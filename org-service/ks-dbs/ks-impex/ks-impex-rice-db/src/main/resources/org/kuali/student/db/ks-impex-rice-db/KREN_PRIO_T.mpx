@@ -1,0 +1,4 @@
+PRIO_ID,NM,DESC_TXT,PRIO_ORD,VER_NBR,OBJ_ID
+"1","Normal","Normal priority","2","1","${mpx.null}"
+"2","Low","A low priority","3","1","${mpx.null}"
+"3","High","A high priority","1","1","${mpx.null}"
