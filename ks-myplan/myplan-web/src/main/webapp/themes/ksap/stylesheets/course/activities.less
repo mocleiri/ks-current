@@ -1,0 +1,252 @@
+.courseActivities__termHeader {
+    text-transform: uppercase;
+    color: @textColorLight;
+    font-size: @fontSizeExtraLarge;
+    padding: @paddingSmall @paddingDefault;
+    margin: 0 0 @marginDefault 0;
+    .border-radius(@baseBorderRadius);
+    .normal();
+}
+
+.courseActivities__curriculumComments .uif-disclosureContent {
+    margin: @marginSmall @marginLarge;
+}
+
+.courseActivities__curriculumComments .uif-disclosure-image {
+    margin: 0 @marginMini 0 0;
+}
+
+.courseActivities__courseComments {
+    display: block;
+}
+
+.courseActivities__help {
+    float: right;
+}
+
+.courseActivities__table {
+    border: @baseBorderStyle;
+    font-size: @fontSizeSmall;
+    font-family: @altFontFamily;
+    margin: 0 0 @marginLarge 0;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0px;
+
+    & thead {
+
+        & tr {
+            display: none;
+
+            &:first-child {
+                display: table-row;
+            }
+
+            & th {
+                text-align: left;
+                padding: @paddingMini;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    & tbody {
+        & td {
+            border-left: @dottedBorderStyle;
+            border-top: @dottedBorderStyle;
+            padding: @paddingSmall @paddingMini;
+            height: 40px;
+            line-height: @fontSizeLarge;
+        }
+
+        & .courseActivities--primary td:first-child, .courseActivities--secondary td:first-child {
+            border-left: none;
+        }
+
+        & .courseActivities--primary td {
+            border-top: @baseBorderStyle;
+            border-top-width: @sizeMini;
+        }
+
+        & .courseActivities--inactive {
+            color: @textColorMin;
+        }
+    }
+
+    & label {
+        text-transform: uppercase;
+        font-size: @fontSizeTiny;
+        color: @textColorMin;
+    }
+
+    & .collapsible.collapsible--secondary, tfoot {
+        display: none;
+    }
+}
+
+.planContainer--planned .courseActivities--primary.courseActivities--planned td:first-child,
+.planContainer--planned .courseActivities--secondary.courseActivities--planned td:first-child {
+    background: url('../images/planned_activity_bkgrd.png') !important;
+}
+
+.planContainer--backup .courseActivities--primary.courseActivities--planned td:first-child,
+.planContainer--backup .courseActivities--secondary.courseActivities--planned td:first-child {
+    background: url('../images/backup_activity_bkgrd.png') !important;
+}
+
+.courseActivities__code {
+    text-align: center;
+}
+
+.courseActivities__code--primary {
+    font-size: 32px;
+    line-height: 1em;
+}
+
+.courseActivities__code--secondary {
+    font-size: 21px;
+    line-height: 1em;
+}
+
+.courseActivities__code--small {
+    font-size: @fontSizeTiny;
+    margin: 0;
+    line-height: 1em;
+}
+
+.courseActivities__type {
+    text-transform: capitalize;
+}
+
+.courseActivities__meetingData .meetingdetails {
+    display: block;
+    margin: 0;
+    padding: 0;
+    line-height: @fontSizeLarge;
+}
+
+.courseActivities__meetingData .meetingdays,
+.courseActivities__meetingData .meetingtime,
+.courseActivities__meetingData .meetingtba,
+.courseActivities__meetingData .meetingbuilding,
+.courseActivities__meetingData .meetingroom {
+    display: inline-block;
+    margin: 0 @marginSmall 0 0;
+}
+
+.courseActivities__meetingData .meetingdays {
+    width: 50px;
+}
+
+.courseActivities__meetingData .meetingtime {
+    width: 117px;
+}
+
+.courseActivities__meetingData .meetingtba {
+    width: 172px;
+}
+
+.courseActivities__meetingData .meetingbuilding {
+    width: 38px;
+}
+
+.courseActivities__meetingData .meetingroom {
+    width: 34px;
+    margin: 0;
+}
+
+.courseActivities--lightBoxLink {
+    margin: 0;
+    display: inline !important;
+}
+
+.courseActivities__action {
+    text-align: center;
+    margin: @marginDefault auto 0 !important;
+    & a {
+        font-size: @fontSizeTiny;
+        line-height: @fontSizeExtraLarge;
+    }
+}
+
+.courseActivities__itemAdd {
+    .courseResults__itemAdd;
+}
+
+.courseActivities__itemDelete {
+    .courseResults__itemAdd;
+    background-position:  0px -146px;
+    &:hover {
+        background-position: -16px -146px;
+    }
+}
+
+.courseActivities__enrlData {
+    text-transform: capitalize;
+}
+
+.courseActivities__enrlData--open,
+.courseActivities__enrlData--closed {
+    font-size: @baseFontSize + 2px;
+    .bold();
+    line-height: @baseLineHeight;
+    margin: 0 0 @marginSmall 0;
+}
+
+.courseActivities__enrlData--open {
+    color: @green;
+}
+
+.courseActivities__enrlData--closed {
+    color: @textColorMin;
+}
+
+.courseActivities__enrlData--light {
+    color: @textColorMin;
+    & strong {
+        color: @textColor;
+    }
+}
+
+.courseActivities__tabGroup {
+    margin-top: -@marginLarge !important;
+
+    & .ui-tabs .ui-tabs-nav {
+        list-style: none;
+        border-right: @baseBorderStyle;
+        border-bottom: @baseBorderStyle;
+        #gradient > .vertical(#f5f5f5, #ebebeb);
+        margin: 0 0 @marginLarge;
+        padding: 0;
+
+        & li {
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 @paddingLarge;
+            top: 0px;
+            margin-bottom: -1px;
+            .border-radius(0);
+
+            &:first-child {
+                border-left: @baseBorderStyle;
+            }
+
+            &.ui-state-active {
+                border-right: @baseBorderStyle;
+                border-left: @baseBorderStyle;
+                background: @white;
+                border-bottom: solid 1px @white;
+
+                & a {
+                    .bold();
+                }
+            }
+
+            & a {
+                font-size: @fontSizeLarge;
+                color: @textColor;
+            }
+        }
+    }
+}

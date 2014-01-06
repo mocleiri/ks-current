@@ -1,0 +1,19 @@
+#
+#  Pubcookie authentication.
+#
+AuthType UWNetID
+PubcookieAppID KualiStudent
+Require type student or group u_subman_c-myplan      
+
+
+#
+#  Redirect to https
+#
+RewriteEngine on
+RewriteCond %{HTTPS} off
+RewriteCond %{REMOTE_USER} !^$
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/student/$1 [R,L]
+# Lop off jsessionids
+ReWriteRule ^(.*);jsessionid=.*$ /student/$1 [PT]
+# To Tomcat
+RewriteRule ^(.*)$ ajp://localhost:8009/student/$1 [P,L]

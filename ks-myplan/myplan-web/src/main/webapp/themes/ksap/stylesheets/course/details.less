@@ -1,0 +1,50 @@
+.courseDetails__header {
+    border-bottom: solid 2px #f2e4b7;
+    position: relative;
+    margin: @marginLarge 0;
+
+    & h3 {
+        .bold();
+        line-height: 1.25em;
+    }
+}
+
+.courseDetails__headerGroup--right {
+    .rightGroup();
+    color: @textColorLight;
+}
+
+.courseDetails__fieldLabel {
+    width: 165px;
+    text-align: right;
+    & .uif-label {
+        display: block;
+
+        & label {
+            .bold();
+        }
+    }
+
+    & .helpImage {
+        position: relative;
+        top: -4px;
+        margin: 0;
+    }
+
+    & > .uif-horizontalBoxLayout {
+        float: right;
+    }
+}
+
+.courseDetails__field {
+    width: 515px;
+    margin: 0 @marginDefault 0 @marginLarge !important;
+
+    & .uif-boxLayoutHorizontalItem {
+        margin: 0 0 0 @marginSmall;
+
+        &:first-child {
+            margin: 0;
+        }
+    }
+}

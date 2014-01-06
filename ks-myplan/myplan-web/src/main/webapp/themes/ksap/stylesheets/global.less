@@ -1,0 +1,214 @@
+body {
+    background: #A4A4A4;
+}
+
+form {
+    margin: 0;
+}
+
+.uif-application {
+    border-top: solid 5px #39275b;
+    background-image: url('../images/appheader_bkgrd.png');
+    background-repeat: repeat-x;
+    background-color: @white;
+    padding: 0 0 @paddingLarge 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: @headingsFontFamily;
+    font-weight: @headingsFontWeight;
+    margin: 0;
+}
+
+h1 {
+    font-size: @baseFontSize * 2.308;
+    /*line-height: 1.333em;*/
+}
+
+h2 {
+    font-size: @baseFontSize * 1.846;
+    /*line-height: 1.667em;*/
+}
+
+h3 {
+    font-size: @baseFontSize * 1.385;
+    /*line-height: 1.111em;*/
+}
+
+h4 {
+    font-size: @baseFontSize * 1.154;
+    /*line-height: 1.333em;*/
+}
+
+h5 {
+    font-size: @baseFontSize;
+    /*line-height: 1.538em;*/
+}
+
+h6 {
+    font-size: @baseFontSize * 0.923;
+    /*line-height: 1.538em;*/
+}
+
+button, a {
+    cursor: pointer;
+}
+
+.viewHeader {
+    margin: @marginDefault 0;
+    & .viewHeaderText {
+        color: @purple;
+    }
+}
+
+.ellipsisItem {
+    display: block;
+    .text-overflow();
+}
+
+.termBadge dl {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+.termBadge dd {
+    margin: 0;
+    padding: 0;
+}
+
+.termBadge dl dl {
+    display: block;
+}
+
+.termBadge .scheduled {
+    vertical-align: 1px;
+}
+
+.termBadge .scheduled dd {
+    .border-radius(@borderRadiusSmall);
+    .bold();
+    font-size: @fontSizeMin;
+    font-family: @sansFontFamily;
+    padding: 0 @paddingSmall;
+    margin: 0 @marginMini 0 0;
+    line-height: @fontSizeLarge;
+    display: inline-block;
+}
+
+.termBadge .projected dd {
+    display: inline;
+}
+
+.termBadge .projected dd:before {
+    content: ", ";
+}
+
+.termBadge .projected dd:first-child:before {
+    content: "";
+}
+
+.AU {
+    background: #FFCCCC !important;
+}
+
+.WI {
+    background: #CCDDFF !important;
+}
+
+.SP {
+    background: #CCFFCC !important;
+}
+
+.SU {
+    background: #FCF990 !important;
+}
+
+.tinyLightText {
+    font-size: @fontSizeTiny;
+    color: @textColorLight;
+}
+.normalLightText {
+    color: @textColorLight;
+    .normal();
+}
+
+.inlineElement.uif-boxLayoutHorizontalItem {
+    display: inline !important;
+    float: none;
+}
+
+.removeMargin.uif-boxLayoutHorizontalItem,
+.removeMargin.uif-boxLayoutVerticalItem {
+    margin: 0;
+}
+
+.block {
+    display: block;
+}
+
+.inlineBlock {
+    display: inline-block;
+}
+
+.blockLink {
+    display: inline-block;
+    float: left;
+    clear: both;
+}
+
+.defaultTopMargin {
+    margin-top: @marginDefault !important;
+}
+.defaultBottomMargin {
+    margin-bottom: @marginDefault !important;
+}
+
+.smallerLineHeight {
+    line-height: @fontSizeLarge;
+}
+
+.bold {
+    .bold() !important;
+    & > label {
+        .bold() !important;
+    }
+}
+
+.normal {
+    .normal() !important;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.center {
+    text-align: center;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.right {
+    float: right !important;
+}
+
+.bold() {
+    font-weight: 700;
+}
+
+.normal() {
+    font-weight: 500;
+}
+
+.rightGroup() {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
