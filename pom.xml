@@ -6,6 +6,7 @@
         <artifactId>kuali-common</artifactId>
         <version>3.3.39</version>
     </parent>
+
     <groupId>org.kuali.student</groupId>
     <artifactId>student</artifactId>
     <version>2.1.0-fr2-M1-SNAPSHOT</version>
