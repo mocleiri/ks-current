@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.kuali.student</groupId>
         <artifactId>student</artifactId>
-        <version>2.1.0-fr1-SNAPSHOT</version>
+        <version>2.1.0-fr1-build-632</version>
     </parent>
     <groupId>org.kuali.student.core</groupId>
     <artifactId>ks-core</artifactId>
-    <version>2.1.0-fr1-SNAPSHOT</version>
+    <version>2.1.0-fr1-build-632</version>
     <name>KS Core</name>
     <packaging>pom</packaging>
     <profiles>
