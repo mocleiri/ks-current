@@ -1,10 +1,10 @@
-# module = ks-api branch Path = enrollment/ks-api/branches/2.0.0-Mx revision = 58576
-ks-api::enrollment_ks-api_branches_2.0.0-Mx::884df33f0a6ee4a5472e6ca5a416af5dffb3d67e
-# module = ks-core branch Path = enrollment/ks-core/trunk revision = 58576
-ks-core::enrollment_ks-core_trunk::19b30966d56cb5644c6a028c76c9ac1d7a51fc7f
-# module = ks-lum branch Path = enrollment/ks-lum/trunk revision = 58576
-ks-lum::enrollment_ks-lum_trunk::25156a6ddf2c23760b18ec91bd74b6e1f8bad5fa
-# module = ks-enroll branch Path = enrollment/ks-enroll/trunk revision = 58576
-ks-enroll::enrollment_ks-enroll_trunk::3ddd1da98b88dadc779c669193185961452da1af
-# module = ks-deployments branch Path = enrollment/ks-deployments/trunk revision = 58576
-ks-deployments::enrollment_ks-deployments_trunk::51fcb09e98ee2e136ef6a2282f1acc1412f7a2ec
+# module = ks-api branch Path = sandbox/KSENROLL-11373/ks-api/tags/builds/ks-api-2.1/2.1.0-fr2-M1/build-988 revision = 63037
+ks-api::sandbox_KSENROLL-11373_ks-api_tags_builds_ks-api-2.1_2.1.0-fr2-M1_build-988::5bea628ec6e7b8e340454f69fa9818fb10e48046
+# module = ks-core branch Path = sandbox/KSENROLL-11373/ks-core/tags/builds/ks-core-2.1/2.1.0-fr2-M1/build-988 revision = 63037
+ks-core::sandbox_KSENROLL-11373_ks-core_tags_builds_ks-core-2.1_2.1.0-fr2-M1_build-988::55692044d426076b4949a538beffd7fa2e6a6a14
+# module = ks-deployments branch Path = sandbox/KSENROLL-11373/ks-deployments/tags/builds/ks-deployments-2.1/2.1.0-fr2-M1/build-988 revision = 63037
+ks-deployments::sandbox_KSENROLL-11373_ks-deployments_tags_builds_ks-deployments-2.1_2.1.0-fr2-M1_build-988::ec67b4b07e924c72a7e4f5002a8226c33635b162
+# module = ks-enroll branch Path = sandbox/KSENROLL-11373/ks-enroll/tags/builds/ks-enroll-0.2/0.2.0-fr2-M1/build-988 revision = 63037
+ks-enroll::sandbox_KSENROLL-11373_ks-enroll_tags_builds_ks-enroll-0.2_0.2.0-fr2-M1_build-988::0a346b34101a0af9f9a5ea3576371902321edd50
+# module = ks-lum branch Path = sandbox/KSENROLL-11373/ks-lum/tags/builds/ks-lum-2.1/2.1.0-fr2-M1/build-988 revision = 63037
+ks-lum::sandbox_KSENROLL-11373_ks-lum_tags_builds_ks-lum-2.1_2.1.0-fr2-M1_build-988::04734a1d951f201d09b77fd01e9c26957361f108
