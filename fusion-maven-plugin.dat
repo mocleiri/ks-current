@@ -1,10 +1,10 @@
-# module = ks-api branch Path = enrollment/ks-api/branches/2.0.0-Mx revision = 58576
-ks-api::enrollment_ks-api_branches_2.0.0-Mx::884df33f0a6ee4a5472e6ca5a416af5dffb3d67e
-# module = ks-core branch Path = enrollment/ks-core/trunk revision = 58576
-ks-core::enrollment_ks-core_trunk::19b30966d56cb5644c6a028c76c9ac1d7a51fc7f
-# module = ks-lum branch Path = enrollment/ks-lum/trunk revision = 58576
-ks-lum::enrollment_ks-lum_trunk::25156a6ddf2c23760b18ec91bd74b6e1f8bad5fa
-# module = ks-enroll branch Path = enrollment/ks-enroll/trunk revision = 58576
-ks-enroll::enrollment_ks-enroll_trunk::3ddd1da98b88dadc779c669193185961452da1af
-# module = ks-deployments branch Path = enrollment/ks-deployments/trunk revision = 58576
-ks-deployments::enrollment_ks-deployments_trunk::7214969f8c1fbafe616283876de1188a3dcd4953
+# module = ks-api branch Path = sandbox/KSENROLL-11373/ks-api/tags/builds/ks-api-2.1/2.1.0-fr2-M1/build-0 revision = 63046
+ks-api::sandbox_KSENROLL-11373_ks-api_tags_builds_ks-api-2.1_2.1.0-fr2-M1_build-0::bd60118fb66569fa510650b1ab7688495f440748
+# module = ks-core branch Path = sandbox/KSENROLL-11373/ks-core/tags/builds/ks-core-2.1/2.1.0-fr2-M1/build-0 revision = 63046
+ks-core::sandbox_KSENROLL-11373_ks-core_tags_builds_ks-core-2.1_2.1.0-fr2-M1_build-0::96056686af5d94ba31f77e10b5b2da4da88e21aa
+# module = ks-deployments branch Path = sandbox/KSENROLL-11373/ks-deployments/tags/builds/ks-deployments-2.1/2.1.0-fr2-M1/build-0 revision = 63046
+ks-deployments::sandbox_KSENROLL-11373_ks-deployments_tags_builds_ks-deployments-2.1_2.1.0-fr2-M1_build-0::550a1e8c07b8da8c857a8211597db758445a2213
+# module = ks-enroll branch Path = sandbox/KSENROLL-11373/ks-enroll/tags/builds/ks-enroll-0.2/0.2.0-fr2-M1/build-0 revision = 63046
+ks-enroll::sandbox_KSENROLL-11373_ks-enroll_tags_builds_ks-enroll-0.2_0.2.0-fr2-M1_build-0::ae56bbaa725cdc1bad764a0d0ba1a378a8246434
+# module = ks-lum branch Path = sandbox/KSENROLL-11373/ks-lum/tags/builds/ks-lum-2.1/2.1.0-fr2-M1/build-0 revision = 63046
+ks-lum::sandbox_KSENROLL-11373_ks-lum_tags_builds_ks-lum-2.1_2.1.0-fr2-M1_build-0::ab13e76c456ce2be8c14b1389b465ca2c011f850
