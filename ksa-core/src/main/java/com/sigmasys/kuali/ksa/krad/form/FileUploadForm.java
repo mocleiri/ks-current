@@ -15,6 +15,14 @@ public class FileUploadForm extends AbstractViewModel {
    private String uploadProcessState;
 
 
+    private int transactionCount = 0;
+    private int successfulCount = 0;
+    private int failedCount = 0;
+
+    private String responseFile;
+    private String responseFilename;
+
+
    /**
     * Get the upload XML file
     * @return
@@ -46,4 +54,44 @@ public class FileUploadForm extends AbstractViewModel {
    public void setUploadProcessState(String uploadProcessState) {
       this.uploadProcessState = uploadProcessState;
    }
+
+    public int getTransactionCount() {
+        return transactionCount;
+    }
+
+    public void setTransactionCount(int transactionCount) {
+        this.transactionCount = transactionCount;
+    }
+
+    public int getSuccessfulCount() {
+        return successfulCount;
+    }
+
+    public void setSuccessfulCount(int successfulCount) {
+        this.successfulCount = successfulCount;
+    }
+
+    public int getFailedCount() {
+        return failedCount;
+    }
+
+    public void setFailedCount(int failedCount) {
+        this.failedCount = failedCount;
+    }
+
+    public String getResponseFile() {
+        return responseFile;
+    }
+
+    public void setResponseFile(String responseFile) {
+        this.responseFile = responseFile;
+    }
+
+    public String getResponseFilename() {
+        return responseFilename;
+    }
+
+    public void setResponseFilename(String responseFilename) {
+        this.responseFilename = responseFilename;
+    }
 }

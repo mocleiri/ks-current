@@ -49,6 +49,14 @@
                         </list>
                     </property>
                 </bean>
+                <bean parent="Uif-Page" p:id="BatchTransactionsProcessedPage" p:title="File Upload">
+                    <property name="headerText" value="File Upload"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="batchTransactionsProcessed"/>
+                        </list>
+                    </property>
+                </bean>
                 <bean parent="Uif-Page" p:id="AgeTransactionsView" p:title="Age All Transactions">
                     <property name="headerText" value="Age all transactions"/>
                     <property name="items">
@@ -98,6 +106,7 @@
     ********************************************************************************************************************
     -->
     <bean id="batchTransactionsUploadFile" parent="Uif-VerticalBoxSection"
+          p:title="Upload Transactions from XML File"
           p:layoutManager.orientation="VERTICAL">
         <!--p:title="Upload a file for processing">-->
         <property name="disclosure.render" value="false"/>
@@ -129,6 +138,31 @@
                         </list>
                     </property>
                 </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                         Summary of uploaded XML section
+    ********************************************************************************************************************
+    -->
+    <bean id="batchTransactionsProcessed" parent="Uif-VerticalBoxSection"
+          p:title="Processed Batch File Summary"
+          p:layoutManager.orientation="VERTICAL">
+        <!--p:title="Upload a file for processing">-->
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="The following enumerates the successful and failed transactions.  If unexpected transaction errors occurred
+                    please download and review the response XML file and resubmit the corrected transactions"/>
+                <bean parent="Uif-GridSection" p:readOnly="true"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="transactionCount" p:label="Transactions Processed"/>
+                    <bean parent="Uif-InputField" p:propertyName="successfulCount" p:label="Transactions Succeeded"/>
+                    <bean parent="Uif-InputField" p:propertyName="failedCount" p:label="Transactions Failed"/>
+                </list></property></bean>
+                <bean parent="Uif-ActionField" p:actionLabel="Download Response File"
+                      p:methodToCall="download" p:ajaxSubmit="false" p:disableBlocking="true"/>
             </list>
         </property>
     </bean>

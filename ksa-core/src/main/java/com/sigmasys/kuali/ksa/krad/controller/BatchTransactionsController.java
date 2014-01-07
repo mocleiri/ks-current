@@ -18,7 +18,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -83,13 +90,24 @@ public class BatchTransactionsController extends GenericSearchController {
                 }
 
                 String processResponse = transactionImportService.importTransactions(xmlContent);
+                form.setResponseFile(processResponse);
 
                 KsaBatchTransactionResponse responseObject =
                         JaxbUtils.fromXml(processResponse, KsaBatchTransactionResponse.class);
 
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                form.setResponseFilename("xml_batch_" + df.format(new Date()) + "-" + responseObject.getResponseIdentifier() + ".xml");
+
                 logger.info("Response: \n" + processResponse);
 
                 String batchStatus = responseObject.getBatchStatus();
+
+                KsaBatchTransactionResponse.BatchSummary batchSummary = responseObject.getBatchSummary();
+                if(batchSummary != null) {
+                    form.setTransactionCount(batchSummary.getTransactionsInBatch());
+                    form.setSuccessfulCount(batchSummary.getTransactionsAccepted());
+                    form.setFailedCount(batchSummary.getTransactionsFailed());
+                }
 
                 if (BatchReceiptStatus.FAILED_NAME.equals(batchStatus)) {
                     String errMsg = "";
@@ -122,7 +140,35 @@ public class BatchTransactionsController extends GenericSearchController {
             return handleError(form, errMsg);
         }
 
+        form.setPageId("BatchTransactionsProcessedPage");
+
         return getUIFModelAndView(form);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=download")
+    public ModelAndView download(@ModelAttribute("KualiForm") FileUploadForm form, HttpServletResponse response) throws Exception {
+        ServletOutputStream outputStream = response.getOutputStream();
+        response.setContentType("application/xml");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + form.getResponseFilename() + "\"");
+
+        InputStream is = new ByteArrayInputStream(form.getResponseFile().getBytes());
+
+
+        try {
+            int length;
+            int bufSize = 1024;
+            byte[] buffer = new byte[bufSize];
+            while ((length = is.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            outputStream.flush();
+            outputStream.close();
+        }
+
+        return null;
+        //return getUIFModelAndView(form);
     }
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=ageDebts")
