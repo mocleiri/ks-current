@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<package name="com.sigmasys.kuali.ksa"
+         xmlns="http://drools.org/drools-5.0"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
+
+    <import name="com.sigmasys.kuali.ksa.model.Currency"/>
+
+    <rule name="USCurrency">
+
+        <lhs>
+
+            <pattern identifier="currency" object-type="Currency">
+
+                <and-constraint-connective>
+
+                    <field-constraint field-name="code">
+                        <variable-restriction evaluator="!=" identifier="null"/>
+                    </field-constraint>
+
+                    <field-constraint field-name="code">
+                        <literal-restriction evaluator="==" value="USD"/>
+                    </field-constraint>
+
+                </and-constraint-connective>
+
+            </pattern>
+
+        </lhs>
+
+        <rhs>
+            System.out.println("USCurrency rule is fired!");
+            currency.setDescription("US Dollar");
+        </rhs>
+
+    </rule>
+
+    <rule name="SetCurrencyEditor">
+
+        <lhs>
+
+            <pattern identifier="currency" object-type="Currency">
+
+                <and-constraint-connective>
+
+                    <field-constraint field-name="code">
+                        <variable-restriction evaluator="!=" identifier="null"/>
+                    </field-constraint>
+
+                    <field-constraint field-name="code">
+                        <literal-restriction evaluator="==" value="USD"/>
+                    </field-constraint>
+
+                </and-constraint-connective>
+
+            </pattern>
+
+        </lhs>
+
+        <rhs>
+            System.out.println("SetCurrencyEditor rule is fired!");
+            currency.setEditorId("admin");
+        </rhs>
+
+    </rule>
+
+</package>

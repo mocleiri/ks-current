@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+    <bean id="BatchCashLimitView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Combined Cash Limit"/>
+        <property name="headerText" value="Combined Cash Limit"/>
+        <property name="entryPageId" value="BatchCashLimitPage"/>
+        <property name="navigation" ref="KsaBatchNavigation"/>
+        <property name="viewHelperService" ref="batchRefundHelper"/>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.CashLimitForm"/>
+        <property name="items">
+            <list merge="true">
+				<!-- Batch Cash Limit Main Page -->
+				<bean parent="Uif-Page" p:id="BatchCashLimitPage" p:title="Combined Cash Limit">
+					<property name="headerText" value="Combined Cash Limit"/>
+					<property name="items">
+                        <list>
+							<!-- Search Transactions section -->
+							<bean parent="Uif-Disclosure-VerticalBoxSection">
+								<property name="headerText" value="Filter Transactions"/>
+								<property name="items">
+									<list>
+										<ref bean="accountFilterGroup"/>
+										<ref bean="dateRangeFilterGroup"/>
+										<ref bean="cashLimitEventStatusFilterDropdown"/>
+										<ref bean="filterRefreshViewhButton"/>
+								   </list>
+								</property>
+							</bean>
+									
+							<!-- The Combined Cash Limit Accounts section -->
+							<ref bean="combinedCashLimitAccountsSection"/>
+						</list>
+					</property>
+				</bean>
+            </list>
+        </property>
+    </bean>
+	
+	
+	<!--
+	
+	******************************* Combined Cash Limit Accounts section *********************************
+	
+	-->
+	<bean id="combinedCashLimitAccountsSection" parent="Uif-VerticalBoxSection" p:headerText="Combined Cash Limit Events">
+		<property name="items">
+			<list>
+				<!-- No Cash Limit Events message -->
+				<bean parent="Uif-MessageField" p:messageText="No Cash Limit Events found with supplied filter criteria" p:render="@{cashLimitEvents.size() == 0}"/>
+				
+				<!-- Cash Limit Events Collection -->
+				<bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="7" p:displayCollectionSize="10">
+					<property name="title" value="Combined Cash Limit Events"/>
+					<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.CashLimitEventModel"/>
+					<property name="propertyName" value="cashLimitEvents" />
+					<property name="layoutManager.generateAutoSequence" value="false" />
+					<property name="layoutManager.richTable.render" value="true"/>
+					<property name="layoutManager.renderSequenceField" value="false"/>
+					<property name="renderAddBlankLineButton" value="false"/>
+					<property name="renderAddLine" value="false"/>
+					<property name="renderLineActions" value="false"/>
+					<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="layoutManager.richTable.disableTableSort" value="true"/>
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:propertyName="selected" p:label="Select" p:readOnly="false">
+								<property name="control">
+									<bean parent="Uif-CheckboxControl"/>
+								</property>
+							</bean>
+							<bean parent="Uif-HorizontalFieldGroup" p:label="Status">
+								<property name="items">
+									<list>
+										<bean parent="Uif-LinkField" p:href="javascript:void(0)" p:onClickScript="showLightboxComponent('combinedCashLimitEventLightbox@{#lineSuffix}');" 
+												p:linkText="@{#line.statusString}" p:style="width: 100%;"/>
+										<ref bean="combinedCashLimitEventLightbox"/>
+									</list>
+								</property>
+							</bean>
+							<bean parent="Uif-HorizontalFieldGroup" p:label="Account ID">
+								<property name="items">
+									<list>
+										<bean parent="Uif-DataField" p:propertyName="cashLimitEvent.accountId"/>
+										<bean parent="Uif-Image" p:source="../images/audit_guy.png" p:style="cursor:pointer;" p:altText="Account Info">
+											<property name="toolTip">
+												<bean parent="Uif-Tooltip">
+													<property name="tooltipContent" value="&lt;b&gt;Default Name:&amp;nbsp;&lt;/b&gt;@{#line.account.compositeDefaultPersonName}&lt;br&gt;&lt;b&gt;Date of Birth:&amp;nbsp;&lt;b&gt;@{#line.dateOfBirthString}&lt;br&gt;&lt;b&gt;Postal Address:&amp;nbsp;&lt;/b&gt;@{#line.account.compositeDefaultPostalAddress}"/>
+												</bean>
+											</property>
+										</bean>
+									</list>
+								</property>
+							</bean>
+                            <bean parent="Uif-DataField" p:label="Date of Event" p:propertyName="eventDateString"/>
+							<bean parent="Uif-DataField" p:label="Total Cash Amount" p:propertyName="totalPayments"/>
+							<bean parent="Uif-HorizontalFieldGroup" p:label="Notification Sent Date">
+								<property name="items">
+									<list>
+										<bean parent="Uif-DataField" p:propertyName="cashLimitEvent.notificationDate"/>
+										<bean parent="Uif-Image" p:source="../images/audit_guy.png" p:style="cursor:pointer;" p:altText="Notification Info">
+											<property name="toolTip">
+												<bean parent="Uif-Tooltip">
+													<property name="tooltipContent" value="&lt;b&gt;Notification Sent to:&amp;nbsp;&lt;/b&gt;@{#line.cashLimitEvent.recipient}"/>
+												</bean>
+											</property>
+										</bean>
+									</list>
+								</property>
+							</bean>
+							<bean parent="Uif-LinkField" p:linkText="Download XML" p:target="_self"
+								  p:align="center" p:width="10%" p:hidden="@{#line.cashLimitEvent.status.id == 'I'}"
+								  p:href="batchCashLimitView?methodToCall=downloadCashEventXml&amp;viewId=BatchCashLimitView&amp;cashLimitEventId=@{#line.cashLimitEvent.id}&amp;accountId=@{#line.cashLimitEvent.accountId}&amp;eventDateString=@{#line.eventDateString}"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- Generate Documents from Selected checkbox. Hiding it for now. Always generate an XML for selected -->
+				<bean parent="Uif-InputField" p:propertyName="generateDocumentsFromSelected" p:hidden="true"> <!-- p:hidden="@{cashLimitEvents.size() == 0}" -->
+					<property name="control">
+						<bean parent="Uif-CheckboxControl"  p:checkboxLabel="Generate Documents from Selected" p:componentSecurity.viewAuthz="true"/>
+					</property>
+				</bean>
+				
+				<!-- Action buttons row -->
+				<bean parent="Uif-HorizontalBoxSection">
+					<property name="items">
+						<list>
+							<!-- "Completed Selected" button -->
+							<bean parent="Uif-SecondaryActionButton" p:actionLabel="Complete Selected" p:methodToCall="completeSelectedAccounts" p:hidden="@{cashLimitEvents.size() == 0}"/>
+							
+							<!-- "Ignore Selected" button -->
+							<bean parent="Uif-SecondaryActionButton" p:actionLabel="Ignore Selected" p:methodToCall="ignoreSelectedAccounts" p:hidden="@{cashLimitEvents.size() == 0}"/>
+							
+							<!-- "Enqueue Selected" button -->
+							<bean parent="Uif-SecondaryActionButton" p:actionLabel="Enqueue Selected" p:methodToCall="enqueueSelectedAccounts" p:hidden="@{cashLimitEvents.size() == 0}"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- Generated Document Archive Download link -->
+				<bean parent="Uif-LinkField" p:linkText="Download Generated Documents" p:style="padding-top: 5px;" p:target="_self" 
+						p:hidden="@{lastCompletedCashLimitEventIds == null or lastCompletedCashLimitEventIds.trim().length() == 0}" 
+						p:href="batchCashLimitView?methodToCall=downloadGeneratedArchiveXml&amp;viewId=BatchCashLimitView&amp;cashLimitEventIds=@{lastCompletedCashLimitEventIds}"/>
+						
+				<!-- XML Generation error message -->
+				<bean parent="Uif-Message" p:messageText="@{getFormSubmissionError()}" p:hidden="@{getFormSubmissionError() == null}" p:style="color: red"/>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!--
+	
+	******************************* Combined Cash Limit Event lightbox *********************************
+	
+	-->
+	<bean id="combinedCashLimitEventLightbox" parent="Uif-VerticalBoxSection" p:hidden="true">
+		<property name="headerText" value="Combined Cash Limit Event (@{#line.statusString}, @{#line.cashLimitEvent.id})          "/>
+		<property name="items">
+			<list>
+				<!-- Properties of the CashLimitEvent and related associations -->
+				<bean parent="Uif-GridSection" p:title="Combined Cash Limit Event (@{#line.statusString}, @{#line.cashLimitEvent.id})          " 
+							p:readOnly="true" p:width="100%" p:align="center">
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:label="Status" p:propertyName="statusString"/>
+							<bean parent="Uif-InputField" p:label="Reporting Complete Date" p:propertyName="cashLimitEvent.reportDate"/>
+							<bean parent="Uif-InputField" p:label="Account ID" p:propertyName="cashLimitEvent.accountId"/>
+							<bean parent="Uif-InputField" p:label="Full Name (default)" p:propertyName="account.compositeDefaultPersonName"/>
+							<bean parent="Uif-InputField" p:label="Date of Birth" p:propertyName="dateOfBirthString"/>
+							<bean parent="Uif-InputField" p:label="Postal Address (default)" p:propertyName="account.compositeDefaultPostalAddress"/>
+							<bean parent="Uif-InputField" p:label="Final Transaction Servicer" p:propertyName="cashLimitEvent.creatorId"/>
+							<bean parent="Uif-InputField" p:label="Date of Event" p:propertyName="eventDateString"/>
+							<bean parent="Uif-InputField" p:label="Multiple Payments" p:propertyName="cashLimitEvent.multiple"/>
+							<bean parent="Uif-InputField" p:label="Sum of Transactions" p:propertyName="totalPayments"/>
+							<bean parent="Uif-InputField" p:label="Sum of Allocations" p:propertyName="totalAllocations"/>
+							<bean parent="Uif-InputField" p:label="Type of Identification" p:propertyName="accountProtectedInfo.identityType.name"/>
+							<bean parent="Uif-InputField" p:label="Identification Serial No." p:propertyName="accountProtectedInfo.identitySerial"/>
+							<bean parent="Uif-InputField" p:label="Identification Issuer" p:propertyName="accountProtectedInfo.identityIssuer"/>
+							<bean parent="Uif-InputField" p:label="Serial Numbers of Cash Istruments" p:propertyName="cashLimitEvent.serials"/>
+							<bean parent="Uif-InputField" p:label="Notification Sent to" p:propertyName="cashLimitEvent.recipient"/>
+							<bean parent="Uif-InputField" p:label="Notification Sent Date" p:propertyName="cashLimitEvent.notificationDate"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- Table of Transactions -->
+				<bean parent="Uif-Disclosure-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="100%" p:style="width: 450px;">
+					<property name="readOnly" value="true"/>
+					<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.Payment"/>
+					<property name="propertyName" value="payments"/>
+					<property name="layoutManager.richTable.render" value="true"/>
+					<property name="layoutManager.renderSequenceField" value="false"/>
+					<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+					<property name="layoutManager.richTable.disableTableSort" value="false"/>
+					<property name="layoutManager.richTable.templateOptions">
+						<map merge="true">
+							<entry key="bPaginate" value="false"/>
+							<entry key="bInfo" value="false"/>
+							<entry key="bFilter" value="false"/>
+						</map>
+					</property>
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:label="Effective Date" p:propertyName="effectiveDate" p:style="width: 60px;"/>
+							<bean parent="Uif-InputField" p:label="Description (Allocations) Actions" p:propertyName="statementText" p:style="width: 250px;"/>
+							<!--bean parent="Uif-InputField" p:label="Charge" p:propertyName="amount"/-->
+							<bean parent="Uif-InputField" p:label="Payment" p:propertyName="amount" p:style="width: 60px;"/>
+							<!--bean parent="Uif-InputField" p:label="Deferment" p:propertyName="amount"/-->
+							<bean parent="Uif-InputField" p:label="Allocated" p:propertyName="allocatedAmount" p:style="width: 60px;"/>
+							<bean parent="Uif-InputField" p:label="Unallocated" p:propertyName="unallocatedAmount" p:style="width: 60px;"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- Totals -->
+				<bean parent="Uif-VerticalBoxSection" p:readOnly="true">
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:label="Total Payment: " p:propertyName="totalPayments" p:style="padding-left: 150px; padding-top: 30px;"/>
+							<bean parent="Uif-InputField" p:label="Total Allocated: " p:propertyName="totalAllocations" p:style="padding-left: 150px;"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+</beans>

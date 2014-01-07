@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="AccountImportView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Account Import"/>
+        <property name="headerText" value="Account Profile Upload"/>
+        <property name="entryPageId" value="AccountImportUploadFilePage"/>
+        <property name="navigation">
+			<ref bean="KsaAdministrationNavigation"/>
+        </property>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="AccountImportQuickMenuOptionsPage" p:title="Quick Options">
+                    <property name="headerText" value="Quick Options"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="accountImportQuickOptions"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="AccountImportUploadFilePage" p:title="File Upload">
+                    <property name="headerText" value="File Upload"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="accountImportUploadFile"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+<!--
+        <property name="additionalCssFiles" ref=""/>
+        <property name="additionalJsFiles" ref=""/>
+        <property name="viewHelperServiceClassName" value=""/>
+        <property name="defaultBindingObjectPath" vaue=""/>
+-->
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.FileUploadForm"/>
+    </bean>
+
+
+    <!--
+    ********************************************************************************************************************
+                                          Quick Options section
+    This is the list of options like an extra navigation page
+    ********************************************************************************************************************
+    -->
+    <bean id="accountImportQuickOptions" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL"
+          p:title="Account Import Tasks"
+          p:instructionalText="Select a quick navigation link from the options listed here.">
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LinkField" p:linkText="XML Import Process" p:target="_self"
+                      p:href="accountImportView?methodToCall=get&amp;viewId=AccountImportView&amp;pageId=AccountImportUploadFilePage"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                         Upload XML file section
+    This is the upload task page
+    ********************************************************************************************************************
+    -->
+    <bean id="accountImportUploadFile" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <!--p:title="Upload a file for processing">-->
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="uploadFile" p:label="@{getLValue('ksa.label.upload.xml.file')}">
+                    <property name="instructionalText" value="Select an XML file to Upload and Process. The file will be validated during the process task."/>
+					<property name="propertyEditor">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.MultipartFilePropertyEditor"/>
+					</property>
+                    <property name="control">
+                        <bean parent="Uif-FileControl" p:size="30"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:layoutManager.orientation="VERTICAL">
+                    <property name="disclosure.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="submit"
+                                  p:actionLabel="@{getLValue('ksa.label.upload.file')}">
+                                <!--<property name="actionImage">
+                                    <bean parent="Uif-ImageField"
+                                          p:source="@{#ConfigProperties['krad.externalizable.images.url']}ks/icon_btn_add.png"/>
+                                </property>-->
+                            </bean>
+                            <!--bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="ageAccounts"
+                                  p:actionLabel="Age All Accounts">
+                                <property name="actionImage">
+                                    <bean parent="Uif-ImageField"
+                                          p:source="@{#ConfigProperties['krad.externalizable.images.url']}ks/icon_btn_add.png"/>
+                                </property>
+                            </bean-->
+                            <!--  Status message -->
+                            <bean parent="Uif-MessageField" p:messageText="@{uploadProcessState}"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

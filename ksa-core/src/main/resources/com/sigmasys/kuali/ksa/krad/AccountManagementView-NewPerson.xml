@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	
+	<!--
+	********************************************************************************************************************
+										PAGE: New Person Account
+	********************************************************************************************************************
+	-->
+	
+	<bean parent="Uif-Page" id="NewPersonAccountPage" p:id="NewPersonAccountPage" p:title="Account Management">
+		<property name="headerText" value="Account Management"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="title" value="Create a new account for a person"/>
+					<property name="items">
+						<list>
+							<bean parent="Uif-MessageField" p:messageText="This form allows for manual creation of a new account for a person."/>
+							<!-- Biographic Information -->
+							<ref bean="NewPersonAccountBiographicInformationSecion"/>
+							<!-- Account Information -->
+							<ref bean="NewPersonAccountAccountInformationSecion"/>
+							<!-- User Settings -->
+							<ref bean="NewPersonAccountUserSettingsSection"/>
+							<!-- Submit section -->
+							<bean parent="Uif-HorizontalBoxSection">
+								<property name="items">
+									<list>
+										<bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="saveNewPersonAccount"
+											p:actionLabel="Save"
+											p:onClickScript="writeHiddenToForm(&quot;actionParameters[pageId]&quot;, &quot;NewPersonAccountPage&quot;);">
+										</bean>
+										<bean parent="Uif-ActionLink" p:actionLabel="Cancel" p:methodToCall="cancel"
+											p:preSubmitCall="return confirm('Are you sure you want to cancel?');"/>
+									</list>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	
+	
+	<!--
+	********************************************************************************************************************
+						 Sub-Sections - Biographic Information, Account Information, User Settrings
+	********************************************************************************************************************
+	-->
+	
+	<!-- New Person Account: Name subsection -->
+	<bean id="NewPersonAccountNameSection" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="headerText" value="NAME"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.kimNameType" p:labelPlacement="TOP" p:label="Name Type" 
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="org.kuali.rice.kim.impl.identity.name.EntityNameTypeBo"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.firstName" p:labelPlacement="TOP" p:label="First Name" p:required="true" p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.middleName" p:labelPlacement="TOP" p:label="Middle Name">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.lastName" p:labelPlacement="TOP" p:label="Last Name" p:required="true">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.suffix" p:labelPlacement="TOP" p:label="Suffix">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.title" p:labelPlacement="TOP" p:label="Title">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- New Person Account: Address subsection -->
+	<bean id="NewPersonAccountAddressSection" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="headerText" value="ADDRESS"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.kimAddressType" p:labelPlacement="TOP" p:label="Address Type" 
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="org.kuali.rice.kim.impl.identity.address.EntityAddressTypeBo"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.streetAddress1" p:labelPlacement="TOP" p:label="Line 1" p:required="true">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.streetAddress2" p:labelPlacement="TOP" p:label="Line 2" p:required="false">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.streetAddress3" p:labelPlacement="TOP" p:label="Line 3" p:required="false">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.city" p:labelPlacement="TOP" p:label="City" p:required="true">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.state" p:labelPlacement="TOP" p:label="State Code" p:required="true">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="5"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.postalCode" p:labelPlacement="TOP" p:label="Postal Code" p:required="true">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="12"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.country" p:labelPlacement="TOP" p:label="Country Code" p:required="true">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- New Person Account: Electronic Contact subsection -->
+	<bean id="NewPersonAccountElectronicContactSection" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="headerText" value="ELECTRONIC CONTACT"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.kimEmailAddressType" p:labelPlacement="TOP" p:label="Email Address Type" 
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="org.kuali.rice.kim.impl.identity.email.EntityEmailTypeBo"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+			
+				<bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.emailAddress" p:labelPlacement="TOP" p:label="Email">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="255"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.kimPhoneType" p:labelPlacement="TOP" p:label="Phone Type" 
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="org.kuali.rice.kim.impl.identity.phone.EntityPhoneTypeBo"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.phoneCountry" p:labelPlacement="TOP" p:label="Phone Country">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="5"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.phoneNumber" p:labelPlacement="TOP" p:label="Phone Number">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="20"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.phoneExtension" p:labelPlacement="TOP" p:label="Phone Ext.">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- New Person Account: Account Information subsection 1 -->
+	<bean id="NewPersonAccountAccountInfoSection1" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="items">
+			<list>
+
+				<bean parent="Uif-InputField" p:propertyName="accountStatusTypeId" p:labelPlacement="TOP" p:label="Status"
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="com.sigmasys.kuali.ksa.model.AccountStatusType"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+
+				<bean parent="Uif-InputField" p:propertyName="accountInfo.accountType" p:labelPlacement="TOP" p:label="Account Type" 
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.AccountTypeKeyValuesFinder"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="accountInfo.dateOfBirth" p:labelPlacement="TOP" p:label="Date of Birth"
+						p:constraintText="Format: mm/dd/yyyy">
+					<property name="control">
+						<bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="account.creditLimit" p:labelPlacement="TOP" p:label="Credit Limit">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="20"/>
+					</property>
+				</bean>
+				<bean parent="Uif-InputField" p:propertyName="account.ableToAuthenticate">
+					<property name="control">
+						<bean parent="Uif-CheckboxControl"  p:checkboxLabel="Account can Authenticate"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- New Person Account: Account Information subsection 2 -->
+	<bean id="NewPersonAccountAccountInfoSection2" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="accountBankTypeId" p:labelPlacement="TOP" p:label="Bank Type"
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="com.sigmasys.kuali.ksa.model.BankType"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+
+				<bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.bankDetails" p:labelPlacement="TOP" p:label="Bank Detail"
+						p:constraintText="Format: xxx-xxx-xxx">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="accountTaxTypeId" p:labelPlacement="TOP" p:label="Tax Type"
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="com.sigmasys.kuali.ksa.model.TaxType"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.taxReference" p:labelPlacement="TOP" p:label="Tax Detail"
+						p:constraintText="Format: xxx-xxx-xxx">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	
+	<!-- New Person Account: Account Information subsection 3 -->
+	<bean id="NewPersonAccountAccountInfoSection3" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="accountIdentityTypeId" p:labelPlacement="TOP" p:label="Identity Type"
+						p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder">
+							<constructor-arg>
+								<bean class="java.lang.Class" factory-method="forName">
+									<constructor-arg value="com.sigmasys.kuali.ksa.model.IdentityType"/>
+								</bean>
+							</constructor-arg>
+						</bean>
+					</property>
+				</bean>
+				<bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.identitySerial" p:labelPlacement="TOP" p:label="Identity Serial"
+						p:constraintText="Format: DL-123456789">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+					</property>
+				</bean>
+				
+				<bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.identityIssuer" p:labelPlacement="TOP" p:label="Identity Issuer">
+					<property name="control">
+						<bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- New Person Account: User Preference subsection -->
+	<bean id="NewPersonAccountUserPreferenceSection" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+		<property name="instructionalText" value="The following table allows User Preference entries to be added to an account."/>
+		<property name="items">
+			<list>
+				<bean id="UserPreferences" parent="Uif-Disclosure-TableCollectionSection"
+					  p:layoutManager.numberOfColumns="2"
+					  p:width="85%" p:renderSaveLineActions="true" p:renderLineActions="true" p:renderAddLine="true">
+					<property name="title" value="Recent Activity"/>
+					<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.UserPreference"/>
+					<property name="readOnly" value="true"/>
+					<property name="propertyName" value="accountInfo.userPreferences"/>
+					<property name="layoutManager.richTable.render" value="true"/>
+					<property name="layoutManager.renderSequenceField" value="false"/>
+					<property name="layoutManager.richTable.disableTableSort" value="false"/>
+					<property name="layoutManager.richTable.templateOptions">
+						<map merge="true">
+							<entry key="bPaginate" value="true"/>
+							<entry key="iDisplayLength" value="20"/>
+						</map>
+					</property>
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:label="Name" p:propertyName="name">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:size="21" p:maxLength="256"/>
+								</property>
+							</bean>
+							
+							<bean parent="Uif-InputField" p:label="Value" p:propertyName="value">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:size="21" p:maxLength="100"/>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!--
+	********************************************************************************************************************
+									 SECTION - New Person Account Large titled sections.
+	********************************************************************************************************************
+	-->
+	
+	<bean id="NewPersonAccountBiographicInformationSecion" parent="Uif-Disclosure-VerticalBoxSection">
+		<property name="headerText" value="Biographic Information"/>
+		<property name="items">
+			<list>
+                <bean parent="Uif-InputField" p:propertyName="accountType">
+                <property name="control">
+                    <bean parent="Uif-HorizontalRadioControl">
+                        <property name="options">
+                            <list>
+                                <bean parent="Uif-KeyLabelPair" p:key="I" p:value="Individual Account"/>
+                                <bean parent="Uif-KeyLabelPair" p:key="O" p:value="Organization Account"/>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:label="Organization Name" p:propertyName="organizationName" p:progressiveRender="@{accountType == 'O'}"/>
+
+                <bean parent="Uif-HorizontalBoxSection" p:style="text-decoration:underline">
+                    <property name="items">
+                        <list>
+                            <!-- Name subsection -->
+                            <ref bean="NewPersonAccountNameSection"/>
+                            <!-- Address subsection -->
+                            <ref bean="NewPersonAccountAddressSection"/>
+                            <!-- Electronic Contact subsection -->
+                            <ref bean="NewPersonAccountElectronicContactSection"/>
+	                    </list>
+                    </property>
+                </bean>
+            </list>
+		</property>
+	</bean>
+
+	<bean id="NewPersonAccountAccountInformationSecion" parent="Uif-Disclosure-HorizontalBoxSection" p:style="text-decoration:underline">
+		<property name="headerText" value="Account Information"/>
+		<property name="items">
+			<list>
+				<!-- First subsection -->
+				<ref bean="NewPersonAccountAccountInfoSection1"/>
+				<!-- Second subsection -->
+				<ref bean="NewPersonAccountAccountInfoSection2"/>
+				<!-- Third subsection -->
+				<ref bean="NewPersonAccountAccountInfoSection3"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="NewPersonAccountUserSettingsSection" parent="Uif-Disclosure-VerticalBoxSection" p:style="text-decoration:underline">
+		<property name="headerText" value="User Preferences"/>
+		<property name="items">
+			<list>
+				<ref bean="NewPersonAccountUserPreferenceSection"/>
+			</list>
+		</property>
+	</bean>
+
+	
+</beans>

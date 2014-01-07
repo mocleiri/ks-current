@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="TemplateView" parent="Uif-KsaFormView">
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.TemplateForm"/>
+        <property name="title" value="Template View"/>
+        <property name="headerText" value="Template View"/>
+        <property name="entryPageId" value="Page1"/>
+        <property name="navigation">
+            <bean parent="Uif-KsaPageNavigation">
+                <property name="items">
+                    <list merge="true">
+                        <bean parent="Uif-NavigationActionLink" p:navigateToPageId="Page1" p:actionLabel="Page 1"/>
+                        <bean parent="Uif-NavigationActionLink" p:navigateToPageId="Page2" p:actionLabel="Page 2"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="Page1" p:title="Page 1">
+                    <property name="headerText" value="Page 1"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="dateValue" p:label="Date Value">
+                                <property name="bindingInfo.bindToForm" value="true"/>
+                                <property name="control">
+                                    <bean parent="Uif-DateControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:propertyName="stringValue" p:label="String Value"
+                                  p:fieldLabel.renderColon="true"
+                                  p:maxLength="10">
+                                <property name="bindingInfo.bindToForm" value="true"/>
+                                <property name="control">
+                                    <bean parent="Uif-TextControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="submit"
+                                  p:actionLabel="Submit"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="Page2" p:title="Page 2">
+                    <property name="headerText" value="Page 2"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="doubleValue" p:label="Double Value">
+                                <property name="bindingInfo.bindToForm" value="true"/>
+                                <property name="control">
+                                    <bean parent="Uif-TextControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:propertyName="intValue" p:label="Integer Value"
+                                  p:fieldLabel.renderColon="true"
+                                  p:maxLength="10">
+                                <property name="bindingInfo.bindToForm" value="true"/>
+                                <property name="control">
+                                    <bean parent="Uif-TextControl"/>
+                                </property>
+                            </bean>
+                            <ref bean="stringModelTable"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="stringModelTable" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="2"
+          p:disclosure.render="false"
+          p:progressiveRenderViaAJAX="true">
+<!--        <property name="cssClasses">
+            <list merge="true">
+                <value>ksa-quickview-table</value>
+            </list>
+        </property>-->
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.form.TemplateForm.StringModel"/>
+        <property name="propertyName" value="stringModels"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="false"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="id" p:label="ID">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="value" p:label="Value">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

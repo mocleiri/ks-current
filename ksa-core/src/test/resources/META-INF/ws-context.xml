@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-lazy-init="true">
+
+    <bean id="baseServiceUrl" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="http://localhost:11111"/>
+    </bean>
+
+    <!-- JAX WS Exporter finds all services annotated with @WebService and exports on the local HTTP server
+       running at 'baseServiceUrl' -->
+    <bean id="jaxWsServiceExporter" class="com.sigmasys.kuali.ksa.service.jaxws.JaxWsServiceExporter" lazy-init="false">
+        <property name="baseServiceUrl" ref="baseServiceUrl"/>
+    </bean>
+
+    <bean id="wsProxyFactoryBean" class="com.sigmasys.kuali.ksa.service.jaxws.JaxWsProxyFactoryBean" abstract="true">
+        <property name="lookupServiceOnStartup" value="false"/>
+        <property name="maintainSession" value="true"/>
+        <property name="baseServiceUrl" ref="baseServiceUrl"/>
+    </bean>
+
+    <bean id="localizationWsClient" class="com.sigmasys.kuali.ksa.service.jaxws.JaxWsProxyFactoryBean"
+          parent="wsProxyFactoryBean">
+        <property name="serviceInterface" value="com.sigmasys.kuali.ksa.service.LocalizationService"/>
+    </bean>
+
+</beans>

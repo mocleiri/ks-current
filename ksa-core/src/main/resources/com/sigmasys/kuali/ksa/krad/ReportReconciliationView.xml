@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="ReportReconciliationView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="headerText" value="Reports &amp; Reconciliation"/>
+        <property name="title" value="Reports &amp; Reconciliation"/>
+        <property name="entryPageId" value="AgedBalanceView"/>
+        <property name="navigation" ref="KsaReportingNavigation">
+        </property>
+        <property name="items">
+            <list merge="true">
+
+                <bean parent="Uif-Page" p:id="AgedBalanceView" p:title="Generate Aged Balance List">
+                    <property name="headerText" value="File Upload"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="agedTransactionDownloadFile"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Begin General Ledger Page-->
+
+                <ref bean="GeneralLedgerMainPage"/>
+                <ref bean="GeneralLedgerPriorBatchPage"/>
+                <ref bean="GeneralLedgerPendingPage"/>
+				<ref bean="GeneralLedgerBatchDetailsPage"/>
+
+                <!--End General Ledger Page-->
+
+            </list>
+        </property>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.ReportReconciliationForm"/>
+    </bean>
+
+
+    <bean id="agedTransactionDownloadFile" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+        <!--p:title="Upload a file for processing">-->
+        <property name="headerText" value="Download Aged Transactions Report"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="agedTransactions"
+                      p:actionLabel="Generate Aged Balance List" p:ajaxSubmit="false" p:disableBlocking="true">
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

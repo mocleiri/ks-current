@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-lazy-init="true">
+
+    <!-- Atomikos JTA TransactionManager and UserTransaction implementation -->
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager">
+        <property name="forceShutdown" value="false"/>
+    </bean>
+
+    <!--  Spring JTA TransactionManager -->
+    <bean id="transactionManager" class="com.sigmasys.kuali.ksa.service.jta.JtaTransactionManager">
+        <property name="userTransaction" ref="atomikosTransactionManager"/>
+        <property name="transactionManager" ref="atomikosTransactionManager"/>
+    </bean>
+
+
+    <!-- XA data source definitions -->
+    <bean id="xaDataSource" class="com.sigmasys.kuali.ksa.service.jta.AtomikosXaDataSourceBean" abstract="true">
+        <property name="xaDataSourceClassName" value="oracle.jdbc.xa.client.OracleXADataSource"/>
+        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="20"/>
+        <property name="testQuery" value="select 1 from dual"/>
+        <property name="defaultXaProperties">
+            <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetClass" value="com.sigmasys.kuali.ksa.util.CommonUtils"/>
+                <property name="targetMethod" value="getProperties"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="ksaDataSource" parent="xaDataSource">
+        <property name="uniqueResourceName" value="ksaDataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="user">${ksa.db.test.username}</prop>
+                <prop key="password">${ksa.db.test.password}</prop>
+                <prop key="URL">${ksa.db.test.url}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="ksDataSource" parent="xaDataSource">
+        <property name="uniqueResourceName" value="ksDataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="user">${ks.db.test.username}</prop>
+                <prop key="password">${ks.db.test.password}</prop>
+                <prop key="URL">${ks.db.test.url}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="riceDataSource" parent="xaDataSource">
+        <property name="uniqueResourceName" value="riceDataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="user">${rice.db.test.username}</prop>
+                <prop key="password">${rice.db.test.password}</prop>
+                <prop key="URL">${rice.db.test.url}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="jndiBinder" class="com.sigmasys.kuali.ksa.util.LocalJndiBinder">
+        <property name="bindings">
+            <map>
+                <entry key="java:comp/env/TransactionManager" value-ref="atomikosTransactionManager"/>
+                <entry key="java:comp/UserTransaction" value-ref="atomikosTransactionManager"/>
+                <entry key="javax.transaction.TransactionManager" value-ref="atomikosTransactionManager"/>
+                <entry key="javax.transaction.UserTransaction" value-ref="atomikosTransactionManager"/>
+                <entry key="ksa" value-ref="ksaDataSource"/>
+                <entry key="ks" value-ref="ksDataSource"/>
+                <entry key="rice" value-ref="riceDataSource"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>

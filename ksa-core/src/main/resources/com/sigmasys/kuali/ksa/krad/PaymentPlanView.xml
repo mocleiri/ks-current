@@ -1,0 +1,1483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+<bean id="PaymentPlanView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value=""/>
+        <property name="headerText" value="Payment Plans"/>
+        <property name="entryPageId" value="ManageThirdPartyPage"/>
+        <property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.PaymentPlanHelper"/>
+        <property name="navigation" ref="KsaThirdPartyPaymentPlansNavigation"/>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="CreatePaymentPlanPage">
+                    <property name="headerText" value="Create Payment Billing Plan"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="createPaymentPlan"/>
+
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="ManagePaymentPlanPage">
+                    <property name="headerText" value="Manage Payment Billing Plans"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="managePaymentPlans"/>
+
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="BatchPaymentPlanPage">
+                    <property name="headerText" value="Batch Enroll Payment Billing Plans"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="batchPaymentPlans"/>
+
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="CreateThirdPartyPage">
+                    <property name="headerText" value="Create Third Party Payment Plan"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="createThirdParty"/>
+
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="ManageThirdPartyPage">
+                    <property name="headerText" value="Manage Third Party Payment Plans"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="manageThirdParty"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="BatchThirdPartyPage">
+                    <property name="headerText" value="Batch Enroll Third Party Payment Plans"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="batchThirdPartyPlans"/>
+
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="ViewTransactionTransferListPage">
+                    <property name="headerText" value="Transaction Transfer List"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="transactionTransferList"/>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.PaymentPlanForm"/>
+    </bean>
+
+    <bean id="createPaymentPlan" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="paymentPlanDescription"/>
+                <ref bean="thirdPartyOpenPeriod"/>
+                <ref bean="thirdPartyChargePeriod"/>
+                <ref bean="paymentBillingCharges"/>
+                <ref bean="paymentBillingDates"/>
+                <ref bean="paymentBillingFlatFees"/>
+                <ref bean="paymentBillingVariableFees"/>
+                <ref bean="paymentBillingRounding"/>
+                <ref bean="paymentBillingAdditionalSettings"/>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="insertPaymentBilling" p:actionLabel="Submit"/>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="manageThirdParty" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="filterThirdPartyPlansSection"/>
+                <ref bean="thirdPartyPaymentPlans"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="managePaymentPlans" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="filterPaymentPlansSection"/>
+                <ref bean="paymentBillingPlans"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="batchPaymentPlans" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="suggestPaymentPlanSection"/>
+                <bean parent="Uif-InputField" p:propertyName="batchAccounts" p:label="Accounts to Enroll" p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="batchPaymentBilling" p:actionLabel="Submit"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="createThirdParty" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="thirdPartyDescription"/>
+                <ref bean="newThirdPartyAdministrative"/>
+                <ref bean="thirdPartyOpenPeriod"/>
+                <ref bean="thirdPartyChargePeriod"/>
+                <ref bean="thirdPartyCharges"/>
+                <ref bean="thirdPartyTransferredTransactions"/>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="insertThirdParty" p:actionLabel="Submit"/>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="paymentPlanDescription" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Payment Billing Plan"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="newPaymentBillingPlan.code" p:label="Code" p:required="true"/>
+                    <bean parent="Uif-InputField" p:propertyName="newPaymentBillingPlan.name" p:label="Name" p:required="true"/>
+                </list></property></bean>
+                <bean parent="Uif-InputField" p:propertyName="newPaymentBillingPlan.description" p:label="Description" p:labelPlacement="TOP" p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"/>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyDescription" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Third Party Plan"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="code" p:label="Code"/>
+                    <bean parent="Uif-InputField" p:propertyName="name" p:label="Name"/>
+                </list></property></bean>
+                <bean parent="Uif-InputField" p:propertyName="description" p:label="Description" p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"/>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="newThirdPartyAdministrative" parent="Uif-HorizontalBoxSection">
+        <property name="headerText" value="Administrative Information"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Responsible Account" p:labelPlacement="TOP" p:propertyName="responsibleAccount">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getAccountsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-VerticalBoxSection" p:methodToCallOnRefresh="getResponsibleAccount" p:refreshWhenChangedPropertyNames="responsibleAccount">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="@{responsibleAccountMessage}"/>
+                            <bean parent="Uif-VerticalBoxSection" p:style="background-color: #CCC; border-radius: 15px;" p:render="@{!#empty(thirdPartyAccount.id)}">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Disclosure-GridSection" p:readOnly="true" >
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="thirdPartyAccount.id" p:label="Userid" />
+                                                    <bean parent="Uif-InputField" p:propertyName="thirdPartyAccount.compositeDefaultPersonName" p:label="Name" />
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyAdministrative" parent="Uif-HorizontalBoxSection">
+        <property name="headerText" value="Administrative Information"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Responsible Account" p:labelPlacement="TOP" p:propertyName="thirdPartyAccount.id">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getAccountsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-VerticalBoxSection" p:methodToCallOnRefresh="getResponsibleAccount" p:refreshWhenChangedPropertyNames="thirdPartyAccount.id">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-VerticalBoxSection" p:style="background-color: #CCC; border-radius: 15px;">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Disclosure-GridSection" p:readOnly="true" >
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="thirdPartyAccount.id" p:label="Userid" />
+                                                    <bean parent="Uif-InputField" p:propertyName="thirdPartyAccount.compositeDefaultPersonName" p:label="Name" />
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyOpenPeriod" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Open Period"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="openPeriodStartDate" p:labelPlacement="TOP" p:label="Start"  p:required="true"
+                          p:constraintText="Format: mm/dd/yyyy">
+                        <property name="control">
+                            <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                        </property>
+                    </bean>
+                    <bean parent="Uif-InputField" p:propertyName="openPeriodEndDate" p:labelPlacement="TOP" p:label="End" p:required="true"
+                          p:constraintText="Format: mm/dd/yyyy">
+                        <property name="control">
+                            <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                        </property>
+                    </bean>
+                </list></property></bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyChargePeriod" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Charge Period"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="chargePeriodStartDate" p:labelPlacement="TOP" p:label="Start" p:required="true"
+                          p:constraintText="Format: mm/dd/yyyy">
+                        <property name="control">
+                            <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                        </property>
+                    </bean>
+                    <bean parent="Uif-InputField" p:propertyName="chargePeriodEndDate" p:labelPlacement="TOP" p:label="End" p:required="true"
+                          p:constraintText="Format: mm/dd/yyyy">
+                        <property name="control">
+                            <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                        </property>
+                    </bean>
+                </list></property></bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyCharges" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Charges"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="maxAmount" p:label="Maximum Amount" p:labelPlacement="TOP"/>
+
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="6" p:width="85%">
+                    <property name="headerText" value="Allowable Charges"/>
+                    <property name="readOnly" value="false"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.ThirdPartyAllowableChargeModel"/>
+                    <property name="propertyName" value="thirdPartyAllowableCharges"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="layoutManager.richTable.disableTableSort" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Transaction Type Mask" p:propertyName="transactionTypeMask"/>
+                            <bean parent="Uif-InputField" p:label="Priority" p:propertyName="priority"/>
+                            <bean parent="Uif-InputField" p:label="Percentage Allowed" p:propertyName="maxPercentageString"/>
+                            <bean parent="Uif-InputField" p:label="Maximum Amount" p:propertyName="maxAmount"/>
+                            <bean parent="Uif-InputField" p:label="Charge Distribution Plan" p:propertyName="distributionPlanCode">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl" p:width="100%"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="com.sigmasys.kuali.ksa.krad.util.DistributionPlanKeyValuesFinder"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="batchThirdPartyPlans" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="suggestThirdPartySection"/>
+                <bean parent="Uif-InputField" p:propertyName="batchAccounts" p:label="Accounts to Enroll" p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="forceReversal">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl" p:checkboxLabel="Force reversal of existing accounts"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="batchThirdParty" p:actionLabel="Queue" p:actionParameters="action:queue"/>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="batchThirdParty" p:actionLabel="Enroll" p:actionParameters="action:enroll"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="paymentBillingCharges" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Charges"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="maxAmount" p:label="Maximum Amount" p:labelPlacement="TOP"/>
+
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="6" p:width="85%">
+                    <property name="headerText" value="Allowable Charges"/>
+                    <property name="readOnly" value="false"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.PaymentBillingAllowableChargeModel"/>
+                    <property name="propertyName" value="paymentBillingAllowableCharges"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="layoutManager.richTable.disableTableSort" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Transaction Type Mask" p:propertyName="transactionTypeMask"/>
+                            <bean parent="Uif-InputField" p:label="Priority" p:propertyName="priority"/>
+                            <bean parent="Uif-InputField" p:label="Percentage Allowed" p:propertyName="maxPercentageString"/>
+                            <bean parent="Uif-InputField" p:label="Maximum Amount" p:propertyName="maxAmount"/>
+                        </list>
+                    </property>
+                </bean>
+
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="paymentBillingDates" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Payback Schedule"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:width="85%">
+                    <property name="headerText" value="Payment Billing Dates"/>
+                    <property name="readOnly" value="false"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.PaymentBillingDateModel"/>
+                    <property name="propertyName" value="paymentBillingDates"/>
+                    <property name="layoutManager.sequencePropertyName" value="id"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="layoutManager.richTable.disableTableSort" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Payment Date" p:propertyName="effectiveDate">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:label="Percentage of Total" p:propertyName="percentage"/>
+                            <bean parent="Uif-InputField" p:propertyName="rollupId" p:labelPlacement="TOP" p:label="Roll-Up"
+                                  p:fieldLabel.renderColon="false">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl" p:width="100%"/>
+                                </property>
+                                <property name="optionsFinder" value="@{getRollupOptionsFinder()}"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyTransferredTransactions" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Transferred Transaction Settings"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="effectiveDate" p:labelPlacement="TOP" p:label="Effective Date"
+                      p:constraintText="Format: mm/dd/yyyy">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="recognitionDate" p:labelPlacement="TOP" p:label="Recognition Date"
+                      p:constraintText="Format: mm/dd/yyyy">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean id="PaymentPlanViewTransferType" parent="Uif-InputField" p:propertyName="transferType" p:labelPlacement="TOP" p:label="Transfer Type">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder" value="@{getTransferTypeOptionsFinder()}"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="filterThirdPartyPlansSection" parent="Uif-Disclosure-VerticalBoxSection">
+        <property name="headerText" value="Filter"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-HorizontalBoxSection">
+                    <property name="items">
+                        <list>
+                            <!-- Plan Name suggest -->
+                            <bean parent="Uif-InputField" p:label="Name of Plan" p:propertyName="filterPlanName">
+                                <property name="suggest">
+                                    <bean parent="Uif-Suggest">
+                                        <property name="valuePropertyName" value="id"/>
+                                        <property name="labelPropertyName" value="name"/>
+                                        <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig">
+                                                <property name="queryMethodToCall" value="getThirdPartyPlansForSuggest"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="filterThirdPartyPlans" p:actionLabel="Add this Plan"/>
+                            <bean parent="Uif-ListCollectionGroup" >
+                                <property name="headerText" value="Selected Plans"/>
+                                <property name="readOnly" value="true"/>
+                                <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.tp.ThirdPartyPlan"/>
+                                <property name="propertyName" value="filterThirdPartyPlans"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-HorizontalFieldGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Remove" p:methodToCall="removeThirdPartyPlan" p:actionParameters="planId:@{#line.id}">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image" p:source="../images/remove.png"/>
+                                                        </property>
+                                                        <property name="toolTip">
+                                                            <bean parent="Uif-Tooltip" p:tooltipContent="Remove the Third Party Payment Plan"/>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalBoxSection">
+                    <property name="items">
+                        <list>
+                            <!-- Third Party Account suggest -->
+                            <bean parent="Uif-InputField" p:label="Responsible Account" p:propertyName="filterThirdPartyAccount">
+                                <property name="suggest">
+                                    <bean parent="Uif-Suggest">
+                                        <property name="valuePropertyName" value="id"/>
+                                        <property name="labelPropertyName" value="id"/>
+                                        <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig">
+                                                <property name="queryMethodToCall" value="getAccountsForSuggest"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="filterThirdPartyAccount" p:actionLabel="Add this Account"/>
+                            <bean parent="Uif-ListCollectionGroup" >
+                                <property name="headerText" value="Selected Accounts"/>
+                                <property name="readOnly" value="true"/>
+                                <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.ThirdPartyAccount"/>
+                                <property name="propertyName" value="filterThirdPartyAccounts"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-HorizontalFieldGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="id"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="compositeDefaultPersonName"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Remove" p:methodToCall="removeThirdPartyAccount" p:actionParameters="accountId:@{#line.id}">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image" p:source="../images/remove.png"/>
+                                                        </property>
+                                                        <property name="toolTip">
+                                                            <bean parent="Uif-Tooltip" p:tooltipContent="Remove the Third Party Payment Plan"/>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="filterPaymentPlansSection" parent="Uif-Disclosure-VerticalBoxSection">
+        <property name="headerText" value="Filter"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-HorizontalBoxSection">
+                    <property name="items">
+                        <list>
+                            <!-- Plan Name suggest -->
+                            <bean parent="Uif-InputField" p:label="Name of Plan" p:propertyName="filterPlanName">
+                                <property name="suggest">
+                                    <bean parent="Uif-Suggest">
+                                        <property name="valuePropertyName" value="id"/>
+                                        <property name="labelPropertyName" value="name"/>
+                                        <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig">
+                                                <property name="queryMethodToCall" value="getPaymentBillingPlansForSuggest"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="filterPaymentBillingPlans" p:actionLabel="Add this Plan"/>
+                            <bean parent="Uif-ListCollectionGroup" >
+                                <property name="headerText" value="Selected Plans"/>
+                                <property name="readOnly" value="true"/>
+                                <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.pb.PaymentBillingPlan"/>
+                                <property name="propertyName" value="filterPaymentBillingPlans"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-HorizontalFieldGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Remove" p:methodToCall="removePaymentBillingPlan" p:actionParameters="planId:@{#line.id}">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image" p:source="../images/remove.png"/>
+                                                        </property>
+                                                        <property name="toolTip">
+                                                            <bean parent="Uif-Tooltip" p:tooltipContent="Remove the Payment Billing Plan"/>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="suggestPaymentPlanSection" parent="Uif-Disclosure-VerticalBoxSection">
+        <property name="headerText" value="Batch Enroll Payment Billing Plans"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <!-- Plan Name suggest -->
+                            <bean parent="Uif-InputField" p:label="Name of Plan" p:propertyName="planName">
+                                <property name="suggest">
+                                    <bean parent="Uif-Suggest">
+                                        <property name="valuePropertyName" value="name"/>
+                                        <property name="labelPropertyName" value="code"/>
+                                        <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig">
+                                                <property name="queryMethodToCall" value="getPaymentBillingPlansForSuggest"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-HorizontalBoxSection" p:methodToCallOnRefresh="getPaymentBillingPlan" p:readOnly="true" p:refreshWhenChangedPropertyNames="planName">
+                                <property name="items"><list>
+                                    <bean parent="Uif-InputField" p:propertyName="paymentBillingPlan.code" p:label="Code" p:labelPlacement="TOP"/>
+                                    <bean parent="Uif-InputField" p:propertyName="paymentBillingPlan.name" p:label="Name" p:labelPlacement="TOP"/>
+                                    <bean parent="Uif-InputField" p:propertyName="paymentBillingPlan.description" p:label="Description" p:labelPlacement="TOP"/>
+                                </list></property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="suggestThirdPartySection" parent="Uif-Disclosure-VerticalBoxSection">
+        <property name="headerText" value="Batch Enroll Third Party Plans"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <!-- Plan Name suggest -->
+                            <bean parent="Uif-InputField" p:label="Name of Plan" p:propertyName="planName">
+                                <property name="suggest">
+                                    <bean parent="Uif-Suggest">
+                                        <property name="valuePropertyName" value="name"/>
+                                        <property name="labelPropertyName" value="name"/>
+                                        <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig">
+                                                <property name="queryMethodToCall" value="getThirdPartyPlansForSuggest"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-HorizontalBoxSection" p:methodToCallOnRefresh="getThirdPartyPlan" p:readOnly="true" p:refreshWhenChangedPropertyNames="planName">
+                                <property name="items"><list>
+                                    <bean parent="Uif-InputField" p:propertyName="batchThirdPartyPlan.code" p:label="Code" p:labelPlacement="TOP"/>
+                                    <bean parent="Uif-InputField" p:propertyName="batchThirdPartyPlan.name" p:label="Name" p:labelPlacement="TOP"/>
+                                    <bean parent="Uif-InputField" p:propertyName="batchThirdPartyPlan.description" p:label="Description" p:labelPlacement="TOP"/>
+                                </list></property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thirdPartyPaymentPlans" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Plans"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No plans match filter criteria" p:render="@{thirdPartyPlans.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.ThirdPartyPlanModel"/>
+                    <property name="propertyName" value="thirdPartyPlans"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="true"/>
+                            <!--<entry key="iDisplayLength" value="20"/>-->
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Name of Plan" p:propertyName="name"/>
+                            <bean parent="Uif-InputField" p:label="Description" p:propertyName="description"/>
+                            <bean parent="Uif-LinkField" p:label="Responsible Account" p:linkText="@{#line.thirdPartyAccount.id}" p:href="quickView?methodToCall=get&amp;viewId=QuickView&amp;userId=@{#line.thirdPartyAccount.id}"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions">
+                                <property name="items">
+                                    <list>
+
+                                        <bean parent="Uif-ImageField" p:source="../images/plan_members.png" p:style="cursor:pointer;" p:altText="View Plan Members" p:title=""
+                                              p:onClickScript="showLightboxComponent('planMemberLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Members"/>
+                                            </property>
+                                        </bean>
+                                        <bean id="planMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Third Party Payment Plan Members"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+
+                                                    <ref bean="ThirdPartyPlanMemberTable"/>
+
+
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ImageField" p:source="../images/queue.png" p:style="cursor:pointer;" p:altText="View Plan Queue" p:title=""
+                                              p:onClickScript="showLightboxComponent('planQueueLightbox@{#lineSuffix}');">
+                                        <property name="toolTip">
+                                            <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Queue"/>
+                                        </property>
+                                        </bean>
+                                        <bean id="planQueueLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Third Party Payment Plan - Queued Members"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+
+                                                    <ref bean="ThirdPartyPlanQueueTable"/>
+
+
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ImageField" p:source="../images/settings.png" p:style="cursor:pointer;" p:altText="View Plan Settings" p:title=""
+                                              p:onClickScript="showLightboxComponent('planSettingsLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Settings"/>
+                                            </property>
+                                        </bean>
+                                        <bean id="planSettingsLightbox" parent="Uif-VerticalBoxSection">
+                                            <property name="headerText" value="Third Party Payment Plan Settings"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="readOnly" value="false"/>
+                                            <property name="items">
+                                                <list>
+                                                    <ref bean="thirdPartyDescription"/>
+                                                    <ref bean="thirdPartyAdministrative"/>
+                                                    <ref bean="thirdPartyOpenPeriod"/>
+                                                    <ref bean="thirdPartyChargePeriod"/>
+                                                    <ref bean="thirdPartyCharges"/>
+                                                    <ref bean="thirdPartyTransferredTransactions"/>
+                                                    <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="updateThirdParty"
+                                                          p:actionLabel="Submit" p:actionParameters="planId:@{#line.parent.id}"
+                                                          p:preSubmitCall="jQuery.fancybox.close(); return true;"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="paymentBillingPlans" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Plans"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No plans match filter criteria" p:render="@{paymentBillingPlans.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.PaymentBillingPlanModel"/>
+                    <property name="propertyName" value="paymentBillingPlans"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="true"/>
+                            <!--<entry key="iDisplayLength" value="20"/>-->
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Name of Plan" p:propertyName="name"/>
+                            <bean parent="Uif-InputField" p:label="Description" p:propertyName="description"/>
+                            <bean parent="Uif-InputField" p:label="Open Start" p:propertyName="openPeriodStartDate"/>
+                            <bean parent="Uif-InputField" p:label="Open End" p:propertyName="openPeriodEndDate"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions">
+                                <property name="items">
+                                    <list>
+
+                                        <bean parent="Uif-ImageField" p:source="../images/plan_members.png" p:style="cursor:pointer;" p:altText="View Plan Members" p:title=""
+                                              p:onClickScript="showLightboxComponent('paymentBillingMemberLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Members"/>
+                                            </property>
+                                        </bean>
+                                        <bean id="paymentBillingMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Payment Billing Plan Members"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+                                                    <ref bean="PaymentBillingPlanMemberTable"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+
+                                        <bean parent="Uif-ImageField" p:source="../images/queue.png" p:style="cursor:pointer;" p:altText="View Plan Queue" p:title=""
+                                              p:onClickScript="showLightboxComponent('paymentBillingQueueLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Queue"/>
+                                            </property>
+                                        </bean>
+                                        <bean id="paymentBillingQueueLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Payment Billing Plan Queued Members"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+                                                    <ref bean="PaymentBillingPlanQueuedMemberTable"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+
+                                        <bean parent="Uif-ImageField" p:source="../images/plan_members_reversed.png" p:style="cursor:pointer;" p:altText="View Reversed Plan Members" p:title=""
+                                              p:onClickScript="showLightboxComponent('paymentBillingReversedLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="View Reversed Plan Members"/>
+                                            </property>
+                                        </bean>
+                                        <bean id="paymentBillingReversedLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Payment Billing Plan Reversed Members"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="code"/>
+                                                    <ref bean="PaymentBillingPlanReversedMemberTable"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ThirdPartyPlanQueueTable" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Queued Plan Members"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No queued plan members" p:render="@{#line.queuedMembers.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.tp.ThirdPartyPlanMember"/>
+                    <property name="propertyName" value="queuedMembers"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="directChargeAccount.id"/>
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="directChargeAccount.compositeDefaultPersonName"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions">
+                                <property name="items">
+                                    <list>
+
+                                        <bean parent="Uif-ActionLink" p:methodToCall="enrollThirdParty" p:actionParameters="memberId:@{#line.directChargeAccount.id},planId:@{#line.plan.id}"
+                                                p:onClickScript="jQuery.fancybox.close();">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="../images/move_waiting_to_participant_green.png" p:altText="Enroll Now"/>
+                                            </property>
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Enroll Now"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ActionLink" p:methodToCall="removeFromThirdPartyQueue" p:actionParameters="memberId:@{#line.directChargeAccount.id},planId:@{#line.plan.id}"
+                                              p:onClickScript="jQuery.fancybox.close();">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="../images/remove_from_queue.png" p:altText="Remove from the queue"/>
+                                            </property>
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Remove from the queue"/>
+                                            </property>
+                                        </bean>
+
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ThirdPartyPlanMemberTable" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Plan Members"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No plan members" p:render="@{#line.planMembers.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.ThirdPartyMemberModel"/>
+                    <property name="propertyName" value="planMembers"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="transferDetail.directChargeAccount.id"/>
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="transferDetail.directChargeAccount.compositeDefaultPersonName"/>
+                            <bean parent="Uif-InputField" p:label="Initiation Date" p:propertyName="transferDetail.initiationDate"/>
+                            <bean parent="Uif-InputField" p:label="Transfer Amount" p:propertyName="transferDetail.transferAmount"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions" p:style="white-space: nowrap;">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-ImageField" p:source="../images/re_execute.png" p:style="cursor:pointer;" p:altText="Re-execute the Third Party Payment Plan" p:title=""
+                                              p:onClickScript="showLightboxComponent('ThirdPartyReExecutePlanLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Re-execute the Third Party Payment Plan"/>
+                                            </property>
+                                        </bean>
+                                        <ref bean="ThirdPartyReExecutePlanLightbox"/>
+
+                                        <bean parent="Uif-ActionLink" p:methodToCall="transactionTransferList" p:actionParameters="memberId:@{#line.transferDetail.directChargeAccount.id},planId:@{#line.plan.id},transferDetailId:@{#line.transferDetail.id}"
+                                              p:onClickScript="jQuery.fancybox.close();">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="../images/transaction_transfer_list.png" p:altText="Transaction Transfer List"/>
+                                            </property>
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Transaction Transfer List"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ImageField" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Reverse the Third Party Payment Plan" p:title=""
+                                              p:onClickScript="showLightboxComponent('reverseThirdPartyMemberLightbox@{#lineSuffix}');" p:render="@{#line.transferDetailId > 0}">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Re-execute the Third Party Payment Plan"/>
+                                            </property>
+                                        </bean>
+                                        <bean id="reverseThirdPartyMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Reverse the Third Party Payment Plan"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="plan.name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="plan.code"/>
+                                                    <bean parent="Uif-InputField" p:label="Member" p:propertyName="transferDetail.directChargeAccount.compositeDefaultPersonName"/>
+                                                    <bean parent="Uif-MessageField" p:label="Mandatory Memo" p:labelPlacement="TOP"
+                                                          p:messageText="Please describe why the Third Party Payment Plan is being reversed"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="memo.text" p:readOnly="false"/>
+
+                                                    <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="reverseThirdPartyPlan" p:actionLabel="Reverse Plan"
+                                                          p:actionParameters="transferDetailId:@{#line.transferDetailId},planId:@{#line.plan.id}" p:preSubmitCall="jQuery.fancybox.close(); return true;"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="PaymentBillingPlanMemberTable" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Plan Members"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No plan members" p:render="@{#line.planMembers.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.pb.PaymentBillingQueue"/>
+                    <property name="propertyName" value="planMembers"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="directChargeAccount.id"/>
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="directChargeAccount.compositeDefaultPersonName"/>
+                            <bean parent="Uif-InputField" p:label="Initiation Date" p:propertyName="initiationDate"/>
+                            <bean parent="Uif-InputField" p:label="Maximum Requested Amount" p:propertyName="transferDetail.maxAmount"/>
+                            <bean parent="Uif-InputField" p:label="Actual Plan Amount" p:propertyName="transferDetail.planAmount"/>
+                            <bean parent="Uif-InputField" p:label="Flat Charge" p:propertyName="transferDetail.flatFeeCharge"/>
+                            <bean parent="Uif-InputField" p:label="Variable Charge" p:propertyName="transferDetail.variableFeeCharge"/>
+                            <bean parent="Uif-InputField" p:label="Status" p:propertyName="transferDetail.chargeStatus"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions" p:style="white-space: nowrap;">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-ImageField" p:source="../images/re_execute.png" p:style="cursor:pointer;" p:altText="Re-execute the Payment Billing Plan" p:title=""
+                                              p:onClickScript="showLightboxComponent('PaymentBillingReExecutePlanLightbox@{#lineSuffix}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Re-execute the Payment Billing Plan"/>
+                                            </property>
+                                        </bean>
+                                        <ref bean="PaymentBillingReExecutePlanLightbox"/>
+
+                                        <!--
+                                        <bean parent="Uif-ActionLink" p:methodToCall="transactionTransferList" p:actionParameters="memberId:@{#line.transferDetail.directChargeAccount.id},planId:@{#line.plan.id},transferDetailId:@{#line.transferDetail.id}"
+                                              p:onClickScript="jQuery.fancybox.close();">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="../images/transaction_transfer_list.png" p:altText="Transaction Transfer List"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ImageField" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Reverse the Third Party Payment Plan" p:title=""
+                                              p:onClickScript="showLightboxComponent('reverseThirdPartyMemberLightbox@{#lineSuffix}');" p:render="@{#line.transferDetailId > 0}"/>
+                                        <bean id="reverseThirdPartyMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                            <property name="headerText" value="Reverse the Third Party Payment Plan"/>
+                                            <property name="hidden" value="true"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="plan.name"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="plan.code"/>
+                                                    <bean parent="Uif-InputField" p:label="Member" p:propertyName="transferDetail.directChargeAccount.compositeDefaultPersonName"/>
+                                                    <bean parent="Uif-MessageField" p:label="Mandatory Memo" p:labelPlacement="TOP"
+                                                          p:messageText="Please describe why the Third Party Payment Plan is being reversed"/>
+                                                    <bean parent="Uif-InputField" p:propertyName="memo.text" p:readOnly="false"/>
+
+                                                    <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="reverseThirdPartyPlan" p:actionLabel="Reverse Plan"
+                                                          p:actionParameters="transferDetailId:@{#line.transferDetailId},planId:@{#line.plan.id}" p:preSubmitCall="jQuery.fancybox.close(); return true;"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        -->
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PaymentBillingPlanQueuedMemberTable" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Members"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No queued plan members" p:render="@{#line.queuedMembers.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.pb.PaymentBillingQueue"/>
+                    <property name="propertyName" value="queuedMembers"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="directChargeAccount.id"/>
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="directChargeAccount.compositeDefaultPersonName"/>
+                            <bean parent="Uif-InputField" p:label="Queued Date" p:propertyName="initiationDate"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-ActionLink" p:methodToCall="enrollPaymentBilling" p:actionParameters="memberId:@{#line.directChargeAccount.id},planId:@{#line.plan.id}"
+                                              p:onClickScript="jQuery.fancybox.close();">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="../images/move_waiting_to_participant_green.png" p:altText="Enroll Now"/>
+                                            </property>
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Enroll Now"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ActionLink" p:methodToCall="removeFromPaymentBillingQueue" p:actionParameters="memberId:@{#line.directChargeAccount.id},planId:@{#line.plan.id}"
+                                              p:onClickScript="jQuery.fancybox.close();">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="../images/remove_from_queue.png" p:altText="Remove from the queue"/>
+                                            </property>
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent="Remove from the queue"/>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PaymentBillingPlanReversedMemberTable" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Members"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No reversed plan members" p:render="@{#line.reversedMembers.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.pb.PaymentBillingQueue"/>
+                    <property name="propertyName" value="reversedMembers"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="directChargeAccount.id"/>
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="directChargeAccount.compositeDefaultPersonName"/>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ThirdPartyReExecutePlanLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:headerText="Re-Execute the Third Party Payment Plan">
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="plan.name"/>
+                <bean parent="Uif-InputField" p:propertyName="plan.description"/>
+                <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="transferDetail.directChargeAccount.id"/>
+                <bean parent="Uif-InputField" p:label="Name" p:propertyName="transferDetail.directChargeAccount.compositeDefaultPersonName"/>
+
+                <bean parent="Uif-MessageField" p:label="Please Note" p:labelPlacement="TOP"
+                        p:messageText="If any of the original settings for this Payment Billing Plan have changed since&lt;br&gt;
+                                        this account was enrolled then the new settings (percentages, schedule of payments, etc.)&lt;br&gt;
+                                        will apply upon re-execution of the plan."/>
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="reexecuteThirdParty" p:actionLabel="Re-execute Plan"
+                      p:actionParameters="planId:@{#line.plan.id},accountId:@{#line.transferDetail.directChargeAccount.id}" p:onClickScript="jQuery.fancybox.close();"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PaymentBillingReExecutePlanLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:headerText="Re-Execute the Payment Billing Plan">
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="plan.name"/>
+                <bean parent="Uif-InputField" p:propertyName="plan.description"/>
+                <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="directChargeAccount.id"/>
+                <bean parent="Uif-InputField" p:label="Name" p:propertyName="directChargeAccount.compositeDefaultPersonName"/>
+
+                <bean parent="Uif-MessageField" p:label="Please Note" p:labelPlacement="TOP"
+                      p:messageText="If any of the original settings for this Payment Billing Plan have changed since&lt;br&gt;
+                                        this account was enrolled then the new settings (percentages, schedule of payments, etc.)&lt;br&gt;
+                                        will apply upon re-execution of the plan."/>
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="reexecutePaymentBilling" p:actionLabel="Re-execute Plan"
+                      p:actionParameters="planId:@{#line.plan.id},accountId:@{#line.directChargeAccount.id}" p:onClickScript="jQuery.fancybox.close();"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="transactionTransferList" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <ref bean="currentPaymentPlanDescription"/>
+                <bean parent="Uif-InputField" p:propertyName="thirdPartyTransactionTransfer.directChargeAccountName" p:label="Member Name" p:labelPlacement="TOP" p:readOnly="true"/>
+                <ref bean="transactionTransferTable"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="currentPaymentPlanDescription" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Descriptive Information"/>
+        <property name="readOnly" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="thirdPartyPlan.code" p:label="Code"/>
+                    <bean parent="Uif-InputField" p:propertyName="thirdPartyPlan.name" p:label="Name"/>
+                </list></property></bean>
+                <bean parent="Uif-InputField" p:propertyName="thirdPartyPlan.description" p:label="Description" p:labelPlacement="TOP">
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="transactionTransferTable" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Transaction Transfers"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No transaction transfers" p:render="@{thirdPartyTransactionTransfer.transactionTransfers.size() == 0}"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:width="85%">
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.TransactionTransfer"/>
+                    <property name="propertyName" value="thirdPartyTransactionTransfer.transactionTransfers"/>
+                    <property name="layoutManager.sequencePropertyName" value="name"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="false"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                            <entry key="bSort" value="false" />
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Transfer Date" p:propertyName="creationDate"/>
+                            <bean parent="Uif-InputField" p:label="Source Transaction Description" p:propertyName="sourceTransaction.statementText"/>
+                            <bean parent="Uif-InputField" p:label="Offset Transaction Description" p:propertyName="offsetTransaction.statementText"/>
+                            <bean parent="Uif-InputField" p:label="Destination Transaction Description" p:propertyName="destTransaction.statementText"/>
+                            <bean parent="Uif-InputField" p:label="Transfer Amount" p:propertyName="transferAmount"/>
+                            <bean parent="Uif-InputField" p:label="Transaction Type" p:propertyName="transferType.name"/>
+                            <bean parent="Uif-InputField" p:label="Reversal Amount" p:propertyName="reversalAmount"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="paymentBillingFlatFees" parent="Uif-HorizontalBoxSection">
+        <property name="headerText" value="Flat Fees"/>
+        <property name="readOnly" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="flatFeeAmount" p:label="Amount" p:labelPlacement="TOP" p:required="true"/>
+                <bean parent="Uif-InputField" p:propertyName="flatFeeTransactionType" p:label="Transaction Type" p:labelPlacement="TOP" p:required="true">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id.id"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getTransactionTypesForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="paymentBillingVariableFees" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Variable Fees"/>
+        <property name="readOnly" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="variableFeePercentage" p:label="Percentage" p:labelPlacement="TOP"/>
+                    <bean parent="Uif-InputField" p:propertyName="variableFeeTransactionType" p:label="Transaction Type" p:labelPlacement="TOP">
+                        <property name="suggest">
+                            <bean parent="Uif-Suggest">
+                                <property name="valuePropertyName" value="id.id"/>
+                                <property name="templateOptions" value="minLength:2,delay:0"/>
+                                <property name="suggestQuery">
+                                    <bean parent="Uif-AttributeQueryConfig">
+                                        <property name="queryMethodToCall" value="getTransactionTypesForSuggest"/>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </property>
+                    </bean>
+                </list></property></bean>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:propertyName="minFeeAmount" p:label="Minimum Amount" p:labelPlacement="TOP"/>
+                    <bean parent="Uif-InputField" p:propertyName="maxFeeAmount" p:label="Maximum Amount" p:labelPlacement="TOP"/>
+                </list></property></bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="paymentBillingRounding" parent="Uif-HorizontalBoxSection">
+        <property name="headerText" value="Rounding"/>
+        <property name="readOnly" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="roundingFactor" p:label="Rounding" p:labelPlacement="TOP"/>
+                <bean parent="Uif-InputField" p:propertyName="nonRoundedPaymentType" p:label="Non-rounded Payment" p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:options-ref="PaymentRoundingTypeList"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <util:list id="PaymentRoundingTypeList">
+        <bean parent="Uif-KeyLabelPair" p:key="F" p:value="First Code"/>
+        <bean parent="Uif-KeyLabelPair" p:key="L" p:value="Last Code"/>
+    </util:list>
+
+    <bean id="paymentBillingAdditionalSettings" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Additional Settings"/>
+        <property name="readOnly" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="postToGeneralLedger" p:label="Post to the General Ledger" p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:options-ref="PostToGeneralLedgerList"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="lateMembership" p:label="Late Membership" p:labelPlacement="TOP" p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-VerticalRadioControl" p:options-ref="LateMembershipList"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="prefixStatement" p:label="Prefix the statement entry with the following" p:labelPlacement="TOP"/>
+            </list>
+        </property>
+    </bean>
+
+    <util:list id="PostToGeneralLedgerList">
+        <bean parent="Uif-KeyLabelPair" p:key="Y" p:value="All transactions immediately upon membership within the plan"/>
+        <bean parent="Uif-KeyLabelPair" p:key="N" p:value="On the Effective Date of each transaction"/>
+    </util:list>
+
+    <util:list id="LateMembershipList">
+        <bean parent="Uif-KeyLabelPair" p:key="N" p:value="Is not allowed. Users will not be allowed to enroll in the plan after the first payment date has passed."/>
+        <bean parent="Uif-KeyLabelPair" p:key="B" p:value="All plan transactions will have Effective Dates according to the schedule of the plan.  Late transactions will be considered past-due immedately upon membership according to the effective dates of the transactions."/>
+        <bean parent="Uif-KeyLabelPair" p:key="S" p:value="Financable transactions will be evenly allocated over the remaining payment dates according to the original plan schedule."/>
+        <bean parent="Uif-KeyLabelPair" p:key="D" p:value="Charges with payment dates prior to the payment plan membership date will be due immediately.  Future transactions will be created according to the schedule and amounts set in the plan."/>
+    </util:list>
+
+
+
+
+
+
+
+
+
+</beans>

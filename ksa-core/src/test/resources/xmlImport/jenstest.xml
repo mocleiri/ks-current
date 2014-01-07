@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ksa-batch-transaction>
+    <batch-identifier>jensbatch</batch-identifier>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>KSA Charge Processor</incoming-identifier>
+        <effective-date>2012-12-25</effective-date>
+        <origination-date>2012-12-25</origination-date>
+        <amount>520.00</amount>
+        <native-amount>520</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Tuition Charge for 2012 Fall Academic Period</open-document>
+        </document>
+        <transaction-type>2102</transaction-type>
+    </ksa-transaction>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>KSA Charge Processor</incoming-identifier>
+        <effective-date>2013-01-31</effective-date>
+        <origination-date>2013-01-31</origination-date>
+        <amount>3900.00</amount>
+        <native-amount>3900</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Tuition Charge for 2012 Fall Academic Period</open-document>
+        </document>
+        <transaction-type>1020</transaction-type>
+    </ksa-transaction>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>KSA Charge Processor</incoming-identifier>
+        <effective-date>2013-01-31</effective-date>
+        <origination-date>2013-01-31</origination-date>
+        <amount>3500.00</amount>
+        <native-amount>3500</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Tuition Charge for 2012 Fall Academic Period</open-document>
+        </document>
+        <transaction-type>2004</transaction-type>
+    </ksa-transaction>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>KSA Charge Processor</incoming-identifier>
+        <effective-date>2013-02-01</effective-date>
+        <origination-date>2013-02-01</origination-date>
+        <amount>85.00</amount>
+        <native-amount>85</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Tuition Charge for 2012 Fall Academic Period</open-document>
+        </document>
+        <transaction-type>1208</transaction-type>
+    </ksa-transaction>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>Cashier Desk 1000</incoming-identifier>
+        <effective-date>2013-02-01</effective-date>
+        <origination-date>2013-02-01</origination-date>
+        <amount>5.00</amount>
+        <native-amount>5</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Payment at the cashier desk.</open-document>
+        </document>
+        <transaction-type>1195</transaction-type>
+    </ksa-transaction>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>Cashier Desk 1000</incoming-identifier>
+        <effective-date>2013-02-01</effective-date>
+        <origination-date>2013-02-01</origination-date>
+        <amount>132.00</amount>
+        <native-amount>132</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Payment at the cashier desk.</open-document>
+        </document>
+        <transaction-type>1503</transaction-type>
+    </ksa-transaction>
+    <ksa-transaction>
+        <account-identifier>user6</account-identifier>
+        <incoming-identifier>Cashier Desk 1000</incoming-identifier>
+        <effective-date>2013-02-17</effective-date>
+        <origination-date>2013-02-17</origination-date>
+        <amount>1100.00</amount>
+        <native-amount>1100</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@sigmauniveristy.com</email-address>
+            <open-document>Payment at the cashier desk.</open-document>
+        </document>
+        <transaction-type>1354</transaction-type>
+    </ksa-transaction>
+</ksa-batch-transaction>

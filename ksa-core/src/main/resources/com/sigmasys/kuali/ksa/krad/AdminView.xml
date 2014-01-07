@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<import resource="AccountManagementView-NewPerson.xml"/>
+	<import resource="AccountManagementView-SearchPerson.xml"/>
+	
+    <bean id="AdminView" parent="Uif-KsaFormView">
+        <property name="title" value="Administration"/>
+        <property name="headerText" value="Administration"/>
+        <property name="entryPageId" value="AccountManagement"/>
+        <property name="navigation">
+            <ref bean="KsaAdministrationNavigation"/>
+        </property>
+        <property name="items">
+            <list merge="true">
+
+                <!--Begin Account Management Page-->
+
+                <bean parent="Uif-Page" p:id="AccountManagement" p:title="Account Management">
+                    <property name="headerText" value="Account Management"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Using the links below, accounts can be added manually or a search can be initiated to locate an account which needs to be updated.&lt;br&gt;&lt;br&gt;"/>
+										<bean parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+											<property name="items">
+												<list>
+												
+													<bean parent="Uif-LinkField" p:linkText="Create a New Account for a Person or Organization" p:target="_self"
+														p:href="accountManagement?methodToCall=newPersonAccount&amp;viewId=AdminView&amp;pageId=NewPersonAccountPage" p:style="text-decoration:underline"/>
+														
+													<bean parent="Uif-LinkField" p:linkText="Update an Account" p:target="_self"
+														p:href="accountSearch?methodToCall=searchPersonAccount&amp;viewId=AdminView&amp;pageId=SearchPersonAccountPage" p:style="text-decoration:underline"/>
+														
+												</list>
+											</property>
+										</bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+				
+				<!-- New Person Account Page -->
+				<ref bean="NewPersonAccountPage"/>
+				<!-- Search Person Account Page -->
+				<ref bean="SearchPersonAccountPage"/>
+				<!-- Search Account Results Page -->
+				<ref bean="SearchAccountResultsPage"/>
+				
+                <!--End Account Management Page-->
+
+                <!--Begin System Activity Page-->
+
+                <bean parent="Uif-Page" p:id="SystemActivity" p:title="System Activity">
+                    <property name="headerText" value="System Activity"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="FilterActivitySection"/>
+                            <ref bean="ActivitySection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End System Activity Page-->
+
+                <!--Begin Regulatory Tracking Page-->
+
+                <bean parent="Uif-Page" p:id="RegulatoryTracking" p:title="Regulatory Tracking">
+                    <property name="headerText" value="Account Management"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Placeholder: Text"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Regulatory Tracking Page-->
+
+                <!--Begin System Roles/Users Page-->
+
+                <bean parent="Uif-Page" p:id="SystemRolesUsers" p:title="System Roles &amp; Users">
+                    <property name="headerText" value="System Roles &amp; Users"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-TabGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-VerticalBoxSection" p:headerText="Person Lookup">
+                                            <property name="items"><list>
+                                                <bean parent="Uif-Iframe" p:width="100%" p:height="550px" p:source="@{getContext()}/kr/lookup.do?methodToCall=start&amp;businessObjectClassName=org.kuali.rice.kim.api.identity.Person&amp;docFormKey=88888888&amp;returnLocation=index.jsp&amp;hideReturnLink=true&amp;showMaintenanceLinks=true"/>
+                                            </list></property>
+                                        </bean>
+                                        <bean parent="Uif-VerticalBoxSection" p:headerText="Group Lookup">
+                                            <property name="items"><list>
+                                                <bean parent="Uif-Iframe" p:width="100%" p:height="550px" p:source="@{getContext()}/kr/lookup.do?methodToCall=start&amp;businessObjectClassName=org.kuali.rice.kim.impl.group.GroupBo&amp;docFormKey=88888888&amp;returnLocation=portal.do&amp;hideReturnLink=true&amp;showMaintenanceLinks=true"/>
+                                            </list></property>
+                                        </bean>
+                                        <bean parent="Uif-VerticalBoxSection" p:headerText="Responsibility Lookup">
+                                            <property name="items"><list>
+                                                <bean parent="Uif-Iframe" p:width="100%" p:height="550px" p:source="@{getContext()}/kr/lookup.do?methodToCall=start&amp;businessObjectClassName=org.kuali.rice.kim.impl.responsibility.UberResponsibilityBo&amp;docFormKey=88888888&amp;returnLocation=portal.do&amp;hideReturnLink=true&amp;showMaintenanceLinks=true"/>
+                                            </list></property>
+                                        </bean>
+                                        <bean parent="Uif-VerticalBoxSection" p:headerText="Role  Lookup">
+                                            <property name="items"><list>
+                                                <bean parent="Uif-Iframe" p:width="100%" p:height="550px" p:source="@{getContext()}/kr/lookup.do?methodToCall=start&amp;businessObjectClassName=org.kuali.rice.kim.impl.role.RoleBo&amp;docFormKey=88888888&amp;returnLocation=portal.do&amp;hideReturnLink=true&amp;showMaintenanceLinks=true"/>
+                                            </list></property>
+                                        </bean>
+                                        <bean parent="Uif-VerticalBoxSection" p:headerText="Permission Lookup">
+                                            <property name="items"><list>
+                                                <bean parent="Uif-Iframe" p:width="100%" p:height="550px" p:source="@{getContext()}/kr/lookup.do?methodToCall=start&amp;businessObjectClassName=org.kuali.rice.kim.impl.permission.UberPermissionBo&amp;docFormKey=88888888&amp;returnLocation=portal.do&amp;hideReturnLink=true&amp;showMaintenanceLinks=true"/>
+                                            </list></property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End System Roles/Users Page-->
+
+                <!--Begin General Ledger Page-->
+
+                <bean parent="Uif-Page" p:id="GeneralLedger" p:title="General Ledger">
+                    <property name="headerText" value="General Ledger"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Placeholder: Text"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End General Ledger Page-->
+
+                <!--Begin Transactions Page-->
+
+                <bean parent="Uif-Page" p:id="Transactions" p:title="Transactions">
+                    <property name="headerText" value="Transactions"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Placeholder: Text"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Transactions Page-->
+
+                <!--Begin Transactions Export Page-->
+
+                <bean parent="Uif-Page" p:id="TransactionsExport" p:title="Transactions Export">
+                    <property name="headerText" value="Transactions Export"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+										<bean parent="Uif-LinkField" p:linkText="Export Transactions" p:target="_self"
+											p:href="javascript: void(0)"
+											p:onClickScript="jQuery.download('/ksa/uif/exportTransactions', 'methodToCall=download');"/>
+
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="GLTransactionListSection"/>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Transactions Export Page-->
+
+                <!--Begin Refunds Page-->
+
+                <bean parent="Uif-Page" p:id="Refunds" p:title="Refunds">
+                    <property name="headerText" value="Refunds"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Placeholder: Text"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<ref bean="PageSection"/>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Refunds Page-->
+
+
+            </list>
+        </property>
+<!--        <property name="additionalCssFiles" ref=""/>
+        <property name="additionalJsFiles" ref=""/>
+        <property name="viewHelperServiceClassName" value=""/>
+        <property name="defaultBindingObjectPath" vaue=""/>-->
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.AdminForm"/>
+    </bean>
+	
+
+    <!--
+    ********************************************************************************************************************
+                                        Activity section
+    A table of activities with refresh
+    ********************************************************************************************************************
+    -->
+    <bean id="ActivitySection" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="9"
+          p:width="85%">
+        <property name="title" value="Recent Activity"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.Activity"/>
+        <property name="readOnly" value="true"/>
+        <property name="propertyName" value="activities"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <!-- Can't use server side paging because the html isn't compressed.  If it is compressed, it breaks the formatting on the rule pages -->
+        <!--<property name="useServerPaging" value="true"/>-->
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Creator"
+                      p:propertyName="creatorId"
+                        p:width="5%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Creation Date"
+                      p:propertyName="timestamp"
+                      p:width="8%">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="IP Address"
+                      p:propertyName="ipAddress"
+                      p:width="8%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Altered Entity Id"
+                      p:propertyName="entityId"
+                      p:width="5%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Altered Entity Type"
+                      p:propertyName="entityType"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Altered Entity Property"
+                      p:propertyName="entityProperty"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Old Attribute"
+                      p:propertyName="oldAttribute"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="New Attribute"
+                      p:propertyName="newAttribute"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="21" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="logDetail"
+                      p:width="40%">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:watermarkText="Activity description..." p:maxLength="2000"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="FilterActivitySection" parent="Uif-Disclosure-VerticalBoxSection">
+        <property name="headerText" value="Filter Transactions"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" >
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="startingDate" p:labelPlacement="LEFT" p:label="From"
+                                  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:propertyName="endingDate" p:labelPlacement="LEFT" p:label="to"
+                                  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="activityLimit" p:labelPlacement="LEFT" p:label="Limit recent activities"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder" value="@{getActivityLimitFinder()}"/>
+                </bean>
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="filter" p:actionLabel="Filter"
+                      p:onClickScript="writeHiddenToForm(&quot;pageId&quot;, &quot;SystemActivity&quot;);">
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="GLTransactionListSection" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="4"
+          p:width="85%">
+        <property name="title" value="View Transaction Types"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.GlTransaction"/>
+        <property name="propertyName" value="glTransactions"/>
+        <property name="layoutManager.sequencePropertyName" value="id.id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="GL Transaction Date" p:propertyName="date" p:width="10%"/>
+                <bean parent="Uif-InputField" p:label="GL Account" p:propertyName="glAccountId" p:width="10%"/>
+                <bean parent="Uif-InputField" p:label="Recognition Period" p:propertyName="recognitionPeriod.code" p:width="10%"/>
+                <bean parent="Uif-InputField" p:label="Operation" p:propertyName="glOperation" p:width="10%"/>
+                <bean parent="Uif-InputField" p:label="Start Date" p:propertyName="amount" p:width="20%"/>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-lazy-init="true">
+
+    <bean id="riceConfig" class="com.sigmasys.kuali.ksa.config.RiceConfigFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:/META-INF/ksa-config.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="configProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="riceConfig"/>
+        <property name="targetMethod" value="getProperties"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" ref="configProps"/>
+    </bean>
+
+    <!-- Configure KSA-specific implementations of Rice services/beans here -->
+    <bean id="coreConfigurer" class=" com.sigmasys.kuali.ksa.config.CoreConfigurer">
+        <property name="dataSource" ref="riceDataSource"/>
+        <property name="serverDataSource" ref="riceDataSource"/>
+        <property name="nonTransactionalDataSource" ref="riceDataSource"/>
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="ksbConfigurer" class="com.sigmasys.kuali.ksa.config.KsbConfigurer" depends-on="coreConfigurer">
+        <property name="services">
+            <list>
+                <bean class="com.sigmasys.kuali.ksa.service.KsaServiceDefinition"
+                      p:serviceNameSpaceURI="http://sigmasys.com/ksa"
+                      p:localServiceName="accountService"
+                      p:jaxWsService="true"
+                      p:busSecurity="false"
+                      p:service-ref="accountService"/>
+                <bean class="com.sigmasys.kuali.ksa.service.KsaServiceDefinition"
+                      p:serviceNameSpaceURI="http://sigmasys.com/ksa"
+                      p:localServiceName="localizationService"
+                      p:jaxWsService="true"
+                      p:busSecurity="false"
+                      p:service-ref="localizationService"/>
+                <bean class="com.sigmasys.kuali.ksa.service.KsaServiceDefinition"
+                      p:serviceNameSpaceURI="http://sigmasys.com/ksa"
+                      p:localServiceName="transactionService"
+                      p:jaxWsService="true"
+                      p:busSecurity="false"
+                      p:service-ref="transactionService"/>
+                <bean class="com.sigmasys.kuali.ksa.service.KsaServiceDefinition"
+                      p:serviceNameSpaceURI="http://sigmasys.com/ksa"
+                      p:localServiceName="transactionImportService"
+                      p:jaxWsService="true"
+                      p:busSecurity="false"
+                      p:service-ref="transactionImportService"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--bean id="kenConfigurer" class="org.kuali.rice.ken.impl.config.KENConfigurer" depends-on="ksbConfigurer"/-->
+
+    <bean id="kradConfigurer" class="org.kuali.rice.krad.config.KRADConfigurer" depends-on="ksbConfigurer"/>
+
+    <bean id="kimConfigurer" class="org.kuali.rice.kim.config.KIMConfigurer" depends-on="kradConfigurer"/>
+
+    <bean id="coreServiceConfigurer" class="org.kuali.rice.coreservice.impl.config.CoreServiceConfigurer"
+          depends-on="kimConfigurer"/>
+
+    <bean id="kewConfigurer" class="org.kuali.rice.kew.config.KEWConfigurer" depends-on="coreServiceConfigurer"/>
+
+    <bean id="locationConfigurer" class="org.kuali.rice.location.impl.config.LocationConfigurer"
+          depends-on="kewConfigurer"/>
+
+    <bean id="ksaConfigurer" class="com.sigmasys.kuali.ksa.config.KsaConfigurer" depends-on="locationConfigurer">
+        <property name="dataDictionaryPackages">
+            <list>
+                <value>classpath:com/sigmasys/kuali/ksa/krad</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

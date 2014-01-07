@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-lazy-init="true">
+
+    <!--  Spring JTA TransactionManager -->
+    <bean id="transactionManager" class="com.sigmasys.kuali.ksa.service.jta.JtaTransactionManager">
+        <property name="transactionManagerName" value="java:comp/env/TransactionManager"/>
+        <property name="userTransactionName" value="java:comp/UserTransaction"/>
+    </bean>
+
+    <bean id="abstractDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" abstract="true">
+        <property name="lookupOnStartup" value="false"/>
+        <property name="proxyInterface" value="javax.sql.DataSource"/>
+    </bean>
+
+    <!-- KSA DataSource definition -->
+    <bean id="ksaDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" parent="abstractDataSource">
+        <property name="jndiName" value="java:comp/env/ksa"/>
+    </bean>
+
+    <!-- Rice DataSource definition -->
+    <bean id="riceDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" parent="abstractDataSource">
+        <property name="jndiName" value="java:comp/env/rice"/>
+    </bean>
+
+    <!-- Rice DataSource definition -->
+    <bean id="ksDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" parent="abstractDataSource">
+        <property name="jndiName" value="java:comp/env/ks"/>
+    </bean>
+
+</beans>

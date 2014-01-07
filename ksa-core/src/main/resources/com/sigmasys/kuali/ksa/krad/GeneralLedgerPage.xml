@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<!-- 
+	
+	*********************  The main page with the tabbed control    ***********************
+	
+	-->
+	
+	<bean id="GeneralLedgerMainPage" parent="Uif-Page" p:id="GeneralLedgerMainPage" p:title="General Ledger">
+		<property name="headerText" value="General Ledger"/>
+		<property name="items">
+			<list>
+				<!-- Make All Transactions Effective action -->
+				<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Make Transactions Effective" p:ajaxSubmit="true" p:methodToCall="makeTransactionsEffective"
+						p:errorCallback="alert('There were errors making transactions effective. See log for details.');"/>
+			
+				<!-- Export Pending Transaction action -->
+				<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Export All Pending Transactions" p:ajaxSubmit="true" p:methodToCall="exportAllPendingTransactions"
+						p:errorCallback="alert('There were errors exporting transactions. See log for details.');"/>
+				
+				<!-- The "Refresh" link that will actually display the contents since we don't want to load the contents immediately -->
+				<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Refresh View" 
+						p:actionScript="window.location.href='generalLedger?methodToCall=displayGeneralLedger&amp;viewId=ReportReconciliationView&amp;pageId=GeneralLedgerMainPage'"/>
+									
+				<!-- The tabbed Control -->
+				<bean parent="Uif-TabGroup">
+					<property name="items">
+						<list>
+							<!-- The Prior Batch tab -->
+							<ref bean="glPriorBatchSection"/>
+							
+							<!-- The Pending tag -->
+							<ref bean="glPendingTransactionSection"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+    <bean id="GeneralLedgerPriorBatchPage" parent="Uif-Page" p:title="General Ledger">
+        <property name="headerText" value="General Ledger"/>
+        <property name="items">
+            <list>
+                <!-- Make All Transactions Effective action -->
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Make Transactions Effective" p:ajaxSubmit="true" p:methodToCall="makeTransactionsEffective"
+                      p:errorCallback="alert('There were errors making transactions effective. See log for details.');"/>
+
+                <!-- Export Pending Transaction action -->
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Export All Pending Transactions" p:ajaxSubmit="true" p:methodToCall="exportAllPendingTransactions"
+                      p:errorCallback="alert('There were errors exporting transactions. See log for details.');"/>
+
+                <!-- The "Refresh" link that will actually display the contents since we don't want to load the contents immediately -->
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Refresh View"
+                      p:actionScript="window.location.href='generalLedger?methodToCall=displayGeneralLedger&amp;viewId=ReportReconciliationView&amp;pageId=GeneralLedgerPriorBatchPage'"/>
+
+                <!-- The Prior Batch tab -->
+                <ref bean="glPriorBatchSection"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="GeneralLedgerPendingPage" parent="Uif-Page" p:title="General Ledger">
+        <property name="headerText" value="General Ledger"/>
+        <property name="items">
+            <list>
+                <!-- Make All Transactions Effective action -->
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Make Transactions Effective" p:ajaxSubmit="true" p:methodToCall="makeTransactionsEffective"
+                      p:errorCallback="alert('There were errors making transactions effective. See log for details.');"/>
+
+                <!-- Export Pending Transaction action -->
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Export All Pending Transactions" p:ajaxSubmit="true" p:methodToCall="exportAllPendingTransactions"
+                      p:errorCallback="alert('There were errors exporting transactions. See log for details.');"/>
+
+                <!-- The "Refresh" link that will actually display the contents since we don't want to load the contents immediately -->
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Refresh View"
+                      p:actionScript="window.location.href='generalLedger?methodToCall=displayGeneralLedger&amp;viewId=ReportReconciliationView&amp;pageId=GeneralLedgerPendingPage'"/>
+
+                <!-- The Pending tag -->
+                <ref bean="glPendingTransactionSection"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+
+     *********************  The Batch Details page    ***********************
+
+     -->
+	
+	<bean id="GeneralLedgerBatchDetailsPage" parent="Uif-Page" p:id="GeneralLedgerBatchDetailsPage" p:title="General Ledger">
+		<property name="headerText" value="Detail View of Batch No. @{displayedBatchId}"/>
+		<property name="items">
+			<list>
+				<!-- GL Accounts that make up the batch section -->
+				<ref bean="displayedBatchGLAccountsSection"/>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- 
+	
+	*********************  The Prior Batch section    ***********************
+	
+	-->
+	
+	<bean id="glPriorBatchSection" parent="Uif-VerticalBoxSection" p:headerText="Prior Batch">
+		<property name="items">
+			<list>
+				<!-- The table of Prior Batches -->
+				<bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:displayCollectionSize="10">
+					<property name="title" value="Prior Batch"/>
+                    <property name="readOnly" value="true"/>
+					<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.BatchTransmissionModel"/>
+					<property name="propertyName" value="priorBatchTransmissions" />
+					<property name="layoutManager.generateAutoSequence" value="false" />
+					<property name="layoutManager.richTable.render" value="true"/>
+					<property name="layoutManager.renderSequenceField" value="false"/>
+					<property name="renderAddBlankLineButton" value="false"/>
+					<property name="renderAddLine" value="false"/>
+					<property name="renderLineActions" value="false"/>
+					<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="layoutManager.richTable.disableTableSort" value="true"/>
+					<property name="items">
+						<list>
+							<bean parent="Uif-LinkField" p:label="Batch No." p:linkText="@{#line.batchId}" p:style="width: 20%;"
+									p:href="generalLedger?methodToCall=displayBatchDetails&amp;viewId=ReportReconciliationView&amp;pageId=GeneralLedgerBatchDetailsPage&amp;batchId=@{#line.batchId}"/>
+							<bean parent="Uif-DataField" p:label="Date" p:propertyName="transmissionDate" p:style="width: 35%;"/>
+							<bean parent="Uif-DataField" p:label="Credit Total" p:propertyName="totalCreditAmount" p:style="text-align: right; width: 20%;"/>
+                            <bean parent="Uif-DataField" p:label="Debit Total" p:propertyName="totalDebitAmount" p:style="text-align: right; width: 20%;"/>
+
+                            <!-- Download XML action link -->
+							<bean parent="Uif-LinkField" p:linkText="Download XML" p:target="_self"
+								  p:align="center" p:width="20%"
+								  p:href="generalLedger?methodToCall=downloadPriorBatchTransactions&amp;viewId=ReportReconciliationView&amp;pageId=GeneralLedgerMainPage&amp;batchId=@{#line.batchId}"/>
+						</list>
+					</property>
+
+					<property name="layoutManager.expandDetailsActionPrototype">
+						<bean parent="Uif-ExpandDetailsImageAction"/>
+					</property>
+					<property name="layoutManager.rowDetailsGroup">
+						<ref bean="generalLedgerAccountSublist"/>
+					</property>
+
+				</bean>
+				
+				<!-- The total of all GL Accounts -->
+				<!--bean parent="Uif-DataField" p:label="Total" p:shortLabel="Total" p:labelPlacement="LEFT" p:propertyName="allPriorBatchTotal"/-->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="generalLedgerAccountSublist" parent="Uif-TableSubCollection-WithinSection" p:layoutManager.numberOfColumns="3">
+        <property name="headerText" value="General Ledger Accounts" />
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.GeneralLedgerAccountModel" />
+        <property name="propertyName" value="glAccountSublist" />
+        <property name="layoutManager.richTable.render" value="true" />
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="style" value="width: 100%;"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="false"/>
+                <entry key="bInfo" value="false"/>
+                <entry key="bFilter" value="false"/>
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="name" p:label="General Ledger Account" p:style="width: 60%;"/>
+                <bean parent="Uif-InputField" p:propertyName="operationTypeString" p:label="Type" p:style="text-align: center; width: 10%;"/>
+                <bean parent="Uif-InputField" p:propertyName="totalAmount" p:label="Total" p:style="text-align: right; width: 30%;"/>
+            </list>
+        </property>
+    </bean>
+
+	
+	<!-- 
+	
+	*********************  The Pending Transaction section    ***********************
+	
+	-->
+	
+	<bean id="glPendingTransactionSection" parent="Uif-VerticalBoxSection" p:headerText="Pending">
+		<property name="items">
+			<list>
+				<!-- The table of GL Accounts -->
+				<ref bean="glAccountTable"/>
+				
+				<!-- The total of all GL Accounts -->
+				<!--bean parent="Uif-DataField" p:label="Total" p:shortLabel="Total" p:labelPlacement="LEFT" p:propertyName="allGlAccountsTotal"/-->
+			</list>
+		</property>
+	</bean>
+
+	<!-- Table of GL Accounts -->
+	<bean id="glAccountTable" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:displayCollectionSize="10">
+		<property name="title" value="Pending Transactions"/>
+		<property name="readOnly" value="true"/>
+		<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.GeneralLedgerAccountModel"/>
+		<property name="propertyName" value="glAccountsPending" />
+		<property name="layoutManager.generateAutoSequence" value="false" />
+		<property name="layoutManager.richTable.render" value="true"/>
+		<property name="layoutManager.renderSequenceField" value="false"/>
+		<property name="renderAddBlankLineButton" value="false"/>
+		<property name="renderAddLine" value="false"/>
+		<property name="renderLineActions" value="false"/>
+		<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+		<property name="layoutManager.richTable.disableTableSort" value="true"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:label="General Ledger Account" p:propertyName="name" p:style="width: 60%;"/>
+				<bean parent="Uif-InputField" p:label="Type" p:propertyName="operationTypeString" p:style="text-align: center; width: 10%;"/>
+				<bean parent="Uif-InputField" p:label="Total" p:propertyName="totalAmount" p:style="text-align: right; width: 25%;"/>
+			</list>
+		</property>
+
+		<property name="layoutManager.expandDetailsActionPrototype">
+			<bean parent="Uif-ExpandDetailsImageAction"/>
+		</property>
+
+		<property name="layoutManager.rowDetailsGroup" ref="generalLedgerTransactionSublist"/>
+
+	</bean>
+
+	<!-- Sublist of GL Transactions that belong to a GL Account -->
+	<bean id="generalLedgerTransactionSublist" parent="Uif-TableSubCollection-WithinSection" p:layoutManager.numberOfColumns="6">
+        <property name="headerText" value="Transactions" />
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.GeneralLedgerTransactionModel" />
+        <property name="propertyName" value="glTransactions" />
+        <property name="layoutManager.richTable.render" value="true" />
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="style" value="width: 100%;"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="false"/>
+                <entry key="bInfo" value="false"/>
+                <entry key="bFilter" value="false"/>
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="transactionDate" p:label="Date" p:style="width: 10%;"/>
+                <bean parent="Uif-InputField" p:propertyName="originalAmount" p:label="Original Amount" p:style="text-align: right; width: 10%;"/>
+				<bean parent="Uif-HorizontalFieldGroup" p:label="Description" p:style="width: 50%;">
+					<property name="items">
+						<list>
+							<bean parent="Uif-LinkField" p:href="javascript:void(0)" p:onClickScript="showLightboxComponent('transactionDetailLightboxRunningTotal@{#lineSuffix}');" 
+									p:linkText="@{#line.description}" p:style="width: 100%;"/>
+							<ref bean="transactionDetailLightboxRunningTotal"/>
+						</list>
+					</property>
+				</bean>
+				<bean parent="Uif-InputField" p:propertyName="operationTypeString" p:label="Type" p:style="text-align: center; width: 10%;"/>
+                <bean parent="Uif-InputField" p:propertyName="glAmount" p:label="GL Amount" p:style="text-align: right; width: 10%;"/>
+                <bean parent="Uif-InputField" p:propertyName="originatingAccountId" p:label="Originating Account" p:style="text-align: right; width: 10%;"/>
+            </list>
+        </property>
+    </bean>
+	
+	
+	<!-- 
+	
+	*********************  The Batch GL Accounts section    ***********************
+	
+	-->
+	
+	<bean id="displayedBatchGLAccountsSection" parent="Uif-VerticalBoxSection">
+		<property name="items">
+			<list>				
+				<!-- Batch Details -->
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<bean parent="Uif-DataField" p:label="Batch No." p:propertyName="displayedBatch.batchId" />
+							<bean parent="Uif-DataField" p:label="Date" p:propertyName="displayedBatch.transmissionDate" />
+							<bean parent="Uif-DataField" p:label="Total" p:propertyName="displayedBatch.totalAmount" />
+						</list>
+					</property>
+				</bean>
+				
+				<!-- The table of Accrual GL Accounts -->
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="headerText" value="Accrual Accounts"/>
+					<property name="items">
+						<list>
+							<ref bean="batchDetailsAccrualGlAccountsTable"/>
+							<bean parent="Uif-DataField" p:label="Total" p:propertyName="displayedBatch.accrualGlAccountsTotal"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- The table of All Other GL Accounts -->
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="headerText" value="All Other General Ledger Accounts"/>
+					<property name="items">
+						<list>
+							<ref bean="batchDetailsAllOtherGlAccountsTable"/>
+							<bean parent="Uif-DataField" p:label="Total" p:propertyName="displayedBatch.allOtherGlAccountsTotal"/>
+						</list>
+					</property>
+				</bean>
+				
+			</list>
+		</property>
+	</bean>
+
+	<!-- Table of Accrual GL Accounts -->
+	<bean id="batchDetailsAccrualGlAccountsTable" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:displayCollectionSize="10">
+		<property name="title" value="Accrual Accounts"/>
+		<property name="readOnly" value="true"/>
+		<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.GeneralLedgerAccountModel"/>
+		<property name="propertyName" value="displayedBatch.accrualGlAccounts" />
+		<property name="layoutManager.generateAutoSequence" value="false" />
+		<property name="layoutManager.richTable.render" value="true"/>
+		<property name="layoutManager.renderSequenceField" value="false"/>
+		<property name="renderAddBlankLineButton" value="false"/>
+		<property name="renderAddLine" value="false"/>
+		<property name="renderLineActions" value="false"/>
+		<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+		<property name="layoutManager.richTable.disableTableSort" value="true"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:label="General Ledger Account" p:propertyName="name" p:style="width: 60%;"/>
+				<bean parent="Uif-InputField" p:label="Type" p:propertyName="operationTypeString" p:style="text-align: center; width: 10%;"/>
+				<bean parent="Uif-InputField" p:label="Total" p:propertyName="totalAmount" p:style="text-align: right; width: 25%;"/>
+			</list>
+		</property>
+
+		<property name="layoutManager.expandDetailsActionPrototype">
+			<bean parent="Uif-ExpandDetailsImageAction"/>
+		</property>
+
+		<property name="layoutManager.rowDetailsGroup" ref="generalLedgerTransactionSublist"/>
+
+	</bean>
+
+	<!-- Table of All Other GL Accounts -->
+	<bean id="batchDetailsAllOtherGlAccountsTable" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:displayCollectionSize="10">
+		<property name="title" value="All Other General Ledger Accounts"/>
+		<property name="readOnly" value="true"/>
+		<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.GeneralLedgerAccountModel"/>
+		<property name="propertyName" value="displayedBatch.allOtherGlAccounts" />
+		<property name="layoutManager.generateAutoSequence" value="false" />
+		<property name="layoutManager.richTable.render" value="true"/>
+		<property name="layoutManager.renderSequenceField" value="false"/>
+		<property name="renderAddBlankLineButton" value="false"/>
+		<property name="renderAddLine" value="false"/>
+		<property name="renderLineActions" value="false"/>
+		<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+		<property name="layoutManager.richTable.disableTableSort" value="true"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:label="General Ledger Account" p:propertyName="name" p:style="width: 60%;"/>
+				<bean parent="Uif-InputField" p:label="Type" p:propertyName="operationTypeString" p:style="text-align: center; width: 10%;"/>
+				<bean parent="Uif-InputField" p:label="Total" p:propertyName="totalAmount" p:style="text-align: right; width: 25%;"/>
+			</list>
+		</property>
+
+		<property name="layoutManager.expandDetailsActionPrototype">
+			<bean parent="Uif-ExpandDetailsImageAction"/>
+		</property>
+
+		<property name="layoutManager.rowDetailsGroup" ref="generalLedgerTransactionSublist"/>
+
+	</bean>
+	
+	
+	
+</beans>

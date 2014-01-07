@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="ksa-types.xsd"/>
+
+    <xs:element name="irs-1098-t">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="form-year" type="xs:string"/>
+                <xs:element name="form-checkboxes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="void" type="xs:boolean"/>
+                            <xs:element name="corrected" type="xs:boolean"/>
+                            <xs:element name="reporting-method-changed" type="xs:boolean"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="filer">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string"/>
+                            <xs:element ref="postal-address"/>
+                            <xs:element name="telephone-number" type="xs:string"/>
+                            <xs:element name="fein" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="student">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string"/>
+                            <xs:element ref="postal-address"/>
+                            <xs:element name="social-security-number" type="xs:string"/>
+                            <xs:element name="account-number" type="xs:string"/>
+                            <xs:element name="half-time" type="xs:boolean"/>
+                            <xs:element name="graduate-student" type="xs:boolean"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="financial">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:choice>
+                                <xs:element name="payments-received" type="xs:decimal"/>
+                                <xs:element name="amount-billed" type="xs:decimal"/>
+                            </xs:choice>
+                            <xs:element name="includes-next-quarter" type="xs:boolean"/>
+                            <xs:element name="prior-year-adjustment" type="xs:decimal" minOccurs="0"/>
+                            <xs:element name="scholarships-or-grants" type="xs:decimal"/>
+                            <xs:element name="prior-year-scholarship-adjustment" type="xs:decimal" minOccurs="0"/>
+                            <xs:element name="insurance-contract" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="aged-balance-report">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="date-of-report" type="xs:date"/>
+                <xs:sequence maxOccurs="unbounded">
+                    <xs:element name="age-breakdown">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="period1" type="xs:int"/>
+                                <xs:element name="period2" type="xs:int"/>
+                                <xs:element name="period3" type="xs:int"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="aged-account-detail" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="account-identifier" type="xs:string"/>
+                                <xs:element name="account-name" type="xs:string"/>
+                                <xs:element name="account-balances">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="period1balance" type="xs:decimal"/>
+                                            <xs:element name="period2balance" type="xs:decimal"/>
+                                            <xs:element name="period3balance" type="xs:decimal"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="failed-transactions-report">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="date-of-report" type="xs:date"/>
+                <xs:element name="failure-group" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="posting-entity" type="xs:string"/>
+                            <xs:element name="failed">
+                                <xs:complexType>
+                                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                        <xs:element ref="ksa-transaction"/>
+                                        <xs:element name="reason" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="batch-rejection" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element ref="ksa-transaction"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="account-report">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="account-identifier" type="xs:string"/>
+                <xs:element ref="reporting-period"/>
+                <xs:element name="name">
+                    <xs:complexType>
+                        <xs:choice>
+                            <xs:element ref="person-name"/>
+                            <xs:element name="company-name" type="xs:string"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="balances">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="aged-balance" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element name="period-length" type="xs:int"/>
+                                        <xs:element name="period-balance" type="xs:decimal"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="prior-balance" type="xs:decimal"/>
+                            <xs:element name="total-charges" type="xs:decimal"/>
+                            <xs:element name="total-payments" type="xs:decimal"/>
+                            <xs:element name="total-deferments" type="xs:decimal"/>
+                            <xs:element name="net-balance" type="xs:decimal"/>
+                            <xs:element name="written-off" type="xs:decimal"/>
+                            <xs:element name="unallocated-payments" type="xs:decimal"/>
+                            <xs:element name="unallocated-charges" type="xs:decimal"/>
+                            <xs:element name="future-balance" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="transaction-detail" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded">
+                            <xs:element ref="list-transaction"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="general-ledger-report">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="reporting-period"/>
+                <xs:element name="general-ledger-report-entry">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="general-ledger-account" type="xs:string"/>
+                            <xs:element name="date" type="xs:date"/>
+                            <xs:element name="general-ledger-operation">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="credit"/>
+                                        <xs:enumeration value="debit"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="amount" type="xs:decimal"/>
+                            <xs:element name="system" type="xs:string"/>
+                            <xs:element name="transaction-identifier" type="xs:string" maxOccurs="unbounded"/>
+                            <xs:element name="transaction-status" type="xs:string"/>
+                            <xs:element name="transmission-identifier" type="xs:string" minOccurs="0"/>
+                            <xs:element name="transmission-date" type="xs:date" minOccurs="0"/>
+                            <xs:element name="transmission-time" type="xs:date" minOccurs="0"/>
+                            <xs:element name="batch" type="xs:string" minOccurs="0"/>
+                            <xs:element name="transmission-result" type="xs:string" minOccurs="0"/>
+                            <xs:element name="transmission-period" type="xs:string" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="transaction-receipt">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="receipt-date" type="xs:date"/>
+                <xs:element name="receipt-time" type="xs:time"/>
+                <xs:element name="transaction-identifier" type="xs:string"/>
+                <xs:element name="authorization" type="xs:string" minOccurs="0"/>
+                <xs:element name="amount" type="xs:decimal"/>
+                <xs:element name="foreign-transaction" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="native-amount" type="xs:decimal"/>
+                            <xs:element name="currency" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="posted-to-account-identifier" type="xs:string"/>
+                <xs:element name="posting-user-identifier" type="xs:string"/>
+                <xs:element name="transaction-type">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="transaction-type-identifier" type="xs:string"/>
+                            <xs:element name="transaction-type-name" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="irs-8300">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="type" minOccurs="0">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="AMENDS"/>
+                            <xs:enumeration value="SUSPICIOUS"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="payer">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="person-name"/>
+                            <xs:element ref="postal-address"/>
+                            <xs:element name="identity" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tax-identifier" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="date-of-birth" type="xs:date" minOccurs="0"/>
+                                        <xs:element name="occupation" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="identity-document" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="id-type" type="xs:string"/>
+                                                    <xs:element name="id-issuer" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="id-serial" type="xs:string" minOccurs="0"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="transaction-description">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="date" type="xs:date"/>
+                            <xs:element name="total-amount" type="xs:decimal"/>
+                            <xs:element name="multiple-payments" type="xs:boolean"/>
+                            <xs:element name="total-price" type="xs:decimal"/>
+                            <xs:element name="detail">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="financial-breakdown">
+                                            <xs:complexType>
+                                                <xs:sequence maxOccurs="unbounded">
+                                                    <xs:element name="type" type="xs:string"/>
+                                                    <xs:element name="amount" type="xs:decimal"/>
+                                                    <xs:element name="native-amount" type="xs:decimal"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="serials" type="xs:string"/>
+                                        <xs:choice>
+                                            <xs:element name="type" minOccurs="0">
+                                                <xs:simpleType>
+                                                    <xs:restriction base="xs:string">
+                                                        <xs:enumeration value="PERSONAL_PROPERTY"/>
+                                                        <xs:enumeration value="REAL_PROPERTY"/>
+                                                        <xs:enumeration value="PERSONAL_SERVICE"/>
+                                                        <xs:enumeration value="BUSINESS_SERVICE"/>
+                                                        <xs:enumeration value="INTANGIBLE_PROPERTY"/>
+                                                        <xs:enumeration value="DEBT_OBLIGATION"/>
+                                                        <xs:enumeration value="EXCHANGE_OF_CASH"/>
+                                                        <xs:enumeration value="ESCROW"/>
+                                                        <xs:enumeration value="BAIL"/>
+                                                    </xs:restriction>
+                                                </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="other-type" type="xs:string" minOccurs="0"/>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="filer">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="business-name" type="xs:string"/>
+                            <xs:element name="fein" type="xs:string" minOccurs="0"/>
+                            <xs:element name="ssn" type="xs:string" minOccurs="0"/>
+                            <xs:element ref="postal-address"/>
+                            <xs:element name="nature-of-business" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:element name="ksa-transaction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="account-identifier" type="xs:string" nillable="false"/>
+                <xs:element name="incoming-identifier" type="xs:string" minOccurs="0"/>
+                <xs:element name="effective-date" type="xs:date"/>
+                <xs:element name="origination-date" type="xs:date" minOccurs="0"/>
+                <xs:element name="recognition-date" type="xs:date" minOccurs="0"/>
+                <xs:element name="expiration-date" type="xs:date" minOccurs="0"/>
+                <xs:element name="amount" type="xs:decimal"/>
+                <xs:sequence minOccurs="0">
+                    <xs:element name="native-amount" type="xs:decimal"/>
+                    <xs:element name="currency" type="xs:string"/>
+                </xs:sequence>
+                <xs:element name="document" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="person-to-contact" type="xs:string"/>
+                            <xs:element name="telephone-number" type="xs:string"/>
+                            <xs:element name="email-address" type="xs:string"/>
+                            <xs:element name="open-document" type="xs:string" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:sequence minOccurs="0">
+                    <xs:element name="override">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="override-rollup" type="xs:string" minOccurs="0"/>
+                                <xs:element name="override-statement-text" type="xs:string" minOccurs="0"/>
+                                <xs:element name="general-ledger-type" type="xs:string" minOccurs="0"/>
+                                <xs:sequence minOccurs="0">
+                                    <xs:element name="general-ledger-override">
+                                        <xs:complexType>
+                                            <xs:sequence maxOccurs="unbounded">
+                                                <xs:element name="general-ledger-account" type="xs:string"/>
+                                                <xs:element name="percentage-allocation" type="xs:decimal"/>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:element name="override-refund-rule" type="xs:string" minOccurs="0"/>
+                                <xs:element name="is-refundable" type="xs:boolean" minOccurs="0"/>
+                                <xs:choice minOccurs="0">
+                                    <xs:element name="override-clear-date" type="xs:int"/>
+                                    <xs:element name="override-clear-period" type="xs:int"/>
+                                </xs:choice>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:element name="transaction-type" type="xs:string" form="qualified"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="account">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="command" minOccurs="0">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="new"/>
+                            <xs:enumeration value="update"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="account-status-type" type="xs:string" minOccurs="0"/>
+                <xs:element name="account-identifier" type="xs:string"/>
+                <xs:element name="is-kim-account" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="can-authenticate" type="xs:boolean" minOccurs="0"/>
+                <xs:element ref="person-name" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="postal-address" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="electronic-contact" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="credit-limit" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="date-of-birth" type="xs:date" minOccurs="0"/>
+                <xs:element name="protected-information" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="bank-information" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="bank-type"/>
+                                        <xs:element name="bank-detail"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="tax-information" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="tax-type"/>
+                                        <xs:element name="tax-detail"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="identity-information" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="identity-type"/>
+                                        <xs:element name="identity-issuer"/>
+                                        <xs:element name="identity-serial"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="electronic-contact">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kim-type" type="xs:string" minOccurs="0"/>
+                <xs:element name="email-address" type="xs:string" minOccurs="0"/>
+                <xs:element name="telephone-number" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="country-code" type="xs:string" minOccurs="0"/>
+                            <xs:element name="number" type="xs:string"/>
+                            <xs:element name="extension" type="xs:string" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="is-default" type="xs:boolean" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postal-address">
+        <xs:complexType>
+            <xs:sequence minOccurs="0">
+                <xs:element name="kim-type" type="xs:string" minOccurs="0"/>
+                <xs:element name="address-line-1" type="xs:string"/>
+                <xs:element name="address-line-2" type="xs:string" minOccurs="0"/>
+                <xs:element name="address-line-3" type="xs:string" minOccurs="0"/>
+                <xs:element name="city" type="xs:string"/>
+                <xs:element name="state-code" type="xs:string" minOccurs="0"/>
+                <xs:element name="postal-code" type="xs:string" minOccurs="0"/>
+                <xs:element name="country-code" type="xs:string" minOccurs="0"/>
+                <xs:element name="is-default" type="xs:boolean" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="person-name">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kim-type" type="xs:string" minOccurs="0"/>
+                <xs:element name="title" type="xs:string" minOccurs="0"/>
+                <xs:element name="firstname" type="xs:string"/>
+                <xs:element name="middlename" type="xs:string" minOccurs="0"/>
+                <xs:element name="lastname" type="xs:string"/>
+                <xs:element name="suffix" type="xs:string" minOccurs="0"/>
+                <xs:element name="is-default" type="xs:boolean" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="list-transaction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="effective-date" type="xs:date"/>
+                <xs:element name="amount" type="xs:decimal"/>
+                <xs:sequence minOccurs="0">
+                    <xs:element name="native-amount" type="xs:decimal"/>
+                    <xs:element name="currency" type="xs:string"/>
+                </xs:sequence>
+                <xs:element name="statement-text" type="xs:string" form="qualified"/>
+                <xs:element name="transaction-type" type="xs:string" minOccurs="0"/>
+                <xs:element name="charge-or-payment">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="charge"/>
+                            <xs:enumeration value="payment"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="check">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="identifier" type="xs:string"/>
+                <xs:element name="payee" type="xs:string"/>
+                <xs:element ref="postal-address"/>
+                <xs:element name="date" type="xs:date"/>
+                <xs:element name="amount" type="xs:decimal"/>
+                <xs:element name="currency" type="xs:string" minOccurs="0"/>
+                <xs:element name="memo" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="batch-check">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="batch-identifier" type="xs:string"/>
+                <xs:sequence maxOccurs="unbounded">
+                    <xs:element ref="check"/>
+                </xs:sequence>
+                <xs:element name="batch-control">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="number-of-checks" type="xs:int"/>
+                            <xs:element name="value-of-checks" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ach">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reference" type="xs:string"/>
+                <xs:element name="aba" type="xs:string"/>
+                <xs:element name="account-number" type="xs:string"/>
+                <xs:element name="account-type" type="xs:string"/>
+                <xs:element name="amount" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="batch-ach">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="batch-identifier" type="xs:string"/>
+                <xs:element ref="ach" maxOccurs="unbounded"/>
+                <xs:element name="batch-control">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="number-of-achs" type="xs:int"/>
+                            <xs:element name="value-of-achs" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ksa-bill">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="preferred-delivery-mode" type="xs:string"/>
+                <xs:element name="bill-id" type="xs:string"/>
+                <xs:element name="cycle">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="bill-date" type="xs:date"/>
+                            <xs:element name="bill-generated" type="xs:date"/>
+                            <xs:element name="bill-start" type="xs:date"/>
+                            <xs:element name="bill-end" type="xs:date"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="balances">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="with-deferments">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="aged-balance"/>
+                                        <xs:element name="total-balance" type="xs:decimal"/>
+                                        <xs:element name="future-balance" type="xs:decimal"/>
+                                        <xs:element name="due-balance" type="xs:decimal"/>
+                                        <xs:element name="overdue-balance" type="xs:decimal"/>
+                                        <xs:element name="total-deferred" type="xs:decimal"/>
+                                        <xs:element name="has-expired-deferment" type="xs:boolean"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="without-deferments">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="aged-balance"/>
+                                        <xs:element name="total-balance" type="xs:decimal"/>
+                                        <xs:element name="future-balance" type="xs:decimal"/>
+                                        <xs:element name="due-balance" type="xs:decimal"/>
+                                        <xs:element name="overdue-balance" type="xs:decimal"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="account-owner">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="account-identifier" type="xs:string"/>
+                            <xs:element ref="person-name"/>
+                            <xs:element ref="postal-address"/>
+                            <xs:element ref="electronic-contact"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="bill-recipient" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="person-name"/>
+                            <xs:element ref="postal-address" minOccurs="0"/>
+                            <xs:element ref="electronic-contact" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="transaction-list"/>
+                <xs:element name="message" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="aged-balance">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="period-length" type="xs:int"/>
+                <xs:element name="period-balance" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="mailing-data">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="account"/>
+                <xs:element ref="ksa-bill" minOccurs="0"/>
+                <xs:element ref="transaction-list" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="transaction-list">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="list-transaction" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="rollup" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="date" type="xs:date" minOccurs="0"/>
+                            <xs:element name="rollup-name" type="xs:string"/>
+                            <xs:element name="amount" type="xs:decimal"/>
+                            <xs:element name="charge-or-payment">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="charge"/>
+                                        <xs:enumeration value="payment"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element ref="list-transaction"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ksa-action">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="command">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="age"/>
+                            <xs:enumeration value="payment-application"/>
+                            <xs:enumeration value="refund"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="account-identifier" type="xs:string" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ksa-batch-action">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ksa-action" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="batch-ksa-bill">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ksa-bill" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="reporting-period">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="start-date" type="xs:date"/>
+                <xs:element name="end-date" type="xs:date"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

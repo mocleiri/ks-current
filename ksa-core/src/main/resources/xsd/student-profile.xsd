@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:element name="student-profile">
+        <xs:annotation>
+            <xs:documentation>Student profile is used to send information to the fee management system.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="account-identifier" type="xs:string"/>
+                <xs:element name="student-information" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="citizenship" type="xs:string" minOccurs="0"/>
+                            <xs:element name="residency" type="xs:string" minOccurs="0"/>
+                            <xs:element name="year-of-study" type="xs:string" minOccurs="0"/>
+                            <xs:element name="level-of-study" type="xs:string" minOccurs="0"/>
+                            <xs:element name="campus" type="xs:string" minOccurs="0"/>
+                            <xs:element name="full-or-part-time" type="xs:string" minOccurs="0"/>
+                            <xs:element name="program-of-study" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="major" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="second-major" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="minor" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="second-minor" type="xs:string" minOccurs="0"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element ref="key-pair" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="period-information" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="period" type="xs:string" minOccurs="0"/>
+                            <xs:element ref="key-pair" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element name="study" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="learning-unit" minOccurs="0" maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="key-pair">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="key-name" type="xs:string"/>
+                <xs:element name="value" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="learning-unit">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="unit-code" type="xs:string"/>
+                <xs:element name="unit-section" type="xs:string" minOccurs="0"/>
+                <xs:element name="campus" type="xs:string" minOccurs="0"/>
+                <xs:element name="level" type="xs:string" minOccurs="0"/>
+                <xs:element name="unit-credit" type="xs:int" minOccurs="0"/>
+                <xs:element ref="key-pair" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="command" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="change"/>
+                        <xs:enumeration value="drop"/>
+                        <xs:enumeration value="add"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="effective-date" type="xs:date"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

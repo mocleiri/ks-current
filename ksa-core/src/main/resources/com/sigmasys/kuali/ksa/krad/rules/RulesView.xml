@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="RulesView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="KSA Rules Editor"/>
+        <property name="headerText" value="KSA Rules Editor"/>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.rules.RulesForm"/>
+        <property name="entryPageId" value="EditRulePage"/>
+        <property name="navigation">
+            <bean parent="Uif-KsaPageNavigation">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-HeaderTwo" p:headerText="Business Rules"/>
+                        <bean parent="Uif-NavigationActionLink"
+                              p:navigateToPageId="EditRulePage"
+                              p:actionLabel="Edit Rule"/>
+                        <bean parent="Uif-NavigationActionLink"
+                              p:navigateToPageId="AddRulePage"
+                              p:actionLabel="Add Rule"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="EditRulePage" p:title="Edit Rule">
+                    <property name="headerText" value="Edit Rule"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="editRulePanel"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="AddRulePage" p:title="Add Rule">
+                    <property name="headerText" value="Add Rule"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="addRulePanel"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="addRulePanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="@{addStatusMessage}"/>
+                <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="newRule.name"
+                                  p:label="Rule Name"
+                                  p:labelPlacement="TOP"
+                                  p:width="100"
+                                  p:required="true"
+                                  p:fieldLabel.renderColon="false">
+                                <property name="bindingInfo.bindToForm" value="true"/>
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:size="50"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-ActionLink"
+                                  p:methodToCall="checkRuleNameExistence"
+                                  p:actionLabel="Check if the rule name exists">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksa-form-button</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="newRuleType"
+                      p:label="Rule Type"
+                      p:labelPlacement="TOP"
+                      p:width="100"
+                      p:required="true"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:size="5"/>
+                    </property>
+                    <property name="optionsFinder" value="@{getRuleTypeFinder()}"/>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="newRule.description"
+                      p:label="Rule Description"
+                      p:labelPlacement="TOP"
+                      p:required="false"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="70" p:maxLength="69"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="newRule.priority"
+                      p:label="Rule Priority"
+                      p:labelPlacement="TOP"
+                      p:required="false"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="15" p:maxLength="14"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="newRule.lhs"
+                      p:label="Rule LHS"
+                      p:labelPlacement="TOP"
+                      p:required="true"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="15" p:cols="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="newRule.rhs"
+                      p:label="Rule RHS"
+                      p:labelPlacement="TOP"
+                      p:required="true"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="15" p:cols="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="add"
+                      p:actionLabel="Add">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksa-form-button</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="editRulePanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-MessageField" p:messageText="@{editStatusMessage}"/>
+
+                <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="ruleName"
+                                  p:label="Rule Name"
+                                  p:labelPlacement="TOP"
+                                  p:width="100"
+                                  p:required="true"
+                                  p:fieldLabel.renderColon="false">
+                                <property name="bindingInfo.bindToForm" value="true"/>
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder" value="@{getNameFinder()}"/>
+                            </bean>
+                            <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="select"
+                                  p:actionLabel="Load Rule">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksa-form-button</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="ruleType"
+                      p:label="Rule Type"
+                      p:labelPlacement="TOP"
+                      p:width="100"
+                      p:required="true"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:size="5"/>
+                    </property>
+                    <property name="optionsFinder" value="@{getRuleTypeFinder()}"/>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="description"
+                      p:label="Rule Description"
+                      p:labelPlacement="TOP"
+                      p:required="false"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="70" p:maxLength="69"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="rulePriority"
+                      p:label="Rule Priority"
+                      p:labelPlacement="TOP"
+                      p:required="false"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="15" p:maxLength="14"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="ruleLhs"
+                      p:label="Rule LHS"
+                      p:labelPlacement="TOP"
+                      p:required="true"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="15" p:cols="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="ruleRhs"
+                      p:label="Rule RHS"
+                      p:labelPlacement="TOP"
+                      p:required="true"
+                      p:fieldLabel.renderColon="false">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="15" p:cols="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="update"
+                      p:actionLabel="Update">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksa-form-button</value>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+</beans>

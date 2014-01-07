@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="RateTypeView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Rate Types"/>
+        <property name="headerText" value="Fee Management"/>
+        <property name="entryPageId" value="RateTypesPage"/>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.RateTypeForm"/>
+        <!--<property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.PaymentPlanHelper"/>-->
+        <property name="navigation" ref="KsaFeeManagementNavigation"/>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="RateTypesPage" p:title="Rate Types">
+                    <property name="headerText" value="Rate Types"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="rateTypeSection"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="rateTypeSection" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Rate Types"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="No rate types found" p:render="@{rateTypes.size() == 0}"/>
+                <bean parent="Uif-Message" p:messageText="@{errorMessage}" p:render="@{errorMessage != null}" p:style="color: red;"/>
+                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:width="85%">
+                    <property name="readOnly" value="false"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.RateTypeModel"/>
+                    <property name="propertyName" value="rateTypes"/>
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+					<property name="renderAddBlankLineButton" value="false"/>
+					<property name="renderAddLine" value="false"/>
+					<property name="renderLineActions" value="false"/>
+                    <property name="layoutManager.richTable.templateOptions">
+                        <map merge="true">
+                            <entry key="bPaginate" value="true"/>
+                            <entry key="bInfo" value="false"/>
+                            <entry key="bFilter" value="false"/>
+                        </map>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Code" p:propertyName="code" p:readOnly="@{#line.id != null}">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:style="width: 90%"/>
+								</property>
+							</bean>
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="name">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:style="width: 90%"/>
+								</property>
+							</bean>
+                            <bean parent="Uif-InputField" p:label="Description" p:propertyName="description">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:textExpand="true" p:style="width: 90%"/>
+								</property>
+							</bean>
+                            <bean parent="Uif-InputField" p:label="Grouping" p:propertyName="grouping">
+                                <property name="control">
+                                    <bean parent="Uif-CheckboxControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:label="Amount Type" p:propertyName="rateAmountType">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl" p:width="100%"/>
+                                </property>
+                                <property name="optionsFinder" value="@{getRateAmountTypeFinder()}"/>
+                            </bean>
+
+
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions" p:readOnly="true">
+                                <property name="items">
+                                    <list>
+										<!-- "Save" image action -->
+										<bean parent="Uif-ActionLink" p:methodToCall="saveRateType" p:onClickScript="writeHiddenToForm('rateTypeId', '@{#line.id}');">
+											<property name="actionImage">
+												<bean parent="Uif-Image" p:source="../images/save.png" p:style="cursor:pointer;" p:altText="Save"/>
+											</property>
+										</bean>
+										
+										<!-- "Audit Guy" icon with a tooltip -->
+										<bean parent="Uif-Image" p:source="../images/audit_guy.png" p:style="cursor:pointer;" p:altText="Account Info" p:hidden="@{#line.id == null}">
+											<property name="toolTip">
+												<bean parent="Uif-Tooltip">
+													<property name="tooltipContent" value="@{#line.auditingInfo}"/>
+												</bean>
+											</property>
+										</bean>
+										
+										<!-- "Delete" image action -->
+										<bean parent="Uif-ActionLink" p:methodToCall="deleteRateType" p:onClickScript="writeHiddenToForm('rateTypeId', '@{#line.id}');" p:hidden="@{#line.id == null}">
+											<property name="actionImage">
+												<bean parent="Uif-Image" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Save"/>
+											</property>
+										</bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

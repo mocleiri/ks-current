@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: net.sf.beanlib:beanlib-hibernate:5.0.2beta">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/beanlib/beanlib-hibernate/5.0.2beta/beanlib-hibernate-5.0.2beta.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/beanlib/beanlib-hibernate/5.0.2beta/beanlib-hibernate-5.0.2beta-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/beanlib/beanlib-hibernate/5.0.2beta/beanlib-hibernate-5.0.2beta-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

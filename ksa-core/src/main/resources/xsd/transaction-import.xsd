@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="ksa-types.xsd"/>
+
+    <xs:element name="ksa-batch-transaction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="batch-identifier" type="xs:string"/>
+                <xs:element ref="ksa-transaction" maxOccurs="unbounded"/>
+                <xs:element name="batch-control" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="number-of-transactions" type="xs:int"/>
+                            <xs:element name="total-value" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ksa-batch-transaction-response">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="response-identifier" type="xs:string"/>
+                <xs:element name="response-to-batch-identifier" type="xs:string"/>
+                <xs:element name="batch-status" type="xs:string"/>
+                <xs:element name="accepted">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xs:element ref="ksa-transaction"/>
+                            <xs:element name="transaction-details">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="transaction-id" type="xs:string"/>
+                                        <xs:element name="accepted-date" type="xs:date"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="failed">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xs:element ref="ksa-transaction"/>
+                            <xs:element name="reason" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="batch-summary">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="transactions-in-batch" type="xs:int"/>
+                            <xs:element name="value-of-batch" type="xs:decimal"/>
+                            <xs:element name="transactions-accepted" type="xs:int"/>
+                            <xs:element name="value-accepted" type="xs:decimal"/>
+                            <xs:element name="transactions-failed" type="xs:int"/>
+                            <xs:element name="value-failed" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="batch-account">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="account" maxOccurs="unbounded"/>
+                <xs:element name="batch-control" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="number-of-accounts" type="xs:int"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="batch-account-response">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="accepted">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="account" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="rejected">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded">
+                            <xs:element ref="account"/>
+                            <xs:element name="reason" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="batch-summary">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="number-in-batch" type="xs:int"/>
+                            <xs:element name="number-accepted" type="xs:int"/>
+                            <xs:element name="number-of-updates" type="xs:int"/>
+                            <xs:element name="number-rejected" type="xs:int"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="request-failure">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message" type="xs:string"/>
+                <xs:element name="original-request" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

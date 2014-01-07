@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="KSA" type="GWT.ConfigurationType" factoryName="GWT Configuration">
+    <module name="ksa-core" />
+    <option name="VM_PARAMETERS" value="-Xmx768m -Xms256m -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256m" />
+    <option name="SHELL_PARAMETERS" value="-noserver -port 8080 -war C:\KSAGXTSandbox\ksa-core\target\ksa" />
+    <option name="RUN_PAGE" value="/ksa/gwt.html" />
+    <option name="GWT_MODULE" value="com.sigmasys.kuali.ksa.gwt.Ksa" />
+    <option name="BROWSER" value="Chrome" />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Debug" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method>
+      <option name="Make" enabled="false" />
+    </method>
+  </configuration>
+</component>

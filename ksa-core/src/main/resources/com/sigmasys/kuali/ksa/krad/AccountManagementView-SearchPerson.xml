@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+    <!--
+     ********************************************************************************************************************
+                                         PAGE: Search Person Account
+     ********************************************************************************************************************
+     -->
+
+    <bean parent="Uif-Page" id="SearchPersonAccountPage" p:id="SearchPersonAccountPage" p:title="Account Management">
+        <property name="headerText" value="Account Management"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-VerticalBoxSection">
+                    <property name="title" value="Search for a person&apos;s account"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="This form is used to search for an account held by a person."/>
+                            <!-- AccountInfo:Common Identifiers Information -->
+                            <ref bean="SearchPersonAccountCommonIdsSecion"/>
+                            <!-- Biographic Information -->
+                            <ref bean="SearchPersonAccountBiographicInfoSecion"/>
+                            <!-- Account Info:Additional -->
+                            <ref bean="SearchPersonAccountAdditionalInfoSection"/>
+                            <!-- Account Info:Auditable -->
+                            <ref bean="SearchPersonAccountAuditableInfoSection"/>
+                            <!-- User Settings -->
+                            <ref bean="SearchPersonAccountUserSettingsSection"/>
+                            <!-- Search Result Preferences -->
+                            <ref bean="SearchPersonAccountSearchPreferencesSection"/>
+                            <!-- Submit section -->
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-SecondaryActionButton-Small"
+                                              p:methodToCall="doSearchPersonAccount"
+                                              p:actionLabel="Search"
+                                              p:onClickScript="writeHiddenToForm(&quot;actionParameters[pageId]&quot;, &quot;SearchPersonAccountPage&quot;);">
+                                        </bean>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Cancel" p:methodToCall="cancel"
+                                              p:preSubmitCall="return confirm('Are you sure you want to cancel?');"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--
+     *********************************************************************************************************************************************
+     Sub-Sections - Common Identifiers, Biographic Information, Additional Information, Auditable Info, User Settings, Search Prefs
+     *********************************************************************************************************************************************
+     -->
+
+    <!-- Search Person Account: Common Identifiers subsection 1 -->
+    <bean id="SearchPersonAccountCommonInfoSection1" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.id" p:labelPlacement="TOP" p:label="Account ID"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="45"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.identityType.id"
+                      p:labelPlacement="TOP" p:label="Identity Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="com.sigmasys.kuali.ksa.model.IdentityType"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Common Identifiers subsection 2 -->
+    <bean id="SearchPersonAccountCommonInfoSection2" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.dobDateRange.a" p:labelPlacement="TOP"
+                      p:label="Date of Birth"
+                      p:constraintText="Format: mm/dd/yyyy" p:instructionalText="From">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.identitySerial"
+                      p:labelPlacement="TOP" p:label="Identity Serial"
+                      p:constraintText="Format: DL-123456789">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Common Identifiers subsection 3 -->
+    <bean id="SearchPersonAccountCommonInfoSection3" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.dobDateRange.b" p:labelPlacement="TOP"
+                      p:label=""
+                      p:constraintText="Format: mm/dd/yyyy" p:instructionalText="To">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.identityIssuer"
+                      p:labelPlacement="TOP" p:label="Identity Issuer"
+                      p:constraintText="Format: DL-123456789">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Name subsection -->
+    <bean id="SearchPersonAccountNameSection" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+        <property name="headerText" value="NAME"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.kimNameType"
+                      p:labelPlacement="TOP" p:label="Name Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="org.kuali.rice.kim.impl.identity.name.EntityNameTypeBo"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.firstName"
+                      p:labelPlacement="TOP" p:label="First Name"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.middleName"
+                      p:labelPlacement="TOP" p:label="Middle Name">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.lastName" p:labelPlacement="TOP"
+                      p:label="Last Name">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.suffix" p:labelPlacement="TOP"
+                      p:label="Suffix">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPersonName.title" p:labelPlacement="TOP"
+                      p:label="Title">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Address subsection -->
+    <bean id="SearchPersonAccountAddressSection" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+        <property name="headerText" value="ADDRESS"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.kimAddressType"
+                      p:labelPlacement="TOP" p:label="Address Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg
+                                            value="org.kuali.rice.kim.impl.identity.address.EntityAddressTypeBo"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.streetAddress1"
+                      p:labelPlacement="TOP" p:label="Line 1">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.streetAddress2"
+                      p:labelPlacement="TOP" p:label="Line 2">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.streetAddress3"
+                      p:labelPlacement="TOP" p:label="Line 3">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.city" p:labelPlacement="TOP"
+                      p:label="City">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.state" p:labelPlacement="TOP"
+                      p:label="State Code">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="5"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.postalCode"
+                      p:labelPlacement="TOP" p:label="Postal Code">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="12"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultPostalAddress.country"
+                      p:labelPlacement="TOP" p:label="Country Code">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Electronic Contact subsection -->
+    <bean id="SearchPersonAccountElectronicContactSection" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="headerText" value="ELECTRONIC CONTACT"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.kimEmailAddressType"
+                      p:labelPlacement="TOP" p:label="Email Address Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="org.kuali.rice.kim.impl.identity.email.EntityEmailTypeBo"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.emailAddress"
+                      p:labelPlacement="TOP" p:label="Email">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="255"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.kimPhoneType"
+                      p:labelPlacement="TOP" p:label="Phone Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.KradTypeEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="org.kuali.rice.kim.impl.identity.phone.EntityPhoneTypeBo"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.phoneCountry"
+                      p:labelPlacement="TOP" p:label="Phone Country">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="5"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.phoneNumber"
+                      p:labelPlacement="TOP" p:label="Phone Number">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.defaultElectronicContact.phoneExtension"
+                      p:labelPlacement="TOP" p:label="Phone Ext.">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Additional Account Information subsection 1 -->
+    <bean id="SearchPersonAccountAdditionalInfoSection1" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.statusType.id" p:labelPlacement="TOP"
+                      p:label="Status"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="com.sigmasys.kuali.ksa.model.AccountStatusType"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountType" p:labelPlacement="TOP"
+                      p:label="Account Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.AccountTypeKeyValuesFinder" p:blankOption="true"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.creditLimit" p:labelPlacement="TOP"
+                      p:label="Credit Limit">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Additioinal Account Information subsection 2 -->
+    <bean id="SearchPersonAccountAdditionalInfoSection2" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.bankType.id"
+                      p:labelPlacement="TOP" p:label="Bank Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="com.sigmasys.kuali.ksa.model.BankType"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.bankDetails"
+                      p:labelPlacement="TOP" p:label="Bank Detail"
+                      p:constraintText="Format: xxx-xxx-xxx">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Additional Account Information subsection 3 -->
+    <bean id="SearchPersonAccountAdditionalInfoSection3" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.taxType.id"
+                      p:labelPlacement="TOP" p:label="Tax Type"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder"
+                              p:blankOption="true">
+                            <constructor-arg>
+                                <bean class="java.lang.Class" factory-method="forName">
+                                    <constructor-arg value="com.sigmasys.kuali.ksa.model.TaxType"/>
+                                </bean>
+                            </constructor-arg>
+                        </bean>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountInfo.accountProtectedInfo.taxReference"
+                      p:labelPlacement="TOP" p:label="Tax Detail"
+                      p:constraintText="Format: xxx-xxx-xxx">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="50"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Auditable Information subsection 1 -->
+    <bean id="SearchPersonAccountAuditableInfoSection1" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.creatorId" p:labelPlacement="TOP"
+                      p:label="Creator ID">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="45"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.creationDateRange.a"
+                      p:labelPlacement="TOP" p:label="Creation Date Range"
+                      p:constraintText="Format: mm/dd/yyyy" p:instructionalText="From">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.lastUpdateDateRange.b"
+                      p:labelPlacement="TOP" p:label="Last Updated Date Range"
+                      p:constraintText="Format: mm/dd/yyyy" p:instructionalText="From">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Auditable Information subsection 2 -->
+    <bean id="SearchPersonAccountAuditableInfoSection2" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.editorId" p:labelPlacement="TOP"
+                      p:label="Editor ID">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="45"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.creationDateRange.b"
+                      p:labelPlacement="TOP" p:label=""
+                      p:constraintText="Format: mm/dd/yyyy" p:instructionalText="To">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.lastUpdateDateRange.b"
+                      p:labelPlacement="TOP" p:label=""
+                      p:constraintText="Format: mm/dd/yyyy" p:instructionalText="To">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Auditable Information subsection 3 -->
+    <bean id="SearchPersonAccountAuditableInfoSection3" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="account.kimAccount">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl" p:checkboxLabel="Kuali Identity Management Accounts"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="account.ableToAuthenticate">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl" p:checkboxLabel="Account can Authenticate"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: User Settings section -->
+    <bean id="SearchPersonAccountUserSettings" parent="Uif-Disclosure-HorizontalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Disclosure-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.userPreference.name"
+                                  p:labelPlacement="TOP" p:label="User Preference"
+                                  p:instructionalText="Name">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:size="11" p:maxLength="256"/>
+                                </property>
+                            </bean>
+
+                            <!--
+                            <bean parent="Uif-InputField" p:propertyName="account.latePeriod.id" p:labelPlacement="TOP"
+                                  p:label="Late Period"
+                                  p:fieldLabel.renderColon="false">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl" p:width="100%"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder"
+                                          p:blankOption="true">
+                                        <constructor-arg>
+                                            <bean class="java.lang.Class" factory-method="forName">
+                                                <constructor-arg value="com.sigmasys.kuali.ksa.model.LatePeriod"/>
+                                            </bean>
+                                        </constructor-arg>
+                                    </bean>
+                                </property>
+                            </bean>
+                            -->
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Disclosure-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.userPreference.value"
+                                  p:label="  "
+                                  p:instructionalText="Value">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:size="11" p:maxLength="100"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Search Person Account: Search Result Preferences section -->
+    <bean id="SearchPersonAccountSearchPreferences" parent="Uif-Disclosure-HorizontalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Disclosure-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField-LabelTop" p:propertyName="accountSearchInfo.searchResultFields"
+                                  p:label="Additional Fields to Display in Result"
+                                  p:fieldLabel.renderColon="false">
+                                <property name="control">
+                                    <bean parent="Uif-MultiSelectControl" p:width="100%" p:size="5"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="com.sigmasys.kuali.ksa.krad.util.AccountSearchResultFieldsKeyValuesFinder"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Disclosure-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="accountSearchInfo.lastNameSubstringSearch">
+                                <property name="control">
+                                    <bean parent="Uif-CheckboxControl" p:checkboxLabel="Last Name Substring Search"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+     ********************************************************************************************************************
+                                      SECTION - New Person Account Large titled sections.
+     ********************************************************************************************************************
+     -->
+
+    <bean id="SearchPersonAccountCommonIdsSecion" parent="Uif-Disclosure-HorizontalBoxSection"
+          p:style="text-decoration:underline">
+        <property name="headerText" value="Account Information - Common Identifiers"/>
+        <property name="items">
+            <list>
+                <!--  subsection 1 -->
+                <ref bean="SearchPersonAccountCommonInfoSection1"/>
+                <!--  subsection 2 -->
+                <ref bean="SearchPersonAccountCommonInfoSection2"/>
+                <!--  subsection 3 -->
+                <ref bean="SearchPersonAccountCommonInfoSection3"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="SearchPersonAccountBiographicInfoSecion" parent="Uif-Disclosure-HorizontalBoxSection"
+          p:style="text-decoration:underline">
+        <property name="headerText" value="Biographic Information"/>
+        <property name="items">
+            <list>
+                <!-- Name subsection -->
+                <ref bean="SearchPersonAccountNameSection"/>
+                <!-- Address subsection -->
+                <ref bean="SearchPersonAccountAddressSection"/>
+                <!-- Electronic Contact subsection -->
+                <ref bean="SearchPersonAccountElectronicContactSection"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SearchPersonAccountAdditionalInfoSection" parent="Uif-Disclosure-HorizontalBoxSection"
+          p:style="text-decoration:underline">
+        <property name="headerText" value="Account Information - Additional"/>
+        <property name="items">
+            <list>
+                <!-- First subsection -->
+                <ref bean="SearchPersonAccountAdditionalInfoSection1"/>
+                <!-- Second subsection -->
+                <ref bean="SearchPersonAccountAdditionalInfoSection2"/>
+                <!-- Third subsection -->
+                <ref bean="SearchPersonAccountAdditionalInfoSection3"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SearchPersonAccountAuditableInfoSection" parent="Uif-Disclosure-HorizontalBoxSection"
+          p:style="text-decoration:underline">
+        <property name="headerText" value="Account - Auditable Information"/>
+        <property name="items">
+            <list>
+                <!-- First subsection -->
+                <ref bean="SearchPersonAccountAuditableInfoSection1"/>
+                <!-- Second subsection -->
+                <ref bean="SearchPersonAccountAuditableInfoSection2"/>
+                <!-- Third subsection -->
+                <ref bean="SearchPersonAccountAuditableInfoSection3"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SearchPersonAccountUserSettingsSection" parent="Uif-Disclosure-HorizontalBoxSection">
+        <property name="headerText" value="Account - User Settings"/>
+        <property name="items">
+            <list>
+                <ref bean="SearchPersonAccountUserSettings"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SearchPersonAccountSearchPreferencesSection" parent="Uif-Disclosure-HorizontalBoxSection">
+        <property name="headerText" value="Search Results Preferences"/>
+        <property name="items">
+            <list>
+                <ref bean="SearchPersonAccountSearchPreferences"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

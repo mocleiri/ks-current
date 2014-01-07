@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	
+	<!--
+	********************************************************************************************************************
+										PAGE: Search Account Results
+	********************************************************************************************************************
+	-->
+
+	<bean parent="Uif-Page" id="SearchAccountResultsPage" p:id="SearchAccountResultsPage" p:title="Account Management">
+		<property name="headerText" value="Results for Person Account Search"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<!-- Table of Account search results -->
+								<bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5" p:displayCollectionSize="10">
+									<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.AccountSearchResultModel"/>
+									<property name="propertyName" value="accountSearchResults" />
+									<property name="layoutManager.generateAutoSequence" value="false" />
+									<property name="layoutManager.richTable.render" value="false"/>
+									<property name="layoutManager.renderSequenceField" value="false"/>
+									<property name="renderAddBlankLineButton" value="false"/>
+									<property name="renderAddLine" value="false"/>
+									<property name="renderLineActions" value="true"/>
+									<property name="lineActions">
+										<list>
+											<bean parent="Uif-ActionLink" p:actionLabel="Edit" p:methodToCall="editPersonAccount" 
+												p:actionScript="writeHiddenToForm(&quot;accountId&quot;, &quot;@{#line.account.id}&quot;); window.location.href='accountManagement?viewId=AdminView&amp;pageId=NewPersonAccountPage&amp;methodToCall=editPersonAccount&amp;accountId=@{#line.account.id}'"/>
+										</list>
+									</property>
+									<property name="items">
+										<list>
+											<bean parent="Uif-DataField" p:label="Account ID" p:propertyName="account.id"/>
+											<bean parent="Uif-DataField" p:label="Last Name" p:propertyName="account.defaultPersonName.lastName"/>
+                                            <bean parent="Uif-DataField" p:label="Last Name" p:propertyName="account.defaultPersonName.firstName"/>
+                                            <bean parent="Uif-DataField" p:label="Date of Birth" p:propertyName="dateOfBirth"/>
+										</list>
+									</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
+</beans>

@@ -1,0 +1,49 @@
+import java.util.*;
+import java.math.*;
+import com.sigmasys.kuali.ksa.model.*;
+import com.sigmasys.kuali.ksa.service.brm.*;
+
+expander ksa.dsl
+
+global FeeBase feeBase;
+
+
+############ Beginning of rule definitions ##########################
+
+
+rule "Tuition 1"
+when
+    (Student account ID is "admin")
+then
+    Use code "1020" to charge $345.78
+    Use code "pp" to credit $50.0
+end
+
+rule "Tuition 2"
+when
+    (Major is "34444,2345,MAJ1")
+then
+    Use code "1020" to charge $345.78
+    Use code "1319" to credit $50.0
+end
+
+rule "Tuition 3"
+when
+    (LU code is "MFRO,MABO,GOOG" with status "")
+then
+    Use code "cash" to credit $50.50
+end
+
+rule "Tuition 4"
+when
+    ("a" equals "a" and LU code is "WARTY--" with status "C")
+then
+    Use code "cash" to credit $950.50
+end
+
+rule "Tuition 5"
+when
+    (LU code is "MFRO,MABO" with status "F" and Major is "34444,2345,MA34")
+then
+    Use code "cash" to credit $50.50
+end

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<!--
+ Copyright 2007-2009 The Kuali Foundation
+ 
+ Licensed under the Educational Community License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.opensource.org/licenses/ecl2.php
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<xsd:schema xmlns:kfs="http://www.kuali.org/kfs/sys/types"
+            xmlns:dd="http://www.kuali.org/kfs/sys/ddTypes"
+            xmlns="http://www.kuali.org/kfs/gl/collector" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.kuali.org/kfs/gl/collector" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://www.kuali.org/kfs/sys/types" schemaLocation="types.xsd"/>
+    <xsd:import namespace="http://www.kuali.org/kfs/sys/ddTypes" schemaLocation="ddTypes.xsd"/>
+
+    <!-- header fields -->
+    <xsd:element name="organizationCode" type="dd:CollectorBatch.organizationCode"/>
+    <xsd:element name="transmissionDate" type="dd:CollectorBatch.transmissionDate"/>
+    <xsd:element name="batchSequenceNumber" type="dd:CollectorBatch.batchSequenceNumber"/>
+    <xsd:element name="personUserId" type="dd:CollectorBatch.personUserID"/>
+    <xsd:element name="emailAddress" type="dd:CollectorBatch.emailAddress"/>
+    <xsd:element name="campusCode" type="dd:CollectorBatch.campusCode"/>
+    <xsd:element name="phoneNumber" type="dd:CollectorBatch.phoneNumber"/>
+    <xsd:element name="mailingAddress" type="dd:CollectorBatch.mailingAddress"/>
+    <xsd:element name="departmentName" type="dd:CollectorBatch.departmentName"/>
+
+    <!-- glEntry fields -->
+    <xsd:element name="universityFiscalYear" type="dd:OriginEntryFull.universityFiscalYear"/>
+    <xsd:element name="chartOfAccountsCode" type="dd:OriginEntryFull.chartOfAccountsCode"/>
+    <xsd:element name="accountNumber" type="dd:OriginEntryFull.accountNumber"/>
+    <xsd:element name="subAccountNumber" type="dd:OriginEntryFull.subAccountNumber"/>
+    <xsd:element name="objectCode" type="dd:OriginEntryFull.financialObjectCode"/>
+    <xsd:element name="subObjectCode" type="dd:OriginEntryFull.financialSubObjectCode"/>
+    <xsd:element name="balanceTypeCode" type="dd:OriginEntryFull.financialBalanceTypeCode"/>
+    <xsd:element name="objectTypeCode" type="dd:OriginEntryFull.financialObjectTypeCode"/>
+    <xsd:element name="universityFiscalAccountingPeriod"
+                 type="dd:OriginEntryFull.universityFiscalPeriodCode"/>
+    <xsd:element name="documentTypeCode" type="dd:OriginEntryFull.financialDocumentTypeCode"/>
+    <xsd:element name="originationCode"
+                 type="dd:OriginEntryFull.financialSystemOriginationCode"/>
+    <xsd:element name="documentNumber" type="dd:OriginEntryFull.documentNumber"/>
+    <xsd:element name="transactionEntrySequenceId"
+                 type="dd:OriginEntryFull.transactionLedgerEntrySequenceNumber"/>
+    <xsd:element name="transactionLedgerEntryDescription"
+                 type="dd:OriginEntryFull.transactionLedgerEntryDescription"/>
+    <xsd:element name="transactionLedgerEntryAmount"
+                 type="dd:OriginEntryFull.transactionLedgerEntryAmount"/>
+    <xsd:element name="debitOrCreditCode" type="dd:OriginEntryFull.transactionDebitCreditCode"/>
+    <xsd:element name="transactionDate" type="dd:OriginEntryFull.transactionDate"/>
+    <xsd:element name="organizationDocumentNumber"
+                 type="dd:OriginEntryFull.organizationDocumentNumber"/>
+    <xsd:element name="projectCode" type="dd:OriginEntryFull.projectCode"/>
+    <xsd:element name="organizationReferenceId"
+                 type="dd:OriginEntryFull.organizationReferenceId"/>
+    <xsd:element name="referenceDocumentTypeCode"
+                 type="dd:OriginEntryFull.referenceFinancialDocumentTypeCode"/>
+    <xsd:element name="referenceOriginationCode"
+                 type="dd:OriginEntryFull.referenceFinancialSystemOriginationCode"/>
+    <xsd:element name="referenceDocumentNumber"
+                 type="dd:OriginEntryFull.referenceFinancialDocumentNumber"/>
+    <xsd:element name="documentReversalDate" type="dd:OriginEntryFull.financialDocumentReversalDate"/>
+    <xsd:element name="encumbranceUpdateCode"
+                 type="dd:OriginEntryFull.transactionEncumbranceUpdateCode"/>
+
+    <!-- trailer -->
+    <xsd:element name="totalRecords" type="xsd:integer"/>
+    <xsd:element name="totalAmount" type="xsd:decimal"/>
+
+    <!-- detail -->
+    <xsd:element name="createDate" type="dd:CollectorDetail.createDate"/>
+    <xsd:element name="collectorDetailSequenceNumber"
+                 type="dd:CollectorDetail.collectorDetailSequenceNumber"/>
+    <xsd:element name="detailText" type="dd:CollectorDetail.collectorDetailNoteText"/>
+    <xsd:element name="amount" type="dd:CollectorDetail.collectorDetailItemAmount"/>
+
+    <!-- definition of complex type elements -->
+    <xsd:complexType name="headerType">
+        <xsd:all>
+            <xsd:element ref="chartOfAccountsCode"/>
+            <xsd:element ref="organizationCode"/>
+            <xsd:element ref="transmissionDate"/>
+            <xsd:element ref="batchSequenceNumber"/>
+            <xsd:element ref="personUserId"/>
+            <xsd:element ref="emailAddress"/>
+            <xsd:element ref="campusCode"/>
+            <xsd:element ref="phoneNumber"/>
+            <xsd:element ref="mailingAddress"/>
+            <xsd:element ref="departmentName"/>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="detailType">
+        <xsd:all>
+            <xsd:element ref="universityFiscalAccountingPeriod"/>
+            <xsd:element ref="universityFiscalYear"/>
+            <xsd:element ref="createDate"/>
+            <xsd:element ref="chartOfAccountsCode" minOccurs="0"/>
+            <xsd:element ref="accountNumber"/>
+            <xsd:element ref="subAccountNumber" minOccurs="0"/>
+            <xsd:element ref="objectCode"/>
+            <xsd:element ref="subObjectCode" minOccurs="0"/>
+            <xsd:element ref="balanceTypeCode"/>
+            <xsd:element ref="objectTypeCode" minOccurs="0"/>
+            <xsd:element ref="collectorDetailSequenceNumber"/>
+            <xsd:element ref="originationCode"/>
+            <xsd:element ref="documentTypeCode"/>
+            <xsd:element ref="documentNumber"/>
+            <xsd:element ref="amount"/>
+            <xsd:element ref="detailText"/>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="trailerType">
+        <xsd:all>
+            <xsd:element ref="totalRecords"/>
+            <xsd:element ref="totalAmount"/>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="glEntryType">
+        <xsd:all>
+            <xsd:element ref="universityFiscalYear" minOccurs="0"/>
+            <xsd:element ref="chartOfAccountsCode" minOccurs="0"/>
+            <xsd:element ref="accountNumber"/>
+            <xsd:element ref="subAccountNumber" minOccurs="0"/>
+            <xsd:element ref="objectCode"/>
+            <xsd:element ref="subObjectCode" minOccurs="0"/>
+            <xsd:element ref="balanceTypeCode"/>
+            <xsd:element ref="objectTypeCode" minOccurs="0"/>
+            <xsd:element ref="universityFiscalAccountingPeriod" minOccurs="0"/>
+            <xsd:element ref="documentTypeCode"/>
+            <xsd:element ref="originationCode"/>
+            <xsd:element ref="documentNumber"/>
+            <xsd:element ref="transactionEntrySequenceId" minOccurs="0"/>
+            <xsd:element ref="transactionLedgerEntryDescription"/>
+            <xsd:element ref="transactionLedgerEntryAmount"/>
+            <xsd:element ref="debitOrCreditCode"/>
+            <xsd:element ref="transactionDate"/>
+            <xsd:element ref="organizationDocumentNumber" minOccurs="0"/>
+            <xsd:element ref="projectCode" minOccurs="0"/>
+            <xsd:element ref="organizationReferenceId" minOccurs="0"/>
+            <xsd:element ref="referenceDocumentTypeCode" minOccurs="0"/>
+            <xsd:element ref="referenceOriginationCode" minOccurs="0"/>
+            <xsd:element ref="referenceDocumentNumber" minOccurs="0"/>
+            <xsd:element ref="documentReversalDate" minOccurs="0"/>
+            <xsd:element ref="encumbranceUpdateCode" minOccurs="0"/>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="batchType">
+        <xsd:sequence>
+            <xsd:element name="header" type="headerType"/>
+            <xsd:sequence maxOccurs="unbounded">
+                <xsd:element name="glEntry" type="glEntryType" minOccurs="0"/>
+                <xsd:element name="detail" type="detailType" minOccurs="0"/>
+            </xsd:sequence>
+            <xsd:element name="trailer" type="trailerType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="batch" type="batchType"/>
+</xsd:schema>

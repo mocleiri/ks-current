@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+	
+	<!--
+	
+	******************************* Account Filter *********************************
+	
+	-->
+    <bean id="accountFilterGroup" parent="Uif-HorizontalBoxSection" p:header.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField-LabelTop" p:label="Accounts" p:propertyName="newAccount">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getAccountsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="filterAccounts" p:actionLabel="Add this Account" p:style="margin-top: 25px;"/>
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<bean parent="Uif-MessageField" p:messageText="Filter by Selected Accounts:" p:render="@{(accounts != null) and !accounts.isEmpty()}"/>
+							<!-- A list of Accounts to filter on -->
+							<bean parent="Uif-ListCollectionGroup" >
+								<property name="title" value="Filter by Selected Accounts"/>
+								<property name="readOnly" value="true"/>
+								<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.DirectChargeAccount"/>
+								<property name="propertyName" value="accounts"/>
+								<property name="items">
+									<list>
+										<bean parent="Uif-HorizontalFieldGroup">
+											<property name="items">
+												<list>
+													<bean parent="Uif-ActionLinkField" p:methodToCall="removeFilterAccount"
+																p:onClickScript="writeHiddenToForm('accountId', '@{#line.id}');">
+														<property name="actionImage">
+															<bean parent="Uif-Image" p:source="../images/remove.png" p:style="cursor:pointer;" p:altText="Remove from filter."/>
+														</property>
+													</bean>
+													<bean parent="Uif-MessageField" p:messageText="@{#line.id}, @{#line.compositeDefaultPersonName}"/>
+												</list>
+											</property>
+										</bean>
+									</list>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+            </list>
+        </property>
+    </bean>
+
+	<!--
+	
+	******************************* Date Range Filter *********************************
+	
+	-->
+	<bean id="dateRangeFilterGroup" parent="Uif-HorizontalBoxSection" p:header.render="false">
+		<property name="items">
+			<list>
+				<!-- Date Range combo box -->
+				<bean parent="Uif-InputField-LabelTop" p:propertyName="dateRangeType" p:label="Date Range" p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" p:width="100%"	/>
+					</property>
+					<property name="optionsFinder">
+						<bean class="com.sigmasys.kuali.ksa.krad.util.DateRangeFilterKeyValuesFinder"/>
+					</property>
+				</bean>
+				
+				<!-- From datepicker -->
+				<bean parent="Uif-InputField-LabelTop" p:propertyName="filterDateFrom" p:label="From"
+					  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy" p:style="margin-bottom: 0px;">
+					<property name="control">
+						<bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+					</property>
+				</bean>
+				
+				<!-- To datepicker -->
+				<bean parent="Uif-InputField-LabelTop" p:propertyName="filterDateTo" p:label="To"
+					  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy" p:style="margin-bottom: 0px;">
+					<property name="control">
+						<bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!--
+	
+	******************************* Tag Filter *********************************
+	
+	-->
+    <bean id="tagFilterGroup" parent="Uif-HorizontalBoxSection" p:header.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField-LabelTop" p:label="Tags" p:propertyName="newTag">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="code"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getTagsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="filterTags" p:actionLabel="Add this Tag" p:style="margin-top: 25px;"/>
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<bean parent="Uif-MessageField" p:messageText="Filter by Selected Tags:" p:render="@{(filterTags != null) and !filterTags.isEmpty()}"/>
+							<!-- A list of Tags to filter on -->
+							<bean parent="Uif-ListCollectionGroup" >
+								<property name="title" value="Filter by Selected Tags"/>
+								<property name="readOnly" value="true"/>
+								<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.Tag"/>
+								<property name="propertyName" value="filterTags"/>
+								<property name="items">
+									<list>
+										<bean parent="Uif-HorizontalFieldGroup">
+											<property name="items">
+												<list>
+													<bean parent="Uif-ActionLinkField" p:methodToCall="removeFilterTag"
+																p:onClickScript="writeHiddenToForm('tagId', '@{#line.id}');">
+														<property name="actionImage">
+															<bean parent="Uif-Image" p:source="../images/remove.png" p:style="cursor:pointer;" p:altText="Remove from filter."/>
+														</property>
+													</bean>
+													<bean parent="Uif-InputField" p:propertyName="code"/>
+												</list>
+											</property>
+										</bean>
+									</list>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+            </list>
+        </property>
+    </bean>
+
+	<!--
+	
+	******************************* Transaction Status Filter *********************************
+	
+	-->
+	<bean id="transactionStatusFilterDropdown" parent="Uif-InputField-LabelTop" p:propertyName="filterTransactionStatus" p:label="Status" p:fieldLabel.renderColon="false">
+		<property name="propertyEditor">
+			<bean class="com.sigmasys.kuali.ksa.krad.util.TransactionStatusPropertyEditor"/>
+		</property>
+		<property name="control">
+			<bean parent="Uif-DropdownControl" p:width="100%"/>
+		</property>
+		<property name="optionsFinder">
+			<bean class="com.sigmasys.kuali.ksa.krad.util.TransactionStatusKeyValuesFinder"/>
+		</property>
+	</bean>
+
+	<!--
+	
+	******************************* CashLimitEvent Status Filter *********************************
+	
+	-->
+	<bean id="cashLimitEventStatusFilterDropdown" parent="Uif-InputField-LabelTop" p:propertyName="filterCashLimitEventStatus" p:label="Status" p:fieldLabel.renderColon="false">
+		<property name="propertyEditor">
+			<bean class="com.sigmasys.kuali.ksa.krad.util.CashLimitEventStatusPropertyEditor"/>
+		</property>
+		<property name="control">
+			<bean parent="Uif-DropdownControl" p:width="100%"/>
+		</property>
+		<property name="optionsFinder">
+			<bean class="com.sigmasys.kuali.ksa.krad.util.CashLimitEventStatusKeyValuesFinder"/>
+		</property>
+	</bean>
+
+	<!--
+	
+	******************************* Refresh Filter Action button *********************************
+	
+	-->
+	<bean id="filterRefreshViewhButton" parent="Uif-PrimaryActionButton" p:actionLabel="Refresh" p:methodToCall="refreshView" p:onClickScript=""/>	
+	
+	
+	</beans>

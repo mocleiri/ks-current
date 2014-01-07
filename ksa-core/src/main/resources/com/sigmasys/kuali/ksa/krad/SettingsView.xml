@@ -1,0 +1,1192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+<bean id="settingsHelper" class="com.sigmasys.kuali.ksa.krad.helper.SettingsHelper"/>
+
+    <bean id="SettingsView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Settings"/>
+        <property name="headerText" value="Settings"/>
+        <property name="entryPageId" value="CurrencyPage"/>
+        <property name="navigation" ref="settingsNavigation"/>
+        <property name="viewHelperService" ref="settingsHelper"/>
+        <property name="items">
+            <list merge="true">
+
+                <!--Begin User Profile Page-->
+
+                <bean parent="Uif-Page" p:id="UserProfilePage" p:title="User Profile">
+                    <property name="headerText" value="User Profile"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Placeholder: Text"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="userProfile"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End User Profile Page-->
+
+                <!--Begin Currency Page-->
+
+                <bean parent="Uif-Page" p:id="CurrencyPage" p:title="Currency Types">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="CurrencyDetailsPage" p:title="Currency Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Currency Page-->
+
+                <!--Begin Roll-Ups Page-->
+
+                <bean parent="Uif-Page" p:id="RollupPage" p:title="Roll-Ups">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="RollupDetailsPage" p:title="Rollup Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Roll-Ups Page-->
+
+                <!--Begin Tag Page-->
+
+                <bean parent="Uif-Page" p:id="TagPage" p:title="Tags">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSectionTag"/>
+                            <ref bean="tableSectionTag"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="TagDetailsPage" p:title="Rollup Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSectionTag"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Tag Page-->
+
+                <!--Begin General Ledger Types Page-->
+                <bean parent="Uif-Page" p:id="GeneralLedgerTypePage" p:title="General Ledger Types">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSectionGeneralLedgerType"/>
+                            <ref bean="tableSectionGeneralLedger"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="GeneralLedgerTypeDetailsPage" p:title="General Ledger Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSectionGeneralLedger"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Begin Bank Types Page-->
+
+                <bean parent="Uif-Page" p:id="BankTypePage" p:title="Bank Types">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="BankTypeDetailsPage" p:title="Bank Type Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Bank Types Page-->
+
+                <!--Begin Tax Types Page-->
+
+                <bean parent="Uif-Page" p:id="TaxTypePage" p:title="Tax Types">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="TaxTypeDetailsPage" p:title="Tax Type Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Tax Types Page-->
+
+                <!--Begin Late Periods Page-->
+
+                <bean parent="Uif-Page" p:id="LatePeriodPage" p:title="Late Periods">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSectionLatePeriod"/>
+                            <ref bean="tableSectionLatePeriod"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="LatePeriodDetailsPage" p:title="Late Period Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSectionLatePeriod"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Late Periods Page-->
+
+                <!--Begin Account Status Types Page-->
+
+                <bean parent="Uif-Page" p:id="AccountStatusTypePage" p:title="Account Status Types Page">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="AccountStatusTypeDetailsPage" p:title="Account Status Type Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Account Status Types Page-->
+
+                <!--Begin Flag Types Page-->
+
+                <bean parent="Uif-Page" p:id="FlagTypePage" p:title="Flag Types Page">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="FlagTypeDetailsPage" p:title="Flag Type Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Flag Types Page-->
+
+                <!--Begin Activity Types Page-->
+
+                <bean parent="Uif-Page" p:id="ActivityTypePage" p:title="Activity Types Page">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                            </bean>
+                            <ref bean="addSection"/>
+                            <ref bean="tableSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-Page" p:id="ActivityTypeDetailsPage" p:title="Activity Type Details">
+                    <property name="headerText" value="@{humanType} Details"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalBoxSection">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="@{humanType} Summary" p:target="_self"
+                                              p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=@{simpleType}Page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="detailSection"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Activity Types Page-->
+
+                <!--Begin Cash Limit Parameters Page-->
+
+                <bean parent="Uif-Page" p:id="CashLimitParameterPage" p:title="Cash Limit Parameter Page">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="tableSectionCashLimit"/>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="saveCashLimitParameters"
+                                  p:actionLabel="Save"/>
+
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Cash Limit Parameters Page-->
+
+                <!--Begin System Configuration Page-->
+
+                <bean parent="Uif-Page" p:id="SystemConfigurationPage" p:title="System Configuration">
+                    <property name="headerText" value="System Configuration"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message" p:messageText="Changing system configuration parameters may cause system instability."/>
+                            <bean parent="Uif-Disclosure-TableCollectionSection"
+                                  p:layoutManager.numberOfColumns="4"
+                                  p:width="85%">
+                                <property name="title" value="System Configuration"/>
+                                <property name="readOnly" value="false"/>
+                                <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.ConfigParameter"/>
+                                <property name="propertyName" value="configParameters"/>
+                                <property name="layoutManager.sequencePropertyName" value="name"/>
+                                <property name="layoutManager.richTable.render" value="true"/>
+                                <property name="layoutManager.renderSequenceField" value="false"/>
+                                <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                                <property name="layoutManager.richTable.disableTableSort" value="false"/>
+                                <property name="layoutManager.richTable.templateOptions">
+                                    <map merge="true">
+                                        <entry key="bPaginate" value="true"/>
+                                        <!--<entry key="iDisplayLength" value="20"/>-->
+                                    </map>
+                                </property>
+
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-InputField" p:label="Name" p:propertyName="name"/>
+                                        <bean parent="Uif-InputField" p:label="Value" p:propertyName="value"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-PrimaryActionButton" p:ajaxSubmit="true" p:actionLabel="Save" p:methodToCall="updateSystemConfig"/>
+
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Activity Types Page-->
+
+            </list>
+        </property>
+        <!--
+                <property name="additionalCssFiles" ref=""/>
+                <property name="additionalJsFiles" ref=""/>
+                <property name="viewHelperServiceClassName" value=""/>
+                <property name="defaultBindingObjectPath" value=""/>
+        -->
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.SettingsForm"/>
+    </bean>
+
+    <bean name="settingsNavigation" parent="Uif-KsaPageNavigation">
+        <property name="items">
+            <list>
+                <bean parent="Uif-HeaderTwo" p:headerText="Settings"/>
+                <bean parent="Uif-NavigationActionLink" p:navigateToPageId="UserProfilePage"
+                      p:actionLabel="User Profile"/>
+                <bean parent="Uif-Link" p:linkText="Currency Types" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=CurrencyPage"/>
+                <bean parent="Uif-Link" p:linkText="Roll-Ups" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=RollupPage"/>
+                <bean parent="Uif-Link" p:linkText="Tags" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=TagPage"/>
+                <bean parent="Uif-Link" p:linkText="Transaction Types" p:target="_self"
+                      p:href="transactionTypeView?methodToCall=get&amp;viewId=TransactionTypeView&amp;pageId=TransactionTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Bank Types" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=BankTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Tax Types" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=TaxTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Late Periods" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=LatePeriodPage"/>
+                <bean parent="Uif-Link" p:linkText="Account Status Types" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=AccountStatusTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Flag Types" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=FlagTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Activity Types" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=ActivityTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Cash Limit Parameter" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=CashLimitParameterPage"/>
+                <bean parent="Uif-Link" p:linkText="General Ledger Type" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=GeneralLedgerTypePage"/>
+                <bean parent="Uif-Link" p:linkText="System Configuration" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=SystemConfigurationPage"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                             WIP !!!  User Profile Section
+    A section containing User Profile Settings
+    ********************************************************************************************************************
+    -->
+    <bean id="userProfile" parent="Uif-HorizontalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="Placeholder: User Profile Section"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                        Add Currency and List section
+    A horizontal section for adding a currency
+    ********************************************************************************************************************
+    -->
+
+
+    <bean id="addSection" parent="Uif-HorizontalBoxSection">
+        <property name="title" value="Add @{humanType}"/>
+        <property name="instructionalText" value="Input fields to add a @{humanType} * denotes a required field"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Symbol"
+                      p:propertyName="auditableEntity.code"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Name"
+                      p:propertyName="auditableEntity.name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="auditableEntity.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:watermarkText="Paste or key in the description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="insertAuditableEntity"
+                      p:actionLabel="Add"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="addSectionLatePeriod" parent="Uif-HorizontalBoxSection">
+        <property name="title" value="Add @{humanType}"/>
+        <property name="instructionalText" value="Input fields to add a @{humanType} * denotes a required field"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Name"
+                      p:propertyName="auditableEntity.latePeriod.name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="auditableEntity.latePeriod.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:watermarkText="Paste or key in the description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Days Late 1"
+                      p:propertyName="auditableEntity.latePeriod.daysLate1"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Days Late 2"
+                      p:propertyName="auditableEntity.latePeriod.daysLate2"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Days Late 3"
+                      p:propertyName="auditableEntity.latePeriod.daysLate3"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="insertLatePeriod" p:actionLabel="Add"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="addSectionTag" parent="Uif-HorizontalBoxSection">
+        <property name="title" value="Add @{humanType}"/>
+        <property name="instructionalText" value="Input fields to add a @{humanType} * denotes a required field"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Symbol"
+                      p:propertyName="auditableEntity.code"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Name"
+                      p:propertyName="auditableEntity.name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="auditableEntity.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:watermarkText="Paste or key in the description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Administrative Tag" p:propertyName="auditableEntity.administrative"
+                      p:labelPlacement="RIGHT">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="insertAuditableEntity"
+                      p:actionLabel="Add"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="addSectionGeneralLedgerType" parent="Uif-VerticalBoxSection">
+        <property name="title" value="Add @{humanType}"/>
+        <property name="instructionalText" value="Input fields to add a @{humanType} * denotes a required field"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:label="Symbol"
+                          p:propertyName="auditableEntity.code"
+                          p:labelPlacement="TOP"
+                          p:required="true">
+                        <property name="control">
+                            <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                        </property>
+                    </bean>
+                    <bean parent="Uif-InputField" p:label="Name"  p:propertyName="auditableEntity.name"  p:labelPlacement="TOP" p:required="true">
+                        <property name="control">
+                            <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                        </property>
+                    </bean>
+                    <bean parent="Uif-InputField" p:label="Description"
+                          p:propertyName="auditableEntity.description"
+                          p:labelPlacement="TOP">
+                        <property name="control">
+                            <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                                  p:watermarkText="Paste or key in the description here..."/>
+                        </property>
+                    </bean>
+                </list></property></bean>
+                <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
+                    <bean parent="Uif-InputField" p:label="GL Asset Account"  p:propertyName="auditableEntity.glAccountId"  p:labelPlacement="TOP" p:required="true">
+                        <property name="control">
+                            <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                        </property>
+                    </bean>
+                    <bean parent="Uif-InputField" p:label="Operation on Charge (Default: Debit)" p:propertyName="auditableEntity.glOperationCode"  p:labelPlacement="TOP" p:required="true">
+                        <property name="control">
+                            <bean parent="Uif-DropdownControl" p:options-ref="TransactionTypeListShort"/>
+                        </property>
+
+                    </bean>
+                </list></property></bean>
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="insertAuditableEntity"
+                      p:actionLabel="Add"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <util:list id="TransactionTypeListShort">
+        <bean parent="Uif-KeyLabelPair" p:key="C" p:value="Credit"/>
+        <bean parent="Uif-KeyLabelPair" p:key="D" p:value="Debit"/>
+    </util:list>
+
+    <bean id="tableSection" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="4"
+          p:width="85%">
+        <property name="title" value="View @{humanType}"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel"/>
+        <property name="propertyName" value="auditableEntities"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Symbol"
+                      p:propertyName="code"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Name"
+                      p:propertyName="name"
+                      p:width="15%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="description"
+                      p:width="55%">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="5" p:cols="80"
+                              p:watermarkText="Statement description..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-LinkField" p:label="Edit" p:linkText="Edit" p:target="_self" p:width="10%"
+                      p:href="settingsView?viewId=SettingsView&amp;pageId=@{simpleType}DetailsPage&amp;methodToCall=get&amp;entityId=@{#line.id}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="tableSectionLatePeriod" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="6"
+          p:width="85%">
+        <property name="title" value="View @{humanType}"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel"/>
+        <property name="propertyName" value="auditableEntities"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Name" p:propertyName="name" p:width="15%"/>
+                <bean parent="Uif-InputField" p:label="Description" p:propertyName="description" p:width="45%"/>
+                <bean parent="Uif-InputField" p:label="Days Late 1" p:propertyName="latePeriod.daysLate1"
+                      p:width="10%"/>
+                <bean parent="Uif-InputField" p:label="Days Late 2" p:propertyName="latePeriod.daysLate2"
+                      p:width="10%"/>
+                <bean parent="Uif-InputField" p:label="Days Late 3" p:propertyName="latePeriod.daysLate3"
+                      p:width="10%"/>
+                <bean parent="Uif-LinkField" p:label="Edit" p:linkText="Edit" p:target="_self" p:width="10%"
+                      p:href="settingsView?viewId=SettingsView&amp;pageId=@{simpleType}DetailsPage&amp;methodToCall=get&amp;entityId=@{#line.id}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="tableSectionTag" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="4"
+          p:width="85%">
+        <property name="title" value="View @{humanType}"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel"/>
+        <property name="propertyName" value="auditableEntities"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Symbol"
+                      p:propertyName="code"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Name"
+                      p:propertyName="name"
+                      p:width="15%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="description"
+                      p:width="55%">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="5" p:cols="80"
+                              p:watermarkText="Statement description..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Administrative Tag" p:propertyName="administrative"
+                      p:labelPlacement="RIGHT" p:readOnly="false">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-LinkField" p:label="Edit" p:linkText="Edit" p:target="_self" p:width="10%"
+                      p:href="settingsView?viewId=SettingsView&amp;pageId=@{simpleType}DetailsPage&amp;methodToCall=get&amp;entityId=@{#line.id}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="tableSectionCashLimit" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="4"
+          p:width="85%">
+        <property name="title" value="View @{humanType}"/>
+        <property name="readOnly" value="false"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.CashLimitParameterModel"/>
+        <property name="propertyName" value="cashLimitParameters"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Tag" p:propertyName="tagString" p:width="25%" p:readOnly="true" p:render="@{!#isAddLine}"/>
+                <bean parent="Uif-InputField" p:label="Tag" p:propertyName="tagString" p:width="25%" p:render="@{#isAddLine}">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="labelPropertyName" value="description"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getTagsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Lower Limit" p:propertyName="lowerLimit" p:width="5%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="4"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Upper Limit" p:propertyName="upperLimit" p:width="5%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="4"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="active" p:label="Active" p:width="5%">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Friendly Name" p:propertyName="name" p:width="15%"/>
+                <bean parent="Uif-InputField" p:label="Authority Name" p:propertyName="authorityName" p:width="15%"/>
+                <bean parent="Uif-InputField" p:label="XML Element" p:propertyName="xmlElement" p:width="15%"/>
+                <bean parent="Uif-ImageField" p:label="Audit" p:source="../images/audit_guy.png" p:altText="Audit Information" p:title="">
+                    <property name="toolTip">
+                        <bean parent="Uif-Tooltip" p:tooltipContent="@{getAuditTooltip(#line)}" p:width="30%"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="tableSectionGeneralLedger" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="4"
+          p:width="85%">
+        <property name="title" value="View @{humanType}"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel"/>
+        <property name="propertyName" value="auditableEntities"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Symbol"
+                      p:propertyName="code"
+                      p:width="10%">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Name" p:propertyName="name">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description" p:propertyName="description">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="5" p:cols="80"
+                              p:watermarkText="Statement description..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="GL Asset Account" p:propertyName="glAccountId"/>
+                <bean parent="Uif-InputField" p:label="Charge Operation" p:propertyName="glOperation"/>
+                <bean parent="Uif-LinkField" p:label="Edit" p:linkText="Edit" p:target="_self" p:width="10%"
+                      p:href="settingsView?viewId=SettingsView&amp;pageId=@{simpleType}DetailsPage&amp;methodToCall=get&amp;entityId=@{#line.id}"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                        Edit a auditableEntity
+    A section devoted to displaying the detail of an auditableEntity and allows editing
+    ********************************************************************************************************************
+    -->
+    <bean id="detailSection" parent="Uif-VerticalBoxSection">
+        <property name="title" value="@{humanType} Details View"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField"
+                      p:propertyName="auditableEntity.code"
+                      p:labelPlacement="TOP"
+                      p:label="Symbol">
+                    <property name="readOnly" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField"
+                      p:propertyName="auditableEntity.name"
+                      p:label="Name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField"
+                      p:label="Description"
+                      p:propertyName="auditableEntity.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="5" p:cols="80"
+                              p:watermarkText="Key in the statement description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="updateAuditableEntity"
+                      p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[entityId]&quot;, &quot;@{auditableEntity.id}&quot;);">
+                    <!--<property name="actionImage">
+                        <bean parent="Uif-ImageField"
+                              p:source="@{#ConfigProperties['krad.externalizable.images.url']}ks/icon_btn_add.png"/>
+                    </property>-->
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="detailSectionLatePeriod" parent="Uif-VerticalBoxSection">
+        <property name="title" value="@{humanType} Details View"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Name"
+                      p:propertyName="auditableEntity.latePeriod.name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description"
+                      p:propertyName="auditableEntity.latePeriod.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:watermarkText="Paste or key in the description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Days Late 1"
+                      p:propertyName="auditableEntity.latePeriod.daysLate1"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Days Late 2"
+                      p:propertyName="auditableEntity.latePeriod.daysLate2"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Days Late 3"
+                      p:propertyName="auditableEntity.latePeriod.daysLate3"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="updateAuditableEntity"
+                      p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[entityId]&quot;, &quot;@{auditableEntity.id}&quot;);">
+                    <!--<property name="actionImage">
+                        <bean parent="Uif-ImageField"
+                              p:source="@{#ConfigProperties['krad.externalizable.images.url']}ks/icon_btn_add.png"/>
+                    </property>-->
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="detailSectionTag" parent="Uif-VerticalBoxSection">
+        <property name="title" value="@{humanType} Details View"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField"
+                      p:propertyName="auditableEntity.code"
+                      p:labelPlacement="TOP"
+                      p:label="Symbol">
+                    <property name="readOnly" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField"
+                      p:propertyName="auditableEntity.name"
+                      p:label="Name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField"
+                      p:label="Description"
+                      p:propertyName="auditableEntity.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="5" p:cols="80"
+                              p:watermarkText="Key in the statement description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Administrative Tag" p:propertyName="auditableEntity.administrative"
+                      p:onChangeScript="showLightboxComponent('administrativeTagLightbox');" p:labelPlacement="RIGHT">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean id="administrativeTagLightbox" parent="Uif-VerticalBoxSection">
+                    <property name="hidden" value="true"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HeaderTwo" p:headerText="Administrative Tag"/>
+                            <bean parent="Uif-Message" p:messageText="Warning: Changes to tag types will be applied to all"/>
+                            <bean parent="Uif-Message" p:messageText="existing tags.  Unchecking the 'Administrative' tag checkbox"/>
+                            <bean parent="Uif-Message" p:messageText="will cause all previous tags with this symbol to"/>
+                            <bean parent="Uif-Message" p:messageText="be visible and available to everyone.  Checking a previously"/>
+                            <bean parent="Uif-Message" p:messageText="unchecked 'Administrative' checkbox makes tags with this"/>
+                            <bean parent="Uif-Message" p:messageText="symbol only visible and available to users with the"/>
+                            <bean parent="Uif-Message" p:messageText="appropriate permissions."/>
+
+                            <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="OK"  p:onClickScript="jQuery.fancybox.close();"/>
+                        </list>
+                    </property>
+                </bean>
+
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="updateAuditableEntity"
+                      p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[entityId]&quot;, &quot;@{auditableEntity.id}&quot;);">
+                    <!--<property name="actionImage">
+                        <bean parent="Uif-ImageField"
+                              p:source="@{#ConfigProperties['krad.externalizable.images.url']}ks/icon_btn_add.png"/>
+                    </property>-->
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="detailSectionGeneralLedger" parent="Uif-VerticalBoxSection">
+        <property name="title" value="@{humanType} Details View"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField"
+                      p:propertyName="auditableEntity.code"
+                      p:labelPlacement="TOP"
+                      p:label="Symbol">
+                    <property name="readOnly" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField"
+                      p:propertyName="auditableEntity.name"
+                      p:label="Name"
+                      p:labelPlacement="TOP"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField"
+                      p:label="Description"
+                      p:propertyName="auditableEntity.description"
+                      p:labelPlacement="TOP">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="5" p:cols="80"
+                              p:watermarkText="Key in the statement description here..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="GL Asset Account"  p:propertyName="auditableEntity.glAccountId"  p:labelPlacement="TOP" p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Operation on Charge (Default: Debit)" p:propertyName="auditableEntity.glOperationCode"  p:labelPlacement="TOP" p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:options-ref="TransactionTypeListShort"/>
+                    </property>
+
+                </bean>
+
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="updateAuditableEntity"
+                      p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[entityId]&quot;, &quot;@{auditableEntity.id}&quot;);">
+                    <!--<property name="actionImage">
+                        <bean parent="Uif-ImageField"
+                              p:source="@{#ConfigProperties['krad.externalizable.images.url']}ks/icon_btn_add.png"/>
+                    </property>-->
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

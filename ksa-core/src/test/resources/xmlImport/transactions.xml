@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ksa-batch-transaction>
+    <batch-identifier>IMPORT001</batch-identifier>
+	<ksa-transaction>
+		<account-identifier>admin</account-identifier>
+		<incoming-identifier>HOUSING-10291</incoming-identifier>
+		<effective-date>2012-08-01</effective-date>
+		<origination-date>2012-06-07</origination-date>
+		<amount>7000.00</amount>
+		<native-amount>7000.00</native-amount>
+		<currency>USD</currency>
+		<document>
+            <person-to-contact>Thomas Jefferson</person-to-contact>
+            <telephone-number>301-555-1212</telephone-number>
+            <email-address>tjefferson@gmail.com</email-address>
+			<open-document>Housing charge for the academic year 2012-2013 for Room 123 Barnes Hall.</open-document>
+		</document>
+		<transaction-type>1020</transaction-type>
+	</ksa-transaction>
+   <ksa-transaction>
+      <account-identifier>admin</account-identifier>
+      <incoming-identifier>HOUSING-10292</incoming-identifier>
+      <effective-date>2012-08-02</effective-date>
+      <origination-date>2012-06-08</origination-date>
+      <amount>8000.00</amount>
+      <native-amount>8000.00</native-amount>
+      <currency>USD</currency>
+      <document>
+          <person-to-contact>Todd Helton</person-to-contact>
+          <telephone-number>301-555-4567</telephone-number>
+          <email-address>thelton@yahoo.com</email-address>
+         <open-document>Housing charge for the academic year 2012-2013 for Room 456 Barnes Hall.</open-document>
+      </document>
+      <transaction-type>1020</transaction-type>
+   </ksa-transaction>
+   <ksa-transaction>
+        <account-identifier>admin</account-identifier>
+        <incoming-identifier>HOUSING-10293</incoming-identifier>
+        <effective-date>2012-08-03</effective-date>
+        <origination-date>2012-06-09</origination-date>
+        <amount>9000.00</amount>
+        <native-amount>9000.00</native-amount>
+        <currency>USD</currency>
+        <document>
+            <person-to-contact>Sir Alan Sugar</person-to-contact>
+            <telephone-number>450-666-7891</telephone-number>
+            <email-address>asugar@gmail.uk.com</email-address>
+            <open-document>Housing charge for the academic year 2012-2013 for Room 789 Barnes Hall.</open-document>
+        </document>
+        <transaction-type>1020</transaction-type>
+    </ksa-transaction>
+</ksa-batch-transaction>

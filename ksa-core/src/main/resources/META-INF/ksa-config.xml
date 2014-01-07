@@ -1,0 +1,62 @@
+<config>
+
+    <param name="config.location">classpath:/META-INF/common-config-defaults.xml</param>
+
+    <param name="application.id">KSA</param>
+
+    <param name="app.context.name">ksa</param>
+
+
+    <!-- KRAD settings -->
+    <param name="krad.url">/ksa/uif</param>
+    <param name="rice.krad.dev.mode">false</param>
+
+    <param name="validate.data.dictionary">true</param>
+
+    <param name="load.dictionary.external.messages">false</param>
+
+    <!--  log4j Settings -->
+    <param name="log4j.reload.minutes">5</param>
+    <param name="log4j.settings.path">classpath:/log4j.properties</param>
+
+    <!-- Modes -->
+    <param name="core.mode">LOCAL</param>
+    <param name="coreservice.mode">LOCAL</param>
+    <param name="ksa.mode">LOCAL</param>
+    <param name="ksb.mode">LOCAL</param>
+    <param name="kr.mode">LOCAL</param>
+    <param name="ken.mode">LOCAL</param>
+    <param name="kew.mode">LOCAL</param>
+    <param name="kim.mode">LOCAL</param>
+    <param name="location.mode">LOCAL</param>
+
+    <param name="rice.core.additionalSpringFiles">classpath:/META-INF/rice-beans.xml</param>
+
+    <param name="rice.kew.jpa.enabled">true</param>
+    <param name="rice.kim.jpa.enabled">true</param>
+
+    <!-- UserTransaction properties -->
+    <param name="transaction.timeout">3600</param>
+
+    <!--  Bus Configuration  -->
+    <param name="dev.mode">false</param>
+    <param name="message.persistence">false</param>
+    <param name="message.delivery">async</param>
+    <param name="Routing.ImmediateExceptionRouting">false</param>
+    <param name="RouteQueue.timeIncrement">500</param>
+    <param name="RouteQueue.maxRetryAttempts">2</param>
+
+    <!--  Quartz Configuration  -->
+    <param name="useQuartzDatabase">false</param>
+    <param name="ksb.org.quartz.scheduler.instanceName">KSBScheduler</param>
+    <param name="ksb.org.quartz.scheduler.instanceId">AUTO</param>
+    <!--	<param name="ksb.org.quartz.jobStore.tablePrefix">KRSB_QRTZ_</param>-->
+    <!--	<param name="ksb.org.quartz.jobStore.isClustered">true</param>-->
+    <param name="ksb.org.quartz.scheduler.idleWaitTime">1000</param>
+    <param name="ksb.org.quartz.scheduler.threadsInheritContextClassLoaderOfInitializer">true</param>
+    <param name="ksb.org.quartz.scheduler.wrapJobExecutionInUserTransaction">true</param>
+    <param name="ksb.org.quartz.scheduler.skipUpdateCheck">true</param>
+    <param name="ksb.org.quartz.threadPool.threadCount">1</param>
+    <param name="ksb.org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</param>
+
+</config>

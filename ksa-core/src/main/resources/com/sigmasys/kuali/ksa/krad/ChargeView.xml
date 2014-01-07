@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="transactionTypeHelper" class="com.sigmasys.kuali.ksa.krad.helper.TransactionTypeHelper"/>
+
+    <bean id="ChargeView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Charge"/>
+        <property name="headerText" value="Charges"/>
+        <property name="entryPageId" value="AddChargePage"/>
+        <property name="navigation" ref="KsaAccountNavigation"/>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="AddChargePage" p:title="Account">
+                    <property name="headerText" value="Add Charge"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="addChargeSection"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+<!--
+        <property name="additionalCssFiles" ref=""/>
+        <property name="additionalJsFiles" ref=""/>
+        <property name="viewHelperServiceClassName" value=""/>
+        <property name="defaultBindingObjectPath" value=""/>
+-->
+        <property name="viewHelperService" ref="transactionTypeHelper"/>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.ChargeForm"/>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                        Add Charge section
+    A vertical section with a vertical disclosure subsection and horizontal sub section devoted to button controls
+    ********************************************************************************************************************
+    -->
+    <bean id="addChargeSection" parent="Uif-VerticalBoxSection"
+          p:title="@{account.id}"
+          p:instructionalText="The following form will allow a charge to be added to the account">
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <!-- Use a field to get/set the value  -->
+                <bean parent="Uif-InputField" p:propertyName="estimatedCurrentBalance"
+                      p:label="Estimated Current Balance"
+                      p:instructionalText="An estimate of the current charge balance"
+                      p:fieldLabel.renderColon="true"
+                      p:maxLength="10"
+                      p:readOnly="true">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" />
+                    </property>
+                </bean>
+                <!-- Use a field to get/set the value  -->
+                <bean parent="Uif-InputField" p:propertyName="chargeTransactionTypeId"
+                      p:label="Charge Type"
+                      p:instructionalText="Charge type"
+                      p:fieldLabel.renderColon="true"
+                      p:labelPlacement="TOP"
+                      p:maxLength="10"
+                      p:required="true">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" />
+                    </property>
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id.id"/>
+                            <property name="labelPropertyName" value="description"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getChargesForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-VerticalBoxSection" p:style="background-color: #CCC; border-radius: 15px;"
+                      p:methodToCallOnRefresh="getTransactionType" p:refreshWhenChangedPropertyNames="chargeTransactionTypeId">
+                    <property name="items"><list>
+                        <bean parent="Uif-Disclosure-GridSection" p:readOnly="true" >
+                            <property name="items">
+                                <list>
+                                    <bean parent="Uif-MessageField" p:messageText="@{transactionTypeMessage}"/>
+                                    <bean parent="Uif-InputField" p:propertyName="chargeTransactionTypeId2" p:label="Charge Type" />
+                                    <bean parent="Uif-InputField" p:propertyName="description" p:label="Description" />
+
+                                </list>
+                            </property>
+                        </bean>
+                    </list></property>
+                </bean>
+                <!-- Use the Charge instance to get/set the values -->
+                <bean parent="Uif-InputField" p:propertyName="charge.amount"
+                      p:label="Amount"
+                      p:instructionalText="Enter the amount of the charge"
+                      p:fieldLabel.renderColon="true"
+                      p:labelPlacement="TOP"
+                      p:maxLength="21"
+                      p:required="true">
+                    <property name="control">
+                        <bean parent="Uif-CurrencyTextControl" p:size="22"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="charge.effectiveDate"
+                      p:label="Effective Date"
+                      p:instructionalText="Enter effective date of the charge"
+                      p:fieldLabel.renderColon="true"
+                      p:labelPlacement="TOP"
+                      p:maxLength="10"
+                      p:required="true">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11"/>
+                    </property>
+                </bean>
+                <!-- Advanced vertical sub section -->
+                <bean parent="Uif-Disclosure-VerticalBoxSubSection"
+                    p:title="Advanced">
+                    <property name="disclosure.render" value="false"/>
+                    <property name="items">
+                        <list>
+                           <!--  TODO Currency stuff -->
+                        </list>
+                    </property>
+                </bean>
+                <!-- Use a field to get/set the value  -->
+                <bean parent="Uif-InputField" p:propertyName="estimatedPendingBalance"
+                      p:label="Estimated Pending Balance"
+                      p:instructionalText="An estimate of the pending charge balance"
+                      p:fieldLabel.renderColon="true"
+                      p:maxLength="10"
+                      p:readOnly="true">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" />
+                    </property>
+                </bean>
+                <ref bean="chargeControls"/>
+                <!--  Status message -->
+                <bean parent="Uif-MessageField" p:messageText="@{statusMessage}"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    ********************************************************************************************************************
+                                        Controls and Links section
+    A horizontal sub section devoted to button controls or links
+    TODO Cancel should return to previous form but how to ?
+    ********************************************************************************************************************
+    -->
+    <bean id="chargeControls" parent="Uif-HorizontalBoxSubSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="submit" p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[userId]&quot;, &quot;@{account.id}&quot;);"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

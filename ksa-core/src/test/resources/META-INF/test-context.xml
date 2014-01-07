@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+       default-lazy-init="true">
+
+    <bean id="initialParameterConfigurer" class="com.sigmasys.kuali.ksa.config.InitialParameterConfigurer"
+          depends-on="jndiBinder">
+        <constructor-arg index="0" value="KSSA_CONFIG"/>
+        <constructor-arg index="1" value="0"/>
+        <property name="location" value="classpath:/ksa.properties"/>
+        <property name="dataSource" ref="ksaDataSource"/>
+        <property name="riceConfig" ref="riceConfig"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <import resource="classpath:/META-INF/ksa-config-beans.xml"/>
+
+    <import resource="classpath:/META-INF/ksa-beans.xml"/>
+
+    <import resource="classpath:/META-INF/ks-beans.xml"/>
+
+    <import resource="classpath:/META-INF/ws-context.xml"/>
+
+</beans>

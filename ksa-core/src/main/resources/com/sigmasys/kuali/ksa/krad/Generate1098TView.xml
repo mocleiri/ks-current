@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<bean id="Generate1098TView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Generate 1098T"/>
+        <property name="headerText" value="Generate 1098T"/>
+        <property name="entryPageId" value="Generate1098TViewPage"/>
+        <property name="navigation" ref="KsaAccountNavigation"/>
+		<property name="items">
+            <list merge="true">
+				<!-- Generate 1098T page -->
+				<bean parent="Uif-Page" p:id="Generate1098TViewPage" p:title="Generate 1098T">
+					<property name="headerText" value="@{account.defaultPersonName.displayValue}"/>
+					<property name="items">
+                        <list>
+							<ref bean="biographicInformationSection"/>
+							<ref bean="generateReportSection"/>
+							<ref bean="displayGenerated1098TFormsSection"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.Generate1098TForm"/>
+	</bean>
+	
+	
+	<!-- 
+	
+	*********************  Display Demographic Info and Generate 1098T Page    ***********************
+	
+	-->
+	
+	<!-- Account Biographic Information section -->
+	<bean id="biographicInformationSection" parent="Uif-VerticalBoxGroup" p:title="Biographic Information" p:width="85%">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksa-group-border</value>
+            </list>
+        </property>
+		<property name="items">
+			<list>
+				<!-- Header -->
+                <bean parent="Uif-HorizontalBoxGroup">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksa-quickview-section-header</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="Biographic Information"/>
+                        </list>
+                    </property>
+                </bean>
+				
+				<!-- Biographic Information section -->
+				<ref bean="biographicInformationContentSection"/>
+
+				<!-- Details link -->
+				<bean parent="Uif-LinkField" p:href="javascript: void(0);" p:linkText="Details" p:onClickScript="showLightboxComponent('accountDetailsLightbox');" p:style="padding-left: 5px;"/>
+				
+				<!-- Account details lightbox -->
+				<ref bean="accountDetailsLightbox"/>
+				
+			</list>
+		</property>
+	</bean>
+
+    <!-- Demographic information section -->
+    <bean id="biographicInformationContentSection" parent="Uif-HorizontalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksa-group-content</value>
+            </list>
+        </property>
+        <property name="readOnly" value="true"/>
+        <property name="items">
+            <list>
+                <!-- Name and ID section -->
+                <bean parent="Uif-VerticalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:style="font-weight: bold; padding-top: 10px; padding-left: 5px; font-size: larger;"
+                                  p:messageText="@{account.defaultPersonName.title} @{account.defaultPersonName.firstName} @{account.defaultPersonName.middleName} @{account.defaultPersonName.lastName} @{account.defaultPersonName.suffix}"/>
+                            <bean parent="Uif-DataField" p:label="ID" p:shortLabel="ID" p:labelPlacement="LEFT"  p:propertyName="account.id" p:style="padding-left: 5px;"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!-- Default Address -->
+                <bean parent="Uif-VerticalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="Default Address:" p:style="font-weight: bold; padding-top: 20px; padding-left: 20px;"/>
+                            <bean parent="Uif-MessageField" p:messageText="@{account.defaultPostalAddress.streetAddress1}" p:style="padding-left: 20px;"/>
+                            <bean parent="Uif-MessageField" p:messageText="@{account.defaultPostalAddress.streetAddress2}" p:style="padding-left: 20px; display: @{addressLine2DisplayStyle};"/>
+                            <bean parent="Uif-MessageField" p:messageText="@{account.defaultPostalAddress.streetAddress3}" p:style="padding-left: 20px; display: @{addressLine3DisplayStyle};"/>
+                            <bean parent="Uif-MessageField" p:messageText="@{account.defaultPostalAddress.city}, @{account.defaultPostalAddress.state} @{account.defaultPostalAddress.postalCode}" p:style="padding-left: 20px;"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!-- Default Contact -->
+                <bean parent="Uif-VerticalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="Default Contact:" p:style="font-weight: bold; padding-top: 20px; padding-left: 20px;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Phone: @{account.defaultElectronicContact.phoneNumber}" p:style="padding-left: 20px;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Email: @{account.defaultElectronicContact.emailAddress}" p:style="padding-left: 20px;"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Generate 1098T Report section -->
+	<bean id="generateReportSection" parent="Uif-VerticalBoxSection" p:title="Generate 1098T" p:width="100%">
+		<property name="headerText" value="Generate 1098T"/>
+		<property name="items">
+			<list>
+				<bean parent="Uif-MessageField" p:messageText="Select a period for which to generate a 1098T XML document."/>
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<!-- List of report years -->
+							<bean parent="Uif-Disclosure-VerticalBoxSection">
+								<property name="items">
+									<list>
+										<bean id="reportYearSelectControl" parent="Uif-InputField-LabelTop" p:propertyName="reportYears" p:label="Period" p:fieldLabel.renderColon="false">
+											<property name="control">
+												<bean parent="Uif-DropdownControl" p:width="100%"	/>
+											</property>
+											<property name="optionsFinder">
+												<bean class="com.sigmasys.kuali.ksa.krad.util.Generate1098TReportYearKeyValuesFinder"/>
+											</property>
+										</bean>
+									</list>
+								</property>
+							</bean>
+							
+							<!-- Generate Document button -->
+							<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Generate Document" p:actionScript="onGenerate1098TClick('@{account.id}')"/>
+				
+							<!-- Document Generation error message -->
+							<bean id="documentGenerationErrorMessage" parent="Uif-Message" p:messageText="@{getDocumentGenerationError()}" p:hidden="@{getDocumentGenerationError() == null}" p:style="color: red"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- Display Existing 1098T forms section -->
+	<bean id="displayGenerated1098TFormsSection" parent="Uif-VerticalBoxSection" p:title="Generated IRS Forms 1098T for @{account.defaultPersonName.displayValue}">
+		<property name="headerText" value="Saved 1098T"/>
+		<property name="items">
+			<list>
+				<!-- Display Saved Documents button -->
+				<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Display Saved Documents" p:methodToCall="viewGenerated1098TForms"
+					p:onClickScript="writeHiddenToForm('userId', '@{account.id}');"/>
+				
+				<!-- Saved 1098T table -->
+				<bean parent="Uif-Disclosure-TableCollectionSection"
+					  p:layoutManager.numberOfColumns="4"
+					  p:disclosure.render="false"
+					  p:title="Generated IRS Forms 1098T"
+					  p:instructionalText="Generated IRS Forms 1098T for @{account.defaultPersonName.displayValue}."
+					  p:width="85%">
+					<property name="readOnly" value="true"/>
+					<property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.Form1098TModel"/>
+					<property name="propertyName" value="form1098TModels"/>
+					<property name="layoutManager.generateAutoSequence" value="false" />
+					<property name="layoutManager.renderSequenceField" value="false"/>
+					<property name="layoutManager.richTable.render" value="false"/>
+					<property name="layoutManager.applyDefaultCellWidths" value="false"/>
+					<property name="layoutManager.richTable.disableTableSort" value="false"/>
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:label="Creation Date"
+								  p:propertyName="form1098T.creationDate" p:width="10%">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:size="50" p:maxLength="20"/>
+								</property>
+							</bean>
+							<bean parent="Uif-InputField" p:label="Report Year"
+								  p:propertyName="form1098T.formYear"
+								  p:width="30%">
+								<property name="control">
+									<bean parent="Uif-TextControl" p:size="15" p:maxLength="50"/>
+								</property>
+							</bean>
+							<bean parent="Uif-ImageField" p:source="@{#line.finalRevision ? '../images/icons/icon-tag-green.png' : '../images/icons/clear.gif'}" p:label="Is Final?" p:altText=""/>
+							
+							<!-- Actions -->
+							<bean parent="Uif-LinkField" p:linkText="View" p:target="_self"
+								  p:align="center" p:width="10%"
+								  p:onClickScript="jQuery('#viewGeneratedDocumentErrorMessage_span').css('display', 'none')"
+								  p:href="generate1098T?methodToCall=viewGenerated1098TForm&amp;viewId=Generate1098TView&amp;userId=@{account.id}&amp;reportYear=@{#line.form1098T.formYear}&amp;form1098TId=@{#line.form1098T.id}"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- "No Saved Documents" message -->
+				<bean parent="Uif-Message" p:messageText="No saved documents." p:hidden="@{getHideNoSavedDocumentsMessage()}" p:style="font-size: larger"/>
+				
+				<!-- View Generated Document error message -->
+				<bean id="viewGeneratedDocumentErrorMessage" parent="Uif-Message" p:messageText="@{getViewGeneratedFormError()}" p:hidden="@{getViewGeneratedFormError() == null}" p:style="color: red"/>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- 
+	
+	*********************  Display Account Details Lightbox    ***********************
+	
+	-->
+	
+	<bean id="accountDetailsLightbox" parent="Uif-VerticalBoxGroup" p:title="Account Details">
+		<property name="hidden" value="true"/>
+		<property name="items">
+			<list>
+				<ref bean="accountInformationContentSection"/>
+			</list>
+		</property>
+	</bean>
+		
+	
+	<!-- Account Information section -->
+	<bean id="accountInformationContentSection" parent="Uif-VerticalBoxSection" p:title="Account Information">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksa-group-content</value>
+            </list>
+        </property>
+		<property name="headerText" value="@{account.defaultPersonName.displayValue}"/>
+		<property name="items">
+			<list>
+				<!-- Account information section -->
+				<bean parent="Uif-HorizontalBoxSection">
+                    <property name="readOnly" value="true"/>
+					<property name="items">
+						<list>
+							<!-- Name section -->
+							<bean parent="Uif-VerticalBoxSection">
+								<property name="items">
+									<list>
+										<bean parent="Uif-DataField" p:label="First Name" p:shortLabel="FN" p:labelPlacement="LEFT" p:propertyName="account.defaultPersonName.firstName" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Middle Name" p:shortLabel="MN" p:labelPlacement="LEFT" p:propertyName="account.defaultPersonName.middleName" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Last Name" p:shortLabel="LN" p:labelPlacement="LEFT" p:propertyName="account.defaultPersonName.lastName" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Suffix" p:shortLabel="SU" p:labelPlacement="LEFT" p:propertyName="account.defaultPersonName.suffix" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Title" p:shortLabel="TI" p:labelPlacement="LEFT" p:propertyName="account.defaultPersonName.title" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="KIM Type" p:shortLabel="NKT" p:labelPlacement="LEFT" p:propertyName="account.defaultPersonName.kimNameType" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-MessageField" p:messageText="Default: @{account.defaultPersonName.default ? 'Yes' : 'No'}" p:style="padding-left: 5px;"/>
+									</list>
+								</property>
+							</bean>
+							
+							<!-- Postal Address section -->
+							<bean parent="Uif-VerticalBoxSection">
+								<property name="items">
+									<list>
+										<bean parent="Uif-DataField" p:label="Address Line 1" p:shortLabel="AL1" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.streetAddress1" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Address Line 2" p:shortLabel="AL2" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.streetAddress2" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Address Line 3" p:shortLabel="AL3" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.streetAddress3" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="City" p:shortLabel="CI" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.city" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="State" p:shortLabel="ST" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.state" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Postal Code" p:shortLabel="ZIP" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.postalCode" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Country" p:shortLabel="CO" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.country" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="KIM Type" p:shortLabel="AKT" p:labelPlacement="LEFT" p:propertyName="account.defaultPostalAddress.kimAddressType" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-MessageField" p:messageText="Default: @{account.defaultPostalAddress.default ? 'Yes' : 'No'}" p:style="padding-left: 5px;"/>
+									</list>
+								</property>
+							</bean>
+							
+							<!-- Electronic Contact section -->
+							<bean parent="Uif-VerticalBoxSection">
+								<property name="items">
+									<list>
+										<bean parent="Uif-DataField" p:label="Email" p:shortLabel="EM" p:labelPlacement="LEFT" p:propertyName="account.defaultElectronicContact.emailAddress" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="KIM Email Type" p:shortLabel="EKT" p:labelPlacement="LEFT" p:propertyName="account.defaultElectronicContact.kimEmailAddressType" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-MessageField" p:messageText="   "/>
+										<bean parent="Uif-DataField" p:label="Country Code" p:shortLabel="CC" p:labelPlacement="LEFT" p:propertyName="account.defaultElectronicContact.phoneCountry" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Phone Number" p:shortLabel="PH" p:labelPlacement="LEFT" p:propertyName="account.defaultElectronicContact.phoneNumber" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="Extension" p:shortLabel="" p:labelPlacement="LEFT" p:propertyName="account.defaultElectronicContact.phoneExtension" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-DataField" p:label="KIM Phone Type" p:shortLabel="PKT" p:labelPlacement="LEFT" p:propertyName="account.defaultElectronicContact.kimPhoneType" p:style="padding-left: 5px;"/>
+										<bean parent="Uif-MessageField" p:messageText="Default: @{account.defaultElectronicContact.default ? 'Yes' : 'No'}" p:style="padding-left: 5px;"/>
+									</list>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

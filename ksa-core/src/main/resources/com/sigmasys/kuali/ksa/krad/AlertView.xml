@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="AlertView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="title" value="Alerts"/>
+        <property name="headerText" value="Alerts"/>
+        <property name="entryPageId" value="AlertsPage"/>
+        <property name="navigation">
+            <bean parent="Uif-KsaPageNavigation">
+                <property name="items">
+                    <list merge="true">
+                        <!-- TODO Advanced Search -->
+                        <bean parent="Uif-NavigationActionLink" p:navigateToPageId="AdvancedSearch"
+                              p:actionLabel="Advanced Search"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list merge="true">
+                <bean parent="Uif-Page" p:id="AlertsPage" p:title="@{account.id}">
+                    <property name="headerText" value="Alerts List"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Link" p:linkText="Quick View" p:target="_self"
+                                  p:href="quickView?methodToCall=get&amp;viewId=QuickView&amp;userId=@{account.id}"/>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="refresh"
+                                  p:actionLabel="Refresh"
+                                  p:onClickScript="writeHiddenToForm(&quot;actionParameters[userId]&quot;, &quot;@{account.id}&quot;);">
+                            </bean>
+                            <ref bean="alertDateRangeSection"/>
+                            <ref bean="alertTableSection"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="AddAlertPage" p:title="@{account.id}"
+                      p:instructionalText="Alerts are freeform text items, which can be entered by system users to provide a history of when and why certain things have happened on the account.">
+                    <property name="headerText" value="Add Alert"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="addAlertSection"/>
+                            <ref bean="addAlertControlsGroup"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="ViewAlertPage" p:title="View an alert for @{account.id}">
+                    <property name="headerText" value="View Alert"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="viewAlertSection"/>
+                            <ref bean="viewAlertControlsGroup"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Page" p:id="EditAlertPage" p:title="Edit an alert for @{account.id}">
+                    <property name="headerText" value="Edit Alert"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="viewAlertSection"/>
+                            <ref bean="addAlertSection"/>
+                            <ref bean="editAlertControlsGroup"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+<!--
+        <property name="additionalCssFiles" ref=""/>
+        <property name="additionalJsFiles" ref=""/>
+        <property name="viewHelperServiceClassName" value=""/>
+        <property name="defaultBindingObjectPath" value=""/>
+-->
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.AlertForm"/>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        Add Alert page section
+    A user definable date range from and to values
+    ********************************************************************************************************************
+    -->
+    <bean id="alertDateRangeSection" parent="Uif-HorizontalBoxSection"
+          p:title="Date Range">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="fromDate"
+                      p:label="Show information from"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="10">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="toDate"
+                      p:label=" to "
+                      p:labelPlacement="LEFT"
+                      p:maxLength="10">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-Link" p:linkText="Add" p:target="_self"
+                      p:href="alertView?methodToCall=get&amp;viewId=AlertView&amp;pageId=AddAlertPage&amp;userId=@{account.id}"/>
+                <!--  Status message -->
+                <bean parent="Uif-MessageField" p:messageText="@{statusMessage}"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        Alerts table section
+    An alert list
+    ********************************************************************************************************************
+    -->
+    <bean id="alertTableSection" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="4"
+          p:disclosure.render="false"
+          p:progressiveRenderViaAJAX="true"
+          p:instructionalText="The following is a list of alerts for the selected account @{account.id}"
+          p:width="85%">
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.Alert"/>
+        <property name="propertyName" value="alerts"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="false"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="items">
+            <list>
+                <!-- TODO New alert field
+                                <bean parent="Uif-InputField" p:propertyName="status"
+                                      p:label="Status"
+                                      p:maxLength="10">
+                                    <property name="bindingInfo.bindToForm" value="true"/>
+                                    <property name="control">
+                                        <bean parent="Uif-TextControl" p:size="11"/>
+                                    </property>
+                                </bean>
+                -->
+                <bean parent="Uif-InputField" p:propertyName="effectiveDate"
+                      p:label="Effective Date"
+                      p:maxLength="10">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="text"
+                      p:label="Description">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:style="resize:none;"/>
+                    </property>
+                </bean>
+                <!-- using a button means the controller would need to redirect to the appropriate page -->
+                <bean parent="Uif-LinkField" p:linkText="View" p:target="_self" p:align="center"
+                      p:href="alertView?methodToCall=get&amp;viewId=AlertView&amp;pageId=ViewAlertPage&amp;userId=@{account.id}"/>
+                <bean parent="Uif-LinkField" p:linkText="Update" p:target="_self" p:align="center"
+                      p:href="alertView?methodToCall=get&amp;viewId=AlertView&amp;pageId=EditAlertPage&amp;userId=@{account.id}"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        Add Alert section
+    Add an alert input
+    ********************************************************************************************************************
+    -->
+    <bean id="addAlertSection" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="alert.effectiveDate"
+                      p:label="Effective Date"
+                      p:labelPlacement="TOP"
+                      p:maxLength="10"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.expirationDate"
+                      p:label="Expiration Date"
+                      p:labelPlacement="TOP"
+                      p:maxLength="10"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.accessLevel.code"
+                      p:label="Level">
+                    <property name="control">
+                        <bean parent="Uif-HorizontalRadioControl">
+                            <property name="options">
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0" p:value="0"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1" p:value="1"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="2" p:value="2"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="3" p:value="3"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="4" p:value="4"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.text"
+                      p:label="Alert"
+                      p:labelPlacement="TOP">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:style="resize:none;"
+                              p:watermarkText="Type in information text here..."/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        Add Alert controls group
+    A group of controls to support the add of an alert
+    ********************************************************************************************************************
+    -->
+    <bean id="addAlertControlsGroup" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="addAlert"
+                      p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[userId]&quot;, &quot;@{account.id}&quot;);">
+                </bean>
+                <!--  Status message -->
+                <bean parent="Uif-MessageField" p:messageText="@{statusMessage}"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        Edit Alert controls group
+    A group of controls to support the update of an alert
+    ********************************************************************************************************************
+    -->
+    <bean id="editAlertControlsGroup" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="updateAlert"
+                      p:actionLabel="Submit"
+                      p:onClickScript="writeHiddenToForm(&quot;actionParameters[userId]&quot;, &quot;@{account.id}&quot;);">
+                </bean>
+                <!--  Status message -->
+                <bean parent="Uif-MessageField" p:messageText="@{statusMessage}"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        View Alert section
+    View an alert input
+    ********************************************************************************************************************
+    -->
+    <bean id="viewAlertSection" parent="Uif-GridSection"
+          p:title="@{account.id}"
+          p:instructionalText="@{instructionalText}">
+        <property name="layoutManager">
+            <bean parent="Uif-GridLayoutBase" p:numberOfColumns="4"/>
+        </property>
+        <property name="disclosure.render" value="false"/>
+        <property name="readOnly" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="alert.id"
+                      p:label="ID"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="21"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.creationDate"
+                      p:label="Creation Date"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="10"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" />
+                    </property>
+                </bean>
+
+                <!--
+                                <bean parent="Uif-InputField" p:propertyName="alert.account.id"
+                                      p:label="Account ID"
+                                      p:labelPlacement="LEFT"
+                                      p:maxLength="21"
+                                      p:fieldLabel.renderColon="true">
+                                    <property name="control">
+                                        <bean parent="Uif-TextControl" p:size="22" />
+                                    </property>
+                                </bean>
+                                <bean parent="Uif-InputField" p:propertyName="alert.transaction.id"
+                                      p:label="Transaction ID"
+                                      p:labelPlacement="LEFT"
+                                      p:maxLength="21"
+                                      p:fieldLabel.renderColon="true">
+                                    <property name="control">
+                                        <bean parent="Uif-TextControl" p:size="22" />
+                                    </property>
+                                </bean>
+                -->
+
+                <!-- Activity Name -->
+                <!--                <bean parent="Uif-InputField" p:propertyName="alert.activity.id"
+                      p:label="Activity Name"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="21"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" />
+                    </property>
+                </bean>-->
+                <bean parent="Uif-InputField" p:propertyName="alert.creatorId"
+                      p:label="Creator ID"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="21"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.editorId"
+                      p:label="Editor ID"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="21"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" />
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="alert.lastUpdate"
+                      p:label="Last Date"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="10"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.effectiveDate"
+                      p:label="Effective Date"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="10"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.expirationDate"
+                      p:label="Expiration Date"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="10"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.accessLevel.code"
+                      p:label="Level"
+                      p:maxLength="2"
+                      p:labelPlacement="LEFT"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="3"/>
+                    </property>
+                </bean>
+                <!-- TODO need the ID for these two -->
+                <bean parent="Uif-InputField" p:propertyName="alert.previousAlert"
+                      p:label="Previous Alert ID"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="21"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.nextAlert"
+                      p:label="Next Alert ID"
+                      p:labelPlacement="LEFT"
+                      p:maxLength="21"
+                      p:fieldLabel.renderColon="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" />
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="alert.text"
+                      p:label="Description"
+                      p:fieldLabel.renderColon="true"
+                      p:labelPlacement="LEFT">
+                    <property name="bindingInfo.bindToForm" value="true"/>
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"
+                              p:style="resize:none;"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    *******************************************************************************************************************
+                                        Alert controls group
+    A group of controls to support the view of an alert
+    ********************************************************************************************************************
+    -->
+    <bean id="viewAlertControlsGroup" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <!-- using a button means the controller would need to redirect to the appropriate page -->
+                <bean parent="Uif-Link" p:linkText="Add" p:target="_self"
+                      p:href="alertView?methodToCall=get&amp;viewId=AlertView&amp;pageId=AddAlertPage&amp;userId=@{account.id}"/>
+                <bean parent="Uif-Link" p:linkText="Update" p:target="_self"
+                      p:href="alertView?methodToCall=get&amp;viewId=AlertView&amp;pageId=EditAlertPage&amp;userId=@{account.id}"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,238 @@
+<web-app
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+        version="3.0">
+
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:/META-INF/ksa-context.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>web.bootstrap.spring.file</param-name>
+        <param-value>classpath:/META-INF/ksa-context.xml</param-value>
+    </context-param>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/ajaxError.jsp</location>
+    </error-page>
+
+    <listener>
+        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.sigmasys.kuali.ksa.servlet.WebappContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.sigmasys.kuali.ksa.servlet.RequestContextListener</listener-class>
+    </listener>
+
+    <!-- KRAD listeners BEGIN -->
+
+    <!--listener>
+        <listener-class>org.kuali.rice.core.web.listener.KualiInitializeListener</listener-class>
+    </listener-->
+
+    <listener>
+        <listener-class>org.kuali.rice.core.web.listener.BootstrapListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.kuali.rice.krad.web.listener.KualiHttpSessionListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.kuali.rice.core.framework.config.module.WebModuleLoaderListener</listener-class>
+    </listener>
+    <!-- KRAD listeners END -->
+
+
+    <servlet>
+        <servlet-name>springDispatcher</servlet-name>
+        <servlet-class>com.sigmasys.kuali.ksa.servlet.WebServiceDispatcherServlet</servlet-class>
+        <!--  Tell this servlet to use ROOT spring context -->
+        <init-param>
+            <param-name>contextAttribute</param-name>
+            <param-value>org.springframework.web.context.WebApplicationContext.ROOT</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>krad</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ksbDispatcher</servlet-name>
+        <servlet-class>org.kuali.rice.ksb.messaging.servlet.KSBDispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- KualiActionServlet is needed by Rice UI -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.kuali.rice.kns.web.struts.action.KualiActionServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/core/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>3</param-value>
+        </init-param>
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>3</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>springDispatcher</servlet-name>
+        <url-pattern>*.service</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>springDispatcher</servlet-name>
+        <url-pattern>*.webservice</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ksbDispatcher</servlet-name>
+        <url-pattern>/remoting/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>krad</servlet-name>
+        <url-pattern>/uif/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>coreFilter</filter-name>
+        <filter-class>com.sigmasys.kuali.ksa.servlet.CoreFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>HideWebInfFilter</filter-name>
+        <filter-class>org.kuali.rice.krad.web.filter.HideWebInfFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>ResponseOverrideFilter</filter-name>
+        <filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>httpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>BootstrapFilter</filter-name>
+        <filter-class>org.kuali.rice.krad.web.filter.BootstrapFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>BootstrapFilter</filter-name>
+        <servlet-name>action</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>httpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--filter>
+        <filter-name>UserPreferencesFilter</filter-name>
+        <filter-class>org.kuali.rice.kew.web.UserPreferencesFilter</filter-class>
+    </filter-->
+
+    <filter-mapping>
+        <filter-name>coreFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>HideWebInfFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>ResponseOverrideFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+
+
+    <!--filter-mapping>
+        <filter-name>UserPreferencesFilter</filter-name>
+        <servlet-name>krad</servlet-name>
+    </filter-mapping-->
+
+    <!--filter-mapping>
+        <filter-name>UserPreferencesFilter</filter-name>
+        <servlet-name>action</servlet-name>
+    </filter-mapping-->
+
+    <!-- only need to include this for the kuali tlds -->
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://www.kuali.org/jsp/jstl/functions</taglib-uri>
+            <taglib-location>/WEB-INF/tld/kuali-func.tld</taglib-location>
+        </taglib>
+        <!-- customized struts tags -->
+        <taglib>
+            <taglib-uri>http://www.kuali.org/struts.apache.org/tags-html</taglib-uri>
+            <taglib-location>/WEB-INF/tld/kuali-struts-html.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>http://www.kuali.org/struts.apache.org/tags-html-el</taglib-uri>
+            <taglib-location>/WEB-INF/tld/kuali-struts-html-el.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>http://www.joda.org/joda/time/tags</taglib-uri>
+            <taglib-location>/WEB-INF/tld/joda.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+
+    <resource-env-ref>
+        <description>KSA XA DataSource</description>
+        <resource-env-ref-name>ksa</resource-env-ref-name>
+        <resource-env-ref-type>javax.sql.XADataSource</resource-env-ref-type>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <description>KS XA DataSource</description>
+        <resource-env-ref-name>ks</resource-env-ref-name>
+        <resource-env-ref-type>javax.sql.XADataSource</resource-env-ref-type>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <description>Rice XA DataSource</description>
+        <resource-env-ref-name>rice</resource-env-ref-name>
+        <resource-env-ref-type>javax.sql.XADataSource</resource-env-ref-type>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <description>Transaction Manager</description>
+        <resource-env-ref-name>TransactionManager</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionManager</resource-env-ref-type>
+    </resource-env-ref>
+
+</web-app>
