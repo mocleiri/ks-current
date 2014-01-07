@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.kuali.student</groupId>
         <artifactId>student</artifactId>
-        <version>2.1.0-FR2-M2-SNAPSHOT</version>
+        <version>2.1.0-fr2-M1-build-654</version>
     </parent>
     <groupId>org.kuali.student.api</groupId>
     <artifactId>ks-api</artifactId>
-    <version>2.1.0-FR2-M2-SNAPSHOT</version>
+    <version>2.1.0-fr2-M1-build-654</version>
     <packaging>pom</packaging>
     <name>KS API</name>
     <profiles>
