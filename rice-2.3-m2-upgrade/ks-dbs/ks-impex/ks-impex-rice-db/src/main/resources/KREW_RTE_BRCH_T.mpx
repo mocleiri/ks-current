@@ -1,0 +1,5 @@
+RTE_BRCH_ID,NM,PARNT_ID,INIT_RTE_NODE_INSTN_ID,SPLT_RTE_NODE_INSTN_ID,JOIN_RTE_NODE_INSTN_ID,VER_NBR
+"KS-KREW-RTE-BRCH-1000","PRIMARY","${mpx.null}","KS-KREW-RTE-NODE-INSTN-1000","${mpx.null}","${mpx.null}","18"
+"KS-KREW-RTE-BRCH-1001","PRIMARY","${mpx.null}","KS-KREW-RTE-NODE-INSTN-1001","${mpx.null}","${mpx.null}","14"
+"KS-KREW-RTE-BRCH-1002","PRIMARY","${mpx.null}","KS-KREW-RTE-NODE-INSTN-1002","${mpx.null}","${mpx.null}","10"
+"KS-KREW-RTE-BRCH-1003","PRIMARY","${mpx.null}","KS-KREW-RTE-NODE-INSTN-1003","${mpx.null}","${mpx.null}","10"
