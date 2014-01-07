@@ -1,23 +1,5 @@
-#
-# The svn.externals file (indirectly) controls what local directories appear
-# in the checkout, and what actual location inside Subversion they represent
-# (by tying in with the svn:externals property).
-# 
-# This enables development streams to be independently managed and released 
-# while also providing a single spot to perform an aggregated Kuali Student checkout
-# and build.
-#
-# The SVN command for using this file to create SVN external definitions is
-# 
-# svn propset svn:externals -F svn.externals .
-#
-# *** IMPORTANT ***
-# You must rerun the svn propset command (shown above) and commit after editing any of
-# the external paths for the changes to take effect.
-#
-
-ks-api https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-api/trunk
-ks-core https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-core/trunk
-ks-lum https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-lum/trunk
-ks-enroll https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-enroll/trunk
-ks-deployments https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-deployments/trunk
+ks-api https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-api/tags/builds/ks-api-2.1/2.1.0-fr2-M1/build-654
+ks-core https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-core/tags/builds/ks-core-2.1/2.1.0-fr2-M1/build-654
+ks-deployments https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-deployments/tags/builds/ks-deployments-2.1/2.1.0-fr2-M1/build-654
+ks-enroll https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-enroll/tags/builds/ks-enroll-0.2/0.2.0-fr2-M1/build-654
+ks-lum https://svn.kuali.org/repos/student/sandbox/KSENROLL-11373/ks-lum/tags/builds/ks-lum-2.1/2.1.0-fr2-M1/build-654
