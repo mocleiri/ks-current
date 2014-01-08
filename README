@@ -1,0 +1,76 @@
+svn-merge-tools
+===============
+
+Several helper scripts for performing merges and also to identify the commits of interest.
+
+Script Index:
+
+* view-conflict.sh
+	This provides a way to view the conflicts (both tree and file) and to delegate to kdiff3 for resolving file conflicts.
+
+* git/compare-revs.sh
+
+	This needs to be run in a git repository that mirrors the svn repo and includes the commit meta data (the git-svn-id lines that include the svn revision of the commit.
+
+
+	
+
+view-conflict.sh
+-----------------
+
+The view-conflict.sh shell script depends on the kdiff3 program being in the path.
+
+
+http://kdiff3.sourceforge.net/
+
+This exists for both linux and Windows.
+
+If running in Windows the program will work in a recent Mingw32 installation:
+http://www.mingw.org
+
+USAGE: <mode: SHOW|VIEW|RESOLVE>
+
+SHOW:
+
+show the file conflicts and then the tree conflicts
+
+VIEW:
+
+show the first file conflict in a kdiff3 merge tool window.
+
+A panel is original, B panel is the inbound change, lower panel is the working copy.
+
+
+RESOLVE:
+
+with no arguments will resolve the first file conflict with 
+
+svn resolve --accept working path/to/file
+
+with the TREE argument will resolve the tree conflict.
+
+[not working yet]
+
+
+git/compare-revs.sh
+-------------------
+
+
+	SHOW <changes in branch> <since branch> [gitk]
+
+	Show the commits in the first branch/commitish specified since the point given.  
+
+	optionally display the results in gitk.
+
+	BY_JIRA <changes in branch> <since branch> [show_headers]
+
+	Determines the git commits and then for each of them parses the commit message to extract the revision.
+
+	This can be used to quickly identify the svn revisions for each jira which is useful when we want to exclude or include commits based on a particular jira number.
+
+apply-merge.sh
+--------------
+
+	<source repo URL> <revision(s) to cherry-pick>
+
+	to pass multiple revisions they need to be wrapped in a quoted string like: "123 456 789" to cherry pick revs: 123, 456 and 789 from the source repo URL 
