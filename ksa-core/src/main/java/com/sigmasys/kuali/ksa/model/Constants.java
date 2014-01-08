@@ -49,7 +49,8 @@ public interface Constants {
 
     // BRM parameters
     String BRM_CLASSPATH = "drools";
-    String BRM_FM_RULE_SET_NAME_1 = "Fee Management 1";
+    String BRM_FM_MAIN_RULE_SET_NAME = "Fee Management Main";
+    String BRM_FM_1_RULE_SET_NAME = "Fee Management 1";
     String BRM_PA_RULE_SET_NAME = "Payment Application";
     String BRM_AB_RULE_SET_NAME = "Account Blocking";
     String BRM_PB_RULE_SET_NAME = "Payment Bouncing";

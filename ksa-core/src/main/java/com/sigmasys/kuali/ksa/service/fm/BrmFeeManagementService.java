@@ -178,9 +178,9 @@ public interface BrmFeeManagementService {
                                    String signupOperations, String operator, BrmContext context);
 
     /**
-     * Compares the number of units to the given number.
+     * Compares the number of all units in the current FeeManagementSignup or FeeManagementSession to the given number.
      *
-     * @param numberOfUnits    Number of units in the current FeeManagementSession
+     * @param numberOfUnits    Number of units
      * @param rateCodes        List of Rate codes separated by ","
      * @param rateTypeCodes    List of RateType codes separated by ","
      * @param signupOperations List of signup operation values separated by ","
@@ -192,7 +192,21 @@ public interface BrmFeeManagementService {
                                  String signupOperations, String operator, BrmContext context);
 
     /**
-     * Compares the number of units to the number of units of taken signups.
+     * Compares the number of taken units in the current FeeManagementSession to the given number.
+     *
+     * @param numberOfUnits    Number of units
+     * @param rateCodes        List of Rate codes separated by ","
+     * @param rateTypeCodes    List of RateType codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param operator         Relational operator. For example, "==" or "!="
+     * @param context          BRM context
+     * @return boolean value
+     */
+    boolean compareNumberOfTakenUnits(int numberOfUnits, String rateCodes, String rateTypeCodes,
+                                      String signupOperations, String operator, BrmContext context);
+
+    /**
+     * Compares the number of units to the number of taken units.
      *
      * @param rateCodes      List of Rate codes of all signups separated by ","
      * @param takenRateCodes List of Rate codes of taken signups separated by ","

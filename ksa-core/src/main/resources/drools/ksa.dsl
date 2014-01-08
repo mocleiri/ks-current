@@ -90,6 +90,11 @@
 [when][]number of units gte {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">=",context)
 [when][]number of units lt {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","<",context)
 [when][]number of units lte {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","<=",context)
+[when][]number of taken units is {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfTakenUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","==",context)
+[when][]number of taken units gt {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfTakenUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">",context)
+[when][]number of taken units gte {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfTakenUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">=",context)
+[when][]number of taken units lt {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfTakenUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","<",context)
+[when][]number of taken units lte {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfTakenUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","<=",context)
 [when][]number of signups is {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfSignups({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","==",context)
 [when][]number of signups gt {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfSignups({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">",context)
 [when][]number of signups gte {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfSignups({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">=",context)
@@ -98,6 +103,8 @@
 
 
 # RHS definitions
+[then][]on session fire "{ruleSetName}" rule set = context.getFmService().fireSessionRuleSet("{ruleSetName}",context);
+[then][]on each session signup fire "{ruleSetName}" rule set = context.getFmService().fireSignupRuleSet("{ruleSetName}",context);
 [then][]set account key "{key}" to "{value}" = context.getFmService().setAccountKeyPair("{key}","{value}",context);
 [then][]set session key "{key}" to "{value}" = context.getFmService().setSessionKeyPair("{key}","{value}",context);
 [then][]set session key "{key}" to number of units where signup is taken = context.getFmService().setSessionKeyPairToUnitNumberWithSignupMethod("{key}","isTaken",context);

@@ -523,27 +523,11 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         // Calling BrmService with payment application rules
         BrmContext brmContext = new BrmContext();
         brmContext.setAccount(session.getAccount());
-
         brmContext.setGlobalVariable(FM_SESSION_VAR_NAME, session);
 
-        // TODO: Uncomment this after the rules have been split into "signup" and "session" rule sets
-        /* brmContext.setGlobalVariable(FM_SIGNUP_VAR_NAME, null);
+        brmService.fireRules(Constants.BRM_FM_MAIN_RULE_SET_NAME, brmContext);
 
-        brmService.fireRules(Constants.BRM_FM_RULE_SET_NAME_1, brmContext);
-        */
-
-        Set<FeeManagementSignup> signups = session.getIncompleteSignups();
-
-        if (CollectionUtils.isNotEmpty(signups)) {
-            for (FeeManagementSignup signup : signups) {
-                brmContext.setGlobalVariable(FM_SIGNUP_VAR_NAME, signup);
-                // TODO: fire rule sets for individual signups
-                brmService.fireRules(Constants.BRM_FM_RULE_SET_NAME_1, brmContext);
-            }
-        }
-
-        // TODO
-        return session;
+        return brmContext.getGlobalVariable(FM_SESSION_VAR_NAME);
     }
 
     /**
@@ -567,7 +551,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void fireSignupRuleSet(String ruleSetName, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        /*FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -576,7 +560,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 context.setGlobalVariable(FM_SIGNUP_VAR_NAME, signup);
                 brmService.fireRules(ruleSetName, context);
             }
-        }
+        } */
     }
 
     /**
@@ -1012,9 +996,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
-     * Compares the number of units to the given number.
+     * Compares the number of all units in the current FeeManagementSignup or FeeManagementSession to the given number.
      *
-     * @param numberOfUnits    Number of units in the current FeeManagementSession
+     * @param numberOfUnits    Number of units
      * @param rateCodes        List of Rate codes separated by ","
      * @param rateTypeCodes    List of RateType codes separated by ","
      * @param signupOperations List of signup operation values separated by ","
@@ -1048,7 +1032,38 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
-     * Compares the number of units to the number of units of taken signups.
+     * Compares the number of taken units in the current FeeManagementSession to the given number.
+     *
+     * @param numberOfUnits    Number of units
+     * @param rateCodes        List of Rate codes separated by ","
+     * @param rateTypeCodes    List of RateType codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param operator         Relational operator. For example, "==" or "!="
+     * @param context          BRM context
+     * @return boolean value
+     */
+    @Override
+    public boolean compareNumberOfTakenUnits(int numberOfUnits, String rateCodes, String rateTypeCodes,
+                                             String signupOperations, String operator, BrmContext context) {
+
+        int takenUnits = 0;
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        Set<FeeManagementSignup> signups =
+                filterSignups(session.getSignups(), rateCodes, rateTypeCodes, null, signupOperations, null);
+
+        for (FeeManagementSignup fmSignup : signups) {
+            if (fmSignup.isTaken() && fmSignup.getUnits() != null) {
+                takenUnits += fmSignup.getUnits();
+            }
+        }
+
+        return compareObjects(takenUnits, numberOfUnits, operator);
+    }
+
+    /**
+     * Compares the number of units to the number of taken units.
      *
      * @param rateCodes      List of Rate codes of all signups separated by ","
      * @param takenRateCodes List of Rate codes of taken signups separated by ","
@@ -1067,7 +1082,6 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, null, null);
 
         for (FeeManagementSignup signup : signups) {
-
             if (signup.getUnits() != null) {
                 sessionUnits += signup.getUnits();
             }
@@ -1076,7 +1090,6 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         signups = filterSignups(session.getSignups(), takenRateCodes, null, null, null, null);
 
         for (FeeManagementSignup signup : signups) {
-
             if (signup.getUnits() != null && signup.isTaken()) {
                 takenUnits += signup.getUnits();
             }
@@ -1704,7 +1717,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                     for (FeeManagementSignupRate signupRate : new HashSet<FeeManagementSignupRate>(signupRates)) {
 
-                        if (fmSignup.getEffectiveDate().compareTo(signup.getEffectiveDate()) <= 0) {
+                        if (fmSignup.getEffectiveDate().compareTo(signup.getEffectiveDate()) < 0 ||
+                                fmSignup.getId().equals(signup.getId())) {
 
                             signupRates.remove(signupRate);
 
