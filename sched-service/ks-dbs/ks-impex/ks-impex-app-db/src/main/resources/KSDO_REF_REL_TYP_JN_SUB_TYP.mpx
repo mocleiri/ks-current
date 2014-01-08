@@ -1,0 +1,4 @@
+REF_DOC_RELTN_TYPE_KEY,REF_OBJ_SUB_TYPE_KEY
+"kuali.org.DocRelation.allObjectTypes","kuali.org.RefObjectSubType.Program"
+"kuali.org.DocRelation.allObjectTypes","kuali.org.RefObjectSubType.Course"
+"kuali.org.DocRelation.allObjectTypes","kuali.org.RefObjectSubType.Proposal"

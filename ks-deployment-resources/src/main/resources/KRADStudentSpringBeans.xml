@@ -1,0 +1,204 @@
+<!--
+
+    Copyright 2010 The Kuali Foundation Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <bean id="kualiModuleService" class="org.kuali.rice.krad.service.impl.KualiModuleServiceImpl" />
+
+    <bean id="studentRiceModule" class="org.kuali.rice.krad.service.impl.ModuleServiceBase">
+        <property name="moduleConfiguration" ref="studentRiceModuleConfiguration" />
+        <property name="kualiModuleService" ref="kualiModuleService" />
+    </bean>
+
+    <bean id="studentRiceModuleConfiguration" class="org.kuali.rice.krad.bo.ModuleConfiguration">
+        <property name="namespaceCode" value="KS-SYS" />
+        <property name="initializeDataDictionary" value="true" />
+        <property name="dataDictionaryPackages">
+            <list>
+                <!-- rice and basic ks xmls -->
+                <value>classpath:org/kuali/rice/student/bo</value>
+                <value>${krad.js.scriptfiles}</value>
+                <value>classpath:UifKRADOverrideDefinitions.xml</value>
+                <value>classpath:UifKradExtensionDefinitions.xml</value>
+                <value>classpath:org/kuali/student/rice/kim/KSPersonnelLookupView.xml</value>
+                <value>classpath:UifKSDefinitions.xml</value>
+                <value>classpath:UifUtils.xml</value>
+                <value>classpath:ks-base-dictionary.xml</value>
+                <value>classpath:ks-ActivityOfferingInfo-dictionary.xml</value>
+                <value>classpath:ks-CourseOfferingInfo-dictionary.xml</value>
+                <value>classpath:ks-EnrollmentFeeInfo-dictionary.xml</value>
+                <value>classpath:ks-FormatOfferingInfo-dictionary.xml</value>
+                <value>classpath:ks-OfferingInstructorInfo-dictionary.xml</value>
+                <value>classpath:ks-SocRolloverResultInfo-dictionary.xml</value>
+                <value>classpath:ks-SocRolloverResultItemInfo-dictionary.xml</value>
+                <value>classpath:ks-TermInfo-dictionary.xml</value>
+                <value>classpath:ks-PopulationInfo-dictionary.xml</value>
+                <value>classpath:ks-PopulationRuleInfo-dictionary.xml</value>
+                <value>classpath:ks-CourseOfferingDisplayInfo-dictionary.xml</value>
+                <value>classpath:ks-BuildingInfo-dictionary.xml</value>
+                <value>classpath:ks-RoomInfo-dictionary.xml</value>
+                <value>classpath:ks-SocInfo-dictionary.xml</value>
+                <value>classpath:ks-ResultValueInfo-dictionary.xml</value>
+                <value>classpath:ks-ResultScaleInfo-dictionary.xml</value>
+                <value>classpath:ks-ResultValuesGroupInfo-dictionary.xml</value>
+                <value>classpath:ks-RoomInfo-dictionary.xml</value>
+                <value>classpath:ks-BuildingInfo-dictionary.xml</value>
+                <value>classpath:ks-RoomResponsibleOrgInfo-dictionary.xml</value>
+                <value>classpath:ks-AcademicCalendarInfo-dictionary.xml</value>
+                <value>classpath:ks-HolidayCalendarInfo-dictionary.xml</value>
+                <value>classpath:ks-TermInfo-dictionary.xml</value>
+                <value>classpath:ks-HolidayInfo-dictionary.xml</value>
+                <value>classpath:ks-KeyDateInfo-dictionary.xml</value>
+                <value>classpath:ks-CourseInfo-dictionary.xml</value> <!-- KSCM-720  Curriculum Management Course Info -->
+                <value>classpath:ks-ProposalInfo-dictionary.xml</value>
+                <!-- <value>classpath:org/kuali/student/cm/dictionary/ks-CourseProposalInfo-dictionary.xml</value>-->
+                <value>classpath:org/kuali/student/cm/UifKsCmDefinitions.xml</value>
+
+                <!-- KIM Attributes -->
+                <value>classpath:org/kuali/rice/student/bo/KualiStudentKimAttributes.xml</value>
+
+                <!-- Home Views -->
+                <value>classpath:org/kuali/student/common/main/KSFunctionalHomeView.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CurriculumHomeView.xml</value> <!-- KSCM-727 Curriculum Management Course -->
+                <value>classpath:org/kuali/student/cm/main/CourseSelectView.xml</value>
+                <value>classpath:org/kuali/student/cm/main/FindCourseLookupView.xml</value>
+                
+                <!-- Krms -->
+                <value>classpath:org/kuali/rice/krms/PropositionEditorView.xml</value>
+                <value>classpath:org/kuali/rice/krms/RuleEditMaintenance.xml</value>
+                <value>classpath:org/kuali/rice/krms/RuleManagementView.xml</value>
+                <value>classpath:org/kuali/rice/krms/AgendaManagementView.xml</value>
+                <value>classpath:org/kuali/student/core/krms/KSKRMSCustomComponents.xml</value>
+                <value>classpath:org/kuali/student/core/krms/KSKRMSRuleMaintenance.xml</value>
+                <value>classpath:org/kuali/student/lum/lu/ui/krms/LUCustomComponents.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseRuleMaintenance.xml</value>
+                <value>classpath:org/kuali/student/lum/lu/ui/krms/CourseLookupView.xml</value>
+                <value>classpath:org/kuali/student/lum/lu/ui/krms/CourseSetsLookupView.xml</value>
+                <value>classpath:org/kuali/student/lum/lu/ui/krms/ProgramLookupView.xml</value>
+                <value>classpath:org/kuali/student/core/krms/DepartmentLookupView.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CMLUCustomComponents.xml</value>
+                
+                <!-- Curriculum Management Course Info -->
+                <value>classpath:org/kuali/student/cm/main/CourseMaintenanceView.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewCourseInfo.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewGovernance.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewCourseLogistics.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewLearningObjectives.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewCourseRequisites.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewActiveDates.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewFinancials.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewSupportingDocuments.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewReviewProposal.xml</value>
+                <value>classpath:org/kuali/student/cm/main/CourseViewAuthorsAndCollaborators.xml</value>
+                <value>classpath:org/kuali/student/cm/main/LoCategoryMaintenanceView.xml</value>
+                <value>classpath:org/kuali/student/cm/lookup/CluInstructorInfoWrapperLookupView.xml</value>
+                <value>classpath:org/kuali/student/cm/lookup/CourseJointInfoWrapperLookupView.xml</value>
+                <value>classpath:org/kuali/student/cm/lookup/OrganizationInfoWrapperLookupView.xml</value>
+                <value>classpath:org/kuali/student/cm/lookup/CollaboratorWrapperLookupView.xml</value>
+                <value>classpath:org/kuali/student/cm/lookup/LoCategoryInfoWrapperView.xml</value>
+                <value>classpath:org/kuali/student/cm/lookup/LoDisplayInfoWrapperLookupView.xml</value>
+            </list>
+        </property>
+        <property name="packagePrefixes">
+            <list>
+                <value>org.kuali.rice.student.</value>
+                <value>org.kuali.student.cm.</value>                
+            </list>
+        </property>
+        <!-- add in the student attributes to the kim module configuration -->
+        <property name="externalizableBusinessObjectImplementations">
+            <map>
+                <entry key="org.kuali.rice.student.bo.KualiStudentKimAttributes"
+                       value="org.kuali.rice.student.bo.KualiStudentKimAttributes"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- OrgAdmin Derived role (AdministrativeOfficer of this org) -->
+    <bean id="ksOrgAdminRoleTypeService"
+        class="org.kuali.student.lum.kim.role.type.OrgDerivedRoleTypeServiceImpl">
+        <property name="includedOrgPersonRelationTypes">
+            <list>
+                <value>kuali.org.PersonRelation.Chair</value>
+            </list>
+        </property>
+        <!--<property name="orgService" ref="orgClient"/>-->
+    </bean>
+
+    <!-- Org Derived role (anyone that's related to this org -->
+    <bean id="ksOrgCommitteeRoleTypeService"
+        class="org.kuali.student.lum.kim.role.type.OrgDerivedRoleTypeServiceImpl">
+        <property name="excludedOrgPersonRelationTypes">
+            <list>
+                <value>kuali.org.PersonRelation.Chair</value>
+            </list>
+        </property>
+        <!--<property name="orgService" ref="orgClient"/>-->
+    </bean>
+
+    <!-- impl for Rice Authentication Service  -->
+    <bean id="ksRiceAuthenticationService" class="org.kuali.student.security.KSRiceAuthenticationServiceImpl"/>
+
+    <!-- Action Request Derived role (type - Non Adhoc) (status - ACTIVE) -->
+    <bean id="ksNonAdhocActionRequestDerivedRoleTypeServiceImpl" class="org.kuali.student.lum.kim.role.type.KSNonAdhocActionRequestDerivedRoleTypeServiceImpl"/>
+
+    <!-- Action Request Derived role (type = Adhoc) (status - ACTIVE) -->
+    <bean id="ksAdhocActionRequestDerivedRoleTypeServiceImpl" class="org.kuali.student.lum.kim.role.type.KSAdhocActionRequestDerivedRoleTypeServiceImpl"/>
+
+    <!-- Action Request Derived role (type = Non Adhoc) (status - DONE) -->
+    <bean id="ksNonAdhocDoneActionRequestDerivedRoleTypeServiceImpl" class="org.kuali.student.lum.kim.role.type.KSNonAdhocDoneActionRequestDerivedRoleTypeServiceImpl"/>
+
+    <!-- Action Request Derived role (type = Adhoc) (status - DONE) -->
+    <bean id="ksAdhocDoneActionRequestDerivedRoleTypeServiceImpl" class="org.kuali.student.lum.kim.role.type.KSAdhocDoneActionRequestDerivedRoleTypeServiceImpl"/>
+
+    <!-- Route Log Derived role -->
+    <bean id="ksRouteLogDerivedRoleTypeServiceImpl" class="org.kuali.student.lum.kim.role.type.KSRouteLogDerivedRoleTypeServiceImpl">
+        <property name="checkFutureRequests" value="false" />
+    </bean>
+
+    <bean id="ksCommentOnDocumentRoleTypeService" class="org.kuali.rice.krad.kim.PermissionDerivedRoleTypeServiceImpl">
+        <property name="permissionTemplateNamespace" value="KS-SYS" />
+        <property name="permissionTemplateName" value="Comment on Document" />
+    </bean>
+
+    <bean id="ksEditDocumentRoleTypeService" class="org.kuali.rice.krad.kim.PermissionDerivedRoleTypeServiceImpl">
+        <property name="permissionTemplateNamespace" value="KS-SYS" />
+        <property name="permissionTemplateName" value="Edit Document" />
+    </bean>
+    
+    <!-- Organization Hierarchy Role Type -->
+    <bean id="ksOrganizationHierarchyRoleTypeService" class="org.kuali.student.lum.kim.role.type.OrganizationHierarchyRoleTypeService"/>
+
+    <!-- Use our own custom xml parser which also parses passwords -->
+    <bean id="enUserXmlService" class="org.kuali.rice.student.kew.xml.KSUserXmlServiceImpl" />
+
+
+    <!-- Default all KRAD type services to the original KRAD definition -->
+    <alias name="viewEditModePermissionTypeService" alias="ksViewEditModePermissionTypeService"/>
+    <alias name="viewWidgetPermissionTypeService" alias="ksViewWidgetPermissionTypeService"/>
+    <alias name="viewLineFieldPermissionTypeService" alias="ksViewLineFieldPermissionTypeService"/>
+    <alias name="viewLineActionPermissionTypeService" alias="ksViewLineActionPermissionTypeService"/>
+
+</beans>
