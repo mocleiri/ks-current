@@ -25,6 +25,22 @@ public interface BrmFeeManagementService {
     FeeManagementSession assessFees(Long sessionId);
 
     /**
+     * Fires the rule set specified by name for the entire FeeManagementSession object.
+     *
+     * @param ruleSetName Rule Set name
+     * @param context     BRM context
+     */
+    void fireSessionRuleSet(String ruleSetName, BrmContext context);
+
+    /**
+     * Fires the rule set specified by name for each FeeManagementSignup object within the current FeeManagementSession.
+     *
+     * @param ruleSetName Rule Set name
+     * @param context     BRM context
+     */
+    void fireSignupRuleSet(String ruleSetName, BrmContext context);
+
+    /**
      * Compares the value of the Account KeyPair specified by "key" to the given "value".
      *
      * @param key      KeyPair's key

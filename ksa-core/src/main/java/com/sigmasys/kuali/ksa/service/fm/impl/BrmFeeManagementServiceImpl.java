@@ -547,6 +547,39 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
+     * Fires the rule set specified by name for the entire FeeManagementSession object.
+     *
+     * @param ruleSetName Rule Set name
+     * @param context     BRM context
+     */
+    @Override
+    public void fireSessionRuleSet(String ruleSetName, BrmContext context) {
+        context.getGlobalVariables().remove(FM_SIGNUP_VAR_NAME);
+        brmService.fireRules(ruleSetName, context);
+    }
+
+    /**
+     * Fires the rule set specified by name for each FeeManagementSignup object within the current FeeManagementSession.
+     *
+     * @param ruleSetName Rule Set name
+     * @param context     BRM context
+     */
+    @Override
+    public void fireSignupRuleSet(String ruleSetName, BrmContext context) {
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        Set<FeeManagementSignup> signups = session.getSignups();
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+            for (FeeManagementSignup signup : signups) {
+                context.setGlobalVariable(FM_SIGNUP_VAR_NAME, signup);
+                brmService.fireRules(ruleSetName, context);
+            }
+        }
+    }
+
+    /**
      * Compares the value of the Account KeyPair specified by "key" to the given "value".
      *
      * @param key      KeyPair's key

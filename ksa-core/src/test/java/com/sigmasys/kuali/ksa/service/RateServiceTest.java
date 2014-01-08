@@ -416,6 +416,59 @@ public class RateServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    public void getRateCatalogsByRateTypeId() {
+
+        String rateTypeCode = "RT_2013";
+
+        RateType rateType = rateService.getRateTypeByCode(rateTypeCode);
+
+        Assert.notNull(rateType);
+        Assert.notNull(rateType.getId());
+
+        String code = "RC_2013_EXT";
+
+        RateCatalog rateCatalog1 = _createRateCatalog(code, "19871", "19872");
+
+        Assert.notNull(rateCatalog1);
+        Assert.notNull(rateCatalog1.getId());
+
+        RateCatalog rateCatalog2 = _createRateCatalog(code, "19873", "19874");
+
+        Assert.notNull(rateCatalog2);
+        Assert.notNull(rateCatalog2.getId());
+
+        List<RateCatalog> rateCatalogs = rateService.getRateCatalogsByRateTypeId(rateType.getId());
+
+        Assert.notNull(rateCatalogs);
+        Assert.notEmpty(rateCatalogs);
+        Assert.isTrue(rateCatalogs.size() == 2);
+
+        boolean rateCatalog1Exists = false;
+        boolean rateCatalog2Exists = false;
+
+        for (RateCatalog rateCatalog : rateCatalogs) {
+
+            Assert.notNull(rateCatalog);
+
+            Assert.notNull(rateCatalog.getId());
+
+            Assert.notNull(rateCatalog.getCode());
+
+            logger.debug("RateCatalog code = " + rateCatalog.getCode() + ", ID = " + rateCatalog.getId());
+
+            if (rateCatalog.getId().equals(rateCatalog1.getId())) {
+                rateCatalog1Exists = true;
+            } else if (rateCatalog.getId().equals(rateCatalog2.getId())) {
+                rateCatalog2Exists = true;
+            }
+        }
+
+        Assert.isTrue(rateCatalog1Exists);
+        Assert.isTrue(rateCatalog2Exists);
+
+    }
+
+    @Test
     public void getRateCatalogsByAtpId() {
 
         RateCatalog rateCatalog1 = _createRateCatalog("RC_2013_EXT_1", "19871", "19872");
@@ -1175,12 +1228,14 @@ public class RateServiceTest extends AbstractServiceTest {
     }
 
 
-    /*******************************************************************
-     *
+    /**
+     * ****************************************************************
+     * <p/>
      * Rate Interpretation tests.
      * Tests for the "getEffectiveDateFromRate" method.
-     *
-     *******************************************************************/
+     * <p/>
+     * *****************************************************************
+     */
 
     @Test
     public void testGetEffectiveDateFromRateNullRateId() throws Exception {
@@ -1539,11 +1594,13 @@ public class RateServiceTest extends AbstractServiceTest {
         Assert.isTrue(DateUtils.isSameInstant(baseDate, effectiveDate), "Didn't get the same Base date");
     }
 
-    /**********************************************************************
-     *
+    /**
+     * *******************************************************************
+     * <p/>
      * Tests for the "getRecognitionDateFromRate" method.
-     *
-     **********************************************************************/
+     * <p/>
+     * ********************************************************************
+     */
 
     @Test
     public void testGetRecognitionDateFromRateNullRateId() throws Exception {
@@ -1597,7 +1654,7 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog  = _createRateCatalog(rateCatalogCode);
+        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().setRateCatalog(null);
@@ -1618,7 +1675,7 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog  = _createRateCatalog(rateCatalogCode);
+        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.setRecognitionDate(null);
@@ -1640,7 +1697,7 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog  = _createRateCatalog(rateCatalogCode);
+        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         Date transactionDate = new Date();
 
@@ -1664,7 +1721,7 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog  = _createRateCatalog(rateCatalogCode);
+        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         Date transactionDate = new Date();
 
@@ -1729,11 +1786,13 @@ public class RateServiceTest extends AbstractServiceTest {
         Assert.isTrue(DateUtils.isSameInstant(recognitionDate, recognitionDateFromRate), "Recognition Date should have been equals to Rate recognition date but it wasn't.");
     }
 
-    /*****************************************************************************
-     *
+    /**
+     * **************************************************************************
+     * <p/>
      * Tests for the "getAmountFromRate" method
-     *
-     *****************************************************************************/
+     * <p/>
+     * ***************************************************************************
+     */
 
     @Test
     public void testGetAmountFromRateNullRateId() throws Exception {
@@ -1867,7 +1926,7 @@ public class RateServiceTest extends AbstractServiceTest {
 
         for (RateAmount rateAmount : rate.getRateAmounts()) {
             // Set the RateAmount number of units to a value different from numUnits:
-            rateAmount.setUnits(numUnits+1);
+            rateAmount.setUnits(numUnits + 1);
         }
 
         // Call the service method:
@@ -1897,7 +1956,7 @@ public class RateServiceTest extends AbstractServiceTest {
 
         for (RateAmount rateAmount : rate.getRateAmounts()) {
             // Set the RateAmount number of units to a value different from numUnits:
-            rateAmount.setUnits(numUnits+1);
+            rateAmount.setUnits(numUnits + 1);
         }
 
         // Call the service method:
@@ -2141,11 +2200,13 @@ public class RateServiceTest extends AbstractServiceTest {
         Assert.isTrue(amountFromRate.compareTo(expectedAmount) == 0, "Amount from Rate should be the default amount.");
     }
 
-    /******************************************************************************************
-     *
+    /**
+     * ***************************************************************************************
+     * <p/>
      * Tests for the "getTransactionTypeFromRate" method.
-     *
-     ******************************************************************************************/
+     * <p/>
+     * ****************************************************************************************
+     */
 
     @Test
     public void testGetTransactionTypeFromRateNullRateId() throws Exception {
@@ -2192,7 +2253,7 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog  = _createRateCatalog(rateCatalogCode);
+        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         int numUnits = 4;
 
@@ -2211,7 +2272,7 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog  = _createRateCatalog(rateCatalogCode);
+        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         String transactionTypeId = "test-test";
         int numUnits = 4;

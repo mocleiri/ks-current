@@ -197,6 +197,14 @@ public interface RateService {
     List<RateCatalog> getRateCatalogsByCode(String rateCatalogCode);
 
     /**
+     * Returns the list of rate catalogs by RateType ID.
+     *
+     * @param rateTypeId RateType ID
+     * @return a list of RateCatalog instances
+     */
+    List<RateCatalog> getRateCatalogsByRateTypeId(Long rateTypeId);
+
+    /**
      * Returns the list of rate catalogs by ATP ID.
      *
      * @param atpId ATP ID

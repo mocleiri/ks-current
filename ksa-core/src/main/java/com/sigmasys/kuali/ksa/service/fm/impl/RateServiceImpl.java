@@ -459,6 +459,23 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
     }
 
     /**
+     * Returns the list of rate catalogs by RateType ID.
+     *
+     * @param rateTypeId RateType ID
+     * @return a list of RateCatalog instances
+     */
+    @Override
+    @PermissionsAllowed(Permission.READ_RATE_CATALOG)
+    public List<RateCatalog> getRateCatalogsByRateTypeId(Long rateTypeId) {
+        Query query = em.createQuery("select distinct rc from RateCatalog rc " +
+                " left outer join fetch rc.rateType rt " +
+                " left outer join fetch rc.keyPairs kp " +
+                " where rt.id = :rateTypeId");
+        query.setParameter("rateTypeId", rateTypeId);
+        return query.getResultList();
+    }
+
+    /**
      * Returns the list of rate catalogs by ATP ID.
      *
      * @param atpId ATP ID
