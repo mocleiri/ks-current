@@ -261,9 +261,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/KD13</connection>
-        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/KD13</developerConnection>
-        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/KD13</url>
+        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/KD13</connection>
+        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/KD13</developerConnection>
+        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/KD13</url>
     </scm>
     <prerequisites>
         <maven>${maven.min.version}</maven>
