@@ -265,9 +265,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/CM-KRAD</connection>
-        <developerConnection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/CM-KRAD</developerConnection>
-        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/CM-KRAD</url>
+        <connection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/CM-KRAD-rice-2.3.0</connection>
+        <developerConnection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/CM-KRAD-rice-2.3.0</developerConnection>
+        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/CM-KRAD-rice-2.3.0</url>
     </scm>
     <prerequisites>
         <maven>${maven.min.version}</maven>
