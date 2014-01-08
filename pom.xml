@@ -261,9 +261,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/ENR-FR2</connection>
-        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/ENR-FR2</developerConnection>
-        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/ENR-FR2</url>
+        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/ENR-FR2</connection>
+        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/ENR-FR2</developerConnection>
+        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/inactive/ENR-FR2</url>
     </scm>
     <prerequisites>
         <maven>${maven.min.version}</maven>
