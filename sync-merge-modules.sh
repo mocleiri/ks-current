@@ -136,7 +136,7 @@ then
 
 	# detect which svn:externals are here and merge them.
 
-	svn propget svn:externals . 2>1 | while read -r LINE
+	svn propget svn:externals . 2>&1 | while read -r LINE
 	do
 		if test -n "$LINE"
 		then
