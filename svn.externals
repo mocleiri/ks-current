@@ -15,8 +15,8 @@
 # You must rerun the svn propset command (shown above) and commit after editing any of
 # the external paths for the changes to take effect.
 #
-ks-api  https://svn.kuali.org/repos/student/enrollment/ks-api/branches/ENR-FR2
-ks-core  https://svn.kuali.org/repos/student/enrollment/ks-core/branches/ENR-FR2
-ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/ENR-FR2
-ks-enroll  https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/ENR-FR2
-ks-deployments  https://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/ENR-FR2
+ks-api https://svn.kuali.org/repos/student/enrollment/ks-api/branches/inactive/ENR-FR2
+ks-core https://svn.kuali.org/repos/student/enrollment/ks-core/branches/inactive/ENR-FR2
+ks-lum https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/inactive/ENR-FR2
+ks-enroll https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/inactive/ENR-FR2
+ks-deployments https://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/inactive/ENR-FR2
