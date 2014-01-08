@@ -161,6 +161,9 @@ then
 
 		bash -c "cd $WORKING_COPY && cp $SVN_EXTERNALS_FILE svn.externals && svn propset svn:externals -F svn.externals . && svn commit -m\"$COMMIT_MESSAGE\""
 
+	else
+		echo "execution of ${CMD_FILE} failed"
+		exit 1
 	fi
 
 	echo "applied"
@@ -171,7 +174,7 @@ then
 	echo "(2) mvn validate -Pscm -N"
 	
 else
-	echo "failed"
+	echo "skipped execution"
 
 fi
 
