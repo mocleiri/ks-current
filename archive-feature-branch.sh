@@ -107,7 +107,7 @@ printf "$SVNMUCC_CMD " > $CMD_FILE
 
 printf "mv $AGGREGATE_BRANCH $ARCHIVED_AGGREGATE_BRANCH " >> $CMD_FILE
 
-svn propget svn:externals $AGGREGATE_BRANCH 2>1 | while read -r LINE
+svn propget svn:externals $AGGREGATE_BRANCH 2>&1 | while read -r LINE
 do
 	if test -n "$LINE"
 	then
