@@ -21,6 +21,8 @@ Insert into KSSA_ACNT_PROTECTED_INFO (ID,BANK_DETAILS,TAX_REFERENCE,BANK_TYPE_ID
 ---------------------------------------------------
 --   DATA FOR TABLE KSSA_ACNT
 --   FILTER = none used
+-- Additional account have been added at the end of the file.
+
 ---------------------------------------------------
 Insert into KSSA_ACNT (TYPE,ID,CAN_AUTHENTICATE,CREATION_DATE,CREDIT_LIMIT,IS_KIM_ACNT,LAST_KIM_UPDATE,LATE1,LATE2,LATE3,LATE_LAST_UPDATE,LATE_PERIOD_ID_FK,ACNT_STATUS_TYPE_ID_FK, IS_BLOCKING_ENABLED) values ('ACD','user1','N',to_timestamp('02-APR-12 12.00.00.000000000 AM','DD-MON-RR HH.MI.SS.FF AM'),0,'N',null,null,null,null,null,1,1,'Y');
 Insert into KSSA_ACNT (TYPE,ID,CAN_AUTHENTICATE,CREATION_DATE,CREDIT_LIMIT,IS_KIM_ACNT,LAST_KIM_UPDATE,LATE1,LATE2,LATE3,LATE_LAST_UPDATE,LATE_PERIOD_ID_FK,ACNT_STATUS_TYPE_ID_FK) values ('ACD','user2','N',to_timestamp('02-APR-12 12.00.00.000000000 AM','DD-MON-RR HH.MI.SS.FF AM'),0,'N',null,null,null,null,null,1,1);
@@ -1580,11 +1582,28 @@ Insert into KSSA_REFUND_TYPE (ID,CODE,CREATION_DATE,CREATOR_ID,DESCRIPTION,EDITO
 
 -- Cash Limit Events
 -- Cash limit event 1
-insert into KSSA_CASH_LIMIT_EVENT values(1, 'user1', 0, 'admin', sysdate-30, 'Y', sysdate-20, 10000, 'Peter Griffin', sysdate-10, '15430598, daslkfj3333, 454545sdfkak', 'Q', null);
-insert into KSSA_CASH_LIMIT_EVENT_TRANS values (1, 5);
-insert into KSSA_CASH_LIMIT_EVENT_TRANS values (1, 6);
+insert into kssa_cash_limit_event values(1, 'user1', 0, 'admin', sysdate-30, 'Y', sysdate-20, 10000, 'Peter Griffin', sysdate-10, '15430598, daslkfj3333, 454545sdfkak', 'Q', null);
+insert into kssa_cash_limit_event_trans values (1, 5);
+insert into kssa_cash_limit_event_trans values (1, 6);
 
 -- Cash limit event 2
-insert into KSSA_CASH_LIMIT_EVENT values(2, 'user1', 20000, 'admin', sysdate-40, 'Y', sysdate-30, 30000, 'Stewart Gilligan Griffin', sysdate-20, '111111111, 2222222222, 343424', 'Q', null);
-insert into KSSA_CASH_LIMIT_EVENT_TRANS values (2, 7);
-insert into KSSA_CASH_LIMIT_EVENT_TRANS values (2, 8);
+insert into kssa_cash_limit_event values(2, 'user1', 20000, 'admin', sysdate-40, 'Y', sysdate-30, 30000, 'Stewart Gilligan Griffin', sysdate-20, '111111111, 2222222222, 343424', 'Q', null);
+insert into kssa_cash_limit_event_trans values (2, 7);
+insert into kssa_cash_limit_event_trans values (2, 8);
+
+-- Rate types
+-- insert into kssa_rate_type (id, code, creation_date, creator_id, description, editor_id, last_update, name)
+-- values (1, 'fee.ao.credits.fixed', sysdate, 'admin', 'A fee calculated by multiplying the number of credits in an activity offering by a fee. Example: A  3 credit activity offering is multiplied by 5(USD) resulting in a final fee of 15(USD).', 'admin', sysdate, 'Fixed price per credit fee');
+
+-- insert into kssa_rate_type (id, code, creation_date, creator_id, description, editor_id, last_update, name)
+--values (2, 'fee.ao.credits.flexible', sysdate, 'admin', 'Lorem ipsum dolor sit amet. Duis aute irure dolor in reprehenderit in voluptate', 'admin', sysdate, 'Flexible price per credit fee');
+
+--insert into kssa_rate_type (id, code, creation_date, creator_id, description, editor_id, last_update, name)
+--values (3, 'fee.ao.course', sysdate, 'admin', 'Consectetur adipisicing elit. Duis aute irure dolor in reprehenderit in voluptate', 'admin', sysdate, 'Flat per course fee');
+
+--insert into kssa_rate_type (id, code, creation_date, creator_id, description, editor_id, last_update, name)
+--values (4, 'fee.ao.annual', sysdate, 'admin', 'Ut enim ad minim veniam. Duis aute irure dolor in reprehenderit in voluptate', 'admin', sysdate, 'Flat annual fee');
+
+--insert into kssa_rate_type (id, code, creation_date, creator_id, description, editor_id, last_update, name)
+--values (5, 'fee.ao.once', sysdate, 'admin', 'Duis aute irure dolor in reprehenderit in voluptate. Duis aute irure dolor in reprehenderit in voluptate', 'admin', sysdate, 'Flat one time fee');
+
