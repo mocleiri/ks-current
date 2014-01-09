@@ -63,25 +63,6 @@
         </property>
     </bean>
 
-    <!-- Override programService bean with UW implementation -->
-    <bean id="programServiceImpl" class="org.kuali.student.myplan.program.ProgramServiceImpl">
-    </bean>
-
-    <!--<bean id="ks.exp.programService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
-        <property name="serviceDefinition">
-            <bean class="org.kuali.rice.ksb.api.bus.support.SoapServiceDefinition">
-                <property name="jaxWsService" value="true"/>
-                <property name="service" ref="programServiceImpl"/>
-                <property name="serviceInterface"
-                          value="org.kuali.student.lum.program.service.ProgramService"/>
-                <property name="localServiceName" value="ProgramService"/>
-                <property name="serviceNameSpaceURI"
-                          value="http://student.kuali.org/wsdl/program"/>
-                <property name="busSecurity" value="${ks.lum.bus.security}"/>
-            </bean>
-        </property>
-    </bean>-->
-
     <!-- Override ks-enroll CourseOfferingService bean with UW implementation -->
     <bean id="coService" class="edu.uw.kuali.student.web.UwSolrCourseOfferingServiceImpl">
         <property name="offeringServiceUtils" ref="offeringServiceUtil"/>

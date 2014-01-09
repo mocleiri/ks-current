@@ -283,17 +283,6 @@
         <load-on-startup>3</load-on-startup>
     </servlet>
 
-    <servlet>
-        <servlet-name>samplePlan</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>samplePlan</servlet-name>
-        <url-pattern>/samplePlan/*</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>remoting</servlet-name>
         <url-pattern>/remoting/*</url-pattern>
@@ -367,21 +356,10 @@
         <url-pattern>/myplan/unauthorized</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>UnAuthorized</servlet-name>
-        <url-pattern>/samplePlan/unauthorized</url-pattern>
-    </servlet-mapping>
-
     <servlet>
         <servlet-name>BrowserIncompatible</servlet-name>
         <jsp-file>/ks-myplan/WEB-INF/jsp/templates/MyPlanIncompatibleErrorPage.jsp</jsp-file>
     </servlet>
-
-    <servlet-mapping>
-        <servlet-name>BrowserIncompatible</servlet-name>
-        <url-pattern>/samplePlan/browserIncompatible</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>BrowserIncompatible</servlet-name>
         <url-pattern>/myplan/browserIncompatible</url-pattern>
@@ -391,12 +369,6 @@
         <servlet-name>SessionExpired</servlet-name>
         <jsp-file>/ks-myplan/WEB-INF/jsp/templates/MyPlanSessionExpiredPage.jsp</jsp-file>
     </servlet>
-
-    <servlet-mapping>
-        <servlet-name>SessionExpired</servlet-name>
-        <url-pattern>/samplePlan/sessionExpired</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>SessionExpired</servlet-name>
         <url-pattern>/myplan/sessionExpired</url-pattern>

@@ -21,8 +21,6 @@
     <ul class="chan">
         <li><a href="${ConfigProperties.application.url}/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView"
                target="_new">Your Plan</a></li>
-        <li><a href="${ConfigProperties.application.url}/samplePlan/lookup?methodToCall=search&viewId=SamplePlan-LookupView"
-               target="_new">Sample Plan</a></li>
         <li>
             <a href="${ConfigProperties.application.url}/myplan/lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView"
                target="_new">Bookmarked Courses</a></li>

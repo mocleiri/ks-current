@@ -223,12 +223,6 @@
     <!-- MyPlan Max Search results -->
     <param name="myplan.search.results.max">500</param>
 
-    <!-- SamplePlan Year Count -->
-    <param name="samplePlan.year.count">7</param>
-
-    <!-- SamplePlan Items Count -->
-    <param name="samplePlan.items.count">6</param>
-
 
     <!--<param name="css.files" override="true">ks-myplan/css/myplan.css,${css.files}</param>-->
     <!-- Default config file location -->

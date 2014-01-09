@@ -252,12 +252,6 @@
     <!-- MyPlan Max Search results -->
     <param name="myplan.search.results.max">500</param>
 
-    <!-- SamplePlan Year Count -->
-    <param name="samplePlan.year.count">7</param>
-
-    <!-- SamplePlan Items Count -->
-    <param name="samplePlan.items.count">6</param>
-
     <!-- default config files -->
     <param name="config.location">${user.home}/kuali/main/${environment}/myplan-config.xml</param>
     <param name="config.location">/data/kuali/etc/myplan-config.xml</param>
