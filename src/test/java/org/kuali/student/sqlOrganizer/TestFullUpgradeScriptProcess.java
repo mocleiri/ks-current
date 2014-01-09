@@ -15,8 +15,9 @@ public class TestFullUpgradeScriptProcess {
 
     @Test
     public void testUpgradeProcess() throws IOException {
-        TestSqlOrganizer testSqlOrganizer = new TestSqlOrganizer();
-        TestSqlUpgradeFileCreator testSqlUpgradeFileCreator = new TestSqlUpgradeFileCreator();
+        SqlOrganizer sqlOrganizer = new SqlOrganizer();
+        sqlOrganizer.init();
+        sqlOrganizer.organizeAggregateFiles();
 
         UpgradeCreationConfig config = TestSqlUpgradeFileCreator.getTestConfig();
         SqlUpgradeFileCreator.createSqlUpgradeFile(config);
