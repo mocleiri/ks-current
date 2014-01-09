@@ -169,7 +169,7 @@ public class KSCollectionUtils {
      * @return       the get(0) element in the list. If there are no elements, return null.
      * @throws OperationFailedException
      */ 
-    public static <T> T getOptionalZeroElement(List<T> list, boolean throwOnNullList) throws OperationFailedException{
+    public static <T> T getOptionalZeroElement(List<T> list, boolean throwOnNullList) throws OperationFailedException {
     	
     	if (isListNull(list, throwOnNullList))
     		return null;

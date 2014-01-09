@@ -12,14 +12,28 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+package org.kuali.student.r2.core.ges.infc;
 
-package org.kuali.student.r2.core.rule.infc;
 
-import org.kuali.student.r2.common.infc.IdEntity;
+
 
 /**
- * Provides the definition of a rule, i.e., the description of
- * a rule in a BRMS (business rule management system).
+ * Criteria used to evaluate the applicability of a value(s) associated with a parameter.
  */
-public interface Rule extends IdEntity {
+public interface GesCriteria {
+    /**
+     * ATP used to restrict the value(s) returned by evaluations using this criteria.
+     * An empty or null value is treated as a wild card.
+     * @name Atp Type Key
+     */
+    String getAtpTypeKey();
+
+    /**
+     * Person Id used to derive attributes that constrain the applicability of a value.
+     * An empty or null value is treated as a wild card.
+     * @name Person Id
+     */
+    String getPersonId();
+
+
 }

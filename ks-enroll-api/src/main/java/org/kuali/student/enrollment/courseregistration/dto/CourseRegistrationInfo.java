@@ -25,15 +25,28 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.kuali.rice.core.api.util.type.KualiDecimal;
+
 import org.kuali.student.enrollment.courseregistration.infc.CourseRegistration;
 import org.kuali.student.r2.common.dto.RelationshipInfo;
+
 import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CourseRegistrationInfo", propOrder = {
-        "id", "typeKey", "stateKey", 
-        "studentId", "courseOfferingId", "credits", "gradingOptionId", 
-        "effectiveDate", "expirationDate", "meta", "attributes", 
+        "id", 
+        "typeKey", 
+        "stateKey", 
+        "personId", 
+        "termId", 
+        "courseOfferingId", 
+        "registrationGroupId", 
+        "credits", 
+        "gradingOptionId", 
+        "effectiveDate", 
+        "expirationDate", 
+        "meta", 
+        "attributes", 
         "_futureElements"})
 
 public class CourseRegistrationInfo 
@@ -43,13 +56,19 @@ public class CourseRegistrationInfo
     private static final long serialVersionUID = 1L;
 
     @XmlElement
-    private String studentId;
+    private String personId;
+    
+    @XmlElement
+    private String termId;
 
     @XmlElement
     private String courseOfferingId;
 
     @XmlElement
-    private String credits;
+    private String registrationGroupId;
+    
+    @XmlElement
+    private KualiDecimal credits;
 
     @XmlElement
     private String gradingOptionId;
@@ -74,22 +93,35 @@ public class CourseRegistrationInfo
         super(courseRegistration);
 
         if (courseRegistration != null) {
-            this.studentId = courseRegistration.getStudentId();
+            this.personId = courseRegistration.getPersonId();
+            this.termId = courseRegistration.getTermId();
             this.courseOfferingId = courseRegistration.getCourseOfferingId();
-            this.credits = courseRegistration.getCredits();
+            this.registrationGroupId = courseRegistration.getRegistrationGroupId();
+            this.credits = new KualiDecimal(courseRegistration.getCredits().bigDecimalValue());
             this.gradingOptionId = courseRegistration.getGradingOptionId();
          }
     }
 
     @Override
-    public String getStudentId() {
-        return studentId;
+    public String getPersonId() {
+        return personId;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setPersonId(String studentId) {
+        this.personId = studentId;
     }
 
+    @Override
+    public String getTermId() {
+        return termId;
+    }
+
+    public void setTermId(String termId) {
+        this.termId = termId;
+    }
+
+    
+    
     @Override
     public String getCourseOfferingId() {
         return courseOfferingId;
@@ -100,11 +132,20 @@ public class CourseRegistrationInfo
     }
 
     @Override
-    public String getCredits() {
+    public String getRegistrationGroupId() {
+        return registrationGroupId;
+    }
+
+    public void setRegistrationGroupId(String registrationGroupId) {
+        this.registrationGroupId = registrationGroupId;
+    } 
+
+    @Override
+    public KualiDecimal getCredits() {
         return credits;
     }
 
-    public void setCredits(String credits) {
+    public void setCredits(KualiDecimal credits) {
         this.credits = credits;
     }
 
