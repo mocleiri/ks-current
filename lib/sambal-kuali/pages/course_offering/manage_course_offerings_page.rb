@@ -45,11 +45,11 @@ class ManageCourseOfferings < BasePage
   element(:add_activity_button){ |b| b.frm.button(id: "KS-CourseOfferingManagement-ToolBar-Add-AO-ClusterTab") }
   action(:add_activity){ |b| b.add_activity_button.click; b.loading.wait_while_present}
 
-  element(:add_activity_popup_div){ |b| b.frm.div(id: "KS-CourseOfferingManagement-AddActivityOfferingPopupForm") }
-  element(:format) { |b| b.add_activity_popup_div.select(name: "formatOfferingIdForNewAO") }
-  element(:activity_type) { |b| b.add_activity_popup_div.select(name: "activityIdForNewAO") }
-  element(:cluster) { |b| b.add_activity_popup_div.select(name: "clusterIdForNewAO") }
-  element(:quantity) { |b| b.add_activity_popup_div.text_field(name: "noOfActivityOfferings") }
+  element(:add_activity_popup_div){ |b| b.frm.div(id: /jquerybubblepopup/) }
+  element(:format) { |b| b.add_activity_popup_div.select }
+  element(:activity_type) { |b| b.add_activity_popup_div.select(id: "activityOfferingTypeDropDown_control") }
+  element(:cluster) { |b| b.add_activity_popup_div.select(id: "clusterDropDown_control") }
+  element(:quantity) { |b| b.add_activity_popup_div.text_field(id: "addActivityOfferingQuantity_control") }
   element(:add_button) { |b| b.add_activity_popup_div.button }
   action(:complete_add_activity) { |b| b.add_button.click; b.loading.wait_while_present }
 
