@@ -1,0 +1,4 @@
+TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
+"kuali.cluSet.type.CreditCourse","Clu set for Courses","2000-01-01T00:00:00.000-0700","${mpx.null}","Course Clu Set","${mpx.null}","0"
+"kuali.cluSet.type.Program","Clu set for programs","2000-01-01T00:00:00.000-0700","${mpx.null}","Program Clu Set","${mpx.null}","0"
+"kuali.cluSet.type.Test","Clu set for Tests","2010-01-01T00:00:00.000-0700","${mpx.null}","Test Clu Set","${mpx.null}","0"
