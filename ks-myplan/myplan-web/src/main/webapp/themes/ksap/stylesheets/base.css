@@ -1,0 +1,20 @@
+body {
+    background: #fff;
+}
+
+.uif-application {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+#Uif-ApplicationHeader-Wrapper,
+form#kualiForm {
+    width: auto;
+    margin: 0;
+}
+
+#Uif-ApplicationFooter-Wrapper {
+    background: none !important;
+    border: none !important;
+}

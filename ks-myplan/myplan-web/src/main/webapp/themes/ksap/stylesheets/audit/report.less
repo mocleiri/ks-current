@@ -1,0 +1,454 @@
+.auditReport h6 {
+    background: #39275b;
+    color: @white;
+    padding: 2px @paddingDefault;
+    text-transform: uppercase;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+}
+
+.auditReport h1 {
+    color: @white;
+    text-transform: uppercase;
+    background: #39275b;
+    padding: 15px;
+    font-size: @fontSizeExtraLarge;
+    line-height: @baseLineHeight;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+}
+
+.auditReport .auditReport__html--plan h1 {
+    color: @black;
+    border-left: solid 1px #ffe3a2;
+    border-right: solid 1px #ffe3a2;
+    background: url('../images/planned_activity_bkgrd.png') !important;
+    text-shadow: 0px 0px 5px #FBF2DB;
+    .border-radius(0);
+}
+
+.auditReport .audit-summary {
+    background: #ddd;
+    padding: @paddingDefault 15px;
+    overflow: auto;
+    margin: 0 0 @marginDefault 0;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+}
+
+.auditReport .auditReport__html--plan .audit-summary {
+    border: solid 1px #ffe3a2;
+    border-top: none;
+    background: @white;
+}
+
+.auditReport .audit-summary .audit-summary-data {
+    float: left;
+    width: 50%;
+}
+
+.auditReport .auditReport__html--degree .audit-summary .plan-audit-data {
+    display: none;
+}
+
+.auditReport .auditReport__html--plan .audit-summary .audit-summary-data label {
+    color: @textColorMin;
+    display: inline-block;
+    width: 39%;
+    .normal();
+}
+
+.auditReport .audit-summary .audit-summary-data > div,
+.auditReport .audit-summary .audit-summary-data > span {
+    display: inline-block;
+    width: 59%;
+}
+
+.auditReport .toptext,
+.auditReport .audit-status-msg,
+.auditReport .advisory {
+    margin-top: 1em;
+}
+
+.auditReport .audit-status-msg {
+    background: #faf5ff;
+    padding: 10px 15px 10px 85px;
+    position: relative;
+    .border-radius(@baseBorderRadius);
+}
+
+.auditReport .audit-status-msg label {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #ebe1fe;
+    padding: @paddingDefault 15px;
+    .border-radius(@baseBorderRadius 0 0 @baseBorderRadius);
+}
+
+// SHOW/HIDE MET REQUIREMENTS #############################################
+.auditReport .control-toolbar {
+    display: none; // TODO: HIDE DROPDOWN FOR SHOW/HIDE MET REQUIREMENTS UNTIL MYPLAN-2521 RESOLVED
+    padding: @paddingDefault;
+    margin: 0 0 @marginLarge 0;
+    background: #faf8ec;
+    border: @baseBorderStyle;
+    .border-radius(@baseBorderRadius);
+}
+
+.auditReport .control-toolbar label {
+    margin: 0 7px 0 0;
+    .normal();
+}
+
+.auditReport .section {
+    margin: @marginLarge 0 0 0;
+}
+
+.auditReport .section .heading,
+.auditReport .section .planHeading {
+    font-size: @fontSizeLarge;
+    background: #dddddd;
+    border: solid 1px #e6e6e6;
+    padding: @paddingDefault;
+    margin: 0 0 @marginLarge 0;
+    .border-radius(@baseBorderRadius);
+}
+
+.auditReport .section .planHeading {
+    border: none;
+    margin: 0;
+    background: none;
+    .border-radius(0);
+}
+
+.auditReport .requirement,
+.auditReport .bigsection {
+    margin: 0 @marginDefault @marginSmall;
+    clear: both;
+    border-top: @dottedBorderStyle;
+    padding: @paddingDefault;
+    overflow: hidden;
+    height: auto;
+    background: -moz-linear-gradient(top, #fbf6e6 0px, #ffffff 50px);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0px,#fbf6e6), color-stop(50px,#ffffff));
+    background: -webkit-linear-gradient(top, #fbf6e6 0px,#ffffff 50px);
+    background: -o-linear-gradient(top, #fbf6e6 0px,#ffffff 50px);
+    background: -ms-linear-gradient(top, #fbf6e6 0px,#ffffff 50px);
+    background: linear-gradient(to bottom, #fbf6e6 0px,#ffffff 50px);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbf6e6', endColorstr='#ffffff',GradientType=0);
+}
+
+.auditReport .bigsection .heading {
+    margin-left: 66px;
+    background: none;
+    border: none;
+    padding: 0;
+    .border-radius(0);
+}
+
+.auditReport .requirement .header {
+    overflow: auto;
+}
+
+.auditReport .requirement .header .toggle,
+.auditReport .requirement .header .status,
+.auditReport .requirement .header .reqNumber,
+.auditReport .requirement .header .reqGroup,
+.auditReport .requirement .header .title,
+.auditReport .requirement .subrequirement .header .status,
+.auditReport .requirement .subrequirement .header .required,
+.auditReport .requirement .subrequirement .header .subreqNumber,
+.auditReport .requirement .subrequirement .header .title,
+.auditReport .requirement .subrequirement .header .subreqCline {
+    float: left;
+    margin: 0 @marginDefault 0 0;
+    vertical-align: middle;
+    padding: 0;
+    min-height: 1px;
+}
+
+.auditReport .requirement .header .title,
+.auditReport .requirement .subrequirement .header .title {
+    margin: 0;
+}
+
+.auditReport .requirement .header .reqNumber {
+    width: 20px;
+}
+
+.auditReport .requirement .header .toggle {
+    background: url('../images/icon_sprite.png') no-repeat -1000px -1000px;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.auditReport .requirement.expanded .header .toggle {
+    background-position: 0px -16px;
+}
+
+.auditReport .requirement.expanded .header .toggle:hover {
+    background-position: -16px -16px;
+}
+
+.auditReport .requirement.collapsed .header .toggle {
+    background-position: 0px -32px;
+}
+
+.auditReport .requirement.collapsed .header .toggle:hover {
+    background-position: -16px -32px;
+}
+
+.auditReport .requirement .header .title {
+    text-overflow: ellipsis;
+    cursor: pointer;
+    width: 564px;
+}
+
+.auditReport .requirement .header .status,
+.auditReport .requirement .subrequirement .header .status {
+    color: @white;
+    font-size: @fontSizeMin;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    width: 28px;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 13px;
+    height: 13px;
+    margin-top: @marginMini;
+    .border-radius(@borderRadiusSmall);
+    border: solid 1px transparent;
+    text-shadow: 0px 1px 2px rgba(50, 50, 50, 1);
+    .bold();
+}
+
+.auditReport .requirement .header .status.Status_NO {
+    background-color: #990000;
+    border-color: #b76066;
+}
+
+.auditReport .requirement .header .status.Status_PL {
+    background: #fbf2da url('../images/planned_activity_bkgrd.png');
+    border-color: #fdd982;
+    color: @black;
+    text-shadow: 0px 0px 3px rgba(250, 250, 250, 1);
+}
+
+.auditReport .requirement .header .status.Status_IP {
+    background-color: #ffac22;
+    border-color: #ffc86c;
+    color: #013802;
+    text-shadow: 0px 0px 3px rgba(250, 250, 250, 1);
+}
+
+.auditReport .requirement .header .status.Status_OK {
+    background-color: #4a7c01;
+    border-color: #92b067;
+}
+
+.auditReport .requirement .header .status.Status_NONE {
+    background-color: transparent;
+    display: none;
+}
+
+.auditReport .requirement .subrequirement .status.Status_NONE {
+    visibility: hidden;
+    display: block;
+}
+
+.auditReport .requirement .body {
+    clear: both;
+    margin: 20px 0 0 66px;
+}
+
+.auditReport .requirement .body .totals .value {
+    .bold();
+}
+
+.auditReport .requirement .body .totals .earned,
+.auditReport .requirement .body .totals .inprogress,
+.auditReport .requirement .body .totals .needs,
+.auditReport .requirement .body .totals .required,
+.auditReport .requirement .body .totals .whatif {
+    margin: 0 @marginLarge 0 0;
+    display: inline-block;
+}
+
+.auditReport .requirement .subrequirement .header .status {
+    background-color: #666;
+    border-color: #aaa;
+    color: @white;
+}
+
+.auditReport .requirement .subrequirement .header .Status_PL {
+    background: #666;
+    border-color: #aaa;
+    text-shadow: none;
+}
+
+.auditReport .requirement .subrequirement .header .Status_IP {
+    text-shadow: none;
+}
+
+.auditReport .requirement .subrequirement .header .Status_NONE {
+    text-shadow: none;
+}
+
+.auditReport .requirement .subrequirement .header .required.subreqNumber {
+    width: 30px;
+    text-align: right;
+}
+
+.auditReport .requirement .subrequirement .header .title {
+    text-overflow: clip;
+    cursor: default;
+    width: 474px;
+}
+
+.auditReport .requirement .subrequirement.justtitle {
+    padding: @paddingDefault 0px;
+}
+
+.auditReport .requirement .subrequirement.justtitle .subreqNumber.required {
+    display: none;
+}
+
+.auditReport .requirement .subrequirement.justtitle .title {
+    margin-left: 40px;
+    font-weight: bold;
+    border-top: @dottedBorderStyle;
+    border-bottom: @dottedBorderStyle;
+    padding: 4px 0px;
+    line-height: 1.25em;
+}
+
+.auditReport table,
+.auditReport table th,
+.auditReport table td {
+    padding: 0;
+    border-collapse: collapse;
+}
+
+.auditReport table caption {
+    font-size: @fontSizeTiny;
+    color: #666;
+    text-transform: uppercase;
+    line-height: 2em;
+}
+
+.auditReport .subrequirement .totals,
+.auditReport .subrequirement .taken,
+.auditReport .subrequirement .fromcourses,
+.auditReport .requirement .subrequirement .header .subreqCline {
+    margin-left: 80px;
+}
+
+.auditReport .requirement table.taken {
+    border-top: @baseBorderStyle;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+}
+
+.auditReport .requirement table th,
+.auditReport .requirement table td {
+    font-size: @fontSizeSmall;
+    padding: 0 0.4em 0 0;
+}
+
+.auditReport .requirement .taken td,
+.auditReport .requirement .taken th {
+    padding-right: 1.25em;
+    border-bottom: @baseBorderStyle;
+    line-height: 1.88em;
+}
+
+.auditReport .requirement .taken td:first-child,
+.auditReport .requirement .taken th:first-child {
+    padding-left: 1.25em;
+}
+
+.auditReport .requirement table th {
+    font-size: @fontSizeTiny;
+    color: @textColorMin;
+    text-align: left;
+}
+
+.auditReport .taken .ccode {
+    cursor: help;
+}
+
+.auditReport .section.rname_WHAT-IF .heading {
+    border: none;
+    margin: 0;
+    padding: 0px;
+    background: transparent;
+    font-size: 1em !important;
+    height: 20px;
+}
+
+.auditReport .section.rname_LINE1 .heading {
+    border: none;
+    margin: 0;
+    padding: 0px;
+    background: transparent !important;
+    font-size: 1em !important;
+    height: 20px;
+}
+
+.auditReport .footer {
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.75em;
+}
+
+.auditReport .footer .gray-line {
+    background: #dddddd;
+}
+
+.auditReport .footer .purple-line {
+    background: #39275b;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+    color: @white;
+}
+
+.sigdateLabel, .sigdateField {
+    display: block;
+}
+
+.sigdateField {
+    border-bottom: solid 1px #000;
+    margin-top: 3.5em;
+}
+
+.WIFCRSES.requirement.Status_NONE {
+    border: solid 1px #fac157;
+    .border-radius(@baseBorderRadius);
+    margin-bottom: 30px;
+    background: @white;
+    padding: 0;
+}
+
+.WIFCRSES.requirement.Status_NONE > .header {
+    padding: @paddingLarge;
+    background: #faeac4;
+    line-height: 1.5em;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    .bold();
+}
+
+.WIFCRSES.requirement.Status_NONE > .header .title {
+    width: auto;
+}
+
+.WIFCRSES.requirement.Status_NONE > .header .toggle,
+.WIFCRSES.requirement.Status_NONE > .body .header .status,
+.WIFCRSES.requirement.Status_NONE > .body .header .subreqNumber {
+    display: none;
+}
+
+.WIFCRSES.requirement.Status_NONE > .body {
+    margin: 0 0 25px 0;
+}
+
+.WIFCRSES.requirement.Status_NONE > .body .subrequirement .taken {
+    margin-left: 75px;
+}

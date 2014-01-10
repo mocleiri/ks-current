@@ -1,0 +1,259 @@
+.planTerm {
+    & .courseActivities__table {
+        border: none;
+        margin: 0;
+        & .collapsible {
+            display: none;
+        }
+        & .courseActivities--primary td, .courseActivities--secondary td {
+            border-top: @baseBorderStyle;
+        }
+    }
+
+    & .courseActivities__table--registered {
+        & td {
+            height: 50px;
+        }
+
+        & .courseActivities__code {
+            text-align: left;
+            font-size: @fontSizeLarge;
+            .bold();
+        }
+
+        & .courseActivities__title {
+            font-size: @fontSizeTiny;
+            width: 150px;
+        }
+
+        & .courseActivities--primary td:first-child {
+            background: #a58dce;
+        }
+
+        & .courseActivities--secondary td:first-child {
+            background: #c1b1dd;
+        }
+
+        & .courseActivities--primary td,
+        & .courseActivities--secondary td {
+            border-top-width: 3px;
+        }
+
+        & .courseActivities--primary td:first-child img,
+        & .courseActivities--secondary td:first-child img {
+            width: 16px;
+            height: 16px;
+            background: url('../images/icon_sprite.png') no-repeat -32px -32px;
+
+            &.expanded {
+                background-position: -32px -16px;
+            }
+        }
+    }
+}
+
+.planTerm__header {
+    font-size: @fontSizeExtraLarge;
+    text-transform: uppercase;
+    padding: @paddingDefault;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    border-width: 1px;
+    border-style: solid;
+
+    &.planTerm__header--past {
+        #gradient > .vertical(#dedede, #ccc);
+        border-color: #ccc;
+        color: @gray;
+        text-shadow: 0px 1px 0px #fcffff;
+    }
+
+    &.planTerm__header--current {
+        #gradient > .vertical(#5c428e, #3b295f);
+        border-color: #432f69;
+        color: #f9f7f7;
+        text-shadow: 0px 1px 0px #000;
+    }
+
+    &.planTerm__header--future {
+        #gradient > .vertical(#ede1c1, #efd89e);
+        border-color: #dcca9d;
+        color: @gray;
+        text-shadow: 0px 1px 0px #fcffff;
+    }
+}
+
+.planTerm__container {
+    border: @baseBorderStyle;
+    border-top: none;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+}
+
+.planContainer__header {
+    border-bottom: @baseBorderStyle;
+    padding: @paddingSmall;
+    #gradient > .vertical(#e7e7e7, #dfdfdf);
+
+    & .planContainer__headerText {
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    & .planContainer__headerGroup--right {
+        display: inline-block;
+        margin: 0 0 0 @marginSmall;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+    }
+
+    &.planTerm--unlocked {
+        filter: none;
+        background-image: url('../images/icon_unlocked.png');
+        background-repeat: no-repeat;
+        background-position: right center;
+    }
+
+    &.planTerm--locked {
+        filter: none;
+        background-image: url('../images/icon_locked.png');
+        background-repeat: no-repeat;
+        background-position: right center;
+    }
+}
+
+.planContainer--recommended {
+    & .planContainer__header {
+        #gradient > .vertical(#d5edd5, #c7e1c7);
+        border-top: solid 1px #cce6cc;
+        border-bottom: solid 1px #c6dec7;
+        & .planContainer__headerText {
+            color: #547a58;
+        }
+    }
+
+    & .termPlanItem__note {
+        width: 16px;
+        & img {
+            width: 16px;
+            height: 16px;
+            background-position: -37px -181px;
+        }
+    }
+}
+
+.planTerm__item {
+    border-top: @baseBorderStyle;
+    border-top-width: 3px;
+    &:first-child {
+        border-top: none;
+    }
+    & .uif-subCollection.uif-boxLayoutVerticalItem {
+        margin: 0;
+    }
+
+    &.planTerm__item--placeholder {
+        & .termPlanItem__title, & .termPlanItem__credit {
+            font-style: italic;
+            font-family: @altSerifFontFamily;
+            color: @gray;
+        }
+    }
+
+    &.planTerm__item--recommendedProposed {
+        & .termPlanItem__code, &.planTerm__item--placeholder .termPlanItem__title {
+            .bold();
+        }
+    }
+
+    &.planTerm__item--recommendedAccepted {
+        & .termPlanItem__code, &.planTerm__item--placeholder .termPlanItem__title {
+            color: @green;
+        }
+    }
+}
+
+.termPlanItem {
+    padding: @paddingSmall;
+}
+
+.termPlanItem__alert {
+    .planItem__alert;
+    left: auto;
+    top: auto;
+    position: relative;
+    & img {
+        position: relative;
+        top: -2px
+    }
+}
+
+.termPlanItem__note {
+    .planItem__note;
+    right: auto;
+    top: auto;
+    position: relative;
+    & img {
+        position: relative;
+        top: -2px
+    }
+    &.uif-boxLayoutHorizontalItem {
+        margin: 0 0 0 @marginDefault;
+    }
+}
+
+.termPlanItem__actions {
+    margin: 0 0 0 @marginLarge !important;
+    font-size: @fontSizeMini;
+    float: right !important;
+    & .uif-boxLayoutHorizontalItem {
+        float: none;
+        margin: 0;
+    }
+}
+
+.planTerm__activitiesInstitution {
+    padding: @paddingSmall;
+    .bold();
+    color: @textColorLight;
+    border-top: @baseBorderStyle;
+}
+
+.planTerm__creditTotal {
+    padding: @paddingSmall @paddingDefault;
+    background: #f6ebcd;
+    border: @baseBorderStyle;
+    border-left: none;
+    border-right: none;
+    border-top-width: 3px;
+    border-bottom-width: 2px;
+    color: @purple;
+    font-size: 15px;
+
+    & .uif-boxLayoutHorizontalItem {
+        display: inline-block;
+        margin: 0 0 0 @marginDefault;
+        vertical-align: middle;
+        float: none;
+    }
+
+    & .uif-boxLayoutHorizontalItem:first-child {
+        margin: 0;
+    }
+
+    & .planTerm__creditValue {
+        font-size: @fontSizeExtraLarge;
+        .bold();
+        margin: 0 0 0 @marginLarge;
+    }
+
+    & .uif-tooltip {
+        position: relative;
+        top: -2px;
+    }
+}
+
+.planContainer--empty {
+    padding: @paddingLarge;
+    font-style: italic;
+    color: @textColorMin;
+}
