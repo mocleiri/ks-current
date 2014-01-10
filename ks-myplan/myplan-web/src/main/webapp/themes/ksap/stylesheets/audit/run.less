@@ -1,0 +1,46 @@
+.auditRun {
+    border: @baseBorderStyle;
+    border-top: none;
+    .border-radius(0px 0px @baseBorderRadius @baseBorderRadius);
+    background-color: #fdfaf3;
+    padding: @paddingLarge;
+    margin: 0;
+}
+
+.auditRun__radioSet {
+    margin: @marginDefault 0 0;
+    & input, & label {
+        vertical-align: middle;
+        margin: 0;
+    }
+
+    & label {
+        margin: 0 @marginLarge 0 @marginSmall;
+    }
+}
+
+.auditRun__blockAudit {
+    .border-radius(15px);
+    font-size: @fontSizeLarge;
+    line-height: 32px;
+    background-image: url('../images/loader/ajax_large.gif');
+    background-repeat: no-repeat;
+    background-position: 30px 30px;
+
+}
+
+.auditRun__info {
+    width: 313px;
+    height: 205px;
+    margin: @marginDefault !important;
+    padding: @paddingDefault;
+    border: @baseBorderStyle;
+    .border-radius(@baseBorderRadius);
+}
+
+.auditRun__infoHeader {
+    margin: 0 0 @marginDefault;
+    & .auditRun__infoHeaderText {
+        .bold();
+    }
+}
