@@ -61,9 +61,10 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 '(signup operation is "DROP_WITHOUT_PENALTY,TRANSFER_OUT")',
 'mark preceding offerings as not taken
  mark signup as not taken
- on signup including preceding offerings remove rates ".*fee.*"
+ remove signup rates ".*fee.*"
+ remove rates ".*fee.*" from preceding offerings
  mark preceding offerings as complete
- mark signup as not taken
+ mark signup as complete
 ')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (5004, 'FM Rule 4', 3, 10, null,
@@ -103,13 +104,16 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  mark preceding offerings as not taken
  mark signup as not taken
  mark signup as not complete
- on signup including preceding offerings remove rates ".*fee.*"
+ remove rates ".*fee.*" from preceding offerings
  charge incidental rate "late.registration", "1" using id "late.registration"
  discount rate "late.registration", "1" by $10.67
  discount rate "late.registration", "1" by 99.91%
- on signup replace rates ".*,late.fee,2", "" with "late.registration", "1"
- on signup remove rates ".*"
- on signup add rate "late.registration", "1"
+ replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
+ remove signup rates ".*"
+ add signup rate "late.registration", "1"
+ replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
+ remove signup rates ".*"
+ add signup rate "late.registration", "1"
 ')!
 
 -- FM rule associations

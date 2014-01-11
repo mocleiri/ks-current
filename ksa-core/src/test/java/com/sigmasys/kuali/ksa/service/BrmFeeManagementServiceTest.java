@@ -3,6 +3,8 @@ package com.sigmasys.kuali.ksa.service;
 import com.sigmasys.kuali.ksa.config.ConfigService;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.model.fm.*;
+import com.sigmasys.kuali.ksa.service.brm.BrmContext;
+import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,9 +53,12 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     @Autowired
     private BrmFeeManagementService brmFmService;
 
+    @Autowired
+    private BrmService brmService;
+
 
     @Test
-    public void assesFees() throws Exception {
+    public void assesFees1() throws Exception {
 
         // Create an FM session and manifest:
         FeeManagementSession session = createFmSession(1, true, false, false, false, FeeManagementManifestType.ORIGINAL);
@@ -68,6 +73,46 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         Assert.notNull(signup);
 
         FeeManagementSession updatedSession = brmFmService.assessFees(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void assesFees2() throws Exception {
+
+        // Create an FM session and manifest:
+        FeeManagementSession session = createFmSession(1, true, false, false, false, FeeManagementManifestType.ORIGINAL);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSignup signup = session.getSignups().iterator().next();
+
+        Assert.notNull(signup);
+
+        // Calling BrmService with payment application rules
+        BrmContext context = new BrmContext();
+        context.setAccount(session.getAccount());
+        context.setGlobalVariable("fmSession", session);
+
+        FeeManagementSession updatedSession = null;
+
+        Set<FeeManagementSignup> signups = session.getSignups();
+
+        Assert.notNull(signups);
+        Assert.notEmpty(signups);
+
+        for (FeeManagementSignup fmSignup : signups) {
+            context.setGlobalVariable("fmSignup", fmSignup);
+            brmService.fireRules("FM Signup 1", context);
+            updatedSession = context.getGlobalVariable("fmSession");
+        }
 
         Assert.notNull(updatedSession);
         Assert.notNull(updatedSession.getId());

@@ -419,37 +419,45 @@ public interface BrmFeeManagementService {
     void setPrecedingOfferingsTaken(boolean isTaken, String signupOperations, BrmContext context);
 
     /**
-     * Removes all rates on the current signup and all preceding signups (offerings) based on the given parameters.
+     * Removes rates from all preceding signups (offerings) based on the given parameters.
      *
-     * @param rateCodes            List of rate codes separated by ","
-     * @param rateTypeCodes        List of rate type codes separated by ","
-     * @param rateCatalogCodes     List of rate catalog codes separated by ","
-     * @param removeFromSignupOnly If true the rates will be removed from the signup only
-     * @param context              BRM context
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param context          BRM context
      */
-    void removeRatesFromSignupAndPrecedingOfferings(String rateCodes,
-                                                    String rateTypeCodes,
-                                                    String rateCatalogCodes,
-                                                    boolean removeFromSignupOnly,
-                                                    BrmContext context);
+    void removeRatesFromPrecedingOfferings(String rateCodes,
+                                           String rateTypeCodes,
+                                           String rateCatalogCodes,
+                                           BrmContext context);
 
     /**
-     * Adds a rate to a FeeManagementSignup object from the BRM context.
+     * Removes all rates on the current signup or session based on the given parameters.
+     *
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param context          BRM context
+     */
+    void removeRates(String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context);
+
+    /**
+     * Adds a rate to a FeeManagementSignup(s) object from the BRM context.
      *
      * @param rateCode    Rate code
      * @param rateSubCode Rate sub-code
      */
-    void addRateToSignup(String rateCode, String rateSubCode, BrmContext context);
+    void addRate(String rateCode, String rateSubCode, BrmContext context);
 
     /**
-     * Replaces rates on FeeManagementSignup object with the new rate specified by code and sub-code.
+     * Replaces rates on FeeManagementSignup(s) object with the new rate specified by code and sub-code.
      *
      * @param rateCodes      List of rate codes separated by ","
      * @param rateSubCodes   List of rate sub-codes separated by ","
      * @param newRateCode    Code of the new rate
      * @param newRateSubCode Sub-code of the new rate
      */
-    void replaceRatesOnSignup(String rateCodes, String rateSubCodes, String newRateCode, String newRateSubCode, BrmContext context);
+    void replaceRates(String rateCodes, String rateSubCodes, String newRateCode, String newRateSubCode, BrmContext context);
 
     /**
      * Charges rates on the signups from FeeManagementSession.

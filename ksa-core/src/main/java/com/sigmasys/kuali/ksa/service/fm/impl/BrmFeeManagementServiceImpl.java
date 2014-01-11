@@ -551,7 +551,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void fireSignupRuleSet(String ruleSetName, BrmContext context) {
 
-        /*FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -560,7 +560,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 context.setGlobalVariable(FM_SIGNUP_VAR_NAME, signup);
                 brmService.fireRules(ruleSetName, context);
             }
-        } */
+        }
     }
 
     /**
@@ -1684,28 +1684,25 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
-     * Removes all rates on the current signup and all preceding signups (offerings) based on the given parameters.
+     * Removes rates from all preceding signups (offerings) based on the given parameters.
      *
-     * @param rateCodes            List of rate codes separated by ","
-     * @param rateTypeCodes        List of rate type codes separated by ","
-     * @param rateCatalogCodes     List of rate catalog codes separated by ","
-     * @param removeFromSignupOnly If true the rates will be removed from the signup only
-     * @param context              BRM context
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param context          BRM context
      */
     @Override
-    public void removeRatesFromSignupAndPrecedingOfferings(String rateCodes,
-                                                           String rateTypeCodes,
-                                                           String rateCatalogCodes,
-                                                           boolean removeFromSignupOnly,
-                                                           BrmContext context) {
+    public void removeRatesFromPrecedingOfferings(String rateCodes,
+                                                  String rateTypeCodes,
+                                                  String rateCatalogCodes,
+                                                  BrmContext context) {
 
         FeeManagementSignup signup = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
-        Set<FeeManagementSignup> signups =
-                filterSignups(!removeFromSignupOnly ? session.getIncompleteSignups() : Arrays.asList(signup),
-                        rateCodes, rateTypeCodes, rateCatalogCodes, null, signup.getOfferingId());
+        Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(),
+                rateCodes, rateTypeCodes, rateCatalogCodes, null, signup.getOfferingId());
 
         if (CollectionUtils.isNotEmpty(signups)) {
 
@@ -1733,13 +1730,53 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
-     * Adds a rate to a FeeManagementSignup object from the BRM context.
+     * Removes all rates on the current signup or session based on the given parameters.
+     *
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param context          BRM context
+     */
+    @Override
+    public void removeRates(String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+
+        Set<FeeManagementSignup> signups =
+                filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
+                        rateCodes, rateTypeCodes, rateCatalogCodes, null, null);
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            for (FeeManagementSignup fmSignup : signups) {
+
+                Set<FeeManagementSignupRate> signupRates = fmSignup.getIncompleteSignupRates();
+
+                if (CollectionUtils.isNotEmpty(signupRates)) {
+
+                    for (FeeManagementSignupRate signupRate : new HashSet<FeeManagementSignupRate>(signupRates)) {
+
+                        signupRates.remove(signupRate);
+
+                        if (signupRate.getId() != null) {
+                            deleteEntity(signupRate.getId(), FeeManagementSignupRate.class);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds a rate to a FeeManagementSignup(s) object from the BRM context.
      *
      * @param rateCode    Rate code
      * @param rateSubCode Rate sub-code
      */
     @Override
-    public void addRateToSignup(String rateCode, String rateSubCode, BrmContext context) {
+    public void addRate(String rateCode, String rateSubCode, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -1774,7 +1811,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
-     * Replaces rates on FeeManagementSignup object with the new rate specified by code and sub-code.
+     * Replaces rates on FeeManagementSignup object(s) with the new rate specified by code and sub-code.
      *
      * @param rateCodes      List of rate codes separated by ","
      * @param rateSubCodes   List of rate sub-codes separated by ","
@@ -1782,7 +1819,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param newRateSubCode Sub-code of the new rate
      */
     @Override
-    public void replaceRatesOnSignup(String rateCodes, String rateSubCodes, String newRateCode, String newRateSubCode, BrmContext context) {
+    public void replaceRates(String rateCodes, String rateSubCodes, String newRateCode, String newRateSubCode, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
