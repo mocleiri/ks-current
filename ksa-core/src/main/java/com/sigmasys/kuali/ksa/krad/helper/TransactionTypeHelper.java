@@ -3,6 +3,7 @@ package com.sigmasys.kuali.ksa.krad.helper;
 import com.sigmasys.kuali.ksa.model.CreditType;
 import com.sigmasys.kuali.ksa.model.DebitType;
 import com.sigmasys.kuali.ksa.model.Tag;
+import com.sigmasys.kuali.ksa.model.TransactionType;
 import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.TransactionService;
 import com.sigmasys.kuali.ksa.util.ContextUtils;
@@ -39,6 +40,11 @@ public class TransactionTypeHelper extends ViewHelperServiceImpl {
         }
         return auditableEntityService;
     }
+
+    public List<TransactionType> getTransactionTypesForSuggest(String suggest) {
+        return getTransactionService().getTransactionTypesByNamePattern(suggest, TransactionType.class);
+    }
+
 
     public List<CreditType> getPaymentsForSuggest(String suggest) {
         return getTransactionService().getTransactionTypesByNamePattern(suggest, CreditType.class);
