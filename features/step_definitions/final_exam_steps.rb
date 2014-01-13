@@ -259,11 +259,6 @@ Then /^see Exam Offerings for the each Activity Offering of the Course with a st
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code).should match /#{exp_state}/
-        page.eo_by_ao_days(code).should == ""
-        page.eo_by_ao_st_time(code).should == ""
-        page.eo_by_ao_end_time(code).should == ""
-        page.eo_by_ao_bldg(code).should == ""
-        page.eo_by_ao_room(code).should == ""
       end
       no_of_eos = array.length
     end
@@ -271,11 +266,6 @@ Then /^see Exam Offerings for the each Activity Offering of the Course with a st
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
-        page.eo_by_ao_days(code, "CL Leftovers").should == ""
-        page.eo_by_ao_st_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_end_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_bldg(code, "CL Leftovers").should == ""
-        page.eo_by_ao_room(code, "CL Leftovers").should == ""
       end
       no_of_eos = array.length
     end
@@ -287,11 +277,6 @@ Then /^see one Exam Offering for the Course Offering with a status of ([^"]*)$/ 
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.eo_by_co_status.should match /#{exp_state}/
-    page.eo_by_co_days.should == ""
-    page.eo_by_co_st_time.should == ""
-    page.eo_by_co_end_time.should == ""
-    page.eo_by_co_bldg.should == ""
-    page.eo_by_co_room.should == ""
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -997,11 +982,6 @@ Then /^the Exam Offerings for Course Offering should be in a ([^"]*) state$/ do 
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.eo_by_co_status.should match /#{exp_state}/
-    page.eo_by_co_days.should == ""
-    page.eo_by_co_st_time.should == ""
-    page.eo_by_co_end_time.should == ""
-    page.eo_by_co_bldg.should == ""
-    page.eo_by_co_room.should == ""
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1010,11 +990,6 @@ Then /^the EO in the Exam Offerings for Course Offering table should be in a ([^
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.eo_by_co_status.should match /#{exp_state}/
-    page.eo_by_co_days.should == ""
-    page.eo_by_co_st_time.should == ""
-    page.eo_by_co_end_time.should == ""
-    page.eo_by_co_bldg.should == ""
-    page.eo_by_co_room.should == ""
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1027,11 +1002,6 @@ Then /^the Exam Offerings for Course Offering in the EO for CO table should be i
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.eo_by_co_status.should match /#{exp_state}/
-    page.eo_by_co_days.should == ""
-    page.eo_by_co_st_time.should == ""
-    page.eo_by_co_end_time.should == ""
-    page.eo_by_co_bldg.should == ""
-    page.eo_by_co_room.should == ""
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1042,21 +1012,11 @@ Then /^the Exam Offerings for each Activity Offering in the EO for AO table shou
     array = page.return_array_of_ao_codes
     array.each do |code|
       page.eo_by_ao_status(code).should match /#{exp_state}/
-      page.eo_by_ao_days(code).should == ""
-      page.eo_by_ao_st_time(code).should == ""
-      page.eo_by_ao_end_time(code).should == ""
-      page.eo_by_ao_bldg(code).should == ""
-      page.eo_by_ao_room(code).should == ""
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
-        page.eo_by_ao_days(code, "CL Leftovers").should == ""
-        page.eo_by_ao_st_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_end_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_bldg(code, "CL Leftovers").should == ""
-        page.eo_by_ao_room(code, "CL Leftovers").should == ""
       end
     end
   end
@@ -1079,11 +1039,6 @@ Then /^the Exam Offerings? for Activity Offering should be in a ([^"]*) state$/ 
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code).should match /#{exp_state}/
-        page.eo_by_ao_days(code).should == ""
-        page.eo_by_ao_st_time(code).should == ""
-        page.eo_by_ao_end_time(code).should == ""
-        page.eo_by_ao_bldg(code).should == ""
-        page.eo_by_ao_room(code).should == ""
       end
       no_of_eos = array.length
     end
@@ -1091,11 +1046,6 @@ Then /^the Exam Offerings? for Activity Offering should be in a ([^"]*) state$/ 
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
-        page.eo_by_ao_days(code, "CL Leftovers").should == ""
-        page.eo_by_ao_st_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_end_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_bldg(code, "CL Leftovers").should == ""
-        page.eo_by_ao_room(code, "CL Leftovers").should == ""
       end
       no_of_eos = array.length
     end
@@ -1110,11 +1060,6 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code).should match /#{exp_state}/
-        page.eo_by_ao_days(code).should == ""
-        page.eo_by_ao_st_time(code).should == ""
-        page.eo_by_ao_end_time(code).should == ""
-        page.eo_by_ao_bldg(code).should == ""
-        page.eo_by_ao_room(code).should == ""
       end
       no_of_eos = array.length
     end
@@ -1122,11 +1067,6 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
-        page.eo_by_ao_days(code, "CL Leftovers").should == ""
-        page.eo_by_ao_st_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_end_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_bldg(code, "CL Leftovers").should == ""
-        page.eo_by_ao_room(code, "CL Leftovers").should == ""
       end
       no_of_eos = array.length
     end
@@ -1141,22 +1081,12 @@ Then /^the EOs in the Exam Offerings for Activity Offering table should be in a 
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code).should match /#{exp_state}/
-        page.eo_by_ao_days(code).should == ""
-        page.eo_by_ao_st_time(code).should == ""
-        page.eo_by_ao_end_time(code).should == ""
-        page.eo_by_ao_bldg(code).should == ""
-        page.eo_by_ao_room(code).should == ""
       end
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
-        page.eo_by_ao_days(code, "CL Leftovers").should == ""
-        page.eo_by_ao_st_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_end_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_bldg(code, "CL Leftovers").should == ""
-        page.eo_by_ao_room(code, "CL Leftovers").should == ""
       end
     end
   end
@@ -1183,22 +1113,13 @@ Then /^the ([\d]*) Exam Offerings? for Activity Offering should be in a ([^"]*) 
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code).should match /#{exp_state}/
-        page.eo_by_ao_days(code).should == ""
-        page.eo_by_ao_st_time(code).should == ""
-        page.eo_by_ao_end_time(code).should == ""
-        page.eo_by_ao_bldg(code).should == ""
-        page.eo_by_ao_room(code).should == ""     end
+      end
       no_of_eos = array.length
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
         page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
-        page.eo_by_ao_days(code, "CL Leftovers").should == ""
-        page.eo_by_ao_st_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_end_time(code, "CL Leftovers").should == ""
-        page.eo_by_ao_bldg(code, "CL Leftovers").should == ""
-        page.eo_by_ao_room(code, "CL Leftovers").should == ""
       end
       no_of_eos = array.length
     end
