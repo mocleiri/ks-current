@@ -174,7 +174,35 @@
                                             <bean parent="Uif-CheckboxControl"/>
                                         </property>
                                     </bean>
+                                    <bean parent="Uif-Disclosure-VerticalBoxSection">
+                                        <property name="headerText" value="Rate Plateau Parameters"/>
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="Uif-InputField" p:propertyName="limitAmountFinal" p:labelPlacement="TOP" p:label="Rates Derived from this model will have a defined plateau">
+                                                    <property name="control">
+                                                        <bean parent="Uif-CheckboxControl"/>
+                                                    </property>
+                                                </bean>
+                                                <bean parent="Uif-InputField" p:propertyName="isLimitAmount" p:labelPlacement="TOP" p:label="Lock the pplateau parameters">
+                                                    <property name="control">
+                                                        <bean parent="Uif-CheckboxControl"/>
+                                                    </property>
+                                                </bean>
+                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.minLimitAmount" p:label="Minimum Amount" p:required="true" p:labelPlacement="TOP"/>
+                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.maxLimitAmount" p:label="Maximum Amount" p:required="true" p:labelPlacement="TOP"/>
+                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.minLimitUnits" p:label="Minimum Units" p:required="true" p:labelPlacement="TOP"/>
+                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.maxLimitUnits" p:label="Maximum Units" p:required="true" p:labelPlacement="TOP"/>
 
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <bean parent="Uif-Disclosure-VerticalBoxSection">
+                                        <property name="headerText" value="Name/Value Pairs"/>
+                                        <property name="items">
+                                            <list>
+                                            </list>
+                                        </property>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>

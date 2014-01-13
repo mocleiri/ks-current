@@ -55,6 +55,22 @@ public class RateCatalogModel {
         getRateCatalog().setRecognitionDateDefinable(locked);
     }
 
+    public Boolean getLimitAmountFinal() {
+        return getRateCatalog().isLimitAmountFinal();
+    }
+
+    public void setLimitAmountFinal(Boolean limitAmountFinal) {
+        getRateCatalog().setLimitAmountFinal(limitAmountFinal);
+    }
+
+    public Boolean getIsLimitAmount() {
+        return getRateCatalog().isLimitAmount();
+    }
+
+    public void setIsLimitAmount(Boolean limitAmount) {
+        getRateCatalog().setLimitAmount(limitAmount);
+    }
+
 }
 
 
