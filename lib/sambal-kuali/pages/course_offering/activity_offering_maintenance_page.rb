@@ -143,7 +143,7 @@ class ActivityOfferingMaintenance < BasePage
     end
   end
 
-  element(:delete_requested_delivery_logistics_element) { |b| b.requested_logistics_table.link(text: "delete") } #TODO: identify button by row (days + start_time)
+  element(:delete_requested_delivery_logistics_element) { |b| b.requested_logistics_table.link(text: "Delete") } #TODO: identify button by row (days + start_time)
   action(:delete_requested_delivery_logistics) { |b| b.delete_requested_delivery_logistics_element.click; b.loading.wait_while_present }
   element(:requested_logistics_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-Requested") }
   element(:requested_logistics_table) { |b| b.requested_logistics_div.table() }
