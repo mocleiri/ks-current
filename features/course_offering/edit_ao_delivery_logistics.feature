@@ -32,6 +32,7 @@ Feature: WC.Edit AO delivery logistics as CSC
     When I add RDLs for an AO specifying times and room only
     Then an error message is displayed about the required RDL fields
 
+  @bug @KSENROLL-11518
   Scenario: Add TBA RDLs for an AO
     When I add RDLs for an AO checking the TBA flag
     Then the AO's delivery logistics shows the new schedule as TBA
