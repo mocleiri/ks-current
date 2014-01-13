@@ -241,7 +241,7 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def delete_rdl_row(row)
-    row.cells[LOGISTICS_ACTION_COLUMN].link(text: "delete").click
+    row.cells[LOGISTICS_ACTION_COLUMN].link(text: "Delete").click
   end
 
   def get_inst_effort(id)
