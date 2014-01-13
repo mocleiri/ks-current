@@ -12,6 +12,7 @@ Feature: EC.Copy Activity Offering Clusters
     Then the activity offering cluster and assigned AOs are copied over with the course offering
     And the registration groups are automatically generated
 
+    @bug @KSENROLL-11516
   Scenario: Copy course offering and ensure constrained activity offering clusters are copied
     Given I have created an additional activity offering cluster for a course offering
     When I copy the course offering
