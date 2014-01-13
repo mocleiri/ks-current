@@ -1113,7 +1113,7 @@ class DeliveryLogistics
 
         if @end_time != nil then
           if @dsc
-            approved_for_nonStandard_timeslots = ( page.non_std_ts_control.text == "true" ? true : false );
+            approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.checked?
             if approved_for_nonStandard_timeslots
               page.add_end_time_div.click
               page.add_end_time.wait_until_present
