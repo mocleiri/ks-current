@@ -43,7 +43,7 @@ class ActivityOfferingMaintenance < BasePage
 
   value(:subterm) { |b| b.frm.div(id: "subterm_name").span.text }
   element(:change_subterm_element) { |b| b.frm.link(id: "change_link") }
-  element(:change_subterm_popup) { |b| b.frm.div(id: "KS-ActivityOfferingEdit-SubtermsPopupForm") }
+  element(:change_subterm_popup) { |b| b.frm.div(id: /jquerybubblepopup/) }
 
   def change_subterm(subterm_type)
     change_subterm_element.click
