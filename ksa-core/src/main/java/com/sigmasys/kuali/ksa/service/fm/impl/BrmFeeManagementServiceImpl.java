@@ -430,7 +430,6 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 } else {
                     intersection = rateTypeCodeSignups;
                 }
-
             }
 
             if (StringUtils.isNotEmpty(rateCatalogCodes)) {
@@ -1881,6 +1880,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param rateSubCodes     List of rate sub-codes separated by ","
      * @param rateTypeCodes    List of rate type codes separated by ","
      * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param percentage       Amount percentage value [0, 100]
      * @param context          BRM context
      */
     @Override
@@ -1888,12 +1889,21 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                   String rateSubCodes,
                                   String rateTypeCodes,
                                   String rateCatalogCodes,
+                                  String signupOperations,
+                                  BigDecimal percentage,
                                   BrmContext context) {
+
+        if (percentage != null && (percentage.compareTo(BigDecimal.ZERO) < 0 ||
+                percentage.compareTo(Constants.BIG_DECIMAL_HUNDRED) > 0)) {
+            String errMsg = "Percentage value must be in [0, 100] range";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
-        Set<FeeManagementSignup> signups =
-                filterSignups(session.getIncompleteSignups(), rateCodes, rateTypeCodes, rateCatalogCodes, null, null);
+        Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(), rateCodes, rateTypeCodes,
+                rateCatalogCodes, signupOperations, null);
 
         // Map of [Rate ID, Date]
         Map<Long, Date> rateBaseDateMap = new HashMap<Long, Date>();
@@ -1949,6 +1959,10 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                             BigDecimal amount = rateService.getAmountFromRate(rate.getId(), numberOfUnits);
 
+                            if (percentage != null) {
+                                amount = amount.divide(Constants.BIG_DECIMAL_HUNDRED).multiply(amount).setScale(2, RoundingMode.HALF_DOWN);
+                            }
+
                             Date effectiveDate = rateService.getEffectiveDateFromRate(rate.getId(), signup.getEffectiveDate());
                             Date recognitionDate = rateService.getRecognitionDateFromRate(rate.getId(), signup.getEffectiveDate());
 
@@ -1994,6 +2008,10 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             BigDecimal amount = rateService.getAmountFromRate(rateId, numberOfUnits);
 
+            if (percentage != null) {
+                amount = amount.divide(Constants.BIG_DECIMAL_HUNDRED).multiply(amount).setScale(2, RoundingMode.HALF_DOWN);
+            }
+
             Date effectiveDate = rateService.getEffectiveDateFromRate(rateId, rateBaseDateMap.get(rateId));
             Date recognitionDate = rateService.getRecognitionDateFromRate(rateId, rateBaseDateMap.get(rateId));
 
@@ -2004,7 +2022,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                     FeeManagementManifestStatus.PENDING,
                     transactionTypeId,
                     rateId,
-                    rateCode,
+                    rateCode + rateId,
                     null,
                     null,
                     effectiveDate,

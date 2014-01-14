@@ -466,12 +466,16 @@ public interface BrmFeeManagementService {
      * @param rateSubCodes     List of rate sub-codes separated by ","
      * @param rateTypeCodes    List of rate type codes separated by ","
      * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param percentage       Amount percentage value [0, 100]
      * @param context          BRM context
      */
     void chargeSignupRates(String rateCodes,
                            String rateSubCodes,
                            String rateTypeCodes,
                            String rateCatalogCodes,
+                           String signupOperations,
+                           BigDecimal percentage,
                            BrmContext context);
 
     /**

@@ -165,6 +165,8 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  mark signup as not complete
  remove rates ".*fee.*" from preceding offerings
  charge incidental rate "late.registration", "1" using id "late.registration"
+ charge rates "late.registration", "1" in amount of 34.56% with types "", catalogs "", signup operations ""
+ charge rates "late.registration", "" with types "", catalogs "", signup operations ""
  discount rate "late.registration", "1" by $10.67
  discount rate "late.registration", "1" by 99.91%
  replace signup rates ".*,late.fee,2", "" with "late.registration", "1"

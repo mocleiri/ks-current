@@ -7,6 +7,7 @@ import com.sigmasys.kuali.ksa.service.brm.BrmContext;
 import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
+import com.sigmasys.kuali.ksa.util.GuidGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -158,6 +159,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         FeeManagementSignup signup = new FeeManagementSignup();
         signup.setOfferingId("12345");
+        signup.setRegistrationId(new GuidGenerator().getNewGuid());
         signup.setCreationDate(new Date());
         signup.setEffectiveDate(new Date());
         signup.setAtpId("19871");
