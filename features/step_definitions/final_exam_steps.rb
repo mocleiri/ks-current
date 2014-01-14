@@ -773,6 +773,7 @@ Then /^there should be no final exam period for any term in the copy$/ do
     all_terms.each do |term_name|
       page.open_term_section(term_name)
       page.final_exam_section( term_name).text.should match /Final Exam Period\nAdd Final Exam Period/
+      page.cancel
     end
   end
 end
@@ -946,6 +947,7 @@ Then /^all the exam settings and messages are retained after the rollover is com
   @test_co_list[3].manage
   on(ManageCourseOfferings).edit_course_offering
   on(CourseOfferingCreateEdit).final_exam_driver_value.should == "Course Offering"
+  on(CourseOfferingCreateEdit).cancel
 end
 
 Then /^all the Final Exam and Exam Driver data for the COs should be retained after the rollover is completed and Exam Offerings should be created in a state of Draft$/ do
