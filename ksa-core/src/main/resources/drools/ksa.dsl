@@ -3,11 +3,6 @@
 # Commonly used DSL definitions
 
 [keyword][]and = &&
-[keyword][]eq = ==
-[keyword][]lt = <
-[keyword][]gt = >
-[keyword][]lte = <=
-[keyword][]gte = >=
 
 # LHS definitions
 
@@ -80,16 +75,16 @@
 [when][]signup date is before atp milestone "{milestoneName}" = fmService.compareSignupEffectiveDateToAtpMilestone("{milestoneName}","<",context)
 [when][]signup date is on or after atp milestone "{milestoneName}" = fmService.compareSignupEffectiveDateToAtpMilestone("{milestoneName}",">=",context)
 [when][]signup date is on or before atp milestone "{milestoneName}" = fmService.compareSignupEffectiveDateToAtpMilestone("{milestoneName}","<=",context)
-[when][]units of rates "{rateCodes}" is taken units of rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}","==",context)
-[when][]units of rates "{rateCodes}" gt taken units of rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}",">",context)
-[when][]units of rates "{rateCodes}" gte taken units of rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}",">=",context)
-[when][]units of rates "{rateCodes}" lt taken units of rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}","<",context)
-[when][]units of rates "{rateCodes}" lte taken units of rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}","<=",context)
-[when][]amount of rates "{rateCodes}" is taken amount of rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}","==",context)
-[when][]amount of rates "{rateCodes}" gt taken amount of rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}",">",context)
-[when][]amount of rates "{rateCodes}" gte taken amount of rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}",">=",context)
-[when][]amount of rates "{rateCodes}" lt taken amount of rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}","<",context)
-[when][]amount of rates "{rateCodes}" lte taken amount of rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}","<=",context)
+[when][]units of rates "{rateCodes}" is units of taken rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}","==",context)
+[when][]units of rates "{rateCodes}" gt units of taken rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}",">",context)
+[when][]units of rates "{rateCodes}" gte units of taken rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}",">=",context)
+[when][]units of rates "{rateCodes}" lt units of taken rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}","<",context)
+[when][]units of rates "{rateCodes}" lte units of taken rates "{takenRateCodes}" = fmService.compareNumberOfTakenUnits("{rateCodes}","{takenRateCodes}","<=",context)
+[when][]amount of rates "{rateCodes}" is amount of taken rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}","==",context)
+[when][]amount of rates "{rateCodes}" gt amount of taken rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}",">",context)
+[when][]amount of rates "{rateCodes}" gte amount of taken rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}",">=",context)
+[when][]amount of rates "{rateCodes}" lt amount of taken rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}","<",context)
+[when][]amount of rates "{rateCodes}" lte amount of taken rates "{takenRateCodes}" = fmService.compareAmountOfTakenSignups("{rateCodes}","{takenRateCodes}","<=",context)
 [when][]number of units is {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}","==",context)
 [when][]number of units gt {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">",context)
 [when][]number of units gte {units} with rates "{rateCodes}", types "{rateTypeCodes}", signup operations "{signupOperations}" = fmService.compareNumberOfUnits({units},"{rateCodes}","{rateTypeCodes}","{signupOperations}",">=",context)

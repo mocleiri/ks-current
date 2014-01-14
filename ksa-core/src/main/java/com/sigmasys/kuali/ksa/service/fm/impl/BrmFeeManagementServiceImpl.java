@@ -172,7 +172,12 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                     object2 = CommonUtils.nvl(value);
                 }
 
-                if (compareObjects(object1, object2, operator)) {
+                if (object1 instanceof String) {
+                    boolean stringsMatch = matchesPatterns((String) object2, Arrays.asList((String) object1));
+                    if ((stringsMatch && operatorValue == Operator.EQUAL) || (!stringsMatch && operatorValue != Operator.EQUAL)) {
+                        return true;
+                    }
+                } else if (compareObjects(object1, object2, operator)) {
                     return true;
                 }
             }
