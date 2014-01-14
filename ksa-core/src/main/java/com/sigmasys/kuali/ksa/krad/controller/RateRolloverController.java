@@ -39,8 +39,41 @@ public class RateRolloverController extends GenericSearchController {
         return form;
     }
 
+    /**
+     * Displays the initial page.
+     * The initial page requires no initialization and pre-loading at the time of the design.
+     *
+     * @param form  The form object.
+     * @return Model and View.
+     */
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=displayInitialPage")
     public ModelAndView displayInitialPage(@ModelAttribute("KualiForm") RateRolloverForm form) {
+
+        return getUIFModelAndView(form);
+    }
+
+    /**
+     * Retrieves information about the "Rollover From" ATP.
+     * Invoked when the "Get Information" button is pressed.
+     *
+     * @param form  The form object.
+     * @return Model and View.
+     */
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=getAtpFromInfo")
+    public ModelAndView getAtpFromInfo(@ModelAttribute("KualiForm") RateRolloverForm form) {
+
+        return getUIFModelAndView(form);
+    }
+
+    /**
+     * Performs the actual Rate rollover.
+     * Invoked whe the "Rollover Rates" button is pressed.
+     *
+     * @param form The form object.
+     * @return Model and View.
+     */
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=rolloverRates")
+    public ModelAndView rolloverRates(@ModelAttribute("KualiForm") RateRolloverForm form) {
 
         return getUIFModelAndView(form);
     }

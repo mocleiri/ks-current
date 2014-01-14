@@ -28,7 +28,7 @@
         <property name="headerText" value="Fee Management"/>
         <property name="entryPageId" value="RateRolloverPage"/>
         <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.RateRolloverForm"/>
-        <!--<property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.PaymentPlanHelper"/>-->
+        <property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.RateRolloverHelper"/>
         <property name="navigation" ref="KsaFeeManagementNavigation"/>
         <property name="items">
             <list merge="true">
@@ -36,7 +36,11 @@
                     <property name="headerText" value="Rate Rollover"/>
                     <property name="items">
                         <list>
-							<bean parent="Uif-MessageField" p:messageText="Work in progress"/>
+							<!-- Select Rates section -->
+							<ref bean="selectRatesSection"/>
+							
+							<!-- Rollover Options section -->
+							<ref bean="rolloverOptionsSection"/>
                         </list>
                     </property>
                 </bean>
@@ -44,5 +48,141 @@
         </property>
     </bean>
 
+	
+	<!--
+		Select Rates section 
+	-->
+	
+	<bean id="selectRatesSection" parent="Uif-VerticalBoxSection" p:headerText="Select Rates">
+		<property name="items">
+			<list>
+				<!-- Required Fields message -->
+				<bean parent="Uif-Message" p:messageText="* Required Fields"/>
+			
+				<!-- Academic Time Period from -->
+                <bean parent="Uif-InputField-LabelTop" p:label="Academic Time Period" p:propertyName="atpRolloverFrom" p:required="true">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="atpId"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getAtpRolloverFromForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+				
+				<!-- Get Information button -->
+				<bean parent="Uif-SecondaryActionButton" p:actionLabel="Get Information" p:methodToCall="getAtpFromInfo"/>
+				
+				<!-- ATP Rollover from information message -->
+				<bean parent="Uif-Message" p:messageText="@{atpRolloverFromInfo}" p:hidden="@{atpRolloverFromInfo == null}"/>
+			</list>
+		</property>
+	</bean>
 
+	
+	<!--
+		Rollover Options section 
+	-->
+
+	<bean id="rolloverOptionsSection" parent="Uif-VerticalBoxSection" p:headerText="Rollover Options">
+		<property name="items">
+			<list>
+				<!-- Academic Time Period to -->
+                <bean parent="Uif-InputField-LabelTop" p:label="Rollover to Academic Time Period" p:propertyName="atpRolloverTo" p:required="true">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="atpId"/>
+                            <property name="templateOptions" value="minLength:2,delay:0"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getAtpRolloverToForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+				
+				<!-- Date Setting section -->
+				<!-- Null Dates option -->
+				<bean parent="Uif-InputField-LabelTop" p:propertyName="nullDatesOption" p:label="Make date settings valid by" p:fieldLabel.renderColon="true">
+					<property name="control">
+						<bean parent="Uif-VerticalRadioControl" id="radioNullDates">
+							<property name="options">
+								<list>
+									<bean parent="Uif-KeyLabelPair" p:key="nullDates" p:value="Setting the Date Type, Effective Date and Recognition Date to NULL"/>
+								</list>
+							</property>
+						</bean>
+					</property>
+				</bean>
+				
+				<!-- Automatic Date Advancement option -->
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<!-- Radio Button -->
+							<bean parent="Uif-InputField" p:propertyName="autoAdvancedDatesOption">
+								<property name="control">
+									<bean parent="Uif-VerticalRadioControl" id="radioAutoAdvancedDates">
+										<property name="options">
+											<list>
+												<bean parent="Uif-KeyLabelPair" p:key="autoAdvancedDates" p:value="Automatically advancing the Effective Date and Recognition Date by the following number of days of all rates where the current Effective Dates and Recognition Dates are not null:"/>
+											</list>
+										</property>
+									</bean>
+								</property>
+							</bean>
+							
+							<!-- Number of Days input field -->
+							<bean parent="Uif-InputField-LabelTop" id="inputNumDaysToAdvance" p:propertyName="numOfDaysToAdvance" p:label="Number of Days to Advance Dates" p:fieldLabel.renderColon="false" p:readOnly="true"/>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- Custom Date Settings option -->
+				<bean parent="Uif-VerticalBoxSection">
+					<property name="items">
+						<list>
+							<!-- Radio Button -->
+							<bean parent="Uif-InputField" p:propertyName="customDatesOption">
+								<property name="control">
+									<bean parent="Uif-VerticalRadioControl" id="radioCustomDates">
+										<property name="options">
+											<list>
+												<bean parent="Uif-KeyLabelPair" p:key="customDates" p:value="Setting the Effective Date and Recognition Date to a valid static date of all rates where the Effective Date and Recognition Date are not null:"/>
+											</list>
+										</property>
+									</bean>
+								</property>
+							</bean>
+							
+							<!-- Custom Transaction Date -->
+							<bean parent="Uif-InputField-LabelTop" p:propertyName="customTransactionDate" p:label="Transaction Date" p:readOnly="true"
+								  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy" p:style="margin-bottom: 0px;">
+								<property name="control">
+									<bean parent="Uif-DateControl" id="customTransactionDate" p:size="11" p:maxLength="20"/>
+								</property>
+							</bean>
+							
+							<!-- Custom Recognition Date -->
+							<bean parent="Uif-InputField-LabelTop" p:propertyName="customRecognitionDate" p:label="Recognition Date" p:readOnly="true"
+								  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy" p:style="margin-bottom: 0px;">
+								<property name="control">
+									<bean parent="Uif-DateControl" id="customRecognitionDate" p:size="11" p:maxLength="20"/>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- Rollover Dates button -->
+				<bean parent="Uif-SecondaryActionButton" p:actionLabel="RolloverRates" p:methodToCall="rolloverRates"/>
+			</list>
+		</property>
+	</bean>
+	
 </beans>
