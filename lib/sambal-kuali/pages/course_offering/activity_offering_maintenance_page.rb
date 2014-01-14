@@ -55,7 +55,7 @@ class ActivityOfferingMaintenance < BasePage
   action(:select_colocated_checkbox) { |b| b.colocated_checkbox.click() }
   element(:colocated_co_input_field) { |b| b.frm.text_field(id: "ActivityOfferingEdit-CoLocatedActivities-CoInputField_add_control") }
   element(:colocated_ao_input_field) { |b| b.frm.text_field(id: "ActivityOfferingEdit-CoLocatedActivities-AoInputField_add_control") }
-  element(:colocated_add_button) { |b| b.frm.div(id: "ActivityOfferingEdit-CoLocatedActivities").button(text: "add") }
+  element(:colocated_add_button) { |b| b.frm.div(id: "ActivityOfferingEdit-CoLocatedActivities").button(text: /add/i) }
   element(:add_colocate_ao_confirmation_dialog) { |b| b.div(id: "ActivityOfferingEdit-CoLocatedAddLineDialog") }
   action(:add_colocate_ao_confirmation_add) { |b| b.add_colocate_ao_confirmation_dialog.button(id: "edit_ao_add_colocate_line").click; b.loading.wait_while_present }
 
