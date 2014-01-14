@@ -21,6 +21,7 @@ Feature: WC.Edit AO delivery logistics as DSC
     Then there is a validation error on the EndTime field
 
   #CO 20.2 (KSENROLL-10318)
+  @bug @KSENROLL-11526
   Scenario: Add non-standard RDLs for an AO with non-standard time slots approved
     When I edit an Activity Offering with non-standard time slots approved
     And I add non-standard RDLs for an AO as a DSC
