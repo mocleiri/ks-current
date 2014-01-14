@@ -15,7 +15,7 @@ class TimeSlotMaintenance < BasePage
   element(:time_slot_toolbar_div) { |b| b.frm.div(id: "TimeSlotToolBar-Section") }
   action(:initiate_add_time_slot) { |b| b.time_slot_toolbar_div.button(text: "Add Time Slot").click }
   
-  element(:add_time_slot_form) { |b| b.frm.div(id: "KS-TimeSlot-AddTimeSlotPopupForm") }
+  element(:add_time_slot_form) { |b| b.frm.div(id: /jquerybubblepopup/) }
 
   element(:add_time_slot_popup_field_termType) { |b| b.add_time_slot_form.div(id: "addOrEditTermKey").select_list }
   element(:add_time_slot_popup_field_days) { |b| b.add_time_slot_form.div(id: "addOrEditDays").text_field }
