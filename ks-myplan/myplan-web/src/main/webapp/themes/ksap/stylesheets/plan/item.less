@@ -1,0 +1,124 @@
+.planItem {
+    font-size: @fontSizeMini;
+    font-family: @sansFontFamily;
+    margin: 1px 0 0 0;
+    height: 25px;
+    line-height: 26px;
+    position: relative;
+    padding: 0 @paddingSmall;
+    color: @black;
+    &:hover {
+        background-color: @itemHover;
+        & .planItem__note img {
+            opacity: 0.4;
+            filter: alpha(opacity=40);
+        }
+    }
+}
+
+.planItem--actionless {
+    &:hover {
+        background: none;
+    }
+    & .planItem__action {
+        cursor: default;
+    }
+}
+
+.planItem--empty {
+    font-style: italic;
+    text-align: center;
+    display: block;
+    color: @textColorMin;
+    &:hover {
+        background: none;
+    }
+}
+
+.planItem__alert,
+.planItem__action,
+.planItem__note,
+.planItem__grade {
+    position: absolute;
+    top: 0px;
+    &.uif-boxLayoutHorizontalItem {
+        margin: 0;
+    }
+}
+
+.planItem__alert {
+    left: 5px;
+    width: 16px;
+    & img {
+        background: url('../images/icon_sprite.png') no-repeat -55px -116px;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.planItem__action {
+    left: 24px;
+    width: 136px;
+    cursor: pointer;
+    &.planItem__action--hasNote {
+        width: 121px;
+        padding: 0 15px 0 0;
+    }
+    & .uif-boxLayoutHorizontalItem {
+        margin: 0 0 0 @marginSmall !important;
+    }
+    & .uif-boxLayoutHorizontalItem:first-child {
+        margin: 0 !important;
+    }
+}
+
+.planItem__note {
+    right: 5px;
+    width: 12px;
+    & img {
+        background: url('../images/icon_sprite.png') no-repeat -3px -183px;
+        width: 12px;
+        height: 12px;
+        &:hover {
+            opacity: 1 !important;
+            filter: alpha(opacity=100) !important;
+        }
+    }
+}
+
+.planItem__grade {
+    right: 5px;
+    .bold();
+    color: @textColorMin;
+}
+
+.planItem__credit {
+    color: @textColorMin;
+    font-size: @fontSizeTiny;
+    line-height: 24px;
+}
+
+.planItem--add {
+    color: @linkColor;
+    cursor: pointer;
+}
+
+.planItem--placeholder {
+    font-style: italic;
+    font-family: @altSerifFontFamily;
+    & .planItem__title {
+        color: @gray;
+    }
+}
+
+.planItem--recommendedProposed {
+    & .planItem__title {
+        .bold();
+    }
+}
+
+.planItem--recommendedAccepted {
+    & .planItem__title {
+        color: @green;
+    }
+}

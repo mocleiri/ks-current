@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!--
+    Copyright 2007-2009 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    -->
+    <!-- VIEWS ######################################################################################## -->
+
+    <bean id="MyPlanView" abstract="true" parent="Uif-View">
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
+        <property name="header">
+            <bean parent="Uif-ViewHeader">
+                <property name="headerLevel" value="h1"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- View without the header and footer and just the theme -->
+    <bean id="MyPlanBaseFormView" abstract="true" parent="Uif-FormView">
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
+    </bean>
+
+    <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
+        </property>
+        <property name="applicationHeader">
+            <bean parent="KSAP-GlobalApplicationHeader"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="KSAP-GlobalApplicationFooter"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanBaseLookupView" abstract="true" parent="Uif-LookupView">
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+        <property name="renderSearchButtons" value="false"/>
+        <property name="renderLookupCriteria" value="false"/>
+    </bean>
+
+    <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
+        </property>
+        <property name="applicationHeader">
+            <bean parent="KSAP-GlobalApplicationHeader"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="KSAP-GlobalApplicationFooter"/>
+        </property>
+        <property name="resultsGroup.header.render" value="false"/>
+    </bean>
+
+    <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
+    </bean>
+
+    <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
+        </property>
+        <property name="applicationHeader">
+            <bean parent="KSAP-GlobalApplicationHeader"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="KSAP-GlobalApplicationFooter"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanBaseMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
+    </bean>
+
+    <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
+        </property>
+        <property name="footer" ref="MyPlanFooterDocument"/>
+        <property name="applicationHeader">
+            <bean parent="KSAP-GlobalApplicationHeader"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="KSAP-GlobalApplicationFooter"/>
+        </property>
+    </bean>
+
+    <!-- THEMES ######################################################################################## -->
+
+    <bean id="MyPlanTheme" parent="MyPlanTheme-parentBean"/>
+    <bean id="MyPlanTheme-parentBean" parent="Uif-KbootTheme" p:name="ksap"
+          p:minVersionSuffix="@{#ConfigProperties['myplan.version']}">
+        <property name="scriptFiles">
+            <list>
+                <value>https://use.typekit.net/jpx3dug.js</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--Myplan theme with different view-->
+    <bean id="MyPlanBaseTheme" parent="MyPlanBaseTheme-parentBean"/>
+    <bean id="MyPlanBaseTheme-parentBean" parent="MyPlanTheme" abstract="true">
+        <property name="cssFiles">
+            <list merge="true">
+                <value>themes/ksap/stylesheets/base.css</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--Myplan theme with different view-->
+    <bean id="MyPlanRetrievedTheme" abstract="true" parent="MyPlanRetrievedTheme-parentBean"/>
+    <bean id="MyPlanRetrievedTheme-parentBean" parent="MyPlanTheme">
+        <property name="cssFiles">
+            <list merge="false"/>
+        </property>
+        <property name="scriptFiles">
+            <list merge="false"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-GlobalApplicationHeader" parent="Uif-GlobalApplicationHeader" p:templateName="ksap_app_header"
+          p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl" p:render="true"/>
+
+    <bean id="KSAP-GlobalApplicationFooter" parent="Uif-GlobalApplicationFooter" p:templateName="ksap_app_footer"
+          p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl" p:render="true"/>
+
+    <bean id="MyPlanFooterDocument" parent="Uif-FooterBase">
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="performRouteReport" p:actionLabel="Route Report"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_PERFORM_ROUTE_REPORT]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="sendAdHocRequests" p:actionLabel="Send Adhoc"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_SEND_ADHOC_REQUESTS]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:actionScript="validateAndSubmit('route', replacePage);"
+                      p:actionLabel="Submit"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:actionScript="validateAndSubmit('save', replacePage);"
+                      p:actionLabel="Save"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_SAVE]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="reload" p:actionLabel="Reload"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_RELOAD]}"/>
+                <bean parent="KSAP-PrimaryActionButton"
+                      p:actionScript="validateAndSubmit('blanketApprove', replacePage);" p:actionLabel="Blanket Approve"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_BLANKET_APPROVE]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:actionScript="validateAndSubmit('approve', replacePage);"
+                      p:actionLabel="Approve"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_APPROVE]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="disapprove" p:actionLabel="Disapprove"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_DISAPPROVE]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="fyi" p:actionLabel="FYI"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_FYI]}"/>
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="acknowledge" p:actionLabel="Acknowledge"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ACKNOWLEDGE]}"/>
+                <bean parent="KSAP-SecondaryActionButton" p:methodToCall="close" p:actionLabel="Close"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CLOSE]}"/>
+                <bean parent="Uif-ActionLink" p:methodToCall="cancel" p:actionLabel="Cancel"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}"/>
+                <bean parent="Uif-ActionLink" p:actionScript="validateAndSubmit('copy', replacePage);"
+                      p:actionLabel="Copy"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_COPY]}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MyPlanFooter_SubmitCancel" parent="MyPlanFooterDocument">
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PrimaryActionButton" p:actionScript="validateAndSubmit('route', replacePage);"
+                      p:actionLabel="Submit"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE]}"/>
+                <bean parent="Uif-ActionLink" p:methodToCall="cancel" p:actionLabel="Cancel"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MyPlanHeader_Empty" parent="KSAP-HeaderOne">
+        <property name="items">
+            <list/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HelpImage" parent="Uif-HelpImage"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_help.png" p:altText="" p:title="" p:cssClasses="helpImage">
+    </bean>
+
+    <bean id="KSAP-Tooltip" parent="Uif-Tooltip">
+        <property name="onFocus" value="true"/>
+        <property name="onMouseHover" value="true"/>
+        <property name="templateOptions">
+            <map merge="true">
+                <entry key="position" value="top"/>
+                <entry key="align" value="center"/>
+                <entry key="tail" value="{align:'center', hidden:false}"/>
+                <entry key="openingSpeed" value="50"/>
+                <entry key="closingSpeed" value="50"/>
+                <entry key="openingDelay" value="500"/>
+                <entry key="closingDelay" value="0"/>
+                <entry key="themeMargins" value="{total:'18px', difference:'8px'}"/>
+                <entry key="themePath" value="../themes/ksap/images/popover-theme/"/>
+                <entry key="themeName" value="help"/>
+                <entry key="distance" value="0px"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="KSAP-TooltipRight" parent="KSAP-Tooltip">
+        <property name="templateOptions">
+            <map merge="true">
+                <entry key="align" value="right"/>
+                <entry key="tail" value="{ align:'right', hidden: false }"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="KSAP-TooltipLeft" parent="KSAP-Tooltip">
+        <property name="templateOptions">
+            <map merge="true">
+                <entry key="align" value="left"/>
+                <entry key="tail" value="{ align:'left', hidden: false }"/>
+                <entry key="themeMargins" value="{ total:'17px', difference:'8px' }"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>@{#parentLine.completedTerm ? 'locked' : (#parentLine.openForPlanning ? 'unlocked' : 'locked')}
+                </value>
+                <value>myplan-registration-status</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MyPlanMessagingIcon" parent="Uif-Image"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>icon</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HorizontalStackedSubCollection-WithinSection"
+          parent="Uif-StackedSubCollection-WithinSection-parentBean">
+        <property name="layoutManager">
+            <bean parent="KSAP-HorizontalStackedCollectionLayout"/>
+        </property>
+        <property name="validationMessages">
+            <null/>
+        </property>
+    </bean>
+
+
+    <bean id="KSAP-HorizontalStackedCollectionLayout"
+          parent="Uif-StackedCollectionLayout-WithBoxItems-parentBean">
+        <property name="addLineGroup">
+            <bean parent="Uif-CollectionVerticalBoxItem">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-collectionAddItem</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="lineGroupPrototype">
+            <bean parent="Uif-CollectionHorizontalBoxItem">
+                <property name="validationMessages">
+                    <null/>
+                </property>
+                <property name="footer.render" value="false"/>
+            </bean>
+        </property>
+        <property name="subCollectionFieldGroupPrototype">
+            <bean parent="Uif-VerticalFieldGroup" p:cssClasses="uif-subCollection"/>
+        </property>
+        <property name="validationMessages">
+            <null/>
+        </property>
+    </bean>
+
+
+    <bean id="KSAP-RightPane" parent="KSAP-VerticalBoxGroup" p:width="230px">
+        <property name="cssClasses" value=""/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-YourStuff"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-ModuleContainer" parent="KSAP-VerticalBoxGroup">
+        <property name="header">
+            <bean parent="KSAP-HeaderBase">
+                <property name="cssClasses" value="moduleContainer__header"/>
+                <property name="headerTagCssClasses" value="moduleContainer__headerText"/>
+            </bean>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>moduleContainer</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-Module" parent="KSAP-VerticalBoxGroup">
+        <property name="header">
+            <bean parent="KSAP-ModuleHeader"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>module</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-YourStuff" parent="KSAP-ModuleContainer" p:headerText="Your Stuff">
+        <property name="items">
+            <list>
+                <bean parent="KSAP-BookmarkList"/>
+                <bean parent="KSAP-PlanAuditList"/>
+                <bean parent="KSAP-DegreeAuditList"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-MessagesList" parent="KSAP-Module" p:headerText="Messages" p:id="KSAP-MessagesList">
+        <property name="header.render" value="false"/>
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
+
+
+    <bean id="KSAP-BookmarkList" parent="KSAP-Module" p:headerText="Bookmarked Courses" p:id="KSAP-BookmarkList">
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
+
+    <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
+          p:id="KSAP-DegreeAuditList">
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
+
+    <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Audits" p:id="KSAP-PlanAuditList">
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
+
+
+    <!-- Possibly no longer needed since advisers can view and run audits -->
+    <!--<bean id="non_student_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recent-audit</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-HeaderSix"/>
+        </property>
+        <property name="instructionalText" value="No recent audits found."/>
+    </bean>-->
+
+    <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
+
+    <bean id="recommendation_formatter" class="org.kuali.student.myplan.course.util.RecommendationsFormatter"/>
+
+    <bean id="delete_planned_sections_formatter"
+          class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
+        <property name="deleteDialog" value="true"/>
+    </bean>
+    <bean id="move_planned_sections_formatter"
+          class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
+        <property name="moveDialog" value="true"/>
+    </bean>
+    <bean id="plan_notes_formatter"
+          class="org.kuali.student.myplan.course.util.PlanNotesPropertyEditor">
+    </bean>
+    <bean id="copy_planned_sections_formatter"
+          class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
+        <property name="copyDialog" value="true"/>
+    </bean>
+
+
+    <bean id="scheduled_terms_list_formatter"
+          class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor"/>
+
+
+    <!--<bean id="section_scheduled_terms_list_formatter"
+          class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
+        <property name="applyClassOnItem" value="true"/>
+        <property name="emptyListMessage" value="Not currently scheduled"/>
+        <property name="fullLinks" value="true"/>
+        <property name="emptyListStyleClasses">
+            <list merge="true">
+                <value>empty</value>
+            </list>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>scheduled</value>
+            </list>
+        </property>
+    </bean>-->
+
+    <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
+        <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
+    </bean>
+
+    <bean id="plan_audit_timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
+        <property name="simpleDateFormat" value="MMM d h:mm aa"/>
+        <property name="planAuditSummaryFormat" value="true"/>
+    </bean>
+
+    <!-- Light weight fields -->
+    <bean id="KSAP-SimpleDataField" parent="KSAP-SimpleDataField-parentBean"/>
+    <bean id="KSAP-SimpleDataField-parentBean" abstract="true" parent="Uif-DataField" scope="prototype">
+        <property name="readOnly" value="true"/>
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
+        <property name="templateName" value="ksap_simpleDataField"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
+        <property name="inquiry">
+            <null/>
+        </property>
+        <property name="help">
+            <null/>
+        </property>
+        <property name="toolTip">
+            <null/>
+        </property>
+    </bean>
+
+
+    <bean id="KSAP-SimpleInputField" parent="KSAP-SimpleInputField-parentBean"/>
+    <bean id="KSAP-SimpleInputField-parentBean" abstract="true" parent="Uif-InputField-parentBean" scope="prototype">
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
+        <property name="templateName" value="ksap_simpleDataField"/>
+        <property name="inquiry">
+            <null/>
+        </property>
+        <property name="help">
+            <null/>
+        </property>
+        <property name="quickfinder">
+            <null/>
+        </property>
+        <property name="validationMessages">
+            <null/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-MessageField" parent="KSAP-MessageField-parentBean"/>
+    <bean id="KSAP-MessageField-parentBean" abstract="true" class="org.kuali.rice.krad.uif.field.MessageField"
+          parent="Uif-MessageField-parentBean" scope="prototype">
+        <property name="message">
+            <bean parent="KSAP-NoSpanMessage"/>
+        </property>
+        <property name="readOnly" value="true"/>
+    </bean>
+
+    <bean id="KSAP-Message" parent="KSAP-Message-parentBean"/>
+    <bean id="KSAP-Message-parentBean" abstract="true" parent="Uif-Message-parentBean" scope="prototype">
+        <property name="generateSpan" value="true"/>
+        <property name="readOnly" value="true"/>
+    </bean>
+
+    <bean id="KSAP-NoSpanMessage" parent="KSAP-NoSpanMessage-parentBean"/>
+    <bean id="KSAP-NoSpanMessage-parentBean" abstract="true" parent="Uif-Message-parentBean" scope="prototype">
+        <property name="generateSpan" value="false"/>
+        <property name="readOnly" value="true"/>
+    </bean>
+
+
+    <bean id="KSAP-StackedCollectionGroup" parent="KSAP-StackedCollectionGroup-parentBean"/>
+    <bean id="KSAP-StackedCollectionGroup-parentBean" parent="Uif-StackedCollectionGroup-parentBean">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPcollectionGroup.ftl"/>
+        <property name="templateName" value="ksap_collectionGroup"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="KSAP-VerticalFieldGroup">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="footer.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+
+        <property name="highlightNewItems" value="false"/>
+        <property name="newItemsCssClass" value="uif-newCollectionItem"/>
+        <property name="highlightAddItem" value="false"/>
+        <property name="addItemCssClass" value="uif-collectionAddItem"/>
+        <property name="renderAddBlankLineButton" value="false"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="readOnly" value="true"/>
+        <property name="bindingInfo">
+            <ref bean="Uif-BindingInfo"/>
+        </property>
+        <property name="addLineBindingInfo">
+            <null/>
+        </property>
+        <property name="addLineLabel">
+            <null/>
+        </property>
+        <property name="addLineActions">
+            <list>
+            </list>
+        </property>
+        <property name="lineActions">
+            <list>
+            </list>
+        </property>
+        <property name="addBlankLineAction">
+            <null/>
+        </property>
+        <property name="addViaLightBoxAction">
+            <null/>
+        </property>
+        <property name="collectionLookup">
+            <null/>
+        </property>
+        <property name="validationMessages">
+            <null/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-VerticalBoxGroup" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="help">
+            <null/>
+        </property>
+        <property name="toolTip">
+            <null/>
+        </property>
+        <property name="scrollpane">
+            <null/>
+        </property>
+        <property name="cssClasses">
+            <list merge="false"/>
+        </property>
+    </bean>
+
+    <!-- KSAP Fmpty footer for lookup criteria -->
+    <bean id="KSAP-EmptyLookupCriteriaFooter" parent="Uif-FooterBase">
+        <property name="items">
+            <list merge="false"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HorizontalBoxGroup" parent="Uif-HorizontalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="help">
+            <null/>
+        </property>
+        <property name="toolTip">
+            <null/>
+        </property>
+        <property name="scrollpane">
+            <null/>
+        </property>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>uif-horizontalBoxGroup</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-VerticalFieldGroup" parent="Uif-VerticalFieldGroup">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
+        <property name="group">
+            <bean parent="KSAP-VerticalBoxGroup"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
+        <property name="group">
+            <bean parent="KSAP-HorizontalBoxGroup"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>uif-horizontalFieldGroup</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PopoverPage" parent="Uif-Page" class="org.kuali.rice.krad.uif.container.extension.KSAPPageGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-HeaderDiv" p:cssClasses="popover__header" p:headerTagCssClasses="popover__headerText"/>
+        </property>
+        <property name="width" value="300px"/>
+    </bean>
+
+    <bean id="KSAP-HeaderBase" parent="Uif-HeaderBase">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/element/header.ftl"/>
+        <property name="cssClasses">
+            <list merge="false"/>
+        </property>
+        <property name="headerTagCssClasses">
+            <list merge="false"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HeaderOne" parent="KSAP-HeaderOne-parentBean"/>
+    <bean id="KSAP-HeaderOne-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h1"/>
+    </bean>
+
+    <bean id="KSAP-HeaderTwo" parent="KSAP-HeaderTwo-parentBean"/>
+    <bean id="KSAP-HeaderTwo-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h2"/>
+    </bean>
+
+    <bean id="KSAP-HeaderThree" parent="KSAP-HeaderThree-parentBean"/>
+    <bean id="KSAP-HeaderThree-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h3"/>
+    </bean>
+
+    <bean id="KSAP-HeaderFour" parent="KSAP-HeaderFour-parentBean"/>
+    <bean id="KSAP-HeaderFour-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h4"/>
+    </bean>
+
+    <bean id="KSAP-HeaderFive" parent="KSAP-HeaderFive-parentBean"/>
+    <bean id="KSAP-HeaderFive-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h5"/>
+    </bean>
+
+    <bean id="KSAP-HeaderSix" parent="KSAP-HeaderSix-parentBean"/>
+    <bean id="KSAP-HeaderSix-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h6"/>
+    </bean>
+
+    <bean id="KSAP-Suggest" parent="Uif-Suggest-parentBean">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/widget/suggest.ftl"/>
+    </bean>
+
+    <bean id="KSAP-ModuleHeader" parent="KSAP-HeaderBase">
+        <property name="cssClasses" value="module__header"/>
+        <property name="headerTagCssClasses" value="module__headerText"/>
+    </bean>
+
+    <bean id="KSAP-HeaderDiv" parent="KSAP-HeaderBase">
+        <property name="cssClasses" value=""/>
+        <property name="headerTagCssClasses" value=""/>
+    </bean>
+
+    <bean id="KSAP-Action" parent="Uif-Action">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>btn</value>
+            </list>
+        </property>
+        <property name="libraryCssClasses">
+            <list merge="false"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PrimaryActionButton" parent="KSAP-Action">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-primary</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-SecondaryActionButton" parent="KSAP-Action">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-secondary</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PrimaryActionButton-Small" parent="KSAP-PrimaryActionButton">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-small</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-SecondaryActionButton-Small" parent="KSAP-SecondaryActionButton">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-small</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-ViewHeader" parent="Uif-ViewHeader">
+        <property name="cssClasses" value="viewHeader"/>
+        <property name="headerTagCssClasses" value="viewHeaderText"/>
+        <property name="headerLevel" value="h2"/>
+        <property name="supportTitleText" value=""/>
+    </bean>
+
+    <bean id="KSAP-Page" parent="Uif-Page">
+        <property name="header.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-HorizontalBoxLayout"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-Messaging" parent="KSAP-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>alert</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-InfoMessage" parent="KSAP-Messaging">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-info</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-WarningMessage" parent="KSAP-Messaging"/>
+
+    <bean id="KSAP-SuccessMessage" parent="KSAP-Messaging">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-success</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-ErrorMessage" parent="KSAP-Messaging">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-error</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

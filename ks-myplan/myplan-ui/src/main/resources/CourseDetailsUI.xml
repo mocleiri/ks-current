@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!--
+     Copyright 2007-2009 The Kuali Foundation
+
+     Licensed under the Educational Community License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.opensource.org/licenses/ecl2.php
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+    -->
+    <bean id="CourseDetails-InquiryView" parent="MyPlanInquiryView">
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl"/>
+        <property name="footer.render" value="false"/>
+        <property name="singlePageView" value="true"/>
+        <property name="headerText" value="@{dataObject.courseSummaryDetails.code} @{dataObject.courseSummaryDetails.courseTitle} (@{dataObject.courseSummaryDetails.credit})"/>
+        <property name="page">
+            <bean parent="KSAP-Page" id="course_details_page">
+                <property name="items">
+                    <list>
+                        <ref bean="course_details_section"/>
+                        <bean parent="KSAP-RightPane" p:width="230px"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="additionalScriptFiles">
+            <list merge="true">
+                <value>themes/ksap/scripts/ksap.widgets.js</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_section" parent="KSAP-VerticalBoxGroup" p:width="710px">
+        <property name="items">
+            <list>
+                <ref bean="course_details_actions"/>
+                <bean parent="KSAP-InfoMessage" p:style="margin-top:20px;"
+                      p:render="@{(dataObject.plannedCourseSummary.backupList.size() gt 0 or dataObject.plannedCourseSummary.plannedList.size() gt 0 or dataObject.plannedCourseSummary.academicTerms.size() gt 0) ? true : false}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>alert-inline</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="details" p:escapeHtmlInPropertyValue="false">
+                                <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="course_details_overview"/>
+                <ref bean="course_details_sections"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="course_details_actions" parent="KSAP-HorizontalBoxGroup">
+        <property name="onDocumentReadyScript" value="
+            jQuery('#course_details_actions').on('PLAN_ITEM_ADDED', function(event, data){
+                if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
+                    actionFeedback(data.courseId + '_addSavedCourse', true, '@{dataObject.courseSummaryDetails.courseId}_bookmarked', data.cssClasses + ' alert-unboxed alert-replace-btn uif-boxLayoutHorizontalItem', data.message)
+                }
+            }).on('PLAN_ITEM_DELETED', function(event, data){
+                if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
+                    restoreDetailsBookmarkButton(data);
+                }
+            });
+        "/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PrimaryActionButton" p:actionLabel="Add to Plan"
+                      p:id="@{dataObject.courseSummaryDetails.courseId}_addUpdatePlanItem"
+                      p:actionImagePlacement="RIGHT">
+                    <property name="actionImage">
+                        <bean parent="Uif-Image"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
+                            <property name="cssClasses" value="rightArrowLarge"/>
+                        </bean>
+                    </property>
+                    <property name="actionScript" value="
+                        var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{dataObject.courseSummaryDetails.courseId}', code:'@{dataObject.courseSummaryDetails.code}', pageId:'add_dialog_page'};
+                        var popupStyle = {width:'300px', height:'16px'};
+                        var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
+                        openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                    "/>
+                </bean>
+                <bean parent="KSAP-SecondaryActionButton" p:actionLabel="Bookmark Course"
+                      p:id="@{dataObject.courseSummaryDetails.courseId}_addSavedCourse"
+                      p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList}">
+                    <property name="actionScript" value="
+                        var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}', code:'@{dataObject.courseSummaryDetails.code}'};
+                        submitHiddenForm('plan', additionalFormData, e);
+                    "/>
+                </bean>
+                <bean parent="KSAP-Message">
+                    <property name="id" value="@{dataObject.courseSummaryDetails.courseId}_bookmarked"/>
+                    <property name="messageText" value="[0] on @{dataObject.plannedCourseSummary.savedItemDateCreated}"/>
+                    <property name="cssClasses" value="alert alert-success alert-unboxed alert-replace-btn"/>
+                    <property name="render" value="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"/>
+                    <property name="inlineComponents">
+                        <list>
+                            <bean parent="Uif-Link" p:linkText="Bookmarked" p:title="Bookmarked" p:cssClasses=""
+                                  p:href="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
+                    <property name="replacement">
+                        <list>
+                            <!--  Message to use when an adviser can't perform a particular action. -->
+                            <bean parent="KSAP-InfoMessage">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-Message"
+                                              p:messageText="Advisers are unable to add or bookmark courses and sections. [0]">
+                                            <property name="inlineComponents">
+                                                <list>
+                                                    <bean parent="Uif-Link" p:linkText="Learn more about Adviser View." p:target="_blank">
+                                                        <property name="href"
+                                                                  value="https://depts.washington.edu/myplan/adviser-help/#view"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_overview" parent="KSAP-VerticalBoxGroup" p:headerText="Course Overview">
+        <property name="header">
+            <bean parent="KSAP-HeaderThree">
+                <property name="cssClasses" value="courseDetails__header"/>
+            </bean>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="cssClasses" value="courseDetails__headerGroup--right"/>
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-SimpleDataField" p:propertyName="courseSummaryDetails.abbrGenEdRequirements"
+                              p:escapeHtmlInPropertyValue="false"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="header.rightGroup.render"
+                  value="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0}"/>
+        <property name="items">
+            <list>
+                <!--Course Description-->
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__fieldLabel"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Label" p:labelText="Course Description"
+                                              p:renderColon="false"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__field"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-SimpleDataField"
+                                              p:propertyName="courseSummaryDetails.courseDescription"
+                                              p:escapeHtmlInPropertyValue="false">
+                                            <property name="render"
+                                                      value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? true : false}"/>
+                                        </bean>
+                                        <!-- If Course Description is empty-->
+                                        <bean parent="KSAP-Message"
+                                              p:messageText="This course has no description in the Course Catalog. Please contact the department for more details.">
+                                            <property name="render"
+                                                      value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? false : true}"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Cross Listings -->
+                <bean parent="KSAP-HorizontalFieldGroup"
+                      p:render="@{dataObject.courseSummaryDetails.crossListings.size() gt 0}">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__fieldLabel"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Label" p:labelText="Offered Jointly With"
+                                              p:renderColon="false"/>
+                                        <ref bean="course_cross_listings_help_icon"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__field"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-SimpleDataField"
+                                              p:propertyName="courseSummaryDetails.crossListings"
+                                              p:escapeHtmlInPropertyValue="false"
+                                              p:render="@{dataObject.courseSummaryDetails.crossListings.size() gt 0}"/>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Course Requisites-->
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__fieldLabel"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Label" p:labelText="Course Requisites"
+                                              p:renderColon="false"/>
+                                        <ref bean="course_requisite_help_icon"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__field"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-SimpleDataField" p:cssClasses="inlineElement"
+                                              p:propertyName="courseSummaryDetails.requisites"
+                                              p:escapeHtmlInPropertyValue="false"
+                                              p:render="@{dataObject.courseSummaryDetails.requisites.size() GT 0}"/>
+                                        <bean parent="KSAP-Message" p:messageText="None" p:cssClasses="inlineElement"
+                                              p:render="@{dataObject.courseSummaryDetails.requisites.size() EQ 0}">
+                                        </bean>
+                                        <bean parent="KSAP-Message" p:messageText="(Source: Course Catalog)">
+                                            <property name="cssClasses" value="inlineElement tinyLightText"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Quarters-->
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__fieldLabel"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Label" p:labelText="Quarters"
+                                              p:renderColon="false"/>
+                                        <ref bean="course_quarter_help_icon"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__field"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-HorizontalBoxGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-SimpleDataField" p:label="Scheduled For"
+                                                          p:propertyName="courseSummaryDetails"
+                                                          p:escapeHtmlInPropertyValue="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}">
+                                                        <property name="fieldLabel.render" value="true"/>
+                                                        <property name="fieldLabel.renderColon" value="true"/>
+                                                        <property name="fieldLabel.cssClasses" value="normalLightText"/>
+                                                        <property name="propertyEditor"
+                                                                  ref="scheduled_terms_list_formatter"/>
+                                                        <property name="cssClasses" value="termBadge inlineElement"/>
+                                                    </bean>
+                                                    <bean parent="KSAP-Message" p:messageText="Not Currently Scheduled" p:cssClasses="inlineElement"
+                                                          p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() eq 0}">
+                                                    </bean>
+                                                    <bean parent="KSAP-Message" p:messageText="(Source: Time Schedule)">
+                                                        <property name="cssClasses" value="inlineElement tinyLightText"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="KSAP-VerticalBoxGroup"
+                                              p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0 ? false : true}">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-SimpleDataField" p:label="Last Offered"
+                                                          p:propertyName="courseSummaryDetails.lastOffered"
+                                                          p:render="@{dataObject.courseSummaryDetails.lastOffered ne null ? true : false}">
+                                                        <property name="fieldLabel.render" value="true"/>
+                                                        <property name="fieldLabel.cssClasses" value="normalLightText"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="KSAP-HorizontalBoxGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-SimpleDataField" p:label="Projected Quarter Info"
+                                                          p:propertyName="courseSummaryDetails.termsOffered"
+                                                          p:escapeHtmlInPropertyValue="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0}">
+                                                        <property name="fieldLabel.render" value="true"/>
+                                                        <property name="fieldLabel.renderColon" value="true"/>
+                                                        <property name="fieldLabel.cssClasses" value="normalLightText"/>
+                                                        <property name="cssClasses" value="inlineElement"/>
+                                                    </bean>
+                                                    <bean parent="KSAP-MessageField" p:label="Projected Quarter Info"
+                                                          p:render="@{dataObject.courseSummaryDetails.termsOffered.size() eq 0}">
+                                                        <property name="fieldLabel.cssClasses" value="normalLightText"/>
+                                                        <property name="cssClasses" value="inlineElement"/>
+                                                        <property name="fieldLabel.renderColon" value="true"/>
+                                                        <property name="messageText" value="Check with the department or your adviser for more information about this course."/>
+                                                    </bean>
+                                                    <bean parent="KSAP-Message" p:messageText="(Source: Course Catalog)">
+                                                        <property name="cssClasses" value="inlineElement tinyLightText"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Genedu-->
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__fieldLabel"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Label" p:labelText="General Edu. Req."
+                                              p:renderColon="false"/>
+                                        <ref bean="course_gened_help_icon"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__field"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-SimpleDataField"
+                                              p:propertyName="courseSummaryDetails.genEdRequirements"
+                                              p:escapeHtmlInPropertyValue="false"
+                                              p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() gt 0}"/>
+                                        <bean parent="KSAP-Message" p:messageText="None"
+                                              p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() eq 0}"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--Curriculum-->
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__fieldLabel"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-Label" p:labelText="Curriculum"
+                                              p:renderColon="false"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="cssClasses" value="courseDetails__field"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-Message" p:messageText="@{dataObject.courseSummaryDetails.curriculumTitle}@{dataObject.courseSummaryDetails.campusLocations.size() GT 0 ? ',':''}"
+                                              p:render="@{dataObject.courseSummaryDetails.curriculumTitle NE '' OR dataObject.courseSummaryDetails.curriculumTitle NE null}"/>
+                                        <bean parent="KSAP-SimpleDataField" p:propertyName="courseSummaryDetails.campusLocations"
+                                              p:escapeHtmlInPropertyValue="false"
+                                              p:render="@{dataObject.courseSummaryDetails.campusLocations.size() GT 0}"/>
+                                        <bean parent="KSAP-Message" p:messageText="Campus"
+                                              p:render="@{dataObject.courseSummaryDetails.campusLocations.size() GT 0}"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="meeting_building_link_formatter"
+          class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
+    </bean>
+
+    <bean id="course_details_sections" parent="KSAP-VerticalBoxGroup" p:headerText="@{dataObject.courseSummaryDetails.code} Course Sections">
+        <property name="render" value="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree">
+                <property name="cssClasses" value="courseDetails__header"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean id="course_details_sections_list_container" parent="KSAP-VerticalBoxGroup"
+                      p:style="min-height: 150px;">
+                    <property name="onDocumentReadyScript" value="
+                        customRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}',courseCd:'@{dataObject.courseSummaryDetails.code}',loadActivityOffering:'true'}, null, {centerX:true, centerY:false, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{color:'#c09853', backgroundColor:'#fcf8e3', border:'solid 1px #fbeed5', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+                    "/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_institution_data_single" parent="KSAP-StackedCollectionGroup">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
+        <property name="propertyName" value="courseOfferingInstitutionList"/>
+        <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() eq 1}"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup">
+                        <property name="fieldLabel.render" value="false"/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="footer.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="header.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.name}"
+                      p:style="margin-top:20px; font-weight:700; font-size: 1.25em;"/>
+                <bean parent="KSAP-MessageField"
+                      p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
+                      p:render="@{#line.code eq 95}" p:style="margin-top:20px;"/>
+            </list>
+        </property>
+        <property name="subCollections">
+            <list>
+                <ref bean="course_details_term_data"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_institution_data_multi" parent="Uif-TabbedCollectionGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
+        <property name="propertyName" value="courseOfferingInstitutionList"/>
+        <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 1}"/>
+        <property name="cssClasses" value="courseActivities__tabGroup"/>
+        <property name="layoutManager.summaryFields" value="name"/>
+        <property name="layoutManager.id" value="course_details_institution_data_multi"/>
+        <!-- Tab Label -->
+        <property name="layoutManager.lineGroupPrototype">
+            <bean p:id="institution_@{#line.code}" parent="Uif-VerticalBoxSection">
+                <property name="header.render" value="false"/>
+            </bean>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="header.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-MessageField"
+                      p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
+                      p:render="@{#line.code eq 95}"/>
+            </list>
+        </property>
+        <property name="subCollections">
+            <list>
+                <ref bean="course_details_term_data"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_term_data" parent="KSAP-StackedCollectionGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
+        <property name="propertyName" value="courseOfferingTermList"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup">
+                        <property name="fieldLabel.render" value="false"/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <!-- TODO: parentLine expression not available within the lineGroupPrototype, KRAD bug https://jira.kuali.org/browse/KULRICE-9003 -->
+                    <bean p:id="@{#line.instituteCode}_tab-@{#line.yearTerm.toATP()}"
+                          parent="Uif-CollectionVerticalBoxItem">
+                        <property name="footer.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="subCollections">
+            <list>
+                <ref bean="course_details_activity_data"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_activity_data" parent="Uif-TableCollectionSection" p:headerText="@{#line.term}">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
+        <property name="propertyName" value="activityOfferingItemList"/>
+        <property name="onDocumentReadyScript" value="
+            var table = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP()}');
+            var tableHead = table.find('thead');
+            tableHead.find('tr:gt(0)').remove();
+            tableHead.before('
+                &lt;col style=&quot;width: 62px;&quot;&gt;
+                &lt;col style=&quot;width: 103px;&quot;&gt;
+                &lt;col style=&quot;width: 268px;&quot;&gt;
+                &lt;col style=&quot;width: 50px;&quot;&gt;
+                &lt;col style=&quot;width: 100px;&quot;&gt;
+                &lt;col style=&quot;width: 80px;&quot;&gt;
+                &lt;col style=&quot;width: 45px;&quot;&gt;
+            ');
+            table.find('.courseActivities__other').parents('td').each(function() {
+                jQuery(this).attr('colspan', '3');
+            });
+            table.find('.courseActivities__additionalDetails').parents('td').each(function() {
+                jQuery(this).attr('colspan', '5');
+            });
+        "/>
+        <property name="header">
+            <bean parent="KSAP-HeaderFour">
+                <property name="cssClasses" value="courseActivities__termHeader @{#line.term.substring(0, 2).toUpperCase()}"/>
+            </bean>
+        </property>
+        <property name="header.lowerGroup">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-VerticalBoxGroup" p:headerText="View a note about @{dataObject.courseSummaryDetails.subjectArea} curriculum">
+                            <property name="render" value="@{#line.curriculumComments NE null}"/>
+                            <property name="disclosure.render" value="true"/>
+                            <property name="disclosure.expandImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/link_expand.png"/>
+                            <property name="disclosure.collapseImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/link_collapse.png"/>
+                            <property name="disclosure.defaultOpen" value="false"/>
+                            <property name="disclosure.animationSpeed" value="250"/>
+                            <property name="cssClasses" value="courseActivities__curriculumComments"/>
+                            <property name="header">
+                                <bean parent="KSAP-HeaderDiv">
+                                    <property name="cssClasses" value=""/>
+                                    <property name="headerTagCssClasses" value="uif-headerText-span"/>
+                                </bean>
+                            </property>
+                            <property name="items">
+                                <list>
+                                    <bean parent="KSAP-Message" p:messageText="@{#line.curriculumComments}"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="KSAP-Message" p:messageText="@{#line.courseComments}">
+                            <property name="render" value="@{#line.courseComments ne null}"/>
+                            <property name="cssClasses" value="courseActivities__courseComments"/>
+                        </bean>
+                        <bean parent="KSAP-HorizontalBoxGroup">
+                            <property name="items">
+                                <list>
+                                    <bean parent="KSAP-Message" p:messageText="Enrollment status is updated every few minutes."/>
+                                    <bean parent="course_sections_help_icon" p:cssClasses="courseActivities__help"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-TableCollectionLayout"
+                  class="org.kuali.rice.krad.uif.layout.extension.CourseSectionDetailsLayoutManager">
+                <property name="id"
+                          value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP()}"/>
+                <property name="numberOfColumns" value="7"/>
+                <property name="suppressLineWrapping" value="false"/>
+                <property name="renderSequenceField" value="false"/>
+                <property name="applyDefaultCellWidths" value="false"/>
+                <property name="richTable.render" value="false"/>
+                <property name="cssClasses" value="courseActivities__table"/>
+                <property name="libraryCssClasses">
+                    <list/>
+                </property>
+            </bean>
+        </property>
+
+        <!-- layoutManager.rowCssClasses does not work currently, but no exception is thrown. TableLayoutManager clears any values set -->
+        <!--<property name="layoutManager.rowCssClasses">
+            <list merge="true">
+                <value>testing</value>
+            </list>
+        </property>-->
+        <property name="items">
+            <list>
+                <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                <bean parent="activityCode" p:render="@{!#line.primary OR #line.stateKey NE 'active'}" p:rowSpan="1"/>
+
+                <bean parent="activityType"/>
+
+                <bean parent="activityMeetingData"/>
+
+                <bean parent="activityRegCode"/>
+
+                <bean parent="activityEnrlRestr"/>
+
+                <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
+
+                <bean id="activityActionGroup" parent="KSAP-VerticalFieldGroup" p:valign="TOP"
+                      p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3" p:colSpan="1"
+                      p:cssClasses="courseActivities__action">
+                    <property name="label" value="Add"/>
+                    <property name="items">
+                        <list>
+                            <!-- Add button when active, unplanned, open for planning -->
+                            <bean parent="activityActionButton"
+                                  p:render="@{#line.openForPlanning AND #line.planItemId EQ null AND #line.stateKey EQ 'active'}"/>
+                            <!-- Empty when closed for planning and unplanned or open for planning and not active-->
+                            <bean parent="emptyAction"
+                                  p:render="@{(!#line.openForPlanning AND #line.planItemId EQ null) OR (#line.openForPlanning AND #line.stateKey NE 'active' AND #line.planItemId EQ null)}"/>
+                            <!-- Added link when planned -->
+                            <bean parent="activityActionLink"
+                                  p:render="@{#line.planItemId NE null}"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="activityActionGroup" p:render="@{!#line.primary OR #line.stateKey NE 'active'}"
+                      p:rowSpan="1"/>
+
+                <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
+
+                <bean parent="activityOther" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                <bean parent="activityOther" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}" p:colSpan="5"/>
+
+                <bean parent="activityAdditionalDetails" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}"
+                      p:colSpan="7"/>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                            <bean parent="activityCode" p:render="@{!#line.primary OR #line.stateKey NE 'active'}"
+                                  p:rowSpan="1"/>
+
+                            <bean parent="activityType"/>
+
+                            <bean parent="activityMeetingData"/>
+
+                            <bean parent="activityRegCode"/>
+
+                            <bean parent="activityEnrlRestr"/>
+
+                            <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                            <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
+
+                            <bean id="activityActionsCDPAdvisor" parent="KSAP-VerticalFieldGroup" p:valign="TOP"
+                                  p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3"
+                                  p:colSpan="1" p:cssClasses="courseActivities__action">
+                                <property name="label" value="Add"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="emptyAction"
+                                              p:render="@{#line.planItemId EQ null}"/>
+                                        <bean parent="activityActionLink"
+                                              p:render="@{#line.planItemId NE null}"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="activityActionsCDPAdvisor"
+                                  p:render="@{!#line.primary OR #line.stateKey NE 'active'}" p:rowSpan="1"/>
+
+                            <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
+
+                            <bean parent="activityOther" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                            <bean parent="activityOther" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}"
+                                  p:colSpan="5"/>
+
+                            <bean parent="activityAdditionalDetails"
+                                  p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                            <bean parent="activityAdditionalDetails"
+                                  p:render="@{!#line.primary AND #line.stateKey EQ 'active'}" p:colSpan="7"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="activityCode" parent="KSAP-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
+        <property name="label" value="Section"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="cssClasses" value="courseActivities__code"/>
+        <property name="items">
+            <list>
+                <bean p:id="@{#line.atpId}-@{#line.registrationCode}"
+                      parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section">
+                    <property name="cssClasses">
+                        <list merge="false">
+                            <value>courseActivities__code--@{#line.primary ? 'primary':'secondary'}</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-MessageField" p:messageText="PCE"
+                      p:title="UW Professional &amp; Continuing Education"
+                      p:render="@{#line.primary AND #line.instituteCode.startsWith('95')}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>courseActivities__code--small</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Link" p:linkText="View more"
+                      p:render="@{!#line.primary AND #line.stateKey eq 'active'}">
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="collapsed" value="true"/>
+                        </map>
+                    </property>
+                    <property name="onClickScript"
+                              value="stopEvent(e); toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>courseActivities__code--small</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityType" parent="KSAP-MessageField" p:rowSpan="1" p:colSpan="1">
+        <property name="label" value="Type (Credit)"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="messageText"
+                  value="@{#line.activityOfferingType}@{#line.primary ? ' (' + #line.credits + ')':''}"/>
+        <property name="cssClasses" value="courseActivities__type"/>
+    </bean>
+
+    <bean id="activityMeetingData" parent="KSAP-SimpleDataField" p:rowSpan="1" p:colSpan="1">
+        <property name="label" value="Meeting Time &amp; Location"/>
+        <property name="propertyName" value="activityItem"/>
+        <property name="escapeHtmlInPropertyValue" value="false"/>
+        <property name="propertyEditor" ref="meeting_building_link_formatter"/>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>courseActivities__meetingData</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityRegCode" parent="KSAP-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+        <property name="label" value="SLN"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="cssClasses" value="courseActivities__regCode"/>
+        <property name="items">
+            <list>
+                <bean parent="current_section_status" p:linkText="@{#line.registrationCode}"
+                      p:render="@{#line.stateKey EQ 'active'}"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="@{#line.registrationCode}"
+                      p:render="@{#line.stateKey EQ 'suspended'}"/>
+                <bean parent="emptyField" p:render="@{#line.stateKey EQ 'withdrawn'}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityEnrlRestr" parent="KSAP-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+        <property name="label" value="ENRL RESTR"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="cssClasses" value="courseActivities__enrlRestr"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Faculty Code Required"
+                      p:render="@{#line.independentStudy AND #line.stateKey EQ 'active'}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Add Code Required"
+                      p:render="@{#line.addCodeRequired AND !#line.independentStudy AND #line.stateKey EQ 'active'}"
+                      p:cssClasses="removeMargin"/>
+                <bean parent="current_section_status" p:linkText="View restrictions"
+                      p:render="@{#line.enrollRestriction AND !#line.independentStudy AND !#line.addCodeRequired AND #line.stateKey EQ 'active'}"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="--"
+                      p:render="@{(!#line.enrollRestriction AND !#line.addCodeRequired  AND !#line.independentStudy) OR #line.stateKey NE 'active'}"
+                      p:cssClasses="removeMargin"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityEnrlStatus" parent="KSAP-VerticalFieldGroup" p:rowSpan="1" p:colSpan="1"
+          p:id="enrl_@{#line.atpId}_@{#line.registrationCode}"
+          p:title="Section @{#line.code} is @{#line.stateKey}">
+        <property name="label" value="ENRL STATUS"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>courseActivities__enrlStatus</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-WarningMessage">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>alert-unboxed</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="@{#line.stateKey}">
+                                <property name="style" value="text-transform:capitalize;"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityEnrlData" parent="KSAP-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
+          p:id="enrl_@{#line.atpId}_@{#line.registrationCode}">
+        <property name="label" value="ENRL STATUS"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="cssClasses" value="courseActivities__enrlData"/>
+        <property name="items">
+            <list/>
+        </property>
+    </bean>
+
+    <bean id="activityInstructor" parent="KSAP-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
+        <property name="id" value="instructor_@{#line.atpId}_@{#line.registrationCode}"/>
+        <property name="cssClasses" value="courseActivities__instructor"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Label" p:labelText="Instructor" p:renderColon="false"/>
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.instructor}">
+                    <property name="cssClasses" value="removeMargin"/>
+                </bean>
+                <!--
+                TODO: Uncomment to enable Course Syllabus link
+                <bean id="syllabus_link" parent="Uif-LinkField" p:cssClasses="removeMargin" p:render="@{#line.hasSyllabus}">
+                    <property name="linkText" value="View syllabus description"/>
+                    <property name="title" value="View syllabus description"/>
+                    <property name="href"
+                              value="/student/myplan/inquiry?methodToCall=start&amp;viewId=CourseSyllabus-InquiryView&amp;activityId=@{#line.activityId}"/>
+                    <property name="lightBox">
+                        <bean parent="Uif-LightBox">
+                            <property name="templateOptions">
+                                <map merge="true">
+                                    <entry key="width" value="800"/>
+                                    <entry key="fitToView" value="true"/>
+                                </map>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>-->
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityOther" parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="3">
+        <property name="cssClasses" value="courseActivities__other"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Label" p:labelText="Other" p:renderColon="false"/>
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.gradingOption}"
+                      p:render="@{#line.gradingOption ne null}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Distance learning"
+                      p:render="@{#line.distanceLearning}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Honors"
+                      p:render="@{#line.honorsSection}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Jointly offered"
+                      p:render="@{#line.jointOffering}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Research"
+                      p:render="@{#line.research}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Writing"
+                      p:render="@{#line.writingSection}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Service learning"
+                      p:render="@{#line.serviceLearning}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="New course"
+                      p:render="@{#line.newThisYear}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="May not be eligible for Financial Aid"
+                      p:render="@{#line.ineligibleForFinancialAid}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="Course Fee $@{#line.feeAmount}"
+                      p:render="@{#line.feeAmount ne null}" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-MessageField" p:messageText="--" p:cssClasses="removeMargin"
+                      p:render="@{#line.gradingOption eq null AND
+                                 !#line.distanceLearning AND
+                                 !#line.honorsSection AND
+                                 !#line.jointOffering AND
+                                 !#line.research AND
+                                 !#line.writingSection AND
+                                 !#line.serviceLearning AND
+                                 !#line.newThisYear AND
+                                 !#line.ineligibleForFinancialAid AND
+                                 #line.feeAmount eq null  AND
+                                 !#line.independentStudy}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityAdditionalDetails" parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
+        <property name="id" value="details_@{#line.atpId}_@{#line.registrationCode}"/>
+        <property name="cssClasses" value="courseActivities__additionalDetails"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Label" p:labelText="Additional Details" p:renderColon="false" p:cssClasses="removeMargin"/>
+                <bean parent="KSAP-HorizontalFieldGroup" p:cssClasses="removeMargin">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="@{#line.summerTerm NE null ? #line.summerTerm + '&lt;br&gt; ':''}@{#line.sectionComments NE null ? #line.sectionComments + ' ':''}[0]">
+                                <property name="inlineComponents">
+                                    <list>
+                                        <bean parent="current_section_status" p:linkText="@{#line.details}"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityActionLink" parent="Uif-LinkField">
+        <property name="fieldLabel.render" value="false"/>
+        <property name="cssClasses" value=""/>
+        <property name="link">
+            <bean parent="Uif-Link" p:target="">
+                <property name="linkText" value="Added"/>
+                <property name="title"
+                          value="@{#line.code} is added. To delete or move, go to @{#line.longTermName} Plan."/>
+                <property name="href"
+                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.atpId}"/>
+                <property name="cssClasses" value="courseActivities__action--link"/>
+            </bean>
+        </property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="planned" value="@{#line.planItemId ne null}"/>
+                <entry key="primary" value="@{#line.primary}"/>
+                <entry key="coursesection" value="@{#line.code}"/>
+                <entry key="primarysection" value="@{#line.primaryActivityOfferingCode}"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="activityActionButton" parent="section_button">
+        <property name="cssClasses" value="courseActivities__itemAdd"/>
+        <property name="title" value="Add"/>
+        <property name="actionScript" value="
+            var additionalFormData = {
+                viewId: 'PlannedCourse-FormView',
+                methodToCall: 'addUpdatePlanItem',
+                courseId: '@{dataObject.courseSummaryDetails.courseId}',
+                code: '@{dataObject.courseSummaryDetails.code}',
+                sectionCode: '@{#line.code}',
+                atpId: '@{#line.atpId}',
+                instituteCode: '@{#line.instituteCode}',
+                registrationCode: '@{#line.registrationCode}'
+            };
+            submitHiddenForm('plan', additionalFormData, e);
+        "/>
+    </bean>
+
+    <bean id="section_button" parent="Uif-ActionImage">
+        <property name="id" value="button_@{#line.atpId}_@{#line.registrationCode}"/>
+        <property name="actionImage">
+            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+        </property>
+        <property name="onMouseOverScript" value="buildHoverText(jQuery(this));"/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="planned" value="@{#line.planItemId ne null}"/>
+                <entry key="primary" value="@{#line.primary}"/>
+                <entry key="coursesection" value="@{#line.code}"/>
+                <entry key="primarysection" value="@{#line.primaryActivityOfferingCode}"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="current_section_status" parent="Uif-Link">
+        <property name="href"
+                  value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}"/>
+        <property name="cssClasses" value="courseActivities--lightBoxLink lightBoxLink"/>
+    </bean>
+
+    <bean id="emptyField" parent="KSAP-MessageField" p:messageText="--"/>
+
+    <bean id="emptyAction" parent="emptyField">
+        <property name="cssClasses" value="courseActivities__action"/>
+    </bean>
+
+    <bean id="CourseDetailsSections-InquiryView" parent="MyPlanBaseInquiryView">
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="singlePageView" value="true"/>
+        <property name="viewName" value="CourseDetailsSections-InquiryView"/>
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
+        <property name="page">
+            <bean parent="KSAP-Page" p:id="course_details_sections_page">
+                <property name="layoutManager">
+                    <bean parent="Uif-VerticalBoxLayout"/>
+                </property>
+                <property name="items">
+                    <list>
+                        <bean id="course_details_sections_list" parent="KSAP-VerticalBoxGroup">
+                            <property name="onDocumentReadyScript" value="
+                                    jQuery('a.lightBoxLink').each(function() {
+                                    	createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
+                                    });
+                                    jQuery('body').on('SECTION_ITEM_ADDED', function(event, data){
+                                        addSectionAddedLink(data);
+                                    });
+                            getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}', 'courseCd':'@{dataObject.courseSummaryDetails.code}'});
+                                "/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="course_details_institution_data_single"/>
+                                    <ref bean="course_details_institution_data_multi"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+</beans>
