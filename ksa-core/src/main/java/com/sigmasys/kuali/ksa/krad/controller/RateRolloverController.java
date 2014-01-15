@@ -2,6 +2,7 @@ package com.sigmasys.kuali.ksa.krad.controller;
 
 import com.sigmasys.kuali.ksa.krad.form.RateRolloverForm;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +35,26 @@ public class RateRolloverController extends GenericSearchController {
      */
     @Override
     protected RateRolloverForm createInitialForm(HttpServletRequest request) {
+
+        // Create the initial form object and set default values:
         RateRolloverForm form = new RateRolloverForm();
+
+        form.setSelectedDateOption(RateRolloverForm.OPTION_NULL_DATES);
 
         return form;
     }
 
     /**
      * Displays the initial page.
-     * The initial page requires no initialization and pre-loading at the time of the design.
      *
      * @param form  The form object.
      * @return Model and View.
      */
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=displayInitialPage")
     public ModelAndView displayInitialPage(@ModelAttribute("KualiForm") RateRolloverForm form) {
+
+        // Update the selected Date option:
+        updateSelectedDateOption(form);
 
         return getUIFModelAndView(form);
     }
@@ -62,6 +69,9 @@ public class RateRolloverController extends GenericSearchController {
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=getAtpFromInfo")
     public ModelAndView getAtpFromInfo(@ModelAttribute("KualiForm") RateRolloverForm form) {
 
+        // Update the selected Date option:
+        updateSelectedDateOption(form);
+
         return getUIFModelAndView(form);
     }
 
@@ -75,6 +85,50 @@ public class RateRolloverController extends GenericSearchController {
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=rolloverRates")
     public ModelAndView rolloverRates(@ModelAttribute("KualiForm") RateRolloverForm form) {
 
+        // Update the selected Date option:
+        updateSelectedDateOption(form);
+
+        // Reset the error message:
+        form.setRolloverErrorMessage(null);
+
         return getUIFModelAndView(form);
+    }
+
+    /**
+     * Properly sets the value of each of the Date options based on the selected value.
+     *
+     * @param form The form object.
+     */
+    private void updateSelectedDateOption(RateRolloverForm form) {
+
+        // Inspect the current value of the "selectedDateOption" property:
+        String selectedDateOption = form.getSelectedDateOption();
+
+        if (StringUtils.isEmpty(selectedDateOption)
+                || StringUtils.equals(selectedDateOption, RateRolloverForm.OPTION_NULL_DATES)) {
+
+            // Reset the options and set the "Null Dates" option as selected:
+            form.setSelectedDateOption(RateRolloverForm.OPTION_NULL_DATES);
+            form.setNullDatesOption(RateRolloverForm.OPTION_RADIO_BUTTON_SELECTED);
+            form.setAutoAdvancedDatesOption(null);
+            form.setCustomDatesOption(null);
+
+        } else if (StringUtils.equals(selectedDateOption, RateRolloverForm.OPTION_AUTO_ADVANCED_DATES)) {
+
+            // Reset the options and set the "Auto Advanced Dates" option as selected:
+            form.setSelectedDateOption(RateRolloverForm.OPTION_AUTO_ADVANCED_DATES);
+            form.setAutoAdvancedDatesOption(RateRolloverForm.OPTION_RADIO_BUTTON_SELECTED);
+            form.setNullDatesOption(null);
+            form.setCustomDatesOption(null);
+
+        } else { // "Custom Dates" option
+
+            // Reset the options and set the "Custom Dates" option as selected:
+            form.setSelectedDateOption(RateRolloverForm.OPTION_CUSTOM_DATES);
+            form.setCustomDatesOption(RateRolloverForm.OPTION_RADIO_BUTTON_SELECTED);
+            form.setNullDatesOption(null);
+            form.setAutoAdvancedDatesOption(null);
+
+        }
     }
 }

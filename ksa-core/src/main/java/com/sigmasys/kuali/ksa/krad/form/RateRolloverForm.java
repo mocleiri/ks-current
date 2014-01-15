@@ -11,6 +11,27 @@ import java.util.Date;
 public class RateRolloverForm extends AbstractViewModel {
 
     /**
+     * Date option - Null dates.
+     */
+    public static final String OPTION_NULL_DATES = "nullDatesOption";
+
+    /**
+     * Date option - Auto-Advanced dates.
+     */
+    public static final String OPTION_AUTO_ADVANCED_DATES = "autoAdvancedDatesOption";
+
+    /**
+     * Date option - Custom dates.
+     */
+    public static final String OPTION_CUSTOM_DATES = "customDatesOption";
+
+    /**
+     * Value that indicates that a radio-button must be selected.
+     */
+    public static final String OPTION_RADIO_BUTTON_SELECTED = "1";
+
+
+    /**
      * ID of an ATP to roll over from.
      */
     private String atpRolloverFrom;
@@ -26,9 +47,24 @@ public class RateRolloverForm extends AbstractViewModel {
     private String atpRolloverFromInfo;
 
     /**
-     * Selected option of Date settings.
+     * Selected option of Date adjustment.
      */
-    private String dateSettingsOption;
+    private String selectedDateOption;
+
+    /**
+     * Property associated with the "Null Dates" option.
+     */
+    private String nullDatesOption;
+
+    /**
+     * Property associated with the "Auto Advanced Dates" option.
+     */
+    private String autoAdvancedDatesOption;
+
+    /**
+     * Property associated with the "Custom Dates" option.
+     */
+    private String customDatesOption;
 
     /**
      * Number of days to advance dates. Used when the "Automatic Advancement" option is selected.
@@ -44,6 +80,11 @@ public class RateRolloverForm extends AbstractViewModel {
      * Custom Recognition Date. Used when the "Custom Dates" option is selected.
      */
     private Date customRecognitionDate;
+
+    /**
+     * Error message resulting from pressing the Rollover Rate button.
+     */
+    private String rolloverErrorMessage;
 
 
     public int getNumOfDaysToAdvance() {
@@ -94,11 +135,43 @@ public class RateRolloverForm extends AbstractViewModel {
         this.atpRolloverFromInfo = atpRolloverFromInfo;
     }
 
-    public String getDateSettingsOption() {
-        return dateSettingsOption;
+    public String getRolloverErrorMessage() {
+        return rolloverErrorMessage;
     }
 
-    public void setDateSettingsOption(String dateSettingsOption) {
-        this.dateSettingsOption = dateSettingsOption;
+    public void setRolloverErrorMessage(String rolloverErrorMessage) {
+        this.rolloverErrorMessage = rolloverErrorMessage;
+    }
+
+    public String getSelectedDateOption() {
+        return selectedDateOption;
+    }
+
+    public void setSelectedDateOption(String selectedDateOption) {
+        this.selectedDateOption = selectedDateOption;
+    }
+
+    public String getNullDatesOption() {
+        return nullDatesOption;
+    }
+
+    public void setNullDatesOption(String nullDatesOption) {
+        this.nullDatesOption = nullDatesOption;
+    }
+
+    public String getAutoAdvancedDatesOption() {
+        return autoAdvancedDatesOption;
+    }
+
+    public void setAutoAdvancedDatesOption(String autoAdvancedDatesOption) {
+        this.autoAdvancedDatesOption = autoAdvancedDatesOption;
+    }
+
+    public String getCustomDatesOption() {
+        return customDatesOption;
+    }
+
+    public void setCustomDatesOption(String customDatesOption) {
+        this.customDatesOption = customDatesOption;
     }
 }
