@@ -412,7 +412,7 @@ end
 
 Then /^I have access to edit the registration options$/ do
   on CourseOfferingCreateEdit do |page|
-    page.registration_opts_div.checkbox.enabled?.should be_true
+    page.pass_fail_checkbox.enabled?.should be_true
   end
 end
 

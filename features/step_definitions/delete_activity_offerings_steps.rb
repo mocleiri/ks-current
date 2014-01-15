@@ -43,7 +43,7 @@ end
 And /^I? ?add an Activity Offering to the cross-listed CO$/ do
   @course_offering.manage_and_init
   @orig_total = @course_offering.get_ao_list.count
-  @course_offering.create_ao(make ActivityOffering, :format => "Lecture Only")
+  @course_offering.create_ao  :ao_obj => (make ActivityOffering, :format => "Lecture Only"), :navigate_to_page => false
 end
 
 Then /^the AO count reflects the added AO$/ do

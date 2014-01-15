@@ -18,6 +18,8 @@ When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
     seatpool = make SeatPool, :priority => (ctr)
     temp_list[ctr] = seatpool
   end
+  course_offering = make CourseOffering
+  course_offering.manage
 
   @activity_offering = create ActivityOffering, :seat_pool_list => temp_list
   @activity_offering.save

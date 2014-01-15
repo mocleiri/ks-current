@@ -30,10 +30,6 @@ class CourseOfferingCreateEdit < BasePage
 
   element(:term_label_div) { |b| b.frm.div(data_label: "Term") }
 
-  value(:target_term) { |b| b.frm.div(data_label: "Term").span.text }
-  value(:course_code_element) { |b| b.frm.div(data_label: "Course Code").span }
-  value(:course_code) { |b| b.frm.course_code_element.text() }
-
   element(:suffix) { |b| b.frm.div(data_label: "Course Number Suffix").text_field }
 
   element(:grading_reg_opts_div) { |b| b.frm.div(id: "KS-GradingAndRegOptions") }
@@ -41,13 +37,11 @@ class CourseOfferingCreateEdit < BasePage
   action(:set_grading_option) { |option,b| b.frm.radio(value: "kuali.resultComponent.grade.#{option.downcase}").click() }
   element(:grading_letter) { |b| b.grading_reg_opts_div.radio(text: "Letter") }
 
-  element(:registration_opts_div) { |b| b.frm.div(data_label: "Student Registration Options").parent }
-  element(:pass_fail_checkbox) { |b| b.registration_opts_div.checkbox(name: "document.newMaintainableObject.dataObject.passFailStudentRegOpts") }
-  element(:audit_checkbox) { |b| b.registration_opts_div.checkbox(name: "document.newMaintainableObject.dataObject.auditStudentRegOpts") }
+  element(:pass_fail_checkbox) { |b| b.checkbox(name: "document.newMaintainableObject.dataObject.passFailStudentRegOpts") }
+  element(:audit_checkbox) { |b| b.checkbox(name: "document.newMaintainableObject.dataObject.auditStudentRegOpts") }
 
   element(:credit_type_option_fixed) { |b| b.frm.radio(id: "KS-CourseOfferingEdit-CreditType_OptionTypeSelector_control_0") }
 
-  element(:credits) { |b| b.frm.div(data_label: "Credits").text_field() }
   element(:fixed_credit_select_menu) { |b| b.frm.select(id: "KS-CourseOfferingEdit-CreditType_OptionTypeFixed_control") }
   action(:select_fixed_credit_option) { |b| b.credit_type_option_fixed.set() }
 
@@ -74,9 +68,12 @@ class CourseOfferingCreateEdit < BasePage
 
   element(:final_exam_option_div) { |b| b.frm.div(id: "finalExamType") }
   #TODO:: need elements for AZ here
-  action(:final_exam_option_standard) { |b| b.frm.radio(value: "STANDARD").set; b.loading.wait_while_present}
-  action(:final_exam_option_alternate) { |b| b.frm.radio(value: "ALTERNATE").set; b.loading.wait_while_present }
-  action(:final_exam_option_none) { |b| b.frm.radio(value: "NONE").set; b.loading.wait_while_present }
+  action(:final_exam_option_standard) { |b| b.final_exam_option_standard_element.set; b.loading.wait_while_present}
+  element(:final_exam_option_standard_element) { |b| b.final_exam_option_div.radio(value: "STANDARD")}
+  action(:final_exam_option_alternate) { |b| b.final_exam_option_alternate_element.set; b.loading.wait_while_present }
+  element(:final_exam_option_alternate_element) { |b| b.final_exam_option_div.radio(value: "ALTERNATE") }
+  action(:final_exam_option_none) { |b| b.final_exam_option_none_element.set; b.loading.wait_while_present }
+  element(:final_exam_option_none_element) { |b| b.final_exam_option_div.radio(value: "NONE") }
 
   element(:cross_listed_as_label) { |b| b.frm.span(text:/Crosslisted as:/)}
   element(:cross_listed_co_check_boxes) { |b| b.frm.div(id:"KS-COEditListed-Checkbox-Group")}
@@ -92,6 +89,7 @@ class CourseOfferingCreateEdit < BasePage
 
   action(:set_exam_matrix) { |b| b.use_exam_matrix_checkbox.set }
   action(:clear_exam_matrix) { |b| b.use_exam_matrix_checkbox.clear }
+
   def check_final_exam_matrix( use_final_exam_matrix)
     if use_final_exam_matrix
       set_exam_matrix
@@ -110,16 +108,14 @@ class CourseOfferingCreateEdit < BasePage
   #work for the newest row, ie when adding
   element(:new_format_select) {|b| b.delivery_formats_table.rows[-2].cells[FORMAT_COLUMN].select }
   element(:new_grade_roster_level_select) {|b| b.delivery_formats_table.rows[-2].cells[GRADE_ROSTER_LEVEL_COLUMN].select }
+  value(:new_final_exam_driver_value) { |b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_DRIVER_COLUMN].text}
   element(:new_final_exam_activity_select)  {|b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_ACTIVITY_COLUMN].select }
+  value(:new_final_exam_activity_value) { |b| b.new_final_exam_activity_select.selected_options[0].text}
   element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-2].cells[ACTIONS_COLUMN].link(text: "Delete") }
 
   element(:add_format_btn) { |b| b.frm.button(id: "KS-CourseOffering-FormatOfferingSubSection_add")}
   action(:add_format) { |b| b.add_format_btn.click; b.loading.wait_while_present }
   #end elements for adding delivery format
-
-  value(:final_exam_driver_value) { |b| b.delivery_formats_table.rows[1].cells[FINAL_EXAM_DRIVER_COLUMN].text}
-  element(:final_exam_activity_options) { |b| b.delivery_formats_table.rows[1].cells[FINAL_EXAM_ACTIVITY_COLUMN].select()} #TODO: make format row aware
-  value(:final_exam_activity_value) { |b| b.final_exam_activity_options.selected_options[0].text}   #TODO: make format row aware
 
   def set_delivery_format_(format)
     if new_format_select.include? format

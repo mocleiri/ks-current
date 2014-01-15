@@ -1,4 +1,6 @@
 When /^I add requested delivery logistics to an activity offering$/ do
+  course_offering = make CourseOffering
+  course_offering.manage
   @activity_offering = create ActivityOffering, :requested_delivery_logistics_list => {"default"=> (make DeliveryLogistics)}
 end
 

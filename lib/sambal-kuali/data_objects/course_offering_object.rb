@@ -461,19 +461,20 @@ class CourseOffering
       page.show
 
     end
-    begin
-      on ManageCourseOfferings do |page|
-        page.create_co_button.wait_until_present(5)
-      end
+    #check to see if course code returns multiple rows
+    on_list_page = false
+    on ManageCourseOfferings do |page|
+      Watir::Wait.until { page.create_co_button.present? || page.add_activity_button.present? }
+      on_list_page = page.create_co_button.exists?
+      #previous lines avoid delay caused by 'page.create_co_button.wait_until_present(5)'
+    end
 
+    if on_list_page
       on ManageCourseOfferingList do |page|
         page.target_row(@course).link(text: "Manage").click
         page.loading.wait_while_present
       end
-    rescue Watir::Wait::TimeoutError
-      #means was single CO returned, AO list is already displayed
     end
-
   end
 
 
@@ -957,8 +958,18 @@ class CourseOffering
   # @example
   #  @course_offering.create_ao(activity_offering_object)
   #
-  #@param opts ActivityOffering object
-  def create_ao(activity_offering_object)
+  #@param opts :ao_obj => ActivityOffering object, :navigate_to_page => true/false
+  def create_ao(opts = {})
+
+    defaults = {
+        :navigate_to_page => true,
+        :ao_obj => (make ActivityOffering)
+    }
+    options = defaults.merge(opts)
+
+    self.manage if options[:navigate_to_page]
+
+    activity_offering_object = options[:ao_obj]
     activity_offering_object.parent_course_offering = self
     activity_offering_object.create
     activity_offering_object.save

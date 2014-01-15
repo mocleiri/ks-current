@@ -254,7 +254,7 @@ class ManageCourseOfferings < BasePage
     codes = []
     begin
       activity_offering_results_table(cluster_private_name).rows.each { |row| codes << row[AO_CODE].text }
-      codes.delete_if { |code| code == "Code" }
+      codes.delete_if { |code| code.downcase == "code" }
       codes.delete_if { |code| code.strip == "" }
     rescue
       #no AOs found

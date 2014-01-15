@@ -1,7 +1,7 @@
 When /^I add an Activity Offering to an existing Course Offering$/ do
   course_offering = make CourseOffering, :course=>"CHEM276"
-  course_offering.manage_and_init
-  @new_ao = course_offering.create_ao(make ActivityOffering, :format => "Lecture/Discussion")
+  #course_offering.manage_and_init
+  @new_ao = course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture/Discussion")
 end
 
 

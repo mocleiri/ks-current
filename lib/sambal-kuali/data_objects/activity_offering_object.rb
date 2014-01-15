@@ -174,7 +174,7 @@ class ActivityOffering
 
   #navigates to activity offering edit page and sets up activity offering based on class attributes
   def create
-    @parent_course_offering.manage
+    #@parent_course_offering.manage
 
     if @create_by_copy then
       on ManageCourseOfferings do |page|
