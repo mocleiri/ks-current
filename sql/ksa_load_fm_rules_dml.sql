@@ -287,11 +287,34 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6023, 'FM Session 1_23', 3, 10, null,
 '(session key "major.code" is "z077" and signup has rates "cybersecurity.leadership")',
-'replace signup rates "mba.cohort.flag", "" with "mba.cohort.em12", "default"')!
+'remove signup rates "regular"')!
 
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6024, 'FM Session 1_24', 3, 7, null,
-'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.resident.ft")',
-'add signup rate "cp.undergrad.resident.ft.frostburg.discount", "default"')!
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6024, 'FM Session 1_24', 3, 8, null,
+'(session key "study.load" is "ft" and session key "residency" is "in.state")',
+'replace signup rates "cp", "" with "cp.resident.ft", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6025, 'FM Session 1_25', 3, 8, null,
+'(session key "study.load" is "ft" and session key "residency" is "out.of.state")',
+'replace signup rates "cp", "" with "cp.nonresident.ft", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6026, 'FM Session 1_26', 3, 8, null,
+'(session key "study.load" is "pt" and session key "residency" is "in.state")',
+'replace signup rates "cp", "" with "cp.resident.pt", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6027, 'FM Session 1_27', 3, 8, null,
+'(session key "study.load" is "pt" and session key "residency" is "out.of.state")',
+'replace signup rates "cp", "" with "cp.nonresident.pt", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6028, 'FM Session 1_28', 3, 8, null,
+'(session key "campus" is "sg" and signup has rate "sg.fee" and session key "study.load" is "ft" and session key "study.level" is "undergraduate")',
+'add signup rate "sg.facilities.ft", "default"
+ add signup rate "sg.administrative.fee", "default"
+')!
+
+
+--Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6024, 'FM Session 1_24', 3, 7, null,
+--'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.resident.ft")',
+--'add signup rate "cp.undergrad.resident.ft.frostburg.discount", "default"')!
 
 
 -- FM rule associations
@@ -344,6 +367,10 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6021)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6022)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6023)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6024)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6025)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6026)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6027)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6028)!
 
 
 -----------------------------------------------------------------------------------------------------------------------
