@@ -1,7 +1,9 @@
 package com.sigmasys.kuali.ksa.krad.controller;
 
 import com.sigmasys.kuali.ksa.krad.form.RatesForm;
+import com.sigmasys.kuali.ksa.krad.model.RateModel;
 import com.sigmasys.kuali.ksa.model.fm.Rate;
+import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
 import com.sigmasys.kuali.ksa.service.atp.AtpService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import org.apache.commons.logging.Log;
@@ -100,7 +102,14 @@ public class RatesController extends GenericSearchController {
         rateList.addAll(rates);
         rateList.add(0, new Rate());
 
-        form.setRates(rateList);
+        List<RateModel> rateModels = new ArrayList<RateModel>(rateList.size());
+        for(Rate rate : rateList) {
+            RateModel m = new RateModel(rate);
+            RateCatalog rc = rateService.getRateCatalogByRateId(rate.getId());
+            m.setRateCatalog(rc);
+            rateModels.add(m);
+        }
+        form.setRates(rateModels);
 
         return getUIFModelAndView(form);
     }

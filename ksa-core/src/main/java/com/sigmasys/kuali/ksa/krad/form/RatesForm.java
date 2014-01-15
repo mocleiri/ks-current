@@ -1,5 +1,6 @@
 package com.sigmasys.kuali.ksa.krad.form;
 
+import com.sigmasys.kuali.ksa.krad.model.RateModel;
 import com.sigmasys.kuali.ksa.model.fm.Rate;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class RatesForm extends AbstractViewModel {
     private String rateSubcode;
 
 
-    private List<Rate> rates;
+    private List<RateModel> rates;
 
     public String getAcademicTimePeriod() {
         return academicTimePeriod;
@@ -54,14 +55,14 @@ public class RatesForm extends AbstractViewModel {
         this.rateSubcode = rateSubcode;
     }
 
-    public List<Rate> getRates() {
+    public List<RateModel> getRates() {
         if(rates == null) {
-            rates = new ArrayList<Rate>();
+            rates = new ArrayList<RateModel>();
         }
         return rates;
     }
 
-    public void setRates(List<Rate> rates) {
+    public void setRates(List<RateModel> rates) {
         this.rates = rates;
     }
 }

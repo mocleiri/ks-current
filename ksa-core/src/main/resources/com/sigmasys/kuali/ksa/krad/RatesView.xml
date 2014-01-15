@@ -149,7 +149,7 @@
                 <bean parent="Uif-Message" p:messageText="Please select rate criteria." p:render="@{rates.size() == 0}"/>
                 <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:width="85%">
                     <property name="readOnly" value="false"/>
-                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.fm.Rate"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.RateModel"/>
                     <property name="propertyName" value="rates"/>
                     <property name="layoutManager.richTable.render" value="true"/>
                     <property name="layoutManager.renderSequenceField" value="false"/>
@@ -166,17 +166,17 @@
 
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:label="Code" p:propertyName="code" p:readOnly="@{#line.id != null}">
+                            <bean parent="Uif-InputField" p:label="Code" p:propertyName="rate.code" p:readOnly="@{#line.rate.id != null}">
                                 <property name="control">
                                     <bean parent="Uif-TextControl"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="name">
+                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="rate.name">
                                 <property name="control">
                                     <bean parent="Uif-TextControl"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-InputField" p:label="Description" p:propertyName="description">
+                            <bean parent="Uif-InputField" p:label="Description" p:propertyName="rate.description">
                                 <property name="control">
                                     <bean parent="Uif-TextControl" p:textExpand="true"/>
                                 </property>
@@ -185,7 +185,7 @@
                                 <property name="items">
                                     <list>
                                         <!-- "Save" image action -->
-                                        <bean parent="Uif-ActionLink" p:methodToCall="saveRates" p:onClickScript="writeHiddenToForm('rateId', '@{#line.id}');">
+                                        <bean parent="Uif-ActionLink" p:methodToCall="saveRates" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');">
                                             <property name="actionImage">
                                                 <bean parent="Uif-Image" p:source="../images/save.png" p:style="cursor:pointer;" p:altText="Save"/>
                                             </property>
@@ -202,7 +202,7 @@
                                         </bean>
                                         -->
                                         <!-- "Delete" image action -->
-                                        <bean parent="Uif-ActionLink" p:methodToCall="deleteRate" p:onClickScript="writeHiddenToForm('rateId', '@{#line.id}');" p:hidden="@{#line.id == null}">
+                                        <bean parent="Uif-ActionLink" p:methodToCall="deleteRate" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');" p:hidden="@{#line.rate.id == null}">
                                             <property name="actionImage">
                                                 <bean parent="Uif-Image" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Delete"/>
                                             </property>
@@ -217,103 +217,9 @@
                         <bean parent="Uif-VerticalBoxGroup">
                             <property name="items">
                                 <list>
-                                    <!--
-                                    <bean parent="Uif-InputField" p:propertyName="rateTypeId" p:labelPlacement="TOP" p:label="Rate Type">
-                                        <property name="control">
-                                            <bean parent="Uif-DropdownControl"/>
-                                        </property>
-                                        <property name="optionsFinder" value="@{getRateTypeOptionsFinder()}"/>
-                                    </bean>
-                                    <bean parent="Uif-InputField" p:propertyName="rateCatalog.minAmount" p:label="Minimum Amount" p:required="true" p:labelPlacement="TOP"/>
-                                    <bean parent="Uif-InputField" p:propertyName="rateCatalog.maxAmount" p:label="Maximum Amount" p:required="true" p:labelPlacement="TOP"/>
-
-                                    <bean parent="Uif-HorizontalBoxGroup">
-                                        <property name="items">
-                                            <list>
-                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.transactionTypeId"
-                                                      p:label="Transaction Type Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                      p:maxLength="20" p:required="true">
-                                                    <property name="suggest">
-                                                        <bean parent="Uif-Suggest">
-                                                            <property name="valuePropertyName" value="id.id"/>
-                                                            <property name="labelPropertyName" value="description"/>
-                                                            <property name="templateOptions">
-                                                                <map>
-                                                                    <entry key="minLength" value="2"/>
-                                                                    <entry key="delay" value="0"/>
-                                                                </map>
-                                                            </property>
-                                                            <property name="suggestQuery">
-                                                                <bean parent="Uif-AttributeQueryConfig">
-                                                                    <property name="queryMethodToCall" value="getTransactionTypesForSuggest"/>
-                                                                </bean>
-                                                            </property>
-                                                        </bean>
-                                                    </property>
-
-                                                </bean>
-
-                                                <bean parent="Uif-InputField" p:propertyName="transactionTypeFinal" p:labelPlacement="TOP" p:label="Locked">
-                                                    <property name="control">
-                                                        <bean parent="Uif-CheckboxControl"/>
-                                                    </property>
-                                                </bean>
-
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <bean parent="Uif-HorizontalBoxGroup">
-                                        <property name="items">
-                                            <list>
-                                                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="rateCatalog.transactionDateType" p:labelPlacement="TOP">
-                                                    <property name="control">
-                                                        <bean parent="Uif-DropdownControl" p:width="100%"/>
-                                                    </property>
-                                                    <property name="optionsFinder" value="@{getTransactionDateTypeFinder()}"/>
-                                                </bean>
-                                                <bean parent="Uif-InputField" p:propertyName="transactionTypeFinal" p:labelPlacement="TOP" p:label="Locked">
-                                                    <property name="control">
-                                                        <bean parent="Uif-CheckboxControl"/>
-                                                    </property>
-                                                </bean>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <bean parent="Uif-InputField" p:propertyName="recognitionDateLocked" p:label="Recognition Date is Locked to Effective Date">
-                                        <property name="control">
-                                            <bean parent="Uif-CheckboxControl"/>
-                                        </property>
-                                    </bean>
-                                    <bean parent="Uif-Disclosure-VerticalBoxSection">
-                                        <property name="headerText" value="Rate Plateau Parameters"/>
-                                        <property name="items">
-                                            <list>
-                                                <bean parent="Uif-InputField" p:propertyName="limitAmountFinal" p:labelPlacement="TOP" p:label="Rates Derived from this model will have a defined plateau">
-                                                    <property name="control">
-                                                        <bean parent="Uif-CheckboxControl"/>
-                                                    </property>
-                                                </bean>
-                                                <bean parent="Uif-InputField" p:propertyName="isLimitAmount" p:labelPlacement="TOP" p:label="Lock the pplateau parameters">
-                                                    <property name="control">
-                                                        <bean parent="Uif-CheckboxControl"/>
-                                                    </property>
-                                                </bean>
-                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.minLimitAmount" p:label="Minimum Amount" p:required="true" p:labelPlacement="TOP"/>
-                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.maxLimitAmount" p:label="Maximum Amount" p:required="true" p:labelPlacement="TOP"/>
-                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.minLimitUnits" p:label="Minimum Units" p:required="true" p:labelPlacement="TOP"/>
-                                                <bean parent="Uif-InputField" p:propertyName="rateCatalog.maxLimitUnits" p:label="Maximum Units" p:required="true" p:labelPlacement="TOP"/>
-
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <bean parent="Uif-Disclosure-VerticalBoxSection">
-                                        <property name="headerText" value="Name/Value Pairs"/>
-                                        <property name="items">
-                                            <list>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    -->
+                                    <bean parent="Uif-InputField" p:propertyName="rate.atpId" p:labelPlacement="TOP" p:label="Academic Time Period Code"/>
+                                    <bean parent="Uif-InputField" p:propertyName="defaultAmount" p:labelPlacement="TOP" p:label="Default Amount" p:readOnly="@{#line.getDefaultAmountReadOnly()}"/>
+                                    <bean parent="Uif-InputField" p:propertyName="transactionTypeId" p:labelPlacement="TOP" p:label="Transaction Type Code" p:readOnly="@{#line.getTransactionTypeIdReadOnly()}"/>
                                 </list>
                             </property>
                         </bean>
