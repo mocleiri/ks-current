@@ -773,8 +773,8 @@ Then /^there should be no final exam period for any term in the copy$/ do
     all_terms.each do |term_name|
       page.open_term_section(term_name)
       page.final_exam_section( term_name).text.should match /Final Exam Period\nAdd Final Exam Period/
-      page.cancel
     end
+    page.cancel
   end
 end
 
