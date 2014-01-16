@@ -109,6 +109,7 @@ public class CalendarConstants {
         public static final String ERROR_DUPLICATE_NAME  = "error.enroll.calendar.duplicateName";
         public static final String ERROR_DATE_NOT_IN_ACAL_RANGE = "error.enroll.event.dateNotInAcal";
         public static final String ERROR_INVALID_DATE_RANGE = "error.enroll.daterange.invalid";
+        public static final String ERROR_TERM_TYPE_REQUIRED = "error.enroll.term.type.empty";
         public static final String ERROR_DUPLICATE_TERM_NAME = "error.enroll.term.duplicateName";
         public static final String ERROR_TERM_NOT_IN_ACAL_RANGE = "error.enroll.term.dateNotInAcal";
         public static final String ERROR_TERM_NOT_IN_TERM_RANGE = "error.enroll.term.dateNotInTerm";
@@ -118,6 +119,7 @@ public class CalendarConstants {
         public static final String ERROR_INVALID_DATE_TIME = "error.enroll.date.time.invalid";
         public static final String ERROR_EMPTY_DATES = "error.enroll.examdate.empty";
         public static final String ERROR_EXAM_PERIOD_DAYS_VALIDATION = "error.enroll.acal.examperiod.days.validation";
+        public static final String ERROR_HOLIDAY_END_DATE_BEFORE_START = "error.enroll.holiday.invalidDates";
     }
 
     public static final String EMPTY_TERM_CODE = "No Code";

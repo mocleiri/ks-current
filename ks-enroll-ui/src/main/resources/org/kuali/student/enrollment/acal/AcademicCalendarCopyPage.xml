@@ -25,7 +25,7 @@ limitations under the License.
     -->
     <bean id="KS-AcademicCalendar-CopyPage" parent="KS-Uif-Page"
           p:id="academicCalendarCopyPage"
-          p:headerText=""
+          p:headerText="Academic Calendar"
           p:disclosure.render="false">
 
         <property name="pageSourceFile" value="AcademicCalendarCopyPage.xml" />
@@ -66,8 +66,7 @@ limitations under the License.
                 <!-- This adds the file names to the page HTML -->
                 <ref bean="KS-SourceFile-Comment-Group"/>
 
-                <bean parent="Uif-VerticalBoxSection"
-                      p:style="margin-bottom:0; padding-bottom:0;">
+                <bean parent="Uif-VerticalBoxSection">
                     <property name="items">
                         <list>
                             <ref bean="KS-AcademicCalendar-CopyPage-From"/>
@@ -80,11 +79,20 @@ limitations under the License.
             <bean parent="KS-Uif-FooterBase">
                 <property name="items">
                     <list>
-                        <bean parent="KS-Uif-PrimaryActionButton"
-                              p:methodToCall="copy"
-                              p:actionLabel="Copy Academic Calendar"
-                              p:render="@{academicCalendarInfo != null}"/>
-                        <bean parent="Uif-ActionLink" p:actionLabel="Cancel" p:actionScript="stepBrowserBackTwoPages()"/>
+                        <bean parent="Uif-HorizontalBoxGroup">
+                            <property name="items">
+                                <list>
+                                    <bean parent="KS-Uif-PrimaryActionButton"
+                                          p:methodToCall="copy"
+                                          p:actionLabel="Copy Academic Calendar"
+                                          p:render="@{academicCalendarInfo != null}"/>
+                                    <bean parent="Uif-ActionLink"
+                                          p:actionLabel="Cancel"
+                                          p:actionScript="stepBrowserBackTwoPages()"
+                                          p:additionalCssClasses="cancel_link"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>

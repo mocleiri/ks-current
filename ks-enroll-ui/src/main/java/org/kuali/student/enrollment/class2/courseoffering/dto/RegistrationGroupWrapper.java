@@ -47,6 +47,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     private String rgMaxEnrText;
     private String aoClusterName;
     private String aoEditLink;
+    private String scheduledState = "";
     private String startTimeDisplay = "";
     private String endTimeDisplay = "";
     private String daysDisplayName = "";
@@ -157,7 +158,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     }
 
     public void setStartTimeDisplay(String startTimeDisplay,boolean appendForDisplay){
-        setStartTimeDisplay(startTimeDisplay, false, null);
+        setStartTimeDisplay(startTimeDisplay, appendForDisplay, null);
     }
 
     public void setStartTimeDisplay(String startTimeDisplay,boolean appendForDisplay, String dlTypeClass) {
@@ -184,7 +185,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     }
 
     public void setEndTimeDisplay(String endTimeDisplay,boolean appendForDisplay) {
-        setEndTimeDisplay(endTimeDisplay, false, null);
+        setEndTimeDisplay(endTimeDisplay, appendForDisplay, null);
     }
 
     public void setEndTimeDisplay(String endTimeDisplay,boolean appendForDisplay, String dlTypeClass) {
@@ -211,7 +212,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     }
 
     public void setDaysDisplayName(String daysDisplayName,boolean appendForDisplay) {
-        setDaysDisplayName(daysDisplayName, false, null);
+        setDaysDisplayName(daysDisplayName, appendForDisplay, null);
     }
 
     public void setDaysDisplayName(String daysDisplayName,boolean appendForDisplay, String dlTypeClass) {
@@ -245,6 +246,33 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
         this.endTime = endTime;
     }
 
+    public String getScheduledState() {
+        return scheduledState;
+    }
+
+    public void setScheduledState(String scheduledState) {
+        setScheduledState(scheduledState, false);
+    }
+
+    public void setScheduledState(String scheduledState,boolean appendForDisplay) {
+        setScheduledState(scheduledState, appendForDisplay, null);
+    }
+
+    public void setScheduledState(String scheduledState,boolean appendForDisplay, String dlTypeClass) {
+        String cssClass = "";
+        if(!StringUtils.isEmpty(dlTypeClass)){
+            cssClass = "class=\"" + dlTypeClass + "\"";
+        }
+        if(StringUtils.isEmpty(this.scheduledState)){
+            appendForDisplay = false;
+        }
+        if (appendForDisplay){
+            this.scheduledState = this.scheduledState + "<br><span " + cssClass + " >" + scheduledState + "</span>";
+        }else{
+            this.scheduledState = "<span " + cssClass + " >" + scheduledState + "</span>";
+        }
+    }
+
     public List<String> getWeekDays() {
         return weekDays;
     }
@@ -262,7 +290,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     }
 
     public void setBuildingName(String buildingName,boolean appendForDisplay) {
-        setBuildingName(buildingName, false, null);
+        setBuildingName(buildingName, appendForDisplay, null);
     }
 
     public void setBuildingName(String buildingName,boolean appendForDisplay, String dlTypeClass) {
@@ -289,7 +317,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     }
 
     public void setBuildingCode(String buildingCode,boolean appendForDisplay) {
-        setBuildingCode(buildingCode, false, null);
+        setBuildingCode(buildingCode, appendForDisplay, null);
     }
 
     public void setBuildingCode(String buildingCode,boolean appendForDisplay, String dlTypeClass) {
@@ -309,25 +337,15 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
 
     public void setBuildingCodeWithTooltip(String buildingCode, String buildingName, String dlTypeClass) {
         String cssClass = "";
-        boolean  appendForDisplay = true;
+        boolean  appendForDisplay;
         if(!StringUtils.isEmpty(dlTypeClass)){
-            cssClass = "class=\"" + dlTypeClass + "\"";
+            cssClass = " class=\"" + dlTypeClass + "\"";
         }
-        if(StringUtils.isEmpty(this.buildingCode)){
-            appendForDisplay = false;
-        } else {
-            appendForDisplay = true;
-        }
-        String underlineCssClass = "<span style=\"border-bottom: 1px dotted;\">";
+        appendForDisplay = !StringUtils.isEmpty(this.buildingCode);
 
-/*
-        if (appendForDisplay){
-            this.buildingCode = this.buildingCode + "<br><span " + cssClass + " >" + "  [id='SchOfClasses-RegGroup-BuildingCodeAndName-Tooltip' messageText='" + buildingCode + "'" + " toolTip.tooltipContent="+ "'" + buildingName +"']" + "</span>";
-        }else{
-            this.buildingCode = "<span " + cssClass + " >" + "  [id='SchOfClasses-RegGroup-BuildingCodeAndName-Tooltip' messageText=" + "'" + buildingCode + "'" + " toolTip.tooltipContent=" + "'" + buildingName + "']" + "</span>";
-        }
-*/
-        String BldgCodeMark = "<span " + cssClass + "title='" + buildingName  + "'>" + underlineCssClass + buildingCode + "</span> </span>";
+        String underlineCssClass = "<span style=\"border-bottom: 1px dotted\"";
+        String BldgCodeMark = underlineCssClass + cssClass + ">" + buildingCode + "</span>";
+
         if (appendForDisplay){
             this.buildingCode = this.buildingCode + "<br>" + BldgCodeMark;
         }else{
@@ -339,9 +357,7 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
     public void setBuildingCodeWithTooltip(String buildingCode, String buildingName) {
         String underlineCssClass = "<span style=\"border-bottom: 1px dotted;\">";
 
-        String BldgCodeMark = "<span title='" + buildingName  + "'>" + underlineCssClass + buildingCode + "</span> </span>";
-
-        this.buildingCode = BldgCodeMark;
+        this.buildingCode = "<span title='" + buildingName  + "'>" + underlineCssClass + buildingCode + "</span> </span>";
     }
 
     public List<String> getBldgNameList() {
@@ -427,3 +443,4 @@ public class RegistrationGroupWrapper implements Serializable, ComparatorModel {
         this.commonRequisite = commonRequisite;
     }
 }
+

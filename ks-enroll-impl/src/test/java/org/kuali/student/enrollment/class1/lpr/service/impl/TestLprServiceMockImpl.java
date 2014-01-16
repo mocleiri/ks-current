@@ -1,8 +1,21 @@
 package org.kuali.student.enrollment.class1.lpr.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kuali.rice.core.api.util.type.KualiDecimal;
 import org.kuali.student.common.test.util.AttributeTester;
 import org.kuali.student.common.test.util.IdEntityTester;
 import org.kuali.student.common.test.util.ListOfStringTester;
@@ -28,17 +41,6 @@ import org.kuali.student.r2.common.util.constants.LprServiceConstants;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:lpr-mock-service-test-context.xml"})
 public class TestLprServiceMockImpl {
@@ -62,6 +64,8 @@ public class TestLprServiceMockImpl {
         principalId = "123";
         callContext = new ContextInfo();
         callContext.setPrincipalId(principalId);
+        callContext.setAuthenticatedPrincipalId(principalId);
+        callContext.setCurrentDate(new Date());
 //        try {
 //            new LprTestDataLoader(lprDao).loadData();
 //        } catch (Exception ex) {
@@ -86,7 +90,7 @@ public class TestLprServiceMockImpl {
         expected.setStateKey(LprServiceConstants.ASSIGNED_STATE_KEY);
         expected.setEffectiveDate(new Date());
         expected.setExpirationDate(new Date(new Date().getTime() + 1000));
-        expected.setCommitmentPercent("100.00");
+        expected.setCommitmentPercent(new KualiDecimal("100.00"));
         expected.getResultValuesGroupKeys().add("rvg1");
         expected.getResultValuesGroupKeys().add("rvg2");
         new AttributeTester().add2ForCreate(expected.getAttributes());
@@ -129,7 +133,7 @@ public class TestLprServiceMockImpl {
 		}
         expected.setEffectiveDate(new Timestamp(expected.getEffectiveDate().getTime() - 2000));
         expected.setExpirationDate(new Timestamp(expected.getExpirationDate().getTime() + 2000));
-        expected.setCommitmentPercent("33.33");
+        expected.setCommitmentPercent(new KualiDecimal("33.33"));
         expected.getResultValuesGroupKeys().remove(0);
         expected.getResultValuesGroupKeys().add("rvg3");
         new AttributeTester().delete1Update1Add1ForUpdate(expected.getAttributes());
@@ -290,7 +294,7 @@ public class TestLprServiceMockImpl {
         expected1.setStateKey(LprServiceConstants.ASSIGNED_STATE_KEY);
         expected1.setEffectiveDate(new Date());
         expected1.setExpirationDate(new Date(new Date().getTime() + 1000));
-        expected1.setCommitmentPercent("100.00");
+        expected1.setCommitmentPercent(new KualiDecimal("100.00"));
         expected1.getResultValuesGroupKeys().add("rvg1");
         expected1.getResultValuesGroupKeys().add("rvg2");
         new AttributeTester().add2ForCreate(expected1.getAttributes());
@@ -303,7 +307,7 @@ public class TestLprServiceMockImpl {
         expected2.setStateKey(LprServiceConstants.CONFIRMED_STATE_KEY);
         expected2.setEffectiveDate(new Date(new Date().getTime() + 1000));
         expected2.setExpirationDate(new Date(new Date().getTime() + 2000));
-        expected2.setCommitmentPercent("75.00");
+        expected2.setCommitmentPercent(new KualiDecimal("75.00"));
         expected2.getResultValuesGroupKeys().add("rvg3");
         expected2.getResultValuesGroupKeys().add("rvg4");
         new AttributeTester().add2ForCreate(expected2.getAttributes());
@@ -366,7 +370,7 @@ public class TestLprServiceMockImpl {
         expected1.setStateKey(LprServiceConstants.ASSIGNED_STATE_KEY);
         expected1.setEffectiveDate(new Date());
         expected1.setExpirationDate(new Date(new Date().getTime() + 1000));
-        expected1.setCommitmentPercent("100.00");
+        expected1.setCommitmentPercent(new KualiDecimal(100.00));
         expected1.getResultValuesGroupKeys().add("rvg1");
         expected1.getResultValuesGroupKeys().add("rvg2");
         new AttributeTester().add2ForCreate(expected1.getAttributes());
@@ -379,7 +383,7 @@ public class TestLprServiceMockImpl {
         expected2.setStateKey(LprServiceConstants.CONFIRMED_STATE_KEY);
         expected2.setEffectiveDate(new Date(new Date().getTime() + 1000));
         expected2.setExpirationDate(new Date(new Date().getTime() + 2000));
-        expected2.setCommitmentPercent("75.00");
+        expected2.setCommitmentPercent(new KualiDecimal("75.00"));
         expected2.getResultValuesGroupKeys().add("rvg3");
         expected2.getResultValuesGroupKeys().add("rvg4");
         new AttributeTester().add2ForCreate(expected2.getAttributes());

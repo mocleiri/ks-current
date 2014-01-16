@@ -1,16 +1,26 @@
 package org.kuali.student.enrollment.class2.courseoffering.util;
 
+import net.sf.ehcache.CacheManager;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.PredicateFactory;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.IdentityService;
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.permission.PermissionService;
+import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.kim.impl.KIMPropertyConstants;
 import org.kuali.rice.krad.uif.UifParameters;
 import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
+import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.rice.krms.api.KrmsConstants;
+import org.kuali.rice.krms.api.repository.RuleManagementService;
 import org.kuali.student.common.uif.form.KSUifForm;
+import org.kuali.student.enrollment.class2.courseoffering.controller.ActivityOfferingControllerTransactionHelper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingClusterWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper;
@@ -18,12 +28,23 @@ import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingList
 import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.RegistrationGroupWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.form.CourseOfferingManagementForm;
+import org.kuali.student.enrollment.class2.courseoffering.form.CreateSocForm;
+import org.kuali.student.enrollment.class2.courseoffering.form.DiagnoseRolloverForm;
+import org.kuali.student.enrollment.class2.courseoffering.form.TestServiceCallForm;
+import org.kuali.student.enrollment.class2.courseoffering.helper.impl.ActivityOfferingScheduleHelperImpl;
+import org.kuali.student.enrollment.class2.courseoffering.refdata.CluFixer;
 import org.kuali.student.enrollment.class2.courseoffering.service.CourseOfferingManagementViewHelperService;
+import org.kuali.student.enrollment.class2.courseoffering.service.CourseOfferingViewHelperService;
+import org.kuali.student.enrollment.class2.courseoffering.service.CreateSocViewHelperService;
+import org.kuali.student.enrollment.class2.courseoffering.service.DiagnoseRolloverViewHelperService;
+import org.kuali.student.enrollment.class2.courseoffering.service.SeatPoolUtilityService;
+import org.kuali.student.enrollment.class2.courseoffering.service.TestServiceCallViewHelperService;
 import org.kuali.student.enrollment.class2.courseoffering.service.facade.CourseOfferingServiceFacade;
 import org.kuali.student.enrollment.class2.courseoffering.service.facade.CSRServiceFacade;
 import org.kuali.student.enrollment.class2.courseoffering.service.impl.CourseInfoByTermLookupableImpl;
 import org.kuali.student.enrollment.class2.courseoffering.service.impl.DefaultOptionKeysService;
 import org.kuali.student.enrollment.class2.courseoffering.service.impl.DefaultOptionKeysServiceImpl;
+import org.kuali.student.enrollment.class2.courseoffering.service.impl.SeatPoolUtilityServiceImpl;
 import org.kuali.student.enrollment.class2.coursewaitlist.service.facade.CourseWaitListServiceFacade;
 import org.kuali.student.enrollment.class2.coursewaitlist.service.facade.CourseWaitListServiceFacadeConstants;
 import org.kuali.student.enrollment.class2.examoffering.service.facade.ExamOfferingServiceFacade;
@@ -36,28 +57,40 @@ import org.kuali.student.enrollment.courseofferingset.dto.SocInfo;
 import org.kuali.student.enrollment.courseofferingset.service.CourseOfferingSetService;
 import org.kuali.student.enrollment.coursewaitlist.service.CourseWaitListService;
 import org.kuali.student.enrollment.examoffering.service.ExamOfferingService;
+import org.kuali.student.enrollment.lpr.service.LprService;
+import org.kuali.student.enrollment.lui.service.LuiService;
 import org.kuali.student.r2.common.constants.CommonServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.DtoConstants;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.ContextUtils;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.student.r2.common.util.constants.CourseOfferingSetServiceConstants;
 import org.kuali.student.r2.common.util.constants.ExamOfferingServiceConstants;
+import org.kuali.student.r2.common.util.constants.LprServiceConstants;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.common.util.date.DateFormatters;
 import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.core.acal.service.AcademicCalendarService;
 import org.kuali.student.r2.core.atp.dto.AtpInfo;
 import org.kuali.student.r2.core.atp.service.AtpService;
+import org.kuali.student.r2.core.class1.state.dto.StateInfo;
 import org.kuali.student.r2.core.class1.state.service.StateService;
 import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.core.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.r2.core.constants.FeeServiceConstants;
 import org.kuali.student.r2.core.constants.PopulationServiceConstants;
+import org.kuali.student.r2.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.r2.core.fee.service.FeeService;
 import org.kuali.student.r2.core.organization.dto.OrgInfo;
 import org.kuali.student.r2.core.organization.service.OrganizationService;
 import org.kuali.student.r2.core.population.service.PopulationService;
+import org.kuali.student.r2.core.room.service.RoomService;
 import org.kuali.student.r2.core.scheduling.service.SchedulingService;
 import org.kuali.student.r2.core.search.dto.SearchParamInfo;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
@@ -77,8 +110,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equal;
@@ -92,6 +127,10 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equal;
  */
 public class CourseOfferingManagementUtil {
     private static CourseOfferingManagementViewHelperService viewHelperService;
+    private static CourseOfferingViewHelperService coViewHelperService;
+    private static CreateSocViewHelperService socViewHelperService;
+    private static DiagnoseRolloverViewHelperService drViewHelperService;
+    private static  TestServiceCallViewHelperService testViewHelperService;
     private static OrganizationService organizationService;
     private static StateService stateService;
     private static LRCService lrcService;
@@ -113,9 +152,116 @@ public class CourseOfferingManagementUtil {
     private static PopulationService populationService;
     private static CourseWaitListService courseWaitListService;
     private static DefaultOptionKeysService defaultOptionKeysService;
+    private static RoomService roomService;
+    private static PermissionService permissionService;
+    private static CacheManager cacheManager;
+    private static IdentityService identityService;
+    private static RuleManagementService ruleManagementService;
+    private static LprService lprService;
+    private static FeeService feeService;
+    private static CluFixer cluFixer;
+    private static LuiService luiService = null;
+    private static ActivityOfferingControllerTransactionHelper activityOfferingControllerTransactionHelper;
+    private static EnumerationManagementService enumerationManagementService;
+    private static PersonService personService;
+
+    private static HashMap<String, String> scheduleStateHm = null;
+
+    public static PersonService getPersonService() {
+        return KimApiServiceLocator.getPersonService();
+    }
+
+    public static EnumerationManagementService getEnumerationManagementService() {
+        if(enumerationManagementService == null) {
+            enumerationManagementService = (EnumerationManagementService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/enumerationmanagement", "EnumerationManagementService"));
+        }
+        return enumerationManagementService;
+    }
+
+    public static ActivityOfferingControllerTransactionHelper getActivityOfferingControllerTransactionHelper() {
+        if(activityOfferingControllerTransactionHelper == null){
+            activityOfferingControllerTransactionHelper = GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "activityOfferingControllerTransactionHelper", ActivityOfferingControllerTransactionHelper.class.getSimpleName()));
+        }
+
+        return activityOfferingControllerTransactionHelper;
+    }
+
+    public static LuiService getLuiService() {
+        if (luiService == null) {
+            luiService = (LuiService) GlobalResourceLoader.getService(new QName(LuiServiceConstants.NAMESPACE,
+                    LuiServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return luiService;
+    }
+
+    public static CluFixer getCluFixer() {
+        if(cluFixer == null){
+            cluFixer = (CluFixer) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/cluFixer","CluFixer"));
+        }
+        return cluFixer;
+    }
+
+    public static FeeService getFeeService() {
+        if (feeService == null) {
+            feeService = (FeeService) GlobalResourceLoader.getService(new QName(FeeServiceConstants.NAMESPACE,
+                    FeeServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return feeService;
+    }
+
+    public static LprService getLprService() {
+        if (lprService == null) {
+            lprService = (LprService) GlobalResourceLoader.getService(new QName(LprServiceConstants.NAMESPACE,
+                    LprServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return lprService;
+    }
+
+    public static RuleManagementService getRuleManagementService() {
+        if (ruleManagementService == null) {
+            ruleManagementService = (RuleManagementService) GlobalResourceLoader.getService(new QName(KrmsConstants.Namespaces.KRMS_NAMESPACE_2_0, "ruleManagementService"));
+        }
+        return ruleManagementService;
+    }
+
+    public static IdentityService getIdentityService() {
+        if (identityService == null) {
+            identityService = KimApiServiceLocator.getIdentityService();
+        }
+        return identityService;
+    }
+
+    public static CacheManager getCacheManager() {
+        if(cacheManager == null){
+            // "ks-ehcache" is the parent bean in ks-ehcache.xml file. This should probably be a constant.
+            cacheManager = CacheManager.getCacheManager("ks-ehcache");
+        }
+        return cacheManager;
+    }
+
+    public static PermissionService getPermissionService() {
+        if(permissionService==null){
+            permissionService = KimApiServiceLocator.getPermissionService();
+        }
+        return permissionService;
+    }
+
+    public static RoomService getRoomService(){
+        if (roomService == null){
+            roomService = CourseOfferingResourceLoader.loadRoomService();
+        }
+        return roomService;
+    }
+
+    public static ActivityOfferingScheduleHelperImpl getScheduleHelper(){
+        return new ActivityOfferingScheduleHelperImpl();
+    }
+
+    public static SeatPoolUtilityService getSeatPoolUtilityService(){
+        return new SeatPoolUtilityServiceImpl();
+    }
 
     public static CourseOfferingManagementViewHelperService getViewHelperService(CourseOfferingManagementForm theForm) {
-
         if (viewHelperService == null) {
             if (theForm.getView().getViewHelperServiceClass() != null) {
                 viewHelperService = (CourseOfferingManagementViewHelperService) theForm.getView().getViewHelperService();
@@ -123,14 +269,56 @@ public class CourseOfferingManagementUtil {
                 viewHelperService = (CourseOfferingManagementViewHelperService) theForm.getPostedView().getViewHelperService();
             }
         }
-
         return viewHelperService;
+    }
+
+    public static CourseOfferingViewHelperService getCoViewHelperService(UifFormBase form) {
+        if (coViewHelperService == null) {
+            if (form.getView().getViewHelperServiceClass() != null) {
+                coViewHelperService = (CourseOfferingViewHelperService) form.getView().getViewHelperService();
+            } else {
+                coViewHelperService = (CourseOfferingViewHelperService) form.getPostedView().getViewHelperService();
+            }
+        }
+        return coViewHelperService;
+    }
+
+    public static CreateSocViewHelperService getSocViewHelperService(CreateSocForm createSocForm) {
+        if (socViewHelperService == null) {
+            if (createSocForm.getView().getViewHelperServiceClass() != null) {
+                socViewHelperService = (CreateSocViewHelperService) createSocForm.getView().getViewHelperService();
+            } else {
+                socViewHelperService = (CreateSocViewHelperService) createSocForm.getPostedView().getViewHelperService();
+            }
+        }
+        return socViewHelperService;
+    }
+
+    public static DiagnoseRolloverViewHelperService getDrViewHelperService(DiagnoseRolloverForm rolloverForm) {
+        if (drViewHelperService == null) {
+            if (rolloverForm.getView().getViewHelperServiceClass() != null) {
+                drViewHelperService = (DiagnoseRolloverViewHelperService) rolloverForm.getView().getViewHelperService();
+            } else {
+                drViewHelperService = (DiagnoseRolloverViewHelperService) rolloverForm.getPostedView().getViewHelperService();
+            }
+        }
+        return drViewHelperService;
+    }
+
+    public static TestServiceCallViewHelperService getTestViewHelperService(TestServiceCallForm serviceCallForm) {
+        if (testViewHelperService == null) {
+            if (serviceCallForm.getView().getViewHelperServiceClass() != null) {
+                testViewHelperService = (TestServiceCallViewHelperService) serviceCallForm.getView().getViewHelperService();
+            } else {
+                testViewHelperService = (TestServiceCallViewHelperService) serviceCallForm.getPostedView().getViewHelperService();
+            }
+        }
+        return testViewHelperService;
     }
 
     public static OrganizationService getOrganizationService() {
         if (organizationService == null) {
             organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "organization", "OrganizationService"));
-
         }
         return organizationService;
     }
@@ -206,21 +394,21 @@ public class CourseOfferingManagementUtil {
         return courseService;
     }
 
-    private static CourseOfferingSetService getSocService() {
+    public static CourseOfferingSetService getSocService() {
         if (socService == null) {
             socService = CourseOfferingResourceLoader.loadSocService();
         }
         return socService;
     }
 
-    private static AtpService getAtpService() {
+    public static AtpService getAtpService() {
         if(atpService == null){
             atpService = CourseOfferingResourceLoader.loadAtpService();
         }
         return atpService;
     }
 
-    private static CluService getCluService() {
+    public static CluService getCluService() {
         if (cluService == null) {
             cluService = CourseOfferingResourceLoader.loadCluService();
         }
@@ -284,16 +472,18 @@ public class CourseOfferingManagementUtil {
     public static void prepareManageAOsModelAndView(CourseOfferingManagementForm form, CourseOfferingListSectionWrapper selectedCO) throws Exception {
 
         CourseOfferingWrapper currentCOWrapper = new CourseOfferingWrapper(selectedCO.isCrossListed(),selectedCO.getCourseOfferingCode(),selectedCO.getCourseOfferingDesc(),selectedCO.getAlternateCOCodes(),selectedCO.getCourseOfferingId());
-        try{
-            currentCOWrapper.setExamPeriodId(getExamOfferingServiceFacade().getExamPeriodId(form.getTermInfo().getId(), ContextUtils.createDefaultContextInfo()));
-        }catch (DoesNotExistException e){
-
-        }
         form.setSubjectCode(selectedCO.getSubjectArea());
         prepare_AOs_RGs_AOCs_Lists(form, currentCOWrapper);
     }
 
     public static void prepare_AOs_RGs_AOCs_Lists (CourseOfferingManagementForm form, CourseOfferingWrapper currentCOWrapper) throws Exception {
+
+        //Set exam period id
+        try{
+            currentCOWrapper.setExamPeriodId(getExamOfferingServiceFacade().getExamPeriodId(form.getTermInfo().getId(), ContextUtils.createDefaultContextInfo()));
+        }catch (DoesNotExistException e){
+        }
+
         currentCOWrapper.setTerm( form.getTermInfo() );
 
         CourseOfferingInfo coInfo = getCourseOfferingService().getCourseOffering(currentCOWrapper.getCourseOfferingId(),ContextUtils.createDefaultContextInfo());
@@ -335,6 +525,8 @@ public class CourseOfferingManagementUtil {
         form.setPrivateClusterNamePopover("");
         form.setPublishedClusterNamePopover("");
 
+        getViewHelperService(form).loadExamOfferingRelations(form);
+
         getViewHelperService(form).loadPreviousAndNextCourseOffering(form);
 
         getViewHelperService(form).build_AOs_RGs_AOCs_Lists_For_TheCourseOffering(form);
@@ -370,7 +562,7 @@ public class CourseOfferingManagementUtil {
     }
 
     public static void reloadCourseOfferings(CourseOfferingManagementForm theForm) throws Exception {
-        getViewHelperService(theForm).loadCourseOfferingsByTermAndCourseCode(theForm.getTermInfo().getId(), theForm.getInputCode(), theForm);
+        getViewHelperService(theForm).loadCourseOfferingsByTermAndCourseCode(theForm.getTermInfo(), theForm.getInputCode(), theForm);
         CourseOfferingManagementToolbarUtil.processCoToolbarForUser(theForm.getCourseOfferingResultList(), theForm);
     }
 
@@ -382,6 +574,8 @@ public class CourseOfferingManagementUtil {
         getViewHelperService(theForm).build_AOs_RGs_AOCs_Lists_For_TheCourseOffering(theForm);
 
         getViewHelperService(theForm).loadPreviousAndNextCourseOffering(theForm);
+
+        getViewHelperService(theForm).loadExamOfferingRelations(theForm);
 
         CourseOfferingManagementToolbarUtil.processAoToolbarForUser(theForm.getActivityWrapperList(), theForm);
     }
@@ -751,15 +945,24 @@ public class CourseOfferingManagementUtil {
         return props;
     }
 
-    public static SocInfo getMainSocForTerm(TermInfo term, ContextInfo contextInfo) throws Exception {
-        List<String> socIds = getSocService().getSocIdsByTerm(term.getId(), contextInfo);
-        List<SocInfo> socInfos = getSocService().getSocsByIds(socIds, contextInfo);
-        for (SocInfo socInfo: socInfos) {
-            if (socInfo.getTypeKey().equals(CourseOfferingSetServiceConstants.MAIN_SOC_TYPE_KEY)) {
-                return socInfo;
+    public static HashMap getSchedulingStateAndNameHash() throws Exception {
+        if (scheduleStateHm == null) {
+            scheduleStateHm = new HashMap<String, String>();
+            ContextInfo contextInfo = ContextUtils.getContextInfo();
+
+            List<StateInfo> stateInfoList;
+            try {
+                stateInfoList = getStateService().getStatesByLifecycle(LuiServiceConstants.LUI_AO_SCHEDULING_STATE_LIFECYCLE_KEY, contextInfo);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            for (StateInfo stateInfo : stateInfoList) {
+                if (stateInfo != null) {
+                    scheduleStateHm.put(stateInfo.getKey(), stateInfo.getName());
+                }
             }
         }
-        return null;
+        return scheduleStateHm;
     }
-
 }

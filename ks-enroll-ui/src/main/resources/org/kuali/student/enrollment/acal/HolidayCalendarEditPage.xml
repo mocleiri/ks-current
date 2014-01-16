@@ -33,7 +33,7 @@
     <bean id="KS-HolidayCalendar-EditPage" parent="KS-Uif-Page"
           p:id="holidayCalendarEditPage"
           p:disclosure.render="false"
-          p:headerText="@{!newCalendar ? #view.readOnly ? 'Holiday Calendar' : 'Edit Holiday Calendar' : ''}"
+          p:headerText="@{!newCalendar ? #view.readOnly ? 'Holiday Calendar' : 'Edit Holiday Calendar' : 'Holiday Calendar'}"
           p:header.id="KS-HolidayCalendar-EditPage-header">
         <property name="pageSourceFile" value="HolidayCalendarEditPage.xml" /> <!-- Shows up in HTML so devs can find the code -->
         <property name="header">
@@ -51,12 +51,13 @@
                 <bean parent="Uif-BreadcrumbItem" p:render="@{!#view.readOnly and !newCalendar}">
                     <property name="label" value="@{holidayCalendarInfo.name}"/>
                     <property name="url.viewId" value="holidayCalendarFlowView"/>
-                    <property name="url.pageId" value="holidayCalendarViewPage"/>
+                    <property name="url.pageId" value="holidayCalendarEditPage"/>
                     <property name="url.controllerMapping" value="/holidayCalendar"/>
                     <property name="url.methodToCall" value="start"/>
                     <property name="url.requestParameters">
                         <map key-type="java.lang.String" merge="true">
                             <entry key="id" value="@{holidayCalendarInfo.id}"/>
+                            <entry key="readOnlyView" value="true"/>
                         </map>
                     </property>
                 </bean>
@@ -85,16 +86,16 @@
             <bean parent="Uif-FooterBase">
                 <property name="items">
                     <list>
-                        <bean parent="Uif-HorizontalBoxGroup" p:additionalCssClasses="ac_stickyfooter">
+                        <bean parent="Uif-HorizontalBoxGroup" p:additionalCssClasses="ac_stickyfooter" p:render="@{!#view.readOnly}">
                             <property name="items">
                                 <list>
                                     <bean parent="KS-Uif-PrimaryActionButton"
                                           p:methodToCall="save"
                                           p:actionLabel="Save"  p:performClientSideValidation="true" />
-                                    <bean parent="Uif-ActionLink" p:methodToCall="delete"
+                                    <bean parent="KS-Uif-ActionLink" p:methodToCall="delete"
                                           p:actionLabel="Delete"
                                           p:render="@{!newCalendar and !officialUI}"/>
-                                    <bean parent="Uif-ActionLink" p:actionLabel="Cancel" p:actionScript="skipDirtyChecks();stepBrowserBackTwoPages()"
+                                    <bean parent="KS-Uif-ActionLink" p:actionLabel="Cancel" p:actionScript="skipDirtyChecks();stepBrowserBackTwoPages()"
                                             p:style="float: right  !important;"/>
                                 </list>
                             </property>
@@ -121,20 +122,20 @@
 				     p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="labelTop"
 					p:propertyName="holidayCalendarInfo.startDate">
                     <property name="validCharactersConstraint">
-						<bean parent="BasicDatePatternConstraint" />
+						<bean parent="KS-BasicDatePatternConstraint" />
 					</property>
 					<property name="control">
-						<bean parent="Uif-KS-Default-DateControl" />
+						<bean parent="KS-Uif-Default-DateControl" />
 					</property>
 				</bean>
                 <bean parent="Uif-InputField" p:label="End Date" p:labelPlacement="TOP" p:required="true"
 					p:fieldLabel.cssClasses="labelTop" p:fieldLabel.renderColon="false"
 					p:propertyName="holidayCalendarInfo.endDate">
                     <property name="validCharactersConstraint">
-						<bean parent="BasicDatePatternConstraint" />
+						<bean parent="KS-BasicDatePatternConstraint" />
 					</property>
 					<property name="control">
-						<bean parent="Uif-KS-Default-DateControl" />
+						<bean parent="KS-Uif-Default-DateControl" />
 					</property>
 				</bean>
                 <!-- NOTE:
@@ -179,12 +180,12 @@
                     </property>
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="startDate" p:label="Start"
-                      p:readOnlyDisplayReplacementPropertyName="startDateUI">
+                      p:readOnlyDisplayReplacementPropertyName="startDateUI" p:id="startDate">
                     <property name="control">
-                        <bean parent="Uif-KS-Default-DateControl" p:size="9" p:watermarkText="mm/dd/yyyy" />
+                        <bean parent="KS-Uif-Default-DateControl" />
                     </property>
                     <property name="validCharactersConstraint">
-                        <bean parent="BasicDatePatternConstraint" />
+                        <bean parent="KS-BasicDatePatternConstraint" />
                     </property>
                 </bean>
 
@@ -196,7 +197,7 @@
                         <bean parent="TimePatternConstraint" />
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="startTimeAmPm" p:defaultValue="AM" p:render="@{!#view.readOnly}"
+                <bean parent="Uif-InputField"  p:cssClasses="am_pm_style" p:propertyName="startTimeAmPm" p:defaultValue="AM" p:render="@{!#view.readOnly}"
                       p:additionalCssClasses="acal_keydate_radiobutton">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl" p:options-ref="hctime-options"
@@ -207,12 +208,12 @@
                 </bean>
 
                 <bean parent="Uif-InputField" p:propertyName="endDate" p:label="End"
-                      p:readOnlyDisplayReplacementPropertyName="endDateUI">
+                      p:readOnlyDisplayReplacementPropertyName="endDateUI" p:id="endDate">
                     <property name="control">
-                        <bean parent="Uif-KS-Default-DateControl" p:size="9" p:watermarkText="mm/dd/yyyy"/>
+                        <bean parent="KS-Uif-Default-DateControl"/>
                     </property>
                     <property name="validCharactersConstraint">
-                        <bean parent="BasicDatePatternConstraint" />
+                        <bean parent="KS-BasicDatePatternConstraint" />
                     </property>
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="endTime" p:label="End Time" p:render="@{!#view.readOnly}">
@@ -223,7 +224,7 @@
                         <bean parent="TimePatternConstraint" />
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="endTimeAmPm" p:defaultValue="AM" p:render="@{!#view.readOnly}"
+                <bean parent="Uif-InputField" p:cssClasses="am_pm_style" p:propertyName="endTimeAmPm" p:defaultValue="AM" p:render="@{!#view.readOnly}"
                       p:additionalCssClasses="acal_keydate_radiobutton">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl" p:options-ref="hctime-options"
@@ -242,7 +243,7 @@
 		</property>
         <property name="lineActions">
             <list>
-                <bean parent="Uif-ActionLink" p:methodToCall="deleteHoliday" p:actionLabel="delete"/>
+                <bean parent="Uif-ActionLink" p:methodToCall="deleteHoliday" p:actionLabel="Delete"/>
             </list>
         </property>
 	</bean>

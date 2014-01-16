@@ -22,7 +22,6 @@
 
     <bean id="KS-HomewardPathBreadcrumbs-Home" parent="Uif-BreadcrumbItem">
         <property name="label" value="Home"/>
-        <!--<property name="url.href" value="@{#ConfigProperties['application.url']}/portal.do"/>-->
         <property name="url.baseUrl" value="launch"/>
         <property name="url.viewId" value="ksFunctionalHomeView"/>
     </bean>
@@ -64,7 +63,7 @@
         </property>
     </bean>
 
-    <bean id="KS-CourseOffering-View-ContextBar-PlaceHolder" parent="KS-Uif-HorizontalBoxGroup-TopGroup"  p:onDocumentReadyScript="updateContextBar( 'KS-CourseOffering-ContextBar', 'KS-CourseOffering-View-ContextBar-PlaceHolder', @{#dp.contextBar.termDayOfYear}, '@{#ConfigProperties['application.url']}' );"/>
+    <bean id="KS-CourseOffering-View-ContextBar-PlaceHolder" parent="KS-Uif-HorizontalBoxGroup-TopGroup" />
 
     <!-- Note: due to the way breadcrumbs are implemented, EC found that we need to initially set the CSS display to none -->
     <!-- Also note: Uif-HorizontalBoxGroup is inheriting from KRAD a margin-bottom:10px which on CreateCO and ManageSoc views is causing
@@ -73,15 +72,13 @@
     <bean id="KS-CourseOffering-ContextBar" parent="Uif-HorizontalBoxGroup" p:style="display:none" p:additionalCssClasses="ks-topGroup">
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="contextBar.termName" p:additionalCssClasses="ks-topGroup-courseOffering-termName">
-                </bean>
-                <bean parent="KS-Lozenge-Grey-Uif-DataField" p:propertyName="contextBar.termSocState" p:additionalCssClasses="ks-topGroup-courseOffering-socState">
-                </bean>
+                <bean parent="Uif-DataField" p:propertyName="contextBar.termName" p:additionalCssClasses="ks-topGroup-courseOffering-termName"/>
+                <bean id="termSocStateId" parent="Uif-DataField" p:propertyName="contextBar.termSocState" p:additionalCssClasses="@{#dp.contextBar.termSocStateUIStyle},ks-topGroup-courseOffering-socState"/>
             </list>
         </property>
     </bean>
 <!-- END: CONTEXT-BAR BEANS -->
 
     <bean id="KS-View-Header-RightGroup-PlaceHolder" parent="KS-Unified-Header-Right-Group" />
-    <bean id="KS-View-HeaderText-SourceHolder" parent="Uif-Message" p:style="visibility:hidden;"/>
+    <bean id="KS-View-HeaderText-SourceHolder" parent="Uif-Message" p:style="display:none;"/>
 </beans>

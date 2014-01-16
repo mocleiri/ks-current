@@ -15,8 +15,6 @@
  */
 package org.kuali.student.enrollment.class2.courseoffering.util;
 
-import org.kuali.rice.krad.util.ErrorMessage;
-
 /**
  * This class defines constants related to the Activity Offering ui
  *
@@ -42,6 +40,7 @@ public class ActivityOfferingConstants {
     public static final String MSG_ERROR_INSTRUCTOR_DUPLICATE = "error.enroll.ao.instructor.duplicate";
     public static final String MSG_ERROR_SEATPOOL_DUPLICATE = "error.enroll.ao.seatpool.duplicate";
     public static final String MSG_ERROR_INVALID_START_TIME = "error.enroll.ao.starttime.invalid";
+    public static final String MSG_ERROR_INVALID_END_TIME = "error.enroll.ao.endtime.invalid";
     public static final String MSG_ERROR_TBA_VALIDATION_ERROR = "error.enroll.ao.tba.invalid";
     public static final String MSG_ERROR_ORGANIZATION_ID_REQUIRED = "error.enroll.ao.organization.id.required";
     public static final String MSG_ERROR_AO_PART_COLOCATE = "error.enroll.ao.part.colocate";
@@ -49,6 +48,7 @@ public class ActivityOfferingConstants {
     public static final String MSG_ERROR_AO_CANCEL_STATE_COLOCATE = "error.enroll.ao.cancel.state.colocate";
     public static final String MSG_ERROR_AO_DUPLICATE_COLOCATE = "error.enroll.ao.duplicate.colocate";
     public static final String MSG_ERROR_AO_INVALID_CO_CODE_COLOCATE = "error.enroll.ao.invalid.co.code.colocate";
+    public static final String MSG_ERROR_AO_INVALID_AO_CODE_COLOCATE = "error.enroll.ao.invalid.ao.code.colocate";
     public static final String MSG_ERROR_AO_MULTIPLE_CO_COLOCATE = "error.enroll.ao.multiple.co.colocate";
     public static final String MSG_ERROR_AO_NOT_EXIST_CO_COLOCATE = "error.enroll.ao.not.exist.co.colocate";
 

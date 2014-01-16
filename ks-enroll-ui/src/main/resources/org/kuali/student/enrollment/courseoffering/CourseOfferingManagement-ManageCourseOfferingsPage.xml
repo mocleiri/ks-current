@@ -32,7 +32,7 @@
              when pages where refreshed. I investigated and partially implemented handing view title text overrides in the controller
              code, but concluded that this is a much cleaner solution. -->
          <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-        <property name="onDocumentReadyScript" value="updateContextBar( 'KS-CourseOffering-ContextBar', 'KS-CourseOffering-View-ContextBar-PlaceHolder', @{#dp.contextBar.termDayOfYear}, '@{#ConfigProperties['application.url']}' ); updateViewHeaderText( '@{subjectCode}: @{subjectCodeDescription}' ); resetHeaderPosition('KS-CourseOffering-View-ContextBar-PlaceHolder');" />
+        <property name="onDocumentReadyScript" value="updateViewHeaderText( '@{subjectCode}: @{subjectCodeDescription}' );" />
 
         <property name="breadcrumbOptions.homewardPathBreadcrumbs">
             <list>
@@ -57,7 +57,7 @@
                 <ref bean="KS-CourseOfferingManagement-CriteriaSection"/>
                 <ref bean="KS-CourseOfferingManagement-CourseOfferingResultSection"/>
                  <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-                <ref bean="KS-CourseOffering-ContextBar"/>
+                <!--<ref bean="KS-CourseOffering-ContextBar"/>-->
             </list>
         </property>
     </bean>
@@ -121,14 +121,14 @@
                     <property name="label" value="Label"/>
                     <property name="items">
                         <list>
-                            <bean parent="KS-Uif-DataField-Simple" p:propertyName="courseOfferingCode">
-                                <property name="inquiry">
-                                    <bean parent="KS-Uif-Inquiry" p:dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper"  p:inquiryParameters="courseOfferingId" />
-                                </property>
-                            </bean>
+                            <bean parent="KS-Uif-InquiryLink"
+                                  p:propertyName="courseOfferingCode"
+                                  p:inquiry.dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper"
+                                  p:inquiry.inquiryParameters="courseOfferingId" />
+
                             <bean parent="Uif-ImageField" p:hidden="@{#lp.alternateCOCodes.isEmpty()}" p:image.altText="@{#lp.crossListedCodesUI}" p:source="@{#ConfigProperties['ks.externalizable.images.url']}/cross-listed.png">
                                 <property name="toolTip">
-                                    <bean parent="Uif-Tooltip" p:tooltipContent="@{#lp.crossListedCodesUI}"/>
+                                    <bean parent="Uif-KS-Tooltip" p:tooltipContent="@{#lp.crossListedCodesUI}"/>
                                 </property>
                                 <property name="propertyReplacers">
                                     <list>
@@ -141,7 +141,6 @@
                                     </list>
                                 </property>
                             </bean>
-
                         </list>
                     </property>
                 </bean>
@@ -185,15 +184,15 @@
                 <!--<bean parent="KS-Uif-NavigationActionLink-withSeparator" p:seperator="&#160;&#160;|&#160;&#160;">-->
                     <!--<property name="seperatedActions">-->
                         <!--<list>-->
-                            <bean  parent="Uif-NavigationActionLink" p:methodToCall="copyCourseOffering"
+                            <bean parent="Uif-NavigationActionLink" p:methodToCall="copyCourseOffering"
                                   p:actionLabel="Copy"
                                   p:render="@{#line.isEnableCopyCOActionLink() and !#line.isCrossListed()}"
                                   p:actionEvent="copyCOonManageCOsPage"/>
-                            <bean  parent="Uif-NavigationActionLink" p:methodToCall="edit"
+                            <bean parent="Uif-NavigationActionLink" p:methodToCall="edit"
                                   p:actionLabel="Edit"
                                   p:render="@{#line.isEnableEditCOActionLink()}" p:actionEvent="editCOonManageCOsPage">
                             </bean>
-                            <bean  parent="Uif-NavigationActionLink" p:methodToCall="loadAOs_RGs_AOCs"
+                            <bean parent="Uif-NavigationActionLink" p:methodToCall="loadAOs_RGs_AOCs"
                                   p:actionLabel="Manage">
                             </bean>
                         <!--</list>-->

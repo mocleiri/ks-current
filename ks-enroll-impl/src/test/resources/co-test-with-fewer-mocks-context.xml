@@ -81,6 +81,14 @@
         <property name="em" ref="entityManager" />
     </bean>
 
+    <bean id="courseOfferingServiceExtender" class="org.kuali.student.enrollment.class2.courseoffering.service.extender.CourseOfferingServiceExtenderImpl">
+        <property name="activityOfferingTransformer" ref="activityTransformer" />
+        <property name="registrationGroupTransformer" ref="registrationGroupTransformer" />
+        <property name="roomService" ref="roomService"/>
+        <property name="searchService" ref="searchService" />
+        <property name="schedulingService" ref="schedulingService"/>
+    </bean>
+
     <bean id="coService" class="org.kuali.student.enrollment.class2.courseoffering.service.impl.CourseOfferingServiceImpl">
         <property name="luiService" ref="luiService" />
         <property name="rgAssembler" ref="rgAssembler" />
@@ -96,6 +104,7 @@
         <property name="schedulingService" ref="schedulingService"/>
         <property name="atpService" ref="atpService"/>
         <property name="searchService" ref="searchService" />
+        <property name="courseOfferingServiceExtender" ref="courseOfferingServiceExtender"/>
     </bean>
 
     <bean id="schedulingService" class="org.kuali.student.r2.core.scheduling.service.impl.SchedulingServiceMockImpl">
@@ -135,6 +144,7 @@
         <property name="activityOfferingTransformer" ref="activityTransformer" />
         <property name="rolloverAssist" ref="rolloverAssist"/>
         <property name="courseWaitListService" ref="courseWaitListService"/>
+        <property name="courseOfferingServiceExtender" ref="courseOfferingServiceExtender"/>
     </bean>
 
     <bean id="examOfferingServiceFacade" class="org.kuali.student.enrollment.class2.examoffering.service.facade.ExamOfferingServiceFacadeImpl">
@@ -231,7 +241,7 @@
     <bean id="searchService" class="org.kuali.student.r2.common.class1.search.SearchServiceDispatcherImpl">
         <property name="searchServices">
             <list>
-
+                <ref bean="courseService"/>
                 <ref bean="ActivityOfferingSearchServiceImpl"/>
                 <bean id="CoreSearchServiceImpl" class="org.kuali.student.r2.core.class1.search.CoreSearchServiceImpl"/>
             </list>

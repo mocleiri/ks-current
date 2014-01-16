@@ -15,6 +15,8 @@
  */
 package org.kuali.student.enrollment.class2.courseoffering.dto;
 
+import org.kuali.student.r2.common.util.constants.CourseOfferingSetServiceConstants;
+
 import java.util.Date;
 
 /**
@@ -86,11 +88,11 @@ public class ManageSOCStatusHistory implements Comparable<ManageSOCStatusHistory
     @Override
     public int compareTo(ManageSOCStatusHistory manageSOCStatusHistory) {
         //FindBugs - it is fine as is
-        if (this.getDateObject() != null && manageSOCStatusHistory.getDateObject() != null){
+        if (this.getDateObject() != null && manageSOCStatusHistory.getDateObject() != null) {
             return getDateObject().compareTo(manageSOCStatusHistory.getDateObject());
-        }else if (manageSOCStatusHistory.getDateObject() == null){
+        } else if (manageSOCStatusHistory.getDateObject() == null) {
             return -1;
-        }else{
+        } else {
             return 1;
         }
     }

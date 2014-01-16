@@ -1,11 +1,12 @@
 package org.kuali.student.enrollment.class2.scheduleofclasses.util;
 
+import org.kuali.rice.krms.api.repository.rule.RuleDefinition;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * This class contains all the required requisites for display on the ui
@@ -14,46 +15,18 @@ import java.util.TreeSet;
  */
 public class SOCRequisiteWrapper {
 
-    private Map<String, Map<String, String>> aoRequisiteTypeMap;
-    private Map<String, String> coRequisiteTypeMap;
-    private Set<String> ruleTypes;
-
     private StringBuilder coRequisite;
     private Map<String, Map<String, String>> aoRequisiteMap;
 
-    private Map<String, String> suppressNullMap;
+    private List<RuleDefinition> coRules;
+    private Map<String, List<RuleDefinition>> aoToRulesMap;
+    private Map<String, String> nlMap;
+    private List<String> ruleTypes;
 
     public SOCRequisiteWrapper() {
-        aoRequisiteTypeMap = new HashMap<String, Map<String, String>>();
-        coRequisiteTypeMap = new HashMap<String, String>();
-        ruleTypes = new TreeSet<String>();
         coRequisite = new StringBuilder();
         aoRequisiteMap = new HashMap<String, Map<String, String>>();
-        suppressNullMap = new HashMap<String, String>();
-    }
-
-    public Map<String, Map<String, String>> getAoRequisiteTypeMap() {
-        return aoRequisiteTypeMap;
-    }
-
-    public void setAoRequisiteTypeMap(Map<String, Map<String, String>> aoRequisiteTypeMap) {
-        this.aoRequisiteTypeMap = aoRequisiteTypeMap;
-    }
-
-    public Map<String, String> getCoRequisiteTypeMap() {
-        return coRequisiteTypeMap;
-    }
-
-    public void setCoRequisiteTypeMap(Map<String, String> coRequisiteTypeMap) {
-        this.coRequisiteTypeMap = coRequisiteTypeMap;
-    }
-
-    public Set<String> getRuleTypes() {
-        return ruleTypes;
-    }
-
-    public void setRuleTypes(Set<String> ruleTypes) {
-        this.ruleTypes = ruleTypes;
+        ruleTypes = new ArrayList<String>();
     }
 
     public StringBuilder getCoRequisite() {
@@ -72,11 +45,52 @@ public class SOCRequisiteWrapper {
         this.aoRequisiteMap = aoRequisiteMap;
     }
 
-    public Map<String, String> getSuppressNullMap() {
-        return suppressNullMap;
+    public List<RuleDefinition> getCoRules() {
+        return coRules;
     }
 
-    public void setSuppressNullMap(Map<String, String> suppressNullKeys) {
-        this.suppressNullMap = suppressNullKeys;
+    public void setCoRules(List<RuleDefinition> coRules) {
+        this.coRules = coRules;
+    }
+
+    public Map<String, List<RuleDefinition>> getAoToRulesMap() {
+        return aoToRulesMap;
+    }
+
+    public void setAoToRulesMap(Map<String, List<RuleDefinition>> aoToRulesMap) {
+        this.aoToRulesMap = aoToRulesMap;
+    }
+
+    public Map<String, String> getNlMap() {
+        return nlMap;
+    }
+
+    public void setNlMap(Map<String, String> nlMap) {
+        this.nlMap = nlMap;
+    }
+
+    public List<String> getRuleTypes() {
+        return ruleTypes;
+    }
+
+    public void setRuleTypes(List<String> ruleTypes) {
+        this.ruleTypes = ruleTypes;
+    }
+
+    /**
+     * Build string for display of AO requisites
+     *
+     * @param aoId
+     * @return string of requisites
+     */
+    public String getRequisiteForAO(String aoId) {
+        StringBuilder requisites = new StringBuilder();
+        Map<String, String> requisiteMap = this.getAoRequisiteMap().get(aoId);
+
+        for (String req : requisiteMap.values()) {
+            requisites.append(req);
+        }
+
+        return requisites.toString();
     }
 }

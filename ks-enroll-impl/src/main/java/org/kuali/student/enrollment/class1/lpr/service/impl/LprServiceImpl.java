@@ -36,6 +36,7 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.exceptions.ReadOnlyException;
+import org.kuali.student.r2.common.exceptions.VersionMismatchException;
 import org.kuali.student.r2.common.util.constants.LprServiceConstants;
 import org.kuali.student.r2.core.class1.util.ValidationUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,7 +128,7 @@ public class LprServiceImpl implements LprService {
 
     @Override
     @Transactional(readOnly=true)
-    public List<LprInfo> getLprsByLui(String luiId, ContextInfo context) throws DoesNotExistException, InvalidParameterException,
+    public List<LprInfo> getLprsByLui(String luiId, ContextInfo context) throws InvalidParameterException,
             MissingParameterException, OperationFailedException, PermissionDeniedException {
         List<LprEntity> luiPersonRelations = lprDao.getByLuiId(luiId);
         List<LprInfo> dtos = new ArrayList<LprInfo>();
@@ -240,8 +241,7 @@ public class LprServiceImpl implements LprService {
 
     @Override
     @Transactional(readOnly=true)
-    public List<LprInfo> getLprsByPersonAndLui(String personId, String luiId, ContextInfo context) throws DoesNotExistException,
-            InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<LprInfo> getLprsByPersonAndLui(String personId, String luiId, ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
 
         List<LprEntity> entityList = lprDao.getLprByLuiAndPerson(personId, luiId);
 
@@ -259,8 +259,7 @@ public class LprServiceImpl implements LprService {
 
     @Override
     @Transactional(readOnly=true)
-    public List<LprInfo> getLprsByPerson(String personId, ContextInfo context) throws DoesNotExistException,
-            InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<LprInfo> getLprsByPerson(String personId, ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         List<LprEntity> entityList = lprDao.getLprsByPerson(personId);
 
         List<LprInfo> infoList = new ArrayList<LprInfo>();
@@ -308,6 +307,8 @@ public class LprServiceImpl implements LprService {
         lpr.setEntityCreated(context);
 
         lprDao.persist(lpr);
+        
+        lprDao.getEm().flush();
 
         return lpr.toDto();
     }
@@ -340,9 +341,17 @@ public class LprServiceImpl implements LprService {
 
             lprEntity.setEntityUpdated(contextInfo);
 
-            lprDao.merge(lprEntity);
+            try {
+                lprEntity = lprDao.merge(lprEntity);
+            } catch (VersionMismatchException e) {
+                // TODO KSENROLL-9296 remove this exception translation once 
+                // version mismatch exception is added to the updateLpr method 
+               throw new OperationFailedException("Version Mismatch", e);
+            }
+            
+            lprDao.getEm().flush();
 
-            return lprDao.find(lprId).toDto();
+            return lprEntity.toDto();
         } else {
             throw new DoesNotExistException(lprId);
         }
@@ -408,14 +417,7 @@ public class LprServiceImpl implements LprService {
     }
 
 
-    @Override
-    public List<LprInfo> getLprsByPersonForAtp(String personId, String atpId, ContextInfo context) throws DoesNotExistException,
-            InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        // TODO: get a reference to the luiService so we can resolve the atpid
-
-        throw new UnsupportedOperationException("Operation not implemented");
-    }
-
+   
     @Override
     @Transactional
     public LprTransactionInfo createLprTransaction(String lprTransactionType, LprTransactionInfo lprTransactionInfo, ContextInfo context)
@@ -447,6 +449,8 @@ public class LprServiceImpl implements LprService {
         }
 
         Set<LprTransactionItemEntity> lprTransItemEntities = new HashSet<LprTransactionItemEntity>();
+        
+        
 
         for (LprTransactionItemInfo lprTransItemInfo : lprTransactionInfo.getLprTransactionItems()) {
 
@@ -456,19 +460,14 @@ public class LprServiceImpl implements LprService {
         }
 
         lprTransactionEntity.setLprTransactionItems(lprTransItemEntities);
-
+        
         lprTransactionEntity.setEntityCreated(context);
 
         lprTransactionDao.persist(lprTransactionEntity);
 
-        LprTransactionEntity retrived = lprTransactionDao.find(lprTransactionEntity.getId());
+        lprTransactionDao.getEm().flush();
 
-        LprTransactionInfo info = null;
-        if (retrived != null) {
-            info = retrived.toDto();
-        }
-
-        return info;
+        return lprTransactionEntity.toDto();
 
     }
 
@@ -503,18 +502,14 @@ public class LprServiceImpl implements LprService {
             newLprTransactionEntity.setLprTransType(existingLprTransactionEntity.getLprTransType());
             newLprTransactionEntity.setRequestingPersonId(existingLprTransactionEntity.getRequestingPersonId());
             lprTransactionDao.persist(newLprTransactionEntity);
+            
+            lprTransactionDao.getEm().flush();
+            
+            return newLprTransactionEntity.toDto();
 
         } else {
             throw new DoesNotExistException("Could not find any LPR Transaction for id : " + lprTransactionId);
         }
-        LprTransactionEntity retrived = lprTransactionDao.find(newLprTransactionEntity.getId());
-        LprTransactionInfo info = null;
-        if (retrived != null) {
-            info = retrived.toDto();
-        } else {
-            throw new OperationFailedException("");
-        }
-        return info;
     }
 
     @Override
@@ -526,8 +521,8 @@ public class LprServiceImpl implements LprService {
 
         for (LprTransactionItemInfo lprTransactionItemInfo : lprTransaction.getLprTransactionItems()) {
             LprTransactionItemResultInfo lprTransResultInfo = new LprTransactionItemResultInfo();
-            if (lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.LPRTRANS_ITEM_ADD_TYPE_KEY) ||
-                    lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.LPRTRANS_ITEM_ADD_TO_WAITLIST_TYPE_KEY)) {
+            if (lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.REQ_ITEM_ADD_TYPE_KEY) ||
+                    lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.REQ_ITEM_ADD_TO_WAITLIST_TYPE_KEY)) {
                 /*
                 // TODO Mezba - the method createLprFromLprTransactionItem is no longer there, decide what to do
                 String lprCreated = createLprFromLprTransactionItem(lprTransactionItemInfo, context);
@@ -535,7 +530,7 @@ public class LprServiceImpl implements LprService {
                 lprTransResultInfo.setResultingLprId(lprCreated);
                  */
                 throw new UnsupportedOperationException("Empty If Statement: No action defined for this method. Get Mezba to fix");
-            } else if (lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.LPRTRANS_ITEM_DROP_TYPE_KEY)) {
+            } else if (lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.REQ_ITEM_DROP_TYPE_KEY)) {
                 /**
                  * TODO this needs to be implemented for drop to work, read below Be careful with the implementation here,
                  * because we DO NOT want to delete all lprs that are matched by lui, person, and state, but instead only the
@@ -554,14 +549,14 @@ public class LprServiceImpl implements LprService {
                 List<LprInfo> toBeDroppedLPRs;
                 try {
                     toBeDroppedLPRs = getLprsByLuiPersonAndState(lprTransactionItemInfo.getPersonId(),
-                            lprTransactionItemInfo.getExistingLuiId(), LprServiceConstants.REGISTERED_STATE_KEY, context);
+                            lprTransactionItemInfo.getExistingLprId(), LprServiceConstants.REGISTERED_STATE_KEY, context);
                 } catch (DisabledIdentifierException ex) {
                     throw new OperationFailedException("unexpected", ex);
                 }
 
                 if (toBeDroppedLPRs.size() > 1) {
                     throw new OperationFailedException("Multiple LuiPersonRelations between person:" +
-                            lprTransactionItemInfo.getPersonId() + " and lui:" + lprTransactionItemInfo.getExistingLuiId() +
+                            lprTransactionItemInfo.getPersonId() + " and lpr:" + lprTransactionItemInfo.getExistingLprId() +
                             "; unimplemented functionality required to deal with this scenario is currentluy unimplemented");
                 }
                 for (LprInfo lprInfo : toBeDroppedLPRs) {
@@ -575,18 +570,18 @@ public class LprServiceImpl implements LprService {
                     lprTransResultInfo.setResultingLprId(lprInfo.getId());
                 }
 
-            } else if (lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.LPRTRANS_ITEM_SWAP_TYPE_KEY)) {
+            } else if (lprTransactionItemInfo.getTypeKey().equals(LprServiceConstants.REQ_ITEM_SWAP_TYPE_KEY)) {
 
                 List<LprInfo> toBeDroppedLPRs;
                 try {
                     toBeDroppedLPRs = getLprsByLuiPersonAndState(lprTransactionItemInfo.getPersonId(),
-                            lprTransactionItemInfo.getExistingLuiId(), LprServiceConstants.REGISTERED_STATE_KEY, context);
+                            lprTransactionItemInfo.getExistingLprId(), LprServiceConstants.REGISTERED_STATE_KEY, context);
                 } catch (DisabledIdentifierException ex) {
                     throw new OperationFailedException("unexpected", ex);
                 }
                 if (toBeDroppedLPRs.size() > 1) {
                     throw new OperationFailedException("Multiple LuiPersonRelations between person:" +
-                            lprTransactionItemInfo.getPersonId() + " and lui:" + lprTransactionItemInfo.getExistingLuiId() +
+                            lprTransactionItemInfo.getPersonId() + " and lpr:" + lprTransactionItemInfo.getExistingLprId() +
                             "; unimplemented functionality required to deal with this scenario is currentluy unimplemented");
                 }
                 for (LprInfo lprInfo : toBeDroppedLPRs) {
@@ -669,16 +664,24 @@ public class LprServiceImpl implements LprService {
 
             lprTrans.setEntityUpdated(context);
 
-            lprTransactionDao.merge(lprTrans);
+            try {
+                lprTrans = lprTransactionDao.merge(lprTrans);
+            } catch (VersionMismatchException e) {
+                // TODO KSENROLL-9296 remove this exception translation once 
+                // version mismatch exception is added to the updateLprTransaction method 
+               throw new OperationFailedException("Version Mismatch", e);
+            }
+            
+            lprTransactionDao.getEm().flush();
 
-            return lprTransactionDao.find(lprTransactionId).toDto();
+            return lprTrans.toDto();
 
         } else {
             throw new DoesNotExistException(lprTransactionId);
         }
     }
 
-    private List<LprTransactionItemEntity> processLprTransactionItemsModification(LprTransactionInfo modifiedTransactionInfo, LprTransactionEntity originalLprTransEntity, ContextInfo context) {
+    private List<LprTransactionItemEntity> processLprTransactionItemsModification(LprTransactionInfo modifiedTransactionInfo, LprTransactionEntity originalLprTransEntity, ContextInfo context) throws VersionMismatchException {
         List<LprTransactionItemEntity> modifiedLprTransItemEntities = new ArrayList<LprTransactionItemEntity>();
         LprTransactionInfo originalLprTransInfo = originalLprTransEntity.toDto();
         List<String> deletedItems = new ArrayList<String>();
@@ -715,7 +718,7 @@ public class LprServiceImpl implements LprService {
 
     }
 
-    private LprTransactionItemEntity updateLprTransactionItem(LprTransactionItemInfo modifiedTransactionItemInfo, ContextInfo context) {
+    private LprTransactionItemEntity updateLprTransactionItem(LprTransactionItemInfo modifiedTransactionItemInfo, ContextInfo context) throws VersionMismatchException {
         LprTransactionItemEntity modifiedLprItemEntity = new LprTransactionItemEntity(modifiedTransactionItemInfo);
         if (null != modifiedTransactionItemInfo.getStateKey()) {
             modifiedLprItemEntity.setLprTransactionItemState(modifiedTransactionItemInfo.getStateKey());
@@ -756,10 +759,7 @@ public class LprServiceImpl implements LprService {
 
         lprTransItemEntity.setOwner(owner);
 
-
-        lprTransactionItemDao.persist(lprTransItemEntity);
-
-        return lprTransactionItemDao.find(lprTransItemEntity.getId());
+        return lprTransItemEntity;
     }
 
     @Override
@@ -772,27 +772,6 @@ public class LprServiceImpl implements LprService {
     public List<String> searchForLprTransactionIds(QueryByCriteria criteria, ContextInfo context) throws InvalidParameterException,
             MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new UnsupportedOperationException("Operation not implemented");
-    }
-
-    @Override
-    @Transactional(readOnly=true)
-    public List<LprInfo> getLprsByPersonAndTypeForAtp(String personId, String atpId, String typeKey, ContextInfo context) throws
-            DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException,
-            PermissionDeniedException {
-
-        // TODO: get a reference to the luiService so we can resolve the atpid
-        throw new UnsupportedOperationException("Operation not implemented");
-//        List<LprEntity> entityList = lprDao.getLprsByPersonAndType(personId, typeKey);
-//        List<LprInfo> infoList = new ArrayList<LprInfo>();
-//        for (LprEntity entity : entityList) {
-//            // TODO: inject this impl with a lui service impl to get the atp to check
-////            LuiEntity lui = luiDao.find(entity.getLuiId());
-////            if (StringUtils.equals(lui.getAtpId(), atpId)) {
-//            infoList.add(entity.toDto());
-////            }
-//        }
-//
-//        return infoList;
     }
 
     @Override
@@ -959,7 +938,49 @@ public class LprServiceImpl implements LprService {
 			throws DoesNotExistException, InvalidParameterException,
 			MissingParameterException, OperationFailedException,
 			PermissionDeniedException {
-		// TODO KSENROLL-8714
+		// KSENROLL-8714
+		LprTransactionInfo lprTransaction = getLprTransaction(lprTransactionId, contextInfo);
+        lprTransaction.setStateKey(nextStateKey);
+        try {
+            updateLprTransaction(lprTransactionId, lprTransaction, contextInfo);
+        } catch (DataValidationErrorException e) {
+            e.printStackTrace();
+            throw new OperationFailedException("changeLprTransactionState failed", e);
+        }
+        StatusInfo statusInfo = new StatusInfo();
+        statusInfo.setSuccess(Boolean.TRUE);
+        return statusInfo;
+    }
+
+	@Override
+	public List<String> getLprIdsByType(String lprTypeKey,
+			ContextInfo contextInfo) throws InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override
+	public List<LprInfo> getLprsByPersonAndAtp(String personId, String atpId,
+			ContextInfo contextInfo) throws InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override
+	public List<LprInfo> getLprsByTypeAndPersonAndAtp(String lprTypeKey,
+			String personId, String atpId, ContextInfo contextInfo)
+			throws InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override
+	public List<String> getLprTransactionIdsByType(
+			String lprTransactionTypeKey, ContextInfo contextInfo)
+			throws InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
 		throw new UnsupportedOperationException("not implemented");
 	}
     

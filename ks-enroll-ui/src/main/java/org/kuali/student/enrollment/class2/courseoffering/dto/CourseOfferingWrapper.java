@@ -20,10 +20,12 @@ package org.kuali.student.enrollment.class2.courseoffering.dto;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingCrossListingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.student.r2.common.util.constants.LuServiceConstants;
+import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.infc.CourseCrossListing;
@@ -93,7 +95,16 @@ public class CourseOfferingWrapper implements Serializable{
         this.alternateCOCodes = new ArrayList<String>();
         this.ownerAliases = new ArrayList<String>();
         this.setAttributeFields(courseOfferingInfo);
-
+        if(courseOfferingInfo.getCrossListings().size() > 0) {
+            this.isCrossListed = true;
+            this.setOwnerCode(courseOfferingInfo.getCourseCode());
+            if (courseOfferingInfo != null){
+                for (CourseOfferingCrossListingInfo crossListing : courseOfferingInfo.getCrossListings()){
+                    this.ownerAliases.add(crossListing.getCode());
+                    this.getAlternateCOCodes().add(crossListing.getCode());
+                }
+            }
+        }
     }
 
     /**
@@ -456,5 +467,17 @@ public class CourseOfferingWrapper implements Serializable{
 
     public void setExamPeriodId(String examPeriodId) {
         this.examPeriodId = examPeriodId;
+    }
+
+    public static boolean isDeleteCoValid(String stateKey) {
+        boolean isValid = false;
+        if(stateKey != null)  {
+            if(   StringUtils.equals(stateKey, LuiServiceConstants.LUI_CO_STATE_DRAFT_KEY)   ||
+                  StringUtils.equals(stateKey, LuiServiceConstants.LUI_CO_STATE_PLANNED_KEY) ||
+                  StringUtils.equals(stateKey, LuiServiceConstants.LUI_CO_STATE_OFFERED_KEY) )   {
+                isValid = true;
+            }
+        }
+        return isValid;
     }
 }

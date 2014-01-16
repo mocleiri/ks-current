@@ -31,11 +31,12 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.uif.util.KSControllerHelper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingClusterWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper;
+import org.kuali.student.enrollment.class2.courseoffering.dto.RegistrationGroupWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
 import org.kuali.student.enrollment.class2.scheduleofclasses.dto.CourseOfferingDisplayWrapper;
 import org.kuali.student.enrollment.class2.scheduleofclasses.form.ScheduleOfClassesSearchForm;
 import org.kuali.student.enrollment.class2.scheduleofclasses.service.ScheduleOfClassesViewHelperService;
-import org.kuali.student.enrollment.class2.scheduleofclasses.util.SOCRequisiteHelper;
+import org.kuali.student.enrollment.class2.scheduleofclasses.util.SOCRequisiteWrapper;
 import org.kuali.student.enrollment.class2.scheduleofclasses.util.ScheduleOfClassesConstants;
 import org.kuali.student.enrollment.class2.scheduleofclasses.util.ScheduleOfClassesUtil;
 import org.kuali.student.enrollment.courseofferingset.service.CourseOfferingSetService;
@@ -67,6 +68,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,12 +84,6 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
     private static final String SEARCH_FIELD = "course";
     private static final String ERROR_SEARCH_FIELD_CANNOT_BE_EMPTY = "Error: search field can't be empty";
 
-    private ScheduleOfClassesViewHelperService viewHelperService;
-    private AcademicCalendarService acalService;
-    private CourseOfferingSetService courseOfferingSetService;
-    private AtpService atpService;
-    private TypeService typeService;
-
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new ScheduleOfClassesSearchForm();
@@ -102,6 +98,10 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
         scheduleOfClassesSearchForm.setSearchType( SEARCH_TYPE_COURSE );
 
         configureCurrentTermCodeOnInitialRequest( scheduleOfClassesSearchForm );
+        //This scenario will be very rare if ever (no published term in db)
+        if (GlobalVariables.getMessageMap().hasErrors() && GlobalVariables.getMessageMap().containsMessageKey(ScheduleOfClassesConstants.SOC_MSG_ERROR_NO_PUBLISHED_TERM)) {
+            return getUIFModelAndView(scheduleOfClassesSearchForm, ScheduleOfClassesConstants.SOC_RESULT_PAGE);
+        }
         configureDefaultAoDisplayFormat( scheduleOfClassesSearchForm );
         configureSelectableAoRenderingWidget( scheduleOfClassesSearchForm, request );
 
@@ -111,9 +111,11 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
     private void configureCurrentTermCodeOnInitialRequest( ScheduleOfClassesSearchForm form ) {
         if (form.getTermCode() == null) {
             ContextInfo context = ContextUtils.getContextInfo();
-            List<AtpInfo> atps = ScheduleOfClassesUtil.getValidSocTerms(getCourseOfferingSetService(), getAtpService(), context);
-            if (!atps.isEmpty()) {
+            List<AtpInfo> atps = ScheduleOfClassesUtil.getValidSocTerms(ScheduleOfClassesUtil.getCourseOfferingSetService(), ScheduleOfClassesUtil.getAtpService(), context);
+            if (atps != null && atps.size() > 0 && !atps.isEmpty()) {
                 form.setTermCode(ScheduleOfClassesUtil.getClosestAtp(atps).getId());
+            } else {
+                GlobalVariables.getMessageMap().putError("termCode", ScheduleOfClassesConstants.SOC_MSG_ERROR_NO_PUBLISHED_TERM);
             }
         }
     }
@@ -167,7 +169,7 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
         //First, find termName based on termCode
         String termCode = theForm.getTermCode();
         if (StringUtils.isNotBlank(termCode)) {
-            String termName = getAcademicCalendarService().getTerm(termCode, ContextUtils.createDefaultContextInfo()).getName();
+            String termName = ScheduleOfClassesUtil.getAcademicCalendarService().getTerm(termCode, ContextUtils.createDefaultContextInfo()).getName();
             theForm.setTermName(termName);
         } else {
             LOG.error("Error: term can't be empty");
@@ -179,7 +181,7 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
         if (theForm.getSearchType().equals( SEARCH_TYPE_COURSE )) {
             String course = StringUtils.upperCase(theForm.getCourse());
             if (StringUtils.isNotBlank(course)) {
-                getViewHelperService(theForm).loadCourseOfferingsByTermAndCourseCode(termCode, course, theForm);
+                ScheduleOfClassesUtil.getViewHelperService(theForm).loadCourseOfferingsByTermAndCourseCode(termCode, course, theForm);
                 theForm.setSearchParameter("Course: " + course);
             } else {
                 LOG.error( ERROR_SEARCH_FIELD_CANNOT_BE_EMPTY );
@@ -190,7 +192,7 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
             String instructorId = theForm.getInstructor();
             String instructorName = theForm.getInstructorName();
             if ((StringUtils.isNotBlank(instructorId)) || (StringUtils.isNotBlank(instructorName))) {
-                getViewHelperService(theForm).loadCourseOfferingsByTermAndInstructor(termCode, instructorId, instructorName, theForm);
+                ScheduleOfClassesUtil.getViewHelperService(theForm).loadCourseOfferingsByTermAndInstructor(termCode, instructorId, instructorName, theForm);
                 theForm.setSearchParameter("Instructor: " + instructorName);
             } else {
                 LOG.error( ERROR_SEARCH_FIELD_CANNOT_BE_EMPTY );
@@ -201,7 +203,7 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
             String departmentId = theForm.getDepartment();
             String departmentName = theForm.getDepartmentName();
             if ((StringUtils.isNotBlank(departmentId)) || (StringUtils.isNotBlank(departmentName))) {
-                getViewHelperService(theForm).loadCourseOfferingsByTermAndDepartment(termCode, departmentId, departmentName, theForm);
+                ScheduleOfClassesUtil.getViewHelperService(theForm).loadCourseOfferingsByTermAndDepartment(termCode, departmentId, departmentName, theForm);
                 theForm.setSearchParameter("Department: " + departmentName);
             } else {
                 LOG.error( ERROR_SEARCH_FIELD_CANNOT_BE_EMPTY );
@@ -211,7 +213,7 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
         } else if (theForm.getSearchType().equals("titleDesc")) {
             String titleDesc = theForm.getTitleDesc();
             if (StringUtils.isNotBlank(titleDesc)) {
-                getViewHelperService(theForm).loadCourseOfferingsByTitleAndDescription(termCode, titleDesc, theForm);
+                ScheduleOfClassesUtil.getViewHelperService(theForm).loadCourseOfferingsByTitleAndDescription(termCode, titleDesc, theForm);
                 theForm.setSearchParameter("Title & Description: " + titleDesc);
             } else {
                 LOG.error(ERROR_SEARCH_FIELD_CANNOT_BE_EMPTY );
@@ -239,20 +241,20 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
 
         SearchRequestInfo searchRequestInfo = new SearchRequestInfo(ActivityOfferingSearchServiceImpl.AOS_AND_CLUSTERS_BY_CO_ID_SEARCH_KEY);
 
-        List<String> aoStates = getViewHelperService(theForm).getAOStateFilter();
+        List<String> aoStates = ScheduleOfClassesUtil.getViewHelperService(theForm).getAOStateFilter();
         searchRequestInfo.addParam(ActivityOfferingSearchServiceImpl.SearchParameters.AO_STATES, aoStates);
 
-        getViewHelperService(theForm).build_AOs_RGs_AOCs_Lists_For_TheCourseOffering(theForm, searchRequestInfo, false);
+        ScheduleOfClassesUtil.getViewHelperService(theForm).build_AOs_RGs_AOCs_Lists_For_TheCourseOffering(theForm, searchRequestInfo, false);
 
         coDisplayWrapper.getClusterResultList().clear();
         coDisplayWrapper.getClusterResultList().addAll(theForm.getClusterResultList());
         coDisplayWrapper.getActivityWrapperList().clear();
         coDisplayWrapper.getActivityWrapperList().addAll(theForm.getActivityWrapperList());
 
-        SOCRequisiteHelper requisites =  getViewHelperService(theForm).retrieveRequisites(coDisplayWrapper.getCourseOfferingId(), coDisplayWrapper.getActivityWrapperList());
-        coDisplayWrapper.setRequisites(requisites.getReqWrapper().getCoRequisite().toString());
+        SOCRequisiteWrapper requisites =  ScheduleOfClassesUtil.getViewHelperService(theForm).retrieveRequisites(coDisplayWrapper.getCourseOfferingId(), coDisplayWrapper.getActivityWrapperList());
+        coDisplayWrapper.setRequisites(requisites.getCoRequisite().toString());
 
-        getViewHelperService(theForm).sortActivityOfferings(theForm,coDisplayWrapper);
+        ScheduleOfClassesUtil.getViewHelperService(theForm).sortActivityOfferings(theForm,coDisplayWrapper);
 
         Map<String, String> subTermInfoMap = new HashMap<String, String>();
 
@@ -260,8 +262,8 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
 
         for (ActivityOfferingWrapper aoWrapper : coDisplayWrapper.getActivityWrapperList()){
             //Adding Requisites
-            if(requisites.getReqWrapper().getAoRequisiteMap().containsKey(aoWrapper.getActivityCode())) {
-                aoWrapper.setRequisite(requisites.prepareAORequisites(aoWrapper.getActivityCode()));
+            if(requisites.getAoRequisiteMap().containsKey(aoWrapper.getId())) {
+                aoWrapper.setRequisite(requisites.getRequisiteForAO(aoWrapper.getId()));
             }
 
             // Adding Information (icons)
@@ -275,13 +277,13 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
             String subTermDisplay = "";
             if (!theForm.getTermCode().equals(termId)) {
                 if (!subTermInfoMap.containsKey(termId)) {
-                    TermInfo subTerm = getAcademicCalendarService().getTerm(termId, contextInfo);
+                    TermInfo subTerm = ScheduleOfClassesUtil.getAcademicCalendarService().getTerm(termId, contextInfo);
                     // check if term or subterm
-                    List<TypeTypeRelationInfo> terms = getTypeService().getTypeTypeRelationsByRelatedTypeAndType(subTerm.getTypeKey(), TypeServiceConstants.TYPE_TYPE_RELATION_CONTAINS_TYPE_KEY, contextInfo);
+                    List<TypeTypeRelationInfo> terms = ScheduleOfClassesUtil.getTypeService().getTypeTypeRelationsByRelatedTypeAndType(subTerm.getTypeKey(), TypeServiceConstants.TYPE_TYPE_RELATION_CONTAINS_TYPE_KEY, contextInfo);
                     // if subterm
                     if (!terms.isEmpty()) {
-                        TypeInfo subTermType = getTypeService().getType(subTerm.getTypeKey(), contextInfo);
-                        subTermDisplay = "This activity is in " + subTermType.getName() + " - " + getViewHelperService(theForm).getTermStartEndDate(subTerm);
+                        TypeInfo subTermType = ScheduleOfClassesUtil.getTypeService().getType(subTerm.getTypeKey(), contextInfo);
+                        subTermDisplay = "This activity is in " + subTermType.getName() + " - " + ScheduleOfClassesUtil.getViewHelperService(theForm).getTermStartEndDate(subTerm);
                         subTermInfoMap.put(termId, subTermDisplay);
                         // displaying information
                         information.append("<img src=").append(ScheduleOfClassesConstants.SOC_RESULT_PAGE_SUBTERM_IMG).append(" title=\"").append(subTermDisplay).append("\"> ");
@@ -315,10 +317,10 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
         CourseOfferingDisplayWrapper coDisplayWrapper = (CourseOfferingDisplayWrapper)KSControllerHelper.getSelectedCollectionItem(theForm);
         theForm.setCourseOfferingId(coDisplayWrapper.getCourseOfferingId());
 
-        List<String> regGroupStates = getViewHelperService(theForm).getRegGroupStateFilter();
+        List<String> regGroupStates = ScheduleOfClassesUtil.getViewHelperService(theForm).getRegGroupStateFilter();
         searchRequestInfo.addParam(ActivityOfferingSearchServiceImpl.SearchParameters.REGGROUP_STATES, regGroupStates);
 
-        getViewHelperService(theForm).build_AOs_RGs_AOCs_Lists_For_TheCourseOffering(theForm,searchRequestInfo, true);
+        ScheduleOfClassesUtil.getViewHelperService(theForm).build_AOs_RGs_AOCs_Lists_For_TheCourseOffering(theForm,searchRequestInfo, true);
 
         coDisplayWrapper.getClusterResultList().clear();
         coDisplayWrapper.getClusterResultList().addAll(theForm.getClusterResultList());
@@ -327,60 +329,47 @@ public class ScheduleOfClassesSearchController extends UifControllerBase {
          * Sort the RegGroups first by the ID and then by institutionally configured list of comparators
          */
         for (ActivityOfferingClusterWrapper clusterWrapper : coDisplayWrapper.getClusterResultList()){
-            if(clusterWrapper.getRgWrapperList().size() >1){
+            Map<RegistrationGroupWrapper, List<RegistrationGroupWrapper>> regGroupMap = new HashMap<RegistrationGroupWrapper, List<RegistrationGroupWrapper>>();
+            List<RegistrationGroupWrapper> sortRegGroupWrappers = new ArrayList<RegistrationGroupWrapper>();
+
+            for (int i = 0; i < clusterWrapper.getRgWrapperList().size(); i++) {
+                RegistrationGroupWrapper registrationGroupWrapper = clusterWrapper.getRgWrapperList().get(i);
+                for (RegistrationGroupWrapper partnerRegistrationGroupWrappers : clusterWrapper.getRgWrapperList()) {
+                    if (registrationGroupWrapper.getRgInfo().getId().equals(partnerRegistrationGroupWrappers.getRgInfo().getId())) {
+                        if (regGroupMap.containsKey(registrationGroupWrapper)) {
+                            regGroupMap.get(registrationGroupWrapper).add(partnerRegistrationGroupWrappers);
+                            i++;
+                        } else {
+                            regGroupMap.put(registrationGroupWrapper, new ArrayList<RegistrationGroupWrapper>());
+                            regGroupMap.get(registrationGroupWrapper).add(registrationGroupWrapper);
+                        }
+                    }
+                }
+            }
+
+            sortRegGroupWrappers.addAll(regGroupMap.keySet());
+
+            if(clusterWrapper.getRgWrapperList().size() > 1){
                 //Sort Reg Groups by Reg Group name (which is not institutionally configurable)
                // Collections.sort(clusterWrapper.getRgWrapperList(),new RegGroupNameComparator());
                 //Sort by whatever configured at the xml (which are institutionally configurable)
-                getViewHelperService(theForm).sortRegGroups(clusterWrapper.getRgWrapperList());
+                ScheduleOfClassesUtil.getViewHelperService(theForm).sortRegGroups(sortRegGroupWrappers);
+            }
+
+            clusterWrapper.getRgWrapperList().clear();
+
+            for (RegistrationGroupWrapper registrationGroupWrapper : sortRegGroupWrappers) {
+                clusterWrapper.getRgWrapperList().addAll(regGroupMap.get(registrationGroupWrapper));
             }
         }
 
-        SOCRequisiteHelper requisites =  getViewHelperService(theForm).retrieveRequisites(coDisplayWrapper.getCourseOfferingId(), theForm.getActivityWrapperList());
-        coDisplayWrapper.setRequisites(requisites.getReqWrapper().getCoRequisite().toString());
+
+        SOCRequisiteWrapper requisites =  ScheduleOfClassesUtil.getViewHelperService(theForm).retrieveRequisites(coDisplayWrapper.getCourseOfferingId(), theForm.getActivityWrapperList());
+        coDisplayWrapper.setRequisites(requisites.getCoRequisite().toString());
         for(ActivityOfferingClusterWrapper activityOfferingClusterWrapper : theForm.getClusterResultList()) {
-            requisites.loadRegRequisites(activityOfferingClusterWrapper.getRgWrapperList());
+            ScheduleOfClassesUtil.loadRegRequisites(requisites, activityOfferingClusterWrapper.getRgWrapperList());
         }
 
         return getUIFModelAndView(theForm, ScheduleOfClassesConstants.SOC_RESULT_PAGE);
-    }
-
-    public ScheduleOfClassesViewHelperService getViewHelperService(ScheduleOfClassesSearchForm theForm) {
-        if (viewHelperService == null) {
-            if (theForm.getView().getViewHelperService() != null) {
-                viewHelperService = (ScheduleOfClassesViewHelperService) theForm.getView().getViewHelperService();
-            } else {
-                viewHelperService = (ScheduleOfClassesViewHelperService) theForm.getPostedView().getViewHelperService();
-            }
-        }
-        return viewHelperService;
-    }
-
-    protected AcademicCalendarService getAcademicCalendarService() {
-        if (acalService == null) {
-            acalService = (AcademicCalendarService) GlobalResourceLoader.getService(new QName(AcademicCalendarServiceConstants.NAMESPACE, AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
-        }
-        return this.acalService;
-    }
-
-    protected CourseOfferingSetService getCourseOfferingSetService() {
-        if (courseOfferingSetService == null) {
-
-            courseOfferingSetService = (CourseOfferingSetService) GlobalResourceLoader.getService(new QName(CourseOfferingSetServiceConstants.NAMESPACE, CourseOfferingSetServiceConstants.SERVICE_NAME_LOCAL_PART));
-        }
-        return this.courseOfferingSetService;
-    }
-
-    protected AtpService getAtpService() {
-        if (atpService == null) {
-            atpService = (AtpService) GlobalResourceLoader.getService(new QName(AtpServiceConstants.NAMESPACE, AtpServiceConstants.SERVICE_NAME_LOCAL_PART));
-        }
-        return this.atpService;
-    }
-
-    public TypeService getTypeService() {
-        if (typeService == null) {
-            typeService = CourseOfferingResourceLoader.loadTypeService();
-        }
-        return this.typeService;
     }
 }

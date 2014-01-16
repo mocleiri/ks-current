@@ -4,18 +4,16 @@ import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
+import org.kuali.student.common.collection.KSCollectionUtils;
 import org.kuali.student.common.uif.service.impl.KSViewHelperServiceImpl;
 import org.kuali.student.common.uif.util.GrowlIcon;
 import org.kuali.student.common.uif.util.KSUifUtils;
-import org.kuali.student.common.util.KSCollectionUtils;
 import org.kuali.student.enrollment.class1.timeslot.dto.TimeSlotWrapper;
 import org.kuali.student.enrollment.class1.timeslot.form.TimeSlotForm;
 import org.kuali.student.enrollment.class1.timeslot.service.TimeSlotViewHelperService;
 import org.kuali.student.enrollment.class1.timeslot.util.TimeSlotConstants;
-import org.kuali.student.enrollment.class1.util.WeekDaysDtoAndUIConversions;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -24,6 +22,7 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.ContextUtils;
+import org.kuali.student.r2.common.util.TimeOfDayHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.scheduling.constants.SchedulingServiceConstants;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
@@ -31,7 +30,6 @@ import org.kuali.student.r2.core.scheduling.service.SchedulingService;
 import org.kuali.student.r2.core.scheduling.util.SchedulingServiceUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,7 +48,6 @@ public class TimeSlotViewHelperServiceImpl
         List<TimeSlotWrapper> timeSlotWrappers = new ArrayList<TimeSlotWrapper>();
 
         for (String tsTypeKey : timeSlotTypes) {
-            Date timeForDisplay;
 
             List<String> timeSlotIds = getSchedulingService().getTimeSlotIdsByType(tsTypeKey, getContextInfo());
             List<TimeSlotInfo> timeSlotInfos = getSchedulingService().getTimeSlotsByIds(timeSlotIds, getContextInfo());
@@ -58,17 +55,15 @@ public class TimeSlotViewHelperServiceImpl
             for (TimeSlotInfo timeSlotInfo : timeSlotInfos) {
                 TimeSlotWrapper tsWrapper = new TimeSlotWrapper();
                 tsWrapper.setTimeSlotInfo(timeSlotInfo);
-                Long startTime = timeSlotInfo.getStartTime().getMilliSeconds();
-                if (startTime != null) {
-                    tsWrapper.setStartTimeDisplay(SchedulingServiceUtil.makeFormattedTimeFromMillis(startTime));
+                if (timeSlotInfo.getStartTime() != null) {
+                    tsWrapper.setStartTimeDisplay(TimeOfDayHelper.makeFormattedTimeForAOSchedules(timeSlotInfo.getStartTime()));
                 }
 
-                Long endTime = timeSlotInfo.getEndTime().getMilliSeconds();
-                if (endTime != null) {
-                    tsWrapper.setEndTimeDisplay(SchedulingServiceUtil.makeFormattedTimeFromMillis(endTime));
+                if (timeSlotInfo.getEndTime() != null) {
+                    tsWrapper.setEndTimeDisplay(TimeOfDayHelper.makeFormattedTimeForAOSchedules(timeSlotInfo.getEndTime()));
                 }
 
-                String daysUI = WeekDaysDtoAndUIConversions.buildDaysForUI(timeSlotInfo.getWeekdays());
+                String daysUI = SchedulingServiceUtil.weekdaysList2WeekdaysString(timeSlotInfo.getWeekdays());
                 tsWrapper.setDaysDisplayName(daysUI);
                 tsWrapper.setTypeKey(timeSlotInfo.getTypeKey());
                 if (timeSlotInfo.getTypeKey() != null) {
@@ -142,7 +137,7 @@ public class TimeSlotViewHelperServiceImpl
                 boolean isInUse = isTimeSlotInUse(tsWrapper.getTimeSlotInfo());
                 if (!isInUse){
                     selectedTimeSlots.add(tsWrapper);
-                    StatusInfo statusInfo = getSchedulingService().deleteTimeSlot(tsWrapper.getTimeSlotInfo().getId(), contextInfo);
+                    getSchedulingService().deleteTimeSlot(tsWrapper.getTimeSlotInfo().getId(), contextInfo);
                     timeSlotsToDelete.add(tsWrapper);
                 }
                 if (!deleteInfoAdded){
@@ -155,33 +150,54 @@ public class TimeSlotViewHelperServiceImpl
         form.getTimeSlotResults().removeAll(timeSlotsToDelete);
     }
 
+    /**
+     * Determines if a time slot created from the values in the add/edit time slot form (as an add) would be unique.
+     *
+     * @param form The add/edit time slot form.
+     * @return Returns false if a time slot already exists. Otherwise, returns true (i.e. the time slot would be unique).
+     */
     public boolean isUniqueTimeSlot(TimeSlotForm form) throws Exception {
-        return isUniqueTimeSlot(form,null);
+        return isUniqueTimeSlot(form, null);
     }
 
-    public boolean isUniqueTimeSlot(TimeSlotForm form,TimeSlotInfo skipTS) throws Exception {
+    /**
+     * Determines if a time slot created from the values in the add/edit time slot form would be unique.
+     *
+     * @param form The edit time slot form.
+     * @param editedTimeSlot The time slot that is being edited. If called from an add operation this should be null.
+     * @return Returns false if a time slot already exists. Otherwise, returns true (i.e. the time slot would be unique).
+     */
+    public boolean isUniqueTimeSlot(TimeSlotForm form, TimeSlotInfo editedTimeSlot) throws Exception {
 
-        List<Integer> days = WeekDaysDtoAndUIConversions.buildDaysForDTO(form.getAddOrEditDays());
+        List<Integer> days = SchedulingServiceUtil.weekdaysString2WeekdaysList(form.getAddOrEditDays());
 
         String startTimeString = form.getAddOrEditStartTime() + " " + form.getAddOrEditStartTimeAmPm();
-        TimeOfDayInfo startTimeOfDayInfo = SchedulingServiceUtil.makeTimeOfDayInfoFromTimeString(startTimeString);
+        TimeOfDayInfo startTimeOfDayInfo = TimeOfDayHelper.makeTimeOfDayInfoFromTimeString(startTimeString);
 
         String endTimeString = form.getAddOrEditEndTime() + " " + form.getAddOrEditEndTimeAmPm();
-        TimeOfDayInfo endTimeOfDayInfo = SchedulingServiceUtil.makeTimeOfDayInfoFromTimeString(endTimeString);
+        TimeOfDayInfo endTimeOfDayInfo = TimeOfDayHelper.makeTimeOfDayInfoFromTimeString(endTimeString);
 
         List<TimeSlotInfo> exisitingTS = getSchedulingService()
                 .getTimeSlotsByDaysAndStartTimeAndEndTime(form.getAddOrEditTermKey(),days,startTimeOfDayInfo,endTimeOfDayInfo,createContextInfo());
 
-        if (exisitingTS.size() == 1 && skipTS != null){
+        boolean isUnique = false;
+
+        //  There is an existing time slot and this is an edit.
+        if (exisitingTS.size() == 1 && editedTimeSlot != null){
+            // Since there is a unique constraint on TimeSlot type, weekdays, start, and end times the search
+            // results should only constain one item.
             TimeSlotInfo ts = KSCollectionUtils.getRequiredZeroElement(exisitingTS);
-            if (StringUtils.equals(ts.getId(),skipTS.getId())){
-                return true;
-            } else {
-                return false;
+            //  If the existing time slot is the one being edited then return true.
+            if (StringUtils.equals(ts.getId(), editedTimeSlot.getId())){
+                isUnique = true;
             }
         } else {
-            return exisitingTS.isEmpty();
+            //  This is an add, so check the result set for a dup.
+            if (exisitingTS.isEmpty()) {
+                isUnique = true;
+            }
         }
+        return isUnique;
     }
 
     public boolean isTimeSlotInUse(TimeSlotInfo ts) throws Exception {
@@ -191,24 +207,24 @@ public class TimeSlotViewHelperServiceImpl
     protected void buildTimeSlotInfo(TimeSlotForm form,TimeSlotInfo tsInfo){
 
         tsInfo.setStateKey(SchedulingServiceConstants.TIME_SLOT_STATE_ACTIVE);
-        List<Integer> days = WeekDaysDtoAndUIConversions.buildDaysForDTO(form.getAddOrEditDays());
+        List<Integer> days = SchedulingServiceUtil.weekdaysString2WeekdaysList(form.getAddOrEditDays());
         tsInfo.setWeekdays(days);
 
         String startTimeString = form.getAddOrEditStartTime() + " " + form.getAddOrEditStartTimeAmPm();
-        tsInfo.setStartTime(SchedulingServiceUtil.makeTimeOfDayInfoFromTimeString(startTimeString));
+        tsInfo.setStartTime(TimeOfDayHelper.makeTimeOfDayInfoFromTimeString(startTimeString));
 
         String endTimeString = form.getAddOrEditEndTime() + " " + form.getAddOrEditEndTimeAmPm();
-        tsInfo.setEndTime(SchedulingServiceUtil.makeTimeOfDayInfoFromTimeString(endTimeString));
+        tsInfo.setEndTime(TimeOfDayHelper.makeTimeOfDayInfoFromTimeString(endTimeString));
 
         tsInfo.setTypeKey(form.getAddOrEditTermKey());
     }
 
     protected void initializeTimeSlotWrapper(TimeSlotForm form,TimeSlotWrapper tsWrapper){
-        String daysUI = WeekDaysDtoAndUIConversions.buildDaysForUI(tsWrapper.getTimeSlotInfo().getWeekdays());
+        String daysUI = SchedulingServiceUtil.weekdaysList2WeekdaysString(tsWrapper.getTimeSlotInfo().getWeekdays());
         tsWrapper.setDaysDisplayName(daysUI);
         tsWrapper.setEnableDeleteButton(true);
-        tsWrapper.setStartTimeDisplay(SchedulingServiceUtil.makeFormattedTimeFromMillis(tsWrapper.getTimeSlotInfo().getStartTime().getMilliSeconds()));
-        tsWrapper.setEndTimeDisplay(SchedulingServiceUtil.makeFormattedTimeFromMillis(tsWrapper.getTimeSlotInfo().getEndTime().getMilliSeconds()));
+        tsWrapper.setStartTimeDisplay(TimeOfDayHelper.makeFormattedTimeForAOSchedules(tsWrapper.getTimeSlotInfo().getStartTime()));
+        tsWrapper.setEndTimeDisplay(TimeOfDayHelper.makeFormattedTimeForAOSchedules(tsWrapper.getTimeSlotInfo().getEndTime()));
         TypeInfo type = getTypeInfo(form.getAddOrEditTermKey());
         tsWrapper.setTypeName(type.getName());
 

@@ -196,6 +196,7 @@
                     <map merge="true">
                         <entry key="sDom" value="rtip"/>
                         <entry key="aaSorting" value="[[ 1, 'desc' ]]"/>
+                        <entry key="bPaginate" value="false"/>
                     </map>
                 </property>
             </bean>
@@ -217,7 +218,7 @@
             </list>
 		</property>
         <property name="layoutManager.actionFieldPrototype">
-            <bean parent="Uif-HorizontalFieldGroup" p:align="center" p:required="false" p:label="Actions" p:style="display:inline;"/>
+            <bean parent="Uif-HorizontalFieldGroup" p:required="false" p:label="Actions" p:style="display:inline;"/>
         </property>
         <property name="lineActions">
               <list>
@@ -246,6 +247,7 @@
                     <map merge="true">
                         <entry key="sDom" value="rtip"/>
                         <entry key="aaSorting" value="[[ 1, 'desc' ]]"/>
+                        <entry key="bPaginate" value="false"/>
                     </map>
                 </property>
             </bean>
@@ -267,7 +269,7 @@
             </list>
 		</property>
         <property name="layoutManager.actionFieldPrototype">
-            <bean parent="Uif-HorizontalFieldGroup" p:align="center" p:required="false" p:label="Actions" p:style="display:inline;"/>
+            <bean parent="Uif-HorizontalFieldGroup" p:required="false" p:label="Actions" p:style="display:inline;"/>
         </property>
         <property name="lineActions">
               <list>
@@ -293,6 +295,7 @@
             <map merge="true">
                 <entry key="sDom" value="rtip"/>
                 <entry key="aaSorting" value="[[ 1, 'desc' ]]"/>
+                <entry key="bPaginate" value="false"/>
             </map>
         </property>
 		<property name="items">
@@ -312,7 +315,7 @@
             </list>
 		</property>
         <property name="layoutManager.actionFieldPrototype">
-            <bean parent="Uif-HorizontalFieldGroup" p:align="center" p:required="false" p:label="Actions" p:style="display:inline;"/>
+            <bean parent="Uif-HorizontalFieldGroup" p:required="false" p:label="Actions" p:style="display:inline;"/>
         </property>
         <property name="lineActions">
               <list>

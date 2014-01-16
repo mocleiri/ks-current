@@ -16,6 +16,7 @@
  */
 package org.kuali.student.enrollment.class2.courseoffering.controller;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.PredicateFactory;
@@ -33,6 +34,7 @@ import org.kuali.student.enrollment.class2.courseoffering.service.impl.DefaultOp
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingViewHelperUtil;
+import org.kuali.student.enrollment.class2.courseofferingset.util.CourseOfferingSetUtil;
 import org.kuali.student.enrollment.class2.coursewaitlist.service.facade.CourseWaitListServiceFacade;
 import org.kuali.student.enrollment.class2.coursewaitlist.service.facade.CourseWaitListServiceFacadeConstants;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
@@ -48,6 +50,7 @@ import org.kuali.student.r2.common.util.date.DateFormatters;
 import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.core.class1.search.CourseOfferingHistorySearchImpl;
 import org.kuali.student.r2.core.organization.dto.OrgInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultCellInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.r2.lum.lrc.dto.ResultValueInfo;
@@ -117,7 +120,7 @@ public class CourseOfferingControllerPopulateUIForm {
                     }
                 }
                 //Audit is pulled out into a dynamic attribute on course so map it back
-                if("true".equals(courseInfo.getAttributeValue(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_AUDIT))){
+                if ("true".equals(courseInfo.getAttributeValue(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_AUDIT))) {
                     studentRegOptions.add(LrcServiceConstants.RESULT_GROUP_KEY_GRADE_AUDIT);
                 }
             }
@@ -153,7 +156,7 @@ public class CourseOfferingControllerPopulateUIForm {
 
                     //Copy all the allowed credits and sort so that the multiple checkboxes can be properly displayed
                     List<ResultValueInfo> resultValueInfos = CourseOfferingManagementUtil.getLrcService().getResultValuesForResultValuesGroup(resultValuesGroupInfo.getKey(), contextInfo);
-                    for (ResultValueInfo rVI: resultValueInfos) {
+                    for (ResultValueInfo rVI : resultValueInfos) {
                         creditOption.getAllowedCredits().add(rVI.getValue());
                     }
                     Collections.sort(creditOption.getAllowedCredits());
@@ -181,9 +184,9 @@ public class CourseOfferingControllerPopulateUIForm {
 
             ArrayList<OrganizationInfoWrapper> orgList = new ArrayList<OrganizationInfoWrapper>();
 
-            if(courseInfo.getUnitsContentOwner() != null && !courseInfo.getUnitsContentOwner().isEmpty()){
-                for(String orgId : courseInfo.getUnitsContentOwner()){
-                    OrgInfo orgInfo = CourseOfferingManagementUtil.getOrganizationService().getOrg(orgId,contextInfo);
+            if (courseInfo.getUnitsContentOwner() != null && !courseInfo.getUnitsContentOwner().isEmpty()) {
+                for (String orgId : courseInfo.getUnitsContentOwner()) {
+                    OrgInfo orgInfo = CourseOfferingManagementUtil.getOrganizationService().getOrg(orgId, contextInfo);
                     orgList.add(new OrganizationInfoWrapper(orgInfo));
                 }
             }
@@ -205,9 +208,9 @@ public class CourseOfferingControllerPopulateUIForm {
             SocInfo socInfo = CourseOfferingManagementUtil.getCourseOfferingSetService().getSoc(request.getParameter(CourseOfferingConstants.SOC_ID), contextInfo);
             formObject.setSocInfo(socInfo);
 
-            setTermPropertiesOnFormObject(formObject, termId, contextInfo );
+            setTermPropertiesOnFormObject(formObject, termId, contextInfo);
             formObject.setContextBar(CourseOfferingContextBar.NEW_INSTANCE(formObject.getTerm(), formObject.getSocInfo(),
-                    CourseOfferingManagementUtil.getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo) );
+                    CourseOfferingManagementUtil.getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo));
 
             document.getNewMaintainableObject().setDataObject(formObject);
             document.getOldMaintainableObject().setDataObject(formObject);
@@ -238,6 +241,7 @@ public class CourseOfferingControllerPopulateUIForm {
     }
 
     private static DefaultOptionKeysService defaultOptionKeysService;
+
     protected static DefaultOptionKeysService getDefaultOptionKeysService() {
         if (defaultOptionKeysService == null) {
             defaultOptionKeysService = new DefaultOptionKeysServiceImpl();
@@ -255,20 +259,20 @@ public class CourseOfferingControllerPopulateUIForm {
     protected static void copyCourseOfferingInfo(CourseOfferingCreateWrapper coCreateWrapper, String targetTermCode, String catalogCourseCode, String coId) {
         ContextInfo contextInfo = ContextUtils.createDefaultContextInfo();
 
-        if(targetTermCode !=null){
+        if (targetTermCode != null) {
             coCreateWrapper.setTargetTermCode(targetTermCode);
             TermInfo term = CourseOfferingManagementUtil.getTerm(targetTermCode);
             coCreateWrapper.setTerm(term);
         }
 
-        if(catalogCourseCode !=null){
+        if (catalogCourseCode != null) {
             coCreateWrapper.setCatalogCourseCode(catalogCourseCode);
         }
 
-        if(coId != null){
+        if (coId != null) {
             try {
                 // configure context bar
-                SocInfo soc = CourseOfferingManagementUtil.getMainSocForTerm(coCreateWrapper.getTerm(), contextInfo);
+                SocInfo soc = CourseOfferingSetUtil.getMainSocForTermId(coCreateWrapper.getTerm().getId(), contextInfo);
                 coCreateWrapper.setSocInfo(soc);
                 coCreateWrapper.setContextBar(CourseOfferingContextBar.NEW_INSTANCE(coCreateWrapper.getTerm(), coCreateWrapper.getSocInfo(),
                         CourseOfferingManagementUtil.getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo));
@@ -282,8 +286,8 @@ public class CourseOfferingControllerPopulateUIForm {
                 if (coCreateWrapper.getExistingTermOfferings().size() == 0) {
                     coCreateWrapper.getExistingTermOfferings().add(coEditWrapper);
                 }
-            } catch(Exception e){
-                throw new RuntimeException ("An Exception occurred while trying to copy course to new onw. ", e);
+            } catch (Exception e) {
+                throw new RuntimeException("An Exception occurred while trying to copy course to new onw. ", e);
             }
         }
     }
@@ -302,7 +306,7 @@ public class CourseOfferingControllerPopulateUIForm {
             coWrapper.setShowCopyCourseOffering(false);
             coWrapper.setShowTermOfferingLink(true);
 
-            coWrapper.setContextBar( CourseOfferingContextBar.NEW_INSTANCE(coWrapper.getTerm(), coWrapper.getSocInfo(), CourseOfferingManagementUtil.getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo) );
+            coWrapper.setContextBar(CourseOfferingContextBar.NEW_INSTANCE(coWrapper.getTerm(), coWrapper.getSocInfo(), CourseOfferingManagementUtil.getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo));
 
             coWrapper.getExistingTermOfferings().clear();
             coWrapper.getExistingOfferingsInCurrentTerm().clear();
@@ -319,17 +323,39 @@ public class CourseOfferingControllerPopulateUIForm {
             Calendar termStart = Calendar.getInstance();
             termStart.setTime(term.getStartDate());
             String termYear = Integer.toString(termStart.get(Calendar.YEAR));
+            String termMonth = Integer.toString((termStart.get(Calendar.MONTH) + 1));
+            String termDayOfMonth = Integer.toString((termStart.getActualMaximum(Calendar.DAY_OF_MONTH)));
 
             org.kuali.student.r2.core.search.dto.SearchRequestInfo searchRequest = new org.kuali.student.r2.core.search.dto.SearchRequestInfo(CourseOfferingHistorySearchImpl.PAST_CO_SEARCH.getKey());
             searchRequest.addParam(CourseOfferingHistorySearchImpl.COURSE_ID, coWrapper.getCourse().getId());
 
+            searchRequest.addParam(CourseOfferingHistorySearchImpl.TARGET_DAY_OF_MONTH_PARAM, termDayOfMonth);
+            searchRequest.addParam(CourseOfferingHistorySearchImpl.TARGET_MONTH_PARAM, termMonth);
             searchRequest.addParam(CourseOfferingHistorySearchImpl.TARGET_YEAR_PARAM, termYear);
+            searchRequest.addParam(CourseOfferingHistorySearchImpl.SearchParameters.CROSS_LIST_SEARCH_ENABLED, BooleanUtils.toStringTrueFalse(true));
             org.kuali.student.r2.core.search.dto.SearchResultInfo searchResult = CourseOfferingManagementUtil.getSearchService().search(searchRequest, null);
 
             List<String> courseOfferingIds = new ArrayList<String>(searchResult.getTotalResults());
+
+            /* Checks whether the course is cross-listed and Set the codes that are cross listed to the cross-listed list */
+
             for (org.kuali.student.r2.core.search.dto.SearchResultRowInfo row : searchResult.getRows()) {
-                courseOfferingIds.add(row.getCells().get(firstValue).getValue());
+                for (SearchResultCellInfo cellInfo : row.getCells()) {
+                    String value = StringUtils.EMPTY;
+                    if (cellInfo.getValue() != null) {
+                        value = cellInfo.getValue();
+                    }
+                    if (CourseOfferingHistorySearchImpl.SearchResultColumns.CO_ID.equals(cellInfo.getKey())) {
+                        courseOfferingIds.add(value);
+                    } else if (CourseOfferingHistorySearchImpl.SearchResultColumns.IS_CROSS_LISTED.equals(cellInfo.getValue())) {
+                        coWrapper.setCrossListedCo(BooleanUtils.toBoolean(value));
+                    } else if (CourseOfferingHistorySearchImpl.SearchResultColumns.CROSS_LISTED_COURSES.equals(cellInfo.getKey())) {
+                        coWrapper.setAlternateCOCodes(Arrays.asList(StringUtils.split(value, ",")));
+                    }
+
+                }
             }
+
 
             courseOfferingInfos = CourseOfferingManagementUtil.getCourseOfferingService().getCourseOfferingsByIds(courseOfferingIds, contextInfo);
 
@@ -338,6 +364,7 @@ public class CourseOfferingControllerPopulateUIForm {
                 TermInfo termInfo = CourseOfferingManagementUtil.getAcademicCalendarService().getTerm(courseOfferingInfo.getTermId(), contextInfo);
                 co.setTerm(termInfo);
                 co.setGradingOption(CourseOfferingManagementUtil.getGradingOption(courseOfferingInfo.getGradingOptionId()));
+                co.setAlternateCOCodes(coWrapper.getAlternateCOCodes());
                 coWrapper.getExistingTermOfferings().add(co);
             }
         } catch (Exception e) {

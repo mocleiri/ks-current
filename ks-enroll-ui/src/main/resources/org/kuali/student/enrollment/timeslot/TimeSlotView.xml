@@ -78,8 +78,9 @@
                 <bean parent="Uif-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean id="timeSlotTypeSelection" parent="Uif-InputField" p:propertyName="termTypeSelections"  p:width="auto"
-                                  p:label="Select Term Type(s) To Edit" p:labelPlacement="TOP">
+                            <bean parent="Uif-Message" p:messageText="Select Term Type(s) To Edit" p:style="font-weight:bold;"/>
+                            <bean parent="Uif-Message" p:messageText="Use 'Ctrl' or 'Shift' to select multiple" p:additionalCssClasses="ks-subSection"/>
+                            <bean id="timeSlotTypeSelection" parent="Uif-InputField" p:propertyName="termTypeSelections" >
                                 <property name="control">
                                     <bean parent="Uif-MultiSelectControl" p:size="3" p:style="width:17em;"/>
                                 </property>
@@ -87,13 +88,12 @@
                                     <bean class="org.kuali.student.enrollment.class1.timeslot.keyvalue.TimeSlotTypeOptionsFinder" p:addBlankOption="false"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="Use 'ctrl' or 'shift' to select multiple" />
                         </list>
                     </property>
                 </bean>
                 <!--The submit button -->
                 <bean parent="Uif-PrimaryActionButton"
-                    p:performClientSideValidation="false" p:actionLabel="Show Time Slots" p:methodToCall="show" p:style="margin-top:20px;" p:successCallback="setupTimeSlotTypeDropdown();"/>
+                    p:performClientSideValidation="false" p:actionLabel="Show" p:methodToCall="show" p:style="margin-top:46px;" p:successCallback="setupTimeSlotTypeDropdown();"/>
 
                 <!-- REMOVE ME: This is for a PoC for "intelligent" time entry
                 <bean id="daysPatternTextField" parent="Uif-InputField-LabelTop"  p:propertyName="pocTimeWithAMPM" p:label="PoC Days" p:required="true">
@@ -181,7 +181,7 @@
             <list>
                 <bean id="is_checked" parent="Uif-InputField" p:propertyName="isChecked" p:required="false" p:hidden="@{!#line.isEnableDeleteButton()}"
                       p:onChangeScript="handleToolbar('TimeSlotSearchResultsDisplayTable',['enableDeleteButton'], ['TimeSlot-ToolBar-Delete-TimeSlot']);"
-                      p:cssClasses="fixedCol_1">
+                      p:cssClasses="check_timeSlot">
 
                     <property name="control">
                         <bean parent="Uif-CheckboxControl" p:disabled="false"/>
@@ -191,27 +191,27 @@
                 <bean id="timeSlotCode" parent="KS-Uif-DataField-Simple"
                       p:label="Code"
                       p:propertyName="timeSlotInfo.name"
-                      p:cssClasses="fixedCol_5"/>
+                      p:cssClasses="code_timeSlot"/>
 
                 <bean id="termType" parent="KS-Uif-DataField-Simple"
                       p:label="Term Type"
                       p:propertyName="typeName" p:additionalHiddenPropertyNames="typeKey"
-                      p:cssClasses="fixedCol_11"/>
+                      p:cssClasses="termType_timeSlot"/>
 
                 <bean id="days" parent="KS-Uif-DataField-Simple"
                       p:label="Days"
                       p:propertyName="daysDisplayName"
-                      p:cssClasses="fixedCol_8"/>
+                      p:cssClasses="days_timeSlot"/>
 
                 <bean id="startTime" parent="KS-Uif-DataField-Simple"
                       p:label="Start Time"
                       p:propertyName="startTimeDisplay"
-                      p:cssClasses="fixedCol_7"/>
+                      p:cssClasses="startTime_timeSlot"/>
 
                 <bean id="endTime" parent="KS-Uif-DataField-Simple"
                       p:label="End Time"
                       p:propertyName="endTimeDisplay"
-                      p:cssClasses="fixedCol_6"/>
+                      p:cssClasses="endTime_timeSlot"/>
 
                 <bean name="enableDeleteButton" parent="KS-Uif-DataField-Simple"
                       p:label="enableDeleteButton"
@@ -229,7 +229,7 @@
                   p:align="left"
                   p:required="false"
                   p:label="Actions"
-                  p:cssClasses="fixedCol_3"/>
+                  p:cssClasses="actions_timeSlot"/>
         </property>
         <property name="lineActions">
             <list>
@@ -246,19 +246,22 @@
     <!--
         Toolbar buttons
     -->
+
     <bean id="TimeSlot-ToolBar-Add-Button-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-plus-1');"/>
         <property name="actionLabel" value="Add Time Slot"/>
         <property name="actionScript" value="showTimeSlotLightBox(e,'ADD');"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/add_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/add_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-plus-1"/>
         </property>
     </bean>
 
     <bean id="TimeSlot-ToolBar-Delete-Button-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-cancel');"/>
         <property name="actionScript" value="showTimeSlotDeleteConfirmation();"/>
         <property name="actionLabel" value="Delete"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/delete_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/delete_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-cancel"/>
         </property>
     </bean>
 
@@ -333,7 +336,10 @@
                                 <property name="errorCallback" value="jQuery('div[id=KS-TimeSlot-EditTimeSlotPopupForm]:gt(0)').detach();"/>-->
                                 <property name="methodToCall" value="editTimeSlot"/>
                             </bean>
-                            <bean id="addOrEdit_cancel" parent="KS-Uif-ActionLink" p:actionLabel="Cancel" p:actionScript="closeLightbox();"/>
+                            <bean id="addOrEdit_cancel" parent="Uif-ActionLink"
+                                  p:actionLabel="Cancel"
+                                  p:actionScript="closeLightbox();"
+                                  p:additionalCssClasses="cancel_link"/>
                         </list>
                     </property>
                 </bean>
@@ -394,7 +400,7 @@
                         <bean parent="Uif-VerticalRadioControl" p:options-ref="hctime-options" p:cssClasses="new_ts_control"/>
                     </property>
                 </bean>
-                <bean id="addOrEdit_action" parent="KS-Uif-PrimaryActionButton" >
+                <bean id="addOrEdit_action" parent="Uif-SecondaryActionButton" >
                     <property name="style" value="margin-top:20px;"/>
                     <property name="actionLabel" value="Add Slot"/>
                     <property name="preSubmitCall" value="resetTSValidSelection(); return validateTimeSlot('new_ts_control');"/>
@@ -419,8 +425,11 @@
                         <list>
                             <bean id="timeslot_delete_confirm" parent="Uif-PrimaryActionButton" p:preSubmitCall="resetTSValidSelection(); closeLightbox(); return true;"
                                   p:methodToCall="deleteTimeSlots" p:actionLabel="Delete Time Slots" p:successCallback="setupTimeSlotTypeDropdown();"/>
-                            <bean id="button_close" parent="Uif-ActionLink" p:actionLabel="Cancel"
-                                  p:actionScript="closeLightbox();"/>
+                            <bean id="button_close"
+                                  parent="Uif-ActionLink"
+                                  p:actionLabel="Cancel"
+                                  p:actionScript="closeLightbox();"
+                                  p:additionalCssClasses="cancel_link"/>
                         </list>
                     </property>
                 </bean>

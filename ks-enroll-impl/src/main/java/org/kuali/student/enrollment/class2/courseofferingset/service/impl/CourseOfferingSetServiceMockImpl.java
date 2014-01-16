@@ -8,7 +8,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
 import org.apache.log4j.Logger;
-import org.hsqldb.lib.StringUtil;
 import org.kuali.rice.core.api.criteria.EqualPredicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.common.mock.MockService;
@@ -28,6 +27,7 @@ import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.util.constants.CourseOfferingSetServiceConstants;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
+import org.kuali.student.r2.common.util.date.DateFormatters;
 
 import javax.jws.WebParam;
 import java.text.SimpleDateFormat;
@@ -246,7 +246,7 @@ public class CourseOfferingSetServiceMockImpl implements CourseOfferingSetServic
     @Override
     public Integer deleteCourseOfferingsBySoc(String socId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException,
-            PermissionDeniedException, DataValidationErrorException, VersionMismatchException, ReadOnlyException {
+            PermissionDeniedException {
         return this.businessLogic.deleteCourseOfferingsBySoc(socId, context);
     }
 
@@ -695,9 +695,8 @@ public class CourseOfferingSetServiceMockImpl implements CourseOfferingSetServic
     private void logStateChange(SocInfo soc, ContextInfo contextInfo) {
         // add the state change to the log
         // TODO: consider changing this to a call to a real logging facility instead of stuffing it in the dynamic attributes
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         Date date = contextInfo.getCurrentDate();
-        soc.getAttributes().add(new AttributeInfo(soc.getStateKey(), formatter.format(date)));
+        soc.getAttributes().add(new AttributeInfo(soc.getStateKey(), DateFormatters.SERVER_DATE_PARSER_FORMATTER.format(date)));
     }
 
     private void propagateState(String socId, String nextState,  ContextInfo contextInfo) throws Exception{

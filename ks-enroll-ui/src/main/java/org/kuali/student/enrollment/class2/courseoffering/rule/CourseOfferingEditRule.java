@@ -23,15 +23,13 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.maintenance.MaintenanceDocument;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.uif.rule.KsMaintenanceDocumentRuleBase;
-import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingCreateWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.OfferingInstructorWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
-import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
+import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingViewHelperUtil;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.OfferingInstructorInfo;
-import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
@@ -48,8 +46,6 @@ import java.util.List;
  * @author Kuali Student Team
  */
 public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
-
-    private CourseOfferingService courseOfferingService;
 
     @Override
     protected boolean isDocumentValidForSave(MaintenanceDocument document) {
@@ -88,6 +84,15 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
             if (valid) {
                 valid = validFinalExamDriver(newCOWrapper);
             }
+
+            if (valid){
+                if (!StringUtils.isAlphanumeric(newCOWrapper.getCourseOfferingInfo().getCourseNumberSuffix())){
+                    valid = false;
+                    GlobalVariables.getMessageMap().putError(
+                                        "document.newMaintainableObject.dataObject.courseOfferingInfo.courseNumberSuffix",
+                                        CourseOfferingConstants.ERROR_INVALID_COURSECODE_SUFFIX);
+                }
+            }
         }
 
         return valid;
@@ -96,14 +101,12 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
     protected boolean validFinalExamDriver (CourseOfferingEditWrapper coWrapper) {
         if (StringUtils.equals(coWrapper.getCourseOfferingInfo().getFinalExamType(), CourseOfferingConstants.COURSEOFFERING_FINAL_EXAM_TYPE_STANDARD)
                 && (!StringUtils.equals(coWrapper.getFinalExamDriver(), LuServiceConstants.LU_EXAM_DRIVER_AO_KEY) && !StringUtils.equals(coWrapper.getFinalExamDriver(), LuServiceConstants.LU_EXAM_DRIVER_CO_KEY))) {
-            GlobalVariables.getMessageMap().putErrorForSectionId(
-                    "delivery_and_assessment",
+            GlobalVariables.getMessageMap().putError(
+                    "document.newMaintainableObject.dataObject.finalExamDriver",
                     CourseOfferingConstants.COURSEOFFERING_CREATE_ERROR_PARAMETER_IS_REQUIRED, "Final Exam Driver");
             return false;
         }
-
         return true;
-
     }
     protected boolean validateDuplicateSuffix(CourseOfferingEditWrapper coWrapper){
         // Catalog course code is case INSENSITIVE, but the suffix is case SENSITIVE
@@ -111,7 +114,7 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
         String newCoCode = courseCode + coWrapper.getCourseOfferingInfo().getCourseNumberSuffix();
 
         try {
-            List<CourseOfferingInfo> wrapperList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(coWrapper.getCourse().getId(), coWrapper.getCourseOfferingInfo().getTermId(), ContextUtils.createDefaultContextInfo());
+            List<CourseOfferingInfo> wrapperList = CourseOfferingManagementUtil.getCourseOfferingService().getCourseOfferingsByCourseAndTerm(coWrapper.getCourse().getId(), coWrapper.getCourseOfferingInfo().getTermId(), ContextUtils.createDefaultContextInfo());
             for (CourseOfferingInfo courseOfferingInfo : wrapperList) {
 
                 if (StringUtils.equals(newCoCode, courseOfferingInfo.getCourseOfferingCode())) {
@@ -133,6 +136,7 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
         List<OfferingInstructorWrapper> instructors = coWrapper.getInstructors();
         boolean noError = true;
         if (instructors != null && !instructors.isEmpty()) {
+            int index = 0;
             for (OfferingInstructorWrapper instructorWrapper : instructors)   {
                 if (instructorWrapper != null) {
                     OfferingInstructorInfo info = instructorWrapper.getOfferingInstructorInfo();
@@ -140,8 +144,7 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
                         // verify this is a legal personId
                         List<Person> personList = CourseOfferingViewHelperUtil.getInstructorByPersonId(info.getPersonId());
                         if (personList.isEmpty()) {
-                            GlobalVariables.getMessageMap().putErrorForSectionId(
-                                    "KS-CourseOfferingEdit-PersonnelSection",
+                            GlobalVariables.getMessageMap().putError("document.newMaintainableObject.dataObject.instructors[" + index + "].offeringInstructorInfo.personId",
                                     CourseOfferingConstants.COURSEOFFERING_ERROR_INVALID_PERSONNEL_ID, info.getPersonId());
                             noError &= false;
                         } else {
@@ -149,24 +152,22 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
                             String instructorName = personList.get(firstPerson).getName().trim();
                             if(instructorName != null && !instructorName.isEmpty()) {
                                 if(!instructorName.equals(info.getPersonName())) {
-                                    GlobalVariables.getMessageMap().putErrorForSectionId(
-                                            "KS-CourseOfferingEdit-PersonnelSection",
+                                    GlobalVariables.getMessageMap().putError("document.newMaintainableObject.dataObject.instructors[" + index + "].offeringInstructorInfo.personName",
                                             CourseOfferingConstants.COURSEOFFERING_ERROR_UNMATCHING_PERSONNEL_NAME, info.getPersonName(), instructorName);
                                     noError &=  false;
                                 }
                             }
                             if(info.getTypeKey() == null || info.getTypeKey().isEmpty()) {
-                                GlobalVariables.getMessageMap().putErrorForSectionId(
-                                        "KS-CourseOfferingEdit-PersonnelSection",
+                                GlobalVariables.getMessageMap().putError("document.newMaintainableObject.dataObject.instructors[" + index + "].offeringInstructorInfo.typeKey",
                                         CourseOfferingConstants.COURSEOFFERING_ERROR_PERSONNEL_AFFILIATION);
                                 noError &= false;
                             }
                         }
                     }
                 }
+                index++;
             }
         }
-
         return noError;
     }
 
@@ -209,15 +210,8 @@ public class CourseOfferingEditRule extends KsMaintenanceDocumentRuleBase {
                     PredicateFactory.equalIgnoreCase("atpId", termId)));
             QueryByCriteria criteria = qbcBuilder.build();
 
-            courseOfferings = getCourseOfferingService().searchForCourseOfferings(criteria, ContextUtils.createDefaultContextInfo());
+            courseOfferings = CourseOfferingManagementUtil.getCourseOfferingService().searchForCourseOfferings(criteria, ContextUtils.createDefaultContextInfo());
         }
         return courseOfferings;
-    }
-
-    protected CourseOfferingService getCourseOfferingService() {
-        if (courseOfferingService == null) {
-            courseOfferingService = CourseOfferingResourceLoader.loadCourseOfferingService();
-        }
-        return courseOfferingService;
     }
 }

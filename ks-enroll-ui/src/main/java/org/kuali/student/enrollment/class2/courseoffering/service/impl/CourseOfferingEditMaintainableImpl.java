@@ -18,7 +18,6 @@ package org.kuali.student.enrollment.class2.courseoffering.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.exception.AuthorizationException;
@@ -39,7 +38,7 @@ import org.kuali.student.enrollment.class2.courseoffering.util.ActivityOfferingC
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingViewHelperUtil;
-import org.kuali.student.enrollment.class2.examoffering.service.facade.ExamOfferingServiceFacade;
+import org.kuali.student.enrollment.class2.courseofferingset.util.CourseOfferingSetUtil;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingCrossListingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CreditOptionInfo;
@@ -47,8 +46,6 @@ import org.kuali.student.enrollment.courseoffering.dto.FinalExam;
 import org.kuali.student.enrollment.courseoffering.dto.FormatOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.OfferingInstructorInfo;
 import org.kuali.student.enrollment.courseofferingset.dto.SocInfo;
-import org.kuali.student.enrollment.courseofferingset.service.CourseOfferingSetService;
-import org.kuali.student.r2.common.constants.CommonServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -64,26 +61,21 @@ import org.kuali.student.r2.common.util.constants.LuServiceConstants;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.common.util.date.DateFormatters;
 import org.kuali.student.r2.core.acal.dto.TermInfo;
-import org.kuali.student.r2.core.acal.service.AcademicCalendarService;
+import org.kuali.student.r2.core.class1.search.ActivityOfferingSearchServiceImpl;
 import org.kuali.student.r2.core.class1.search.CourseOfferingManagementSearchImpl;
-import org.kuali.student.r2.core.class1.state.service.StateService;
-import org.kuali.student.r2.core.class1.type.service.TypeService;
-import org.kuali.student.r2.core.constants.StateServiceConstants;
-import org.kuali.student.r2.core.constants.TypeServiceConstants;
 import org.kuali.student.r2.core.organization.dto.OrgInfo;
-import org.kuali.student.r2.core.organization.service.OrganizationService;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
-import org.kuali.student.r2.core.search.service.SearchService;
+import org.kuali.student.r2.core.search.dto.SearchResultCellInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultRowInfo;
 import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.dto.FormatInfo;
 import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.r2.lum.lrc.dto.ResultValueInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
-import org.kuali.student.r2.lum.lrc.service.LRCService;
 import org.kuali.student.r2.lum.util.constants.LrcServiceConstants;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -128,7 +120,9 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
             //persist unitDeploymentOrgIds
             List<String> unitDeploymentOrgIds = new ArrayList<String>();
             for (OrganizationInfoWrapper orgWrapper : coEditWrapper.getOrganizationNames()) {
-                unitDeploymentOrgIds.add(orgWrapper.getId());
+                if( StringUtils.isNotBlank(orgWrapper.getId())) {
+                    unitDeploymentOrgIds.add(orgWrapper.getId());
+                }
             }
 
             CourseOfferingInfo coInfo = coEditWrapper.getCourseOfferingInfo();
@@ -163,13 +157,13 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
             coInfo.setCourseOfferingCode(courseOfferingCode);
 
             // Waitlist
-                if(coInfo.getHasWaitlist()) {
-                    //activate the waitlist
-                    CourseOfferingManagementUtil.getCourseWaitListServiceFacade().activateActivityOfferingWaitlistsByCourseOffering(coInfo.getId(), coInfo.getTermId(), contextInfo);
-                } else if (!coInfo.getHasWaitlist()) {
-                    //deactivate the waitlist
-                    CourseOfferingManagementUtil.getCourseWaitListServiceFacade().deactivateActivityOfferingWaitlistsByCourseOffering(coInfo.getId(), contextInfo);
-                }
+            if(coInfo.getHasWaitlist() && !coEditWrapper.getHasWaitlist()) {
+                //activate the waitlist
+                CourseOfferingManagementUtil.getCourseWaitListServiceFacade().activateActivityOfferingWaitlistsByCourseOffering(coInfo.getId(), coInfo.getTermId(), contextInfo);
+            } else if (!coInfo.getHasWaitlist() && coEditWrapper.getHasWaitlist()) {
+                //deactivate the waitlist
+                CourseOfferingManagementUtil.getCourseWaitListServiceFacade().deactivateActivityOfferingWaitlistsByCourseOffering(coInfo.getId(), contextInfo);
+            }
 
             //TODO REMOVE THIS AFTER KRAD CHECKLISTS ARE FIXED for student registration options
             //determine if audit reg options and pass/fail reg options should be added/removed to/from coInfo
@@ -200,7 +194,7 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
             // update Use Final Exam Matrix
             setUseFinalExamMatrix(coInfo, coEditWrapper);
 
-            getCourseOfferingService().updateCourseOffering(coInfo.getId(), coInfo, contextInfo);
+            CourseOfferingManagementUtil.getCourseOfferingService().updateCourseOffering(coInfo.getId(), coInfo, contextInfo);
 
             // generate exam offerings if exam period exists
             if (!StringUtils.isEmpty(coEditWrapper.getExamPeriodId())) {
@@ -294,7 +288,7 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
             //set Use Final Exam Matrix
             setUseFinalExamMatrix(coInfo, coCreateWrapper);
 
-            CourseOfferingInfo info = getCourseOfferingService().createCourseOffering(coInfo.getCourseId(), coInfo.getTermId(), LuiServiceConstants.COURSE_OFFERING_TYPE_KEY, coInfo, optionKeys, contextInfo);
+            CourseOfferingInfo info = CourseOfferingManagementUtil.getCourseOfferingService().createCourseOffering(coInfo.getCourseId(), coInfo.getTermId(), LuiServiceConstants.COURSE_OFFERING_TYPE_KEY, coInfo, optionKeys, contextInfo);
 
             coCreateWrapper.setCourseOfferingInfo(info);
 
@@ -375,9 +369,8 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
                             }
                             // Populate AO types (all FOs should "require" this (less important here since it should
                             // already exist)
-                            CourseOfferingViewHelperUtil.addActivityOfferingTypesToFormatOffering(formatOfferingInfo, coEditWrapper.getCourse(), getTypeService(), contextInfo);
-                            updatedFormatOffering = getCourseOfferingService().
-                                    updateFormatOffering(formatOfferingInfo.getId(), formatOfferingInfo, contextInfo);
+                            CourseOfferingViewHelperUtil.addActivityOfferingTypesToFormatOffering(formatOfferingInfo, coEditWrapper.getCourse(), CourseOfferingManagementUtil.getTypeService(), contextInfo);
+                            updatedFormatOffering = CourseOfferingManagementUtil.getCourseOfferingService().updateFormatOffering(formatOfferingInfo.getId(), formatOfferingInfo, contextInfo);
                             currentFOIds.remove(formatOfferingInfo.getId());
                         } else {
                             //create a new FO
@@ -388,15 +381,17 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
                             formatOfferingInfo.setCourseOfferingId(coInfo.getId());
                             //We need to set the name to maintain ordinality from CLU. (If we're not setting the name here, service will set the name based on priority order which is not the expected behavior)
                             if (StringUtils.isBlank(formatOfferingInfo.getName())) {
-                                formatOfferingInfo.setName(getFormatName(foWrapper, coEditWrapper.getCourse()));
+                                String[] foNames = getFormatShortAndLongNames(foWrapper, coEditWrapper.getCourse());
+                                formatOfferingInfo.setName(foNames[0]);
+                                formatOfferingInfo.setShortName(foNames[1]);
+
                             }
                             if (coInfo.getFinalExamType() != null && !coInfo.getFinalExamType().equals(CourseOfferingConstants.COURSEOFFERING_FINAL_EXAM_TYPE_STANDARD)) {
                                 formatOfferingInfo.setFinalExamLevelTypeKey(null);
                             }
                             // Populate AO types (all FOs should "require" this
-                            CourseOfferingViewHelperUtil.addActivityOfferingTypesToFormatOffering(formatOfferingInfo, coEditWrapper.getCourse(), getTypeService(), contextInfo);
-                            updatedFormatOffering = getCourseOfferingService().
-                                    createFormatOffering(coInfo.getId(), formatOfferingInfo.getFormatId(), formatOfferingInfo.getTypeKey(), formatOfferingInfo, contextInfo);
+                            CourseOfferingViewHelperUtil.addActivityOfferingTypesToFormatOffering(formatOfferingInfo, coEditWrapper.getCourse(), CourseOfferingManagementUtil.getTypeService(), contextInfo);
+                            updatedFormatOffering = CourseOfferingManagementUtil.getCourseOfferingService().createFormatOffering(coInfo.getId(), formatOfferingInfo.getFormatId(), formatOfferingInfo.getTypeKey(), formatOfferingInfo, contextInfo);
                         }
                         foWrapper.setFormatOfferingInfo(updatedFormatOffering);
                     }
@@ -408,7 +403,7 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
                     //delete all AOs associated with this FO, then delete FO
                     //Note by bonnie deleteAO invoked in deleteFormatOfferingCascaded seems not completely correct.
                     //I didn't see the code if removing FO-AO relations before deleting AOs....
-                    getCourseOfferingService().deleteFormatOfferingCascaded(formatOfferingId, contextInfo);
+                    CourseOfferingManagementUtil.getCourseOfferingService().deleteFormatOfferingCascaded(formatOfferingId, contextInfo);
                 }
             }
         } catch (Exception ex) {
@@ -417,14 +412,23 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
     }
 
     private List<String> getExistingFormatOfferingIds(String courseOfferingId) throws Exception {
-        List<FormatOfferingInfo> formatOfferingInfoList = getCourseOfferingService().getFormatOfferingsByCourseOffering(courseOfferingId, ContextUtils.createDefaultContextInfo());
         List<String> formatOfferingIds = new ArrayList<String>();
 
-        if (formatOfferingInfoList != null && !formatOfferingInfoList.isEmpty()) {
-            for (FormatOfferingInfo formatOfferingInfo : formatOfferingInfoList) {
-                formatOfferingIds.add(formatOfferingInfo.getId());
+        SearchRequestInfo sr = new SearchRequestInfo(ActivityOfferingSearchServiceImpl.FO_IDS_BY_CO_ID_SEARCH_KEY);
+        sr.addParam(ActivityOfferingSearchServiceImpl.SearchParameters.CO_ID, courseOfferingId);
+        SearchResultInfo searchResult = CourseOfferingManagementUtil.getSearchService().search(sr, null);
+        List<SearchResultRowInfo> rows = searchResult.getRows();
+        if (!rows.isEmpty()) {
+            for (SearchResultRowInfo row: rows) {
+                List<SearchResultCellInfo> cells = row.getCells();
+                for (SearchResultCellInfo cell: cells) {
+                    if(ActivityOfferingSearchServiceImpl.SearchResultColumns.FO_ID.equals(cell.getKey())){
+                        formatOfferingIds.add(cell.getValue());
+                    }
+                }
             }
         }
+
         return formatOfferingIds;
     }
 
@@ -544,17 +548,18 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
             if (getDataObject() instanceof CourseOfferingEditWrapper) {
 
                 //0.1 get credit count from CourseInfo
-                CourseOfferingInfo coInfo = getCourseOfferingService().getCourseOffering(dataObjectKeys.get("courseOfferingInfo.id"), contextInfo);
-                CourseInfo courseInfo = getCourseService().getCourse(coInfo.getCourseId(), contextInfo);
+                CourseOfferingInfo coInfo = CourseOfferingManagementUtil.getCourseOfferingService().getCourseOffering(dataObjectKeys.get("courseOfferingInfo.id"), contextInfo);
+                CourseInfo courseInfo = CourseOfferingManagementUtil.getCourseService().getCourse(coInfo.getCourseId(), contextInfo);
 
                 //1. set CourseOfferingInfo
                 CourseOfferingEditWrapper formObject = new CourseOfferingEditWrapper(coInfo);
+                formObject.setHasWaitlist(coInfo.getHasWaitlist());
 
                 //2. set CourseInfo
                 formObject.setCourse(courseInfo);
 
                 //3. set formatOfferingList
-                List<FormatOfferingInfo> formatOfferingList = getCourseOfferingService().getFormatOfferingsByCourseOffering(coInfo.getId(), contextInfo);
+                List<FormatOfferingInfo> formatOfferingList = CourseOfferingManagementUtil.getCourseOfferingService().getFormatOfferingsByCourseOffering(coInfo.getId(), contextInfo);
                 List<FormatOfferingWrapper> foList = new ArrayList<FormatOfferingWrapper>();
                 for (FormatOfferingInfo fo : formatOfferingList) {
                     FormatOfferingWrapper wrapper = new FormatOfferingWrapper();
@@ -563,11 +568,11 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
 
                     //set the reader friendly Grade Roster Level
                     if (!StringUtils.isEmpty(fo.getGradeRosterLevelTypeKey())) {
-                        wrapper.setGradeRosterUI(getTypeService().getType(fo.getGradeRosterLevelTypeKey(), contextInfo).getName());
+                        wrapper.setGradeRosterUI(CourseOfferingManagementUtil.getTypeService().getType(fo.getGradeRosterLevelTypeKey(), contextInfo).getName());
                     }
                     //set the reader friendly Final Exam Driver Activity
                     if (!StringUtils.isEmpty(fo.getFinalExamLevelTypeKey()) && StringUtils.equals(formObject.getFinalExamDriver(), LuServiceConstants.LU_EXAM_DRIVER_AO_KEY)) {
-                        wrapper.setFinalExamUI(getTypeService().getType(fo.getFinalExamLevelTypeKey(), contextInfo).getName());
+                        wrapper.setFinalExamUI(CourseOfferingManagementUtil.getTypeService().getType(fo.getFinalExamLevelTypeKey(), contextInfo).getName());
                     } else {
                         wrapper.setFinalExamUI(" ");
                     }
@@ -717,19 +722,14 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
                 }
                 formObject.setOrganizationNames(orgList);
 
-                List<String> socIds = CourseOfferingManagementUtil.getCourseOfferingSetService().getSocIdsByTerm(coInfo.getTermId(), ContextUtils.createDefaultContextInfo());
-                if (socIds != null && !socIds.isEmpty()) {
-                    List<SocInfo> targetSocs = CourseOfferingManagementUtil.getCourseOfferingSetService().getSocsByIds(socIds, ContextUtils.createDefaultContextInfo());
-                    for (SocInfo soc : targetSocs) {
-                        if (soc.getTypeKey().equals(CourseOfferingSetServiceConstants.MAIN_SOC_TYPE_KEY)) {
-                            formObject.setSocInfo(soc);
-                        }
-                    }
+                SocInfo soc = CourseOfferingSetUtil.getMainSocForTermId(coInfo.getTermId(), ContextUtils.createDefaultContextInfo());
+                if (soc != null) {
+                    formObject.setSocInfo(soc);
                 }
 
                 setTermPropertiesOnFormObject(formObject, coInfo, contextInfo);
                 formObject.setContextBar(CourseOfferingContextBar.NEW_INSTANCE(formObject.getTerm(), formObject.getSocInfo(),
-                        getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo));
+                        CourseOfferingManagementUtil.getStateService(), CourseOfferingManagementUtil.getAcademicCalendarService(), contextInfo));
 
                 document.getNewMaintainableObject().setDataObject(formObject);
                 document.getOldMaintainableObject().setDataObject(formObject);
@@ -821,8 +821,10 @@ public class CourseOfferingEditMaintainableImpl extends CourseOfferingMaintainab
         SearchRequestInfo searchRequest = new SearchRequestInfo(CourseOfferingManagementSearchImpl.CO_MANAGEMENT_SEARCH.getKey());
         searchRequest.addParam(CourseOfferingManagementSearchImpl.SearchParameters.SUBJECT_AREA, wrapper.getCourse().getSubjectArea());
         searchRequest.addParam(CourseOfferingManagementSearchImpl.SearchParameters.ATP_ID, wrapper.getTerm().getId());
-        List<CourseOfferingInfo> relatedCOs = CourseOfferingViewHelperUtil.loadCourseOfferings(CourseOfferingManagementUtil.getSearchService(), searchRequest);
-        if (relatedCOs != null) result.addAll(relatedCOs);
+        List<CourseOfferingInfo> relatedCOs = CourseOfferingViewHelperUtil.loadCourseOfferings(searchRequest);
+        if (relatedCOs != null) {
+            result.addAll(relatedCOs);
+        }
 
         return result;
     }

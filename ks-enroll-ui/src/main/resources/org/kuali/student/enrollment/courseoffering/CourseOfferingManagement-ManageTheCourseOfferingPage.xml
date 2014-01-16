@@ -27,8 +27,8 @@
 
         <!-- This was originally put in as a work-around for a KRAD unified header bug where view headers weren't being updated
              when pages where refreshed. I investigated and partially implemented handing view title text overrides in the controller
-             code, but concluded that this is a much cleaner solution. -->
-        <property name="onDocumentReadyScript" value="updateViewHeaderText( '@{currentCourseOfferingWrapper.ownerCode}' ); resetHeaderPosition('KS-CourseOffering-View-ContextBar-PlaceHolder');" />
+             code, but concluded that this is a much cleaner solution. If you try to "fix" this be sure to test carousel nav. -->
+        <property name="onDocumentReadyScript" value="updateViewHeaderText( '@{currentCourseOfferingWrapper.ownerCode}' );" />
 
         <property name="breadcrumbOptions.homewardPathBreadcrumbs">
             <util:list id="KS-Enrollment-HomewardPathBreadcrumbs">
@@ -57,7 +57,7 @@
                 <ref bean="KS-CourseOfferingManagement-AddAOCPopupForm"/>
                 <ref bean="KS-CourseOfferingManagement-MoveAOCPopupContainer"/>
                  <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-                <ref bean="KS-CourseOffering-ContextBar"/>
+                <!--<ref bean="KS-CourseOffering-ContextBar"/>-->
             </list>
         </property>
     </bean>
@@ -102,6 +102,7 @@
 
     <bean id="KS-CourseOfferingManagement-ManageTheCourseOfferingSection" p:id="ActivityOfferingResultSection" parent="Uif-VerticalBoxSection">
         <property name="componentSecurity.viewAuthz" value="true"/>
+        <property name="validationMessages.displayMessages" value="false"/>
 <!--
         <property name="headerText" value="@{currentCourseOfferingWrapper.ownerCode} - @{currentCourseOfferingWrapper.courseOfferingDesc} (@{currentCourseOfferingWrapper.creditCnt} Credits, SOC State: @{socState})" />
 -->
@@ -113,8 +114,7 @@
         </property>-->
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="Crosslisted as: @{currentCourseOfferingWrapper.ownerAliasesUIList}"
-                      p:render="@{currentCourseOfferingWrapper.ownerAliasesUIList != ''}" p:style="font-weight:bold; margin-top:4px; margin-bottom:8px;"/>
+                <ref bean="KS-CourseOfferingManagement-TitleAndCrossListInfoSection" />
                 <bean id="KS-Tab-Hidden-Input" parent="Uif-InputField" p:defaultValue="0" p:showLabel="false" p:propertyName="selectedTabId" p:hidden="true">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
@@ -126,6 +126,17 @@
         </property>
     </bean>
 
+    <bean id="KS-CourseOfferingManagement-TitleAndCrossListInfoSection" parent="Uif-VerticalBoxSection" >
+        <property name="style" value="background-color: #f8f8f8; padding-left: 10px;"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:label="Title" p:propertyName="currentCourseOfferingWrapper.courseOfferingInfo.courseOfferingTitle"
+                      p:labelPlacement="LEFT" p:style="padding-left: 61px;" p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:label="Crosslisted as" p:labelPlacement="LEFT" p:propertyName="currentCourseOfferingWrapper.alternateCOCodes"
+                      p:render="@{currentCourseOfferingWrapper.alternateCOCodes.size() > 0 }" p:readOnly="true"/>
+            </list>
+        </property>
+    </bean>
 
     <bean id="KS-CourseOfferingManagement-TheCourseOfferingLinks" parent="Uif-HorizontalBoxSection">
         <property name="items">
@@ -141,12 +152,20 @@
                                                 <bean parent="Uif-Inquiry" p:dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper" p:inquiryParameters="currentCourseOfferingWrapper.courseOfferingId" />
                                             </property>
                                         </bean>
-                                        <bean id="edit_co" parent="Uif-ActionLink" p:methodToCall="editTheCO" p:actionLabel=" | Edit" p:disabled="@{#parent.readOnly}" p:componentSecurity.performActionAuthz="true" p:actionEvent="editCO"/>
-                                        <bean id="delete_co" parent="Uif-ActionLink" p:id="ActivityOfferingResultSection-deleteOneCoWithLink" p:methodToCall="deleteOneCoWithLink" p:actionLabel=" | Delete" p:disabled="@{#parent.readOnly}" p:render = "@{currentCourseOfferingWrapper.stateKey eq 'kuali.lui.state.draft' or currentCourseOfferingWrapper.stateKey eq 'kuali.lui.course.offering.state.draft' or currentCourseOfferingWrapper.stateKey eq 'kuali.lui.course.offering.state.planned'  or currentCourseOfferingWrapper.stateKey eq 'kuali.lui.activity.offering.state.offered' or currentCourseOfferingWrapper.stateKey eq 'kuali.lui.course.offering.state.offered'}" p:componentSecurity.performActionAuthz="true" p:actionEvent="deleteCO" />
+                                        <!-- The ajaxSubmit="false" setting is to make the whole page refresh so that the "Loading... " message doesn't disappear prematurely. -->
+                                        <bean id="edit_co" parent="Uif-ActionLink" p:methodToCall="editTheCO" p:actionLabel=" | Edit"
+                                              p:disabled="@{#parent.readOnly}" p:componentSecurity.performActionAuthz="true" p:actionEvent="editCO"
+                                              p:ajaxSubmit="false" />
+                                        <bean id="delete_co" parent="Uif-ActionLink" p:id="ActivityOfferingResultSection-deleteOneCoWithLink" p:methodToCall="deleteOneCoWithLink"
+                                              p:actionLabel=" | Delete" p:disabled="@{#parent.readOnly}"
+                                              p:render = "@{currentCourseOfferingWrapper.isDeleteCoValid(currentCourseOfferingWrapper.stateKey)}"
+                                              p:componentSecurity.performActionAuthz="true" p:actionEvent="deleteCO" />
                                         <bean parent="Uif-ActionLink" p:actionLabel=" | View All Registration Groups (@{rgResultList.size()})"
-                                              p:actionScript = "showLightboxComponent('KS-CourseOfferingManagement-AllRegistrationGroupsForACourseOffering', '@{#ConfigProperties['application.url']}');"/>
-                                        <bean parent="Uif-NavigationActionLink" p:actionLabel="| Course Offering Requisites " p:methodToCall="manageCORequisites"/>
-                                        <bean id="view_eo" parent="Uif-ActionLink" p:methodToCall="viewExamOfferings" p:actionLabel=" | View Exam Offerings" p:render="@{currentCourseOfferingWrapper.examPeriodId?.length() &gt; 0}"/>
+                                              p:actionScript = "showLightboxComponent( 'KS-CourseOfferingManagement-AllRegistrationGroupsForACourseOffering' );"/>
+                                        <bean parent="Uif-Link" p:linkText="| Course Offering Requisites "
+                                              p:href="@{#ConfigProperties['application.url']}/kr-krad/courseOfferingRules?methodToCall=maintenanceEdit&amp;viewTypeName=MAINTENANCE&amp;viewName=COAgendaManagementView&amp;dataObjectClassName=org.kuali.student.enrollment.class1.krms.dto.CORuleManagementWrapper&amp;refObjectId=@{currentCourseOfferingWrapper.courseOfferingId}"/>
+                                        <bean id="view_eo" parent="Uif-ActionLink" p:methodToCall="viewExamOfferings" p:actionLabel=" | View Exam Offerings"
+                                              p:render="@{currentCourseOfferingWrapper.examPeriodId?.length() &gt; 0 and eoRelations.size() gt 0}"/>
                                     </list>
                                 </property>
                             </bean>
@@ -154,13 +173,33 @@
                     </property>
                 </bean>
                 <bean parent="Uif-LinkGroup" p:style="float:right">
+                    <property name="onDocumentReadyScript" value="addBootstrapImageToLink('@{#component.id}')"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-ActionLink" p:methodToCall="loadPreviousCO" p:actionLabel="&lt; @{previousCourseOfferingWrapper != null ? previousCourseOfferingWrapper.courseOfferingCode : ''}" p:render="@{previousCourseOfferingWrapper != null}" p:id="LoadPrev"/>
+                            <bean parent="KS-Uif-ActionLink"
+                                  p:methodToCall="loadPreviousCO"
+                                  p:actionLabel="@{previousCourseOfferingWrapper != null ? previousCourseOfferingWrapper.courseOfferingCode : ''}"
+                                  p:render="@{previousCourseOfferingWrapper != null}" p:id="LoadPrev">
+                                <property name="actionImage">
+                                    <bean parent="Uif-Image" p:altText="" p:style="ks-fontello-icon-angle-left"/>
+                                </property>
+                            </bean>
                             <bean parent="Uif-Label" p:labelText="|" p:renderColon="false" p:render="@{previousCourseOfferingWrapper != null}"/>
-                            <bean parent="Uif-ActionLink" p:methodToCall="loadCOs" p:actionLabel="List All" p:id="ListAll"/>
+                            <bean parent="KS-Uif-ActionLink" p:methodToCall="loadCOs" p:actionLabel="List All" p:id="ListAll"/>
                             <bean parent="Uif-Label" p:labelText="|" p:renderColon="false" p:render="@{nextCourseOfferingWrapper != null}"/>
-                            <bean parent="Uif-ActionLink" p:methodToCall="loadNextCO" p:actionLabel="@{nextCourseOfferingWrapper != null ? nextCourseOfferingWrapper.courseOfferingCode : ''} &gt;" p:render="@{nextCourseOfferingWrapper != null}" p:id="LoadNext"/>
+                            <bean parent="KS-Uif-ActionLink"
+                                  p:methodToCall="loadNextCO"
+                                  p:actionLabel="@{nextCourseOfferingWrapper != null ? nextCourseOfferingWrapper.courseOfferingCode : ''}"
+                                  p:render="@{nextCourseOfferingWrapper != null}" p:id="LoadNext">
+                                <property name="dataAttributes">
+                                    <map key-type="java.lang.String" merge="true">
+                                        <entry key="imageposition" value="right"/>
+                                    </map>
+                                </property>
+                                <property name="actionImage">
+                                    <bean parent="Uif-Image" p:altText="" p:style="ks-fontello-icon-angle-right"/>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>

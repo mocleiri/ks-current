@@ -72,6 +72,7 @@ import org.kuali.student.r2.lum.lrc.service.LRCService;
 
 import javax.annotation.Resource;
 import javax.jws.WebParam;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -251,7 +252,7 @@ public class CourseOfferingServiceMockImpl implements CourseOfferingService,
 
         for (ActivityOfferingInfo activityOfferingInfo : aos) {
 
-            deleteActivityOfferingCascaded(activityOfferingInfo.getId(), formatOfferingId, context);
+            deleteActivityOfferingCascaded(activityOfferingInfo.getId(), context);
         }
 
 
@@ -907,7 +908,7 @@ public class CourseOfferingServiceMockImpl implements CourseOfferingService,
 
 
     @Override
-    public StatusInfo deleteActivityOfferingCascaded(String activityOfferingId, String formatOfferingId,
+    public StatusInfo deleteActivityOfferingCascaded(String activityOfferingId, 
                                                      ContextInfo context) throws DoesNotExistException,
             InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
@@ -2213,6 +2214,25 @@ public class CourseOfferingServiceMockImpl implements CourseOfferingService,
 
         return getActivityOfferingsByIds(activityOfferingIds, context);
     }
+
+	@Override
+	public List<CourseOfferingInfo> getFormatOfferingsByIds(
+			List<String> formatOfferingIds, ContextInfo contextInfo)
+			throws DoesNotExistException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override
+	public List<CourseOfferingInfo> getSeatPoolDefinitionsByIds(
+			List<String> seatPoolDefinitionIds, ContextInfo contextInfo)
+			throws DoesNotExistException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
 
     
 

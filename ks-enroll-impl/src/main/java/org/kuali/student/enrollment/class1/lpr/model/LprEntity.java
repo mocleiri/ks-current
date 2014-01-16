@@ -1,14 +1,12 @@
 package org.kuali.student.enrollment.class1.lpr.model;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.kuali.rice.core.api.util.type.KualiDecimal;
+import org.kuali.student.enrollment.lpr.dto.LprInfo;
+import org.kuali.student.enrollment.lpr.infc.Lpr;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.entity.AttributeOwner;
+import org.kuali.student.r2.common.entity.MetaEntity;
+import org.kuali.student.r2.common.infc.Attribute;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -17,19 +15,18 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-
-import org.kuali.student.enrollment.lpr.dto.LprInfo;
-import org.kuali.student.enrollment.lpr.infc.Lpr;
-import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.entity.AttributeOwner;
-import org.kuali.student.r2.common.entity.MetaEntity;
-import org.kuali.student.r2.common.infc.Attribute;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -38,9 +35,9 @@ import org.kuali.student.r2.common.infc.Attribute;
 @Entity
 @Table(name = "KSEN_LPR")
 @NamedQueries({
-        @NamedQuery(name="Lpr.getLprsByLuis", query="Select lpr from LprEntity lpr where lpr.luiId in (:luiIds)")
+        @NamedQuery(name = "Lpr.getLprsByLuis", query = "Select lpr from LprEntity lpr where lpr.luiId in (:luiIds)")
 })
-public class LprEntity extends MetaEntity implements AttributeOwner<LprAttributeEntity>{
+public class LprEntity extends MetaEntity implements AttributeOwner<LprAttributeEntity> {
 
     @Column(name = "PERS_ID")
     private String personId;
@@ -65,13 +62,25 @@ public class LprEntity extends MetaEntity implements AttributeOwner<LprAttribute
     @Column(name = "LPR_STATE")
     private String personRelationStateId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval=true, fetch=FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
     private final Set<LprAttributeEntity> attributes = new HashSet<LprAttributeEntity>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "KSEN_LPR_RESULT_VAL_GRP", joinColumns = @JoinColumn(name = "LPR_ID"))
     @Column(name = "RESULT_VAL_GRP_ID")
     private final Set<String> resultValueGroups = new HashSet<String>();
+
+    @Column(name = "ATP_ID")
+    private String atpId;
+
+    @Column(name = "MASTER_LUI_ID")
+    private String masterLuiId;
+
+    @Column(name = "CREDITS")
+    private String credits;
+
+    @Column(name = "GRADING_OPT_ID")
+    private String gradingOptionId;
 
     public LprEntity() {
     }
@@ -83,13 +92,17 @@ public class LprEntity extends MetaEntity implements AttributeOwner<LprAttribute
         this.setLuiId(dto.getLuiId());
         this.setPersonId(dto.getPersonId());
         this.setPersonRelationTypeId(dto.getTypeKey());
+        this.setAtpId(dto.getAtpId());
+        this.setMasterLuiId(dto.getMasterLprId());
         fromDto(dto);
     }
 
     public void fromDto(Lpr dto) {
 
-        if(dto.getCommitmentPercent() != null) {
-            this.setCommitmentPercent(new BigDecimal(dto.getCommitmentPercent()));
+        super.fromDTO(dto);
+
+        if (dto.getCommitmentPercent() != null) {
+            this.setCommitmentPercent(dto.getCommitmentPercent().bigDecimalValue());
         }
         this.setExpirationDate(dto.getExpirationDate());
         this.setEffectiveDate(dto.getEffectiveDate());
@@ -161,8 +174,8 @@ public class LprEntity extends MetaEntity implements AttributeOwner<LprAttribute
         LprInfo lprInfo = new LprInfo();
         lprInfo.setId(getId());
         lprInfo.setLuiId(luiId);
-        if(commitmentPercent != null) {
-            lprInfo.setCommitmentPercent("" + commitmentPercent);
+        if (commitmentPercent != null) {
+            lprInfo.setCommitmentPercent(new KualiDecimal(commitmentPercent));
         }
         lprInfo.setPersonId(personId);
         lprInfo.setEffectiveDate(effectiveDate);
@@ -197,7 +210,6 @@ public class LprEntity extends MetaEntity implements AttributeOwner<LprAttribute
     }
 
 
-
     public Set<LprAttributeEntity> getAttributes() {
         return attributes;
     }
@@ -228,4 +240,35 @@ public class LprEntity extends MetaEntity implements AttributeOwner<LprAttribute
         this.commitmentPercent = commitmentPercent;
     }
 
+    public String getAtpId() {
+        return atpId;
+    }
+
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
+    }
+
+    public String getCredits() {
+        return credits;
+    }
+
+    public void setCredits(String credits) {
+        this.credits = credits;
+    }
+
+    public String getGradingOptionId() {
+        return gradingOptionId;
+    }
+
+    public void setGradingOptionId(String gradingOptionId) {
+        this.gradingOptionId = gradingOptionId;
+    }
+
+    public String getMasterLuiId() {
+        return masterLuiId;
+    }
+
+    public void setMasterLuiId(String masterLuiId) {
+        this.masterLuiId = masterLuiId;
+    }
 }

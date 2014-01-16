@@ -21,12 +21,17 @@
     -->
 
     <bean id="ActivityOffering-DeliveryLogistic-Actuals" parent="Uif-TableCollectionSection"
-            p:headerText="Actual Delivery Logistics"
+            p:headerText="Actual Scheduling Information"
             p:collectionObjectClass="org.kuali.student.enrollment.class2.courseoffering.dto.ScheduleWrapper"
             p:propertyName="actualScheduleComponents"
             p:readOnly="true"
             p:render="@{!#dp.actualScheduleComponents.isEmpty()}"
             p:layoutManager.renderSequenceField="false">
+        <property name="additionalCssClasses">
+            <list merge="true">
+                <value>ks-section</value>
+            </list>
+        </property>
         <property name="layoutManager.richTable.render" value="false" />
         <property name="items">
             <list>
@@ -39,24 +44,53 @@
                 <bean parent="Uif-ImageField" p:label="Options" p:hidden="@{!#lp.editRenderHelper.isShowColocateToolTip()}" p:image.altText="@{#lp.editRenderHelper.colocatedAOs}"
                     p:source="@{#ConfigProperties['ks.externalizable.images.url']}/colocate_icon.png">
                     <property name="toolTip">
-                       <bean parent="Uif-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.editRenderHelper.colocatedAOs}"/>
+                       <bean parent="Uif-KS-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.editRenderHelper.colocatedAOs}"/>
                     </property>
                 </bean>
             </list>
         </property>
     </bean>
 
+    <!--
+      The outer container for the manage scheduling requests.
+    -->
+    <bean id="ActivityOffering-ManageSchedulingInformationSection" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="@{#dp.schedulingCompleted ? 'Manage Scheduling Requests' : 'Requested Scheduling Information'}"/>
+        <property name="disclosure.render" value="@{#dp.schedulingCompleted and !#dp.requestedScheduleComponents.isEmpty()}"/>
+        <property name="disclosure.defaultOpen" value="false"/>
+        <property name="additionalCssClasses">
+            <list merge="true">
+                <value>ks-section</value>
+            </list>
+        </property>
+        <!--  TODO: KSENROLL-11002. If an action is in a CollectionGroup KRAD v2.3.2 overwrites Action#jumpToIdAfterSubmit
+              with the id of the of the CollectionGroup which prevents the/this page from being scrolled/positioned correctly.
+              fixActionLinkJumpToIds is a hack to "fix" the jumpToId. Once we get Rice v2.4-m3 or better it can go away and
+              a p:jumpToIdAfterSubmit can be added to the action link below. I set onDocumentReadyScript call here because
+              onDocumentReady the section that contains the action link is in a disclosure and onDocumentReady isn't generated
+              until the disclosure is expanded. I thought that might confuse the AFTs.
+        -->
+        <property name="onDocumentReadyScript" value="reDisplayRDLSection();fixActionLinkJumpToIds('edit_schedule_request_action_link', 'activityCode_label');"/>
+
+        <property name="validationMessages.displayMessages" value="false"/>
+        <property name="items">
+            <list>
+                <ref bean="ActivityOffering-DeliveryLogistic-New"/>
+                <ref bean="ActivityOffering-DeliveryLogistic-Requested"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--
+      Requested Scheduling Information requests collection.
+      -->
     <bean id="ActivityOffering-DeliveryLogistic-Requested" parent="Uif-TableCollectionSection" p:forceSessionPersistence="true"
             p:collectionObjectClass="org.kuali.student.enrollment.class2.courseoffering.dto.ScheduleWrapper"
             p:propertyName="requestedScheduleComponents"
             p:renderAddLine="false"
             p:layoutManager.renderSequenceField="false"
             p:componentSecurity.editAuthz="true">
-        <property name="headerText" value="Requested Delivery Logistics"/>
         <property name="layoutManager.richTable.render" value="false" />
-        <property name="disclosure.render" value="@{#dp.schedulingCompleted and !#dp.requestedScheduleComponents.isEmpty()}"/>
-        <property name="disclosure.defaultOpen" value="false"/>
-        <property name="onDocumentReadyScript" value="reDisplayRDLSection();"/>
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:label="TBA" p:propertyName="tbaUI"/>
@@ -68,44 +102,72 @@
                 <bean parent="Uif-ImageField" p:label="Options" p:hidden="@{!#lp.editRenderHelper.isShowColocateToolTip()}" p:image.altText="@{#lp.editRenderHelper.colocatedAOs}"
                     p:source="@{#ConfigProperties['ks.externalizable.images.url']}/colocate_icon.png">
                     <property name="toolTip">
-                       <bean parent="Uif-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.editRenderHelper.colocatedAOs}"/>
+                       <bean parent="Uif-KS-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.editRenderHelper.colocatedAOs}"/>
                     </property>
                 </bean>
             </list>
         </property>
         <property name="lineActions">
               <list>
-                  <!--<bean parent="Uif-ActionLink" p:methodToCall="editScheduleComponent" p:actionLabel="Edit" p:successCallback="retrieveComponent('ActivityOffering-DeliveryLogistic-New');" p:render="@{#dp.schedulingCompleted}"/>-->
-                  <bean parent="Uif-NavigationActionLink" p:methodToCall="editScheduleComponent" p:actionLabel="Edit" p:preSubmitCall="return checkAOEditWIP();" p:performDirtyValidation="false" />
-                  <bean parent="Uif-DeleteLineAction" p:successCallback="reDisplayRDLSection();"/>
+                  <!-- TODO: KSENROLL-11002. See the onDocumentReadyScript comment in ActivityOffering-ManageSchedulingInformationSection. -->
+                  <bean id="edit_schedule_request_action_link" parent="KS-Uif-NavigationActionLink"
+                        p:methodToCall="editScheduleComponent" p:actionLabel="Edit"
+                        p:preSubmitCall="return checkAOEditWIP();" p:performDirtyValidation="false" />
+                  <bean parent="KS-Uif-ActionLink"  p:style="padding-top: 2px"
+                        p:methodToCall="deleteScheduleComponent"
+                        p:actionLabel="Delete"
+                        p:successCallback="reDisplayRDLSection(); refreshRemoveAllOfferingsFromSchedulerConfirmation();"/>
               </list>
         </property>
     </bean>
 
-    <bean id="ActivityOffering-DeliveryLogistic-New" parent="Uif-VerticalBoxSection" p:style="background-color:#f3f3f3; padding: 4px 0 4px 4px;border: 1px solid black;width:725px;" p:componentSecurity.viewAuthz="true">
-        <property name="headerText" value="Add New Delivery Logistics" />
-        <property name="header">
-          <bean parent="Uif-HeaderFour" p:style="margin-top:20px;"/>
+    <!--
+      The "form" for managing scheduling requests.
+      -->
+    <bean id="ActivityOffering-DeliveryLogistic-New" parent="Uif-VerticalBoxSection" p:onDocumentReadyScript="makeReadOnlyCheckboxDisabled('isApprovedForNonStandardTimeSlots');"
+          p:componentSecurity.viewAuthz="true">
+        <property name="additionalCssClasses">
+            <list merge="true">
+                <value>ks-subSection</value>
+                <value>ks-form-panel</value>
+            </list>
         </property>
+        <property name="header">
+            <bean parent="Uif-HeaderFour">
+                <property name="headerText" value="Add New Scheduling Information" />
+                <property name="rightGroup">
+                    <bean id="ActivityOffering-DeliveryLogistic-New-RightGroup" parent="Uif-ActionsGroup">
+                        <!-- Whether or not this widget is active depends on it's related institutional-configuration
+                         (ie: "kuali.ks.enrollment.timeslots.adhoc_creation_mode"); the widget appears when the config is
+                         set to "NEEDS_APPROVAL" and is not shown when set to "APPROVED" or "NOT_APPROVED". -->
+                        <!--p:render="@{#dp.canNonStandardTimeslotsBeApproved}"-->
+                        <property name="items">
+                            <list>
+                                <bean p:id="isApprovedForNonStandardTimeSlots"
+                                      parent="Uif-InputField"
+                                      p:propertyName="aoInfo.isApprovedForNonStandardTimeSlots"
+                                      p:forceSessionPersistence="true"
+                                      p:label="Approved for non-standard time slots"
+                                      p:labelPlacement="RIGHT"
+                                      p:componentSecurity.editAuthz="true"
+                                      p:render="@{#dp.canNonStandardTimeslotsBeApproved}">
+
+                                    <property name="control">
+                                        <bean parent="Uif-CheckboxControl"/>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+
+        <property name="validationMessages.displayMessages" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="isApprovedForNonStandardTimeSlots"
-                      parent="Uif-InputField"
-                      p:propertyName="aoInfo.isApprovedForNonStandardTimeSlots"
-                      p:forceSessionPersistence="true"
-                      p:label="Approved for non-standard time slots"
-                      p:labelPlacement="RIGHT"
-                      p:render="@{#dp.canNonStandardTimeslotsBeApproved}"
-                      p:componentSecurity.editAuthz="true"
-                      p:style="margin:-45px 0 20px 460px;">
-
-                    <property name="control">
-                        <bean parent="Uif-CheckboxControl" />
-                    </property>
-                </bean>
-
+                <!-- The widgets for adding a schedule request (TBA checkbox, Days, Start time etc.)-->
                 <ref bean="ActivityOffering-DeliveryLogistic-New-Section"/>
-
 
                 <!-- KSENROLL-6378 mods this code to replace the checkboxes with simple-text since we don't currently support partial-colocation; however, since the goal is to
                      support partial-colocation in the future, I'm leaving the "real" version of the code laying here and borrowing the same ID to minimize changes to the existing
@@ -115,52 +177,30 @@
                 <bean id="ActivityOffering-CoLocated-checkbox" parent="Uif-DataField" p:propertyName="newScheduleRequest.colocatedAOsAsStringForUi" p:forceSessionPersistence="true">
                     <property name="label" value="Colocate With"/>
                 </bean>
-                <!--<bean id="ActivityOffering-CoLocated-checkbox" parent="Uif-InputField" p:propertyName="newScheduleRequest.colocatedAOs" p:forceSessionPersistence="true" >
-                    <property name="label" value="Colocate With"/>
-                    <property name="control">
-                        <bean parent="Uif-HorizontalCheckboxesControl">
-                            <property name="onClickScript" value="onColoCheckBoxChange();"/>
-                        </bean>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.ColocatedAOsKeyValues" p:addBlankOption="false" />
-                    </property>
-                </bean>-->
 
-
-                <!--<ref bean="ActivityOffering-DeliveryLogistic-New-Features-Section"/>-->
-                <bean id="add_rdl_button" parent="Uif-SecondaryActionButton-Small" p:disabled="@{#parent.readOnly}"
+                <bean id="add_rdl_button" parent="Uif-SecondaryActionButton" p:disabled="@{#parent.readOnly}"
                       p:actionLabel="@{!#dp.editRenderHelper.scheduleEditInProgress ? 'Add' : 'Update'}"
                       p:preSubmitCall="return preSubmitNewRDL();" p:methodToCall="addScheduleComponent"
-                      p:ajaxReturnType="update-component" p:ajaxSubmit="true" p:refreshId="ActivityOffering-DeliveryLogistic-New"
-                      p:successCallback="retrieveComponent('ActivityOffering-DeliveryLogistic-Requested'); reDisplayNewRDSection(); reDisplayRDLSection();"
-                      p:dirtyOnAction="true"/>
+                      p:ajaxSubmit="false"
+                      p:successCallback="reDisplayNewRDSection(); reDisplayRDLSection();"
+                      p:dirtyOnAction="true"
+                      p:additionalCssClasses="ks-manage-scheduling-request-form-field-top-aligned"/>
             </list>
         </property>
     </bean>
 
-    <bean id="ActivityOffering-DeliveryLogistic-New-Features-Section" parent="Uif-Disclosure-VerticalBoxSection">
-        <property name="disclosure.defaultOpen" value="false"/>
-        <property name="header">
-            <bean parent="Uif-HeaderSix" p:headerText="Optional Facility Features"/>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-InputField" p:id='featuresList' p:propertyName="newScheduleRequest.features" p:label="Features" p:readOnlyDisplayReplacementPropertyName="newScheduleRequest.featuresUI"
-                        p:instructionalText="Any features requested will reduce the room assignement possibilities (we only have so many rooms with operable windows!)">
-                  <property name="control">
-                    <bean parent="Uif-DropdownControl" p:multiple="true" p:size="7" p:options-ref="features-options"/>
-                  </property>
-                </bean>
-                <bean parent="Uif-ActionLink" p:actionLabel="Clear selections" p:preSubmitCall="clearFeaturesSelected();"/>
-            </list>
-        </property>
-    </bean>
-
+    <!--
+        The widgets for adding a schedule request (TBA checkbox, Days, Start time etc.)
+    -->
     <bean id="ActivityOffering-DeliveryLogistic-New-Section" parent="Uif-HorizontalBoxSubSection" p:id="requestedDeliveryLogistic">
+        <property name="additionalCssClasses">
+            <list merge="true">
+                <value>ks-manage-scheduling-request-form-fields</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean id="rdl_tba" parent="Uif-InputField-LabelRight" p:propertyName="newScheduleRequest.tba" p:label="TBA" p:style="margin-top:15px" p:onClickScript="tbaOnClick();">
+                <bean id="rdl_tba" parent="Uif-InputField-LabelRight" p:propertyName="newScheduleRequest.tba" p:label="TBA" p:onClickScript="tbaOnClick();" p:additionalCssClasses="ks-manage-scheduling-request-form-field-top-aligned">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
@@ -174,16 +214,18 @@
 						<bean parent="CharsetPatternConstraint" p:validChars="MTWHFSUmtwhfsu" p:messageKey="validation.enroll.ao.scheduleValidChars"/>
 					</property>
                 </bean>
-                <bean id="rdl_starttime" parent="Uif-InputField-LabelTop" p:label="Start Time" p:propertyName="newScheduleRequest.startTime" p:disableNativeAutocomplete="true" p:required="true">
+                <bean id="rdl_starttime" parent="Uif-InputField-LabelTop" p:label="Start Time" p:propertyName="newScheduleRequest.startTime"   p:additionalCssClasses="uif-boxLayoutHorizontalItem"
+                      p:disableNativeAutocomplete="true" p:required="@{!#dp.newScheduleRequest.tba}" p:refreshWhenChangedPropertyNames="#dp.newScheduleRequest.tba">
                     <property name="fieldLabel.requiredMessage.messageText" value=""/>
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="8" p:maxLength="8" p:cssClasses="new_rdl_components, validTimeAMPMPattern" p:onBlurScript="rdlStartTimeOnBlur();"/>
                     </property>
                 </bean>
-                <bean id="rdl_endtime" parent="Uif-InputField-LabelTop" p:label="End Time" p:propertyName="newScheduleRequest.endTime"  p:disableNativeAutocomplete="true" p:required="@{!#dp.newScheduleRequest.tba}" p:forceSessionPersistence="true">
+                <bean id="rdl_endtime" parent="Uif-InputField-LabelTop" p:label="End Time" p:propertyName="newScheduleRequest.endTime"
+                                       p:disableNativeAutocomplete="true" p:forceSessionPersistence="true">
                     <property name="fieldLabel.requiredMessage.messageText" value=""/>
                      <property name="control">
-                         <bean parent="Uif-DropdownControl" p:cssClasses="new_rdl_components"/>
+                         <bean parent="Uif-DropdownControl" p:cssClasses="new_rdl_components, validDaysStartimeComboForStandardTimeSlot"/>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.TimeSlotEndTimeKeyValues" p:addBlankOption="false" />
@@ -216,6 +258,7 @@
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="20" p:cssClasses="new_rdl_components"/>
                     </property>
+                    <!-- The facility code quick finder -->
                     <property name="quickfinder">
                         <bean parent="Uif-QuickFinder" p:lightBoxLookup.lookupReturnByScript="true">
                             <property name="dataObjectClassName" value="org.kuali.student.r2.core.room.dto.BuildingInfo"/>
@@ -226,14 +269,12 @@
                             </property>
                         </bean>
                     </property>
-                   <!-- <property name="attributeQuery">
-                        <bean parent="Uif-AttributeQueryConfig" p:queryMethodToCall="retrieveBuildingInfo" p:queryMethodArgumentFieldList="newScheduleRequest.buildingCode" p:dataObjectClassName="org.kuali.student.r2.core.room.dto.BuildingInfo" p:queryFieldMapping="newScheduleRequest.buildingCode:buildingCode" p:returnFieldMapping="buildingCode:newScheduleRequest.buildingCode,name:newScheduleRequest.editRenderHelper.buildingName"/>
-                    </property>-->
+                    <!-- The facility code auto-complete -->
                     <property name="suggest">
                         <bean parent="Uif-Suggest" p:render="true" p:valuePropertyName="buildingCode"
                               p:suggestQuery.dataObjectClassName="org.kuali.student.r2.core.room.dto.BuildingInfo">
                           <property name="suggestQuery">
-                            <bean parent="Uif-AttributeQueryConfig" p:queryMethodToCall="retrieveBuildingInfo" p:queryFieldMapping="newScheduleRequest.buildingCode:buildingCode" p:returnFieldMapping="buildingCode:newScheduleRequest.buildingCode,name:newScheduleRequest.editRenderHelper.buildingName"/>
+                            <bean parent="Uif-AttributeQueryConfig" p:queryMethodToCall="retrieveBuildingInfoByCode" p:queryFieldMapping="newScheduleRequest.buildingCode:buildingCode" p:returnFieldMapping="buildingCode:newScheduleRequest.buildingCode,name:newScheduleRequest.editRenderHelper.buildingName"/>
                           </property>
                           <property name="templateOptions">
                             <map merge="true">
@@ -248,7 +289,21 @@
                         <bean parent="Uif-TextControl" p:size="20" p:cssClasses="new_rdl_components"/>
                     </property>
                     <property name="quickfinder">
-                        <bean parent="Uif-QuickFinder" p:lightBoxLookup.lookupReturnByScript="true">
+                        <bean parent="Uif-QuickFinder">
+                            <!-- Tried using this syntax ... lightBoxLookup.templateOptions ... set the callback, but even with 'merge'
+                                 set the other options were overwritten. -->
+                            <property name="lightBoxLookup">
+                                <bean parent="Uif-LightBoxPost">
+                                    <property name="lookupReturnByScript" value="true" />
+                                    <property name="templateOptions">
+                                        <map merge="true">
+                                            <!-- When the lightbox closes trigger a blur event on the room number text field to clear any field validation messages -->
+                                            <entry key="beforeClose" value="function () {jQuery(&quot;#rdl_room_control&quot;).trigger(&quot;blur&quot;);}"/>
+                                        </map>
+                                    </property>
+                                </bean>
+                            </property>
+
                             <property name="dataObjectClassName" value="org.kuali.student.r2.core.room.dto.RoomInfo"/>
                             <property name="autoSearch" value="true"/>
                             <property name="fieldConversions">
@@ -274,19 +329,22 @@
         </property>
     </bean>
 
+    <!--
+      A confirmation dialog which is displayed when colocation is being broken.
+     -->
     <bean id="ActivityOfferingEdit-BreakColocateConfirmation" parent="Uif-VerticalBoxSection">
         <property name="headerText" value="Breaking Colocation"/>
         <property name="hidden" value="true"/>
         <property name="items">
             <list>
                 <bean parent="Uif-Message"
-                      p:messageText="[image src=&quot;@{#ConfigProperties['krad.externalizable.images.url']}/validation/warning.png&quot;]  This action affect maximum enrollment and delivery logistics for all colocated activities."
+                      p:messageText="[image src=&quot;@{#ConfigProperties['krad.externalizable.images.url']}/validation/warning.png&quot;]  This action affect maximum enrollment and scheduling information for all colocated activities."
                       p:style="background-color:#F4E271; padding-top:4px; padding-bottom:4px;font-size: 110%;margin-top:10px;margin-bottom-10px;" p:colSpan="2"/>
 
-                <bean parent="Uif-Message" p:messageText="[b]Delivery Logistics[/b]"/>
+                <bean parent="Uif-Message" p:messageText="[b]Scheduling Information[/b]"/>
 
-                <bean parent="Uif-Message" p:messageText="The Activity you are editing will forfeit any requested and actual delivery logistics as a result [br]
-                                                          of breaking colocation. Delivery logistics will be retained by any remaining Activities.[br]" p:style="margin-top:10px;margin-bottom-10px;"/>
+                <bean parent="Uif-Message" p:messageText="The Activity you are editing will forfeit any requested and actual scheduling information as a result [br]
+                                                          of breaking colocation. Scheduling information will be retained by any remaining Activities.[br]" p:style="margin-top:10px;margin-bottom-10px;"/>
 
                 <bean parent="Uif-Message" p:messageText="[b]Maximum Enrollment[/b]"/>
 
@@ -297,15 +355,65 @@
                 <bean parent="Uif-HorizontalBoxSection">
                     <property name="items">
                         <list>
-                            <bean id="edit_ao_breakcolo" parent="Uif-PrimaryActionButton" p:preSubmitCall="closeLightbox(); return true;" p:successCallback="breakColoCallBack();" p:methodToCall="breakColo" p:actionLabel="Break Colocation"/>
-                            <bean id="button_close" parent="Uif-ActionLink" p:actionLabel="Close"
-                                              p:actionScript="closeColocationLightbox();"/>
+                            <bean id="edit_ao_breakcolo" parent="Uif-PrimaryActionButton"
+                                  p:preSubmitCall="return confirmBreakColo();"
+                                  p:successCallback="breakColoCallBack();"
+                                  p:methodToCall="breakColo"
+                                  p:actionLabel="Break Colocation"/>
+
+                            <bean id="button_close" parent="Uif-ActionLink"
+                                  p:actionLabel="Close"
+                                  p:actionScript="closeLightbox();"/>
                         </list>
                     </property>
                 </bean>
-
             </list>
         </property>
+    </bean>
+
+    <bean id="ActivityOfferingEdit-RemoveAllOfferingsFromSchedulerConfirmation" parent="Uif-VerticalBoxSection">
+        <property name="headerText" value="Removing All Scheduling Information"/>
+        <property name="hidden" value="true"/>
+        <property name="forceSessionPersistence" value="true" />
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message"
+                      p:messageText="[image src=&quot;@{#ConfigProperties['krad.externalizable.images.url']}/validation/warning.png&quot;]  Removing all scheduling information from this activity offering will cause it to become unscheduled."
+                      p:style="background-color:#F4E271; padding-top:4px; padding-bottom: 4px; font-size: 100%; margin-bottom:20px;"
+                      p:colSpan="2" />
+
+                <bean id="ActivityOfferingEdit-RemoveAllOfferingsFromSchedulerConfirmation_ActivityState"
+                      parent="Uif-InputField"
+                      p:propertyName="stateName">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl" />
+                    </property>
+                </bean>
+
+                <bean id="ActivityOfferingEdit-RemoveAllOfferingsFromSchedulerConfirmation_IsRdlListRecentlyEmpty"
+                      parent="Uif-InputField"
+                      p:propertyName="requestedScheduleComponentsRecentlyEmpty">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl" />
+                    </property>
+                </bean>
+
+                <bean parent="Uif-HorizontalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean id="edit_ao_removeAllOfferingsFromScheduler" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Remove All Scheduling Information"
+                                  p:actionScript="confirmRemoveAllOfferingsFromScheduler();"/>
+
+                            <bean id="edit_ao_removeAllOfferingsFromScheduler_cancel" parent="Uif-ActionLink"
+                                  p:actionLabel="Close"
+                                  p:actionScript="closeLightbox();" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
     </bean>
 
 </beans>

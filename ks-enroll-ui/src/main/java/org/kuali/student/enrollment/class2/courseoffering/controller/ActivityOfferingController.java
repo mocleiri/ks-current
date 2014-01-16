@@ -3,7 +3,6 @@ package org.kuali.student.enrollment.class2.courseoffering.controller;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.uif.UifConstants;
 import org.kuali.rice.krad.uif.UifParameters;
@@ -14,16 +13,16 @@ import org.kuali.rice.krad.web.controller.MaintenanceDocumentController;
 import org.kuali.rice.krad.web.form.DocumentFormBase;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.common.collection.KSCollectionUtils;
 import org.kuali.student.common.uif.form.KSUifMaintenanceDocumentForm;
 import org.kuali.student.common.uif.util.KSControllerHelper;
 import org.kuali.student.common.uif.util.KSUifUtils;
-import org.kuali.student.common.util.KSCollectionUtils;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ScheduleWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.service.ActivityOfferingMaintainable;
 import org.kuali.student.enrollment.class2.courseoffering.util.ActivityOfferingConstants;
+import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.common.util.EnrollConstants;
-import org.kuali.student.r2.common.constants.CommonServiceConstants;
 import org.kuali.student.r2.common.util.date.KSDateTimeFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,7 +33,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -42,8 +40,6 @@ import java.util.Properties;
 @Controller
 @RequestMapping(value = "/activityOffering")
 public class ActivityOfferingController extends MaintenanceDocumentController {
-
-    private ActivityOfferingControllerTransactionHelper activityOfferingControllerTransactionHelper;
 
     @Override
     protected MaintenanceDocumentForm createInitialForm(HttpServletRequest request) {
@@ -128,6 +124,18 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
         return getUIFModelAndView(form);
     }
 
+    @RequestMapping(params = "methodToCall=deleteScheduleComponent")
+    public ModelAndView deleteScheduleComponent( @ModelAttribute("KualiForm") MaintenanceDocumentForm form ) throws Exception {
+
+        ActivityOfferingWrapper activityOfferingWrapper = (ActivityOfferingWrapper) form.getDocument().getNewMaintainableObject().getDataObject();
+        ScheduleWrapper scheduleWrapper = (ScheduleWrapper) getSelectedObject(form);
+
+        activityOfferingWrapper.getDeletedScheduleComponents().add(scheduleWrapper);
+        activityOfferingWrapper.getRequestedScheduleComponents().remove(scheduleWrapper);
+
+        return getUIFModelAndView(form);
+    }
+
     @RequestMapping(params = "methodToCall=addScheduleComponent")
     public ModelAndView addScheduleComponent(@ModelAttribute("KualiForm") MaintenanceDocumentForm form) throws Exception {
 
@@ -144,16 +152,12 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
             endTimeAmPm = StringUtils.substringAfter(scheduleWrapper.getEndTime()," ");
         }
 
-        if (!scheduleWrapper.isTba() && validateTime(startTime, startTimeAmPm, endTime, endTimeAmPm)) {
-            GlobalVariables.getMessageMap().putError("requestedDeliveryLogistic", ActivityOfferingConstants.MSG_ERROR_INVALID_START_TIME);
-            return getUIFModelAndView(form);
-        } else if (scheduleWrapper.isTba()){
-            if (StringUtils.isNotBlank(scheduleWrapper.getDays()) &&
-                StringUtils.isNotBlank(scheduleWrapper.getStartTime()) &&
-                StringUtils.isNotBlank(scheduleWrapper.getEndTime())){
-                GlobalVariables.getMessageMap().putError("requestedDeliveryLogistic", ActivityOfferingConstants.MSG_ERROR_TBA_VALIDATION_ERROR);
-                return getUIFModelAndView(form);
-            }
+        if (!StringUtils.isBlank(startTime) && !StringUtils.isBlank(endTime) && validateTime(startTime, startTimeAmPm, endTime, endTimeAmPm)) {
+            GlobalVariables.getMessageMap().putError("document.newMaintainableObject.dataObject.newScheduleRequest.endTime", ActivityOfferingConstants.MSG_ERROR_INVALID_START_TIME);
+        }
+
+        if (!scheduleWrapper.isTba() && StringUtils.isBlank(endTime)) {
+            GlobalVariables.getMessageMap().putError("document.newMaintainableObject.dataObject.newScheduleRequest.endTime", ActivityOfferingConstants.MSG_ERROR_INVALID_END_TIME);
         }
 
         ActivityOfferingMaintainable viewHelper = (ActivityOfferingMaintainable) KSControllerHelper.getViewHelperService(form);
@@ -167,7 +171,9 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
                 GlobalVariables.getMessageMap().putWarning("ActivityOffering-DeliveryLogistic-Requested", RiceKeyConstants.ERROR_CUSTOM,activityOfferingWrapper.getEditRenderHelper().getColocatedActivitiesAsString());
             }
         }
-        
+
+        form.setJumpToId("ActivityOffering-DeliveryLogistic-Actuals");
+
         return getUIFModelAndView(form);
     }
 
@@ -200,7 +206,7 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
             //This way if the super.route transaction fails, the current transaction will still succeed and errors can
             //be displayed in the UI
         	
-        	ActivityOfferingControllerTransactionHelper helper = getActivityOfferingControllerTransactionHelper();
+        	ActivityOfferingControllerTransactionHelper helper = CourseOfferingManagementUtil.getActivityOfferingControllerTransactionHelper();
             helper.routeSuper(form, result, request, response, this);
         } catch (Exception e) {
             GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS, RiceKeyConstants.ERROR_CUSTOM, unwrapException(e).getMessage());
@@ -303,7 +309,8 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
             return performRedirect(form, "activityOffering", urlParameters);
         }
 
-        form.setReturnLocation(url);
+        String newUrl = url.replaceAll("growl[^&]*&", "");
+        form.setReturnLocation(newUrl);
         return back(form,result,request,response);
     }
 
@@ -352,14 +359,4 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
             return false;
         }
     }
-
-
-    public ActivityOfferingControllerTransactionHelper getActivityOfferingControllerTransactionHelper() {
-        if(activityOfferingControllerTransactionHelper == null){
-            activityOfferingControllerTransactionHelper = GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "activityOfferingControllerTransactionHelper", ActivityOfferingControllerTransactionHelper.class.getSimpleName()));
-        }
-
-        return activityOfferingControllerTransactionHelper;
-    }
-
 }

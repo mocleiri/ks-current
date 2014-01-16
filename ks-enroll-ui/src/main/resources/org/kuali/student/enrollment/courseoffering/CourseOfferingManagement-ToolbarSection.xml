@@ -72,72 +72,82 @@
 
     <bean id="KS-CourseOfferingManagement-ToolBar-AddCluster-parent" parent="KS-Uif-ToolBar-Button"
           p:onClickScript="toggleAddAOCButton('addAOCButton','privateClusterNamePopover_control');">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-doc-add');"/>
         <property name="actionLabel" value="Add Cluster"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/add_cluster_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/add_cluster_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-doc-add"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-MoveTo-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-right');"/>
         <property name="actionLabel" value="Move Activity"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/move_to_cluster_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/move_to_cluster_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-right"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Add-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-plus-1');"/>
         <property name="actionLabel" value="Add Course"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/add_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/add_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-plus-1"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Approve-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-ok');"/>
         <property name="actionLabel" value="Approve"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/approve_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/approve_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-ok"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Suspend-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-pause');"/>
         <property name="actionLabel" value="Suspend"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/suspend_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/suspend_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-pause"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Cancel-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-block');"/>
         <property name="actionLabel" value="Cancel"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/cancel_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/cancel_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-block"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Reinstate-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-reply');"/>
         <property name="actionLabel" value="Reinstate"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/reinstate_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/reinstate_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-reply"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Delete-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-cancel');"/>
         <property name="actionLabel" value="Delete"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/delete_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/delete_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-cancel"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Draft-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-doc-text');"/>
         <property name="actionLabel" value="Set as Draft"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/draft_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/draft_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-doc-text"/>
         </property>
     </bean>
 
     <bean id="KS-CourseOfferingManagement-ToolBar-Copy-parent" parent="KS-Uif-ToolBar-Button">
+        <property name="onDocumentReadyScript" value="replaceImageWithGlyph('@{#component.id}', 'ks-fontello-icon-docs');"/>
         <property name="actionLabel" value="Copy"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#parent.disabled ? #ConfigProperties['ks.externalizable.images.url']+'/toolbar/copy_disabled.png' : #ConfigProperties['ks.externalizable.images.url']+'/toolbar/copy_enabled.png'}"/>
+            <bean parent="Uif-Image" p:source="" p:additionalCssClasses="ks-fontello-icon-docs"/>
         </property>
     </bean>
 
@@ -202,7 +212,6 @@
     </bean>
 
     <bean id="KS-CourseOfferingManagement-AddAOCPopupForm" parent="Uif-HorizontalBoxSection">
-        <!--<property name="render" value="@{enableAddButton and !currentCourseOfferingWrapper.crossListed}"/>-->
         <property name="hidden" value="true"/>
         <property name="cssClasses">
             <list>
@@ -251,8 +260,6 @@
     </bean>
 
     <bean id="KS-CourseOfferingManagement-MoveAOCPopupForm" parent="Uif-HorizontalBoxSection" p:forceSessionPersistence="true">
-        <!--<property name="render" value="@{enableAddButton and !currentCourseOfferingWrapper.crossListed}"/>-->
-        <!--<property name="hidden" value="true"/>-->
         <property name="cssClasses">
             <list>
                 <value>uif-bubblepopup-content</value>
@@ -276,12 +283,19 @@
                 </bean>
                 <bean p:id="privateNameForMoveId" parent="Uif-InputField" p:propertyName="privateClusterNameForMovePopover" p:label="Private Name" p:labelPlacement="TOP" p:render="true" p:required="true" p:style="display:none">
                     <property name="control">
-                        <bean parent="Uif-TextControl" p:size="10" p:maxLength="20" p:onKeyUpScript="toggleAddAOCButton('moveAOCButton','privateNameForMoveId_control');"/>
+                        <bean parent="Uif-TextControl"
+                              p:size="10"
+                              p:maxLength="20"
+                              p:onKeyPressScript="submitMoveAoOnEnterKeyIfValid();"
+                              p:onKeyUpScript="toggleAddAOCButton('moveAOCButton','privateNameForMoveId_control');"/>
                     </property>
                 </bean>
                 <bean p:id="publishedNameForMoveId" parent="Uif-InputField"  p:propertyName="publishedClusterNameForMovePopover" p:label="Published Name" p:labelPlacement="TOP"  p:render="true" p:style="display:none">
                     <property name="control">
-                        <bean parent="Uif-TextControl" p:size="10" p:maxLength="20"/>
+                        <bean parent="Uif-TextControl"
+                              p:size="10"
+                              p:maxLength="20"
+                              p:onKeyPressScript="submitMoveAoOnEnterKeyIfValid();" />
                     </property>
                 </bean>
                 <!--these fields above are used for creating a cluster and moving AOs-->

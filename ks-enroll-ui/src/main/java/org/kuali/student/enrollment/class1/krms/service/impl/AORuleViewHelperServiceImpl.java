@@ -64,14 +64,14 @@ public class AORuleViewHelperServiceImpl extends LURuleViewHelperServiceImpl {
      * @throws Exception
      */
     @Override
-    public Tree<CompareTreeNode, String> buildCompareTree(RuleEditor aoRuleEditor, RuleEditor cluRuleEditor) {
+    public Tree<CompareTreeNode, String> buildCompareTree(RuleEditor cluRuleEditor, RuleEditor aoRuleEditor) {
 
         //Set the original nl if not already exists.
         checkNaturalLanguageForTree(aoRuleEditor);
         checkNaturalLanguageForTree(aoRuleEditor.getParent());
         checkNaturalLanguageForTree(cluRuleEditor);
 
-        Tree<CompareTreeNode, String> compareTree = this.getCompareTreeBuilder().buildTree(aoRuleEditor.getParent(), cluRuleEditor, aoRuleEditor);
+        Tree<CompareTreeNode, String> compareTree = this.getCompareTreeBuilder().buildTree(cluRuleEditor, aoRuleEditor.getParent(), aoRuleEditor);
 
         return compareTree;
     }
@@ -85,71 +85,15 @@ public class AORuleViewHelperServiceImpl extends LURuleViewHelperServiceImpl {
      * @throws Exception
      */
     @Override
-    public Tree<CompareTreeNode, String> buildMultiViewTree(RuleEditor coRuleEditor, RuleEditor cluRuleEditor) {
+    public Tree<CompareTreeNode, String> buildMultiViewTree(RuleEditor cluRuleEditor, RuleEditor coRuleEditor) {
 
         //Set the original nl if not already exists.
         checkNaturalLanguageForTree(coRuleEditor);
         checkNaturalLanguageForTree(cluRuleEditor);
 
-        Tree<CompareTreeNode, String> compareTree = this.getViewCoCluTreeBuilder().buildTree(coRuleEditor, cluRuleEditor);
+        Tree<CompareTreeNode, String> compareTree = this.getViewCoCluTreeBuilder().buildTree(cluRuleEditor, coRuleEditor);
 
         return compareTree;
-    }
-
-
-    /**
-     * Initializes the proposition, populating the type and terms.
-     *
-     * @param propositionEditor
-     */
-    protected void initPropositionEditor(PropositionEditor propositionEditor) {
-        if (PropositionType.SIMPLE.getCode().equalsIgnoreCase(propositionEditor.getPropositionTypeCode())) {
-
-            if (propositionEditor.getType() == null) {
-                KrmsTypeDefinition type = this.getKrmsTypeRepositoryService().getTypeById(propositionEditor.getTypeId());
-                propositionEditor.setType(type.getName());
-            }
-
-            ComponentBuilder builder = this.getTemplateRegistry().getComponentBuilderForType(propositionEditor.getType());
-            if (builder != null) {
-                Map<String, String> termParameters = this.getTermParameters(propositionEditor);
-                builder.resolveTermParameters(propositionEditor, termParameters);
-            }
-        } else {
-            for (PropositionEditor child : propositionEditor.getCompoundEditors()) {
-                initPropositionEditor(child);
-            }
-
-        }
-    }
-
-    /**
-     * Create TermEditor from the TermDefinition objects to be used in the ui and return a map of
-     * the key and values of the term parameters.
-     *
-     * @param proposition
-     * @return
-     */
-    protected Map<String, String> getTermParameters(PropositionEditor proposition) {
-
-        Map<String, String> termParameters = new HashMap<String, String>();
-        if (proposition.getTerm() == null) {
-
-            PropositionParameterEditor termParameter = PropositionTreeUtil.getTermParameter(proposition.getParameters());
-            if (termParameter != null) {
-                String termId = termParameter.getValue();
-                TermDefinition termDefinition = this.getTermRepositoryService().getTerm(termId);
-                proposition.setTerm(new TermEditor(termDefinition));
-            } else {
-                return termParameters;
-            }
-        }
-
-        for (TermParameterEditor parameter : proposition.getTerm().getEditorParameters()) {
-            termParameters.put(parameter.getName(), parameter.getValue());
-        }
-
-        return termParameters;
     }
 
     /**

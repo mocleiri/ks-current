@@ -4,10 +4,9 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.util.KeyValue;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.enrollment.class2.courseoffering.util.ActivityOfferingConstants;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
+import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.class2.scheduleofclasses.sort.ComparatorModel;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.FormatOfferingInfo;
@@ -21,11 +20,11 @@ import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.core.population.dto.PopulationInfo;
 import org.kuali.student.r2.core.scheduling.dto.ScheduleRequestSetInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
-import org.kuali.student.r2.lum.course.infc.CourseCrossListing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -77,6 +76,7 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
 
     private SocInfo socInfo;
 
+    private String scheduledState = "";
     private String startTimeDisplay = "";
     private String endTimeDisplay = "";
     private String daysDisplayName = "";
@@ -174,6 +174,8 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
 
     private String timeSlotType;
 
+    private String crossListedCourseCodes;
+
     /**
      * Valid modes for creating non-standard timeslots
      *
@@ -208,7 +210,7 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
                     }
                 }
             }
-            return NonStandardTimeslotCreationMode.ALLOWED;
+            return NonStandardTimeslotCreationMode.NEEDS_APPROVAL;
         }
 
     }
@@ -550,6 +552,35 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
         isCheckedByCluster = checkedByCluster;
     }
 
+    public String getScheduledState() {
+        return scheduledState;
+    }
+
+    public void setScheduledState(String scheduledState) {
+        this.scheduledState = scheduledState;
+    }
+
+    public void setScheduledState(String scheduledState,boolean appendForDisplay) {
+        if (appendForDisplay){
+            this.scheduledState = this.scheduledState + "<br>" + StringUtils.defaultString(scheduledState);
+        }else{
+            this.scheduledState = StringUtils.defaultString(scheduledState);
+        }
+    }
+    public void setScheduledState(String scheduledState,boolean appendForDisplay, String dlTypeClass) {
+        String cssClass = "";
+        if(!StringUtils.isEmpty(dlTypeClass)){
+            cssClass = "class=\"" + dlTypeClass + "\"";
+        }
+        if(StringUtils.isEmpty(this.scheduledState)){
+            appendForDisplay = false;
+        }
+        if (appendForDisplay){
+            this.scheduledState = this.scheduledState + "<br><span " + cssClass + " >" + scheduledState + "</span>";
+        }else{
+            this.scheduledState = "<span " + cssClass + " >" + scheduledState + "</span>";
+        }
+    }
 
     public String getStateName() {
         return stateName;
@@ -684,12 +715,27 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
         this.requestedScheduleComponents = requestedScheduleComponents;
     }
 
+    public List<ScheduleWrapper> getDeletedScheduleComponents() {
+        return deletedScheduleComponents;
+    }
+
+    public void setDeletedScheduleComponents(List<ScheduleWrapper> deletedScheduleComponents) {
+        this.deletedScheduleComponents = deletedScheduleComponents;
+    }
+
     public ScheduleWrapper getNewScheduleRequest() {
         return newScheduleRequest;
     }
 
     public void setNewScheduleRequest(ScheduleWrapper newScheduleRequest) {
         this.newScheduleRequest = newScheduleRequest;
+    }
+
+    public boolean isRequestedScheduleComponentsRecentlyEmpty() {
+        boolean haveNoRequesteds = ( this.requestedScheduleComponents == null || this.requestedScheduleComponents.isEmpty() ) ? true : false;
+        boolean haveSomeDeleteds = ( this.deletedScheduleComponents != null && !this.deletedScheduleComponents.isEmpty() ) ? true : false;
+
+        return haveNoRequesteds && haveSomeDeleteds;
     }
 
     public String getStartTimeDisplay() {
@@ -845,6 +891,27 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
         return bldgCodeSimple;
     }
 
+    public void setBldgCodeSimple(String buildingCode, String buildingName, String dlTypeClass) {
+        String cssClass = "";
+        boolean  appendForDisplay = true;
+        if(!StringUtils.isEmpty(dlTypeClass)){
+            cssClass = "class=\"" + dlTypeClass + "\"";
+        }
+        if(StringUtils.isEmpty(this.bldgCodeSimple)){
+            appendForDisplay = false;
+        } else {
+            appendForDisplay = true;
+        }
+        String underlineCssClass = "<span" + cssClass + "style=\"border-bottom: 1px dotted\">";
+
+        String BldgCodeMark = underlineCssClass + buildingCode + "</span>";
+        if (appendForDisplay){
+            this.bldgCodeSimple = this.bldgCodeSimple + "<br>" + BldgCodeMark;
+        }else{
+            this.bldgCodeSimple = BldgCodeMark;
+        }
+    }
+
     public void setBldgCodeSimple(String bldgCodeSimple) {
         this.bldgCodeSimple = bldgCodeSimple;
     }
@@ -863,17 +930,18 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
     }
 
     public void setBuildingCode(String buildingCode, boolean appendForDisplay, String dlTypeClass) {
+
         String cssClass = "";
         if(!StringUtils.isEmpty(dlTypeClass)){
-            cssClass = "style=\"border-bottom: 1px dotted;\"";
+            cssClass = "style=\"border-bottom: 1px dotted\"";
         }
-        if(StringUtils.isEmpty(this.buildingCode)){
+        if(StringUtils.isEmpty(buildingCode)){
             appendForDisplay = false;
         }
         if (appendForDisplay){
-            this.buildingCode = this.buildingCode + "<br><span " + cssClass + " >" + buildingCode + "</span>";
+            this.buildingCode = this.buildingCode + "<br><span " + cssClass + " class=\"" + dlTypeClass + "\""+ " >" + buildingCode + "</span>";
         }else{
-            this.buildingCode = "<span " + cssClass + " >" + buildingCode + "</span>";
+            this.buildingCode = "<span " + cssClass + " class=\"" + dlTypeClass + "\""+ " >" + buildingCode + "</span>";
         }
     }
 
@@ -901,14 +969,6 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
         }else{
             this.roomName = "<span " + cssClass + " >" + roomName + "</span>";
         }
-    }
-
-    public List<ScheduleWrapper> getDeletedScheduleComponents() {
-        return deletedScheduleComponents;
-    }
-
-    public void setDeletedScheduleComponents(List<ScheduleWrapper> deletedScheduleComponents) {
-        this.deletedScheduleComponents = deletedScheduleComponents;
     }
 
     public String getTypeKey() {
@@ -987,15 +1047,12 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
      * This is used in create and edit course offerings screen.
      * @return
      */
-    @SuppressWarnings("unused")
     public String getCrossListedCourseCodes(){
-        StringBuilder builder = new StringBuilder();
-        if (course != null){
-            for (CourseCrossListing crossListing : course.getCrossListings()){
-                builder.append(crossListing.getCode() + ", ");
-            }
-        }
-        return StringUtils.removeEnd(builder.toString(), ", ");
+        return crossListedCourseCodes;
+    }
+
+    public void setCrossListedCourseCodes(String crossListedCourseCodes) {
+        this.crossListedCourseCodes = crossListedCourseCodes;
     }
 
     /**
@@ -1405,6 +1462,14 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
         this.viewId = viewId;
     }
 
+    public HashMap getSchedulingStateHash() {
+        try {
+            return CourseOfferingManagementUtil.getSchedulingStateAndNameHash();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      *   This method will update waitListType depending on automaticallyProcessed and confirmationRequired boolean
      *
@@ -1444,21 +1509,12 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
             } else if (getNonStandardTimeslotCreationMode() == ActivityOfferingWrapper.NonStandardTimeslotCreationMode.NOT_ALLOWED){
                 return false;
             } else if (getNonStandardTimeslotCreationMode() == ActivityOfferingWrapper.NonStandardTimeslotCreationMode.NEEDS_APPROVAL){
-                return isAdHocFlagSet();
+                return aoInfo.getIsApprovedForNonStandardTimeSlots();
             }
         }
 
         return false;
 
-    }
-
-    private boolean isAdHocFlagSet(){
-       for (AttributeInfo attr : aoInfo.getAttributes()){
-           if (StringUtils.equals(attr.getKey(),"kuali.attribute.nonstd.ts.indicator")){
-               return BooleanUtils.toBoolean(attr.getValue());
-           }
-       }
-       return false;
     }
 
     public String getTimeSlotType() {
@@ -1468,5 +1524,4 @@ public class ActivityOfferingWrapper implements Serializable, ComparatorModel{
     public void setTimeSlotType(String timeSlotType) {
         this.timeSlotType = timeSlotType;
     }
-
 }

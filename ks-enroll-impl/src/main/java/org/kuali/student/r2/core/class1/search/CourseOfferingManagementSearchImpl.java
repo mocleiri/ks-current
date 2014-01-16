@@ -19,12 +19,12 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.student.r2.common.class1.search.SearchServiceAbstractHardwiredImpl;
-import org.kuali.student.r2.common.dao.GenericEntityDao;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.RichTextHelper;
-import org.kuali.student.r2.common.util.constants.LprServiceConstants;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.common.util.date.DateFormatters;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
@@ -35,6 +35,7 @@ import org.kuali.student.r2.core.search.dto.SearchResultRowInfo;
 import org.kuali.student.r2.core.search.util.SearchRequestHelper;
 import org.kuali.student.r2.lum.util.constants.LrcServiceConstants;
 
+import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,7 @@ import java.util.Map;
  */
 public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHardwiredImpl {
 
-    private GenericEntityDao genericEntityDao;
+
 
     private static final String OWNER_UI_SUFFIX = " (Owner)";
 
@@ -79,6 +80,7 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
     public static final class SearchResultColumns {
         public static final String CODE = "courseOfferingCode";
         public static final String DESC = "courseOfferingDesc";
+        public static final String LONG_NAME = "courseOfferingLongName";
         public static final String STATE = "courseOfferingState";
         public static final String CREDIT_OPTION = "courseOfferingCreditOption";
         public static final String GRADING_OPTION = "courseOfferingGradingOption";
@@ -98,9 +100,13 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
         public static final String IS_HONORS_COURSE = "isHonorsCourse";
     }
 
+    public static final String DEFAULT_EFFECTIVE_DATE = "01/01/2012";
+
     public static final TypeInfo CO_MANAGEMENT_SEARCH;
+    public static final TypeInfo COID_BY_TERM_AND_COURSE_CODE_SEARCH;
 
     public static final String CO_MANAGEMENT_SEARCH_KEY = "kuali.search.type.lui.courseOfferingManagementDisplay";
+    public static final String COID_BY_TERM_AND_COURSE_CODE_SEARCH_SEARCH_KEY = "kuali.search.type.lui.courseOfferingIdByTermAndCourseCode";
 
     static {
         TypeInfo info = new TypeInfo();
@@ -114,11 +120,34 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
             throw new RuntimeException("bad code");
         }
         CO_MANAGEMENT_SEARCH = info;
+
+        info = new TypeInfo();
+        info.setKey(COID_BY_TERM_AND_COURSE_CODE_SEARCH_SEARCH_KEY);
+        info.setName("Course Offering Id Search By Term and course Code");
+        info.setDescr(new RichTextHelper().fromPlain("User friendly search that uses the term and course code"));
+        info.setEffectiveDate(DateFormatters.MONTH_DAY_YEAR_DATE_FORMATTER.parse(DEFAULT_EFFECTIVE_DATE));
+
+        COID_BY_TERM_AND_COURSE_CODE_SEARCH = info;
     }
 
     @Override
     public TypeInfo getSearchType() {
         return CO_MANAGEMENT_SEARCH;
+    }
+
+    @Override
+    public TypeInfo getSearchType(String searchTypeKey, ContextInfo contextInfo)
+            throws DoesNotExistException,
+            InvalidParameterException,
+            MissingParameterException,
+            OperationFailedException {
+        if (CO_MANAGEMENT_SEARCH_KEY.equals(searchTypeKey)) {
+            return CO_MANAGEMENT_SEARCH;
+        }
+        if (COID_BY_TERM_AND_COURSE_CODE_SEARCH_SEARCH_KEY.equals(searchTypeKey)) {
+            return COID_BY_TERM_AND_COURSE_CODE_SEARCH;
+        }
+        throw new DoesNotExistException("No Search Type Found for key:"+searchTypeKey);
     }
 
     /**
@@ -142,9 +171,71 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
     public SearchResultInfo search(SearchRequestInfo searchRequestInfo, ContextInfo contextInfo)
             throws MissingParameterException, OperationFailedException {
 
-        if (!StringUtils.equals(searchRequestInfo.getSearchKey(), CO_MANAGEMENT_SEARCH.getKey())) {
+        SearchResultInfo resultInfo = null;
+
+        if (StringUtils.equals(searchRequestInfo.getSearchKey(), CO_MANAGEMENT_SEARCH.getKey())) {
+            resultInfo =  searchForCourseBySubjectCodeAndTerm(searchRequestInfo, contextInfo);
+        }
+        else if (StringUtils.equals(searchRequestInfo.getSearchKey(), COID_BY_TERM_AND_COURSE_CODE_SEARCH.getKey())) {
+            resultInfo = searchForCourseOfferingIdByCourseCodeAndTerm(searchRequestInfo, contextInfo);
+        }  else {
             throw new OperationFailedException("Unsupported search type: " + searchRequestInfo.getSearchKey());
         }
+
+        return resultInfo;
+    }
+
+    protected SearchResultInfo searchForCourseOfferingIdByCourseCodeAndTerm(SearchRequestInfo searchRequestInfo, ContextInfo contextInfo)
+            throws MissingParameterException, OperationFailedException
+    {
+        SearchRequestHelper requestHelper = new SearchRequestHelper(searchRequestInfo);
+
+        String searchCourseCode = requestHelper.getParamAsString(SearchParameters.COURSE_CODE);
+        String searchAtpId = requestHelper.getParamAsString(SearchParameters.ATP_ID);
+
+        SearchResultInfo resultInfo = new SearchResultInfo();
+
+        String queryStr = "SELECT" +
+                "    ident.code," +
+                "    ident.longName," +
+                "    lui.luiState," +
+                "    lui.id ";
+
+        queryStr = queryStr +
+                "    FROM" +
+                "    LuiIdentifierEntity ident, " +
+                "    LuiEntity lui ";
+
+        queryStr = queryStr +
+                "    WHERE" +
+                "    lui.id = ident.lui.id" +
+                "    AND lui.luiType = 'kuali.lui.type.course.offering'" +
+                "    AND lui.atpId = :atpId " +
+                "    AND ident.code = :courseCode ";
+
+        queryStr = queryStr + " ORDER BY ident.code";
+
+        TypedQuery<Object[]> query = getEntityManager().createQuery(queryStr, Object[].class);
+        query.setParameter(SearchParameters.COURSE_CODE, searchCourseCode);
+        query.setParameter(SearchParameters.ATP_ID, searchAtpId);
+        List<Object[]> results = query.getResultList();
+
+        for(Object[] resultRow : results){
+            int i = 0;
+            SearchResultRowInfo row = new SearchResultRowInfo();
+            row.addCell(SearchResultColumns.CODE, (String)resultRow[i++]);
+            row.addCell(SearchResultColumns.LONG_NAME, (String)resultRow[i++]);
+            row.addCell(SearchResultColumns.STATE, (String)resultRow[i++]);
+            row.addCell(SearchResultColumns.CO_ID, (String)resultRow[i++]);
+            resultInfo.getRows().add(row);
+        }
+
+        return resultInfo;
+    }
+
+    protected SearchResultInfo searchForCourseBySubjectCodeAndTerm(SearchRequestInfo searchRequestInfo, ContextInfo contextInfo)
+            throws MissingParameterException, OperationFailedException
+    {
 
         long start = System.currentTimeMillis();
 
@@ -164,7 +255,9 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
         /**
          * Get the results
          */
-        List<Object[]> results = genericEntityDao.getEm().createQuery(query).getResultList();
+        long startQ1 = System.currentTimeMillis();
+        List<Object[]> results = getEntityManager().createQuery(query).getResultList();
+        LOGGER.info("*********BigQueryTime**********"+(System.currentTimeMillis()-startQ1) + " ms");
 
         SearchResultInfo resultInfo = new SearchResultInfo();
         resultInfo.setTotalResults(results.size());
@@ -208,8 +301,9 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
      * @param requestHelper
      * @return
      * @throws MissingParameterException
+     * @throws OperationFailedException 
      */
-    private String buildSearchQuery(SearchRequestHelper requestHelper) throws MissingParameterException{
+    private String buildSearchQuery(SearchRequestHelper requestHelper) throws MissingParameterException, OperationFailedException{
 
         String searchCourseCode = requestHelper.getParamAsString(SearchParameters.COURSE_CODE);
         String searchSubjectArea = requestHelper.getParamAsString(SearchParameters.SUBJECT_AREA);
@@ -274,19 +368,27 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
                 "    AND lui.luiType = 'kuali.lui.type.course.offering'" +
                 "    AND lui.atpId = '" + searchAtpId + "' " +
                 "    AND lrc_rvg1.id = lui_rvg1" +
-                "    AND lrc_rvg1.resultScaleId LIKE 'kuali.result.scale.credit.%' " +
+                "    AND lrc_rvg1.resultScaleId = '" + LrcServiceConstants.RESULT_SCALE_KEY_CREDIT_DEGREE + "' " +
                 "    AND lrc_rvg2.id = lui_rvg2" +
-                "    AND lrc_rvg2.resultScaleId LIKE 'kuali.result.scale.grade.%' ";
+                "    AND lrc_rvg2.resultScaleId IN (" +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_ADMIN + "'," +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_LETTER + "'," +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_LETTER_PLUS_MINUS + "'," +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_PF + "'," +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_PNP + "'," +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_COMPLETED + "'," +
+                "'" + LrcServiceConstants.RESULT_SCALE_KEY_GRADE_PERCENTAGE + "')";
 
         if (!includePassFailAuditAndHonorsResults){
             query = query +
                     //Exclude these two types that can cause duplicates.
                     // audit and passfail are moved into different fields, after that there can be only one grading option
                     // of Satisfactory, Letter, or Percentage
-                    "    AND lrc_rvg2 NOT IN ('kuali.resultComponent.grade.audit','kuali.resultComponent.grade.passFail') ";
+                    "    AND lrc_rvg2 NOT IN ('" + LrcServiceConstants.RESULT_GROUP_KEY_GRADE_AUDIT + "'," +
+                    "'" + LrcServiceConstants.RESULT_GROUP_KEY_GRADE_PASSFAIL + "') ";
         }
-
-        query = query + getLuiIdentifierSubQuery(searchCourseCode,searchSubjectArea,isExactMatchSearch);
+        List<String> crosslistedLuiIds = getCrossListedLuiIds(searchCourseCode,searchSubjectArea,searchAtpId,isExactMatchSearch);
+        query = query + getLuiIdentifierSubQuery(searchCourseCode,searchSubjectArea,isExactMatchSearch, crosslistedLuiIds);
 
         if (coIds != null && !coIds.isEmpty()){
             String coIdsAsString = "'" + StringUtils.join(coIds,"','") + "'";
@@ -329,38 +431,84 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
      * @param isExactMatchSearch
      * @return
      */
-    private String getLuiIdentifierSubQuery(String searchCourseCode, String searchSubjectArea,boolean isExactMatchSearch){
+    private String getLuiIdentifierSubQuery(String searchCourseCode, String searchSubjectArea,boolean isExactMatchSearch, List<String> crosslistIds){
 
         if (StringUtils.isBlank(searchCourseCode) && StringUtils.isBlank(searchSubjectArea)) {
             return StringUtils.EMPTY;
         }
 
         StringBuilder query = new StringBuilder();
-
-        query.append("    AND ident.lui.id IN (SELECT ident_subquery.lui.id FROM LuiIdentifierEntity ident_subquery WHERE ");
+        query.append(" AND ((");
 
         String coCodeSearchString = "";
         if (StringUtils.isNotBlank(searchCourseCode)){
             if (isExactMatchSearch){
-                coCodeSearchString = " ident_subquery.code = '" + searchCourseCode + "' ";
+                coCodeSearchString = " ident.code = '" + searchCourseCode + "' ";
             } else {
-                coCodeSearchString = " ident_subquery.code like '" + searchCourseCode + "%' ";
+                coCodeSearchString = " ident.code LIKE '" + searchCourseCode + "%' ";
             }
         }
 
         if (StringUtils.isNotBlank(searchSubjectArea)){
             if (StringUtils.isBlank(searchCourseCode)){
-                query.append(" ident_subquery.division = '" + searchSubjectArea + "' ");
+                query.append(" ident.division = '" + searchSubjectArea + "' ");
             } else {
-                query.append(" ident_subquery.division = '" + searchSubjectArea + "' AND " + coCodeSearchString);
+                query.append(" ident.division = '" + searchSubjectArea + "' AND " + coCodeSearchString);
             }
         } else {
             query.append(coCodeSearchString);
         }
 
-        query.append(") ");
+        if (crosslistIds != null && !crosslistIds.isEmpty()) {
+            query.append( ") OR (lui.id IN('"+StringUtils.join(crosslistIds,"','")+"')" );
+        }
+
+        query.append("))");
+
 
         return query.toString();
+    }
+
+    /**
+     * This method returns the subquery which joins the LuiEntity with LuiIdentifierEntity and search by
+     * division or code.
+     *
+     * @param searchCourseCode
+     * @param searchSubjectArea
+     * @param isExactMatchSearch
+     * @return
+     */
+    private List<String> getCrossListedLuiIds(String searchCourseCode, String searchSubjectArea, String searchAtpId, boolean isExactMatchSearch){
+        String crossListedLuiIdsQuery =
+                "SELECT cl2.lui.id " +
+                        "FROM LuiIdentifierEntity cl1, LuiIdentifierEntity cl2 " +
+                        "WHERE cl2.type = '" + LuiServiceConstants.LUI_IDENTIFIER_CROSSLISTED_TYPE_KEY + "' " +
+                        "AND cl2.lui.atpId = '" + searchAtpId + "' " +
+                        "AND cl1.lui.id = cl2.lui.id";
+
+
+        String coCodeSearchString = "";
+        if (StringUtils.isNotBlank(searchCourseCode)){
+            if (isExactMatchSearch){
+                coCodeSearchString = " AND cl1.code = '" + searchCourseCode + "' ";
+            } else {
+                coCodeSearchString = " AND cl1.code LIKE '" + searchCourseCode + "%' ";
+            }
+        }
+
+        if (StringUtils.isNotBlank(searchSubjectArea)){
+            if (StringUtils.isBlank(searchCourseCode)){
+                crossListedLuiIdsQuery += " AND cl1.division = '" + searchSubjectArea + "' ";
+            } else {
+                crossListedLuiIdsQuery += " AND cl1.division = '" + searchSubjectArea + "' " + coCodeSearchString;
+            }
+        } else {
+            crossListedLuiIdsQuery += coCodeSearchString;
+        }
+        long startTime = System.currentTimeMillis();
+        TypedQuery query = getEntityManager().createQuery(crossListedLuiIdsQuery, String.class);
+        LOGGER.info("******Time For Crosslist search******* " + (System.currentTimeMillis()-startTime) +"ms");
+        return query.getResultList();
     }
 
     /**
@@ -420,7 +568,10 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
         //Roll up the org ids (if the org cell exists already then
         String deploymentOrg = (String)result[i++];
 
-        row.addCell(SearchResultColumns.CREDIT_OPTION_NAME,(String)result[i++]);
+        String creditNameForDisplay = StringUtils.stripEnd(StringUtils.lowerCase((String)result[i++])," credits");
+        creditNameForDisplay = StringUtils.stripEnd(creditNameForDisplay," credit");
+
+        row.addCell(SearchResultColumns.CREDIT_OPTION_NAME,creditNameForDisplay);
 
         String gradingName = (String)result[i++];
         row.addCell(SearchResultColumns.GRADING_OPTION_NAME,gradingName);
@@ -622,9 +773,7 @@ public class CourseOfferingManagementSearchImpl extends SearchServiceAbstractHar
         }
     }
 
-    public void setGenericEntityDao(GenericEntityDao genericEntityDao) {
-        this.genericEntityDao = genericEntityDao;
-    }
+
 
 
 }
