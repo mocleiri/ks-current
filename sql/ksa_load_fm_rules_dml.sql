@@ -26,6 +26,7 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'on each session signup fire "FM Signup 1" rule set
  on session fire "FM Session 1" rule set
  on each session signup fire "FM Signup 2" rule set
+ on session fire "FM Session 2" rule set
 ')!
 
 -- FM Signup 1 rule set --
@@ -203,11 +204,11 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'charge incidental rate "late.fee", "default" using id "late.fee"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6002, 'FM Session 1_2', 3, 10, null,
-'(number of taken units gte 12 with rates "", types "", signup operations "" and session key "study.level" is "undergraduate")',
+'(number of taken units gte 12 with rates "", types "", signup operations "" and student is undergraduate)',
 'set session key "study.load" to "ft"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6003, 'FM Session 1_3', 3, 10, null,
-'(number of taken units gte 9 with rates "", types "", signup operations "" and session key "study.level" is "graduate")',
+'(number of taken units gte 9 with rates "", types "", signup operations "" and student is graduate)',
 'set session key "study.load" to "ft"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6004, 'FM Session 1_4', 3, 10, null,
@@ -215,11 +216,11 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'set session key "study.load" to "ft"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6005, 'FM Session 1_5', 3, 10, null,
-'(number of taken units lt 12 with rates "", types "", signup operations "" and session key "study.level" is "undergraduate")',
+'(number of taken units lt 12 with rates "", types "", signup operations "" and student is undergraduate)',
 'set session key "study.load" to "pt"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6006, 'FM Session 1_6', 3, 10, null,
-'(number of taken units lt 9 with rates "", types "", signup operations "" and session key "study.level" is "graduate")',
+'(number of taken units lt 9 with rates "", types "", signup operations "" and student is graduate)',
 'set session key "study.load" to "pt"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6007, 'FM Session 1_7', 3, 10, null,
@@ -231,51 +232,51 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'replace signup rates "regular", "" with "enpm", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6009, 'FM Session 1_9', 3, 8, null,
-'(session key "study.load" is "ft" and session key "residency" is "in.state" and session key "study.level" is "undergraduate" and session key "campus" is "cp")',
+'(student is full-time and student is resident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergraduate.resident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6010, 'FM Session 1_10', 3, 8, null,
-'(session key "study.load" is "ft" and session key "residency" is "in.state" and session key "study.level" is "graduate" and session key "campus" is "cp")',
+'(student is full-time and student is resident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.resident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6011, 'FM Session 1_11', 3, 8, null,
-'(session key "study.load" is "ft" and session key "residency" is "out.of.state" and session key "study.level" is "undergraduate" and session key "campus" is "cp")',
+'(student is full-time and student is nonresident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergraduate.nonresident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6012, 'FM Session 1_12', 3, 8, null,
-'(session key "study.load" is "ft" and session key "residency" is "out.of.state" and session key "study.level" is "graduate" and session key "campus" is "cp")',
+'(student is full-time and student is nonresident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.nonresident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6013, 'FM Session 1_13', 3, 8, null,
-'(session key "study.load" is "pt" and session key "residency" is "in.state" and session key "study.level" is "undergraduate" and session key "campus" is "cp")',
+'(student is part-time and student is resident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergraduate.resident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6014, 'FM Session 1_14', 3, 8, null,
-'(session key "study.load" is "pt" and session key "residency" is "in.state" and session key "study.level" is "graduate" and session key "campus" is "cp")',
+'(student is part-time and student is resident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.resident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6015, 'FM Session 1_15', 3, 8, null,
-'(session key "study.load" is "pt" and session key "residency" is "out.of.state" and session key "study.level" is "undergraduate" and session key "campus" is "cp")',
+'(student is part-time and student is nonresident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergraduate.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6016, 'FM Session 1_16', 3, 8, null,
-'(session key "study.load" is "pt" and session key "residency" is "out.of.state" and session key "study.level" is "graduate" and session key "campus" is "cp")',
+'(student is part-time and student is nonresident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6017, 'FM Session 1_17', 3, 8, null,
-'(session key "residency" is "in.state" and session key "study.level" is "undergraduate" and session key "campus" is "sg")',
+'(student is resident and student is undergraduate and session key "campus" is "sg")',
 'replace signup rates "regular", "" with "sg.undergrad.resident", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6018, 'FM Session 1_18', 3, 8, null,
-'(session key "residency" is "out.of.state" and session key "study.level" is "undergraduate" and session key "campus" is "sg")',
+'(student is nonresident and student is undergraduate and session key "campus" is "sg")',
 'replace signup rates "regular", "" with "sg.undergrad.nonresident", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6019, 'FM Session 1_19', 3, 8, null,
-'(session key "residency" is "in.state" and session key "study.level" is "graduate" and session key "campus" is "sg")',
+'(student is resident and student is graduate and session key "campus" is "sg")',
 'replace signup rates "regular", "" with "sg.graduate.resident", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6020, 'FM Session 1_20', 3, 8, null,
-'(session key "residency" is "out.of.state" and session key "study.level" is "graduate" and session key "campus" is "sg")',
+'(student is nonresident and student is graduate and session key "campus" is "sg")',
 'replace signup rates "regular", "" with "sg.graduate.nonresident", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6021, 'FM Session 1_21', 3, 8, null,
@@ -291,31 +292,31 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'remove signup rates "regular"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6024, 'FM Session 1_24', 3, 8, null,
-'(session key "study.load" is "ft" and session key "residency" is "in.state")',
+'(student is full-time and student is resident)',
 'replace signup rates "cp", "" with "cp.resident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6025, 'FM Session 1_25', 3, 8, null,
-'(session key "study.load" is "ft" and session key "residency" is "out.of.state")',
+'(student is full-time and student is nonresident)',
 'replace signup rates "cp", "" with "cp.nonresident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6026, 'FM Session 1_26', 3, 8, null,
-'(session key "study.load" is "pt" and session key "residency" is "in.state")',
+'(student is part-time and student is resident)',
 'replace signup rates "cp", "" with "cp.resident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6027, 'FM Session 1_27', 3, 8, null,
-'(session key "study.load" is "pt" and session key "residency" is "out.of.state")',
+'(student is part-time and student is nonresident)',
 'replace signup rates "cp", "" with "cp.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6028, 'FM Session 1_28', 3, 8, null,
-'(signup has rates "tech.fee.flag" and session key "study.load" is "ft")',
+'(signup has rates "tech.fee.flag" and student is full-time)',
 'replace signup rates "tech.fee.flag", "" with "tech.fee.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6029, 'FM Session 1_29', 3, 8, null,
-'(signup has rates "tech.fee.flag" and session key "study.load" is "pt")',
+'(signup has rates "tech.fee.flag" and student is part-time)',
 'replace signup rates "tech.fee.flag", "" with "tech.fee.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6030, 'FM Session 1_30', 3, 8, null,
-'(session key "study.level" is "graduate" and signup has rates "art.ug")',
+'(student is graduate and signup has rates "art.ug")',
 'replace signup rates "art.ug", "" with "art.grad", "default"')!
 
 
@@ -489,6 +490,57 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'charge rates "dc.weeknight", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 
+-- FM Session 2 rule set --
+
+Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (104, 'FM Session 2', 3,
+'import java.util.*;
+import java.math.*;
+import com.sigmasys.kuali.ksa.model.*;
+import com.sigmasys.kuali.ksa.model.fm.*;
+import com.sigmasys.kuali.ksa.model.rule.*;
+import com.sigmasys.kuali.ksa.service.brm.*;
+import com.sigmasys.kuali.ksa.service.fm.*;
+import com.sigmasys.kuali.ksa.model.security.*;
+import com.sigmasys.kuali.ksa.util.*;
+import org.apache.commons.lang.*;
+
+expander ksa.dsl
+
+global FeeManagementSession fmSession;
+
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (8001, 'FM Session 2_1', 3, 6, null,
+'(Context is initialized)',
+'charge rates "", "" with types "tuition.credits.fixed,tuition.flat", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (8002, 'FM Session 2_2', 3, 8, null,
+'(Context is initialized)',
+'charge rates "", "" with types ".*fee.*", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (8003, 'FM Session 2_3', 3, 10, null,
+'(session key "80percent" is "yes")',
+'charge rates "", "" in amount of 20% with types "tuition.credits.fixed", catalogs "", signup operations "WITHDRAW"
+ charge rates "mba.cohort..*", "" in amount of 20% with types "", catalogs "", signup operations "WITHDRAW"
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (8004, 'FM Session 2_4', 3, 10, null,
+'(session key "60percent" is "yes")',
+'charge rates "", "" in amount of 40% with types "tuition.credits.fixed", catalogs "", signup operations "WITHDRAW"
+ charge rates "mba.cohort..*", "" in amount of 40% with types "", catalogs "", signup operations "WITHDRAW"
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (8005, 'FM Session 2_5', 3, 10, null,
+'(session key "40percent" is "yes")',
+'charge rates "", "" in amount of 60% with types "tuition.credits.fixed", catalogs "", signup operations "WITHDRAW"
+ charge rates "mba.cohort..*", "" in amount of 60% with types "", catalogs "", signup operations "WITHDRAW"
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (8006, 'FM Session 2_6', 3, 10, null,
+'(session key "20percent" is "yes")',
+'charge rates "", "" in amount of 80% with types "tuition.credits.fixed", catalogs "", signup operations "WITHDRAW"
+ charge rates "mba.cohort..*", "" in amount of 80% with types "", catalogs "", signup operations "WITHDRAW"
+')!
 
 -- FM rule associations
 -- Main rule set
@@ -570,7 +622,6 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7019)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7020)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7021)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7022)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7022)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7023)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7024)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7025)!
@@ -584,6 +635,14 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7032)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7033)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7034)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7035)!
+
+-- FM Session 2 rule set --
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8001)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8002)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8003)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8004)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8005)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8006)!
 
 
 -----------------------------------------------------------------------------------------------------------------------
