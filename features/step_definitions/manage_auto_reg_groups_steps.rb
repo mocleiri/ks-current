@@ -149,7 +149,7 @@ When /^I copy an Activity Offering$/ do
 end
 
 When /^I add an Activity Offering$/ do
-  @course_offering.create_ao(make ActivityOffering, :format => "Lecture/Discussion")
+  @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture/Discussion")
 end
 
 When /^I update an Activity Offering to have less seats$/ do

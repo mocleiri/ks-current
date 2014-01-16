@@ -140,6 +140,7 @@ Then /^I disable the allow hold list option$/ do
 end
 
 Given /^I add two activity offerings$/ do
+  @course_offering.manage
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
   @activity_offering.save
   @activity_offering2 = create ActivityOffering, :parent_course_offering => @course_offering
