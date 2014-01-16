@@ -16,6 +16,7 @@
 # the external paths for the changes to take effect.
 #
 ks-api  https://svn.kuali.org/repos/student/enrollment/ks-api/branches/KSAP-merge-to-trunk
+ks-ap  https://svn.kuali.org/repos/student/enrollment/ks-ap/branches/KSAP-merge-to-trunk
 ks-core  https://svn.kuali.org/repos/student/enrollment/ks-core/branches/KSAP-merge-to-trunk
 ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/KSAP-merge-to-trunk
 ks-enroll  https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/KSAP-merge-to-trunk
