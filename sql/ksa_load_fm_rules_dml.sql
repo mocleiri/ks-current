@@ -25,6 +25,7 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 '(Context is initialized)',
 'on each session signup fire "FM Signup 1" rule set
  on session fire "FM Session 1" rule set
+ on each session signup fire "FM Signup 2" rule set
 ')!
 
 -- FM Signup 1 rule set --
@@ -306,15 +307,187 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 'replace signup rates "cp", "" with "cp.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6028, 'FM Session 1_28', 3, 8, null,
-'(session key "campus" is "sg" and signup has rate "sg.fee" and session key "study.load" is "ft" and session key "study.level" is "undergraduate")',
+'(signup has rates "tech.fee.flag" and session key "study.load" is "ft")',
+'replace signup rates "tech.fee.flag", "" with "tech.fee.ft", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6029, 'FM Session 1_29', 3, 8, null,
+'(signup has rates "tech.fee.flag" and session key "study.load" is "pt")',
+'replace signup rates "tech.fee.flag", "" with "tech.fee.pt", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6030, 'FM Session 1_30', 3, 8, null,
+'(session key "study.level" is "graduate" and signup has rates "art.ug")',
+'replace signup rates "art.ug", "" with "art.grad", "default"')!
+
+
+-- FM Signup 2 rule set --
+
+Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (103, 'FM Signup 2', 3,
+'import java.util.*;
+import java.math.*;
+import com.sigmasys.kuali.ksa.model.*;
+import com.sigmasys.kuali.ksa.model.fm.*;
+import com.sigmasys.kuali.ksa.model.rule.*;
+import com.sigmasys.kuali.ksa.service.brm.*;
+import com.sigmasys.kuali.ksa.service.fm.*;
+import com.sigmasys.kuali.ksa.model.security.*;
+import com.sigmasys.kuali.ksa.util.*;
+import org.apache.commons.lang.*;
+
+expander ksa.dsl
+
+global FeeManagementSession fmSession;
+global FeeManagementSignup fmSignup;
+
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7001, 'FM Signup 2_1', 3, 10, null,
+'(signup is taken and signup does not have rates "academic.service.fee")',
+'set session key "academic.service.remove" to "y"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7002, 'FM Signup 2_2', 3, 10, null,
+'(session key "campus" is "sg" and signup has rates "sg.fee" and student is full-time and student is undergraduate)',
 'add signup rate "sg.facilities.ft", "default"
+ add signup rate "sg.administrative.fee", "default"
+ ')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7003, 'FM Signup 2_3', 3, 10, null,
+'(session key "campus" is "sg" and signup has rates "sg.fee" and student is part-time and student is undergraduate)',
+'add signup rate "sg.facilities.pt", "default"
  add signup rate "sg.administrative.fee", "default"
 ')!
 
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7004, 'FM Signup 2_4', 3, 10, null,
+'(session key "campus" is "sg" and signup has rates "sg.fee" and student is full-time and student is graduate)',
+'add signup rate "sg.facilities.ft", "default"
+ add signup rate "sg.fee.graduate.ft", "default"
+')!
 
---Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6024, 'FM Session 1_24', 3, 7, null,
---'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.resident.ft")',
---'add signup rate "cp.undergrad.resident.ft.frostburg.discount", "default"')!
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7005, 'FM Signup 2_5', 3, 10, null,
+'(session key "campus" is "sg" and signup has rates "sg.fee" and student is part-time and student is graduate)',
+'add signup rate "sg.facilities.pt", "default"
+ add signup rate "sg.fee.graduate.pt", "default"
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7006, 'FM Signup 2_6', 3, 10, null,
+'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.resident.ft")',
+'add signup rate "cp.undergrad.resident.ft.frostburg.discount", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7007, 'FM Signup 2_7', 3, 10, null,
+'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.resident.pt")',
+'add signup rate "cp.undergrad.resident.pt.frostburg.discount", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7008, 'FM Signup 2_8', 3, 10, null,
+'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.nonresident.ft")',
+'add signup rate "cp.undergrad.nonresident.ft.frostburg.discount", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7009, 'FM Signup 2_9', 3, 10, null,
+'(session key "major.code" is "0909F" and signup has rates "cp.undergrad.nonresident.pt")',
+'add signup rate "cp.undergrad.nonresident.pt.frostburg.discount", "default"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7010, 'FM Signup 2_10', 3, 10, null,
+'(signup has rates "tech.fee.[..]" and signup has rates "cp.[.*graduate].[..]")',
+'remove signup rates "tech.fee.[..]"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7011, 'FM Signup 2_11', 3, 9, null,
+'(session key "academic.service.remove" is "y")',
+'remove signup rates "academic.service.fee"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7012, 'FM Signup 2_12', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.undergrad.resident.ft,cp.graduate.resident.ft,cp.undergrad.nonresident.ft")',
+'mark signup as complete')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7013, 'FM Signup 2_13', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em11" and manifest has rates "mba.cohort.em11")',
+'mark signup as complete')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7014, 'FM Signup 2_14', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em12" and manifest has rates "mba.cohort.em12")',
+'mark signup as complete')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7015, 'FM Signup 2_15', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em13" and manifest has rates "mba.cohort.em13")',
+'mark signup as complete')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7016, 'FM Signup 2_16', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.ac01" and manifest has rates "mba.cohort.ac01")',
+'mark signup as complete')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7017, 'FM Signup 2_17', 3, 4, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.ac01")',
+'charge rates "mba.cohort.ac01", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7018, 'FM Signup 2_18', 3, 4, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em11")',
+'charge rates "mba.cohort.em11", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7019, 'FM Signup 2_19', 3, 4, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em12")',
+'charge rates "mba.cohort.em12", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7020, 'FM Signup 2_20', 3, 4, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em13")',
+'charge rates "mba.cohort.em13", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7021, 'FM Signup 2_21', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.undergrad.resident.pt")',
+'charge rates "cp.undergrad.resident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7022, 'FM Signup 2_22', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.graduate.resident.pt")',
+'charge rates "cp.graduate.resident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7023, 'FM Signup 2_23', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.undergrad.nonresident.pt")',
+'charge rates "cp.undergrad.nonresident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7024, 'FM Signup 2_24', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.graduate.nonresident.pt")',
+'charge rates "cp.graduate.nonresident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7025, 'FM Signup 2_25', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "sg.grad.resident")',
+'charge rates "sg.grad.resident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7026, 'FM Signup 2_26', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "sg.grad.nonresident")',
+'charge rates "sg.grad.nonresident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7027, 'FM Signup 2_27', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "baltimore.mba")',
+'charge rates "baltimore.mba", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7028, 'FM Signup 2_28', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.resident")',
+'charge rates "public.policy.resident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7029, 'FM Signup 2_29', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.resident.differential")',
+'charge rates "public.policy.resident.differential", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7030, 'FM Signup 2_30', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.nonresident")',
+'charge rates "public.policy.nonresident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7031, 'FM Signup 2_31', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.nonresident.differential")',
+'charge rates "public.policy.nonresident.differential", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7032, 'FM Signup 2_32', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cybersecurity.leadership")',
+'charge rates "cybersecurity.leadership", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7033, 'FM Signup 2_33', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "enpm")',
+'charge rates "enpm", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7034, 'FM Signup 2_34', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "dc.weekend")',
+'charge rates "dc.weekend", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7035, 'FM Signup 2_35', 3, 5, null,
+'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "dc.weeknight")',
+'charge rates "dc.weeknight", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
+
 
 
 -- FM rule associations
@@ -371,6 +544,46 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6025)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6026)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6027)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6028)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6029)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6030)!
+
+-- FM Signup 2 rule set --
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7001)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7002)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7003)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7004)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7005)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7006)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7007)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7008)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7009)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7010)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7011)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7012)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7013)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7014)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7015)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7016)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7017)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7018)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7019)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7020)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7021)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7022)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7022)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7023)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7024)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7025)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7026)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7027)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7028)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7029)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7030)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7031)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7032)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7033)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7034)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 7035)!
 
 
 -----------------------------------------------------------------------------------------------------------------------

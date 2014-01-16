@@ -296,27 +296,30 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         Set<FeeManagementManifest> filteredManifests = new HashSet<FeeManagementManifest>();
 
-        List<String> rateCodeValues = CommonUtils.split(rateCodes, MULTI_VALUE_DELIMITER);
-        List<String> rateTypeCodeValues = CommonUtils.split(rateTypeCodes, MULTI_VALUE_DELIMITER);
-        List<String> rateCatalogCodeValues = CommonUtils.split(rateCatalogCodes, MULTI_VALUE_DELIMITER);
+        if (CollectionUtils.isNotEmpty(manifests)) {
 
-        for (FeeManagementManifest manifest : manifests) {
+            List<String> rateCodeValues = CommonUtils.split(rateCodes, MULTI_VALUE_DELIMITER);
+            List<String> rateTypeCodeValues = CommonUtils.split(rateTypeCodes, MULTI_VALUE_DELIMITER);
+            List<String> rateCatalogCodeValues = CommonUtils.split(rateCatalogCodes, MULTI_VALUE_DELIMITER);
 
-            Rate rate = manifest.getRate();
-            RateType rateType = rate.getRateType();
-            RateCatalog rateCatalog = rate.getRateCatalogAtp().getRateCatalog();
+            for (FeeManagementManifest manifest : manifests) {
 
-            boolean rateCodesComply = StringUtils.isEmpty(rateCodes) ||
-                    matchesPatterns(rate.getCode(), rateCodeValues);
+                Rate rate = manifest.getRate();
+                RateType rateType = rate.getRateType();
+                RateCatalog rateCatalog = rate.getRateCatalogAtp().getRateCatalog();
 
-            boolean rateTypeCodesComply = StringUtils.isEmpty(rateTypeCodes) ||
-                    (rateType != null && matchesPatterns(rateType.getCode(), rateTypeCodeValues));
+                boolean rateCodesComply = StringUtils.isEmpty(rateCodes) ||
+                        matchesPatterns(rate.getCode(), rateCodeValues);
 
-            boolean rateCatalogCodesComply = StringUtils.isEmpty(rateCatalogCodes) ||
-                    (rateCatalog != null && matchesPatterns(rateCatalog.getCode(), rateCatalogCodeValues));
+                boolean rateTypeCodesComply = StringUtils.isEmpty(rateTypeCodes) ||
+                        (rateType != null && matchesPatterns(rateType.getCode(), rateTypeCodeValues));
 
-            if (rateCodesComply && rateTypeCodesComply && rateCatalogCodesComply) {
-                filteredManifests.add(manifest);
+                boolean rateCatalogCodesComply = StringUtils.isEmpty(rateCatalogCodes) ||
+                        (rateCatalog != null && matchesPatterns(rateCatalog.getCode(), rateCatalogCodeValues));
+
+                if (rateCodesComply && rateTypeCodesComply && rateCatalogCodesComply) {
+                    filteredManifests.add(manifest);
+                }
             }
         }
 
@@ -1323,8 +1326,20 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         return false;
     }
 
+    /**
+     * Checks if the manifest has rates specified by the codes.
+     *
+     * @param rateCodes List of Rate codes separated by ","
+     * @param context   BRM context
+     * @return boolean value
+     */
+    @Override
+    public boolean manifestHasRates(String rateCodes, BrmContext context) {
 
-    // TODO
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        return CollectionUtils.isNotEmpty(filterManifests(session.getManifests(), rateCodes, null, null));
+    }
 
 
     // RHS methods start here

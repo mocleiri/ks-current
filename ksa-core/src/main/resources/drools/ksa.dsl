@@ -1,6 +1,6 @@
 # The KSA DSL definition
 
-# Commonly used DSL definitions
+# Commonly used DSL macros
 
 [keyword][]and = &&
 
@@ -26,6 +26,15 @@
 ########################################################################################################################
 
 # FEE MANAGEMENT DSL definitions
+
+# FM macros
+
+[keyword][]student is resident = session key "residency" is "in.state"
+[keyword][]student is nonresident = session key "residency" is "out.of.state"
+[keyword][]student is full-time = session key "study.load" is "ft"
+[keyword][]student is part-time = session key "study.load" is "pt"
+[keyword][]student is undergraduate = session key "study.level" is "undergraduate"
+[keyword][]student is graduate = session key "study.level" is "graduate"
 
 # LHS definitions
 [when][]account key "{key}" is "{value}" = fmService.compareAccountKeyPair("{key}","{value}","==",context)
@@ -53,10 +62,13 @@
 [when][]signup rate key "{key}" lt {value} = fmService.compareSignupRateKeyPair("{key}","{value}","<",context)
 [when][]signup rate key "{key}" lte {value} = fmService.compareSignupRateKeyPair("{key}","{value}","<=",context)
 [when][]signup has rates "{rateCodes}" = fmService.signupHasRates("{rateCodes}",context)
+[when][]signup does not have rates "{rateCodes}" = !fmService.signupHasRates("{rateCodes}",context)
 [when][]signup has rate types "{rateTypeCodes}" = fmService.signupHasRateTypes("{rateTypeCodes}",context)
 [when][]signup has rate catalogs "{rateCatalogCodes}" = fmService.signupHasRateCatalogs("{rateCatalogCodes}",context)
 [when][]signup is taken = fmService.signupIsTaken(context)
 [when][]signup is complete = fmService.signupIsComplete(context)
+[when][]manifest has rates "{rateCodes}" = fmService.manifestHasRates("{rateCodes}",context)
+[when][]manifest does not have rates "{rateCodes}" = !fmService.manifestHasRates("{rateCodes}",context)
 [when][]account type is "{accountTypeCode}" = fmService.compareAccountType("{accountTypeCode}","==",context)
 [when][]account type is not "{accountTypeCode}" = fmService.compareAccountType("{accountTypeCode}","!=",context)
 [when][]account status is "{accountStatusCode}" = fmService.compareAccountStatus("{accountStatusCode}","==",context)

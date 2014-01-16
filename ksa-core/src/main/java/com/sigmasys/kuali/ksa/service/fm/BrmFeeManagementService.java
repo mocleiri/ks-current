@@ -288,8 +288,15 @@ public interface BrmFeeManagementService {
      */
     boolean signupHasOfferingTypes(String offeringTypes, BrmContext context);
 
+    /**
+     * Checks if the manifest has rates specified by the codes.
+     *
+     * @param rateCodes List of Rate codes separated by ","
+     * @param context   BRM context
+     * @return boolean value
+     */
+    boolean manifestHasRates(String rateCodes, BrmContext context);
 
-    // TODO
 
     // RHS method declarations
 
