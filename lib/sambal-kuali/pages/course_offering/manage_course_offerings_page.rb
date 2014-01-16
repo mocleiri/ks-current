@@ -45,7 +45,7 @@ class ManageCourseOfferings < BasePage
   element(:add_activity_button){ |b| b.frm.button(id: "KS-CourseOfferingManagement-ToolBar-Add-AO-ClusterTab") }
   action(:add_activity){ |b| b.add_activity_button.click; b.loading.wait_while_present}
 
-  element(:add_activity_popup_div){ |b| b.frm.div(id: /jquerybubblepopup/) }
+  element(:add_activity_popup_div){ |b| b.frm.div(id: "KS-CourseOfferingManagement-AddActivityOfferingPopupForm") }
   element(:format) { |b| b.add_activity_popup_div.select }
   element(:activity_type) { |b| b.add_activity_popup_div.select(id: "activityOfferingTypeDropDown_control") }
   element(:cluster) { |b| b.add_activity_popup_div.select(id: "clusterDropDown_control") }
@@ -79,7 +79,7 @@ class ManageCourseOfferings < BasePage
   element(:rename_published_name) { |b| b.rename_cluster_popup_div.text_field(id: "publishedClusterNameForRename_control") }
   action(:rename_aoc_button) { |b| b.rename_cluster_popup_div.button(text: "Rename").click; b.loading.wait_while_present }
 
-  element(:add_cluster_popup_div){ |b| b.frm.div(id: /jquerybubblepopup/) }
+  element(:add_cluster_popup_div){ |b| b.frm.div(id: "KS-CourseOfferingManagement-AddAOCPopupForm") }
   element(:format_aoc_select) { |b| b.add_cluster_popup_div.select(name: "formatOfferingIdForViewRG") }
   element(:private_name_add) { |b| b.add_cluster_popup_div.text_field(name: "privateClusterNamePopover") }
   element(:published_name_add) { |b| b.add_cluster_popup_div.text_field(name: "publishedClusterNamePopover") }
