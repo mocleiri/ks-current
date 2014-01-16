@@ -462,18 +462,17 @@ class CourseOffering
 
     end
     #check to see if course code returns multiple rows
-    on_list_page = false
-    on ManageCourseOfferings do |page|
-      Watir::Wait.until { page.create_co_button.present? || page.add_activity_button.present? }
-      on_list_page = page.create_co_button.exists?
-      #previous lines avoid delay caused by 'page.create_co_button.wait_until_present(5)'
-    end
+    begin
+      on ManageCourseOfferings do |page|
+        page.create_co_button.wait_until_present(5)
+      end
 
-    if on_list_page
       on ManageCourseOfferingList do |page|
         page.target_row(@course).link(text: "Manage").click
         page.loading.wait_while_present
       end
+    rescue Watir::Wait::TimeoutError
+      #means was single CO returned (or nothing returned), AO list is already displayed
     end
   end
 
