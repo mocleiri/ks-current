@@ -1540,6 +1540,61 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
+     * Sets "isComplete" to true or false on FeeManagementSignupRate objects specified by Rate codes and sub-codes.
+     *
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateSubCodes     List of rate sub-codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param isComplete       Boolean value
+     * @param context          BRM context
+     */
+    @Override
+    public void setSignupRatesComplete(String rateCodes,
+                                       String rateSubCodes,
+                                       String rateTypeCodes,
+                                       String rateCatalogCodes,
+                                       String signupOperations,
+                                       boolean isComplete,
+                                       BrmContext context) {
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+
+        Set<FeeManagementSignup> signups =
+                filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
+                        rateCodes, rateTypeCodes, rateCatalogCodes, signupOperations, null);
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            List<String> rateSubCodeValues = CommonUtils.split(rateSubCodes, MULTI_VALUE_DELIMITER);
+
+            for (FeeManagementSignup fmSignup : signups) {
+
+                Set<FeeManagementSignupRate> signupRates = fmSignup.getIncompleteSignupRates();
+
+                if (CollectionUtils.isNotEmpty(signupRates)) {
+
+                    for (FeeManagementSignupRate signupRate : signupRates) {
+
+                        Rate rate = signupRate.getRate();
+
+                        boolean rateSubCodesComply = StringUtils.isEmpty(rateSubCodes) ||
+                                matchesPatterns(rate.getSubCode(), rateSubCodeValues);
+
+                        if (rateSubCodesComply) {
+                            signupRate.setComplete(isComplete);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
      * Sets "isComplete" to true or false on all FeeManagementSignup objects from FeeManagementSession
      * that have certain signup operations.
      *
@@ -1838,7 +1893,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param newRateSubCode Sub-code of the new rate
      */
     @Override
-    public void replaceRates(String rateCodes, String rateSubCodes, String newRateCode, String newRateSubCode, BrmContext context) {
+    public void replaceRates(String rateCodes, String rateSubCodes, String newRateCode, String
+            newRateSubCode, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -1897,6 +1953,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param rateCatalogCodes List of rate catalog codes separated by ","
      * @param signupOperations List of signup operation values separated by ","
      * @param percentage       Amount percentage value [0, 100]
+     * @param useTakenSignups  If true only taken signups will be used, if false - non-taken signups, if null - all signups.
      * @param context          BRM context
      */
     @Override
@@ -1906,6 +1963,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                   String rateCatalogCodes,
                                   String signupOperations,
                                   BigDecimal percentage,
+                                  Boolean useTakenSignups,
                                   BrmContext context) {
 
         if (percentage != null && (percentage.compareTo(BigDecimal.ZERO) < 0 ||
@@ -1919,6 +1977,14 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(), rateCodes, rateTypeCodes,
                 rateCatalogCodes, signupOperations, null);
+
+        if (useTakenSignups != null) {
+            for (FeeManagementSignup signup : new HashSet<FeeManagementSignup>(signups)) {
+                if (useTakenSignups && !signup.isTaken() || !useTakenSignups && signup.isTaken()) {
+                    signups.remove(signup);
+                }
+            }
+        }
 
         // Map of [Rate ID, Date]
         Map<Long, Date> rateBaseDateMap = new HashMap<Long, Date>();
@@ -1934,7 +2000,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             if (CollectionUtils.isNotEmpty(signupRates)) {
 
-                for (FeeManagementSignupRate signupRate : new HashSet<FeeManagementSignupRate>(signupRates)) {
+                for (FeeManagementSignupRate signupRate : signupRates) {
 
                     Rate rate = signupRate.getRate();
 
@@ -2211,7 +2277,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context          BRM context
      */
     @Override
-    public void addTagsToManifests(String tagCodes, String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+    public void addTagsToManifests(String tagCodes, String rateCodes, String rateTypeCodes, String
+            rateCatalogCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -2286,7 +2353,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context          BRM context
      */
     @Override
-    public void addRollupToManifests(String rollupCode, String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+    public void addRollupToManifests(String rollupCode, String rateCodes, String rateTypeCodes, String
+            rateCatalogCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -2360,7 +2428,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context          BRM context
      */
     @Override
-    public void setManifestEffectiveDate(String effectiveDate, String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+    public void setManifestEffectiveDate(String effectiveDate, String rateCodes, String rateTypeCodes, String
+            rateCatalogCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -2436,7 +2505,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context          BRM context
      */
     @Override
-    public void setManifestRecognitionDate(String recognitionDate, String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+    public void setManifestRecognitionDate(String recognitionDate, String rateCodes, String rateTypeCodes, String
+            rateCatalogCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -2512,7 +2582,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context          BRM context
      */
     @Override
-    public void setManifestGlAccount(String glAccountId, String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+    public void setManifestGlAccount(String glAccountId, String rateCodes, String rateTypeCodes, String
+            rateCatalogCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -2585,7 +2656,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context          BRM context
      */
     @Override
-    public void setManifestAmount(BigDecimal amount, String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
+    public void setManifestAmount(BigDecimal amount, String rateCodes, String rateTypeCodes, String
+            rateCatalogCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 

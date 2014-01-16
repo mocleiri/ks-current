@@ -378,6 +378,25 @@ public interface BrmFeeManagementService {
     void setSignupComplete(boolean isComplete, BrmContext context);
 
     /**
+     * Sets "isComplete" to true or false on FeeManagementSignupRate objects specified by Rate codes and sub-codes.
+     *
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateSubCodes     List of rate sub-codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param isComplete       Boolean value
+     * @param context          BRM context
+     */
+    void setSignupRatesComplete(String rateCodes,
+                                String rateSubCodes,
+                                String rateTypeCodes,
+                                String rateCatalogCodes,
+                                String signupOperations,
+                                boolean isComplete,
+                                BrmContext context);
+
+    /**
      * Sets "isComplete" to true or false on all FeeManagementSignup objects from FeeManagementSession
      * that have certain signup operations.
      *
@@ -475,6 +494,7 @@ public interface BrmFeeManagementService {
      * @param rateCatalogCodes List of rate catalog codes separated by ","
      * @param signupOperations List of signup operation values separated by ","
      * @param percentage       Amount percentage value [0, 100]
+     * @param useTakenSignups  If true only taken signups will be used, if false - non-taken signups, if null - all signups.
      * @param context          BRM context
      */
     void chargeSignupRates(String rateCodes,
@@ -483,6 +503,7 @@ public interface BrmFeeManagementService {
                            String rateCatalogCodes,
                            String signupOperations,
                            BigDecimal percentage,
+                           Boolean useTakenSignups,
                            BrmContext context);
 
     /**

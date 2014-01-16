@@ -177,6 +177,11 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
  remove signup rates ".*"
  add signup rate "late.registration", "1"
+ mark signup rates ".*", "1" as not complete
+ mark signup rates "late.registration", "1" as complete with types "", catalogs "", signup operations ""
+ mark signup rates ".*", "1" as complete
+ mark signup rates "late.registration", "" as not complete
+ mark signup rates ".*", "" as not complete
 ')!
 
 -- FM Session 1 rule set --
