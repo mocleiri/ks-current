@@ -119,6 +119,25 @@ public class RatesController extends GenericSearchController {
         return getUIFModelAndView(form);
     }
 
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=saveRate")
+    public ModelAndView saveRate(@ModelAttribute("KualiForm") RatesForm form, @RequestParam("rateId") Long rateId) {
+        RateModel rateModel = findRate(form, rateId);
+
+        if(rateModel == null) {
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Rate with id '" + rateId + "' not found");
+            return getUIFModelAndView(form);
+        }
+
+        try{
+            rateService.persistRate(rateModel.getRate());
+            GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Rate saved");
+        } catch(RuntimeException e) {
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
+        }
+
+        return getUIFModelAndView(form);
+    }
+
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=rolloverRate")
     public ModelAndView rolloverRate(@ModelAttribute("KualiForm") RatesForm form, @RequestParam("rateId") Long rateId) {
         RateModel rateModel = findRate(form, rateId);

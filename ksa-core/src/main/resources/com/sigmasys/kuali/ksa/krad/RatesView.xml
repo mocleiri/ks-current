@@ -185,7 +185,7 @@
                                 <property name="items">
                                     <list>
                                         <!-- "Save" image action -->
-                                        <bean parent="Uif-ActionLink" p:methodToCall="saveRates" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');">
+                                        <bean parent="Uif-ActionLink" p:methodToCall="saveRate" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');">
                                             <property name="actionImage">
                                                 <bean parent="Uif-Image" p:source="../images/save.png" p:style="cursor:pointer;" p:altText="Save"/>
                                             </property>
