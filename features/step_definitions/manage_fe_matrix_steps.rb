@@ -18,7 +18,7 @@ When /^I add a Common Final Exam course rule to the Final Exam Matrix$/ do
                    :exam_type => "Common", :courses => "ENGL312", :start_time => "08:00", :end_time => "10:00"
 end
 
-When /^I add Building and Room location data to the Requested Exam Offering Delivery Logistic information$/ do
+When /^I add Building and Room location data to the Requested Exam Offering Scheduling Information$/ do
   @matrix.add_edit_rdl_info
 end
 

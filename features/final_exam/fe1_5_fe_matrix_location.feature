@@ -2,7 +2,7 @@
 Feature: SA.FE1-5 Manage the Final Exam Matrix so that FEs can be Scheduled with the location of the AO
   FE 1.5: As a Central Administrator I want to indicate with a global setting that activity offering locations
   should be used when scheduling exam offerings so that matrix scheduled exam offerings will include location in
-  requested delivery logistics
+  requested scheduling information
 
   Background:
     Given I am logged in as admin

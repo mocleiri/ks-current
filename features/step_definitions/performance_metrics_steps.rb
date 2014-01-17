@@ -439,7 +439,7 @@ When /^I copy a small Activity Offering for performance$/ do
   end
 end
 
-When /^I add Delivery Logistics to a large activity offering and save$/ do
+When /^I add Scheduling Information to a large activity offering and save$/ do
   @performance_test = make PerformanceTest
   go_to_manage_course_offerings
   on ManageCourseOfferings do |page|
@@ -461,14 +461,14 @@ When /^I add Delivery Logistics to a large activity offering and save$/ do
     page.loading.wait_while_present
     page.add_facility.set "IPT"
     page.add_room.set "1116"
-    page.add_new_delivery_logistics
+    page.add_new_scheduling_information
     @performance_test.start
     page.save
     @performance_test.end
   end
 end
 
-When /^I add Delivery Logistics to a medium activity offering and save$/ do
+When /^I add Scheduling Information to a medium activity offering and save$/ do
   @performance_test = make PerformanceTest
   go_to_manage_course_offerings
   on ManageCourseOfferings do |page|
@@ -490,7 +490,7 @@ When /^I add Delivery Logistics to a medium activity offering and save$/ do
     page.loading.wait_while_present
     page.add_facility.set "IPT"
     page.add_room.set "1116"
-    page.add_new_delivery_logistics
+    page.add_new_scheduling_information
     @performance_test.start
     page.save
     @performance_test.end
@@ -498,7 +498,7 @@ When /^I add Delivery Logistics to a medium activity offering and save$/ do
 end
 
 
-When /^I add Delivery Logistics to a small activity offering and save$/ do
+When /^I add Scheduling Information to a small activity offering and save$/ do
   @performance_test = make PerformanceTest
   go_to_manage_course_offerings
   on ManageCourseOfferings do |page|
@@ -520,7 +520,7 @@ When /^I add Delivery Logistics to a small activity offering and save$/ do
     page.loading.wait_while_present
     page.add_facility.set "IPT"
     page.add_room.set "1116"
-    page.add_new_delivery_logistics
+    page.add_new_scheduling_information
     @performance_test.start
     page.save
     @performance_test.end

@@ -10,7 +10,7 @@ Then /^the new Activity Offering is shown in the list of AOs$/ do
 end
 
 
-When /^I copy an AO with Actual Delivery Logistics$/ do
+When /^I copy an AO with Actual Scheduling Information$/ do
 
   # in ref-data this CO has ADLs but no RDLs (copy an ADL first if you need an RDL)
   course_offering = make CourseOffering, :course => "CHEM276"
@@ -22,7 +22,7 @@ When /^I copy an AO with Actual Delivery Logistics$/ do
                     :parent_course_offering => course_offering
 end
 
-When /^I copy an AO with Requested Delivery Logistics$/ do
+When /^I copy an AO with Requested Scheduling Information$/ do
 
   # in ref-data this CO has ADLs but no RDLs (copy an ADL first if you need an RDL)
   course_offering = make CourseOffering, :course => "CHEM276"
@@ -36,30 +36,30 @@ When /^I copy an AO with Requested Delivery Logistics$/ do
                     :parent_course_offering => course_offering
 end
 
-Then /^the "(ADL|RDL)s" are successfully copied as RDLs in the new AO$/ do |source_delivery_logistics_type|
+Then /^the "(ADL|RDL)s" are successfully copied as RDLs in the new AO$/ do |source_scheduling_information_type|
 
   course_offering = @ao_source.parent_course_offering
   course_offering.manage_and_init
-  source_delivery_logistics = nil
-  if source_delivery_logistics_type == "ADL"
-    source_delivery_logistics = course_offering.get_ao_obj_by_code(@ao_source.code).actual_delivery_logistics_list.values[0]
+  source_scheduling_information = nil
+  if source_scheduling_information_type == "ADL"
+    source_scheduling_information = course_offering.get_ao_obj_by_code(@ao_source.code).actual_scheduling_information_list.values[0]
   else
-    source_delivery_logistics = course_offering.get_ao_obj_by_code(@ao_source.code).requested_delivery_logistics_list.values[0]
+    source_scheduling_information = course_offering.get_ao_obj_by_code(@ao_source.code).requested_scheduling_information_list.values[0]
   end
-  source_delivery_logistics.nil?.should be_false
+  source_scheduling_information.nil?.should be_false
 
   #@ao_copy.parent_course_offering.manage
   @ao_copy.edit
 
   on ActivityOfferingMaintenance do |page|
-    page.view_requested_delivery_logistics
+    page.view_requested_scheduling_information
     page.requested_logistics_table.rows.size.should be > 2 #should be more than header/footer rows
     row = page.requested_logistics_table.rows[1]
-    page.get_requested_logistics_days(row).delete(' ').should == source_delivery_logistics.days
-    page.get_requested_logistics_start_time(row).delete(' ').should == "#{source_delivery_logistics.start_time}#{source_delivery_logistics.start_time_ampm}"
-    page.get_requested_logistics_end_time(row).delete(' ').should == "#{source_delivery_logistics.end_time}#{source_delivery_logistics.end_time_ampm}"
-    page.get_requested_logistics_facility(row).should == source_delivery_logistics.facility_long_name
-    page.get_requested_logistics_room(row).should == source_delivery_logistics.room
+    page.get_requested_logistics_days(row).delete(' ').should == source_scheduling_information.days
+    page.get_requested_logistics_start_time(row).delete(' ').should == "#{source_scheduling_information.start_time}#{source_scheduling_information.start_time_ampm}"
+    page.get_requested_logistics_end_time(row).delete(' ').should == "#{source_scheduling_information.end_time}#{source_scheduling_information.end_time_ampm}"
+    page.get_requested_logistics_facility(row).should == source_scheduling_information.facility_long_name
+    page.get_requested_logistics_room(row).should == source_scheduling_information.room
   end
 end
 

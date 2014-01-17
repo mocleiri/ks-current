@@ -1,8 +1,8 @@
 @nightly @green_team
 Feature: WC.Manage SOC
 
-  MSR 2.6: As Central Administrator, I want to process delivery logistics requests for all Activity Offerings within a selected Term
-  so that delivery logistics can be assigned (Mass Scheduling Event)
+  MSR 2.6: As Central Administrator, I want to process scheduling information requests for all Activity Offerings within a selected Term
+  so that scheduling information can be assigned (Mass Scheduling Event)
   MSR 4.1: Lock COs and AOs to send to Scheduler
   MSR 4.2: Re-open COs and AOs for Final Edits
   MSR 4.3: Mark COs and AOs ready for Publishing

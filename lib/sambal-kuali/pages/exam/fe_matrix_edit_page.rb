@@ -12,7 +12,7 @@ class FEMatrixEdit < BasePage
   element(:toolbar_section) { |b| b.frm.div( id: "KSFE-EditRule-ToolbarSection")}
   element(:expand_collapse_section) { |b| b.frm.div( id: "KRMS-RuleEditor-TreeExpandCollapse")}
   element(:rule_tree_section) { |b| b.frm.div( id: "KRMS-RuleEditor-TreeGroup")}
-  element(:delivery_logistics_section) { |b| b.frm.div( id: "FinalExam-DeliveryLogistic-New-Section")}
+  element(:scheduling_information_section) { |b| b.frm.div( id: "FinalExam-DeliveryLogistic-New-Section")}
   element(:proposition_section) { |b| b.frm.div( id: "editWithObjectTree")}
 
   value(:validation_message_text) { |b| b.frm.li( class: "uif-errorMessageItem").text}
@@ -44,15 +44,15 @@ class FEMatrixEdit < BasePage
   element(:cancel_proposition_link) { |b| b.proposition_section.a( text: /Cancel/)}
   action(:cancel_proposition) { |b| b.cancel_proposition_link.click; b.loading.wait_while_present}
 
-  element(:rdl_tba_checkbox) { |b| b.delivery_logistics_section.checkbox( id: "FinalExam_tba_control")}
+  element(:rdl_tba_checkbox) { |b| b.scheduling_information_section.checkbox( id: "FinalExam_tba_control")}
   action(:rdl_tba) { |b| b.rdl_tba_checkbox.click}
-  element(:rdl_days) { |b| b.delivery_logistics_section.select( id: "FinalExam_days_control")}
-  element(:rdl_starttime) { |b| b.delivery_logistics_section.text_field( id: "FinalExam_starttime_control")}
-  element(:rdl_starttime_ampm) { |b| b.delivery_logistics_section.select( id: "FinalExam_starttime_ampm_control")}
-  element(:rdl_endtime) { |b| b.delivery_logistics_section.text_field( id: "FinalExam_endtime_control")}
-  element(:rdl_endtime_ampm) { |b| b.delivery_logistics_section.select( id: "FinalExam_endtime_ampm_control")}
-  element(:rdl_facility) { |b| b.delivery_logistics_section.text_field( id: "FinalExam_building_control")}
-  element(:rdl_room) { |b| b.delivery_logistics_section.text_field( id: "FinalExam_room_control")}
+  element(:rdl_days) { |b| b.scheduling_information_section.select( id: "FinalExam_days_control")}
+  element(:rdl_starttime) { |b| b.scheduling_information_section.text_field( id: "FinalExam_starttime_control")}
+  element(:rdl_starttime_ampm) { |b| b.scheduling_information_section.select( id: "FinalExam_starttime_ampm_control")}
+  element(:rdl_endtime) { |b| b.scheduling_information_section.text_field( id: "FinalExam_endtime_control")}
+  element(:rdl_endtime_ampm) { |b| b.scheduling_information_section.select( id: "FinalExam_endtime_ampm_control")}
+  element(:rdl_facility) { |b| b.scheduling_information_section.text_field( id: "FinalExam_building_control")}
+  element(:rdl_room) { |b| b.scheduling_information_section.text_field( id: "FinalExam_room_control")}
 
   element(:update_rule_btn) { |b| b.fe_rule_maintenance_page.button( id: "KSFE-UpdateRule-Button")}
   action(:update_rule) { |b| b.update_rule_btn.click}

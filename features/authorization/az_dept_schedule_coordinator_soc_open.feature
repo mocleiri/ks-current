@@ -88,8 +88,8 @@ Feature: EC.AZ Dept Schedule Coordinator SOC state Open
     Then I have access to edit the activity code
     And I have access to edit total maximum enrollment
     And I have access to add or edit affiliated personnel
-    And I have access to add new delivery logistics
-    And I have access to delete requested delivery logistics
+    And I have access to add new scheduling information
+    And I have access to delete requested scheduling information
     And I have access to edit waitlist options
     And I have access to edit the evaluation flag
     And I have access to edit the honors flag

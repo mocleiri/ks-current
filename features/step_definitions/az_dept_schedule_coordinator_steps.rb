@@ -500,9 +500,9 @@ When /^I do not have access to the page$/ do
   end
 end
 
-Then /^I do not have access to add new delivery logistics$/ do
+Then /^I do not have access to add new scheduling information$/ do
   on ActivityOfferingMaintenance do |page|
-    page.add_new_delivery_logistics_button.present?.should be_false
+    page.add_new_scheduling_information_button.present?.should be_false
   end
 end
 
@@ -717,21 +717,21 @@ Then /^I do not have access to edit the co-located Activity Offering$/ do
   end
 end
 
-Then /^I have access to add new delivery logistics$/ do
+Then /^I have access to add new scheduling information$/ do
   on ActivityOfferingMaintenance do |page|
-    page.view_requested_delivery_logistics
-    page.add_new_delivery_logistics_button.present?.should == true
+    page.view_requested_scheduling_information
+    page.add_new_scheduling_information_button.present?.should == true
   end
 end
 
-When /^I have access to view requested delivery logistics$/ do
+When /^I have access to view requested scheduling information$/ do
   on ActivityOfferingMaintenance do |page|
-    page.view_requested_delivery_logistics
+    page.view_requested_scheduling_information
     page.requested_logistics_table.present?.should == true
   end
 end
-When /^I have access to delete requested delivery logistics$/ do
+When /^I have access to delete requested scheduling information$/ do
   on ActivityOfferingMaintenance do |page|
-    page.delete_requested_delivery_logistics_element.present?.should == true
+    page.delete_requested_scheduling_information_element.present?.should == true
   end
 end

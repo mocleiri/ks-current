@@ -1,10 +1,10 @@
-When /^I add requested delivery logistics to an activity offering$/ do
+When /^I add requested scheduling information to an activity offering$/ do
   course_offering = make CourseOffering
   course_offering.manage
-  @activity_offering = create ActivityOffering, :requested_delivery_logistics_list => {"default"=> (make DeliveryLogistics)}
+  @activity_offering = create ActivityOffering, :requested_scheduling_information_list => {"default"=> (make SchedulingInformation)}
 end
 
-Then /^actual delivery logistics are created with the activity offering$/ do
+Then /^actual scheduling information are created with the activity offering$/ do
   step "the activity offering is updated when saved"
 end
 

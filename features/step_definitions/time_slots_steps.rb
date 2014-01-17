@@ -75,7 +75,7 @@ When /^I? ?add a Time Slot with (one of)? ?the chosen Term Types?$/ do |arg1|
   @time_slots.add_unused_time_slots(1)
 end
 
-When /^I? ?attempt to (.*) a Time Slot which is used in a delivery logistic$/ do |action|
+When /^I? ?attempt to (.*) a Time Slot which is used in scheduling information$/ do |action|
   @code_list = ["1002"]
   @time_slots = create TimeSlots
   if action == "delete"
@@ -97,7 +97,7 @@ When /^I? ?attempt to (.*) the Time Slot added above$/ do |action|
   end
 end
 
-And /^I? ?attempt to delete the Time Slot added above and also a Time Slot used in a delivery logistic$/ do
+And /^I? ?attempt to delete the Time Slot added above and also a Time Slot used in scheduling information$/ do
   @code_list = [@time_slots.new_time_slots[0].code]
   @code_list << "1002"
   @time_slots.delete(@code_list)

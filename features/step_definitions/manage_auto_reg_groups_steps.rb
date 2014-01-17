@@ -174,7 +174,7 @@ When /^I update an Activity Offering to create a time conflict$/ do
 
   @course_offering.get_ao_list.each do |ao|
     if ao.code == "B"
-      ao.edit :requested_delivery_logistics_list => {"default"=> (make DeliveryLogistics, :days=>"M")}, :edit_already_started=>true
+      ao.edit :requested_scheduling_information_list => {"default"=> (make SchedulingInformation, :days=>"M")}, :edit_already_started=>true
       ao.save
     end
   end

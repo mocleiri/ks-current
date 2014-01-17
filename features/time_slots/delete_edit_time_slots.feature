@@ -20,14 +20,14 @@ Feature: WC.Delete and edit standard Time Slots
 
     Scenario: Deleting a time slot that has been used
     When I show time slots for a single term type
-    And I attempt to delete a Time Slot which is used in a delivery logistic
+    And I attempt to delete a Time Slot which is used in scheduling information
     And the Time Slot is not deleted
 
     Scenario: Deleting multiple time slots - some of which have been used
     When I show time slots for a single term type
     And I add a Time Slot with the chosen Term Type
     Then the timeslots are saved
-    And I attempt to delete the Time Slot added above and also a Time Slot used in a delivery logistic
+    And I attempt to delete the Time Slot added above and also a Time Slot used in scheduling information
     Then the first Time Slot is deleted
     And the second Time Slot is not deleted
 
@@ -40,7 +40,7 @@ Feature: WC.Delete and edit standard Time Slots
 
     Scenario: Ability to edit a time slot that has been used
     When I show time slots for a single term type
-    And I attempt to edit a Time Slot which is used in a delivery logistic
+    And I attempt to edit a Time Slot which is used in scheduling information
     Then the Time Slot edits are not saved
 
     Scenario: Changing the term type of a time slot

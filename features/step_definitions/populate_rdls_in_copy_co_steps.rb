@@ -7,13 +7,13 @@ Then /^The new CO and AOs are Successfully created$/ do
   @course_offering.manage_and_init
   tgt_activity_offering = @course_offering.get_ao_obj_by_code("A")
   tgt_activity_offering.status.should == ActivityOffering::DRAFT_STATUS
-  tgt_activity_offering.requested_delivery_logistics_list.size.should_not == 0
+  tgt_activity_offering.requested_scheduling_information_list.size.should_not == 0
 end
 
 And /^The ADLs are Successfully copied to RDLs in the new AOs of the newly created CO$/ do
   @source_course_offering.manage_and_init
   source_activity_offering = @source_course_offering.get_ao_obj_by_code("A")
-  source_activity_offering.actual_delivery_logistics_list.size.should_not == 0
+  source_activity_offering.actual_scheduling_information_list.size.should_not == 0
 
   #now navigate to course offering copy and validate RDLs
   @course_offering.manage
@@ -23,12 +23,12 @@ And /^The ADLs are Successfully copied to RDLs in the new AOs of the newly creat
     page.actual_logistics_div.exists?.should == false  #should not be any ADLs
     page.requested_logistics_table.rows.size.should be > 2 #should be more than header/footer rows
     page.requested_logistics_table.rows[1..-2].each do |row|
-      page.view_requested_delivery_logistics
+      page.view_requested_scheduling_information
       days = page.get_requested_logistics_days(row).delete(' ')
       start_time = page.get_requested_logistics_start_time(row).delete(' ')
       dl_key = "#{days}#{start_time}"
       #get the corresponding ADL by key
-      adl = source_activity_offering.actual_delivery_logistics_list[dl_key]
+      adl = source_activity_offering.actual_scheduling_information_list[dl_key]
       page.get_requested_logistics_days(row).delete(' ').should == adl.days
       page.get_requested_logistics_start_time(row).delete(' ').should == "#{adl.start_time}#{adl.start_time_ampm}"
       page.get_requested_logistics_end_time(row).delete(' ').should == "#{adl.end_time}#{adl.end_time_ampm}"

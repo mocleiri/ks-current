@@ -10,16 +10,16 @@ And /^I am editing an AO with RDLs in an open term$/ do
   @activity_offering = course_offering.get_ao_obj_by_code("A")
 end
 
-When /^I revise an AO's requested delivery logistics$/ do
+When /^I revise an AO's requested scheduling information$/ do
   # capture the RDLs for editing
-  #@new_rdls = @activity_offering.requested_delivery_logistics_list.values[0]
+  #@new_rdls = @activity_offering.requested_scheduling_information_list.values[0]
   # edit RDLs
   @activity_offering.edit
-  orig_key = @activity_offering.requested_delivery_logistics_list.keys[0]
-  @activity_offering.requested_delivery_logistics_list.values[0].edit :days => "SU", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  orig_key = @activity_offering.requested_scheduling_information_list.keys[0]
+  @activity_offering.requested_scheduling_information_list.values[0].edit :days => "SU", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                                                                       :facility => "PHYS", :facility_long_name => "PHYS",:room => "4102"
-  @activity_offering.requested_delivery_logistics_list["SU10:00AM"] = @activity_offering.requested_delivery_logistics_list.values[0]
-  @activity_offering.requested_delivery_logistics_list.delete(orig_key)
+  @activity_offering.requested_scheduling_information_list["SU10:00AM"] = @activity_offering.requested_scheduling_information_list.values[0]
+  @activity_offering.requested_scheduling_information_list.delete(orig_key)
   @activity_offering.save
 end
 
@@ -39,18 +39,18 @@ When /^I add RDLs for an AO specifying (times|times and facility|times and room)
   end
 
   # capture the RDLs
-  #@new_rdls =  @activity_offering.requested_delivery_logistics_list.values[0]
+  #@new_rdls =  @activity_offering.requested_scheduling_information_list.values[0]
 
   # add new RDL row
   @activity_offering.edit
-  dl_obj = create DeliveryLogistics, :days => "TH", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  dl_obj = create SchedulingInformation, :days => "TH", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                   :facility => optional_field_facility, :facility_long_name => optional_field_facility, :room => optional_field_room
-  @activity_offering.requested_delivery_logistics_list[dl_obj.dl_key] = dl_obj
+  @activity_offering.requested_scheduling_information_list[dl_obj.dl_key] = dl_obj
   # if entering an invalid combination, need to stay on page to see the error message, so skip the page submit
   @activity_offering.save unless optional_field == "times and room"
 end
 
-Then /^the AO's delivery logistics shows the new schedule$/ do
+Then /^the AO's scheduling information shows the new schedule$/ do
   # reload saved CO and AO data
   course_offering = make CourseOffering, :term => @activity_offering.parent_course_offering.term, :course => @activity_offering.parent_course_offering.course
   course_offering.manage
@@ -59,14 +59,14 @@ Then /^the AO's delivery logistics shows the new schedule$/ do
 #  norm_st, norm_et = @new_rdls.normalize_start_and_end_times
 
   on ActivityOfferingMaintenance do |page|
-    page.view_requested_delivery_logistics
+    page.view_requested_scheduling_information
     page.requested_logistics_table.rows.size.should be > 2 #should be more than header/footer rows
     page.requested_logistics_table.rows[1..-2].each do |row|
       days = page.get_requested_logistics_days(row).delete(' ')
       start_time = page.get_requested_logistics_start_time(row).delete(' ')
       dl_key = "#{days}#{start_time}"
       #get the corresponding ADL by key
-      del_logisitics = @activity_offering.requested_delivery_logistics_list[dl_key]
+      del_logisitics = @activity_offering.requested_scheduling_information_list[dl_key]
       exp_room = (del_logisitics.room.nil?)?"":del_logisitics.room
       page.get_requested_logistics_days(row).delete(' ').should == del_logisitics.days
       page.get_requested_logistics_start_time(row).delete(' ').should == "#{del_logisitics.start_time}#{del_logisitics.start_time_ampm}"
@@ -78,11 +78,11 @@ Then /^the AO's delivery logistics shows the new schedule$/ do
   end
 end
 
-Then /^the AO's delivery logistics shows the new schedule as TBA$/ do
+Then /^the AO's scheduling information shows the new schedule as TBA$/ do
   @activity_offering.parent_course_offering.manage
   @activity_offering.edit
 
-  del_logisitics = @activity_offering.requested_delivery_logistics_list[""]
+  del_logisitics = @activity_offering.requested_scheduling_information_list[""]
   on ActivityOfferingMaintenance do |page|
     row = page.target_rdl_row("")
     isTBA = page.get_requested_logistics_tba(row) == "TBA"
@@ -100,35 +100,35 @@ end
 When /^I add RDLs for an AO$/ do
   # add new RDL row
   @activity_offering.edit
-  dl_obj = create DeliveryLogistics, :days => "TH", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  dl_obj = create SchedulingInformation, :days => "TH", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                   :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
-  @activity_offering.requested_delivery_logistics_list[dl_obj.dl_key] = dl_obj
+  @activity_offering.requested_scheduling_information_list[dl_obj.dl_key] = dl_obj
   @activity_offering.save
 end
 
 #When /^I add standard RDLs for an AO$/ do
 #  # add new RDL row
 #  @activity_offering.edit
-#  dl_obj = create DeliveryLogistics, :days => "MWF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+#  dl_obj = create SchedulingInformation, :days => "MWF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
 #                  :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => true
-#  @activity_offering.requested_delivery_logistics_list[dl_obj.dl_key] = dl_obj
+#  @activity_offering.requested_scheduling_information_list[dl_obj.dl_key] = dl_obj
 #  @activity_offering.save
 #end
 
 When /^I add RDLs for an AO checking the TBA flag$/ do
   # add new TBA RDL row
   @activity_offering.edit
-  dl_obj = create DeliveryLogistics,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
-  @activity_offering.requested_delivery_logistics_list[dl_obj.dl_key] = dl_obj
+  dl_obj = create SchedulingInformation,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
+  @activity_offering.requested_scheduling_information_list[dl_obj.dl_key] = dl_obj
   @activity_offering.save
 end
 
 And /^I delete the original RDLs$/ do
   @activity_offering.parent_course_offering.manage
   @activity_offering.edit
-  rdl_key = @activity_offering.requested_delivery_logistics_list.keys[0]
-  @activity_offering.requested_delivery_logistics_list.values[0].delete_rdl
-  @activity_offering.requested_delivery_logistics_list.delete(rdl_key)
+  rdl_key = @activity_offering.requested_scheduling_information_list.keys[0]
+  @activity_offering.requested_scheduling_information_list.values[0].delete_rdl
+  @activity_offering.requested_scheduling_information_list.delete(rdl_key)
   @activity_offering.save
 end
 
@@ -136,13 +136,13 @@ When /^I add (standard|non-standard) RDLs for an AO as a (CSC|DSC)$/ do |tsType,
   # add new RDL row
   @activity_offering.edit
   if tsType=="standard"
-    dl_obj = create DeliveryLogistics, :std_ts => true, :days => "MWF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+    dl_obj = create SchedulingInformation, :std_ts => true, :days => "MWF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                     :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
-    @activity_offering.requested_delivery_logistics_list[dl_obj.dl_key] = dl_obj
+    @activity_offering.requested_scheduling_information_list[dl_obj.dl_key] = dl_obj
   elsif tsType=="non-standard"
-    dl_obj = create DeliveryLogistics, :std_ts => false, :days => "TH", :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm",
+    dl_obj = create SchedulingInformation, :std_ts => false, :days => "TH", :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm",
                     :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
-    @activity_offering.requested_delivery_logistics_list[dl_obj.dl_key] = dl_obj
+    @activity_offering.requested_scheduling_information_list[dl_obj.dl_key] = dl_obj
   end
   @activity_offering.save
 end
@@ -154,7 +154,7 @@ end
 Then /^the "approved for non-standard time slots" flag is set$/ do
   @activity_offering.edit
   on ActivityOfferingMaintenance do |page|
-    page.view_requested_delivery_logistics
+    page.view_requested_scheduling_information
     page.non_std_ts_checkbox.should be_checked
   end
 end
@@ -174,7 +174,7 @@ Then /^there is a validation error on the EndTime field$/  do
   @dl_obj.end_time_ampm.upcase! unless @dl_obj.end_time_ampm.nil?
   @dl_obj.start_time_ampm.upcase! unless @dl_obj.start_time_ampm.nil?
   on ActivityOfferingMaintenance do |page|
-    page.view_requested_delivery_logistics
+    page.view_requested_scheduling_information
 
     if @dl_obj.days != nil then
       page.add_start_time.click
@@ -200,7 +200,7 @@ Then /^there is a validation error on the EndTime field$/  do
 end
 
 And /^I attempt to add non-standard RDLs for an AO as a (DSC|CSC)$/ do |role|
-  @dl_obj = make DeliveryLogistics, :std_ts => false, :days => "TH", :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm",
+  @dl_obj = make SchedulingInformation, :std_ts => false, :days => "TH", :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm",
                   :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
 end
 

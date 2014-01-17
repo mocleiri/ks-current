@@ -88,10 +88,10 @@ Then /^the activity offering is updated when saved$/ do
   #  page.activity_code.should == @activity_offering.code
   #  page.max_enrollment.should == @activity_offering.max_enrollment.to_s
   #
-  #  if  @activity_offering.actual_delivery_logistics_list.length != 0
+  #  if  @activity_offering.actual_scheduling_information_list.length != 0
   #    page.actual_logistics_table.rows[1..-1].each do |row|
   #      row_key = "#{page.get_actual_logistics_days(row)}#{page.get_actual_logistics_start_time(row)}".delete(' ')
-  #      adl = @activity_offering.actual_delivery_logistics_list[row_key]
+  #      adl = @activity_offering.actual_scheduling_information_list[row_key]
   #      if row_key != ''
   #        if adl.tba?
   #          page.get_actual_logistics_tba(row).should == "TBA"
@@ -130,10 +130,10 @@ Then /^the activity offering is updated when saved$/ do
   on ActivityOfferingMaintenance do |page|
     page.total_maximum_enrollment.value.should == @activity_offering.max_enrollment.to_s
 
-    if  @activity_offering.actual_delivery_logistics_list.length != 0
+    if  @activity_offering.actual_scheduling_information_list.length != 0
       page.actual_logistics_table.rows[1..-1].each do |row|
         row_key = "#{page.get_actual_logistics_days(row)}#{page.get_actual_logistics_start_time(row)}".delete(' ')
-        adl = @activity_offering.actual_delivery_logistics_list[row_key]
+        adl = @activity_offering.actual_scheduling_information_list[row_key]
         if row_key != ''
           if adl.tba?
             page.get_actual_logistics_tba(row).should == "TBA"

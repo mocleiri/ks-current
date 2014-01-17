@@ -74,8 +74,8 @@ Feature: Performance.Metrics
     When I copy a large Activity Offering for performance
     Then the transaction takes less than "3" seconds
 
-  Scenario: Large Add Delivery Logistics
-    When I add Delivery Logistics to a large activity offering and save
+  Scenario: Large Add Scheduling Information
+    When I add Scheduling Information to a large activity offering and save
     Then the transaction takes less than "3" seconds
 
 #begin Medium
@@ -98,8 +98,8 @@ Feature: Performance.Metrics
     When I copy a medium Activity Offering for performance
     Then the transaction takes less than "3" seconds
 
-  Scenario: Medium Add Delivery Logistics
-    When I add Delivery Logistics to a medium activity offering and save
+  Scenario: Medium Add Scheduling Information
+    When I add Scheduling Information to a medium activity offering and save
     Then the transaction takes less than "3" seconds
 #end Medium
 
@@ -123,8 +123,8 @@ Feature: Performance.Metrics
     When I copy a small Activity Offering for performance
     Then the transaction takes less than "3" seconds
 
-  Scenario: Small Add Delivery Logistics
-    When I add Delivery Logistics to a small activity offering and save
+  Scenario: Small Add Scheduling Information
+    When I add Scheduling Information to a small activity offering and save
     Then the transaction takes less than "3" seconds
 #end Small
 

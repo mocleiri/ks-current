@@ -579,20 +579,20 @@ Given /^I create a course offering from catalog with a suspended activity offeri
                             :delivery_format_list => delivery_format_list
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_delivery_logistics_list => {}
+                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => {}
   @activity_offering.save
   @activity_offering.suspend :navigate_to_page => false
   on(ManageCourseOfferings).ao_status(@activity_offering.code).should == "Suspended"
 end
 
-Given /^I add requested delivery logistics to the activity offering$/ do
+Given /^I add requested scheduling information to the activity offering$/ do
   @rdl_list = {}
-  @rdl_list["MTW"] = make DeliveryLogistics, :days => "MTW",
+  @rdl_list["MTW"] = make SchedulingInformation, :days => "MTW",
                           :start_time => "10:00", :start_time_ampm => "am",
                           :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
 
-  @activity_offering.edit :requested_delivery_logistics_list => @rdl_list
+  @activity_offering.edit :requested_scheduling_information_list => @rdl_list
 
   @activity_offering.save
 end
@@ -602,15 +602,15 @@ Given /^I am able to send the activity offering to the scheduler$/ do
   @activity_offering.save
 end
 
-And /^actual delivery logistics for the activity offering are still shown$/ do
+And /^actual scheduling information for the activity offering are still shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_true
     page.close
   end
 end
 
-Given /^the actual delivery logistics are displayed for the updated activity offering$/ do
+Given /^the actual scheduling information are displayed for the updated activity offering$/ do
   @activity_offering.parent_course_offering.manage
 
   on ManageCourseOfferings do |page|
@@ -646,110 +646,110 @@ Given /^I manage a course offering with a suspended activity offering$/ do
 end
 
 
-And /^actual delivery logistics for the Suspended activity offering are no longer shown$/ do
+And /^actual scheduling information for the Suspended activity offering are no longer shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end
 
-And /^actual delivery logistics for the activity offering are no longer shown$/ do
+And /^actual scheduling information for the activity offering are no longer shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end
 
-And /^actual delivery logistics for the first Suspended activity offering are still shown$/ do
+And /^actual scheduling information for the first Suspended activity offering are still shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@suspended_ao.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_true
     page.close
   end
 end
 
-And /^actual delivery logistics for the Suspended activity offering are still shown$/ do
+And /^actual scheduling information for the Suspended activity offering are still shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@suspended_ao.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_true
     page.close
   end
 end
 
-And /^actual delivery logistics for the Offered activity offering are still shown$/ do
+And /^actual scheduling information for the Offered activity offering are still shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@offered_ao.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_true
     page.close
   end
 end
 
-And /^actual delivery logistics for the second Suspended activity offering are still shown$/ do
+And /^actual scheduling information for the second Suspended activity offering are still shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@suspended_ao2.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_true
     page.close
   end
 end
 
-And /^actual delivery logistics for the Approved activity offering are still shown$/ do
+And /^actual scheduling information for the Approved activity offering are still shown$/ do
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
   on ActivityOfferingInquiry do |page|
-    page.actual_delivery_logistics_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_true
     page.close
   end
 end
 
-And /^requested delivery logistics are still shown and actual delivery logistics are not shown for the activity offering$/ do
+And /^requested scheduling information are still shown and actual scheduling information are not shown for the activity offering$/ do
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
   on ActivityOfferingInquiry do |page|
-    page.requested_delivery_logistics_days.present?.should be_true
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.requested_scheduling_information_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end
 
-And /^requested delivery logistics are still shown and actual delivery logistics are not shown for the second activity offering$/ do
+And /^requested scheduling information are still shown and actual scheduling information are not shown for the second activity offering$/ do
   on(ManageCourseOfferings).view_activity_offering(@suspended_ao.code)
   on ActivityOfferingInquiry do |page|
-    page.requested_delivery_logistics_days.present?.should be_true
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.requested_scheduling_information_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end
 
-And /^requested delivery logistics are still shown and actual delivery logistics are not shown for the third activity offering$/ do
+And /^requested scheduling information are still shown and actual scheduling information are not shown for the third activity offering$/ do
   on(ManageCourseOfferings).view_activity_offering(@suspended_ao2.code)
   on ActivityOfferingInquiry do |page|
-    page.requested_delivery_logistics_days.present?.should be_true
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.requested_scheduling_information_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end
 
-And /^requested delivery logistics are still shown and actual delivery logistics are not shown for both activity offerings$/ do
+And /^requested scheduling information are still shown and actual scheduling information are not shown for both activity offerings$/ do
   on(ManageCourseOfferings).view_activity_offering(@canceled_ao1.code)
   on ActivityOfferingInquiry do |page|
-    page.requested_delivery_logistics_days.present?.should be_true
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.requested_scheduling_information_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
   @course_offering.manage
   on(ManageCourseOfferings).view_activity_offering(@canceled_ao2.code)
   on ActivityOfferingInquiry do |page|
-    page.requested_delivery_logistics_days.present?.should be_true
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.requested_scheduling_information_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end
 
-And /^requested delivery logistics are still shown and actual delivery logistics are not shown for the Canceled activity offering$/ do
+And /^requested scheduling information are still shown and actual scheduling information are not shown for the Canceled activity offering$/ do
   on(ManageCourseOfferings).view_activity_offering(@canceled_ao.code)
   on ActivityOfferingInquiry do |page|
-    page.requested_delivery_logistics_days.present?.should be_true
-    page.actual_delivery_logistics_days.present?.should be_false
+    page.requested_scheduling_information_days.present?.should be_true
+    page.actual_scheduling_information_days.present?.should be_false
     page.close
   end
 end

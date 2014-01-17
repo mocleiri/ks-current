@@ -31,8 +31,8 @@ class ActivityOffering
                 :aoc_private_name,
                 :subterm
   #type: hash - generally set using options hash
-  attr_accessor :actual_delivery_logistics_list,
-                :requested_delivery_logistics_list,
+  attr_accessor :actual_scheduling_information_list,
+                :requested_scheduling_information_list,
                 :seat_pool_list
   #array - generally set using options hash
   attr_accessor :personnel_list,
@@ -64,8 +64,8 @@ class ActivityOffering
   #    :format => "Lecture Only",
   #    :activity_type => "Lecture",
   #    :max_enrollment => 100,
-  #    :actual_delivery_logistics_list => {},
-  #    :requested_delivery_logistics_list => {} ,
+  #    :actual_scheduling_information_list => {},
+  #    :requested_scheduling_information_list => {} ,
   #    :personnel_list => [],
   #    :seat_pool_list => {} ,
   #    :course_url => "www.test_course.com",
@@ -79,7 +79,7 @@ class ActivityOffering
   #  }
   # some basic e.g. list/hash values:
   # :seat_pool_list =>  {"random"=> (make SeatPool)}
-  # :requested_delivery_logistics_list => {"default"=> (make DeliveryLogistics)}
+  # :requested_scheduling_information_list => {"default"=> (make SchedulingInformation)}
   # :personnel_list => Array.new(1){make Personnel}
   # :colocate_ao_list => Array.new(1){make ActivityOffering}
 
@@ -88,7 +88,7 @@ class ActivityOffering
     @browser = browser
 
     # :seat_pool_list =  {"random"=> (make SeatPool)}
-    # :requested_delivery_logistics_list = {"default"=> (make DeliveryLogistics)}
+    # :requested_scheduling_information_list = {"default"=> (make SchedulingInformation)}
     # :personnel_list => [] -- Array.new(1){make Personnel}
 
     defaults = {
@@ -97,8 +97,8 @@ class ActivityOffering
         :format => nil, #nil means use default
         :activity_type => "Lecture",
         :max_enrollment => 100,
-        :actual_delivery_logistics_list => {},
-        :requested_delivery_logistics_list => {},
+        :actual_scheduling_information_list => {},
+        :requested_scheduling_information_list => {},
         :personnel_list => [] ,
         :seat_pool_list => {},
         :course_url => "www.test_course.com",
@@ -208,8 +208,8 @@ class ActivityOffering
     init = {
         :parent_course_offering=> @parent_course_offering,
         :max_enrollment => @max_enrollment,
-        :actual_delivery_logistics_list => @actual_delivery_logistics_list,
-        :requested_delivery_logistics_list => @requested_delivery_logistics_list,
+        :actual_scheduling_information_list => @actual_scheduling_information_list,
+        :requested_scheduling_information_list => @requested_scheduling_information_list,
         :personnel_list => @personnel_list ,
         :seat_pool_list => @seat_pool_list,
         :course_url => @course_url,
@@ -232,13 +232,13 @@ class ActivityOffering
     @max_enrollment = ao_table_row.cells[ManageCourseOfferings::AO_MAX_ENR].text
     delivery_days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text
     if delivery_days != "" then
-      #there are delivery logistics
-      dl_list = get_existing_delivery_logistics (ao_table_row)
+      #there are scheduling information
+      dl_list = get_existing_scheduling_information (ao_table_row)
       dl_list.each do |dl_object|
         if dl_object.isRDL then
-          @requested_delivery_logistics_list[dl_object.dl_key] = dl_object
+          @requested_scheduling_information_list[dl_object.dl_key] = dl_object
         else
-          @actual_delivery_logistics_list[dl_object.dl_key] = dl_object
+          @actual_scheduling_information_list[dl_object.dl_key] = dl_object
         end
       end
     end
@@ -246,7 +246,7 @@ class ActivityOffering
     @parent_course_offering = parent_co
   end
 
-  def get_existing_delivery_logistics(ao_table_row)
+  def get_existing_scheduling_information(ao_table_row)
     dl_list = []
     is_rdl = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
     dl_days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text.split("\n")
@@ -268,7 +268,7 @@ class ActivityOffering
     dl_days.each do |day|
       st, st_ampm = st_times[i].split unless st_times[i].nil?
       et, et_ampm = end_times[i].split unless end_times[i].nil?
-      dl = make DeliveryLogistics,
+      dl = make SchedulingInformation,
                 :isRDL => is_rdl,
                 :days => dl_days[i],
                 :start_time => st,
@@ -310,7 +310,7 @@ class ActivityOffering
     edit_colocation options
     edit_max_enrollment_no_colocation options
     edit_non_std_timeslots options
-    edit_requested_delivery_logistics options
+    edit_requested_scheduling_information options
     edit_course_url options
     edit_evaluation options
     edit_honors_course options
@@ -422,7 +422,7 @@ class ActivityOffering
       return nil
     end
     on ActivityOfferingMaintenance do |page|
-      page.view_requested_delivery_logistics
+      page.view_requested_scheduling_information
       if opts[:allow_non_std_timeslots]
         page.approve_non_std_ts
       else
@@ -432,24 +432,24 @@ class ActivityOffering
   end
   private :edit_non_std_timeslots
 
-  def edit_requested_delivery_logistics opts={}
+  def edit_requested_scheduling_information opts={}
 
-    if opts[:requested_delivery_logistics_list].nil? || opts[:requested_delivery_logistics_list].empty?
+    if opts[:requested_scheduling_information_list].nil? || opts[:requested_scheduling_information_list].empty?
       return nil
     end
 
     #'save' vs 'save and process' determined by first rdl
-    first_rdl = opts[:requested_delivery_logistics_list].values[0]
+    first_rdl = opts[:requested_scheduling_information_list].values[0]
     #list of requests added with updated keys
     requests_added = {}
 
-    opts[:requested_delivery_logistics_list].values.each do |request|
+    opts[:requested_scheduling_information_list].values.each do |request|
       request.create
       requests_added["#{request.days}#{request.start_time}#{request.start_time_ampm.upcase}".delete(' ')] = request
     end
 
-  end #END: edit_request_delivery_logistics
-  private :edit_requested_delivery_logistics
+  end #END: edit_request_scheduling_information
+  private :edit_requested_scheduling_information
 
   def edit_course_url opts={}
 
@@ -755,7 +755,7 @@ class ActivityOffering
     @parent_course_offering.manage
     on(ManageCourseOfferings).edit(self.code)
     on ActivityOfferingMaintenance do |page|
-      page.send_revised_delivery_logistics
+      page.send_revised_scheduling_information
       page.submit
     end
   end
@@ -993,21 +993,21 @@ class Personnel
   #  end
 end
 
-# stores test data for creating/editing and validating delivery logistics data and provides convenience methods for navigation and data entry
+# stores test data for creating/editing and validating scheduling information data and provides convenience methods for navigation and data entry
 #
-# DeliveryLogistics is a child of a ActivityOffering (Requested delivery logistics - rdl and actual - adl)
+# SchedulingInformation is a child of a ActivityOffering (Requested scheduling information - rdl and actual - adl)
 #
 # class attributes are initialized with default data unless values are explicitly provided
 #
 # Typical usage: (with optional setting of explicit data value in [] )
 #
-# rdl_list[0] = make DeliveryLogistics, :days=> M, ...
+# rdl_list[0] = make SchedulingInformation, :days=> M, ...
 #
-# @activity_offering.edit_offering :requested_delivery_logistics_list = rdl_list
+# @activity_offering.edit_offering :requested_scheduling_information_list = rdl_list
 #
 #create generally called from ActivityOffering
 # Note the use of the ruby options hash pattern re: setting attribute values
-class DeliveryLogistics
+class SchedulingInformation
   include Foundry
   include DataFactory
   include DateFactory
@@ -1069,7 +1069,7 @@ class DeliveryLogistics
     set_options(options)
   end
 
-  # adds Delivery Logistics request based on class attributes
+  # adds Scheduling Information request based on class attributes
   #
   # add must be completed by calling save or save_and_process (allows adding of multiple rdls)
   #
@@ -1077,7 +1077,7 @@ class DeliveryLogistics
   def create
     if isRDL then
       on ActivityOfferingMaintenance do |page|
-        page.view_requested_delivery_logistics
+        page.view_requested_scheduling_information
         sleep 2
         ns_ts_allowed = !page.non_std_ts_text.nil? && page.non_std_ts_text=="true"
         # if non-standard TS allowed, then treat DSC as CSC
@@ -1147,11 +1147,11 @@ class DeliveryLogistics
         end
 
         #opts["features_list"] TODO if implemented
-        page.add_new_delivery_logistics
+        page.add_new_scheduling_information
 
       end
     else
-      raise "error: cannot add Actual Delivery Logistics"
+      raise "error: cannot add Actual Scheduling Information"
     end
   end
 
@@ -1179,13 +1179,13 @@ class DeliveryLogistics
     @room = ao_table_row.cells[ManageCourseOfferings::AO_ROOM].text
   end
 
-  # compares 2 instances of DeliveryLogistics for field-equality
+  # compares 2 instances of SchedulingInformation for field-equality
   # note: by default, the comparison ignores the isRDL-field
   # @example
-  #   DeliveryLogistics.compare( @dl1, @dl2 )
+  #   SchedulingInformation.compare( @dl1, @dl2 )
   #
-  # @param instance1 -- a DeliveryLogistics object
-  # @param instance2 -- a DeliveryLogistics object
+  # @param instance1 -- a SchedulingInformation object
+  # @param instance2 -- a SchedulingInformation object
   # @param opts [Hash] key => value
   def self.compare(instance1, instance2, opts={})
 
@@ -1271,7 +1271,7 @@ class DeliveryLogistics
   def edit(opts)
     if isRDL then
       on ActivityOfferingMaintenance do |page|
-        page.view_requested_delivery_logistics
+        page.view_requested_scheduling_information
         target_row = page.target_rdl_row(dl_key)
         page.edit_rdl_row(target_row)
         sleep 2
@@ -1308,13 +1308,13 @@ class DeliveryLogistics
         end
 
         #opts["features_list"] TODO if implemented
-        page.add_new_delivery_logistics
+        page.add_new_scheduling_information
       end
       set_options(opts)
       @end_time_ampm.upcase!
       @start_time_ampm.upcase!
     else
-      raise "error: cannot edit Actual Delivery Logistics"
+      raise "error: cannot edit Actual Scheduling Information"
     end
   end
 
@@ -1328,7 +1328,7 @@ class DeliveryLogistics
   #similar method in page object?????
   def target_row_by_dl_key
     on ActivityOfferingMaintenance do |page|
-      page.view_requested_delivery_logistics
+      page.view_requested_scheduling_information
       page.requested_logistics_table.rows.each do |row|
         row_key = "#{row.cells[ActivityOfferingMaintenance::DAYS_COLUMN].text}#{row.cells[ActivityOfferingMaintenance::ST_TIME_COLUMN].text}".delete(' ')
         return row unless row_key != dl_key
@@ -1337,7 +1337,7 @@ class DeliveryLogistics
     return nil
   end
 
-  # delete Delivery Logistics request row
+  # delete Scheduling Information request row
   #
   # generally called from ActivityOffering class - see ActivityOffering
   #

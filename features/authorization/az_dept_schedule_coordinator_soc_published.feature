@@ -85,8 +85,8 @@ Feature: EC.AZ Dept Schedule Coordinator SOC state Published
     And I have access to edit the evaluation flag
     And I have access to edit the honors flag
     But I do not have access to add or edit seat pools
-    And I do not have access to add new delivery logistics
-    And I have access to view requested delivery logistics
+    And I do not have access to add new scheduling information
+    And I have access to view requested scheduling information
     And I do not have access to edit the activity code
     And I do not have access to edit waitlist options
     But I have access to view waitlist options

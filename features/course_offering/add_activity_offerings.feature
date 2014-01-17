@@ -14,7 +14,7 @@ Feature: WC.Add Activity Offerings to existing Course Offerings
     Then the new Activity Offering is shown in the list of AOs
 
   Scenario: Copy Activity Offerings
-    When I copy an AO with Actual Delivery Logistics
+    When I copy an AO with Actual Scheduling Information
     Then the "ADLs" are successfully copied as RDLs in the new AO
-    And I copy an AO with Requested Delivery Logistics
+    And I copy an AO with Requested Scheduling Information
     Then the "RDLs" are successfully copied as RDLs in the new AO

@@ -69,8 +69,8 @@ And /^the new Course Offering should not contain any scheduling information in i
     ao_list.each do |ao_code|
       page.view_activity_offering(ao_code.code)
       on ActivityOfferingInquiry do |page2|
-        page2.requested_delivery_logistics_days.present?.should be_false
-        page2.actual_delivery_logistics_days.present?.should be_false
+        page2.requested_scheduling_information_days.present?.should be_false
+        page2.actual_scheduling_information_days.present?.should be_false
         page2.close
       end
     end
@@ -86,20 +86,20 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
                             :delivery_format_list => delivery_format_list
 
   @rdl_list = {}
-  @rdl_list["MT"] = make DeliveryLogistics, :days => "MT",
+  @rdl_list["MT"] = make SchedulingInformation, :days => "MT",
                          :start_time => "10:00", :start_time_ampm => "am",
                          :end_time => "10:50", :end_time_ampm => "am",
                          :facility => "PHYS", :facility_long_name => "PHYS" , :room => "4102"
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,  :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_delivery_logistics_list => @rdl_list
+                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list
   @activity_offering.save
 
   @rdl_list2 = {}
-  @rdl_list2["WF"] = make DeliveryLogistics, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rdl_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
   @activity_offering2 = create ActivityOffering,  :parent_course_offering => @course_offering, :subterm => @subterm_list[1].subterm_type,
-                               :format => "Lab Only", :activity_type => "Lab" , :requested_delivery_logistics_list => @rdl_list2
+                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list2
 
   @activity_offering2.save
 end
@@ -117,18 +117,18 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
                             :delivery_format_list => delivery_format_list
 
   @rdl_list = {}
-  @rdl_list["MT"] = make DeliveryLogistics, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rdl_list["MT"] = make SchedulingInformation, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                          :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,  :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lecture Only", :activity_type => "Lecture" , :requested_delivery_logistics_list => @rdl_list
+                              :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rdl_list
   @activity_offering.save
 
   @rdl_list2 = {}
-  @rdl_list2["WF"] = make DeliveryLogistics, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rdl_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
   @activity_offering2 = create ActivityOffering,  :parent_course_offering => @course_offering, :subterm => @subterm_list[1].subterm_type,
-                               :format => "Lecture Only", :activity_type => "Lecture" , :requested_delivery_logistics_list => @rdl_list2
+                               :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rdl_list2
 
   @activity_offering2.save
 end
@@ -142,17 +142,17 @@ And /^I create a Course Offering from catalog with Activity Offerings$/ do
                             :delivery_format_list => delivery_format_list
 
   @rdl_list = {}
-  @rdl_list["MT"] = make DeliveryLogistics, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rdl_list["MT"] = make SchedulingInformation, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                          :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, # :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_delivery_logistics_list => @rdl_list
+                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list
   @activity_offering.save
 
   @rdl_list2 = {}
-  @rdl_list2["WF"] = make DeliveryLogistics, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rdl_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
   @activity_offering2 = create ActivityOffering,  :parent_course_offering => @course_offering, #:subterm => @subterm_list[1].subterm_type,
-                               :format => "Lab Only", :activity_type => "Lab" , :requested_delivery_logistics_list => @rdl_list2
+                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list2
   @activity_offering2.save
 end

@@ -92,7 +92,7 @@ Feature: EC.AZ Milestones
     And I do not have access to edit maximum enrollment
     And I have access to add or edit affiliated personnel
     And I do not have access to seat pools
-    And I do not have access to add new delivery logistics
+    And I do not have access to add new scheduling information
     And I have access to edit the honors flag
     And I have access to edit the course url
     And I have access to edit the evaluation flag

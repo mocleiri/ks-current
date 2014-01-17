@@ -26,8 +26,8 @@ class ActivityOfferingMaintenance < BasePage
   action(:submit) { |b| sleep 2; b.loading.wait_while_present; sleep 2; b.submit_button.click; b.loading.wait_while_present(120) }
   action(:cancel) { |b| b.save_cancel_div.link(text: "Cancel").click; b.loading.wait_while_present }
   element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter", index: 1) }
-  element(:send_revised_delivery_logistics_checkbox) { |b| b.sticky_footer_div.checkbox(name: "document.newMaintainableObject.dataObject.sendRDLsToSchedulerAfterMSE") }
-  action(:send_revised_delivery_logistics) { |b| b.send_revised_delivery_logistics_checkbox.click }
+  element(:send_revised_scheduling_information_checkbox) { |b| b.sticky_footer_div.checkbox(name: "document.newMaintainableObject.dataObject.sendRDLsToSchedulerAfterMSE") }
+  action(:send_revised_scheduling_information) { |b| b.send_revised_scheduling_information_checkbox.click }
 
   #unsaved changes dialog - appears when navigating between AOs
   element(:save_continue_alert_div) { |b| b.frm.div(id: "ActivityOfferingEdit-NavigationConfirmation") }
@@ -130,21 +130,21 @@ class ActivityOfferingMaintenance < BasePage
   action(:facility_features) { |b| b.frm.link(id: "ActivityOffering-DeliveryLogistic-New-Features-Section_toggle").click; b.loading.wait_while_present }
   element(:feature_list){ |b|b.frm.select(id: "featuresList_control")}
 
-  element(:add_new_delivery_logistics_button) { |b| b.button(id: "add_rdl_button") }
-  action(:add_new_delivery_logistics) { |b| b.add_new_delivery_logistics_button.click; b.adding.wait_while_present }
+  element(:add_new_scheduling_information_button) { |b| b.button(id: "add_rdl_button") }
+  action(:add_new_scheduling_information) { |b| b.add_new_scheduling_information_button.click; b.adding.wait_while_present }
 
-  element(:view_requested_delivery_logistics_toggle_open) { |b| b.frm.image(id: "ActivityOffering-ManageSchedulingInformationSection_toggle_exp") }
-  element(:view_requested_delivery_logistics_link) { |b| b.frm.link(id: "ActivityOffering-ManageSchedulingInformationSection_toggle") }
+  element(:view_requested_scheduling_information_toggle_open) { |b| b.frm.image(id: "ActivityOffering-ManageSchedulingInformationSection_toggle_exp") }
+  element(:view_requested_scheduling_information_link) { |b| b.frm.link(id: "ActivityOffering-ManageSchedulingInformationSection_toggle") }
 
-  def view_requested_delivery_logistics
-    if view_requested_delivery_logistics_link.present? && !view_requested_delivery_logistics_toggle_open.present?
-      view_requested_delivery_logistics_link.click
+  def view_requested_scheduling_information
+    if view_requested_scheduling_information_link.present? && !view_requested_scheduling_information_toggle_open.present?
+      view_requested_scheduling_information_link.click
       loading.wait_while_present
     end
   end
 
-  element(:delete_requested_delivery_logistics_element) { |b| b.requested_logistics_table.link(text: "Delete") } #TODO: identify button by row (days + start_time)
-  action(:delete_requested_delivery_logistics) { |b| b.delete_requested_delivery_logistics_element.click; b.loading.wait_while_present }
+  element(:delete_requested_scheduling_information_element) { |b| b.requested_logistics_table.link(text: "Delete") } #TODO: identify button by row (days + start_time)
+  action(:delete_requested_scheduling_information) { |b| b.delete_requested_scheduling_information_element.click; b.loading.wait_while_present }
   element(:requested_logistics_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-Requested") }
   element(:requested_logistics_table) { |b| b.requested_logistics_div.table() }
 
@@ -227,7 +227,7 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def target_rdl_row (key)
-    view_requested_delivery_logistics
+    view_requested_scheduling_information
     requested_logistics_table.rows.each do |row|
       row_key = "#{row.cells[DAYS_COLUMN].text.upcase.delete(' ')}#{row.cells[ST_TIME_COLUMN].text.upcase.delete(' ')}"
       return row unless row_key != key
