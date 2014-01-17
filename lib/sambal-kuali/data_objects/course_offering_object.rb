@@ -222,10 +222,6 @@ class CourseOffering
       end
     end
 
-    if options[:affiliated_person_list] != nil
-      @affiliated_person_list = options[:affiliated_person_list]
-    end
-
     if options[:waitlist].nil?
       @waitlist = on(CourseOfferingCreateEdit).has_waitlist?
     else
@@ -359,6 +355,7 @@ class CourseOffering
           page.add_personnel
         end
       end
+      @affiliated_person_list = options[:affiliated_person_list]
     end
 
     if options[:affiliated_org_list] != nil

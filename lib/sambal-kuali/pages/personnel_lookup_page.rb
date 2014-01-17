@@ -27,14 +27,20 @@ class PersonnelLookup < BasePage
     loading.wait_while_present
   end
 
-  NAME_COLUMN = 3
+  NAME_COLUMN = 1
+  ID_COLUMN = 2
   def get_long_name(principal_name)
     target_row(principal_name).wait_until_present
     target_row(principal_name).cells[NAME_COLUMN].text
   end
 
-  def target_row(principal_name)
-    results_table.row(text: /#{principal_name}/)
+  def target_row(id)
+    results_table.wait_until_present
+    results_table.rows.each do |r|
+      if (r.cells[ID_COLUMN].text == id)
+        return r
+      end
+    end
   end
 
   def change_results_page(page_number)
