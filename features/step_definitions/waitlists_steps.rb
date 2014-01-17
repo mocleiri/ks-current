@@ -329,7 +329,7 @@ Given /^there are two other activity offering with waitlists enabled and no wait
   @ao_list = []
   ["ENGL416","ENGL420"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true
-    activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
+    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
     activity_offering.save
     @ao_list << activity_offering
   end
