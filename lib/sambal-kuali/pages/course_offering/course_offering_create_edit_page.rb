@@ -28,17 +28,15 @@ class CourseOfferingCreateEdit < BasePage
   action(:navigation_cancel_and_continue) { |b| b.nav_cancel_and_continue_element.wait_until_present; b.nav_cancel_and_continue_element.click; b.loading.wait_while_present }
   element(:edit_relatedCos_dropdown_list) { |b| b.frm.select(id: "edit_co_select_control") }
 
-  element(:term_label_div) { |b| b.frm.div(data_label: "Term") }
-
-  element(:suffix) { |b| b.frm.div(data_label: "Course Number Suffix").text_field }
+  element(:suffix) { |b| b.frm.text_field(id: 'courseNumberSuffix_control') }
 
   element(:grading_reg_opts_div) { |b| b.frm.div(id: "KS-GradingAndRegOptions") }
   element(:grading_option_div) { |b| b.frm.div(id: "gradingOptionId") }
   action(:set_grading_option) { |option,b| b.frm.radio(value: "kuali.resultComponent.grade.#{option.downcase}").click() }
-  element(:grading_letter) { |b| b.grading_reg_opts_div.radio(text: "Letter") }
+  element(:grading_letter) { |b| b.grading_reg_opts_div.radio(value: 'kuali.resultComponent.grade.letter') }
 
-  element(:pass_fail_checkbox) { |b| b.checkbox(name: "document.newMaintainableObject.dataObject.passFailStudentRegOpts") }
-  element(:audit_checkbox) { |b| b.checkbox(name: "document.newMaintainableObject.dataObject.auditStudentRegOpts") }
+  element(:pass_fail_checkbox) { |b| b.checkbox(id: "is_pass_fail_control") }
+  element(:audit_checkbox) { |b| b.checkbox(id: "is_audit") }
 
   element(:credit_type_option_fixed) { |b| b.frm.radio(id: "KS-CourseOfferingEdit-CreditType_OptionTypeSelector_control_0") }
 
@@ -231,7 +229,7 @@ class CourseOfferingCreateEdit < BasePage
     loading.wait_while_present
   end
 
-  element(:honors_flag) { |b| b.div(data_label: "Honors Flag").checkbox() }
+  element(:honors_flag) { |b| b.checkbox(id: 'isHonoursOffering_control') }
 
   private
 
