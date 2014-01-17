@@ -476,6 +476,28 @@ public interface BrmFeeManagementService {
     void addRate(String rateCode, String rateSubCode, BrmContext context);
 
     /**
+     * Adds a rate specified by code and sub-code to signups from the current FeeManagementSession
+     * filtered by the specified parameters.
+     *
+     * @param rateCode         Rate code
+     * @param rateSubCode      Rate sub-code
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateSubCodes     List of rate sub-codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param context          BRM context
+     */
+    void addRate(String rateCode,
+                 String rateSubCode,
+                 String rateCodes,
+                 String rateSubCodes,
+                 String rateTypeCodes,
+                 String rateCatalogCodes,
+                 String signupOperations,
+                 BrmContext context);
+
+    /**
      * Replaces rates on FeeManagementSignup(s) object with the new rate specified by code and sub-code.
      *
      * @param rateCodes      List of rate codes separated by ","

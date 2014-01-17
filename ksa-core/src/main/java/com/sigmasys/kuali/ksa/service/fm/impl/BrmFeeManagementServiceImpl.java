@@ -1885,6 +1885,71 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
+     * Adds a rate specified by code and sub-code to signups from the current FeeManagementSession
+     * filtered by the specified parameters.
+     *
+     * @param rateCode         Rate code
+     * @param rateSubCode      Rate sub-code
+     * @param rateCodes        List of rate codes separated by ","
+     * @param rateSubCodes     List of rate sub-codes separated by ","
+     * @param rateTypeCodes    List of rate type codes separated by ","
+     * @param rateCatalogCodes List of rate catalog codes separated by ","
+     * @param signupOperations List of signup operation values separated by ","
+     * @param context          BRM context
+     */
+    @Override
+    public void addRate(String rateCode,
+                        String rateSubCode,
+                        String rateCodes,
+                        String rateSubCodes,
+                        String rateTypeCodes,
+                        String rateCatalogCodes,
+                        String signupOperations,
+                        BrmContext context) {
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        String atpId = session.getAtpId();
+
+        Rate rate = rateService.getRate(rateCode, rateSubCode, atpId);
+        if (rate == null) {
+            String errMsg = "Cannot find Rate [" + rateCode + ", " + rateSubCode + ", " + atpId + "]";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
+
+        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+
+        Set<FeeManagementSignup> signups =
+                filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
+                        rateCodes, rateTypeCodes, rateCatalogCodes, signupOperations, null);
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            List<String> rateSubCodeValues = CommonUtils.split(rateSubCodes, MULTI_VALUE_DELIMITER);
+
+            for (FeeManagementSignup fmSignup : signups) {
+
+                Set<FeeManagementSignupRate> signupRates = fmSignup.getIncompleteSignupRates();
+
+                if (CollectionUtils.isNotEmpty(signupRates)) {
+
+                    for (FeeManagementSignupRate signupRate : signupRates) {
+
+                        boolean rateSubCodesComply = StringUtils.isEmpty(rateSubCodes) ||
+                                matchesPatterns(signupRate.getRate().getSubCode(), rateSubCodeValues);
+
+                        if (rateSubCodesComply) {
+                            addRateToSignup(rate, fmSignup);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Replaces rates on FeeManagementSignup object(s) with the new rate specified by code and sub-code.
      *
      * @param rateCodes      List of rate codes separated by ","

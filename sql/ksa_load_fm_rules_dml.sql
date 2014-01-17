@@ -182,6 +182,7 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  mark signup rates ".*", "1" as complete
  mark signup rates "late.registration", "" as not complete
  mark signup rates ".*", "" as not complete
+ add rate "late.registration", "1" to signups with rates ".*", ".*", types "", catalogs "", signup operations ""
 ')!
 
 -- FM Session 1 rule set --
