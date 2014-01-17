@@ -13,7 +13,7 @@ class CourseOfferingInquiry < BasePage
   value(:course_title) { |b| b.frm.div(data_label: "Course Title").span(index: 0).text }
   value(:course_term) { |b| b.frm.div(data_label: "Term").span(index: 0).text }
   value(:course_credit_count) { |b| b.frm.div(data_label: "Credit Count").span(index: 0).text }
-  value(:grading_options) { |b| b.frm.div(data_label: "Grading Options").span(index: 0).text }
+  value(:grading_options) { |b| b.frm.span(id: 'gradingOptionId_control').text }
   value(:registration_options) { |b| b.frm.div(data_label: "Student Registration Options").span(index: 0).text }
   value(:final_exam_type) { |b| b.frm.div(data_label: "Final Exam Type").span(index: 0).text }
   value(:waitlist_state) { |b| b.frm.div(data_label: "Waitlists").span(index: 0).text == "Active" }
