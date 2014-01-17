@@ -4,8 +4,12 @@ import com.sigmasys.kuali.ksa.krad.form.RatesForm;
 import com.sigmasys.kuali.ksa.krad.model.RateModel;
 import com.sigmasys.kuali.ksa.model.fm.Rate;
 import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
+import com.sigmasys.kuali.ksa.model.fm.TransactionDateType;
+import com.sigmasys.kuali.ksa.service.PersistenceService;
 import com.sigmasys.kuali.ksa.service.atp.AtpService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
+import com.sigmasys.kuali.ksa.util.BeanUtils;
+import com.sigmasys.kuali.ksa.util.EnumUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
@@ -15,13 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Controller to serve requests from the "Rates" page.
@@ -40,6 +42,9 @@ public class RatesController extends GenericSearchController {
 
     @Autowired
     private AtpService atpService;
+
+    @Autowired
+    private PersistenceService persistenceService;
 
 
     /**
@@ -113,4 +118,63 @@ public class RatesController extends GenericSearchController {
 
         return getUIFModelAndView(form);
     }
+
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=rolloverRate")
+    public ModelAndView rolloverRate(@ModelAttribute("KualiForm") RatesForm form, @RequestParam("rateId") Long rateId) {
+        RateModel rateModel = findRate(form, rateId);
+
+        if(rateModel == null) {
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Rate with id '" + rateId + "' not found");
+            return getUIFModelAndView(form);
+        }
+
+        Rate newRate = BeanUtils.getDeepCopy(rateModel.getRate());
+        newRate.setId(null);
+        newRate.getDefaultRateAmount().setId(null);
+
+
+        String rolloverAcademicPeriod = rateModel.getRolloverAcademicPeriod();
+        if(rolloverAcademicPeriod != null) {
+            newRate.setAtpId(rolloverAcademicPeriod);
+        }
+
+        String rolloverTransactionDateType = rateModel.getRolloverTransactionDateType();
+        if(rolloverTransactionDateType != null) {
+            newRate.setTransactionDateType(EnumUtils.findById(TransactionDateType.class, rolloverTransactionDateType));
+        }
+
+        Date rolloverTransactionDate = rateModel.getRolloverTransactionDate();
+        if(rolloverTransactionDate != null) {
+            newRate.setTransactionDate(rolloverTransactionDate);
+        }
+
+        Date rolloverRecognitionDate = rateModel.getRolloverRecognitionDate();
+        if(rolloverRecognitionDate != null) {
+            newRate.setRecognitionDate(rolloverRecognitionDate);
+        }
+
+        try {
+            persistenceService.persistEntity(newRate.getDefaultRateAmount());
+            rateService.persistRate(newRate);
+            GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Rate successfully rolled over");
+        } catch(RuntimeException e) {
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
+        }
+
+        return getUIFModelAndView(form);
+    }
+
+    private RateModel findRate(RatesForm form, Long rateId) {
+        for(RateModel model : form.getRates()) {
+            if(rateId == null && model.getRate().getId() == null) {
+                return model;
+            }
+            if(model.getRate().getId() != null && rateId.equals(model.getRate().getId())) {
+                return model;
+            }
+        }
+        return null;
+    }
+
+
 }

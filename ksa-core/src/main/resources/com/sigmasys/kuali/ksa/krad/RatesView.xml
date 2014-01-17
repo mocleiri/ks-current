@@ -201,7 +201,10 @@
                                             </property>
                                         </bean>
                                         -->
-                                        <!-- "Delete" image action -->
+                                        <bean parent="Uif-ImageField" p:source="../images/roll-over.png" p:style="cursor:pointer; float: right;" p:altText="" p:title="" p:render="@{#line.rate.id != null}"
+                                              p:onClickScript="showLightboxComponent('rolloverRateLightbox@{#lineSuffix}');writeHiddenToForm('rateId', '@{#line.rate.id}');">
+                                        </bean>
+                                        <ref bean="rolloverRateLightbox"/>
                                         <bean parent="Uif-ActionLink" p:methodToCall="deleteRate" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');" p:hidden="@{#line.rate.id == null}">
                                             <property name="actionImage">
                                                 <bean parent="Uif-Image" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Delete"/>
@@ -225,6 +228,30 @@
                         </bean>
                     </property>
                 </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="rolloverRateLightbox" parent="Uif-VerticalBoxSection" p:readOnly="false" p:layoutManager.orientation="VERTICAL">
+        <property name="headerText" value="Rollover Rate"/>
+        <!--<property name="retrieveViaAjax" value="true"/>-->
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="New Academic Time Period" p:propertyName="rolloverAcademicPeriod"/>
+                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="rolloverTransactionDateType"/>
+                <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rolloverTransactionDate" p:constraintText="Format: mm/dd/yyyy">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Recognition Date" p:propertyName="rolloverRecognitionDate" p:constraintText="Format: mm/dd/yyyy">
+                    <property name="control">
+                        <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="rolloverRate" p:actionLabel="Save"
+                      p:preSubmitCall="writeHiddenToForm('rateId', '@{#line.rate.id}'); jQuery.fancybox.close();return true;"/>
             </list>
         </property>
     </bean>

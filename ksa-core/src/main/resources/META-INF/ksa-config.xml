@@ -1,5 +1,6 @@
 <config>
 
+    <param name="rice.krad.dev.mode">true</param>
     <param name="config.location">classpath:/META-INF/common-config-defaults.xml</param>
 
     <param name="application.id">KSA</param>

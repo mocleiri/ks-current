@@ -5,6 +5,7 @@ import com.sigmasys.kuali.ksa.model.fm.RateAmount;
 import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * User: tbornholtz
@@ -13,6 +14,12 @@ import java.math.BigDecimal;
 public class RateModel {
     private Rate rate;
     private RateCatalog rateCatalog;
+
+    // Rolover specific fields
+    private String rolloverAcademicPeriod;
+    private String rolloverTransactionDateType;
+    private Date rolloverTransactionDate;
+    private Date rolloverRecognitionDate;
 
     public RateModel() {
 
@@ -25,6 +32,7 @@ public class RateModel {
     public Rate getRate() {
         if(rate == null) {
             rate = new Rate();
+            rate.setDefaultRateAmount(new RateAmount());
         }
         return rate;
     }
@@ -50,14 +58,14 @@ public class RateModel {
         BigDecimal minAmount = rateCatalog.getMinAmount();
         BigDecimal maxAmount = rateCatalog.getMaxAmount();
         if(minAmount != null && maxAmount != null && minAmount.equals(maxAmount)) {
-            return rate.getDefaultRateAmount().getAmount();
+            return this.getDefaultRateAmount().getAmount();
         }
 
         return rateCatalog.getMaxAmount();
     }
 
     public void setDefaultAmount(BigDecimal defaultAmount) {
-        rate.getDefaultRateAmount().setAmount(defaultAmount);
+        this.getDefaultRateAmount().setAmount(defaultAmount);
     }
 
     public boolean getDefaultAmountReadOnly() {
@@ -65,12 +73,9 @@ public class RateModel {
     }
 
     public String getTransactionTypeId() {
-        RateAmount rateAmount = getRate().getDefaultRateAmount();
-        if(rateAmount != null && rateAmount.getTransactionTypeId() != null) {
+        RateAmount rateAmount = this.getDefaultRateAmount();
+        if(rateAmount.getTransactionTypeId() != null) {
             return rateAmount.getTransactionTypeId();
-        }
-        if(rateAmount == null) {
-            rateAmount = new RateAmount();
         }
 
         if(getRateCatalog() != null && getRateCatalog().isTransactionTypeFinal()) {
@@ -82,10 +87,54 @@ public class RateModel {
     }
 
     public void setTransactionTypeId(String transactionTypeId){
-        getRate().getDefaultRateAmount().setTransactionTypeId(transactionTypeId);
+        this.getDefaultRateAmount().setTransactionTypeId(transactionTypeId);
     }
 
     public boolean getTransactionTypeIdReadOnly() {
         return (getRateCatalog() != null) && getRateCatalog().isTransactionTypeFinal();
     }
+
+    public String getRolloverAcademicPeriod() {
+        return rolloverAcademicPeriod;
+    }
+
+    public void setRolloverAcademicPeriod(String rolloverAcademicPeriod) {
+        this.rolloverAcademicPeriod = rolloverAcademicPeriod;
+    }
+
+    public String getRolloverTransactionDateType() {
+        return rolloverTransactionDateType;
+    }
+
+    public void setRolloverTransactionDateType(String rolloverTransactionDateType) {
+        this.rolloverTransactionDateType = rolloverTransactionDateType;
+    }
+
+    public Date getRolloverTransactionDate() {
+        return rolloverTransactionDate;
+    }
+
+    public void setRolloverTransactionDate(Date rolloverTransactionDate) {
+        this.rolloverTransactionDate = rolloverTransactionDate;
+    }
+
+    public Date getRolloverRecognitionDate() {
+        return rolloverRecognitionDate;
+    }
+
+    public void setRolloverRecognitionDate(Date rolloverRecognitionDate) {
+        this.rolloverRecognitionDate = rolloverRecognitionDate;
+    }
+
+    private RateAmount getDefaultRateAmount() {
+        RateAmount amount = getRate().getDefaultRateAmount();
+        if(amount == null) {
+            amount = new RateAmount();
+            amount.setUnits(1);
+            getRate().setDefaultRateAmount(amount);
+
+        }
+        return amount;
+    }
+
 }
