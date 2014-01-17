@@ -183,6 +183,8 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  mark signup rates "late.registration", "" as not complete
  mark signup rates ".*", "" as not complete
  add rate "late.registration", "1" to signups with rates ".*", ".*", types "", catalogs "", signup operations ""
+ mark session as review required
+ mark session as review complete
 ')!
 
 -- FM Session 1 rule set --
@@ -546,6 +548,24 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 '(session key "20percent" is "yes")',
 'charge rates "", "" in amount of 80% with types "tuition.credits.fixed", catalogs "", signup operations "WITHDRAW"
  charge rates "mba.cohort..*", "" in amount of 80% with types "", catalogs "", signup operations "WITHDRAW"
+')!
+
+-- FM Session 3 Java-based rule set --
+
+Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (105, 'FM Session 3', 3,
+'import java.util.*;
+import java.math.*;
+import com.sigmasys.kuali.ksa.model.*;
+import com.sigmasys.kuali.ksa.model.fm.*;
+import com.sigmasys.kuali.ksa.model.rule.*;
+import com.sigmasys.kuali.ksa.service.brm.*;
+import com.sigmasys.kuali.ksa.service.fm.*;
+import com.sigmasys.kuali.ksa.model.security.*;
+import com.sigmasys.kuali.ksa.util.*;
+import org.apache.commons.lang.*;
+
+global FeeManagementSession fmSession;
+
 ')!
 
 -- FM rule associations

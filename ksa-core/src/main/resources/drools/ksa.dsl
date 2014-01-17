@@ -122,6 +122,8 @@
 [then][]set session key "{key}" to number of units where signup is taken = context.getFmService().setSessionKeyPairToUnitNumberWithSignupMethod("{key}","isTaken",context);
 [then][]set session key "{key}" to number of units where signup operation is "{includedOperations}" minus "{excludedOperations}" = context.getFmService().setSessionKeyPairToUnitNumber("{key}","{includedOperations}","{excludedOperations}",context);
 [then][]set signup key "{key}" to "{value}" = context.getFmService().setSignupKeyPair("{key}","{value}",context);
+[then][]mark session as review required = context.getFmService().setSessionReviewRequired(true,context);
+[then][]mark session as review complete = context.getFmService().setSessionReviewComplete(true,context);
 [then][]mark signup as taken = context.getFmService().setSignupTaken(true,context);
 [then][]mark signup as not taken = context.getFmService().setSignupTaken(false,context);
 [then][]mark signup as complete = context.getFmService().setSignupComplete(true,context);
