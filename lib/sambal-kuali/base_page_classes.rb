@@ -85,10 +85,14 @@ module PopulationsSearch
   end
 
   # Returns an array containing the names of the items returned in the search
-  def results_list
+  def results_list(max_length = 0)
     names = []
     results_table.wait_until_present
-    results_table.rows.each { |row| names << row[POPULATION_NAME].text }
+    results_table.rows.each do |row|
+      names << row[POPULATION_NAME].text
+      break if (max_length !=0 and names.length == max_length)
+    end
+
     names.delete_if { |name| name == "" }
     names.delete_if { |name| name == "Name" }
     names
@@ -118,9 +122,9 @@ module PopulationsSearch
     on ActivePopulationLookup do |page|
       page.keyword.wait_until_present
       page.search
-      no_of_full_pages =  [(page.no_of_entries.to_i/10).to_i,5].min
-      page.change_results_page(1+rand(no_of_full_pages))
-      names = page.results_list
+      #no_of_full_pages =  [(page.no_of_entries.to_i/10).to_i,5].min
+      #page.change_results_page(1+rand(no_of_full_pages))
+      names = page.results_list(10)
     end
     #next line ensures population is not used twice
     names = names - pops_used_list
