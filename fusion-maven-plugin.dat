@@ -1,12 +1,12 @@
 # module = ks-ap branch Path = enrollment/ks-ap/tags/builds/ks-ap-0.8/0.8.0-M8-KSAP/build-51 revision = 63628
-ks-ap::enrollment_ks-ap_tags_builds_ks-ap-0.8_0.8.0-M8-KSAP_build-51::0f6d57133b5a29cfcbe5477b1b29059fd73f1602
+ks-ap::enrollment_ks-ap_tags_builds_ks-ap-0.8_0.8.0-M8-KSAP_build-51::54820fdcb043afcda0c1c9466e8d64c224fb084e
 # module = ks-api branch Path = enrollment/ks-api/tags/builds/ks-api-2.0/2.0.0-M8-KSAP/build-51 revision = 63628
-ks-api::enrollment_ks-api_tags_builds_ks-api-2.0_2.0.0-M8-KSAP_build-51::82355919d389ed03b5991f3b019928891a625445
+ks-api::enrollment_ks-api_tags_builds_ks-api-2.0_2.0.0-M8-KSAP_build-51::bb942a4e60546e5f2db1063ca4009d9ab14bbde1
 # module = ks-core branch Path = enrollment/ks-core/tags/builds/ks-core-2.0/2.0.0-M8-KSAP/build-51 revision = 63628
-ks-core::enrollment_ks-core_tags_builds_ks-core-2.0_2.0.0-M8-KSAP_build-51::57b56936d28378652e670cc2580fb46d5ed1152d
+ks-core::enrollment_ks-core_tags_builds_ks-core-2.0_2.0.0-M8-KSAP_build-51::bd800a72b4dd10fd385b1a092190affdaa47e176
 # module = ks-deployments branch Path = enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0-M8-KSAP/build-51 revision = 63628
-ks-deployments::enrollment_ks-deployments_tags_builds_ks-deployments-2.0_2.0.0-M8-KSAP_build-51::1e53c988a4060a18d7ef87bde175a99490dc3dcc
+ks-deployments::enrollment_ks-deployments_tags_builds_ks-deployments-2.0_2.0.0-M8-KSAP_build-51::9b4866e10cc39c6916d57600c8b9e8128ab89c98
 # module = ks-enroll branch Path = enrollment/ks-enroll/tags/builds/ks-enroll-1.0/1.0.0-M8-KSAP/build-51 revision = 63628
-ks-enroll::enrollment_ks-enroll_tags_builds_ks-enroll-1.0_1.0.0-M8-KSAP_build-51::152e6fbb7c6bc5b94e8749c194a4604019830873
+ks-enroll::enrollment_ks-enroll_tags_builds_ks-enroll-1.0_1.0.0-M8-KSAP_build-51::42165d8fcb05853700f2fee1fc97cc7b67840ddd
 # module = ks-lum branch Path = enrollment/ks-lum/tags/builds/ks-lum-2.0/2.0.0-M8-KSAP/build-51 revision = 63628
-ks-lum::enrollment_ks-lum_tags_builds_ks-lum-2.0_2.0.0-M8-KSAP_build-51::662894d24a836571f25d64f0966681610bad4288
+ks-lum::enrollment_ks-lum_tags_builds_ks-lum-2.0_2.0.0-M8-KSAP_build-51::981a137425bb26dbfcfd8b8e401efaf3f3f93461
