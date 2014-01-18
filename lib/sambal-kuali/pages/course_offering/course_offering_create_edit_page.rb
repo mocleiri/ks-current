@@ -36,7 +36,7 @@ class CourseOfferingCreateEdit < BasePage
   element(:grading_letter) { |b| b.grading_reg_opts_div.radio(value: 'kuali.resultComponent.grade.letter') }
 
   element(:pass_fail_checkbox) { |b| b.checkbox(id: "is_pass_fail_control") }
-  element(:audit_checkbox) { |b| b.checkbox(id: "is_audit") }
+  element(:audit_checkbox) { |b| b.checkbox(id: "is_audit_control") }
 
   element(:credit_type_option_fixed) { |b| b.frm.radio(id: "KS-CourseOfferingEdit-CreditType_OptionTypeSelector_control_0") }
 
