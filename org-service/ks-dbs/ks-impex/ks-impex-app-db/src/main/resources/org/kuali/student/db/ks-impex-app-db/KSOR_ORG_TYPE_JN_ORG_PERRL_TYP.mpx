@@ -1,0 +1,4 @@
+ORG_TYPE_ID,ORG_PERS_RELTN_TYPE_ID
+"kuali.org.Department","kuali.org.PersonRelation.Professor"
+"kuali.org.School","kuali.org.PersonRelation.Head"
+"kuali.org.School","kuali.org.PersonRelation.Professor"
