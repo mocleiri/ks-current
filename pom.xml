@@ -262,9 +262,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/tags/builds/student-2.1/2.1.1-FR2-M1/build-645</connection>
-        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/tags/builds/student-2.1/2.1.1-FR2-M1/build-645</developerConnection>
-        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/tags/builds/student-2.1/2.1.1-FR2-M1/build-645</url>
+        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/CM-KRAD-MERGE</connection>
+        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/CM-KRAD-MERGE</developerConnection>
+        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/CM-KRAD-MERGE</url>
     </scm>
     <prerequisites>
         <maven>${maven.min.version}</maven>
