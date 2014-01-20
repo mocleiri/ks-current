@@ -13,18 +13,37 @@ usage () {
 		echo "ERROR: $MSG"
 	fi
 
-	echo "USAGE: <ks-api branch> <aggregate name> <modules> <in_branches:0 or 1>  <source branches> <commit message> <source revision> <recreate branches:0 or 1> <apply aggregate svn:externals: 0 or 1> [<source prefix> <target prefix: like sandbox> ]"
-	echo "<ks-api source branch>: either trunk or branches/some_branch"
-	echo "<aggregate name>: in branches mode this is the name of the branch for each module.  i.e. ks-enroll/brances/aggregate_name"
-	echo "<modules>: non-api based modules to apply, none if only api"
-	echo "<in_branches>:1 if $module/branches/aggregate_name is the target module location. 0 if $module is the target location. use 0 for sandbox based aggregates."
-	echo "<source branches>: trunk or branches/source-branch or space separated list of module:path elements."
-	echo "<commit message>: commit message to use"
-	echo "<source revision>: 0 will find out the current revision. >0 will use the indicated revision."
-	echo "<recreate branches>:1 will deleted any existing feature branch and replace it with the source branch"
-	echo "<apply aggregate svn:externals> 0 will not apply; 1 will apply svn:externals for the modules in the aggregate."
-	echo "<source_prefix>: optional. enrollment or sandbox or contrib/CM"
-	echo "<target_prefix>: optional. enrollment or sandbox or contrib/CM"
+    cat <<EOT
+
+USAGE: $0 \\
+    <ks-api source branch> <aggregate name> <modules> \\
+    <in_branches:0 or 1> \\
+    <source branches> <commit message> <source revision> \\
+    <recreate branches:0 or 1> \\
+    <apply aggregate svn:externals: 0 or 1> \\
+    [<source prefix> <target prefix: like sandbox> ]
+
+where:
+
+<ks-api source branch>:             either trunk or branches/some_branch
+<aggregate name>:                   in branches mode this is the name of the branch for each module.
+                                    i.e. ks-enroll/brances/aggregate_name
+<modules>:                          non-api based modules to apply, none if only api
+<in_branches>:                      1 if $module/branches/aggregate_name is the target module location.
+                                    0 if $module is the target location.
+                                    use 0 for sandbox based aggregates.
+<source branches>:                  trunk or branches/source-branch or space separated list of
+                                    module:path elements.
+<commit message>:                   commit message to use
+<source revision>:                  0 will find out the current revision.
+                                    >0 will use the indicated revision.
+<recreate branches>:                1 will deleted any existing feature branch and replace it with
+                                    the source branch
+<apply aggregate svn:externals>     0 will not apply;
+                                    1 will apply svn:externals for the modules in the aggregate.
+<source_prefix>:                    optional. enrollment or sandbox or contrib/CM
+<target_prefix>:                    optional. enrollment or sandbox or contrib/CM
+EOT
 	exit 1
 
 }
