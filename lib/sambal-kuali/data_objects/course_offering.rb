@@ -24,11 +24,16 @@ class CourseOffering
 
   def add_course_to_current_term
     navigate_to_course_planner_home
-    sleep 5
     on CoursePlannerPage do |page|
-      #page.loading.wait_while_present
+        if page.course_code_current_term.exists?
+          page.course_code_current_term_click
+          page.course_code_delete_click
+          page.delete_course.wait_until_present(5)
+          page.delete_course_click
+          page.refresh
+        end
       page.current_term_add
-      sleep 2
+      page.course_code_text.wait_until_present(5)
       page.course_code_text.set @course_code
       page.notes.set @notes
       page.add_to_plan
@@ -39,10 +44,16 @@ class CourseOffering
 
   def add_course_to_future_term
     navigate_to_course_planner_home
-    sleep 5
       on CoursePlannerPage do |page|
+          if page.course_code_future_term.exists?
+              page.course_code_future_term_click
+              page.course_code_delete_click
+              page.delete_course.wait_until_present(5)
+              page.delete_course_click
+              page.refresh
+          end
         page.future_term_add
-        sleep 2
+        page.course_code_text.wait_until_present(5)
         page.course_code_text.set @course_code
         page.credit.set @credit
         page.notes.set @notes
@@ -51,25 +62,19 @@ class CourseOffering
       end
   end
 
-  def edit_plan_item_current_term
+def edit_plan_item
     on CoursePlannerPage do |page|
-      sleep 2
-      page.course_code_current_term_click
-      page.edit_plan_item_click
-      sleep 2
-      puts page.view_notes_popover
+      if @course_code == "ENGL388"
+        sleep 2
+        page.course_code_future_term_click
+        page.edit_plan_item_click
+      else
+        sleep 2
+        page.course_code_current_term_click
+        page.edit_plan_item_click
+      end
     end
-  end
-
-  def edit_plan_item_future_term
-    on CoursePlannerPage do |page|
-      sleep 2
-      page.course_code_future_term_click
-      page.edit_plan_item_click
-      sleep 2
-      puts page.view_notes_popover
-    end
-  end
+end
 
   def set_search_entry
     navigate_to_course_search_home
