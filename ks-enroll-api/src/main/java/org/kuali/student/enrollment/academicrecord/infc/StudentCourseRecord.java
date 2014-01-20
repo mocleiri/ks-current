@@ -27,9 +27,9 @@ import java.util.Date;
  *
  * @author tom
  * @since Tue Sep 06 14:22:34 EDT 2011
- */ 
+ */
 
-public interface StudentCourseRecord 
+public interface StudentCourseRecord
     extends IdNamelessEntity {
 
     /**
