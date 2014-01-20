@@ -74,7 +74,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And requested scheduling information are still shown and actual scheduling information are not shown for both activity offerings
     And registration group is shown as pending
 
-  Scenario: CO 23.3A.2 CSR Reinstate suspended AOs with ADLs in locked final edits and published SOC states
+  Scenario: CO 23.3A.2 CSR Reinstate suspended AOs with ASIs in locked final edits and published SOC states
     Given I am working on a term in "Published" SOC state
     When I manage a course offering with a suspended activity offering
     Then I am able to reinstate the activity offering
@@ -85,7 +85,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     When I manage a course offering with a suspended activity offering
     Then I am able to reinstate the activity offering
 
-  Scenario: CO 23.3A.8 CSR Reinstate an AO with ADLs that is the only AO in the CO in published SOC state
+  Scenario: CO 23.3A.8 CSR Reinstate an AO with ASIs that is the only AO in the CO in published SOC state
     Given I am working on a term in "Published" SOC state
     And I manage a course offering with an offered activity offering present
     And I suspend the activity offering
@@ -95,7 +95,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And the registration group is shown as offered
     And the Course Offering is shown as Offered
 
-  Scenario: CO 23.3A.9 CSR Reinstate an AO with ADLs in final edits SOC state
+  Scenario: CO 23.3A.9 CSR Reinstate an AO with ASIs in final edits SOC state
     Given I am working on a term in "Final Edits" SOC state
     And I manage a course offering with an approved activity offering present
     And I suspend the activity offering
@@ -105,7 +105,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And the registration group is shown as pending
     And the Course Offering is shown as Planned
 
-  Scenario: CO 23.3A.5 CSR Reinstate an AO with ADLs in locked SOC state
+  Scenario: CO 23.3A.5 CSR Reinstate an AO with ASIs in locked SOC state
     Given a new academic term has an activity offering in approved status
     And I add requested scheduling information to the activity offering
     And I advance the SOC state from open to scheduler complete state
@@ -116,7 +116,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And registration group is shown as pending
     And the Course Offering is now shown as Planned
 
-  Scenario: CO 23.3A.6 CSR Reinstate multiple suspended AOs with ADLs in published SOC state
+  Scenario: CO 23.3A.6 CSR Reinstate multiple suspended AOs with ASIs in published SOC state
     Given I suspend two activity offerings in offered status for a course offering in a published SOC state
     And I reinstate both activity offerings
     Then the Suspended activity offerings are shown as offered
@@ -131,7 +131,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And actual scheduling information for the Suspended activity offering are still shown
     And actual scheduling information for the Offered activity offering are still shown
 
-  Scenario: CO 23.3B.1 CSR Reinstate suspended AO with RDLs in published SOC state
+  Scenario: CO 23.3B.1 CSR Reinstate suspended AO with RSIs in published SOC state
     Given I am working on a term in "Published" SOC state
     And I manage a course offering with a suspended activity offering
     And I reinstate the activity offering
@@ -139,7 +139,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And requested scheduling information are still shown and actual scheduling information are not shown for the activity offering
     And the related registration group is shown as pending
 
-  Scenario: CO 23.3B.2 CSR Reinstate an AO with RDLs in final edits SOC state
+  Scenario: CO 23.3B.2 CSR Reinstate an AO with RSIs in final edits SOC state
     Given I am working on a term in "Final Edits" SOC state
     And I manage a course offering with a suspended activity offering
     When I reinstate the activity offering
@@ -147,7 +147,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And requested scheduling information are still shown and actual scheduling information are not shown for the activity offering
     And the registration group is shown as pending
 
-  Scenario: CO 23.3B.3 CSR Reinstate an AO with RDLs in locked SOC state
+  Scenario: CO 23.3B.3 CSR Reinstate an AO with RSIs in locked SOC state
     Given I am working on a term in "Final Edits" SOC state
     And I manage a course offering with a suspended activity offering
     When I reinstate the activity offering
@@ -155,7 +155,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And requested scheduling information are still shown and actual scheduling information are not shown for the activity offering
     And the registration group is shown as pending
 
-  Scenario: CO 23.3B.4 CSR Reinstate multiple suspended AOs with RDLs in published SOC state
+  Scenario: CO 23.3B.4 CSR Reinstate multiple suspended AOs with RSIs in published SOC state
     Given I suspend two draft activity offerings for a course offering in a published SOC state
     And I reinstate both activity offerings
     Then both Suspended activity offerings are shown as draft
@@ -163,13 +163,13 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And requested scheduling information are still shown and actual scheduling information are not shown for the third activity offering
     And all associated registration group are shown as pending
 
-  Scenario: CO 23.3B.5 CSR Reinstate suspended and draft AOs with RDLs in published SOC state
+  Scenario: CO 23.3B.5 CSR Reinstate suspended and draft AOs with RSIs in published SOC state
     Given I manage a course offering with a suspended and a draft activity offering present in a published SOC state
     When I reinstate both activity offerings, receiving a warning message that one of the two selections is eligible for this action
     Then the Suspended activity offering is shown as draft and the draft activity offering is shown as draft
     And requested scheduling information are still shown and actual scheduling information are not shown for the second activity offering
 
-  Scenario: CO 23.3B.6 CSR Reinstate a single AO with RDLs in published SOC state
+  Scenario: CO 23.3B.6 CSR Reinstate a single AO with RSIs in published SOC state
     Given I am working on a term in "Final Edits" SOC state
     And I manage a course offering with a suspended activity offering
     When I reinstate the activity offering
@@ -178,7 +178,7 @@ Feature: EC.Cancel Suspend Reinstate AOs
     And the registration group is shown as pending
     And the Course Offering is shown as Draft
 
-  Scenario: CO 23.3B.7 CSR Reinstate a single AO with RDLs in final edits SOC state
+  Scenario: CO 23.3B.7 CSR Reinstate a single AO with RSIs in final edits SOC state
     Given I am working on a term in "Final Edits" SOC state
     And I manage a course offering with a suspended activity offering
     When I reinstate the activity offering

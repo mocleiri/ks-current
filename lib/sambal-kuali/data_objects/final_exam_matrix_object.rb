@@ -7,7 +7,7 @@ class FinalExamMatrix
   include Workflows
 
   attr_accessor :term_type, :courses, :days, :start_time,
-                :end_time, :time_ampm, :free_text, :rdl_days,
+                :end_time, :time_ampm, :free_text, :rsi_days,
                 :rule_requirements, :exam_type, :facility,
                 :room
 
@@ -27,7 +27,7 @@ class FinalExamMatrix
       :courses => "ENGL101",
       :facility => "MTH",
       :room => "0304",
-      :rdl_days => "Day 1",
+      :rsi_days => "Day 1",
       :courses_type => "Approved Courses",
       :add_more_statements => false,
       :defer_save => false,
@@ -70,11 +70,11 @@ class FinalExamMatrix
       page.preview_change
       page.loading.wait_while_present
 
-      page.rdl_days.select @rdl_days
-      page.rdl_starttime.set @start_time
-      page.rdl_starttime_ampm.select @time_ampm
-      page.rdl_endtime.set @end_time
-      page.rdl_endtime_ampm.select @time_ampm
+      page.rsi_days.select @rsi_days
+      page.rsi_starttime.set @start_time
+      page.rsi_starttime_ampm.select @time_ampm
+      page.rsi_endtime.set @end_time
+      page.rsi_endtime_ampm.select @time_ampm
 
       page.update_rule unless @defer_save == true
       page.loading.wait_while_present
@@ -197,11 +197,11 @@ class FinalExamMatrix
     set_options(options)
   end
 
-  def add_edit_rdl_info opts = {}
+  def add_edit_rsi_info opts = {}
     defaults = {
         :exam_type => @exam_type,
         :rule_requirements => @rule_requirements,
-        :rdl_days => @rdl_days,
+        :rsi_days => @rsi_days,
         :start_time => @start_time,
         :end_time => @end_time,
         :time_ampm => @time_ampm,
@@ -214,29 +214,29 @@ class FinalExamMatrix
     on(FEMatrixView).edit options[:rule_requirements], options[:exam_type]
 
     on FEMatrixEdit do |page|
-      if options[:rdl_days] != nil
-        page.rdl_days.select options[:rdl_days]
+      if options[:rsi_days] != nil
+        page.rsi_days.select options[:rsi_days]
       end
 
       if options[:start_time] != nil
-        page.rdl_starttime.set options[:start_time]
+        page.rsi_starttime.set options[:start_time]
       end
 
       if options[:end_time] != nil
-        page.rdl_endtime.set options[:end_time]
+        page.rsi_endtime.set options[:end_time]
       end
 
       if options[:time_ampm] != nil
-        page.rdl_starttime_ampm.select options[:time_ampm]
-        page.rdl_endtime_ampm.select options[:time_ampm]
+        page.rsi_starttime_ampm.select options[:time_ampm]
+        page.rsi_endtime_ampm.select options[:time_ampm]
       end
 
       if options[:exam_type] == "Common"
         if options[:facility] != nil
-          page.rdl_facility.set options[:facility]
+          page.rsi_facility.set options[:facility]
         end
         if options[:room] != nil
-          page.rdl_room.set options[:room]
+          page.rsi_room.set options[:room]
         end
       end
 

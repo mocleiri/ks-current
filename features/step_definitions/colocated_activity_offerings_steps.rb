@@ -86,7 +86,7 @@ Then /^the first colocated AO is not colocated with any remaining AOs$/ do
   on ManageCourseOfferings do |page|
     page.target_row('A')[1].image.should_not be_present
 
-    # validate should also include ensuring there are no DLs
+    # validate should also include ensuring there are no SIs
   end
 
   # second AO should indicate colocation with all the remaining
@@ -99,7 +99,7 @@ Then /^the first colocated AO is not colocated with any remaining AOs$/ do
       expected = other_ao.parent_course_offering.course.upcase + ' ' + other_ao.code.upcase
       colocated_tooltip_text.should include expected
 
-      #validation should also include ensuring DLs still exist
+      #validation should also include ensuring SIs still exist
     end
   end
 end

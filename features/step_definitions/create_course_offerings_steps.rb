@@ -85,21 +85,21 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 
-  @rdl_list = {}
-  @rdl_list["MT"] = make SchedulingInformation, :days => "MT",
+  @rsi_list = {}
+  @rsi_list["MT"] = make SchedulingInformation, :days => "MT",
                          :start_time => "10:00", :start_time_ampm => "am",
                          :end_time => "10:50", :end_time_ampm => "am",
                          :facility => "PHYS", :facility_long_name => "PHYS" , :room => "4102"
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,  :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list
+                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list
   @activity_offering.save
 
-  @rdl_list2 = {}
-  @rdl_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rsi_list2 = {}
+  @rsi_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
   @activity_offering2 = create ActivityOffering,  :parent_course_offering => @course_offering, :subterm => @subterm_list[1].subterm_type,
-                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list2
+                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list2
 
   @activity_offering2.save
 end
@@ -116,19 +116,19 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
                             :course => "ENGL211",
                             :delivery_format_list => delivery_format_list
 
-  @rdl_list = {}
-  @rdl_list["MT"] = make SchedulingInformation, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rsi_list = {}
+  @rsi_list["MT"] = make SchedulingInformation, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                          :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,  :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rdl_list
+                              :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rsi_list
   @activity_offering.save
 
-  @rdl_list2 = {}
-  @rdl_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rsi_list2 = {}
+  @rsi_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
   @activity_offering2 = create ActivityOffering,  :parent_course_offering => @course_offering, :subterm => @subterm_list[1].subterm_type,
-                               :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rdl_list2
+                               :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rsi_list2
 
   @activity_offering2.save
 end
@@ -141,18 +141,18 @@ And /^I create a Course Offering from catalog with Activity Offerings$/ do
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 
-  @rdl_list = {}
-  @rdl_list["MT"] = make SchedulingInformation, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rsi_list = {}
+  @rsi_list["MT"] = make SchedulingInformation, :days => "MT", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                          :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
 
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, # :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list
+                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list
   @activity_offering.save
 
-  @rdl_list2 = {}
-  @rdl_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @rsi_list2 = {}
+  @rsi_list2["WF"] = make SchedulingInformation, :days => "WF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
   @activity_offering2 = create ActivityOffering,  :parent_course_offering => @course_offering, #:subterm => @subterm_list[1].subterm_type,
-                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rdl_list2
+                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list2
   @activity_offering2.save
 end

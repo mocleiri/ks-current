@@ -48,24 +48,24 @@ Then /^the activity offering scheduling information are copied to the rollover t
   source_activity_offering = @course_offering.find_ao_obj_by_code("G")
   source_activity_offering.requested_scheduling_information_list.size.should_not == 0
 
-  #now navigate to course offering copy and validate RDLs
+  #now navigate to course offering copy and validate RSIs
   @course_offering_copy.manage
   @course_offering_copy.edit_ao :ao_code => source_activity_offering.code, :cluster_private_name => source_activity_offering.aoc_private_name
 
   on ActivityOfferingMaintenance do |page|
-    page.actual_logistics_div.exists?.should == false  #should not be any ADLs
-    page.requested_logistics_table.rows.size.should be > 2 #should be more than header/footer rows
-    page.requested_logistics_table.rows[1..-2].each do |row|
-      days = page.get_requested_logistics_days(row).delete(' ')
-      start_time = page.get_requested_logistics_start_time(row).delete(' ')
-      dl_key = "#{days}#{start_time}"
-      #get the corresponding ADL by key
-      del_logisitics = source_activity_offering.requested_scheduling_information_list[dl_key]
-      page.get_requested_logistics_days(row).delete(' ').should == del_logisitics.days
-      page.get_requested_logistics_start_time(row).delete(' ').should == "#{del_logisitics.start_time}#{del_logisitics.start_time_ampm}"
-      page.get_requested_logistics_end_time(row).delete(' ').should == "#{del_logisitics.end_time}#{del_logisitics.end_time_ampm}"
-      page.get_requested_logistics_facility(row).should == del_logisitics.facility_long_name
-      page.get_requested_logistics_room(row).should == del_logisitics.room
+    page.actual_sched_info_div.exists?.should == false  #should not be any ASIs
+    page.requested_sched_info_table.rows.size.should be > 2 #should be more than header/footer rows
+    page.requested_sched_info_table.rows[1..-2].each do |row|
+      days = page.get_requested_sched_info_days(row).delete(' ')
+      start_time = page.get_requested_sched_info_start_time(row).delete(' ')
+      si_key = "#{days}#{start_time}"
+      #get the corresponding ASI by key
+      del_sched_info = source_activity_offering.requested_scheduling_information_list[si_key]
+      page.get_requested_sched_info_days(row).delete(' ').should == del_sched_info.days
+      page.get_requested_sched_info_start_time(row).delete(' ').should == "#{del_sched_info.start_time}#{del_sched_info.start_time_ampm}"
+      page.get_requested_sched_info_end_time(row).delete(' ').should == "#{del_sched_info.end_time}#{del_sched_info.end_time_ampm}"
+      page.get_requested_sched_info_facility(row).should == del_sched_info.facility_long_name
+      page.get_requested_sched_info_room(row).should == del_sched_info.room
     end
   end
 end

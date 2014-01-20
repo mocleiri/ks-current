@@ -89,20 +89,20 @@ Then /^the activity offering is updated when saved$/ do
   #  page.max_enrollment.should == @activity_offering.max_enrollment.to_s
   #
   #  if  @activity_offering.actual_scheduling_information_list.length != 0
-  #    page.actual_logistics_table.rows[1..-1].each do |row|
-  #      row_key = "#{page.get_actual_logistics_days(row)}#{page.get_actual_logistics_start_time(row)}".delete(' ')
-  #      adl = @activity_offering.actual_scheduling_information_list[row_key]
+  #    page.actual_sched_info_table.rows[1..-1].each do |row|
+  #      row_key = "#{page.get_actual_sched_info_days(row)}#{page.get_actual_sched_info_start_time(row)}".delete(' ')
+  #      asi = @activity_offering.actual_scheduling_information_list[row_key]
   #      if row_key != ''
-  #        if adl.tba?
-  #          page.get_actual_logistics_tba(row).should == "TBA"
+  #        if asi.tba?
+  #          page.get_actual_sched_info_tba(row).should == "TBA"
   #        else
-  #          page.get_actual_logistics_tba(row).should == ""
+  #          page.get_actual_sched_info_tba(row).should == ""
   #        end
-  #        page.get_actual_logistics_days(row).delete(' ').should == adl.days
-  #        page.get_actual_logistics_start_time(row).should == "#{adl.start_time} #{adl.start_time_ampm.upcase}"
-  #        page.get_actual_logistics_end_time(row).should == "#{adl.end_time} #{adl.end_time_ampm.upcase}"
-  #        page.get_actual_logistics_facility(row).should == adl.facility_long_name
-  #        page.get_actual_logistics_room(row).should == adl.room
+  #        page.get_actual_sched_info_days(row).delete(' ').should == asi.days
+  #        page.get_actual_sched_info_start_time(row).should == "#{asi.start_time} #{asi.start_time_ampm.upcase}"
+  #        page.get_actual_sched_info_end_time(row).should == "#{asi.end_time} #{asi.end_time_ampm.upcase}"
+  #        page.get_actual_sched_info_facility(row).should == asi.facility_long_name
+  #        page.get_actual_sched_info_room(row).should == asi.room
   #        #TODO - validate (facility) features when implemented
   #      end
   #    end
@@ -131,20 +131,20 @@ Then /^the activity offering is updated when saved$/ do
     page.total_maximum_enrollment.value.should == @activity_offering.max_enrollment.to_s
 
     if  @activity_offering.actual_scheduling_information_list.length != 0
-      page.actual_logistics_table.rows[1..-1].each do |row|
-        row_key = "#{page.get_actual_logistics_days(row)}#{page.get_actual_logistics_start_time(row)}".delete(' ')
-        adl = @activity_offering.actual_scheduling_information_list[row_key]
+      page.actual_sched_info_table.rows[1..-1].each do |row|
+        row_key = "#{page.get_actual_sched_info_days(row)}#{page.get_actual_sched_info_start_time(row)}".delete(' ')
+        asi = @activity_offering.actual_scheduling_information_list[row_key]
         if row_key != ''
-          if adl.tba?
-            page.get_actual_logistics_tba(row).should == "TBA"
+          if asi.tba?
+            page.get_actual_sched_info_tba(row).should == "TBA"
           else
-            page.get_actual_logistics_tba(row).should == ""
+            page.get_actual_sched_info_tba(row).should == ""
           end
-          page.get_actual_logistics_days(row).delete(' ').should == adl.days
-          page.get_actual_logistics_start_time(row).should == "#{adl.start_time} #{adl.start_time_ampm.upcase}"
-          page.get_actual_logistics_end_time(row).should == "#{adl.end_time} #{adl.end_time_ampm.upcase}"
-          page.get_actual_logistics_facility(row).should == adl.facility_long_name
-          page.get_actual_logistics_room(row).should == adl.room
+          page.get_actual_sched_info_days(row).delete(' ').should == asi.days
+          page.get_actual_sched_info_start_time(row).should == "#{asi.start_time} #{asi.start_time_ampm.upcase}"
+          page.get_actual_sched_info_end_time(row).should == "#{asi.end_time} #{asi.end_time_ampm.upcase}"
+          page.get_actual_sched_info_facility(row).should == asi.facility_long_name
+          page.get_actual_sched_info_room(row).should == asi.room
           #TODO - validate (facility) features when implemented
         end
       end
