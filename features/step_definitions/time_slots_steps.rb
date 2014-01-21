@@ -19,7 +19,7 @@ When /^I add a new time slot but omit the (start time|end time|days)$/ do |data_
   time_slot = make TimeSlots::TimeSlot
 
   case data_to_omit
-    when "start_time"
+    when "start time"
       time_slot.start_time = nil
     when "end time"
       time_slot.end_time = nil
@@ -51,8 +51,16 @@ Then /^an error message is displayed about the duplicate timeslot$/ do
   on(TimeSlotMaintenance).time_slot_error_message.text.should match /Duplicate time slots are not allowed/
 end
 
-Then /^an error is displayed about the missing data$/ do
-  on(TimeSlotMaintenance).first_msg.should match /Invalid \bdays|Start time|End time\b/
+Then /^an error is displayed about the missing days$/ do
+  on(TimeSlotMaintenance).first_msg.should match /#{Regexp.escape('Valid chars: MTWHFSU (or lower case letters)')}/
+end
+
+Then /^an error is displayed about the missing end time$/ do
+  on(TimeSlotMaintenance).first_msg.should match /invalid end time/i
+end
+
+Then /^an error is displayed about the missing start time$/ do
+  on(TimeSlotMaintenance).first_msg.should match /invalid start time/i
 end
 
 When /^I show time slots for a single term type$/  do

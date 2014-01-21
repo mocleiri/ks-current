@@ -21,13 +21,13 @@ Feature: WC.Create Standard Time Slots
 
   Scenario: Adding a standard time slot using incomplete data - omitting start time
     When I add a new time slot but omit the start time
-    Then an error is displayed about the missing data
+    Then an error is displayed about the missing start time
 
   Scenario: Adding a standard time slot using incomplete data - omitting end time
     When I add a new time slot but omit the end time
-    Then an error is displayed about the missing data
+    Then an error is displayed about the missing end time
 
   Scenario: Adding a standard time slot using incomplete data - omitting days
     When I add a new time slot but omit the days
-    Then an error is displayed about the missing data
+    Then an error is displayed about the missing days
 
