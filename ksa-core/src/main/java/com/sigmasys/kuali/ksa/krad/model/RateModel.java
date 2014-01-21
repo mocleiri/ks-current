@@ -3,9 +3,11 @@ package com.sigmasys.kuali.ksa.krad.model;
 import com.sigmasys.kuali.ksa.model.fm.Rate;
 import com.sigmasys.kuali.ksa.model.fm.RateAmount;
 import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
+import com.sigmasys.kuali.ksa.model.fm.TransactionDateType;
+import com.sigmasys.kuali.ksa.util.EnumUtils;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.*;
 
 /**
  * User: tbornholtz
@@ -126,6 +128,40 @@ public class RateModel {
         this.rolloverRecognitionDate = rolloverRecognitionDate;
     }
 
+    public List<RateAmount> getRateAmounts() {
+        Set<RateAmount> rateAmounts = getRate().getRateAmounts();
+        if(rateAmounts == null) {
+            rateAmounts = new HashSet<RateAmount>();
+            getRate().setRateAmounts(rateAmounts);
+        }
+
+        return new ArrayList<RateAmount>(rateAmounts);
+    }
+
+    public void setRateAmounts(List<RateAmount> rateAmounts) {
+        getRate().setRateAmounts(new HashSet<RateAmount>(rateAmounts));
+    }
+
+    public boolean getIsLimitAmount() {
+        return getRate().isLimitAmount();
+    }
+
+    public void setIsLimitAmount(boolean isLimitAmount) {
+        getRate().setLimitAmount(isLimitAmount);
+    }
+
+    public String getTransactionDateType() {
+        TransactionDateType transactionDateType = getRate().getTransactionDateType();
+        if(transactionDateType == null) {
+            return null;
+        }
+        return transactionDateType.getId();
+    }
+
+    public void setTransactionDateType(String transactionDateType) {
+        getRate().setTransactionDateType(EnumUtils.findById(TransactionDateType.class, transactionDateType));
+    }
+
     private RateAmount getDefaultRateAmount() {
         RateAmount amount = getRate().getDefaultRateAmount();
         if(amount == null) {
@@ -136,5 +172,7 @@ public class RateModel {
         }
         return amount;
     }
+
+
 
 }
