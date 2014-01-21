@@ -6,14 +6,14 @@ class ManageSocPage < BasePage
   frame_element
 
   element(:message) {|b| b.frm.ul(id: "pageValidationList").li.text}
-  element(:term_code)  { |b| b.frm.text_field(name: "termCode") }
+  element(:term_code)  { |b| b.frm.text_field(id: "socTermField_control") }
   element(:lock_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-LockSetButton") }
   element(:final_edit_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-FinalEditButton") }
   element(:send_to_scheduler_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-SendToSchedulerButton") }
   element(:publish_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-PublishButton") }
   element(:close_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-CloseButton") }
 
-  action(:go_action) { |b| b.frm.button(id: "ManageSOCView-GoButton").click; b.loading.wait_while_present }
+  action(:go_action) { |b| b.frm.button(id: "socShowButton").click; b.loading.wait_while_present }
   action(:lock_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-LockSetButton").click; b.loading.wait_while_present }
   action(:final_edit_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-FinalEditButton").click; b.loading.wait_while_present }
   action(:send_to_scheduler_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-SendToSchedulerButton").click; b.loading.wait_while_present }
