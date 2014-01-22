@@ -6,7 +6,7 @@ end
 
 
 When /^I add a variable credit course with notes to a future term$/ do
-  @course_offering = make CourseOffering, :course_code => "ENGL388", :credit => 5
+  @course_offering = make CourseOffering, :course_code => "ENGL388", :credit => 5, :planned_term => "2014Summer1"
   @course_offering.add_course_to_future_term
 end
 

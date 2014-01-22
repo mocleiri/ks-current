@@ -8,7 +8,7 @@ class CourseOffering
   include Comparable
 
   COURSE_ARRAY = 0
-  attr_accessor :course_code,:credit,:notes
+  attr_accessor :course_code,:credit,:notes; :planned_term
 
   def initialize(browser, opts={})
     @browser = browser
@@ -16,7 +16,8 @@ class CourseOffering
     defaults = {
         :course_code=>"BSCI430",
         :credit=>3,
-        :notes=>"#{random_alphanums(20).strip}_pub"
+        :notes=>"#{random_alphanums(20).strip}_pub",
+        :planned_term=>"2013Fall"
     }
     options = defaults.merge(opts)
     set_options(options)
@@ -24,15 +25,17 @@ class CourseOffering
 
   def add_course_to_current_term
     navigate_to_course_planner_home
+
     on CoursePlannerPage do |page|
-        if page.course_code_current_term.exists?
-          page.course_code_current_term_click
+
+        if page.course_code_term(@planned_term, @course_code) != nil?
+          page.course_code_term_click(@planned_term, @course_code)
           page.course_code_delete_click
           page.delete_course.wait_until_present(5)
           page.delete_course_click
           page.refresh
         end
-      page.current_term_add
+      page.add_to_term(@planned_term)
       page.course_code_text.wait_until_present(5)
       page.course_code_text.set @course_code
       page.notes.set @notes
@@ -45,14 +48,14 @@ class CourseOffering
   def add_course_to_future_term
     navigate_to_course_planner_home
       on CoursePlannerPage do |page|
-          if page.course_code_future_term.exists?
-              page.course_code_future_term_click
+          if page.course_code_term(@planned_term, @course_code) != nil?
+              page.course_code_term_click(@planned_term, @course_code)
               page.course_code_delete_click
               page.delete_course.wait_until_present(5)
               page.delete_course_click
               page.refresh
           end
-        page.future_term_add
+        page.add_to_term(@planned_term)
         page.course_code_text.wait_until_present(5)
         page.course_code_text.set @course_code
         page.credit.set @credit
@@ -66,11 +69,11 @@ def edit_plan_item
     on CoursePlannerPage do |page|
       if @course_code == "ENGL388"
         sleep 2
-        page.course_code_future_term_click
+        page.course_code_term_click(@planned_term, @course_code)
         page.edit_plan_item_click
       else
         sleep 2
-        page.course_code_current_term_click
+        page.course_code_term_click(@planned_term, @course_code)
         page.edit_plan_item_click
       end
     end
@@ -101,5 +104,7 @@ end
 
 
 end
+
+
 
 
