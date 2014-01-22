@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.kuali.student.common.collection.KSCollectionUtils;
+import org.kuali.student.common.object.KSObjectUtils;
 import org.kuali.student.r2.core.scheduling.infc.ScheduleRequestComponent;
 
 //import org.w3c.dom.Element;
@@ -34,7 +36,8 @@ import org.kuali.student.r2.core.scheduling.infc.ScheduleRequestComponent;
  * @Author Sri komandur@uw.edu
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ScheduleRequestComponentInfo", propOrder = {"id", "buildingIds", "campusIds", "orgIds", "resourceTypeKeys", "roomIds", "timeSlotIds", "isTBA" , "_futureElements" }) 
+@XmlType(name = "ScheduleRequestComponentInfo", propOrder = {"id", "buildingIds", "campusIds", "orgIds", "resourceTypeKeys", "roomIds",
+        "timeSlotIds", "partitionIds", "isTBA", "roomFeatureTypeKeys", "roomTypeKeys", "capacity", "ignoreConflicts" , "_futureElements" })
 public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, Serializable {
 
     @XmlElement
@@ -52,7 +55,17 @@ public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, S
     @XmlElement
     private List<String> timeSlotIds;
     @XmlElement
+    private List<String> partitionIds;
+    @XmlElement
     private Boolean isTBA;
+    @XmlElement
+    private List<String> roomFeatureTypeKeys;
+    @XmlElement
+    private List<String> roomTypeKeys;
+    @XmlElement
+    private Integer capacity;
+    @XmlElement
+    private Boolean ignoreConflicts;
 
     @XmlAnyElement
     private List<Object> _futureElements;  
@@ -69,7 +82,12 @@ public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, S
             this.resourceTypeKeys = scheduleRequestComponent.getResourceTypeKeys();
             this.roomIds = scheduleRequestComponent.getRoomIds();
             this.timeSlotIds = new ArrayList<String>(scheduleRequestComponent.getTimeSlotIds());
+            this.partitionIds = new ArrayList<String>(scheduleRequestComponent.getPartitionIds());
             this.isTBA = scheduleRequestComponent.getIsTBA();
+            this.roomFeatureTypeKeys = scheduleRequestComponent.getRoomFeatureTypeKeys();
+            this.roomTypeKeys = scheduleRequestComponent.getRoomTypeKeys();
+            this.capacity = scheduleRequestComponent.getCapacity();
+            this.ignoreConflicts = scheduleRequestComponent.getIgnoreConflicts();
         }
     }
 
@@ -79,22 +97,35 @@ public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, S
      */
     public boolean equals (Object obj) {
         ScheduleRequestComponentInfo srci = (ScheduleRequestComponentInfo) obj; // will throw ClassCastException
+        
         if (!this.id.equals(srci.getId())) return false;
-        if (this.buildingIds.size()!=srci.buildingIds.size()) return false;
-        for (int i=0; i<this.buildingIds.size(); i++) { if (!this.buildingIds.get(i).equals(srci.buildingIds.get(i))) { return false; }}
-        if (this.campusIds.size()!=srci.campusIds.size()) return false;
-        for (int i=0; i<this.campusIds.size(); i++) { if (!this.campusIds.get(i).equals(srci.campusIds.get(i))) { return false; }}
-        if (this.orgIds.size()!=srci.orgIds.size()) return false;
-        for (int i=0; i<this.orgIds.size(); i++) { if (!this.orgIds.get(i).equals(srci.orgIds.get(i))) { return false; }}
-        if (this.resourceTypeKeys.size()!=srci.resourceTypeKeys.size()) return false;
-        for (int i=0; i<this.resourceTypeKeys.size(); i++) { if (!this.resourceTypeKeys.get(i).equals(srci.resourceTypeKeys.get(i))) { return false; }}
-        if (this.roomIds.size()!=srci.roomIds.size()) return false;
-        for (int i=0; i<this.roomIds.size(); i++) { if (!this.roomIds.get(i).equals(srci.roomIds.get(i))) { return false; }}
-        if (this.timeSlotIds.size()!=srci.timeSlotIds.size()) return false;
-        for (int i=0; i<this.timeSlotIds.size(); i++) { if (!this.timeSlotIds.get(i).equals(srci.timeSlotIds.get(i))) { return false; }}
-        if (this.isTBA==null && srci.getIsTBA()==null) return true;
-        if (this.isTBA.equals(srci.getIsTBA())) { return true; }
-        return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(buildingIds, srci.buildingIds)) return false;
+
+        if (!KSCollectionUtils.areCollectionContentsEqual(campusIds, srci.campusIds)) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(orgIds, srci.orgIds)) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(resourceTypeKeys, srci.resourceTypeKeys)) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(roomIds, srci.roomIds)) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(timeSlotIds, srci.timeSlotIds)) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(partitionIds, srci.partitionIds)) return false;
+        
+        if (!KSObjectUtils.nullSafeBooleanEquals(this.isTBA, srci.getIsTBA())) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(roomFeatureTypeKeys, srci.roomFeatureTypeKeys)) return false;
+        
+        if (!KSCollectionUtils.areCollectionContentsEqual(roomTypeKeys, srci.roomTypeKeys)) return false;
+        
+        if (!KSObjectUtils.nullSafeIntegerEquals(this.capacity, srci.getCapacity())) return false;
+        
+        if (!KSObjectUtils.nullSafeBooleanEquals(this.ignoreConflicts, srci.getIgnoreConflicts())) return false;
+        
+        // at this point all of the checks have passed.
+        return true;
     }
 
     @Override
@@ -106,7 +137,12 @@ public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, S
         result = 31 * result + (resourceTypeKeys != null ? resourceTypeKeys.hashCode() : 0);
         result = 31 * result + (roomIds != null ? roomIds.hashCode() : 0);
         result = 31 * result + (timeSlotIds != null ? timeSlotIds.hashCode() : 0);
+        result = 31 * result + (partitionIds != null ? partitionIds.hashCode() : 0);
         result = 31 * result + (isTBA != null ? isTBA.hashCode() : 0);
+        result = 31 * result + (roomFeatureTypeKeys != null ? roomFeatureTypeKeys.hashCode() : 0);
+        result = 31 * result + (roomTypeKeys != null ? roomTypeKeys.hashCode() : 0);
+        result = 31 * result + (capacity != null ? capacity.hashCode() : 0);
+        result = 31 * result + (ignoreConflicts != null ? ignoreConflicts.hashCode() : 0);
         return result;
     }
 
@@ -191,12 +227,44 @@ public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, S
     }
 
     @Override
+    public List<String> getPartitionIds() {
+        if (null == this.partitionIds) {
+            this.partitionIds = new ArrayList<String>();
+        }
+        return this.partitionIds;
+    }
+
+    public void setPartitionIds(List<String> partitionIds) {
+        this.partitionIds = partitionIds;
+    }
+
+    @Override
     public Boolean getIsTBA() {
         return isTBA;
     }
 
     public void setIsTBA(Boolean isTBA) {
         this.isTBA = isTBA;
+    }
+
+    @Override
+    public List<String> getRoomFeatureTypeKeys() {
+        return roomFeatureTypeKeys;
+    }
+
+    @Override
+    public List<String> getRoomTypeKeys() {
+        return roomTypeKeys;
+    }
+
+    @Override
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    public Boolean getIgnoreConflicts() {
+        return ignoreConflicts;
     }
 
     @Override
@@ -209,7 +277,12 @@ public class ScheduleRequestComponentInfo implements ScheduleRequestComponent, S
                 ", resourceTypeKeys=" + resourceTypeKeys +
                 ", roomIds=" + roomIds +
                 ", timeSlotIds=" + timeSlotIds +
+                ", partitionIds=" + partitionIds +
                 ", isTBA=" + isTBA +
+                ", roomFeatureTypeKeys=" + roomFeatureTypeKeys +
+                ", roomTypeKeys=" + roomTypeKeys +
+                ", capacity=" + capacity +
+                ", ignoreConflicts=" + ignoreConflicts +
                 '}';
     }
 }

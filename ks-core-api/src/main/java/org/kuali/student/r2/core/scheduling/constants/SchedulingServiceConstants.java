@@ -58,6 +58,7 @@ public class SchedulingServiceConstants {
 
     // schedule transaction types
     public static final String SCHEDULE_TRANSACTION_TYPE_REQUEST_TRANSACTION = "kuali.scheduling.schedule.transaction.type.request";
+    public static final String SCHEDULE_TRANSACTION_TYPE_RELEASE_TRANSACTION = "kuali.scheduling.schedule.transaction.type.release";
 
     // schedule batch types
     public static final String SCHEDULE_BATCH_TYPE_BATCH = "kuali.scheduling.schedule.batch.type.schedule.batch";
@@ -79,6 +80,65 @@ public class SchedulingServiceConstants {
     public static final String TIME_SLOT_TYPE_ACTIVITY_OFFERING_STANDARD_FULLTERM_SUMMER = "kuali.scheduling.time.slot.type.activityoffering.standard.fullterm.summer";
     public static final String TIME_SLOT_TYPE_ACTIVITY_OFFERING_STANDARD_HALFTERM = "kuali.scheduling.time.slot.type.activityoffering.standard.halfterm";
     public static final String TIME_SLOT_TYPE_EXAM = "kuali.scheduling.time.slot.type.exam"; // currently this is a Placeholder, not an Approved
+
+    //room feature types
+    public static final String ROOM_FEATURE_TYPE_3_4_UMATIC_VCR = "kuali.scheduling.type.room.feature.umaticvcr";
+    public static final String ROOM_FEATURE_TYPE_16MM_FILM_PROJECTOR = "kuali.scheduling.type.room.feature.projector.16mm";
+    public static final String ROOM_FEATURE_TYPE_AIR_CONDITIONING = "kuali.scheduling.type.room.feature.aircond";
+    public static final String ROOM_FEATURE_TYPE_AIR_CONDITIONING_WINDOW_UNIT = "kuali.scheduling.type.room.feature.aircondwindow";
+    public static final String ROOM_FEATURE_TYPE_ASSISTED_LISTENING_SYSTEM = "kuali.scheduling.type.room.feature.assistlisten";
+    public static final String ROOM_FEATURE_TYPE_AUDIO_CAPTURE = "kuali.scheduling.type.room.feature.audiocap";
+    public static final String ROOM_FEATURE_TYPE_AUDIO_STEREO = "kuali.scheduling.type.room.feature.audiostereo";
+    public static final String ROOM_FEATURE_TYPE_AUDIO_SURROUND_SOUND = "kuali.scheduling.type.room.feature.audiosurround";
+    public static final String ROOM_FEATURE_TYPE_AUX_INPUT = "kuali.scheduling.type.room.feature.auxinput";
+    public static final String ROOM_FEATURE_TYPE_AV_CONFERENCE_PHONE = "kuali.scheduling.type.room.feature.avconfphone";
+    public static final String ROOM_FEATURE_TYPE_BLU_RAY_PLAYER = "kuali.scheduling.type.room.feature.bluray";
+    public static final String ROOM_FEATURE_TYPE_BOARD_CHALK = "kuali.scheduling.type.room.feature.chalkboard";
+    public static final String ROOM_FEATURE_TYPE_BOARD_CHALK_MOVEABLE = "kuali.scheduling.type.room.feature.chalkboard.moveable";
+    public static final String ROOM_FEATURE_TYPE_BOARD_WHITE = "kuali.scheduling.type.room.feature.whiteboard";
+    public static final String ROOM_FEATURE_TYPE_BOARD_WHITE_MOVEABLE = "kuali.scheduling.type.room.feature.whiteboard.moveable";
+    public static final String ROOM_FEATURE_TYPE_CASSETTE_PLAYER = "kuali.scheduling.type.room.feature.cassetteplayer";
+    public static final String ROOM_FEATURE_TYPE_CLICKER = "kuali.scheduling.type.room.feature.clicker";
+    public static final String ROOM_FEATURE_TYPE_COMPUTER_INSTRUCTOR_MAC_DUAL_BOOT_ = "kuali.scheduling.type.room.feature.computer.instructmac";
+    public static final String ROOM_FEATURE_TYPE_COMPUTER_INSTRUCTOR_WINDOWS = "kuali.scheduling.type.room.feature.computer.instructwin";
+    public static final String ROOM_FEATURE_TYPE_COMPUTER_MAC = "kuali.scheduling.type.room.feature.computer.mac";
+    public static final String ROOM_FEATURE_TYPE_COMPUTER_MAC_DUAL_BOOT_ = "kuali.scheduling.type.room.feature.computer.macdual";
+    public static final String ROOM_FEATURE_TYPE_COMPUTER_WINDOWS = "kuali.scheduling.type.room.feature.computer.win";
+    public static final String ROOM_FEATURE_TYPE_DOCUMENT_CAMERA = "kuali.scheduling.type.room.feature.doccamera";
+    public static final String ROOM_FEATURE_TYPE_DVD_CD_PLAYER = "kuali.scheduling.type.room.feature.dvdcd";
+    public static final String ROOM_FEATURE_TYPE_LASER_DISC = "kuali.scheduling.type.room.feature.laserdisc";
+    public static final String ROOM_FEATURE_TYPE_LECTERN_STAND_UP = "kuali.scheduling.type.room.feature.lecternstand";
+    public static final String ROOM_FEATURE_TYPE_LECTERN_STAND_UP_ADJUSTABLE = "kuali.scheduling.type.room.feature.lecternstandadjust";
+    public static final String ROOM_FEATURE_TYPE_LECTERN_TABLE_TOP = "kuali.scheduling.type.room.feature.lecterntable";
+    public static final String ROOM_FEATURE_TYPE_MEDIA_CONTROL_SYSTEM = "kuali.scheduling.type.room.feature.mediacontrol";
+    public static final String ROOM_FEATURE_TYPE_MICROPHONE = "kuali.scheduling.type.room.feature.mic.general";
+    public static final String ROOM_FEATURE_TYPE_MICROPHONE_WIRED_LECTERN = "kuali.scheduling.type.room.feature.mic.wiredlectern";
+    public static final String ROOM_FEATURE_TYPE_MICROPHONE_WIRELESS_HANDHELD = "kuali.scheduling.type.room.feature.mic.wirelesshand";
+    public static final String ROOM_FEATURE_TYPE_MICROPHONE_WIRELESS_LAVALIER = "kuali.scheduling.type.room.feature.mic.wirelesslavalier";
+    public static final String ROOM_FEATURE_TYPE_PROJECTOR_OVERHEAD_TRANSPANCY = "kuali.scheduling.type.room.feature.projector.overhead";
+    public static final String ROOM_FEATURE_TYPE_PROJECTOR_VIDEO = "kuali.scheduling.type.room.feature.projector.video";
+    public static final String ROOM_FEATURE_TYPE_ROOM_DIVIDER = "kuali.scheduling.type.room.feature.roomdivider";
+    public static final String ROOM_FEATURE_TYPE_SCREEN_FRONT_PROJECTION_ELECTRIC = "kuali.scheduling.type.room.feature.screen.frontelec";
+    public static final String ROOM_FEATURE_TYPE_SCREEN_FRONT_PROJECTION_MANUAL = "kuali.scheduling.type.room.feature.screen.frontmanual";
+    public static final String ROOM_FEATURE_TYPE_SCREEN_REAR_PROJECTION = "kuali.scheduling.type.room.feature.screen.rear";
+    public static final String ROOM_FEATURE_TYPE_SCREEN_WALL = "kuali.scheduling.type.room.feature.screen.wall";
+    public static final String ROOM_FEATURE_TYPE_SINK = "kuali.scheduling.type.room.feature.sink";
+    public static final String ROOM_FEATURE_TYPE_SLIDE_PROJECTOR = "kuali.scheduling.type.room.feature.projector.slide";
+    public static final String ROOM_FEATURE_TYPE_SMART_BOARD = "kuali.scheduling.type.room.feature.smartboard";
+    public static final String ROOM_FEATURE_TYPE_SMART_PODIUM_MONITORS = "kuali.scheduling.type.room.feature.smartpodium";
+    public static final String ROOM_FEATURE_TYPE_STAGE_INSTRUCTOR_ACCESSIBLE = "kuali.scheduling.type.room.feature.stage.instraccess";
+    public static final String ROOM_FEATURE_TYPE_STAGE_INSTRUCTOR_NOT_ACCESSIBLE = "kuali.scheduling.type.room.feature.stage.instrnotaccess";
+    public static final String ROOM_FEATURE_TYPE_TELEPHONE = "kuali.scheduling.type.room.feature.telephone";
+    public static final String ROOM_FEATURE_TYPE_VCR_VHS_ = "kuali.scheduling.type.room.feature.vcrvhs";
+    public static final String ROOM_FEATURE_TYPE_WINDOWS = "kuali.scheduling.type.room.feature.windows";
+    public static final String ROOM_FEATURE_TYPE_WEB_CONFERENCING = "kuali.scheduling.type.room.feature.webconference";
+    public static final String ROOM_FEATURE_TYPE_VIDEO_CONFERENCING = "kuali.scheduling.type.room.feature.videoconference";
+
+    // schedule transaction group types
+    public static final String SCHEDULE_TRANSACTION_GROUP_TYPE_STANDARD = "kuali.scheduling.schedule.transaction.group.type.standard";
+
+    // schedule request group types
+    public static final String SCHEDULE_REQUEST_GROUP_TYPE_STANDARD = "kuali.scheduling.schedule.request.group.constraint.type.standard";
 
     /////////////////////////////
     // States
@@ -117,6 +177,16 @@ public class SchedulingServiceConstants {
     // time slot states
     public static final String TIME_SLOT_LIFECYCLE_KEY = "kuali.scheduling.timeslot.lifecycle";
     public static final String TIME_SLOT_STATE_ACTIVE = "kuali.scheduling.timeslot.state.active";
+
+    // schedule transaction group states
+    public static final String SCHEDULE_TRANSACTION_GROUP_LIFECYCLE_KEY = "kuali.scheduling.schedule.transaction.group.lifecycle";
+    public static final String SCHEDULE_TRANSACTION_GROUP_STATE_ACTIVE = "kuali.scheduling.schedule.transaction.group.state.active";
+    public static final String SCHEDULE_TRANSACTION_GROUP_STATE_INACTIVE = "kuali.scheduling.schedule.transaction.group.state.inactive";
+
+    // schedule request group states
+    public static final String SCHEDULE_REQUEST_GROUP_LIFECYCLE_KEY = "kuali.scheduling.schedule.request.group.constraint.lifecycle";
+    public static final String SCHEDULE_REQUEST_GROUP_STATE_ACTIVE = "kuali.scheduling.schedule.request.group.constraint.state.active";
+    public static final String SCHEDULE_REQUEST_GROUP_STATE_INACTIVE = "kuali.scheduling.schedule.request.group.constraint.state.inactive";
 
     ////////////////////////////////////////
     // TYPES / STATES not yet approved
