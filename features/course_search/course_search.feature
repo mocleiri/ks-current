@@ -25,7 +25,7 @@ Feature: BT.Course Search
       Examples:
           | text   | expected |
           | ENGL   | ENGL     |
-          | ENGL1XX| ENGL1    |
+          | ENGL2XX| ENGL2    |
           | ENGLISH| ENGL     |
 
 
