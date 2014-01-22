@@ -46,8 +46,8 @@ public class AORuleCompareTreeBuilder extends KSRuleCompareTreeBuilder {
             // Set the headers on the first root child
             if (childNode.getData() != null) {
                 CompareTreeNode compareTreeNode = childNode.getData();
-                compareTreeNode.setFirstElement("Course Offering Rule");
-                compareTreeNode.setSecondElement("Catalog Rules");
+                compareTreeNode.setFirstElement("Catalog Rules");
+                compareTreeNode.setSecondElement("Course Offering Rule");
                 compareTreeNode.setThirdElement("Activity Offering Rules");
 
             }
@@ -86,6 +86,11 @@ public class AORuleCompareTreeBuilder extends KSRuleCompareTreeBuilder {
                     if(!compareTreeNode.getThirdElement().trim().isEmpty()){
                         compareTreeNode.setThirdElement(compareTreeNode.getThirdElement() + ":");
                     }
+                }
+
+                //Set suppressed rule description
+                if (!thirdElement.isDummy() && thirdElement.getProposition() == null && thirdElement.getParent().getProposition() != null) {
+                    compareTreeNode.setThirdElement("Rule Suppressed");
                 }
             }
         }

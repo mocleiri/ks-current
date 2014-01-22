@@ -1,21 +1,16 @@
 package org.kuali.student.enrollment.class2.courseoffering.keyvalue;
 
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.uif.control.UifKeyValuesFinderBase;
 import org.kuali.rice.krad.uif.view.ViewModel;
-import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
-import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.util.ContextUtils;
-import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
-import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 import org.kuali.student.r2.lum.course.dto.FormatInfo;
 
-import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +27,8 @@ public abstract class AbstractFormatOfferingTypeKeyValues extends UifKeyValuesFi
 
     private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(AbstractFormatOfferingTypeKeyValues.class);
 
-    private transient TypeService typeService;
-    private transient CourseOfferingService courseOfferingService;
-
     @Override
     public List<KeyValue> getKeyValues(ViewModel model) {
-
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
         keyValues.add(new ConcreteKeyValue("", "Select Format Type"));
         List<FormatInfo> formatOptions = getFormats(model);
@@ -60,7 +51,8 @@ public abstract class AbstractFormatOfferingTypeKeyValues extends UifKeyValuesFi
                         List<ActivityInfo> activityInfos = format.getActivities();
                         StringBuilder st = new StringBuilder();
                         for (ActivityInfo activityInfo : activityInfos) {
-                            TypeInfo activityType = getTypeService().getType(activityInfo.getTypeKey(), contextInfo);
+                            TypeInfo activityType = CourseOfferingManagementUtil.getTypeService().getType(activityInfo.getTypeKey(), contextInfo);
+
                             st.append(activityType.getName()+"/");
                         }
                         String name =st.toString();
@@ -75,21 +67,6 @@ public abstract class AbstractFormatOfferingTypeKeyValues extends UifKeyValuesFi
         }
         return keyValues;
     }
-
-    protected CourseOfferingService getCourseOfferingService() {
-        if (courseOfferingService == null) {
-            courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName(CourseOfferingServiceConstants.NAMESPACE, "CourseOfferingService"));
-        }
-        return courseOfferingService;
-    }
-
-    public TypeService getTypeService() {
-        if(typeService == null) {
-            typeService = CourseOfferingResourceLoader.loadTypeService();
-        }
-        return this.typeService;
-    }
-
     protected abstract List<String> getExistingFormatIdsFromFormatOfferings(ViewModel model) throws Exception ;
 
     protected abstract List<FormatInfo> getFormats(ViewModel model);

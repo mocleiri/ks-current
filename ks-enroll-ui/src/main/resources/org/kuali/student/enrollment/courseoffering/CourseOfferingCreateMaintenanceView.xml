@@ -61,6 +61,12 @@
             </list>
         </property>
 
+        <property name="topGroup">
+            <bean id="CreateCOByCopy-ContextBar" parent="KS-CourseOffering-ContextBar" p:style="@{(#dp.targetTermCode eq null or #dp.catalogCourseCode eq null )? 'display:none;' : 'display:block;'}">
+                <property name="onDocumentReadyScript" value="setSeasonalColor('CreateCOByCopy-ContextBar', '@{#dp.contextBar.termDayOfYear}', '@{#ConfigProperties['application.url']}');"/>
+            </bean>
+        </property>
+
         <property name="breadcrumbOptions.breadcrumbOverrides">
             <list>
                 <bean parent="Uif-BreadcrumbItem" p:render="@{document.newMaintainableObject.dataObject.catalogCourseCode eq null}">
@@ -156,7 +162,7 @@
                     <property name="items">
                         <list>
                              <bean parent="Uif-DataField" p:label="CODE" p:propertyName="courseCode"/>
-                             <bean parent="Uif-DataField" p:propertyName="activitesUI"  p:readOnly="true" p:label="FORMAT"/>
+                             <bean parent="Uif-DataField" p:propertyName="activitesUI" p:label="FORMAT"/>
                              <bean parent="Uif-DataField" p:propertyName="gradeRosterUI" p:label="GRADE ROSTER LEVEL"/>
                              <bean parent="Uif-DataField" p:propertyName="finalExamUI" p:label="FINAL EXAM DRIVER ACTIVITY"/>
                         </list>
@@ -262,15 +268,15 @@
         <property name="items">
             <list>
                  <bean parent="Uif-DataField" p:label="CODE" p:propertyName="courseCode"/>
-                 <bean parent="Uif-DataField" p:propertyName="activitesUI"  p:readOnly="true" p:label="FORMAT"/>
+                 <bean parent="Uif-DataField" p:propertyName="activitesUI" p:label="Format"/>
                  <bean parent="Uif-InputField" p:propertyName="formatOfferingInfo.gradeRosterLevelTypeKey"
-                      p:label="GRADE ROSTER LEVEL" p:required="true" p:labelPlacement="TOP" p:finalizeMethodToCall="populateGradeRosterLevelTypes">
+                      p:label="Grade Roster Level" p:required="true" p:labelPlacement="TOP" p:finalizeMethodToCall="populateGradeRosterLevelTypes">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="formatOfferingInfo.finalExamLevelTypeKey"
-                      p:label="FINAL EXAM DRIVER ACTIVITY" p:required="true" p:labelPlacement="TOP" p:finalizeMethodToCall="populateFinalExamDriverTypes">
+                      p:label="Final Exam Driver Activity" p:required="true" p:labelPlacement="TOP" p:finalizeMethodToCall="populateFinalExamDriverTypes">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -295,9 +301,9 @@
                     </property>
                  </bean>
                  <bean parent="Uif-DataField" p:label="CODE" p:propertyName="courseCode"/>
-                 <bean parent="Uif-DataField" p:propertyName="activitesUI"  p:readOnly="true" p:label="FORMAT"/>
-                 <bean parent="Uif-DataField" p:propertyName="gradeRosterUI"  p:readOnly="true" p:label="GRADE ROSTER LEVEL"/>
-                 <bean parent="Uif-DataField" p:propertyName="finalExamUI"  p:readOnly="true" p:label="FINAL EXAM DRIVER ACTIVITY"/>
+                 <bean parent="Uif-DataField" p:propertyName="activitesUI" p:label="Format"/>
+                 <bean parent="Uif-DataField" p:propertyName="gradeRosterUI" p:label="Grade Roster Level"/>
+                 <bean parent="Uif-DataField" p:propertyName="finalExamUI" p:label="Final Exam Driver Activity"/>
             </list>
         </property>
     </bean>
@@ -306,7 +312,7 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField-LabelTop" p:propertyName="addLineFormatWrapper.formatId"  p:required="true" p:label="FORMAT" p:forceSessionPersistence="true">
+                <bean parent="Uif-InputField-LabelTop" p:propertyName="addLineFormatWrapper.formatId"  p:required="true" p:label="Format" p:forceSessionPersistence="true">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"  p:additionalCssClasses="ignoreValid">
                         </bean>
@@ -317,14 +323,14 @@
                 </bean>
 
                  <bean parent="Uif-InputField-LabelTop" p:propertyName="addLineFormatWrapper.gradeRosterLevelTypeKey" p:refreshWhenChangedPropertyNames="#dp.addLineFormatWrapper.formatId" p:forceSessionPersistence="true"
-                      p:label="GRADE ROSTER LEVEL" p:required="true" p:finalizeMethodToCall="populateGradeRosterLevelTypes">
+                      p:label="Grade Roster Level" p:required="true" p:finalizeMethodToCall="populateGradeRosterLevelTypes">
                     <property name="control">
                         <bean parent="Uif-DropdownControl" p:additionalCssClasses="ignoreValid">
                         </bean>
                     </property>
                 </bean>
                 <bean parent="Uif-InputField-LabelTop" p:propertyName="addLineFormatWrapper.finalExamLevelTypeKey" p:refreshWhenChangedPropertyNames="#dp.addLineFormatWrapper.gradeRosterLevelTypeKey,#dp.addLineFormatWrapper.formatId" p:forceSessionPersistence="true"
-                      p:label="FINAL EXAM DRIVER ACTIVITY" p:required="true" p:finalizeMethodToCall="populateFinalExamDriverTypes">
+                      p:label="Final Exam Driver Activity" p:required="true" p:finalizeMethodToCall="populateFinalExamDriverTypes">
                     <property name="control">
                         <bean parent="Uif-DropdownControl" p:additionalCssClasses="ignoreValid">
                         </bean>
@@ -344,26 +350,10 @@
         <property name="layoutManager.applyAlternatingRowStyles" value="false" />
 		<property name="items">
            <list>
-               <bean parent="Uif-InputField" p:propertyName="courseOfferingCode" p:label="COURSE OFFERING CODE" p:readOnly="true">
-                    <property name="control">
-                        <bean parent="Uif-TextControl"/>
-                    </property>
-                </bean>
-               <bean parent="Uif-InputField" p:propertyName="courseOfferingInfo.courseOfferingTitle" p:label="COURSE TITLE" p:readOnly="true">
-                    <property name="control">
-                        <bean parent="Uif-TextControl"/>
-                    </property>
-                </bean>
-                <bean parent="Uif-InputField" p:propertyName="courseOfferingInfo.creditCnt" p:label="CREDITS" p:readOnly="true">
-                    <property name="control">
-                        <bean parent="Uif-TextControl"/>
-                    </property>
-                </bean>
-                <bean parent="Uif-InputField" p:propertyName="gradingOption" p:label="GRADING" p:readOnly="true">
-                    <property name="control">
-                        <bean parent="Uif-TextControl"/>
-                    </property>
-                </bean>
+               <bean parent="Uif-DataField" p:propertyName="courseOfferingCode" p:label="Course Offering Code"/>
+               <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.courseOfferingTitle" p:label="Course Title"/>
+               <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.creditCnt" p:label="Credits"/>
+               <bean parent="Uif-DataField" p:propertyName="gradingOption" p:label="Grading"/>
            </list>
          </property>
     </bean>
@@ -421,7 +411,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="catalogCourseCode" p:id="catalogCourseCode"
-                      p:label="Catalog Course Code" p:labelPlacement="TOP" p:required="true" p:fieldLabel.renderColon="false">
+                      p:label="Catalog Course Code" p:labelPlacement="TOP" p:required="true" p:fieldLabel.renderColon="false" p:additionalCssClasses="ks-uif-quickFinder">
                     <property name="refreshWhenChangedPropertyNames" value="targetTermCode"/>
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="10" p:watermarkText="ENGL237">
@@ -497,7 +487,8 @@
     <bean id="KS-CourseOffering-CopyPage" parent="KS-Uif-Page" p:disclosure.render="false" p:readOnly="@{#view.readOnly}">
         <property name="id" value="courseOfferingCopyPage"/>
          <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-        <property name="onDocumentReadyScript" value="updateContextBar( 'KS-CourseOffering-ContextBar', 'KS-CourseOffering-View-ContextBar-PlaceHolder', @{#dp.contextBar.termDayOfYear}, '@{#ConfigProperties['application.url']}' );" />
+        <!--<property name="onDocumentReadyScript" value="updateContextBar( 'KS-CourseOffering-ContextBar', 'KS-CourseOffering-View-ContextBar-PlaceHolder', @{#dp.contextBar.termDayOfYear}, '@{#ConfigProperties['application.url']}' );" />-->
+        <property name="onDocumentReadyScript" value="setSeasonalColor('CreateCOByCopy-ContextBar', '@{#dp.contextBar.termDayOfYear}', '@{#ConfigProperties['application.url']}');updateContextBar('CreateCOByCopy-ContextBar');"/>
         <property name="headerText" value="Copy Course Offering"/>
         <property name="pageSourceFile" value="CourseOfferingCreateMaintenanceView.xml" />
         <property name="header">
@@ -507,7 +498,7 @@
         <property name="items">
             <list>
                  <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-                <ref bean="KS-CourseOffering-ContextBar"/>
+                <!--<ref bean="KS-CourseOffering-ContextBar"/>-->
                 <ref bean="KS-CreateFromExistingOffering"/>
             </list>
         </property>
@@ -520,7 +511,7 @@
                                 <list>
                                     <bean parent="KS-Uif-PrimaryActionButton" p:id="createFromCopy_btn" p:methodToCall="createFromCopy" p:actionLabel="Create" p:render="@{!#view.readOnly}"
                                             p:onClickScript="jQuery('#validateDirty')[0].value=false;"/>
-                                    <bean parent="Uif-ActionLink" p:methodToCall="cancel" p:actionLabel="Cancel"
+                                    <bean parent="KS-Uif-ActionLink" p:methodToCall="cancel" p:actionLabel="Cancel"
                                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}"/>
                                 </list>
                             </property>
@@ -590,9 +581,35 @@
                        <bean parent="Uif-CheckboxControl"/>
                    </property>
                </bean>
-               <bean parent="Uif-DataField" p:propertyName="courseOfferingCode" p:label="Course Offering Code">
-                   <property name="inquiry">
-                       <bean parent="Uif-Inquiry" p:dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper"  p:inquiryParameters="courseOfferingId" />
+               <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.labelText="Course Offering Code">
+                   <property name="items">
+                       <list>
+                           <bean parent="Uif-DataField" p:propertyName="courseOfferingCode" p:label="">
+                               <property name="inquiry">
+                                   <bean parent="Uif-Inquiry"
+                                         p:dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper"
+                                         p:inquiryParameters="courseOfferingId"/>
+                               </property>
+                           </bean>
+                           <bean parent="Uif-ImageField" p:hidden="@{#lp.alternateCOCodes.isEmpty()}"
+                                 p:image.altText="@{#lp.crossListedCodesUI}"
+                                 p:source="@{#ConfigProperties['ks.externalizable.images.url']}/cross-listed.png">
+                               <property name="toolTip">
+                                   <bean parent="Uif-KS-Tooltip" p:tooltipContent="@{#lp.crossListedCodesUI}"/>
+                               </property>
+                               <property name="propertyReplacers">
+                                   <list>
+                                       <!-- Don't render the tooltip elements if they aren't needed -->
+                                       <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="toolTip"
+                                             p:condition="@{#lp.alternateCOCodes.isEmpty()}">
+                                           <property name="replacement">
+                                               <null/>
+                                           </property>
+                                       </bean>
+                                   </list>
+                               </property>
+                           </bean>
+                       </list>
                    </property>
                </bean>
                <bean parent="Uif-DataField" p:propertyName="term.code" p:label="Offered Term"/>

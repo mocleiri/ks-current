@@ -20,15 +20,16 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-GridGroup"
-                                  p:layoutManager.numberOfColumns="4" p:additionalCssClasses="ks-krad-tab-gridgroup-fix,ks-gray-background,ks-no-margins">
+                                  p:layoutManager.numberOfColumns="4" p:additionalCssClasses="ks-krad-tab-gridgroup-fix,ks-details-panel,ks-section">
                                   <!--p:layoutManager.applyDefaultCellWidths="false">-->
                                 <property name="items">
                                     <list>
                                         <!--<bean parent="Uif-DataField" p:label="ID" p:propertyName="courseOfferingInfo.id" />-->
                                         <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.courseOfferingCode" p:fieldLabel.renderColon="false"/>
                                         <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.finalExamType" p:fieldLabel.renderColon="false"/>
-                                        <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.courseNumberSuffix" p:fieldLabel.renderColon="false"/>
+                                        <bean parent="Uif-DataField" p:propertyName="crosslistedCodes" p:label="Crosslisted as" p:render="@{dataObject.crosslistedCodes != ''}" p:fieldLabel.renderColon="false"/>
                                         <bean parent="Uif-DataField" p:propertyName="finalExamDriverUI" p:label="Final Exam Driver" p:fieldLabel.renderColon="false"/>
+                                        <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.courseNumberSuffix" p:fieldLabel.renderColon="false"/>
                                         <bean parent="Uif-DataField" p:propertyName="courseOfferingInfo.courseOfferingTitle" p:fieldLabel.renderColon="false"/>
                                         <bean parent="Uif-DataField" p:propertyName="useFinalExamMatrixUI" p:label="Use Final Exam Matrix" p:fieldLabel.renderColon="false"/>
                                         <bean parent="Uif-DataField" p:propertyName="termName" p:label="Term" p:fieldLabel.renderColon="false"/>
@@ -69,9 +70,9 @@
                                         <bean parent="Uif-DataField" p:propertyName="selectedStudentRegOpts" p:label="Student Registration Options" p:fieldLabel.renderColon="false"/>
 
                                         <bean parent="Uif-MessageField" p:label="Honors Flag" p:messageText="@{(dataObject.courseOfferingInfo.isHonorsOffering eq null or !dataObject.courseOfferingInfo.isHonorsOffering) ? 'NO':'YES'}" p:fieldLabel.renderColon="false"/>
-                                        <bean parent="Uif-DataField" p:label="Cross listed as" p:propertyName="alternateCOCodesUIList" p:render="@{dataObject.alternateCOCodesUIList != ''}" p:fieldLabel.renderColon="false"/>
+                                        <!-- <bean parent="Uif-DataField" p:label="Cross listed as" p:propertyName="alternateCOCodesUIList" p:render="@{dataObject.alternateCOCodesUIList != ''}" p:fieldLabel.renderColon="false"/>
 
-                                        <!-- displays "[]" when empty, not desired
+                                        displays "[]" when empty, not desired
                                         <bean parent="Uif-InputField" p:propertyName="courseOfferingInfo.studentRegistrationOptionIds" p:label="Student Registration Options" p:render="@{#dp.studentRegOptions.empty}">
                                             <property name="optionsFinder">
                                                 <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.StudentRegistrationOptionsKeyValues" p:addBlankOption="false"/>
@@ -90,6 +91,11 @@
                                 <property name="layoutManager.richTable.render" value="false" />
                                 <property name="layoutManager.applyDefaultCellWidths" value="false" />
                                 <property name="layoutManager.applyAlternatingRowStyles" value="false" />
+                                <property name="additionalCssClasses">
+                                    <list merge="true">
+                                        <value>ks-section</value>
+                                    </list>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-DataField" p:propertyName="formatOfferingInfo.name" p:label="Format Name" />
@@ -123,15 +129,20 @@
                                 <property name="layoutManager.applyDefaultCellWidths" value="false" />
                                 <property name="layoutManager.applyAlternatingRowStyles" value="false" />
                                 <property name="renderAddBlankLineButton" value="false" />
+                                <property name="additionalCssClasses">
+                                    <list merge="true">
+                                        <value>ks-section</value>
+                                    </list>
+                                </property>
                                 <!--<property name="addLinePlacement" value="BOTTOM" />-->
                                 <property name="items">
                                     <list>
                                         <!--<bean parent="Uif-DataField" p:label="Affiliated Personnel Name" p:propertyName="offeringInstructorInfo.personName" />-->
                                         <!--<bean parent="Uif-DataField" p:label="Affiliated Personnel Affiliation" p:propertyName="typeName" />-->
                                         <bean parent="Uif-DataField" p:propertyName="offeringInstructorInfo.personId"
-                                              p:label="ID" p:required="false" p:cssClasses="col_5"/>
+                                              p:label="Id" p:required="false" p:cssClasses="col_5"/>
                                         <bean parent="Uif-DataField" p:propertyName="offeringInstructorInfo.personName" p:label="Name" />
-                                        <bean parent="Uif-DataField" p:propertyName="offeringInstructorInfo.typeKey" p:label="AFFILIATION" p:required="false">
+                                        <bean parent="Uif-DataField" p:propertyName="offeringInstructorInfo.typeKey" p:label="Affiliation" p:required="false">
                                             <!--<property name="control">-->
                                                 <!--<bean parent="Uif-DropdownControl" p:options-ref="coInstructors-options" />-->
                                             <!--</property>-->
@@ -149,6 +160,11 @@
                                 <property name="layoutManager.richTable.render" value="false" />
                                 <property name="layoutManager.applyDefaultCellWidths" value="false" />
                                 <property name="layoutManager.applyAlternatingRowStyles" value="false" />
+                                <property name="additionalCssClasses">
+                                    <list merge="true">
+                                        <value>ks-section</value>
+                                    </list>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-DataField" p:propertyName="organizationName" p:label="Organization Name"/>
@@ -165,27 +181,28 @@
                                 </property>
                                 <property name="layoutManager.renderSequenceField" value="false" />
                                 <property name="layoutManager.applyDefaultCellWidths" value="false" />
+                                <property name="layoutManager.richTable">
+                                    <bean parent="KS-Uif-PagedRichTable">
+                                        <property name="templateOptions">
+                                            <map merge="true">
+                                                <entry key="iDisplayLength" value="10"/>
+                                                <entry key="bAutoWidth" value="false" />
+                                            </map>
+                                        </property>
+                                    </bean>
+                                </property>
                                 <property name="items">
                                     <list>
-                                        <!--<bean parent="Uif-DataField" p:label="CODE" p:propertyName="aoInfo.activityCode">-->
-                                            <!--<property name="inquiry">-->
-                                                <!--<bean parent="Uif-Inquiry" p:dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper" p:inquiryParameters="aoInfo.id" />-->
-                                            <!--</property>-->
-                                        <!--</bean>-->
-                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.labelText="CODE">
+                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.labelText="Code">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-DataField" p:propertyName="aoInfo.activityCode" p:fieldLabel.render="false">
-                                                        <!--<property name="inquiry">-->
-                                                            <!--<bean parent="Uif-Inquiry" p:dataObjectClassName="org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper" p:inquiryParameters="aoInfo.id" />-->
-                                                        <!--</property>-->
-                                                    </bean>
+                                                    <bean parent="Uif-DataField" p:propertyName="aoInfo.activityCode" p:fieldLabel.render="false" />
                                                     <bean parent="Uif-ImageField" p:hidden="@{#lp.colocatedAoInfo.isEmpty()}"
                                                           p:image.altText="@{#line.colocatedAoInfoUI}"
                                                           p:source="@{#ConfigProperties['ks.externalizable.images.url']}/colocate_icon.png">
                                                         <property name="style" value="padding-left:5px"/>
                                                         <property name="toolTip">
-                                                            <bean parent="Uif-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.colocatedAoInfoUI}"/>
+                                                            <bean parent="Uif-KS-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.colocatedAoInfoUI}"/>
                                                         </property>
                                                     </bean>
                                                     <bean parent="Uif-ImageField" p:hidden="@{#lp.subTermName eq 'None'}"
@@ -195,11 +212,11 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-DataField" p:label="STATUS" p:propertyName="stateName" />
-                                        <bean parent="Uif-DataField" p:label="TYPE" p:propertyName="typeName"/>
-                                        <bean parent="Uif-DataField" p:label="FORMAT" p:propertyName="aoInfo.formatOfferingName"/>
-                                        <bean parent="Uif-DataField" p:label="INSTRUCTOR" p:propertyName="firstInstructorDisplayName"/>
-                                        <bean parent="Uif-DataField" p:label="MAX ENR" p:propertyName="aoInfo.maximumEnrollment"/>
+                                        <bean parent="Uif-DataField" p:label="Status" p:propertyName="stateName" />
+                                        <bean parent="Uif-DataField" p:label="Type" p:propertyName="typeName"/>
+                                        <bean parent="Uif-DataField" p:label="Format" p:propertyName="aoInfo.formatOfferingName"/>
+                                        <bean parent="Uif-DataField" p:label="Instructor" p:propertyName="firstInstructorDisplayName"/>
+                                        <bean parent="Uif-DataField" p:label="Max Enr" p:propertyName="aoInfo.maximumEnrollment"/>
                                     </list>
                                 </property>
                             </bean>

@@ -15,7 +15,6 @@
  */
 package org.kuali.student.enrollment.class1.krms.service.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.criteria.PredicateFactory;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -30,7 +29,6 @@ import org.kuali.rice.krms.dto.RuleEditor;
 import org.kuali.rice.krms.service.impl.RuleEditorMaintainableImpl;
 import org.kuali.rice.krms.tree.RuleCompareTreeBuilder;
 import org.kuali.rice.krms.tree.RuleViewTreeBuilder;
-import org.kuali.rice.krms.util.AlphaIterator;
 import org.kuali.rice.krms.util.NaturalLanguageHelper;
 import org.kuali.student.core.krms.tree.KSRuleViewTreeBuilder;
 import org.kuali.student.enrollment.class1.krms.dto.AORuleEditor;
@@ -39,11 +37,14 @@ import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingCont
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
 import org.kuali.student.enrollment.class2.courseoffering.util.ManageSocConstants;
+import org.kuali.student.enrollment.class2.courseofferingset.util.CourseOfferingSetUtil;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.enrollment.courseofferingset.dto.SocInfo;
 import org.kuali.student.enrollment.courseofferingset.service.CourseOfferingSetService;
+import org.kuali.student.enrollment.lui.dto.LuiInfo;
+import org.kuali.student.enrollment.lui.service.LuiService;
 import org.kuali.student.lum.lu.ui.krms.dto.LUAgendaEditor;
 import org.kuali.student.lum.lu.ui.krms.tree.LURuleViewTreeBuilder;
 import org.kuali.student.r2.common.util.ContextUtils;
@@ -74,7 +75,7 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
 
     private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(CORuleEditorMaintainableImpl.class);
 
-    private transient CluService cluService;
+    private transient LuiService luiService;
     private transient AtpService atpService;
     private transient CourseOfferingService courseOfferingService;
 
@@ -85,41 +86,30 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
     private transient KSRuleViewTreeBuilder viewTreeBuilder;
     private transient NaturalLanguageHelper nlHelper;
 
-    private AlphaIterator alphaIterator = new AlphaIterator(StringUtils.EMPTY);
-
     @Override
     public Object retrieveObjectForEditOrCopy(MaintenanceDocument document, Map<String, String> dataObjectKeys) {
 
         AORuleManagementWrapper dataObject = new AORuleManagementWrapper();
-
-        String aoId = dataObjectKeys.get("refObjectId");
-        dataObject.setRefObjectId(aoId);
-
         dataObject.setNamespace(KSKRMSServiceConstants.NAMESPACE_CODE);
         dataObject.setRefDiscriminatorType(CourseOfferingServiceConstants.REF_OBJECT_URI_ACTIVITY_OFFERING);
-        //Retrieve the Reg Object information
-        ActivityOfferingInfo activityOffering = null;
-        CourseOfferingInfo courseOffering = null;
-        if (aoId != null) {
 
-            dataObject.setAgendas(this.getAgendasForRef(dataObject.getRefDiscriminatorType(), aoId));
+        String aoId = dataObjectKeys.get("refObjectId");
+        try {
+            //Retrieve the Reg Object information
+            dataObject.setRefObjectId(aoId);
+            LuiInfo aoaslui = this.getLuiService().getLui(aoId, ContextUtils.createDefaultContextInfo());
 
-            try {
-                activityOffering = this.getCourseOfferingService().getActivityOffering(aoId, ContextUtils.createDefaultContextInfo());
-                courseOffering = this.getCourseOfferingService().getCourseOffering(activityOffering.getCourseOfferingId(), ContextUtils.createDefaultContextInfo());
-            } catch (Exception e) {
-                throw new RuntimeException("Could not retrieve activity offering for " + aoId);
-            }
-        }
-
-        //Populate Clu Identification Information
-        if (activityOffering != null) {
             //Set the description on the screen.
-            dataObject.setCluDescription(activityOffering.getCourseOfferingCode());
-            dataObject.setAoDescription(activityOffering.getName() + " " + activityOffering.getActivityCode());
+            dataObject.setAoDescription(aoaslui.getOfficialIdentifier().getCode());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve activity offering for " + aoId);
         }
 
-        if (courseOffering != null) {
+        String coId = dataObjectKeys.get("courseOfferingId");
+        try {
+            CourseOfferingInfo courseOffering = this.getCourseOfferingService().getCourseOffering(coId, ContextUtils.createDefaultContextInfo());
+
+            dataObject.setCluDescription(courseOffering.getCourseOfferingCode());
 
             List<String> orgIds = courseOffering.getUnitsDeploymentOrgIds();
             if (orgIds != null && !orgIds.isEmpty()) {
@@ -132,7 +122,9 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
 
             //Set the subjectArea for breadcrumb link
             dataObject.setCluSubjectCode(courseOffering.getSubjectArea());
+            dataObject.setCluTermCode(courseOffering.getTermId());
 
+            dataObject.setAgendas(this.getAgendasForRef(dataObject.getRefDiscriminatorType(), aoId, coId));
             this.setCluRules(dataObject.getAgendas(), courseOffering.getCourseId());
 
             try {
@@ -144,6 +136,8 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
             } catch (Exception e) {
                 throw new RuntimeException("Could not populate context bar.");
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve course offering for " + coId);
         }
 
         dataObject.setCompareTree(RuleCompareTreeBuilder.initCompareTree());
@@ -213,19 +207,13 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
     /**
      * Return the clu id from the canonical course that is linked to the given Activity offering id.
      *
-     * @param refObjectId - the Activity offering id.
+     * @param parentRefObjectId - the Activity offering id.
      * @return
      * @throws Exception
      */
     @Override
-    public List<ReferenceObjectBinding> getParentRefOjbects(String refObjectId) {
-        ActivityOfferingInfo activityOfferingInfo = null;
-        try {
-            activityOfferingInfo = this.getCourseOfferingService().getActivityOffering(refObjectId, ContextUtils.createDefaultContextInfo());
-        } catch (Exception e) {
-            throw new RuntimeException("Could not retrieve activity offering for " + refObjectId);
-        }
-        return this.getRuleManagementService().findReferenceObjectBindingsByReferenceObject(CourseOfferingServiceConstants.REF_OBJECT_URI_COURSE_OFFERING, activityOfferingInfo.getCourseOfferingId());
+    public List<ReferenceObjectBinding> getParentRefOjbects(String parentRefObjectId) {
+        return this.getRuleManagementService().findReferenceObjectBindingsByReferenceObject(CourseOfferingServiceConstants.REF_OBJECT_URI_COURSE_OFFERING, parentRefObjectId);
     }
 
     /**
@@ -243,7 +231,7 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
             List<RuleEditor> cluRules = getRuleEditorsFromTree(firstItem, false);
 
             AgendaEditor aoAgenda = this.getAgendaForType(agendas, cluAgenda.getTypeId());
-            for(RuleEditor cluRule : cluRules){
+            for (RuleEditor cluRule : cluRules) {
                 RuleEditor aoRule = getRuleForType(aoAgenda, cluRule.getTypeId());
                 ((AORuleEditor) aoRule).setCluEditor(cluRule);
             }
@@ -252,18 +240,18 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
 
     }
 
-    private AgendaEditor getAgendaForType(List<AgendaEditor> agendas, String typeId){
-        for(AgendaEditor agenda : agendas){
-            if(agenda.getTypeId().equals(typeId)){
+    private AgendaEditor getAgendaForType(List<AgendaEditor> agendas, String typeId) {
+        for (AgendaEditor agenda : agendas) {
+            if (agenda.getTypeId().equals(typeId)) {
                 return agenda;
             }
         }
         return null;
     }
 
-    private RuleEditor getRuleForType(AgendaEditor agenda, String typeId){
-        for(RuleEditor rule : agenda.getRuleEditors().values()){
-            if(rule.getTypeId().equals(typeId)){
+    private RuleEditor getRuleForType(AgendaEditor agenda, String typeId) {
+        for (RuleEditor rule : agenda.getRuleEditors().values()) {
+            if (rule.getTypeId().equals(typeId)) {
                 return rule;
             }
         }
@@ -295,11 +283,11 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
                 int firstTermInfo = 0;
                 TermInfo term = terms.get(firstTermInfo);
                 //Checking soc
-                List<String> socIds = getSocService().getSocIdsByTerm(term.getId(), createContextInfo());
-                if (socIds.isEmpty()) {
+                SocInfo soc = CourseOfferingSetUtil.getMainSocForTermId(term.getId(), createContextInfo());
+                if (soc == null) {
                     GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS, ManageSocConstants.MessageKeys.ERROR_SOC_NOT_EXISTS);
                 } else {
-                    socStateKey = getSocStateKey(socIds);
+                    socStateKey = soc.getStateKey();
                 }
                 //Set the contextbar details.
                 form.setContextBar(CourseOfferingContextBar.NEW_INSTANCE(term, socStateKey,
@@ -308,22 +296,6 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
         } catch (Exception e) {
             throw new RuntimeException("Could not populate context bar.");
         }
-    }
-
-    private String getSocStateKey(List<String> socIds) {
-        if (socIds != null && !socIds.isEmpty()) {
-            try {
-                List<SocInfo> targetSocs = this.getSocService().getSocsByIds(socIds, createContextInfo());
-                for (SocInfo soc : targetSocs) {
-                    if (soc.getTypeKey().equals(CourseOfferingSetServiceConstants.MAIN_SOC_TYPE_KEY)) {
-                        return soc.getStateKey();
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Could not retrive targetSocs for context bar.");
-            }
-        }
-        return null;
     }
 
     protected RuleViewTreeBuilder getViewTreeBuilder() {
@@ -342,11 +314,11 @@ public class AORuleEditorMaintainableImpl extends RuleEditorMaintainableImpl {
         return nlHelper;
     }
 
-    protected CluService getCluService() {
-        if (cluService == null) {
-            cluService = CourseOfferingResourceLoader.loadCluService();
+    protected LuiService getLuiService() {
+        if (luiService == null) {
+            luiService = CourseOfferingResourceLoader.loadLuiService();
         }
-        return cluService;
+        return luiService;
     }
 
     private CourseOfferingService getCourseOfferingService() {

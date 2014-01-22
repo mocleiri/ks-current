@@ -17,6 +17,7 @@
 package org.kuali.student.enrollment.class1.lui.service.impl;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.GenericQueryResults;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.enrollment.class1.lui.dao.LuiDao;
@@ -53,6 +54,7 @@ import java.util.List;
 
 public class LuiServiceImpl 
     implements LuiService {
+    Logger LOGGER = Logger.getLogger(LuiServiceImpl.class);
 
     private CriteriaLookupService criteriaLookupService;
 
@@ -280,24 +282,21 @@ public class LuiServiceImpl
         
         if(entity.getIdentifiers() != null){
             for(LuiIdentifierEntity ident:entity.getIdentifiers()){
-                ident.setCreateId(context.getPrincipalId());
-                ident.setCreateTime(context.getCurrentDate());
-                ident.setUpdateId(context.getPrincipalId());
-                ident.setUpdateTime(context.getCurrentDate());
+                ident.setEntityCreated(context);
             }
         }
         if(entity.getLuiCodes() != null){
             for(LuCodeEntity code : entity.getLuiCodes()){
-                code.setCreateId(context.getPrincipalId());
-                code.setCreateTime(context.getCurrentDate());
-                code.setUpdateId(context.getPrincipalId());
-                code.setUpdateTime(context.getCurrentDate());
+                
+                code.setEntityCreated(context);
             }
         }
 
 
         luiDao.persist(entity);
 
+        luiDao.getEm().flush();
+        
         return entity.toDto();
     }
 
@@ -358,6 +357,8 @@ public class LuiServiceImpl
 
         //Perform the merge
         entity = luiDao.merge(entity);
+        
+        luiDao.getEm().flush();
 
         return entity.toDto();
     }
@@ -452,8 +453,6 @@ public class LuiServiceImpl
                                                             ContextInfo context) 
         throws InvalidParameterException, MissingParameterException, 
                OperationFailedException, PermissionDeniedException { 
-
-
 
         List<LuiLuiRelationEntity> relEntities = luiLuiRelationDao.getLuiLuiRelationsByLui(luiId);
         List<LuiLuiRelationInfo> relInfos = new ArrayList<LuiLuiRelationInfo>();
@@ -637,6 +636,8 @@ public class LuiServiceImpl
         
         luiLuiRelationDao.persist(entity);
 
+        luiLuiRelationDao.getEm().flush();
+        
         return entity.toDto();
     }
 
@@ -667,13 +668,15 @@ public class LuiServiceImpl
         entity.setEntityUpdated(context);
         
 
-        luiLuiRelationDao.merge(entity);
+        entity = luiLuiRelationDao.merge(entity);
 
         //Delete any orphaned children
         for(Object orphan : orphans){
             luiLuiRelationDao.getEm().remove(orphan);
         }
 
+        luiLuiRelationDao.getEm().flush();
+        
         return entity.toDto();
     }
 
@@ -857,7 +860,7 @@ public class LuiServiceImpl
         LuiSetEntity entity = new LuiSetEntity(luiSetInfo);
         entity.setEntityCreated(contextInfo);
         luiSetDao.persist(entity);
-
+        luiSetDao.getEm().flush();
         return entity.toDto();
     }
 
@@ -873,17 +876,10 @@ public class LuiServiceImpl
         luiSetEntity.setUpdateId(contextInfo.getPrincipalId());
         luiSetEntity.setUpdateTime(contextInfo.getCurrentDate());
 
-        // this line can be removed once KSENROLL-4605 is resolved
-        if (luiSetInfo.getMeta() != null)
-            luiSetEntity.setVersionNumber(new Long (luiSetInfo.getMeta().getVersionInd()));
+        luiSetEntity = luiSetDao.merge(luiSetEntity);
 
-        try {
-            luiSetEntity = luiSetDao.merge(luiSetEntity);
-        } catch (OptimisticLockException e) {
-            throw new VersionMismatchException();
-        }
-
-//        luiSetDao.getEm().flush();
+        luiSetDao.getEm().flush();
+        
         return luiSetEntity.toDto();
     }
 

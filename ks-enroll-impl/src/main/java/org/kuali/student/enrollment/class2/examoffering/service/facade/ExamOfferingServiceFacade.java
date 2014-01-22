@@ -2,6 +2,8 @@ package org.kuali.student.enrollment.class2.examoffering.service.facade;
 
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.examoffering.dto.ExamOfferingRelationInfo;
+import org.kuali.student.enrollment.examoffering.infc.ExamOfferingRelation;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
@@ -13,7 +15,9 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.exceptions.ReadOnlyException;
 import org.kuali.student.r2.common.exceptions.VersionMismatchException;
 
+import javax.jws.WebParam;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Used to support service calls related to exam offerings. *
@@ -73,7 +77,33 @@ public interface ExamOfferingServiceFacade {
      * @throws ReadOnlyException
      */
     StatusInfo generateFinalExamOffering(CourseOfferingInfo courseOfferingInfo, String termId, String examPeriodId, List<String> optionKeys,
-                                          ContextInfo context)
+                                         ContextInfo context)
+            throws DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
+            OperationFailedException, PermissionDeniedException, ReadOnlyException;
+    /**
+     * This method generates new Exam Offerings for the Course Offering for the given Course Offering Id based on
+     * the exam drivers.
+     *
+     * If the Final Exam Status is not STANDARD, then all Exam Offerings will be cancelled
+     *
+     * If the Final Exam Driver changes, the existing offerings will be cancelled and new offerings created based on
+     * new driver, or cancelled exam offerings for the current driver will be reinstated if they do exist.
+     *
+     * @param courseOfferingInfo
+     * @param termId
+     * @param examPeriodId
+     * @param optionKeys
+     * @param context
+     * @throws DoesNotExistException
+     * @throws DataValidationErrorException
+     * @throws InvalidParameterException
+     * @throws MissingParameterException
+     * @throws OperationFailedException
+     * @throws PermissionDeniedException
+     * @throws ReadOnlyException
+     */
+    StatusInfo generateFinalExamOfferingOptimized(CourseOfferingInfo courseOfferingInfo, String termId, String examPeriodId, List<String> optionKeys,
+                                          ContextInfo context, Map<String, List<ActivityOfferingInfo>> foIdToListOfAOs)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException, ReadOnlyException;
 
@@ -130,7 +160,6 @@ public interface ExamOfferingServiceFacade {
                                               List<String> optionKeys, ContextInfo context)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException, ReadOnlyException, VersionMismatchException;
-
     /**
      * Generates a single Exam Offering per Format Offering.
      *
@@ -151,6 +180,26 @@ public interface ExamOfferingServiceFacade {
                                          ContextInfo context)
             throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
             OperationFailedException, DoesNotExistException, ReadOnlyException, DataValidationErrorException;
+    /**
+     * An "optimized" version of generateFinalExamOfferingsPerFO where a map of foId to a list of AOids
+     * is passed in (for this CO) to avoid additional calls to the DB.
+     *
+     * @param courseOfferingId
+     * @param termId
+     * @param examPeriodId
+     * @param context
+     * @param foIdToListOfAOs For the courseOfferingId, this is a map from FO Ids (of the CO) to the AO
+     *                        Infos belonging to the FO.  Saves a service call by passing this info in.
+     * @throws PermissionDeniedException
+     * @throws MissingParameterException
+     * @throws InvalidParameterException
+     * @throws OperationFailedException
+     * @throws DoesNotExistException
+     */
+    void generateFinalExamOfferingsPerFOOptimized(String courseOfferingId, String termId, String examPeriodId, List<String> optionKeys,
+                                         ContextInfo context, Map<String, List<ActivityOfferingInfo>> foIdToListOfAOs)
+            throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
+            OperationFailedException, DoesNotExistException, ReadOnlyException, DataValidationErrorException;
 
     /**
      * Generates an Exam Offering for each Activity Offering.
@@ -168,10 +217,33 @@ public interface ExamOfferingServiceFacade {
      * @throws OperationFailedException
      * @throws DoesNotExistException
      */
-    void generateFinalExamOfferingsPerAO(String courseOfferingId, String termId, String examPeriodId, List<String> optionKeys, ContextInfo context)
+    void generateFinalExamOfferingsPerAO(String courseOfferingId, String termId, String examPeriodId,
+                                         List<String> optionKeys, ContextInfo context)
             throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
             OperationFailedException, DoesNotExistException, ReadOnlyException, DataValidationErrorException;
 
+    /**
+     * An "optimized" version of generateFinalExamOfferingsPerAO where a map of foId to a list of AOids
+     * is passed in (for this CO) to avoid additional calls to the DB.
+     *
+     * @param courseOfferingId
+     * @param termId
+     * @param examPeriodId
+     * @param context
+     * @param foIdToListOfAOs For the courseOfferingId, this is a map from FO Ids (of the CO) to the AO
+     *                        Infos belonging to the FO.  Saves a service call by passing this info in.
+     * @throws PermissionDeniedException
+     * @throws MissingParameterException
+     * @throws InvalidParameterException
+     * @throws OperationFailedException
+     * @throws DoesNotExistException
+     */
+    void generateFinalExamOfferingsPerAOOptimized(String courseOfferingId, String termId, String examPeriodId,
+                                                  List<String> optionKeys,
+                                                  ContextInfo context,
+                                                  Map<String, List<ActivityOfferingInfo>> foIdToListOfAOs)
+            throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
+            OperationFailedException, DoesNotExistException, ReadOnlyException, DataValidationErrorException;
     /**
      * This method removes all Exam Offering from the Course Offering for the given Coure Offering Id. This
      * include all the Exam Offering for the Format Offerings and Activity Offerings linked to the Course
@@ -224,8 +296,7 @@ public interface ExamOfferingServiceFacade {
 
 
     /**
-     *
-     * @param courseOfferingId
+     * @param courseOffering
      * @param termId
      * @param examPeriodId
      * @param optionKeys
@@ -238,10 +309,51 @@ public interface ExamOfferingServiceFacade {
      * @throws ReadOnlyException
      * @throws DataValidationErrorException
      */
-    void generateFinalExamOfferingsPerCO(String courseOfferingId, String termId, String examPeriodId, List<String> optionKeys,
+    void generateFinalExamOfferingsPerCO(CourseOfferingInfo courseOffering, String termId, String examPeriodId, List<String> optionKeys,
                                          ContextInfo context)
             throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
             OperationFailedException, DoesNotExistException, ReadOnlyException, DataValidationErrorException;
+
+    /**
+     * An "optimized" version of generateFinalExamOfferingsPerCO where a map of foId to a list of AOids
+     * is passed in (for this CO) to avoid additional calls to the DB.
+     *
+     * @param courseOffering
+     * @param termId
+     * @param examPeriodId
+     * @param optionKeys
+     * @param context
+     * @param foIdToListOfAOs For the courseOfferingId, this is a map from FO Ids (of the CO) to the AO
+     *                        Infos belonging to the FO.  Saves a service call by passing this info in.
+     * @throws PermissionDeniedException
+     * @throws MissingParameterException
+     * @throws InvalidParameterException
+     * @throws OperationFailedException
+     * @throws DoesNotExistException
+     * @throws ReadOnlyException
+     * @throws DataValidationErrorException
+     */
+    void generateFinalExamOfferingsPerCOOptimized(CourseOfferingInfo courseOffering, String termId, String examPeriodId, List<String> optionKeys,
+                                         ContextInfo context, Map<String, List<ActivityOfferingInfo>> foIdToListOfAOs)
+            throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
+            OperationFailedException, DoesNotExistException, ReadOnlyException, DataValidationErrorException;
+
+    /**
+     * Retrieves a list of ExamOfferingRelations to the given FormatOffering.
+     *
+     * @param courseOfferingId the identifier for the CourseOffering
+     * @param contextInfo  Context information containing the principalId and locale information about the caller of service operation
+     * @return the ExamOfferingRelations to the given FormatOffering or an empty list if none found
+     * @throws InvalidParameterException contextInfo is invalid
+     * @throws MissingParameterException formatOfferingId or contextInfo is missing or null
+     * @throws OperationFailedException unable to complete request
+     * @throws DoesNotExistException
+     * @throws PermissionDeniedException an authorization failure occurred
+     */
+    List<ExamOfferingRelationInfo> getExamOfferingRelationsByCourseOffering(@WebParam(name = "formatOfferingId") String courseOfferingId,
+                                                                                   @WebParam(name = "contextInfo") ContextInfo contextInfo)
+            throws InvalidParameterException, MissingParameterException, OperationFailedException, DoesNotExistException,
+            PermissionDeniedException;
 
     /**
      * This method retrieves the boolea value to indicate if the execution process should or not set the location on the RDL.

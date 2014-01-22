@@ -167,6 +167,7 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
         entity.setEntityCreated(context);
 
         socRorDao.persist(entity);
+        socRorDao.getEm().flush();
         return entity.toDto();
     }
 
@@ -186,6 +187,7 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
         entity.setEntityCreated(context);
 
         socRorItemDao.persist(entity);
+        socRorItemDao.getEm().flush();
         return entity.toDto();
     }
 
@@ -211,6 +213,8 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
             entity.setEntityCreated(context);
 
             socRorItemDao.persist(entity);
+            
+            socRorItemDao.getEm().flush();
         }
         return Integer.valueOf(count);
     }
@@ -218,7 +222,7 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
     @Override
     @Transactional(readOnly = false, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class})
     public Integer deleteCourseOfferingsBySoc(String socId, ContextInfo context) throws DoesNotExistException,
-            InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, VersionMismatchException, ReadOnlyException {
+            InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         return this.businessLogic.deleteCourseOfferingsBySoc(socId, context);
     }
 
@@ -620,7 +624,11 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
 
         entity.setEntityUpdated(context);
 
-        return socDao.merge(entity).toDto();
+        entity = socDao.merge(entity);
+        
+        socDao.getEm().flush();
+        
+        return entity.toDto();
     }
 
     @Override
@@ -644,7 +652,12 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
                 attr.setValue(TransformUtility.dateTimeToDynamicAttributeString(new Date()));
             }
         }
-        return socRorDao.merge(entity).toDto();
+        
+        entity = socRorDao.merge(entity);
+        
+        socRorDao.getEm().flush();
+        
+        return entity.toDto();
     }
 
     @Override
@@ -674,7 +687,11 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
 
         entity.setEntityUpdated(context);
 
-        return socRorDao.merge(entity).toDto();
+        entity = socRorDao.merge(entity);
+        
+        socRorDao.getEm().flush();
+        
+        return entity.toDto();
     }
 
     @Override
@@ -691,7 +708,11 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
 
         entity.setEntityUpdated(context);
 
-        return socRorItemDao.merge(entity).toDto();
+        entity = socRorItemDao.merge(entity);
+        
+        socRorItemDao.getEm().flush();
+        
+        return entity.toDto();
     }
 
     @Override
@@ -761,9 +782,6 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
             MissingParameterException, OperationFailedException,
             PermissionDeniedException {
 
-        org.springframework.transaction.PlatformTransactionManager mgr;
-        socDao.getEm().flush(); // need to flush to get the version ind to update
-
         SocEntity entity = socDao.find(socId);
         if (entity == null) {
             throw new DoesNotExistException(socId);
@@ -789,12 +807,18 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
                 }
 
                 // Log the state change
+                contextInfo.setCurrentDate(new Date());
                 logStateChange(entity, nextStateKey, contextInfo);
-                LOG.warn(String.format("Updated SOC [%s] state to [%s].", socId, CourseOfferingSetServiceConstants.PUBLISHED_SOC_STATE_KEY));
+                LOG.warn(String.format("Updated SOC [%s] state to [%s].", socId, nextStateKey));
 
                 entity.setEntityUpdated(contextInfo);
-                socDao.merge(entity);
-                //socDao.getEm().flush(); // need to flush to get the version ind to update
+                
+                try {
+                    entity = socDao.merge(entity);
+                } catch (VersionMismatchException e) {
+                    throw new OperationFailedException("version mismatch exception, socDao.id=" + entity.getId(), e);
+                }
+                socDao.getEm().flush(); 
             }
             else{
                 throw new OperationFailedException(scStatus.getMessage());
@@ -811,7 +835,7 @@ public class CourseOfferingSetServiceImpl implements CourseOfferingSetService {
         // TODO: consider changing this to a call to a real logging facility instead of stuffing it in the dynamic attributes
 
         // Add an attribute with a key of the state en
-        AttributeInfo attr = new AttributeInfo(stateKey, DateFormatters.STATE_CHANGE_DATE_FORMATTER.format(contextInfo.getCurrentDate()));
+        AttributeInfo attr = new AttributeInfo(stateKey, DateFormatters.SERVER_DATE_PARSER_FORMATTER.format(contextInfo.getCurrentDate()));
         entity.getAttributes().add(new SocAttributeEntity(attr, entity));
     }
 

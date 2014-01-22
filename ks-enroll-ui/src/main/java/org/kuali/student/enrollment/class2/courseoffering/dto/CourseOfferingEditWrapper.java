@@ -42,6 +42,7 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
     private List<String> crsGradingOptions;
     private List<OrganizationInfoWrapper> organizationNames;
     private List<OfferingInstructorWrapper> instructors;
+    private List<String> alternateCOCodes;
     private String stateName;
 
     private String selectedGradingOptionName;
@@ -71,10 +72,23 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
 
     protected String viewId;
 
+    private Boolean hasWaitlist;
+
+    public List<String> getAlternateCOCodes() {
+        if (alternateCOCodes == null) {
+            alternateCOCodes = new ArrayList<String>();
+        }
+        return alternateCOCodes;
+    }
+
+    public void setAlternateCOCodes(List<String> alternateCOCodes) {
+        this.alternateCOCodes = alternateCOCodes;
+    }
+
     //this field is used for CO inquiry page to display all associated AOs
     private List<ActivityOfferingWrapper> aoWrapperList;
 
-    public CourseOfferingEditWrapper(){
+    public CourseOfferingEditWrapper() {
         formatOfferingList = new ArrayList<FormatOfferingWrapper>();
         studentRegOptions = new ArrayList<String>();
         alternateCourseCodesSuffixStripped = new ArrayList<String>();
@@ -87,15 +101,15 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
         aoWrapperList = new ArrayList<ActivityOfferingWrapper>();
     }
 
-    public CourseOfferingEditWrapper(CourseOfferingInfo info){
+    public CourseOfferingEditWrapper(CourseOfferingInfo info) {
         super(info);
         alternateCourseCodesSuffixStripped = new ArrayList<String>();
         instructors = new ArrayList<OfferingInstructorWrapper>();
-        if(info.getInstructors() == null || info.getInstructors().isEmpty()) {
+        if (info.getInstructors() == null || info.getInstructors().isEmpty()) {
             OfferingInstructorWrapper instructorWrapper = new OfferingInstructorWrapper();
             instructors.add(instructorWrapper);
-        } else if(info.getInstructors().size() > 0) {
-            for(OfferingInstructorInfo instructorInfo : info.getInstructors()) {
+        } else if (info.getInstructors().size() > 0) {
+            for (OfferingInstructorInfo instructorInfo : info.getInstructors()) {
                 OfferingInstructorWrapper instructorWrapper = new OfferingInstructorWrapper(instructorInfo);
                 instructors.add(instructorWrapper);
             }
@@ -104,24 +118,24 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
     }
 
     public List<FormatOfferingWrapper> getFormatOfferingList() {
+        if (formatOfferingList == null) {
+            formatOfferingList = new ArrayList<FormatOfferingWrapper>();
+        }
         return formatOfferingList;
     }
 
     public void setFormatOfferingList(List<FormatOfferingWrapper> formatOfferingList) {
-        if (formatOfferingList == null) {
-            formatOfferingList = new ArrayList<FormatOfferingWrapper>();
-        }
         this.formatOfferingList = formatOfferingList;
     }
 
     public List<String> getStudentRegOptions() {
+        if (studentRegOptions == null) {
+            studentRegOptions = new ArrayList<String>();
+        }
         return studentRegOptions;
     }
 
     public void setStudentRegOptions(List<String> studentRegOptions) {
-        if (studentRegOptions == null) {
-            studentRegOptions = new ArrayList<String>();
-        }
         this.studentRegOptions = studentRegOptions;
     }
 
@@ -220,25 +234,25 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
     public boolean isLegalToDelete() {
 
         if (getCourseOfferingInfo() != null &&
-            StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_DRAFT_STATE_KEY) ||
-            StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_CO_STATE_DRAFT_KEY) ||
-            StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_CO_STATE_PLANNED_KEY)||
-            StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY) ||
-            StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_CO_STATE_OFFERED_KEY) ) {
+                StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_DRAFT_STATE_KEY) ||
+                StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_CO_STATE_DRAFT_KEY) ||
+                StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_CO_STATE_PLANNED_KEY) ||
+                StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY) ||
+                StringUtils.equals(getCourseOfferingInfo().getStateKey(), LuiServiceConstants.LUI_CO_STATE_OFFERED_KEY)) {
             return true;
         }
 
         return false;
     }
 
-    public String getCreditOptionCreditsUI(){
-        if(creditOption!=null && !creditOption.getAllowedCredits().isEmpty() && !creditOption.getCredits().isEmpty() ){
-            return StringUtils.join(creditOption.getCredits(),",");
+    public String getCreditOptionCreditsUI() {
+        if (creditOption != null && !creditOption.getAllowedCredits().isEmpty() && !creditOption.getCredits().isEmpty()) {
+            return StringUtils.join(creditOption.getCredits(), ",");
         }
         return "No Credits Selected";
     }
 
-    public String getSelectedStudentRegOptsUI(){
+    public String getSelectedStudentRegOptsUI() {
         return selectedStudentRegOpts;
     }
 
@@ -266,26 +280,26 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
         this.termStartEnd = termStartEnd;
     }
 
-    public void setTermName(String name){
-        this.termName=name;
+    public void setTermName(String name) {
+        this.termName = name;
     }
 
-    public String getTermName(){
+    public String getTermName() {
         return termName;
     }
 
-    public Map<String,String> getAdminOrg(){
-        Map<String,String> adminOrgMap = new HashMap<String,String>();
-        if (organizationNames != null && !organizationNames.isEmpty()){
+    public Map<String, String> getAdminOrg() {
+        Map<String, String> adminOrgMap = new HashMap<String, String>();
+        if (organizationNames != null && !organizationNames.isEmpty()) {
             StringBuilder orgIDs = new StringBuilder("");
             for (OrganizationInfoWrapper organizationName : organizationNames) {
                 orgIDs.append(organizationName.getId()).append(",");
             }
             if (orgIDs.length() > 0) {
-                adminOrgMap.put("offeringAdminOrgId", orgIDs.substring(0, orgIDs.length()-1));
+                adminOrgMap.put("offeringAdminOrgId", orgIDs.substring(0, orgIDs.length() - 1));
             }
         }
-        return  adminOrgMap;
+        return adminOrgMap;
     }
 
     public SocInfo getSocInfo() {
@@ -307,16 +321,19 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
     public void setCreateCO(boolean createCO) {
         this.createCO = createCO;
     }
+
     /**
      * This is a suffix stripped out version of the Cross List codes from Course Offering DTO. This is needed to display
      * the cross list codes at edit co screen so that users can check/uncheck the cross lists
-     *
+     * <p/>
      * <p>Here is the use case for that.
      * On Create CO, user might enter a suffix and it got appended to all the cross list codes associated
      * with a CO. So, On Edit CO, We display a list of Cross list codes from {@link org.kuali.student.r2.lum.course.dto.CourseCrossListingInfo} to allow
      * the user to edit their already selected option. As we're storing with suffixes, this list doesnt match with what available at {@link org.kuali.student.enrollment.courseoffering.dto.CourseOfferingCrossListingInfo}
      * </p>
+     *
      * @param alternateCourseCodesSuffixStripped
+     *
      */
     @SuppressWarnings("unused")
     public void setAlternateCourseCodesSuffixStripped(List<String> alternateCourseCodesSuffixStripped) {
@@ -330,18 +347,18 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
      * the edits are happening directly in this object then the UI code will see the change and be able to
      * display appropriately; the drawback is that it's false since if persistence fails down below this
      * data will still appear as if everything was updated correctly.
-     *
+     * <p/>
      * Essentially, this is a patch for KSENROLL-5398 until KSENROLL-5346 is completed to make the edit
      * synchronous.
      *
-     * @see # getAlternateCOCodesUITooltip()
      * @return
+     * @see # getAlternateCOCodesUITooltip()
      */
     @SuppressWarnings("unused")
-    public String getAlternateCOCodesUIList(){
+    public String getAlternateCOCodesUIList() {
         //JIRA FIX : KSENROLL-8731 - Replaced StringBuffer with StringBuilder
         StringBuilder sb = new StringBuilder();
-        for (String crosslistingCode : alternateCourseCodesSuffixStripped){
+        for (String crosslistingCode : alternateCourseCodesSuffixStripped) {
             sb.append(crosslistingCode + ", ");
         }
 
@@ -363,7 +380,7 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
         private CourseOfferingInfo prevCO;
         private List<KeyValue> relatedCOs;
 
-        protected RenderHelper(){
+        protected RenderHelper() {
             relatedCOs = new ArrayList<KeyValue>();
         }
 
@@ -372,7 +389,7 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
             return getFormatOfferingList().size() < getCourse().getFormats().size();
         }
 
-        public void setSelectedCoCode( String selectedCoCode ) {
+        public void setSelectedCoCode(String selectedCoCode) {
             this.selectedCoCode = selectedCoCode;
         }
 
@@ -380,7 +397,7 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
             return this.selectedCoCode;
         }
 
-        public void setPrevCO( CourseOfferingInfo prevCO ) {
+        public void setPrevCO(CourseOfferingInfo prevCO) {
             this.prevCO = prevCO;
         }
 
@@ -388,7 +405,7 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
             return this.prevCO;
         }
 
-        public void setNextCO( CourseOfferingInfo nextCO ) {
+        public void setNextCO(CourseOfferingInfo nextCO) {
             this.nextCO = nextCO;
         }
 
@@ -396,7 +413,7 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
             return this.nextCO;
         }
 
-        public void setRelatedCOs( List<KeyValue> relatedCOs ) {
+        public void setRelatedCOs(List<KeyValue> relatedCOs) {
             this.relatedCOs = relatedCOs;
         }
 
@@ -420,6 +437,41 @@ public class CourseOfferingEditWrapper extends CourseOfferingWrapper {
 
     public void setViewId(String viewId) {
         this.viewId = viewId;
+    }
+
+    public Boolean getHasWaitlist() {
+        return this.hasWaitlist;
+    }
+
+    public void setHasWaitlist(Boolean hasWaitlist) {
+        this.hasWaitlist = hasWaitlist;
+    }
+
+    /**
+     * This method returns a list of crosslisted/official course code for a course. This will
+     * be displayed as the tooltip (if crosslisted cos exists) at Copy CO Screen.
+     *
+     * @return
+     */
+    @SuppressWarnings("unused")
+    public String getCrossListedCodesUI() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("This course is crosslisted with:<br>");
+        for (String code : alternateCOCodes) {
+            sb.append(code + ",");
+        }
+
+        return StringUtils.removeEnd(sb.toString(), ",");
+    }
+
+    public String getCrosslistedCodes() {
+        StringBuilder sb = new StringBuilder();
+        for (String code : alternateCOCodes) {
+            sb.append(code + ",");
+        }
+
+        return StringUtils.removeEnd(sb.toString(), ",");
     }
 }
 

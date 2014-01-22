@@ -25,9 +25,9 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.common.collection.KSCollectionUtils;
 import org.kuali.student.common.uif.util.GrowlIcon;
 import org.kuali.student.common.uif.util.KSUifUtils;
-import org.kuali.student.common.util.KSCollectionUtils;
 import org.kuali.student.enrollment.class1.krms.dto.CORuleManagementWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingClusterWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper;
@@ -44,7 +44,9 @@ import org.kuali.student.enrollment.class2.courseoffering.util.RegistrationGroup
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingClusterInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.r2.common.util.ContextUtils;
+import org.kuali.student.r2.common.util.date.DateFormatters;
 import org.kuali.student.r2.core.class1.search.CourseOfferingManagementSearchImpl;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -53,6 +55,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -92,7 +95,10 @@ public class CourseOfferingManagementController extends UifControllerBase {
         }
 
         //TODO: Workaround for KRMS return
-        if(!(form.getMethodToCall().contains("edit") || form.getMethodToCall().contains("refresh"))) {
+        if(!( form.getMethodToCall().contains("edit")
+                || form.getMethodToCall().contains("refresh")
+                || form.getMethodToCall().contains("manageCORequisites") ))
+        {
             form.setCurrentCourseOfferingWrapper(null);
         }
 
@@ -157,7 +163,7 @@ public class CourseOfferingManagementController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=show")
     public ModelAndView show(@ModelAttribute("KualiForm") CourseOfferingManagementForm form) throws Exception {
 
-        //If show is being called from another check that no validation errors were passed before reseting the form.
+        //If show is being called from another check that no validation errors were passed before resetting the form.
         if (GlobalVariables.getMessageMap().getErrorCount() > 0) {
             return getUIFModelAndView(form);
         }
@@ -178,7 +184,7 @@ public class CourseOfferingManagementController extends UifControllerBase {
             return getUIFModelAndView(form, CourseOfferingConstants.SEARCH_PAGE);
         }
 
-        CourseOfferingManagementUtil.getViewHelperService(form).loadCourseOfferingsByTermAndCourseCode(form.getTermInfo().getId(), form.getInputCode(), form);
+        CourseOfferingManagementUtil.getViewHelperService(form).loadCourseOfferingsByTermAndCourseCode(form.getTermInfo(), form.getInputCode(), form);
 
         //turn on authz
         form.setEditAuthz(CourseOfferingManagementUtil.checkEditViewAuthz(form));
@@ -377,6 +383,9 @@ public class CourseOfferingManagementController extends UifControllerBase {
      */
     @RequestMapping(params = "methodToCall=reloadManageCO")
     public ModelAndView reloadManageCO(@ModelAttribute("KualiForm") CourseOfferingManagementForm theForm) throws Exception {
+        theForm.setFormatOfferingIdForNewAO(null);
+        theForm.setActivityIdForNewAO(null);
+        theForm.setClusterIdForNewAO(null);
         CourseOfferingManagementUtil.reloadTheCourseOfferingWithAOs_RGs_Clusters(theForm);
         return getUIFModelAndView(theForm, CourseOfferingConstants.MANAGE_THE_CO_PAGE);
     }
@@ -799,7 +808,7 @@ public class CourseOfferingManagementController extends UifControllerBase {
         //  If the private name has changed then check for uniqueness.
         if (! StringUtils.equals(currentPrivateName, requestedPrivateName)) {
             if ( ! CourseOfferingManagementUtil._isClusterUniqueWithinCO(theForm, coId, requestedPrivateName)) {
-                GlobalVariables.getMessageMap().putError("privateClusterNameForRename", RegistrationGroupConstants.MSG_ERROR_INVALID_CLUSTER_NAME);
+                GlobalVariables.getMessageMap().putError("KS-CourseOfferingManagement-AOClustersCollection", RegistrationGroupConstants.MSG_ERROR_INVALID_CLUSTER_NAME, requestedPrivateName);
                 return show(theForm);
             }
             hasChange = true;
@@ -856,29 +865,6 @@ public class CourseOfferingManagementController extends UifControllerBase {
         }
     }
 
-
-    /**
-     * Redirect to Manage Course Offering Requisite View
-     *
-     * @param form model
-     * @return ModelAndView
-     * @throws Exception
-     */
-    @RequestMapping(params = "methodToCall=manageCORequisites")
-    public ModelAndView manageCORequisites(@ModelAttribute("KualiForm") CourseOfferingManagementForm form) throws Exception {
-
-        Properties urlParameters = new Properties();
-        urlParameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, KRADConstants.Maintenance.METHOD_TO_CALL_EDIT);
-        urlParameters.put("viewTypeName", "MAINTENANCE");
-        urlParameters.put(KRADConstants.DATA_OBJECT_CLASS_ATTRIBUTE, CORuleManagementWrapper.class.getName());
-        urlParameters.put("viewName", "COAgendaManagementView");
-        urlParameters.put(KRADConstants.OVERRIDE_KEYS, "refObjectId");
-        urlParameters.put("refObjectId", form.getCurrentCourseOfferingWrapper().getCourseOfferingId());
-        urlParameters.put("returnFormKey", form.getFormKey());
-
-        return super.performRedirect(form, "courseOfferingRules", urlParameters);
-    }
-
     /**
      * Show the exam offerings.
      *
@@ -895,6 +881,25 @@ public class CourseOfferingManagementController extends UifControllerBase {
 
         CourseOfferingManagementUtil.getViewHelperService(theForm).loadExamOfferings(theForm);
         return getUIFModelAndView(theForm, "viewExamOfferingsPage");
+    }
+
+    @RequestMapping(params = "methodToCall=cancel")
+    @Override
+    public ModelAndView cancel(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                               HttpServletRequest request, HttpServletResponse response) {
+
+        CourseOfferingManagementForm theForm = (CourseOfferingManagementForm) form;
+
+        Properties urlParameters = new Properties();
+        urlParameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "show");
+        urlParameters.put("viewId", "courseOfferingManagementView");
+        urlParameters.put(KRADConstants.DATA_OBJECT_CLASS_ATTRIBUTE, CourseInfo.class.getName());
+        urlParameters.put(KRADConstants.HIDE_LOOKUP_RETURN_LINK, "true");
+        urlParameters.put("inputCode", theForm.getCurrentCourseOfferingWrapper().getCourseOfferingCode());
+        urlParameters.put("termCode", theForm.getCurrentCourseOfferingWrapper().getTerm().getCode());
+        urlParameters.put("pageId", "manageTheCourseOfferingPage");
+
+        return super.performRedirect(form, "courseOfferingManagement", urlParameters);
     }
 
 }

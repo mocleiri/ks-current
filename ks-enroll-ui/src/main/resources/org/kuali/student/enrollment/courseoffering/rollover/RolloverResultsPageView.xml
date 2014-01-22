@@ -32,6 +32,22 @@
             </list>
         </property>
 
+        <property name="footer">
+            <bean parent="KS-Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-HorizontalBoxGroup">
+                            <property name="items">
+                                <list>
+                                    <bean parent="KS-Uif-ActionLink" p:actionLabel="Cancel" p:methodToCall="cancel"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">
@@ -45,7 +61,7 @@
                                                 <bean parent="Uif-TextControl" p:size="6" p:watermarkText="201301" p:minLength="5" p:maxLength="6"/>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-SecondaryActionButton-Small" p:performClientSideValidation="true" p:actionLabel="Go" p:methodToCall="showRolloverResults" p:valign="bottom"/>
+                                        <bean parent="Uif-SecondaryActionButton" p:performClientSideValidation="true" p:actionLabel="Show" p:methodToCall="showRolloverResults" p:valign="bottom"/>
                                         <bean parent="Uif-Message" p:messageText="Enter Valid Term" p:render="@{rolloverSourceTermDesc=='' and rolloverTargetTermCode!=''}" p:style="color:red;"/>
                                     </list>
                                 </property>
@@ -103,10 +119,10 @@
                                                 <list>
                                                     <bean parent="Uif-Message" p:id="KS-RolloverResultsInfoSectionMsg2"
                                                           p:messageText="Course offerings for @{rolloverTargetTermDesc!='' ? rolloverTargetTermDesc : 'Unknown Term'} have been rolled over and are in draft state."/>
-                                                    <bean parent="Uif-ImageField"
-                                                          p:source="@{#ConfigProperties['ks.externalizable.images.url']}/help_gray_14px.png">
+                                                    <!--"@{#ConfigProperties['ks.externalizable.images.url']}/help_gray_14px.png"-->
+                                                    <bean parent="Uif-ImageField" p:image.style="ks-fontello-icon-help-circled" p:onDocumentReadyScript="addBootstrapImageToLink('@{#component.id}');">
                                                         <property name="toolTip">
-                                                            <bean parent="Uif-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{rolloverTargetTermDesc!='' ? rolloverTargetTermDesc : 'Unknown Term'} is now in draft state, and&lt;br&gt;only central administrators can make&lt;br&gt;changes to course and activity&lt;br&gt;offerings. Release the term to grant&lt;br&gt;departmental administrators access.&lt;br&gt;(Note that this will disable future&lt;br&gt;Rollovers to this term.)"/>
+                                                            <bean parent="Uif-KS-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{rolloverTargetTermDesc!='' ? rolloverTargetTermDesc : 'Unknown Term'} is now in draft state, and&lt;br&gt;only central administrators can make&lt;br&gt;changes to course and activity&lt;br&gt;offerings. Release the term to grant&lt;br&gt;departmental administrators access.&lt;br&gt;(Note that this will disable future&lt;br&gt;Rollovers to this term.)"/>
                                                         </property>
                                                     </bean>
                                                 </list>

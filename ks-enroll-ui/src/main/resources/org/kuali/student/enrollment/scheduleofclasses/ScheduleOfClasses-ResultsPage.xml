@@ -32,9 +32,6 @@
                 });
            </value>
         </property>
-        <property name="header">
-            <bean parent="Uif-HeaderThree" p:headerText="Schedule of Classes"/>
-        </property>
         <property name="items">
             <list>
                 <ref bean="KS-ScheduleOfClasses-CriteriaSection"/>
@@ -72,7 +69,7 @@
         </property>
     </bean>
 
-    <bean id="KS-ScheduleOfClasses-CourseOfferingListSection" parent="Uif-TableCollectionSection" p:renderAddLine="false">
+    <bean id="KS-ScheduleOfClasses-CourseOfferingListSection" parent="Uif-TableCollectionSection" p:renderAddLine="false" p:additionalCssClasses="ks-uif-table-column">
         <property name="collectionObjectClass" value="org.kuali.student.enrollment.class2.scheduleofclasses.dto.CourseOfferingDisplayWrapper" />
         <property name="propertyName" value="coDisplayWrapperList" />
         <property name="renderLineActions" value="false" />
@@ -85,7 +82,7 @@
                             <bean parent="KS-Uif-DataField-Simple" p:propertyName="courseOfferingCode"/>
                             <bean parent="Uif-ImageField" p:hidden="@{#lp.alternateCOCodes.isEmpty()}" p:image.altText="@{#lp.crossListedCodesUI}" p:source="@{#ConfigProperties['ks.externalizable.images.url']}/cross-listed.png">
                                 <property name="toolTip">
-                                    <bean parent="Uif-Tooltip" p:tooltipContent="@{#lp.crossListedCodesUI}"/>
+                                    <bean parent="Uif-KS-Tooltip" p:tooltipContent="@{#lp.crossListedCodesUI}"/>
                                 </property>
                                 <property name="propertyReplacers">
                                     <list>
@@ -160,7 +157,7 @@
         <property name="header.render" value="true"/>
         <property name="collectionObjectClass" value="org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingClusterWrapper" />
         <property name="header.upperGroup">
-          <bean parent="Uif-HorizontalBoxGroup">
+          <bean parent="Uif-VerticalBoxGroup" p:align="left">
             <property name="items">
               <list>
                   <bean parent="Uif-MessageField" p:label="[b]Course Description[/b]" p:messageText="@{#line.courseOfferingFormatedDesc}"/>
@@ -235,7 +232,7 @@
                                   p:source="@{#ConfigProperties['ks.externalizable.images.url']}/colocate_icon.png">
                                 <property name="style" value="padding-left:3px"/>
                                 <property name="toolTip">
-                                    <bean parent="Uif-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.colocatedAoInfoUI}" p:render="@{!#lp.colocatedAoInfo.isEmpty()}"/>
+                                    <bean parent="Uif-KS-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#lp.colocatedAoInfoUI}" p:render="@{!#lp.colocatedAoInfo.isEmpty()}"/>
                                 </property>
                             </bean>
                         </list>
@@ -255,12 +252,7 @@
                     <property name="label" value="BUILDING"/>
                     <property name="messageText" value="@{#line.buildingCode}"/>
                     <property name="toolTip">
-                        <bean parent="Uif-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#line.buildingName}">
-                            <property name="templateOptions">
-                                <map merge="true">
-                                    <entry key="position" value="right"/>
-                                </map>
-                            </property>
+                        <bean parent="Uif-KS-TooltipFocus" p:onMouseHover="true" p:tooltipContent="@{#line.buildingName}">
                         </bean>
                     </property>
                 </bean>
@@ -280,8 +272,9 @@
     <bean id="SchOfClasses-aoFlatDisplay" parent="SchOfClasses-aoSearchResults" p:render="@{aoDisplayFormat == AoDisplayFormat.FLAT}">
         <property name="headerText" value="Activities" />
         <property name="propertyName" value="activityWrapperList" />
+        <property name="align" value="left" />
         <property name="header.upperGroup">
-          <bean parent="Uif-HorizontalBoxGroup">
+          <bean parent="Uif-VerticalBoxGroup" p:align="left">
             <property name="items">
               <list>
                   <bean parent="Uif-MessageField" p:label="[b]Course Description[/b]" p:messageText="@{#line.courseOfferingFormatedDesc}"/>
@@ -300,7 +293,7 @@
         <property name="header.render" value="true"/>
         <property name="collectionObjectClass" value="org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingClusterWrapper" />
         <property name="header.upperGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
+            <bean parent="Uif-VerticalBoxGroup" p:align="left">
                 <property name="items">
                     <list>
                         <bean parent="Uif-MessageField" p:label="[b]Course Description[/b]" p:messageText="@{#line.courseOfferingFormatedDesc}"/>

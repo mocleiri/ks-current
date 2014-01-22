@@ -33,11 +33,9 @@ import org.kuali.student.lum.lu.ui.krms.dto.CluSetInformation;
 import org.kuali.student.lum.lu.ui.krms.dto.CluSetRangeInformation;
 import org.kuali.student.lum.lu.ui.krms.dto.LUPropositionEditor;
 import org.kuali.student.lum.lu.ui.krms.dto.LURuleEditor;
-import org.kuali.student.lum.lu.ui.krms.dto.LURuleManagementWrapper;
 import org.kuali.student.lum.lu.ui.krms.service.impl.LURuleViewHelperServiceImpl;
 import org.kuali.student.lum.lu.ui.krms.util.CluSetRangeHelper;
 import org.kuali.student.r2.lum.clu.dto.MembershipQueryInfo;
-import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +43,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Properties;
 
 /**
  * Override of RuleEditorController for Student
@@ -79,7 +76,6 @@ public class EnrolRuleEditorController extends RuleEditorController {
     @RequestMapping(params = "methodToCall=route")
     public ModelAndView route(@ModelAttribute("KualiForm") DocumentFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-
         super.route(form, result, request, response);
         return back(form, result, request, response);
     }
@@ -191,6 +187,11 @@ public class EnrolRuleEditorController extends RuleEditorController {
         cluSetRange.setCluSetRangeLabel(rangeHelper.buildLabelFromQuery(membershipQueryInfo));
         cluSetRange.setMembershipQueryInfo(membershipQueryInfo);
         cluSetRange.setClusInRange(this.getViewHelper(form).getCoursesInRange(membershipQueryInfo));
+
+        if(!rangeHelper.validateCoursesInRange(prop, cluSetRange)) {
+            return getUIFModelAndView(form);
+        }
+
         prop.getCluSet().getCluSetRanges().add(cluSetRange);
 
         //Reset range helper to clear values on screen.

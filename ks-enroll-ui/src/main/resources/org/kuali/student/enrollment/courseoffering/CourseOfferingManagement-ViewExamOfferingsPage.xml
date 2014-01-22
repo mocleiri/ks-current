@@ -21,7 +21,8 @@
 
     <bean id="KS-CourseOfferingManagement-ExamOfferingPage" parent="KS-Uif-Page" p:disclosure.render="false"
           p:id="viewExamOfferingsPage">
-
+        <!-- <property name="onDocumentReadyScript" value="updateContextBar( 'ManageCourseOfferingManagement-ContextBar', 'KS-CourseOffering-View-ContextBar-PlaceHolder', @{#dp.contextBar.termDayOfYear}, '@{#ConfigProperties['application.url']}' );" /> -->
+		<property name="onDocumentReadyScript" value="setSeasonalColor('ManageCourseOfferingManagement-ContextBar', '@{#dp.contextBar.termDayOfYear}', '@{#ConfigProperties['application.url']}'); updateViewHeaderText('@{currentCourseOfferingWrapper.courseOfferingCode}');" />
         <property name="pageSourceFile" value="CourseOfferingManagement-ManageCourseOfferingsPage.xml" /> <!-- Shows up in HTML so devs can find the code -->
 
         <property name="headerText" value="Exam Offerings"/>
@@ -45,7 +46,7 @@
                             <entry key="dataObjectClassName" value="org.kuali.student.r2.lum.course.dto.CourseInfo"/>
                             <entry key="hideReturnLink" value="true"/>
                             <entry key="inputCode" value="@{#dp.subjectCode}"/>
-                            <entry key="formKey" value="@{returnFormKey}"/>
+                            <entry key="termCode" value="@{#dp.termCode}"/>
                             <entry key="pageId" value="manageCourseOfferingsPage"/>
                             <entry key="viewName" value="@{#dp.subjectCode}"/>
                         </map>
@@ -81,7 +82,7 @@
                 <bean parent="Uif-HorizontalBoxSection">
                     <property name="items">
                         <list>
-                            <ref bean="KS-CourseOffering-ContextBar"/>
+                            <!--<ref bean="KS-CourseOffering-ContextBar"/>-->
                             <ref bean="KS-CourseOfferingManagement-ExamOfferingByCOTableSection"/>
                             <ref bean="KS-CourseOfferingManagement-ExamOfferingByAOClustersSection" />
                             <bean parent="KS-CourseOfferingManagement-ExamOfferingTableSection" p:render="@{!#dp.examOfferingCancelledList.isEmpty()}">
@@ -102,6 +103,21 @@
                     </property>
                 </bean>
             </list>
+        </property>
+        <property name="footer">
+            <bean parent="KS-Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-HorizontalBoxGroup">
+                            <property name="items">
+                                <list>
+                                    <bean parent="KS-Uif-ActionLink" p:actionLabel="Cancel" p:ajaxSubmit="false" p:methodToCall="cancel"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -149,6 +165,7 @@
         <property name="layoutManager.renderSequenceField" value="false" />
         <property name="layoutManager.applyDefaultCellWidths" value="false" />
         <property name="layoutManager.applyAlternatingRowStyles" value="true" />
+        <property name="validationMessages.displayMessages" value="false"/>
         <property name="layoutManager.richTable.templateOptions">
             <map merge="true">
                 <entry key="sDom" value="rtip"/>
@@ -196,7 +213,8 @@
         <property name="disclosure.render" value="false" />
         <property name="collectionObjectClass" value="org.kuali.student.enrollment.class2.courseoffering.dto.ExamOfferingClusterWrapper" />
         <property name="propertyName" value="eoClusterResultList" />
-        <property name="cssClasses" value="aoc_disclosure"/>
+        <property name="additionalCssClasses" value="aoc_disclosure,ks-uif-diclosureContent-noIndent"/>
+        <property name="validationMessages.displayMessages" value="false"/>
         <property name="headerText" value="Exam Offerings for Activity Offerings"/>
         <property name="collectionLookup">
             <bean parent="Uif-CollectionQuickFinder" p:quickfinderAction.render="false" />

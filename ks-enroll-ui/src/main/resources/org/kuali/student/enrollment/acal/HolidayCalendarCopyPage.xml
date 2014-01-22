@@ -30,7 +30,7 @@
 
     <bean id="KS-HolidayCalendar-CopyPage" parent="KS-Uif-Page"
           p:id="holidayCalendarCopyPage"
-          p:headerText=""
+          p:headerText="Holiday Calendar"
           p:disclosure.render="false">
         <property name="pageSourceFile" value="HolidayCalendarCopyPage.xml" /> <!-- Shows up in HTML so devs can find the code -->
 
@@ -48,7 +48,8 @@
                         <bean parent="Uif-SpaceField"/>
                         <bean parent="Uif-ActionLink"
                               p:methodToCall="toCreate"
-                              p:actionLabel="Create Blank Holiday Calendar"/>
+                              p:actionLabel="Create Blank Holiday Calendar"
+                              p:style="display:inline-block;"/>
                     </list>
                 </property>
             </bean>
@@ -91,12 +92,18 @@
             <bean parent="KS-Uif-FooterBase">
                 <property name="items">
                     <list>
-                        <bean parent="KS-Uif-PrimaryActionButton"
-                              p:methodToCall="copy"
-                              p:actionLabel="Copy Holiday Calendar"
-                              p:render="@{holidayCalendarInfo != null}"
-                              p:performClientSideValidation="true" />
-                        <bean parent="Uif-ActionLink" p:actionLabel="Cancel" p:actionScript="stepBrowserBackTwoPages()"/>
+                        <bean parent="Uif-HorizontalBoxGroup">
+                            <property name="items">
+                                <list>
+                                    <bean parent="KS-Uif-PrimaryActionButton"
+                                          p:methodToCall="copy"
+                                          p:actionLabel="Copy Holiday Calendar"
+                                          p:render="@{holidayCalendarInfo != null}"
+                                          p:performClientSideValidation="true" />
+                                    <bean parent="KS-Uif-ActionLink" p:actionLabel="Cancel" p:actionScript="stepBrowserBackTwoPages()"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
@@ -216,11 +223,10 @@
                                   p:fieldLabel.renderColon="false"
                                   p:fieldLabel.requiredMessagePlacement="RIGHT">
                                 <property name="validCharactersConstraint">
-                                    <bean parent="BasicDatePatternConstraint" />
+                                    <bean parent="KS-BasicDatePatternConstraint" />
                                 </property>
                                 <property name="control">
-                                    <bean parent="Uif-KS-Default-DateControl"
-                                          p:watermarkText="mm/dd/yyyy"/>
+                                    <bean parent="KS-Uif-Default-DateControl"/>
                                 </property>
                             </bean>
                             <bean parent="Uif-InputField"
@@ -231,11 +237,10 @@
                                   p:fieldLabel.renderColon="false"
                                   p:fieldLabel.requiredMessagePlacement="RIGHT">
                                 <property name="validCharactersConstraint">
-                                    <bean parent="BasicDatePatternConstraint" />
+                                    <bean parent="KS-BasicDatePatternConstraint" />
                                 </property>
                                 <property name="control">
-                                    <bean parent="Uif-KS-Default-DateControl"
-                                          p:watermarkText="mm/dd/yyyy"/>
+                                    <bean parent="KS-Uif-Default-DateControl"/>
                                 </property>
                             </bean>
                         </list>

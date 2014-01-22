@@ -49,11 +49,9 @@
         </property>
     </bean>
 
-    <bean id="ActivityOffering-MaintenanceView" parent="KS-CourseOffering-MaintenanceViewWithTermContextBarPlaceholder"
+    <bean id="ActivityOffering-MaintenanceView" parent="KS-CourseOffering-MaintenanceViewWithTermContextBarPlaceholder"   p:applyDirtyCheck="true"
           p:readOnly="@{document.newMaintainableObject.dataObject.readOnlyView or !#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE]}"
           p:additionalCssClasses="aoc_page">
-         <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-        <property name="onDocumentReadyScript" value="updateContextBar( 'KS-CourseOffering-ContextBar', 'KS-CourseOffering-View-ContextBar-PlaceHolder', @{#dp.contextBar.termDayOfYear}, '@{#ConfigProperties['application.url']}' );"/>
 
         <property name="authorizer">
             <bean class="org.kuali.student.enrollment.main.view.KsMaintenanceViewAuthorizerBase"/>
@@ -61,6 +59,12 @@
 
         <property name="headerText" value="@{document.newMaintainableObject.dataObject.courseOfferingCode} - @{document.newMaintainableObject.dataObject.typeName} @{document.newMaintainableObject.dataObject.activityCode}" />
         <property name="page.headerText" value="Edit Activity Offering"/>
+
+        <property name="topGroup">
+            <bean id="AOMaintenance-ContextBar" parent="KS-CourseOffering-ContextBar" p:style="display:block;">
+                <property name="onDocumentReadyScript" value="setSeasonalColor('AOMaintenance-ContextBar', '@{#dp.contextBar.termDayOfYear}', '@{#ConfigProperties['application.url']}');"/>
+            </bean>
+        </property>
 
         <property name="dataObjectClassName" value="org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper"/>
         <property name="viewHelperServiceClass" value="org.kuali.student.enrollment.class2.courseoffering.service.impl.ActivityOfferingMaintainableImpl" />
@@ -93,7 +97,12 @@
                 <value>themes/ksboot/scripts/activity-offering.js</value>
             </list>
         </property>
+        <property name="onKeyPressScript">
+            <value>dismissEnterKeyAction(e);</value>
+        </property>
+
         <property name="page.id" value="ActivityOfferingEditPage"/>
+
 
         <!-- Buttons (cancel link, and controls related to the buttons) have to go in the view footer.
              This overrides the default maintenance doc buttons. -->
@@ -104,15 +113,21 @@
                         <bean parent="Uif-VerticalBoxGroup">
                             <property name="items">
                                 <list>
-                                    <bean  id="send_RDLs_to_scheduler" parent="Uif-InputField-LabelRight" p:cssClasses="unprocessed_changes_checkbox" p:render="@{#dp.schedulingCompleted}"
-                                          p:label="@{#dp.aoInfo.stateKey eq 'kuali.lui.activity.offering.state.canceled' ? 'Delivery logistics cannot be sent to the scheduler for this activity offering because it is canceled.' : 'Send revised delivery logistics to the scheduler for processing upon save.'}"
+                                    <bean id="send_RDLs_to_scheduler"
+                                          parent="Uif-InputField-LabelRight"
+                                          p:cssClasses="unprocessed_changes_checkbox"
+                                          p:render="@{#dp.schedulingCompleted}"
+                                          p:label="@{#dp.aoInfo.stateKey eq 'kuali.lui.activity.offering.state.canceled' ? 'Scheduling information cannot be sent to the scheduler for this activity offering because it is canceled.' : 'Send revised scheduling information to the scheduler for processing upon save.'}"
                                           p:propertyName="sendRDLsToSchedulerAfterMSE">
                                         <property name="control">
-                                            <bean parent="Uif-CheckboxControl" id="send_RDLs_to_scheduler_control">
-                                            <property name="render" value="@{#dp.aoInfo.stateKey ne 'kuali.lui.activity.offering.state.canceled'}"/>
+                                            <bean id="send_RDLs_to_scheduler_control"
+                                                  parent="Uif-CheckboxControl"
+                                                  p:onClickScript="showRemoveAllOfferingsFromSchedulerConfirmation();">
+                                                <property name="render" value="@{#dp.aoInfo.stateKey ne 'kuali.lui.activity.offering.state.canceled'}"/>
                                             </bean>
                                         </property>
                                     </bean>
+
                                     <ref bean="ActivityOfferingEdit_SubmitCancel"/>
                                 </list>
                             </property>
@@ -128,17 +143,13 @@
 
         <property name="page.items">
             <list>
-                 <!--KSENROLL-9951 - Rice Trackback - topGroup should only be displayed when there are items to show-->
-                <ref bean="KS-CourseOffering-ContextBar"/>
-                <bean parent="Uif-MessageField" p:messageText="Crosslisted as: @{#dp.crossListedCourseCodes}" p:render="@{#dp.crossListedCourseCodes != ''}" p:style="font-weight:bold; margin-bottom:8px;"/>
-
                 <ref bean="ActivityOfferingEdit-section1"/>
                 <ref bean="ActivityOfferingEdit-section2"/>
                 <ref bean="ActivityOfferingEdit-CoLocation"/>
 
                 <ref bean="ActivityOffering-DeliveryLogistic-Actuals"/>
-                <ref bean="ActivityOffering-DeliveryLogistic-New"/>
-                <ref bean="ActivityOffering-DeliveryLogistic-Requested"/>
+
+                <ref bean="ActivityOffering-ManageSchedulingInformationSection" />
 
                 <ref bean="ActivityOfferingEdit-PersonnelSection"/>
                 <ref bean="ActivityOfferingEdit-NoWaitlist"/>
@@ -153,13 +164,11 @@
                 <ref bean="ActivityOfferingEdit-NavigationConfirmation"/>
                 <ref bean="ActivityOfferingEdit-BreakColocateConfirmation"/>
                 <ref bean="ActivityOfferingEdit-CoLocatedAddLineDialog"/>
+                <ref bean="ActivityOfferingEdit-RemoveAllOfferingsFromSchedulerConfirmation"/>
             </list>
         </property>
         <property name="dialogs">
-          <list>
-            <!--<ref bean="deleteScheduleConfirmDialog"/>-->
-              <!--<bean id="colocateDialog" parent="Colocate-DialogGroup"/>-->
-          </list>
+          <list/>
         </property>
         <property name="header.cssClasses">
             <list merge="true">
@@ -182,16 +191,16 @@
         <property name="items">
             <list>
                 <ref bean="ActivityOfferingEdit-Header-Right-SubGroup"/>
-                <!--<ref bean="KS-Unified-Right-Header-Group-Status"/>-->
             </list>
         </property>
     </bean>
 
     <!-- This is the carousel widget -->
     <bean id="ActivityOfferingEdit-Header-Right-SubGroup" parent="KS-Unified-Header-Action-Group" p:render="@{#dp.editRenderHelper.aoCodes.size() > 1}">
+        <property name="onDocumentReadyScript" value="addBootstrapImageToLink('@{#component.id}')"/>
         <property name="items">
             <list>
-                <bean id="edit_ao_prev" parent="Uif-ActionLink" p:render="@{#dp.editRenderHelper.prevAO.id != null}"
+                <bean id="edit_ao_prev" parent="KS-Uif-ActionLink" p:render="@{#dp.editRenderHelper.prevAO.id != null}"
                       p:actionScript="handleAONavigation(this,&quot;@{#dp.editRenderHelper.prevAO.id}&quot;);" p:actionImagePlacement="LEFT"
                       p:actionLabel="@{#dp.editRenderHelper.prevAOTypeName} @{#dp.editRenderHelper.prevAO.activityCode}" p:methodToCall="route">
                     <property name="actionParameters">
@@ -200,8 +209,7 @@
                       </map>
                     </property>
                     <property name="actionImage">
-                      <bean parent="Uif-Image" p:altText=""
-                            p:source="@{#ConfigProperties['ks.externalizable.images.url']}/icon-arrow-left.png"/>
+                      <bean parent="Uif-Image" p:altText="" p:style="ks-fontello-icon-angle-left"/>
                     </property>
                 </bean>
                 <bean id="edit_ao_select" parent="Uif-InputField" p:propertyName="editRenderHelper.selectedAO" >
@@ -212,7 +220,7 @@
                         <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.ActivityOfferingCodesKeyValues" p:addBlankOption="false"/>
                     </property>
                 </bean>
-                <bean id="edit_ao_next" parent="Uif-ActionLink" p:render="@{#dp.editRenderHelper.nextAO.id != null}"
+                <bean id="edit_ao_next" parent="KS-Uif-ActionLink" p:render="@{#dp.editRenderHelper.nextAO.id != null}"
                       p:actionScript="handleAONavigation(this,&quot;@{#dp.editRenderHelper.nextAO.id}&quot;);" p:actionImagePlacement="RIGHT"
                       p:actionLabel="@{#dp.editRenderHelper.nextAOTypeName} @{#dp.editRenderHelper.nextAO.activityCode}" p:methodToCall="route">
                     <property name="actionParameters">
@@ -220,9 +228,13 @@
                         <entry key="aoId" value="@{#dp.editRenderHelper.nextAO.id}"/>
                       </map>
                     </property>
+                    <property name="dataAttributes">
+                        <map key-type="java.lang.String" merge="true">
+                            <entry key="imageposition" value="right"/>
+                        </map>
+                    </property>
                     <property name="actionImage">
-                      <bean parent="Uif-Image" p:altText=""
-                            p:source="@{#ConfigProperties['ks.externalizable.images.url']}/icon-arrow-right.png"/>
+                        <bean parent="Uif-Image" p:altText="" p:style="ks-fontello-icon-angle-right"/>
                     </property>
                 </bean>
             </list>
@@ -256,7 +268,6 @@
                 <entry key="hideReturnLink" value="true"/>
                 <entry key="inputCode" value="@{document.newMaintainableObject.dataObject.courseOfferingCode}"/>
                 <entry key="termCode" value="@{document.newMaintainableObject.dataObject.term.code}"/>
-                <!--<entry key="formKey" value="@{formKey}"/>-->
                 <entry key="pageId" value="manageTheCourseOfferingPage"/>
             </map>
         </property>
@@ -267,7 +278,7 @@
     </bean>
 
     <bean id="deleteScheduleConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
-          p:promptText="Removing all delivery logistics from this activity offering will cause it to become unscheduled." >
+          p:promptText="Removing all scheduling information from this activity offering will cause it to become unscheduled." >
         <property name="headerText" value="Delete Schedule"/>
         <property name="availableResponses">
           <list>
@@ -276,24 +287,6 @@
           </list>
         </property>
     </bean>
-
-    <!--<bean id="Colocate-DialogGroup" parent="Uif-DialogGroup">
-        <property name="headerText" value="Partial Colocation Not Supported"/>
-        <property name="promptText" value="Enrollment does not currently support partial colocation. In order to make modifications colocated activities or delivery logistics, you must ensure all delivery logistics are fully colocated."/>
-        <property name="availableResponses">
-          <list>
-              <bean parent="Uif-KeyLabelPair" p:key="O" p:value="Close"/>
-          </list>
-        </property>
-        <property name="responseInputField">
-          <bean parent="Uif-MainteanceDialogResponse">
-              <property name="onChangeScript" value="jQuery.fancybox.close();"/>
-          </bean>
-        </property>
-        <property name="explanation">
-          <bean parent="Uif-MainteanceDialogExplanation"/>
-        </property>
-    </bean>-->
 
     <bean id="ActivityOfferingMaintenanceDocument" parent="ActivityOfferingMaintenanceDocument-parentBean"/>
 
@@ -328,5 +321,4 @@
         <bean parent="Uif-KeyLabelPair" p:value="  Auditorium" p:key="kuali.resource.type.Auditorium"/>
         <bean parent="Uif-KeyLabelPair" p:value="  Lab" p:key="kuali.resource.type.Lab"/>
     </util:list>
-
 </beans>

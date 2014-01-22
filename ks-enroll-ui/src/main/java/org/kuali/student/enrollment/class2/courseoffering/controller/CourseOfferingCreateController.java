@@ -30,6 +30,7 @@ import org.kuali.student.enrollment.class2.courseoffering.service.impl.CourseOff
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.class2.courseoffering.util.ManageSocConstants;
+import org.kuali.student.enrollment.class2.courseofferingset.util.CourseOfferingSetUtil;
 import org.kuali.student.enrollment.common.util.EnrollConstants;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseofferingset.dto.SocInfo;
@@ -38,6 +39,7 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.util.ContextUtils;
 import org.kuali.student.r2.common.util.constants.CourseOfferingSetServiceConstants;
+import org.kuali.student.r2.common.util.constants.LuServiceConstants;
 import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.springframework.stereotype.Controller;
@@ -134,14 +136,19 @@ public class CourseOfferingCreateController extends CourseOfferingBaseController
         CourseOfferingEditWrapper dataObject = (CourseOfferingEditWrapper)((MaintenanceDocumentForm)form).getDocument().getNewMaintainableObject().getDataObject();
 
         //display the correct growl message based on the availability of exam period and final exam type
-        if (StringUtils.isEmpty(dataObject.getExamPeriodId())) {
-            urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS_WITH_MISSING_EXAMPERIOD);
-        } else if (!StringUtils.equals(dataObject.getCourseOfferingInfo().getFinalExamType(), CourseOfferingConstants.COURSEOFFERING_FINAL_EXAM_TYPE_STANDARD)) {
-            urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS);
+        if (StringUtils.equals(dataObject.getFinalExamDriver(), LuServiceConstants.LU_EXAM_DRIVER_CO_KEY)) {
+            if (StringUtils.isEmpty(dataObject.getExamPeriodId())) {
+                urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS_WITH_MISSING_EXAMPERIOD);
+            } else if (!StringUtils.equals(dataObject.getCourseOfferingInfo().getFinalExamType(), CourseOfferingConstants.COURSEOFFERING_FINAL_EXAM_TYPE_STANDARD)) {
+                urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS);
+            } else {
+                urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS_WITH_EXAMOFFERING_GENERATED);
+            }
         } else {
-            urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS_WITH_EXAMOFFERING_GENERATED);
+            urlParameters.put(EnrollConstants.GROWL_MESSAGE, CourseOfferingConstants.COURSE_OFFERING_CREATE_SUCCESS);
         }
-        urlParameters.put(EnrollConstants.GROWL_MESSAGE_PARAMS, dataObject.getCourseOfferingCode());
+
+        urlParameters.put(EnrollConstants.GROWL_MESSAGE_PARAMS, dataObject.getCourseOfferingCode() + dataObject.getCourseOfferingInfo().getCourseNumberSuffix());
 
         urlParameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "show");
         urlParameters.put("termCode", dataObject.getTerm().getCode());
@@ -317,11 +324,10 @@ public class CourseOfferingCreateController extends CourseOfferingBaseController
             } else {
                 // check if SOC state is "published"
                 ContextInfo contextInfo = ContextUtils.createDefaultContextInfo();
-                List<String> socIds = CourseOfferingManagementUtil.getCourseOfferingSetService().getSocIdsByTerm(term.getId(), contextInfo);
-                int firstSocID = 0;
-                if (socIds != null && !socIds.isEmpty()){
+
+                SocInfo soc = CourseOfferingSetUtil.getMainSocForTermId(term.getId(), contextInfo);
+                if (soc != null){
                     // check if user authz for the soc
-                    SocInfo soc = CourseOfferingManagementUtil.getCourseOfferingSetService().getSoc(socIds.get(firstSocID), contextInfo);
                     coWrapper.setSocInfo(soc);
                     boolean canOpenViewSoc = form.getView().getAuthorizer().canOpenView(form.getView(), form, user);
 

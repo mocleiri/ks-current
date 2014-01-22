@@ -67,6 +67,8 @@ public class ActivityOfferingClusterHandler {
             CourseOfferingWrapper currentCOWrapper = new CourseOfferingWrapper(courseOffering);
             form.setInputCode(coWrapper.getCourseOfferingCode());
             form.setCurrentCourseOfferingWrapper(currentCOWrapper);
+            form.getCourseOfferingResultList().clear();
+            form.getCourseOfferingResultList().add(coWrapper);
 
             CourseOfferingManagementUtil.prepareManageAOsModelAndView(form, coWrapper);
             return true;
@@ -131,9 +133,9 @@ public class ActivityOfferingClusterHandler {
         }
 
         if (selectedAolist.size() > 1) {
-            KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_CANCEL_N_SUCCESS);
+            KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_CANCEL_N_SUCCESS);
         } else {
-            KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_CANCEL_1_SUCCESS);
+            KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_CANCEL_1_SUCCESS);
         }
     }
 
@@ -162,9 +164,9 @@ public class ActivityOfferingClusterHandler {
         }
 
         if (selectedAolist.size() > 1) {
-            KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_SUSPEND_N_SUCCESS);
+            KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_SUSPEND_N_SUCCESS);
         } else {
-            KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_SUSPEND_1_SUCCESS);
+            KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_SUSPEND_1_SUCCESS);
         }
     }
 
@@ -193,9 +195,9 @@ public class ActivityOfferingClusterHandler {
         }
 
         if (selectedAolist.size() > 1) {
-            KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_REINSTATE_N_SUCCESS);
+            KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_REINSTATE_N_SUCCESS);
         } else {
-            KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_REINSTATE_1_SUCCESS);
+            KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, CourseOfferingConstants.ACTIVITYOFFERING_TOOLBAR_REINSTATE_1_SUCCESS);
         }
     }
 
@@ -206,7 +208,7 @@ public class ActivityOfferingClusterHandler {
         try {
             for (ActivityOfferingWrapper ao : selectedAolist) {
                 // The adapter does not technically need an AOC ID, so I'm setting it to null
-                CourseOfferingManagementUtil.getCourseOfferingServiceFacade().deleteActivityOfferingCascaded(ao.getAoInfo().getId(), null, ao.getAoInfo().getFormatOfferingId(), ContextBuilder.loadContextInfo());
+                CourseOfferingManagementUtil.getCourseOfferingServiceFacade().deleteActivityOfferingCascaded(ao.getAoInfo().getId(), ContextBuilder.loadContextInfo());
             }
 
             // check for changes to states in CO and related FOs
@@ -383,6 +385,7 @@ public class ActivityOfferingClusterHandler {
                     emptyCluster.getTypeKey(), emptyCluster, context);
 
 
+            theForm.setClusterIdForAOMove(emptyCluster.getId());
 
             List<ActivityOfferingClusterWrapper> aoClusterWrapperList = theForm.getClusterResultList();
             ActivityOfferingClusterWrapper aoClusterWrapper = new ActivityOfferingClusterWrapper();
@@ -422,7 +425,7 @@ public class ActivityOfferingClusterHandler {
             theForm.setPublishedClusterNameForMovePopover("");
             createAOCFromMove = false;
         }else{
-            GlobalVariables.getMessageMap().putError("privateClusterName", RegistrationGroupConstants.MSG_ERROR_INVALID_CLUSTER_NAME);
+            GlobalVariables.getMessageMap().putError("privateClusterName", RegistrationGroupConstants.MSG_ERROR_INVALID_CLUSTER_NAME, growlPrivateName);
             return theForm;
         }
 
@@ -461,7 +464,7 @@ public class ActivityOfferingClusterHandler {
                         return theForm;
                     }
 
-                    aocId = theForm.getClusterResultList().get(theForm.getClusterResultList().size() - 1).getActivityOfferingClusterId();
+                    aocId = theForm.getClusterIdForAOMove();
 
                 }
                 CourseOfferingManagementUtil.getCourseOfferingServiceFacade().moveActivityOffering(aoWrapper.getAoInfo().getId(), aoWrapper.getAoClusterID(), aocId, context);
@@ -514,13 +517,13 @@ public class ActivityOfferingClusterHandler {
     public static Properties manageAO(CourseOfferingManagementForm theForm, String aoId) throws Exception {
         Properties urlParameters = new Properties();
         urlParameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, KRADConstants.Maintenance.METHOD_TO_CALL_EDIT);
-        urlParameters.put(ActivityOfferingConstants.ACTIVITY_OFFERING_WRAPPER_ID, aoId);
         urlParameters.put(ActivityOfferingConstants.ACTIVITYOFFERING_COURSE_OFFERING_ID, theForm.getCurrentCourseOfferingWrapper().getCourseOfferingInfo().getId());
         urlParameters.put(KRADConstants.DATA_OBJECT_CLASS_ATTRIBUTE, AORuleManagementWrapper.class.getName());
         // UrlParams.SHOW_HISTORY and SHOW_HOME no longer exist
         // https://fisheye.kuali.org/changelog/rice?cs=39034
         // TODO KSENROLL-8469
         //urlParameters.put(UifConstants.UrlParams.SHOW_HOME, BooleanUtils.toStringTrueFalse(false));
+        urlParameters.put(KRADConstants.OVERRIDE_KEYS,"refObjectId,courseOfferingId");
         urlParameters.put("viewName", "AOAgendaManagementView");
         urlParameters.put("refObjectId", aoId);
 

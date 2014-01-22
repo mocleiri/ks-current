@@ -25,31 +25,30 @@ import org.kuali.rice.krad.maintenance.MaintainableImpl;
 import org.kuali.rice.krad.maintenance.MaintenanceDocument;
 import org.kuali.rice.krad.uif.UifConstants;
 import org.kuali.rice.krad.uif.container.CollectionGroup;
-import org.kuali.rice.krad.uif.control.CheckboxGroupControl;
 import org.kuali.rice.krad.uif.control.SelectControl;
 import org.kuali.rice.krad.uif.field.InputField;
 import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
+import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingCreateWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.FormatOfferingWrapper;
-import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
+import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingCrossListingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.FormatOfferingInfo;
-import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.util.ContextUtils;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
-import org.kuali.student.r2.core.class1.state.service.StateService;
+import org.kuali.student.r2.core.class1.state.dto.StateInfo;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 import org.kuali.student.r2.lum.course.dto.CourseCrossListingInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.dto.FormatInfo;
-import org.kuali.student.r2.lum.course.service.CourseService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,39 +61,41 @@ import java.util.Set;
  */
 public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl implements Maintainable {
 
-    private transient CourseOfferingService courseOfferingService;
-    private transient TypeService typeService;
-    private transient StateService stateService;
-    private transient CourseService courseService;
-
     /**
-     * Returns the format name by concatenation all the activity names with / seperated
+     * Returns the format long name short name as a string array  by concatenation all the shortened activity names with / seperated
      *
      * @param foWrapper
      * @param course
-     * @return
+     * @return   String[]
      */
-    public String getFormatName(FormatOfferingWrapper foWrapper,CourseInfo course){
+    public String[] getFormatShortAndLongNames(FormatOfferingWrapper foWrapper,CourseInfo course){
+        String[] formatNames = new String[2];
         for (FormatInfo format : course.getFormats()) {
             if (StringUtils.equals(format.getId(),foWrapper.getFormatId())){
-                StringBuilder activityName = new StringBuilder();
+                StringBuilder longName = new StringBuilder();
+                StringBuilder shortName = new StringBuilder();
                 for (ActivityInfo activityInfo : format.getActivities()) {
                     TypeInfo activityType = null;
                     try {
-                        activityType = getTypeService().getType(activityInfo.getTypeKey(), ContextUtils.createDefaultContextInfo());
+                        activityType = CourseOfferingManagementUtil.getTypeService().getType(activityInfo.getTypeKey(), ContextUtils.createDefaultContextInfo());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                    activityName.append(activityType.getName()+"/");
+                    longName.append(activityType.getName()+"/");
+                    shortName.append(activityType.getName().toUpperCase().substring(0,3)+"/");
                 }
                 if (format.getActivities().size() == 1){
-                    return StringUtils.removeEnd(activityName.toString(),"/") + " Only";
+                    formatNames[0] = StringUtils.removeEnd(longName.toString(),"/") + " Only";
                 } else {
-                    return StringUtils.removeEnd(activityName.toString(),"/");
+                    formatNames[0] = StringUtils.removeEnd(longName.toString(),"/");
                 }
+                formatNames[1] = StringUtils.removeEnd(shortName.toString(),"/");
+                return formatNames;
             }
         }
-        return StringUtils.EMPTY;
+        formatNames[0] = StringUtils.EMPTY;
+        formatNames[1] = StringUtils.EMPTY;
+        return formatNames;
     }
 
     @Override
@@ -192,9 +193,9 @@ public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl im
         List<KeyValue> gradeKeyValues = new ArrayList<KeyValue>();
 
         if (StringUtils.isNotBlank(formatOfferingInfo.getFormatId())){
-            // Always include an option for Course
+            gradeKeyValues.addAll(collectActivityTypeKeyValues(courseInfo, formatOfferingInfo.getFormatId(), CourseOfferingManagementUtil.getTypeService(), ContextUtils.createDefaultContextInfo()));
+            // Always include an option for Course as last option
             gradeKeyValues.add(new ConcreteKeyValue(LuiServiceConstants.COURSE_OFFERING_TYPE_KEY, getTypeName(LuiServiceConstants.COURSE_OFFERING_TYPE_KEY)));
-            gradeKeyValues.addAll(collectActivityTypeKeyValues(courseInfo, formatOfferingInfo.getFormatId(), getTypeService(), ContextUtils.createDefaultContextInfo()));
             control.setDisabled(false);
         } else {
             control.setDisabled(true);
@@ -223,14 +224,14 @@ public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl im
      * @see #populateGradeRosterLevelTypes
      */
     @SuppressWarnings("unused")
-    public void populateFinalExamDriverTypes(InputField field, MaintenanceDocumentForm form){
+    public void populateFinalExamDriverTypes(InputField field, MaintenanceDocumentForm form) throws Exception {
 
-        if (field.isReadOnly()){
+        if (field.isReadOnly()) {
             return;
         }
 
         FormatOfferingInfo formatOfferingInfo;
-        CourseOfferingWrapper wrapper = (CourseOfferingWrapper)form.getDocument().getNewMaintainableObject().getDataObject();
+        CourseOfferingWrapper wrapper = (CourseOfferingWrapper) form.getDocument().getNewMaintainableObject().getDataObject();
         CourseInfo courseInfo = wrapper.getCourse();
 
         if (wrapper instanceof CourseOfferingCreateWrapper) {
@@ -238,26 +239,26 @@ public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl im
              * If the call is from create co, then there are two places from where this method is being called. From the 'Add format' section
              * and from the format offering collections. For the 'add format' section, we're checking the property name to get the FO Wrapper
              */
-            if (StringUtils.equals(field.getPropertyName(),"addLineFormatWrapper.finalExamLevelTypeKey")){
-                formatOfferingInfo = ((CourseOfferingCreateWrapper)wrapper).getAddLineFormatWrapper().getFormatOfferingInfo();
+            if (StringUtils.equals(field.getPropertyName(), "addLineFormatWrapper.finalExamLevelTypeKey")) {
+                formatOfferingInfo = ((CourseOfferingCreateWrapper) wrapper).getAddLineFormatWrapper().getFormatOfferingInfo();
             } else {
                 //This else is for the format offering collection.
-                FormatOfferingWrapper foWrapper = (FormatOfferingWrapper)field.getContext().get(UifConstants.ContextVariableNames.LINE);
+                FormatOfferingWrapper foWrapper = (FormatOfferingWrapper) field.getContext().get(UifConstants.ContextVariableNames.LINE);
                 formatOfferingInfo = foWrapper.getFormatOfferingInfo();
-                if (foWrapper.isJointOffering()){
+                if (foWrapper.isJointOffering()) {
                     courseInfo = foWrapper.getJointCreateWrapper().getCourseInfo();
                 }
             }
         } else {
-            formatOfferingInfo = ((FormatOfferingWrapper)field.getContext().get(UifConstants.ContextVariableNames.LINE)).getFormatOfferingInfo();
+            formatOfferingInfo = ((FormatOfferingWrapper) field.getContext().get(UifConstants.ContextVariableNames.LINE)).getFormatOfferingInfo();
         }
 
-        SelectControl control = (SelectControl)field.getControl();
+        SelectControl control = (SelectControl) field.getControl();
 
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-
-        if (StringUtils.isNotBlank(formatOfferingInfo.getFormatId()) && courseInfo != null){
-            keyValues.addAll(collectActivityTypeKeyValues(courseInfo, formatOfferingInfo.getFormatId(), getTypeService(), ContextUtils.createDefaultContextInfo()));
+        CourseOfferingEditWrapper courseOfferingEditWrapper;
+        if (StringUtils.isNotBlank(formatOfferingInfo.getFormatId()) && courseInfo != null) {
+            keyValues.addAll(collectActivityTypeKeyValues(courseInfo, formatOfferingInfo.getFormatId(), CourseOfferingManagementUtil.getTypeService(), ContextUtils.createDefaultContextInfo()));
             control.setDisabled(false);
         } else {
             control.setDisabled(true);
@@ -348,7 +349,9 @@ public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl im
         CourseOfferingEditWrapper editWrapper = (CourseOfferingEditWrapper)coWrapper;
         for (FormatOfferingWrapper foWrapper : editWrapper.getFormatOfferingList()){
             if (StringUtils.isBlank(foWrapper.getFormatOfferingInfo().getName())){
-                foWrapper.getFormatOfferingInfo().setName(getFormatName(foWrapper,editWrapper.getCourse()));
+                String[] foNames = getFormatShortAndLongNames(foWrapper, editWrapper.getCourse());
+                foWrapper.getFormatOfferingInfo().setName(foNames[0]);
+                foWrapper.getFormatOfferingInfo().setShortName(foNames[1]);
             }
             if (StringUtils.isNotBlank(foWrapper.getFormatId())){
                 foWrapper.getRenderHelper().setNewRow(false);
@@ -356,36 +359,7 @@ public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl im
         }
 
     }
-
-    protected TypeService getTypeService() {
-        if(typeService == null) {
-            typeService = CourseOfferingResourceLoader.loadTypeService();
-        }
-        return this.typeService;
-    }
-
-    protected StateService getStateService() {
-        if(stateService == null) {
-            stateService = CourseOfferingResourceLoader.loadStateService();
-        }
-        return stateService;
-    }
-
-    protected CourseOfferingService getCourseOfferingService() {
-        if (courseOfferingService == null) {
-            courseOfferingService = CourseOfferingResourceLoader.loadCourseOfferingService();
-        }
-        return courseOfferingService;
-    }
-
-    protected CourseService getCourseService() {
-        if(courseService == null) {
-            courseService = CourseOfferingResourceLoader.loadCourseService();
-        }
-        return this.courseService;
-    }
-
-    /**
+   /**
      * Returns the Name for a type key.
      *
      * @param typeKey
@@ -393,7 +367,7 @@ public abstract class CourseOfferingMaintainableImpl extends MaintainableImpl im
      */
     protected String getTypeName(String typeKey){
         try{
-            TypeInfo typeInfo = getTypeService().getType(typeKey,ContextUtils.createDefaultContextInfo());
+            TypeInfo typeInfo = CourseOfferingManagementUtil.getTypeService().getType(typeKey,ContextUtils.createDefaultContextInfo());
             return typeInfo.getName();
         } catch (Exception e){
             //Throwing a runtime as we use this method to get the type name only for the ui purpose..

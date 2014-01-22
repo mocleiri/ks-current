@@ -23,9 +23,10 @@ import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
-import org.kuali.student.common.util.KSCollectionUtils;
+import org.kuali.student.common.collection.KSCollectionUtils;
 import org.kuali.student.enrollment.class2.courseoffering.dao.ActivityOfferingClusterDaoApi;
 import org.kuali.student.enrollment.class2.courseoffering.model.ActivityOfferingClusterEntity;
+import org.kuali.student.enrollment.class2.courseoffering.service.extender.CourseOfferingServiceExtender;
 import org.kuali.student.enrollment.class2.courseoffering.service.facade.issue.ActivityOfferingNotInAocSubissue;
 import org.kuali.student.enrollment.class2.courseoffering.service.facade.issue.CourseOfferingAutogenIssue;
 import org.kuali.student.enrollment.class2.courseoffering.service.facade.issue.FormatOfferingAutogenIssue;
@@ -74,14 +75,13 @@ import org.kuali.student.r2.core.search.dto.SearchResultCellInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultRowInfo;
 import org.kuali.student.r2.core.search.service.SearchService;
-import org.kuali.student.r2.lum.course.dto.ActivityInfo;
-import org.kuali.student.r2.lum.course.dto.CourseInfo;
-import org.kuali.student.r2.lum.course.dto.FormatInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
+import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 
 import javax.annotation.Resource;
 import javax.xml.namespace.QName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -116,6 +116,8 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
     private CourseWaitListServiceFacade waitListServiceFacade;
 
     private ExamOfferingServiceFacade examOfferingServiceFacade;
+
+    private CourseOfferingServiceExtender courseOfferingServiceExtender;
 
     /* (non-Javadoc)
      * @see org.kuali.student.enrollment.class2.courseoffering.service.adapter.CourseOfferingServiceFacade#getDefaultClusterName(int)
@@ -252,10 +254,9 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
         }
         FormatOfferingInfo fo = coService.getFormatOffering(foId, context);
         String coId = fo.getCourseOfferingId();
-        CourseOfferingInfo co = coService.getCourseOffering(coId, context);
-        CourseInfo course = getCourseService().getCourse(co.getCourseId(), context);
+
         try {
-            _addActivityOfferingTypesToFormatOffering(fo, course, context);
+            _addActivityOfferingTypesToFormatOffering(fo, context);
         } catch (VersionMismatchException e) {
             LOGGER.warn("VersionMismatchException thrown in createDefaultCluster, part 1");
             throw new OperationFailedException(e.getMessage());
@@ -309,35 +310,20 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
         return aoc;
     }
 
-    private void _addActivityOfferingTypesToFormatOffering(FormatOfferingInfo fo, CourseInfo course, ContextInfo context)
+    private void _addActivityOfferingTypesToFormatOffering(FormatOfferingInfo fo, ContextInfo context)
             throws PermissionDeniedException, MissingParameterException, InvalidParameterException, OperationFailedException,
             DoesNotExistException, ReadOnlyException, DataValidationErrorException, VersionMismatchException {
         if (fo.getActivityOfferingTypeKeys() != null && !fo.getActivityOfferingTypeKeys().isEmpty()) {
             // Only bother with this if there are no AO type keys
             return;
         }
-        List<FormatInfo> formats = course.getFormats();
-        FormatInfo format = null;
-        for (FormatInfo f: formats) {
-            if (f.getId().equals(fo.getFormatId())) {
-                // Find correct format
-                format = f;
-                break;
-            }
-        }
-
-        if(format == null){
-            throw new OperationFailedException("No format could be found to match id: " + fo.getFormatId());
-        }
 
         // Get the activity types
-        List<String> activityTypes = new ArrayList<String>();
-        if (format.getActivities() == null || format.getActivities().isEmpty()) {
-            throw new OperationFailedException("Formats must contain non-empty activities.  Error!");
+        List<String> activityTypes = courseOfferingServiceExtender.getActivityTypesForFormatId(fo.getFormatId(), context);
+        if (activityTypes.isEmpty()) {
+            throw new OperationFailedException("No format could be found to match id: " + fo.getFormatId() + " or Formats contains no activities.  Error!");
         }
-        for (ActivityInfo activityInfo: format.getActivities()) {
-            activityTypes.add(activityInfo.getTypeKey());
-        }
+
         // Use type service to find corresponding AO types--assumes 1-1 mapping of Activity types to AO types
         TypeService typeService = getTypeService();
         List<String> aoTypeKeys = new ArrayList<String>();
@@ -753,7 +739,7 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
                     //Canceled state handling is out of scope. We ignore the state for now
                     // TODO: KSENROLL-9934 this checking will be removed when canceled state handling is available.
                     if (!rgInfo.getStateKey().equals(LuiServiceConstants.REGISTRATION_GROUP_CANCELED_STATE_KEY)) {
-                        if (_isRegistrationGroupValid (rgInfo.getId(), context)) {
+                        if (_areRegistrationGroupAoIdsValid(rgInfo.getActivityOfferingIds(), context)) {
                             // We don't know what the next state should be for this registration group, but the state
                             // service kinda knows. So, try to send it to the highest state, offered.
                             // If that doesn't work, try to send it to pending
@@ -792,9 +778,9 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
         }
     }
 
-    private boolean _isRegistrationGroupValid (String rgId, ContextInfo context) {
+    private boolean _areRegistrationGroupAoIdsValid(List<String> aoIds, ContextInfo context) {
         try {
-            List<ValidationResultInfo> validations = coService.verifyRegistrationGroup(rgId, context);
+            List<ValidationResultInfo> validations = courseOfferingServiceExtender.verifyRegistrationGroup(aoIds, context);
             for (ValidationResultInfo validation : validations) {
                 if (!validation.isOk()) {
                     // If any validation is an error, then make this invalid
@@ -810,12 +796,10 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
 
     @Override
     public void deleteActivityOfferingCascaded(String aoId,
-                                               String aocId,
-                                               String foId,
                                                ContextInfo context)
             throws PermissionDeniedException, MissingParameterException, InvalidParameterException,
-            OperationFailedException, DoesNotExistException, DataValidationErrorException, ReadOnlyException, VersionMismatchException {
-        coService.deleteActivityOfferingCascaded(aoId, foId, context);
+            OperationFailedException, DoesNotExistException {
+        coService.deleteActivityOfferingCascaded(aoId, context);
     }
 
     @Override
@@ -1392,5 +1376,13 @@ public class CourseOfferingServiceFacadeImpl implements CourseOfferingServiceFac
 
     public void setSearchService(SearchService searchService) {
         this.searchService = searchService;
+    }
+
+    public void setCourseOfferingServiceExtender(CourseOfferingServiceExtender courseOfferingServiceExtender) {
+        this.courseOfferingServiceExtender = courseOfferingServiceExtender;
+    }
+
+    public CourseOfferingServiceExtender getCourseOfferingServiceExtender() {
+        return courseOfferingServiceExtender;
     }
 }

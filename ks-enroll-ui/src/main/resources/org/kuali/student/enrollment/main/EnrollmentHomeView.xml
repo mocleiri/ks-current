@@ -60,14 +60,12 @@
                       p:href="@{#ConfigProperties['application.url']}/kr-krad/courseOfferingRollover?viewId=courseOfferingRolloverManagementView&amp;pageId=selectTermsForRollover&amp;methodToCall=start"/>
                 <bean parent="Uif-Link" p:linkText="View Rollover Details"
                       p:href="@{#ConfigProperties['application.url']}/kr-krad/courseOfferingRollover?viewId=courseOfferingRolloverManagementView&amp;pageId=selectTermForRolloverDetails&amp;methodToCall=start"/>
-                <bean parent="Uif-Link" p:linkText="Manage SOC"
+                <bean parent="Uif-Link" p:linkText="Manage Set of Courses"
                       p:href="@{#ConfigProperties['application.url']}/kr-krad/manageSOC?viewId=ManageSOCView&amp;methodToCall=start"/>
                 <bean parent="Uif-Link" p:linkText="Manage Final Exam Matrix"
-                      p:href="@{#ConfigProperties['application.url']}/kr-krad/finalExamMatrixManagement?viewId=finalExamMatrixManagementView&amp;pageId=finalExamSearchInputPage&amp;methodToCall=start&amp;withinPortal=false"/>
+                      p:href="@{#ConfigProperties['application.url']}/kr-krad/finalExamRules?viewName=FEAgendaManagementView&amp;dataObjectClassName=org.kuali.student.enrollment.class1.krms.dto.FERuleManagementWrapper&amp;methodToCall=start&amp;withinPortal=false"/>
                 <bean parent="Uif-Link" p:linkText="Manage Time Slots"
                       p:href="@{#ConfigProperties['application.url']}/kr-krad/timeslot?viewId=timeSlotView&amp;pageId=timeSlotPage&amp;methodToCall=start&amp;withinPortal=false"/>
-                <bean parent="Uif-Link" p:linkText="Manage Populations"
-                      p:href="@{#ConfigProperties['application.url']}/kr-krad/lookup?viewId=KS-Population-LookupView&amp;methodToCall=start&amp;dataObjectClassName=org.kuali.student.enrollment.class2.population.dto.PopulationWrapper&amp;hideReturnLink=true&amp;showMaintenanceLinks=true&amp;viewName=Manage Populations"/>
             </list>
         </property>
     </bean>

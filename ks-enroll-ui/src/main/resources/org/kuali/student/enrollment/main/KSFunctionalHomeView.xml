@@ -9,7 +9,7 @@
         <property name="id" value="ksFunctionalHomeView"/>
         <property name="formClass" value="org.kuali.student.enrollment.main.form.LaunchForm"/>
         <property name="onLoadScript" value="jQuery('#Uif-BreadcrumbWrapper').remove(); jQuery('.ks-unified-header').hide();"/>
-
+        <property name="stickyHeader" value="false"/>
         <property name="items">
             <list>
                 <bean parent="KS-Uif-Page" p:disclosure.render="false">
@@ -51,7 +51,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="KS-StudentHome-KSMaintenance" parent="KS-Uif-Student-Home-Area" p:onClickScript="window.location.href='@{#ConfigProperties['application.url']}/portal.do';">
+                <bean id="KS-StudentHome-KSMaintenance" parent="KS-Uif-Student-Home-Area" p:onClickScript="window.location.href='@{#ConfigProperties['ks.rice.url']}/portal.do';">
                     <property name="items">
                         <list>
                             <bean parent="KS-Uif-Student-Home-Area-Image">

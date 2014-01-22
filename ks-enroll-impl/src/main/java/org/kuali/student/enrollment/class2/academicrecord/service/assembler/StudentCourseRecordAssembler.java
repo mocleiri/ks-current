@@ -20,14 +20,14 @@ import org.kuali.student.r2.core.atp.service.AtpService;
 import org.kuali.student.r2.lum.lrc.dto.ResultValueInfo;
 import org.kuali.student.r2.lum.lrc.service.LRCService;
 
-public class StudentCourseRecordAssembler
+public class StudentCourseRecordAssembler 
     implements DTOAssembler<StudentCourseRecordInfo, CourseRegistrationInfo> {
 
 	private AtpService atpService;
 	private GradingService gradingService;
 	private LRCService lrcService;
 	private LuiService luiService;
-
+	
 	public AtpService getAtpService() {
 		return atpService;
 	}
@@ -63,17 +63,17 @@ public class StudentCourseRecordAssembler
 	@Override
 	public StudentCourseRecordInfo assemble(CourseRegistrationInfo courseReg, ContextInfo context) throws AssemblyException {
             StudentCourseRecordInfo courseRecord = new StudentCourseRecordInfo();
-
+            
             courseRecord.setCourseRegistrationId(courseReg.getId());
-            courseRecord.setPersonId(courseReg.getStudentId());
+            courseRecord.setPersonId(courseReg.getPersonId());
 
             try {
-
+            
                 LuiInfo lui = this.luiService.getLui(courseReg.getCourseOfferingId(), context);
                 LuiIdentifierInfo identifier = lui.getOfficialIdentifier();
                 courseRecord.setCourseTitle(identifier != null ? identifier.getLongName() : null);
                 courseRecord.setCourseCode(identifier != null ? identifier.getCode() : null);
-
+                
                 //TODO:The code or number of the primary activity. how to determine which activity is primary?
                 /*            RegGroupRegistrationInfo regGroup = courseReg.getRegGroupRegistration();
                               if (regGroup.getActivityRegistrations()!= null && !regGroup.getActivityRegistrations().isEmpty()) {
@@ -83,21 +83,21 @@ public class StudentCourseRecordAssembler
 
                 if (lui.getAtpId() != null) {
                     AtpInfo atp = getAtpService().getAtp(lui.getAtpId(), context);
-                courseRecord.setTermId(atp.getId());
+                    courseRecord.setTermId(atp.getId());
                     courseRecord.setTermName(atp.getName());
                     courseRecord.setCourseBeginDate(atp.getStartDate());
                     courseRecord.setCourseEndDate(atp.getEndDate());
                 }
 
                 GradeRosterEntryInfo finalRosterEntry = null;
-                finalRosterEntry = gradingService.getFinalGradeForStudentInCourseOffering(courseReg.getStudentId(), lui.getId(), context);
+                finalRosterEntry = gradingService.getFinalGradeForStudentInCourseOffering(courseReg.getPersonId(), lui.getId(), context);
                 courseRecord.setAssignedGradeValue(getValue(finalRosterEntry.getAssignedGradeKey(), context));
                 courseRecord.setAssignedGradeScaleKey(getScaleKey(finalRosterEntry.getAssignedGradeKey(), context));
                 courseRecord.setAdministrativeGradeValue(getValue(finalRosterEntry.getAdministrativeGradeKey(), context));
                 courseRecord.setAdministrativeGradeScaleKey(getScaleKey(finalRosterEntry.getAdministrativeGradeKey(), context));
                 courseRecord.setCalculatedGradeValue(getValue(finalRosterEntry.getCalculatedGradeKey(), context));
                 courseRecord.setCalculatedGradeScaleKey(getScaleKey(finalRosterEntry.getCalculatedGradeKey(), context));
-
+                
             } catch (DisabledIdentifierException e) {
                 throw new AssemblyException("DisabledIdentifierException: " + e.getMessage());
             } catch (DoesNotExistException e) {
@@ -110,8 +110,8 @@ public class StudentCourseRecordAssembler
                 throw new AssemblyException("OperationFailedException: " + e.getMessage());
             } catch (PermissionDeniedException e) {
                 throw new AssemblyException("PermissionDeniedException: "  + e.getMessage());
-            }
-
+            }	
+            
             return courseRecord;
 	}
 
@@ -120,7 +120,7 @@ public class StudentCourseRecordAssembler
 			StudentCourseRecordInfo businessDTO, ContextInfo context) {
 		return null;
 	}
-
+	
 	private String getValue(String key, ContextInfo context) throws AssemblyException {
 		String value = null;
 		if(key != null){
@@ -141,10 +141,10 @@ public class StudentCourseRecordAssembler
 				throw new AssemblyException("PermissionDeniedException: "  + e.getMessage());
 			}
 		}
-
+		
 		return value;
 	}
-
+	
 	private String getScaleKey(String key, ContextInfo context) throws AssemblyException {
 		String scaleKey = null;
 		if(key != null){
@@ -165,7 +165,7 @@ public class StudentCourseRecordAssembler
 				throw new AssemblyException("PermissionDeniedException: "  + e.getMessage());
 			}
 		}
-
+		
 		return scaleKey;
 	}
 }

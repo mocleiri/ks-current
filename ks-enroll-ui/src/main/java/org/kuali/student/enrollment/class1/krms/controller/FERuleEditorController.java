@@ -4,12 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.krad.uif.UifParameters;
 import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krad.util.ObjectUtils;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.rice.krms.api.repository.reference.ReferenceObjectBinding;
-import org.kuali.rice.krms.dto.AgendaEditor;
 import org.kuali.rice.krms.dto.AgendaTypeInfo;
 import org.kuali.rice.krms.dto.RuleEditor;
 import org.kuali.rice.krms.dto.RuleManagementWrapper;
@@ -17,17 +14,15 @@ import org.kuali.rice.krms.dto.RuleTypeInfo;
 import org.kuali.rice.krms.util.AgendaUtilities;
 import org.kuali.rice.krms.util.KRMSConstants;
 import org.kuali.rice.krms.util.PropositionTreeUtil;
-import org.kuali.student.common.uif.util.KSControllerHelper;
-import org.kuali.student.common.util.KSCollectionUtils;
+import org.kuali.student.common.collection.KSCollectionUtils;
+import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.enrollment.class1.krms.dto.FEAgendaEditor;
 import org.kuali.student.enrollment.class1.krms.dto.FERuleEditor;
 import org.kuali.student.enrollment.class1.krms.dto.FERuleManagementWrapper;
 import org.kuali.student.enrollment.class1.krms.service.impl.FERuleEditorMaintainableImpl;
-import org.kuali.student.enrollment.class1.krms.service.impl.FERuleViewHelperServiceImpl;
 import org.kuali.student.enrollment.class1.krms.util.EnrolKRMSConstants;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.date.DateFormatters;
-import org.kuali.student.r2.core.constants.KSKRMSServiceConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,16 +48,32 @@ import java.util.Map;
 public class FERuleEditorController extends EnrolRuleEditorController {
 
     /**
-     * Setups a new <code>MaintenanceDocumentView</code> with the edit maintenance
-     * action
+     *
+     * @param form
+     * @param result
+     * @param request
+     * @param response
+     * @return
      */
-    @RequestMapping(params = "methodToCall=" + KRADConstants.Maintenance.METHOD_TO_CALL_EDIT)
-    public ModelAndView maintenanceEdit(@ModelAttribute("KualiForm") MaintenanceDocumentForm form, BindingResult result,
-                                        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(params = "methodToCall=show")
+    public ModelAndView show(@ModelAttribute("KualiForm") UifFormBase form, @SuppressWarnings("unused") BindingResult result,
+                             @SuppressWarnings("unused") HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) {
 
-        setupMaintenance(form, request, KRADConstants.MAINTENANCE_EDIT_ACTION);
-        this.displayLinkedTermTypeMessages(form);
-        return getUIFModelAndView(form);
+        MaintenanceDocumentForm document = (MaintenanceDocumentForm) form;
+        FERuleManagementWrapper ruleWrapper = (FERuleManagementWrapper) AgendaUtilities.getRuleWrapper(document);
+
+        String refObjectId = ruleWrapper.getType().getKey();
+        if ((refObjectId == null) || (refObjectId.isEmpty())){
+            GlobalVariables.getMessageMap().putError("type.key", EnrolKRMSConstants.KSKRMS_MSG_INFO_FE_INVALID_TERMTYPE);
+            return getUIFModelAndView(form);
+        }
+
+        FERuleEditorMaintainableImpl maintainable = (FERuleEditorMaintainableImpl) document.getDocument().getNewMaintainableObject();
+        maintainable.setupDataObject(ruleWrapper, refObjectId);
+        this.displayLinkedTermTypeMessages(document);
+
+        form.getActionParameters().put(UifParameters.NAVIGATE_TO_PAGE_ID, EnrolKRMSConstants.KSKRMS_AGENDA_FE_MAINTENANCE_PAGE_ID);
+        return super.navigate(form, result, request, response);
     }
 
     /**
@@ -78,7 +90,7 @@ public class FERuleEditorController extends EnrolRuleEditorController {
 
 
         MaintenanceDocumentForm document = (MaintenanceDocumentForm) form;
-        RuleManagementWrapper ruleWrapper = AgendaUtilities.getRuleWrapper(document);
+        FERuleManagementWrapper ruleWrapper = (FERuleManagementWrapper) AgendaUtilities.getRuleWrapper(document);
         ruleWrapper.setAgendaEditor(this.getSelectedAgenda(document, "Edit"));
 
         //Set a copy on the wrapper so that we can allow the user to cancel his/her action.
@@ -93,9 +105,12 @@ public class FERuleEditorController extends EnrolRuleEditorController {
         }
         rule.setDummy(Boolean.TRUE);
         ruleWrapper.setRuleEditor(rule);
+        rule.setName(ruleWrapper.getRefObjectId()+":"+rule.getTypeId()+":"+ UUIDHelper.genStringUUID());
         if (document.getDocument().getNewMaintainableObject() instanceof FERuleEditorMaintainableImpl) {
             FERuleEditorMaintainableImpl maintainable = (FERuleEditorMaintainableImpl) document.getDocument().getNewMaintainableObject();
             rule.setKey(maintainable.getNextRuleKey());
+            //TODO: KSENROLL-11286 remove this workournd once krad jira is fixed.
+            ruleWrapper.setLocation(maintainable.getExamOfferingServiceFacade().isSetLocation());
         }
 
         this.getViewHelper(form).refreshInitTrees(ruleWrapper.getRuleEditor());
@@ -118,7 +133,12 @@ public class FERuleEditorController extends EnrolRuleEditorController {
                                    @SuppressWarnings("unused") HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) {
 
         MaintenanceDocumentForm document = (MaintenanceDocumentForm) form;
-
+        FERuleManagementWrapper ruleWrapper = (FERuleManagementWrapper)AgendaUtilities.getRuleWrapper(document);
+        //TODO: KSENROLL-11286 remove this workournd once krad jira is fixed.
+        if (document.getDocument().getNewMaintainableObject() instanceof FERuleEditorMaintainableImpl) {
+            FERuleEditorMaintainableImpl maintainable = (FERuleEditorMaintainableImpl) document.getDocument().getNewMaintainableObject();
+            ruleWrapper.setLocation(maintainable.getExamOfferingServiceFacade().isSetLocation());
+        }
         FEAgendaEditor agenda = this.getSelectedAgenda(document, "Delete");
         if (agenda != null) {
             RuleEditor ruleEditor = getSelectedRule(document, "Delete");
@@ -152,9 +172,17 @@ public class FERuleEditorController extends EnrolRuleEditorController {
         form.getClientStateForSyncing().clear();
 
         MaintenanceDocumentForm document = (MaintenanceDocumentForm) form;
-        RuleManagementWrapper ruleWrapper = AgendaUtilities.getRuleWrapper(document);
+        FERuleManagementWrapper ruleWrapper = (FERuleManagementWrapper)AgendaUtilities.getRuleWrapper(document);
         RuleEditor ruleEditor = getSelectedRule(document, "Edit");
-
+        if(!ruleEditor.isInitialized()){
+            this.getViewHelper(form).initPropositionEditor(ruleEditor.getPropositionEditor());
+            ruleEditor.setInitialized(true);
+        }
+        //TODO: KSENROLL-11286 remove this workournd once krad jira is fixed.
+        if (document.getDocument().getNewMaintainableObject() instanceof FERuleEditorMaintainableImpl) {
+            FERuleEditorMaintainableImpl maintainable = (FERuleEditorMaintainableImpl) document.getDocument().getNewMaintainableObject();
+            ruleWrapper.setLocation(maintainable.getExamOfferingServiceFacade().isSetLocation());
+        }
         //Set a copy on the wrapper so that we can allow the user to cancel his/her action.
         ruleWrapper.setRuleEditor((RuleEditor) ObjectUtils.deepCopy(ruleEditor));
         ruleWrapper.setAgendaEditor(this.getSelectedAgenda(document, "Edit"));
@@ -212,6 +240,23 @@ public class FERuleEditorController extends EnrolRuleEditorController {
     }
 
     /**
+     * Back to search input page.
+     *
+     * @param form
+     * @param result
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(params = "methodToCall=cancelEditMatrix")
+    public ModelAndView cancelEditMatrix(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                       HttpServletRequest request, HttpServletResponse response) {
+
+        form.getActionParameters().put(UifParameters.NAVIGATE_TO_PAGE_ID, EnrolKRMSConstants.KSKRMS_INPUT_FE_MAINTENANCE_PAGE_ID);
+        return super.navigate(form, result, request, response);
+    }
+
+    /**
      * Updates rule and redirects to agenda maintenance page.
      *
      * @param form
@@ -227,18 +272,21 @@ public class FERuleEditorController extends EnrolRuleEditorController {
         FERuleEditor ruleEditor = (FERuleEditor) getRuleEditor(form);
         RuleManagementWrapper ruleWrapper = AgendaUtilities.getRuleWrapper((MaintenanceDocumentForm) form);
 
-
-        if (this.getViewHelper(form).validate(ruleEditor)) {
+        if (this.getViewHelper(form).validateRule(ruleEditor)) {
             return getUIFModelAndView(form);
         } else {
             PropositionTreeUtil.resetEditModeOnPropositionTree(ruleEditor.getPropositionEditor());
             PropositionTreeUtil.resetNewProp(ruleEditor.getPropositionEditor());
-            this.getViewHelper(form).rebuildActions(ruleEditor);
+            this.getViewHelper(form).buildActions(ruleEditor);
+        }
+
+        if(ruleEditor.getPropositionEditor()!=null){
+            // handle saving new parameterized terms
+            this.getViewHelper(form).finPropositionEditor(ruleEditor.getPropositionEditor());
         }
 
         FEAgendaEditor agenda = (FEAgendaEditor) ruleWrapper.getAgendaEditor();
         if (ruleEditor.isDummy()) {
-            ruleEditor.setName(ruleWrapper.getRefObjectId() + ":" + ruleEditor.getTypeId() + ":" + agenda.getRules().size() + 1);
             ruleEditor.setDummy(Boolean.FALSE);
             agenda.getRules().add(ruleEditor);
         } else {
@@ -340,21 +388,12 @@ public class FERuleEditorController extends EnrolRuleEditorController {
         return;
     }
 
-    /**
-     * @param form
-     * @return
-     */
-    @Override
-    protected FERuleViewHelperServiceImpl getViewHelper(UifFormBase form) {
-        return (FERuleViewHelperServiceImpl) KSControllerHelper.getViewHelperService(form);
-    }
-
     protected void displayLinkedTermTypeMessages(MaintenanceDocumentForm form) {
 
         FERuleManagementWrapper ruleWrapper = (FERuleManagementWrapper) form.getDocument().getNewMaintainableObject().getDataObject();
 
         for(String termType : ruleWrapper.getLinkedTermTypes()){
-            GlobalVariables.getMessageMap().putInfoForSectionId("KSFE-AgendaMaintenance-Page-parent", EnrolKRMSConstants.KSKRMS_MSG_INFO_FE_LINKED_TERMTYPE, termType);
+            GlobalVariables.getMessageMap().putInfoForSectionId(EnrolKRMSConstants.KSKRMS_AGENDA_FE_MAINTENANCE_PAGE_ID, EnrolKRMSConstants.KSKRMS_MSG_INFO_FE_LINKED_TERMTYPE, termType);
         }
     }
 }

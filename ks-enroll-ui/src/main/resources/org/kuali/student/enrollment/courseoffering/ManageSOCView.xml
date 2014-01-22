@@ -53,7 +53,6 @@
       </property>
       <property name="items">
         <list>
-            <ref bean="KS-CourseOffering-ContextBar" />
             <ref bean="ManageSOCView-termSelection-Section"/>
             <ref bean="ManageSOCView-DetailsSection"/>
         </list>
@@ -63,6 +62,11 @@
                 <value>themes/ksboot/stylesheets/calendar.css</value>
             </list>
       </property>
+        <property name="topGroup">
+            <bean id="ManageSoc-ContextBar" parent="KS-CourseOffering-ContextBar" p:style="@{(termCode eq null)? 'display:none;' : 'display:block;'}">
+                <property name="onDocumentReadyScript" value="setSeasonalColor('ManageSoc-ContextBar', '@{#dp.contextBar.termDayOfYear}', '@{#ConfigProperties['application.url']}');"/>
+            </bean>
+        </property>
       <property name="dialogs">
           <list>
             <ref bean="lockConfirmDialog"/>
@@ -78,6 +82,9 @@
                 <bean class="org.kuali.student.enrollment.class2.courseofferingset.service.impl.CourseOfferingSetPublishingHelper"/>
             </entry>
 		</map>
+      </property>
+      <property name="authorizer">
+          <bean class="org.kuali.student.enrollment.main.view.KsViewAuthorizerBase"/>
       </property>
    </bean>
 
@@ -157,8 +164,9 @@
 
 
     <bean id="ManageSOCView-GoButton" parent="Uif-SecondaryActionButton"
-          p:onClickScript="updateContextBar( null, 'KS-CourseOffering-View-ContextBar-PlaceHolder' );"
-          p:actionLabel="Go" p:methodToCall="buildModel" p:valign="bottom"/>
+          p:actionLabel="Show" p:methodToCall="buildModel" p:valign="bottom" p:ajaxSubmit="false"/>
+
+    <!--p:onClickScript="updateContextBar( null, 'KS-CourseOffering-View-ContextBar-PlaceHolder' );"-->
 
     <bean id="ManageSOCView-DetailsSection" parent="Uif-HorizontalBoxSection" p:render="@{renderDetailsSection}">
         <property name="items">
@@ -234,7 +242,8 @@
 
     <bean id="ManageSOCView-SchedulingDetails-FinalEditButton" parent="Uif-PrimaryActionButton" p:methodToCall="allowFinalEdits" p:actionLabel="Allow Final Edits" p:render="@{showFinalEditButton}" p:disabled="@{!enableFinalEditButton}"/>
 
-    <bean id="ManageSOCView-SchedulingDetails-CloseButton" parent="Uif-PrimaryActionButton" p:methodToCall="closeSOC" p:actionLabel="Close Set" p:disabled="true" p:render="@{showCloseSetButton}"/>
+    <!-- not to render the close set button for now since the functionality is not in place yet -->
+    <bean id="ManageSOCView-SchedulingDetails-CloseButton" parent="Uif-PrimaryActionButton" p:methodToCall="closeSOC" p:actionLabel="Close Set" p:disabled="true" p:render="false"/>
 
     <bean id="ManageSOCView-SchedulingDetails-ManageCOButton" parent="Uif-Link" p:linkText="Manage Course Offerings" p:style="margin-top:5px;"
             p:href="@{#ConfigProperties['application.url']}/kr-krad/courseOfferingManagement?viewId=courseOfferingManagementView&amp;pageId=searchInputPage&amp;methodToCall=start"/>
@@ -296,7 +305,6 @@
                    <property name="items">
                        <list>
                            <bean id="socPublishingStatus" parent="Uif-MessageField" p:messageText="@{socPublishingStatus}" p:label="SOC Publishing Status" p:style="margin-top:15px;margin-bottom:15px;margin-left:15px;"/>
-                           <bean parent="ManageSOCView-SchedulingDetails-PublishButton"/>
                        </list>
                    </property>
                </bean>

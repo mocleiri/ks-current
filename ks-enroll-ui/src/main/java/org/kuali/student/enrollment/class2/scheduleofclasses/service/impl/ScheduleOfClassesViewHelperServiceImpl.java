@@ -31,18 +31,23 @@ import org.kuali.rice.krad.uif.component.ReferenceCopy;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krms.api.KrmsConstants;
+import org.kuali.rice.krms.api.repository.NaturalLanguage;
 import org.kuali.rice.krms.api.repository.RuleManagementService;
 import org.kuali.rice.krms.api.repository.agenda.AgendaDefinition;
 import org.kuali.rice.krms.api.repository.agenda.AgendaItemDefinition;
 import org.kuali.rice.krms.api.repository.reference.ReferenceObjectBinding;
+import org.kuali.rice.krms.api.repository.rule.RuleDefinition;
+import org.kuali.rice.krms.api.repository.type.KrmsTypeRepositoryService;
+import org.kuali.rice.krms.api.repository.typerelation.TypeTypeRelation;
 import org.kuali.student.common.UUIDHelper;
-import org.kuali.student.common.util.KSCollectionUtils;
+import org.kuali.student.common.collection.KSCollectionUtils;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingClusterWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.ActivityOfferingWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.dto.RegistrationGroupWrapper;
 import org.kuali.student.enrollment.class2.courseoffering.service.decorators.PermissionServiceConstants;
 import org.kuali.student.enrollment.class2.courseoffering.service.impl.CourseOfferingManagementViewHelperServiceImpl;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingConstants;
+import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingManagementUtil;
 import org.kuali.student.enrollment.class2.courseoffering.util.CourseOfferingResourceLoader;
 import org.kuali.student.enrollment.class2.scheduleofclasses.dto.CourseOfferingDisplayWrapper;
 import org.kuali.student.enrollment.class2.scheduleofclasses.form.ScheduleOfClassesSearchForm;
@@ -51,9 +56,9 @@ import org.kuali.student.enrollment.class2.scheduleofclasses.sort.KSComparator;
 import org.kuali.student.enrollment.class2.scheduleofclasses.sort.KSComparatorChain;
 import org.kuali.student.enrollment.class2.scheduleofclasses.sort.impl.ActivityOfferingCodeComparator;
 import org.kuali.student.enrollment.class2.scheduleofclasses.sort.impl.ActivityOfferingTypeComparator;
-import org.kuali.student.enrollment.class2.scheduleofclasses.util.SOCRequisiteHelper;
 import org.kuali.student.enrollment.class2.scheduleofclasses.util.SOCRequisiteWrapper;
 import org.kuali.student.enrollment.class2.scheduleofclasses.util.ScheduleOfClassesConstants;
+import org.kuali.student.enrollment.class2.scheduleofclasses.util.ScheduleOfClassesUtil;
 import org.kuali.student.r2.common.constants.CommonServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.util.ContextUtils;
@@ -70,10 +75,14 @@ import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.lum.util.constants.LrcServiceConstants;
 
 import javax.xml.namespace.QName;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -88,10 +97,6 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
 
     private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(ScheduleOfClassesViewHelperServiceImpl.class);
 
-    private OrganizationService organizationService;
-    private TypeService typeService;
-    private RuleManagementService ruleManagementService;
-
     @ReferenceCopy
     private KSComparatorChain activityComparatorChain;
     @ReferenceCopy
@@ -104,7 +109,7 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
      */
     private final static String TOOLTIP_CREATE_SCRIPT
         = "<input type='hidden' data-role='script' data-for='$ID' value=\"createTooltip('$ID', '$TEXT', " +
-            "{position:'bottom',alwaysVisible:false,themeName:'black',themePath:'$APPLICATION_URL/plugins/tooltip/jquerybubblepopup-theme/',selectable:true,align:'left',tail:{ align:'left', hidden: false }}, true, false);\" script='soc_run'>";
+            "{position:'top',alwaysVisible:false,themeName:'all-black',themePath:'$APPLICATION_URL/plugins/tooltip/jquerybubblepopup-theme/',selectable:true,align:'left',distance:'0px',openingSpeed:'250', tail:{ align:'left', hidden: false },tableStyle:{ margin:'0px 0px 5px -8px'}},true, false);\" script='soc_run'>";
 
     private final static String TOOLTIP_ADD_ATTRIBUTE
         = "<input type='hidden' data-role='script' data-for='$ID' " +
@@ -164,7 +169,7 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
             Map<String, String> searchCriteria = new HashMap<String, String>();
             searchCriteria.put(KIMPropertyConstants.Person.PRINCIPAL_NAME, instructorName);
 
-            List<Person> instructors = getPersonService().findPeople(searchCriteria);
+            List<Person> instructors = ScheduleOfClassesUtil.getPersonService().findPeople(searchCriteria);
 
             //JIRA FIX : KSENROLL-8730 - Added NULL check
             int firstInstructor = 0;
@@ -189,7 +194,7 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
             //this is a cross service search between LPR and LUI, so it is inefficient (no join)
             //First get all the luiIds that the instructor is teaching
             //Only get active courses
-            List<String> luiIds = getLprService().getLuiIdsByPersonAndTypeAndState(instructorId, LprServiceConstants.INSTRUCTOR_MAIN_TYPE_KEY, LprServiceConstants.ACTIVE_STATE_KEY, context);
+            List<String> luiIds = CourseOfferingManagementUtil.getLprService().getLuiIdsByPersonAndTypeAndState(instructorId, LprServiceConstants.INSTRUCTOR_MAIN_TYPE_KEY, LprServiceConstants.ACTIVE_STATE_KEY, context);
 
             List<String> courseOfferingIds = null;
 
@@ -202,11 +207,11 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
                         PredicateFactory.equalIgnoreCase("atpId", termId)),
                         PredicateFactory.equal("luiState", LuiServiceConstants.LUI_CO_STATE_OFFERED_KEY));
                 QueryByCriteria criteria = qbcBuilder.build();
-                courseOfferingIds = getCourseOfferingService().searchForCourseOfferingIds(criteria, context);
+                courseOfferingIds = CourseOfferingManagementUtil.getCourseOfferingService().searchForCourseOfferingIds(criteria, context);
             }
 
             //If nothing was found then error
-            if (courseOfferingIds.isEmpty()) {
+            if (courseOfferingIds==null || courseOfferingIds.isEmpty()) {
                 LOG.error("Error: Can't find any Course Offering for selected Instructor in term: " + termId);
                 GlobalVariables.getMessageMap().putError("Term & Instructor", ScheduleOfClassesConstants.SOC_MSG_ERROR_NO_COURSE_OFFERING_IS_FOUND, "instructor", instructorId, termId);
                 form.getCoDisplayWrapperList().clear();
@@ -238,7 +243,7 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
             QueryByCriteria.Builder qBuilder = QueryByCriteria.Builder.create();
             qBuilder.setPredicates(PredicateFactory.equalIgnoreCase("longName", organizationName));
             QueryByCriteria query = qBuilder.build();
-            OrganizationService organizationService = getOrganizationService();
+            OrganizationService organizationService = ScheduleOfClassesUtil.getOrganizationService();
 
             List<String> orgIDs = organizationService.searchForOrgIds(query, ContextUtils.createDefaultContextInfo());
 
@@ -352,60 +357,108 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
      * @param courseOfferingId
      * @return Map of course offering requisites
      */
-    public SOCRequisiteHelper retrieveRequisites(String courseOfferingId, List<ActivityOfferingWrapper> activityOfferingWrapperList) {
-
-        SOCRequisiteHelper reqHelper = new SOCRequisiteHelper();
-
-        String catalogUsageId = getRuleManagementService().getNaturalLanguageUsageByNameAndNamespace(KSKRMSServiceConstants.KRMS_NL_TYPE_CATALOG, PermissionServiceConstants.KS_SYS_NAMESPACE).getId();
+    public SOCRequisiteWrapper retrieveRequisites(String courseOfferingId, List<ActivityOfferingWrapper> activityOfferingWrapperList) {
 
         //Retrieve reference object bindings for course offering
-        List<ReferenceObjectBinding> coRefObjectsBindingList = ruleManagementService.findReferenceObjectBindingsByReferenceObject(
+        List<ReferenceObjectBinding> coRefObjectsBindingList = ScheduleOfClassesUtil.getRuleManagementService().findReferenceObjectBindingsByReferenceObject(
                 CourseOfferingServiceConstants.REF_OBJECT_URI_COURSE_OFFERING, courseOfferingId);
 
+        //Setup the requisites wrapper object.
+        SOCRequisiteWrapper reqWrapper = new SOCRequisiteWrapper();
+        Set<String> agendaTypes = new HashSet<String>();
+        List<String> ruleIds = new ArrayList<String>();
+
         //Retrieve agenda's for course offering
+        List<RuleDefinition> rules = new ArrayList<RuleDefinition>();
         for(ReferenceObjectBinding coReferenceObjectBinding : coRefObjectsBindingList) {
-            AgendaDefinition agendaDefinition = ruleManagementService.getAgenda(coReferenceObjectBinding.getKrmsObjectId());
-            AgendaItemDefinition agendaItem = ruleManagementService.getAgendaItem(agendaDefinition.getFirstItemId());
-            loadNaturalLanguageForRuleTypes(reqHelper.getReqWrapper().getCoRequisiteTypeMap(), agendaItem, catalogUsageId, reqHelper.getReqWrapper().getRuleTypes());
+            AgendaDefinition agendaDefinition = ScheduleOfClassesUtil.getRuleManagementService().getAgenda(coReferenceObjectBinding.getKrmsObjectId());
+            AgendaItemDefinition agendaItem = ScheduleOfClassesUtil.getRuleManagementService().getAgendaItem(agendaDefinition.getFirstItemId());
+            agendaTypes.add(agendaDefinition.getTypeId());
+            loadRules(rules, ruleIds, agendaItem);
         }
+        reqWrapper.setCoRules(rules);
 
-        Map<String, List<ReferenceObjectBinding>> aoRefObjectsBindingMap = new HashMap<String, List<ReferenceObjectBinding>>();
-        //Retrieve reference object bindings for activity offering's
+        //Setup a list of activity offerin ids
+        List<String> aoIds = new ArrayList<String>();
         for(ActivityOfferingWrapper activityOfferingWrapper : activityOfferingWrapperList) {
-            List<ReferenceObjectBinding> aoRefObjectBindingList = ruleManagementService.findReferenceObjectBindingsByReferenceObject(
-                    CourseOfferingServiceConstants.REF_OBJECT_URI_ACTIVITY_OFFERING, activityOfferingWrapper.getAoInfo().getId());
-            if(aoRefObjectBindingList != null && !aoRefObjectBindingList.isEmpty()) {
-                aoRefObjectsBindingMap.put(activityOfferingWrapper.getActivityCode(), aoRefObjectBindingList);
-            }
+            aoIds.add(activityOfferingWrapper.getAoInfo().getId());
         }
 
-        StringBuilder aoRequisite = new StringBuilder();
-        //Retrieve agenda's for activity offering
-        for(Map.Entry<String, List<ReferenceObjectBinding>> aoEntry : aoRefObjectsBindingMap.entrySet()) {
-            Map<String, String> typeRequisites = new HashMap<String, String>();
-            for(ReferenceObjectBinding aoReferenceObjectBinding : aoEntry.getValue()) {
-                AgendaDefinition agendaDefinition = ruleManagementService.getAgenda(aoReferenceObjectBinding.getKrmsObjectId());
-                AgendaItemDefinition agendaItemDefinition = ruleManagementService.getAgendaItem(agendaDefinition.getFirstItemId());
-                this.loadNaturalLanguageForRuleTypes(typeRequisites, agendaItemDefinition, catalogUsageId, reqHelper.getReqWrapper().getRuleTypes());
-            }
-            reqHelper.getReqWrapper().getAoRequisiteTypeMap().put(aoEntry.getKey(), typeRequisites);
+        //Retrieve reference object bindings for activity offering's
+        Map<String, List<RuleDefinition>> aoToRulesMap = new HashMap<String, List<RuleDefinition>>();
+        List<ReferenceObjectBinding> aoRefObjectBindingList = ScheduleOfClassesUtil.getRuleManagementService().findReferenceObjectBindingsByReferenceObjectIds(
+                CourseOfferingServiceConstants.REF_OBJECT_URI_ACTIVITY_OFFERING, aoIds);
+        for(ReferenceObjectBinding refObjectBinding : aoRefObjectBindingList) {
+            AgendaDefinition agendaDefinition = ScheduleOfClassesUtil.getRuleManagementService().getAgenda(refObjectBinding.getKrmsObjectId());
+            AgendaItemDefinition agendaItemDefinition = ScheduleOfClassesUtil.getRuleManagementService().getAgendaItem(agendaDefinition.getFirstItemId());
+            agendaTypes.add(agendaDefinition.getTypeId());
+            loadRulesIntoMap(refObjectBinding.getReferenceObjectId(), aoToRulesMap, ruleIds, agendaItemDefinition);
         }
-        reqHelper.loadRequisites(activityOfferingWrapperList);
-        return reqHelper;
+        reqWrapper.setAoToRulesMap(aoToRulesMap);
+
+        //Retrieve the natural language statements.
+        String catalogUsageId = ScheduleOfClassesUtil.getRuleManagementService().getNaturalLanguageUsageByNameAndNamespace(KSKRMSServiceConstants.KRMS_NL_TYPE_CATALOG,
+                PermissionServiceConstants.KS_SYS_NAMESPACE).getId();
+        List<NaturalLanguage> nlList = ScheduleOfClassesUtil.getRuleManagementService().translateNaturalLanguageForObjects(catalogUsageId, "rule", ruleIds, "en");
+
+        Map<String, String> nlMap = new HashMap<String, String>();
+        for(NaturalLanguage entry : nlList){
+            nlMap.put(entry.getKrmsObjectId(), entry.getNaturalLanguage());
+        }
+        reqWrapper.setNlMap(nlMap);
+
+        //Setup the rule type list.
+        List<TypeTypeRelation> sortedRuleRelations = new ArrayList<TypeTypeRelation>();
+        for(String type : agendaTypes){
+            sortedRuleRelations.addAll(ScheduleOfClassesUtil.getKrmsTypeRepositoryService().findTypeTypeRelationsByFromType(type));
+        }
+        Collections.sort(sortedRuleRelations, new Comparator<TypeTypeRelation>() {
+            @Override
+            public int compare(TypeTypeRelation typeTypeRelation1, TypeTypeRelation typeTypeRelation2) {
+                return typeTypeRelation1.getSequenceNumber().compareTo(typeTypeRelation2.getSequenceNumber());
+            }
+        });
+
+        for (TypeTypeRelation ruleRelation : sortedRuleRelations) {
+            reqWrapper.getRuleTypes().add(ruleRelation.getToTypeId());
+        }
+
+        ScheduleOfClassesUtil.loadRequisites(reqWrapper, aoIds);
+
+        return reqWrapper;
     }
 
-    protected void loadNaturalLanguageForRuleTypes(Map<String, String> typeRequisites, AgendaItemDefinition agendaItem, String catalogUsageId, Set<String> ruleTypes) {
+    protected void loadRules(List<RuleDefinition> rules, List<String> ruleIds, AgendaItemDefinition agendaItem) {
 
         if(agendaItem.getRuleId() != null) {
-            String ruleRequisite = ruleManagementService.translateNaturalLanguageForObject(catalogUsageId, "rule", agendaItem.getRuleId(), "en");
-            typeRequisites.put(agendaItem.getRule().getTypeId(), ruleRequisite);
-            if(!ruleTypes.contains(agendaItem.getRule().getTypeId())) {
-                ruleTypes.add(agendaItem.getRule().getTypeId());
+
+            ruleIds.add(agendaItem.getRuleId());
+            rules.add(agendaItem.getRule());
+        }
+
+        if(agendaItem.getWhenTrue() != null) {
+            this.loadRules(rules, ruleIds, agendaItem.getWhenTrue());
+        }
+    }
+
+    protected void loadRulesIntoMap(String key, Map<String, List<RuleDefinition>> refObjectToRules, List<String> ruleIds,
+                                    AgendaItemDefinition agendaItem) {
+
+        if(agendaItem.getRuleId() != null) {
+
+            ruleIds.add(agendaItem.getRuleId());
+
+            if(refObjectToRules.containsKey(key)){
+                refObjectToRules.get(key).add(agendaItem.getRule());
+            } else {
+                List<RuleDefinition> rules = new ArrayList<RuleDefinition>();
+                rules.add(agendaItem.getRule());
+                refObjectToRules.put(key, rules);
             }
         }
 
         if(agendaItem.getWhenTrue() != null) {
-            this.loadNaturalLanguageForRuleTypes(typeRequisites, agendaItem.getWhenTrue(), catalogUsageId, ruleTypes);
+            this.loadRulesIntoMap(key, refObjectToRules, ruleIds, agendaItem.getWhenTrue());
         }
     }
 
@@ -467,7 +520,7 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
      * @param form
      * @param coWrapper
      */
-    public void sortActivityOfferings(ScheduleOfClassesSearchForm form,CourseOfferingDisplayWrapper coWrapper){
+    public void sortActivityOfferings(ScheduleOfClassesSearchForm form, CourseOfferingDisplayWrapper coWrapper){
         if (form.getAoDisplayFormat() == ScheduleOfClassesSearchForm.AoDisplayFormat.FLAT){
            KSComparatorChain defaultComparator = new KSComparatorChain();
            List<KSComparator> comparators = new ArrayList<KSComparator>(2);
@@ -550,30 +603,5 @@ public class ScheduleOfClassesViewHelperServiceImpl extends CourseOfferingManage
         }
 
         return regGroupStates;
-    }
-
-    private OrganizationService getOrganizationService() {
-        if (organizationService == null) {
-            organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "organization", "OrganizationService"));
-        }
-        return organizationService;
-    }
-
-    public PersonService getPersonService() {
-        return KimApiServiceLocator.getPersonService();
-    }
-
-    public TypeService getTypeService() {
-        if (typeService == null) {
-            typeService = CourseOfferingResourceLoader.loadTypeService();
-        }
-        return this.typeService;
-    }
-
-    public RuleManagementService getRuleManagementService() {
-        if (ruleManagementService == null) {
-            ruleManagementService = (RuleManagementService) GlobalResourceLoader.getService(new QName(KrmsConstants.Namespaces.KRMS_NAMESPACE_2_0, "ruleManagementService"));
-        }
-        return ruleManagementService;
     }
 }

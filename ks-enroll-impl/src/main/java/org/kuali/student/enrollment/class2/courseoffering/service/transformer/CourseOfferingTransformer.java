@@ -7,6 +7,7 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.krms.impl.util.KrmsRuleManagementCopyMethods;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingCrossListingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.OfferingInstructorInfo;
@@ -48,7 +49,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.kuali.rice.krms.impl.util.KrmsRuleManagementCopyMethods;
 
 public class CourseOfferingTransformer {
     private LprService lprService;
@@ -391,7 +391,7 @@ public class CourseOfferingTransformer {
         lui.setName(coCode + " CO");
 
         // cross-listing work
-        assignCourseOfferingSuffixToCrossListings( co );
+        assignCourseOfferingInfoToCrossListings( co );
         lui.setAlternateIdentifiers( buildAlternateIdentifiersFromCo(co) );
 
         //Dynamic Attributes
@@ -490,11 +490,12 @@ public class CourseOfferingTransformer {
         //registrationOrderTypeKey
     }
 
-    private void assignCourseOfferingSuffixToCrossListings(CourseOfferingInfo co) {
+    private void assignCourseOfferingInfoToCrossListings(CourseOfferingInfo co) {
 
         if( co == null || co.getCrossListings() == null ) return;
 
         for( CourseOfferingCrossListingInfo cross : co.getCrossListings() ) {
+            cross.setLongName(co.getCourseOfferingTitle());
             cross.setCourseNumberSuffix( co.getCourseNumberSuffix() );
             if(!StringUtils.isEmpty(cross.getCourseNumberSuffix()))
                 cross.setCode( cross.getCode() + cross.getCourseNumberSuffix() );
@@ -512,11 +513,13 @@ public class CourseOfferingTransformer {
             info.setTypeKey(luiIdentifierInfo.getTypeKey());
             info.setStateKey(luiIdentifierInfo.getStateKey());
             info.setCode(luiIdentifierInfo.getCode());
+            info.setLongName(luiIdentifierInfo.getLongName());
             info.setSubjectArea(luiIdentifierInfo.getDivision());
             info.setSubjectOrgId(luiIdentifierInfo.getOrgId());
             info.setCourseNumberSuffix(luiIdentifierInfo.getSuffixCode());
             info.setMeta(luiIdentifierInfo.getMeta());
             info.setAttributes(luiIdentifierInfo.getAttributes());
+
 
             result.add(info);
         }
@@ -535,11 +538,9 @@ public class CourseOfferingTransformer {
             info.setTypeKey(crossListingInfo.getTypeKey());
             info.setStateKey(crossListingInfo.getStateKey());
             info.setCode(crossListingInfo.getCode());
-            //info.setShortName(crossListingInfo.);
-            //info.setLongName(crossListingInfo.);
+            info.setLongName(crossListingInfo.getLongName());
             info.setDivision(crossListingInfo.getSubjectArea());
             info.setSuffixCode(crossListingInfo.getCourseNumberSuffix());
-            //info.setVariation(crossListingInfo.);
             info.setOrgId(crossListingInfo.getSubjectOrgId());
             info.setMeta(crossListingInfo.getMeta());
             info.setAttributes(crossListingInfo.getAttributes());
@@ -828,8 +829,6 @@ public class CourseOfferingTransformer {
         List<LprInfo> lprs = null;
         try {
             lprs = lprService.getLprsByLui(luiId, context);
-        } catch (DoesNotExistException e) {
-            LOG.warn("Instructors do not exist for LuiId: " + luiId, e);
         } catch (InvalidParameterException e) {
             LOG.error("Error getting instructors for LuiId: " + luiId + " Invalid Parameter ", e);
             throw new RuntimeException("Error getting instructors for LuiId: " + luiId + " Invalid Parameter ", e);
@@ -845,29 +844,6 @@ public class CourseOfferingTransformer {
         }
 
         assembleInstructorsByLprs(co, lprs);
-
-//        for (LprInfo lpr : lprs) {
-//            if (lpr.getStateKey()==null || !lpr.getStateKey().equals(LprServiceConstants.DROPPED_STATE_KEY)) {
-//                OfferingInstructorInfo instructor = new OfferingInstructorInfo();
-//                instructor.setPersonId(lpr.getPersonId());
-//                if (lpr.getCommitmentPercent() != null) {
-//                    instructor.setPercentageEffort(Float.parseFloat(lpr.getCommitmentPercent()));
-//                } else {
-//                    instructor.setPercentageEffort(null);
-//                }
-//                instructor.setId(lpr.getId());
-//                instructor.setTypeKey(lpr.getTypeKey());
-//                instructor.setStateKey(lpr.getStateKey());
-//
-//                 // Should be only one person found by person id
-//                List<Person> personList = OfferingInstructorTransformer.getInstructorByPersonId(instructor.getPersonId());
-//                if(personList != null && !personList.isEmpty()){
-//                    instructor.setPersonName(personList.get(0).getName());
-//                }
-//                co.getInstructors().add(instructor);
-//            }
-//
-//        }
     }
 
     public void assembleInstructorsByLprs(CourseOfferingInfo co, List<LprInfo> lprs) {
@@ -877,7 +853,7 @@ public class CourseOfferingTransformer {
                     OfferingInstructorInfo instructor = new OfferingInstructorInfo();
                     instructor.setPersonId(lpr.getPersonId());
                     if (lpr.getCommitmentPercent() != null) {
-                        instructor.setPercentageEffort(Float.parseFloat(lpr.getCommitmentPercent()));
+                        instructor.setPercentageEffort(lpr.getCommitmentPercent().floatValue());
                     } else {
                         instructor.setPercentageEffort(null);
                     }
@@ -895,7 +871,6 @@ public class CourseOfferingTransformer {
                 }
             }
         }
-
     }
 
     /**
