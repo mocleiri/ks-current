@@ -28,24 +28,49 @@ class EditAcademicCalendar < BasePage
     end
   end
 
+  element(:add_event_button) { |b| b.frm.button(id: "event-addline") }
+  element(:add_event_type) { |b| b.calendar_events_table.rows[-2].select(id: /event_type_line/) }
 
-  element(:event_type) { |b| b.frm.select(name: "newCollectionLines['events'].eventTypeKey") }
-  element(:event_start_date) { |b| b.frm.text_field(name: "newCollectionLines['events'].startDate") }
-  element(:event_end_date) { |b| b.frm.text_field(name: "newCollectionLines['events'].endDate") }
-  element(:event_start_time) { |b| b.frm.text_field(name: "newCollectionLines['events'].startTime") }
-  element(:event_end_time) { |b| b.frm.text_field(name: "newCollectionLines['events'].endTime") }
-  element(:event_start_am) { |b| b.frm.radio(name: "newCollectionLines['events'].startTimeAmPm", value: "AM") }
-  element(:event_start_pm) { |b| b.frm.radio(name: "newCollectionLines['events'].startTimeAmPm", value: "PM") }
-  element(:event_end_am) { |b| b.frm.radio(name: "newCollectionLines['events'].endTimeAmPm", value: "AM") }
-  element(:event_end_pm) { |b| b.frm.radio(name: "newCollectionLines['events'].endTimeAmPm", value: "PM") }
-  action(:event_start_am_set) { |b| b.event_start_am.set; b.loading.wait_while_present}
-  action(:event_start_pm_set) { |b| b.event_start_pm.set; b.loading.wait_while_present}
-  action(:event_end_am_set) { |b| b.event_end_am.set; b.loading.wait_while_present}
-  action(:event_end_pm_set) { |b| b.event_end_pm.set; b.loading.wait_while_present}
-  element(:add_event) { |b| b.frm.link(id: "acal-info-event_add") }
+  element(:add_event_start_date) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_start_date_line/) }
+  element(:add_event_start_time) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_start_time_line/) }
+  element(:add_event_start_am) { |b| b.calendar_events_table.rows[-2].radio(id: /event_start_time_ampm_line/, value: "AM") }
+  element(:add_event_start_pm) { |b| b.calendar_events_table.rows[-2].radio(id: /event_start_time_ampm_line/, value: "PM") }
+  action(:add_event_start_am_set) { |b| b.add_event_start_am.set; b.loading.wait_while_present}
+  action(:add_event_start_pm_set) { |b| b.add_event_start_pm.set; b.loading.wait_while_present}
+
+  element(:add_event_end_date) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_end_date_line/) }
+  element(:add_event_end_time) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_end_time_line/) }
+  element(:add_event_end_am) { |b| b.calendar_events_table.rows[-2].radio.(id: /event_end_time_ampm_line/, value: "AM") }
+  element(:add_event_end_pm) { |b| b.calendar_events_table.rows[-2].radio(id: /event_end_time_ampm_line/, value: "PM") }
+  action(:add_event_end_am_set) { |b| b.add_event_end_am.set; b.loading.wait_while_present}
+  action(:add_event_end_pm_set) { |b| b.add_event_end_pm.set; b.loading.wait_while_present}
+
+  def target_event_row event_type
+    calendar_events_table.rows[1..-2].each do |row|
+      if event_type(row).selected_options[0].text == event_type
+        return row
+      end
+    end
+  end
+
+  element(:event_type) { |row, b| row.select(id: /event_type_line/) }
+
+  element(:event_start_date) { |row, b| row.text_field(id: /event_start_date_line/) }
+  element(:event_start_time) { |row, b| row.text_field(id: /event_start_time_line/) }
+  element(:event_start_am) { |row, b| row.radio(id: /event_start_time_ampm_line/, value: "AM") }
+  element(:event_start_pm) { |row, b| row.radio(id: /event_start_time_ampm_line/, value: "PM") }
+  action(:event_start_am_set) { |row, b| b.add_event_start_am(row).set; b.loading.wait_while_present}
+  action(:event_start_pm_set) { |row, b| b.add_event_start_pm(row).set; b.loading.wait_while_present}
+
+  element(:event_end_date) { |row, b| row.text_field(id: /event_end_date_line/) }
+  element(:event_end_time) { |row, b| row.text_field(id: /event_end_time_line/) }
+  element(:event_end_am) { |row, b| row.radio.(id: /event_end_time_ampm_line/, value: "AM") }
+  element(:event_end_pm) {|row, b| row.radio(id: /event_end_time_ampm_line/, value: "PM") }
+  action(:event_end_am_set) { |row,b| b.add_event_end_am(row).set; b.loading.wait_while_present}
+  action(:event_end_pm_set) { |row,b| b.add_event_end_pm(row).set; b.loading.wait_while_present}
+
   element(:acal_event_list_div) { |b| b.frm.div(id: "acal-info-event") }
-  element(:acal_event_list_link) { |b| b.acal_event_list_div.link(text: "Events") }
-  element(:calendar_events_table) { |b| b.acal_event_list_div.table }
+  element(:calendar_events_table) { |b| b.table(id: "acal-events-table") }
 
   element(:make_official_link) { |b| b.frm.link(id: "acal_Official") }
   action(:make_official) { |b| b.make_official_link.click; b.loading.wait_while_present }

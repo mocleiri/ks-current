@@ -696,24 +696,24 @@ class CalendarEvent
 
     on EditAcademicCalendar do |page|
       page.open_events_section
-      wait_until { page.event_type.enabled? }
-      page.event_type.select @event_type
-      page.event_start_date.set @start_date
-      page.event_end_date.set @end_date
-      page.event_start_time.set @start_time
-      page.event_end_time.set @end_time
+      wait_until { page.add_event_button.present? }
+      page.add_event_button.click
+      page.add_event_type.select @event_type
+      page.add_event_start_date.set @start_date
+      page.add_event_end_date.set @end_date
+      page.add_event_start_time.set @start_time
+      page.add_event_end_time.set @end_time
       page.loading.wait_while_present
       if @start_time_ampm == "am"
-        page.event_start_am_set
+        page.add_event_start_am_set
       else
-        page.event_start_pm_set
+        page.add_event_start_pm_set
       end
       if @end_time_ampm == "am"
-        page.event_end_am_set
+        page.add_event_end_am_set
       else
-        page.event_end_pm_set
+        page.add_event_end_pm_set
       end
-      page.add_event.click
       page.save
 
     end
