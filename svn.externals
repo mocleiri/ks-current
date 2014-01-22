@@ -17,7 +17,7 @@
 #
 ks-api  https://svn.kuali.org/repos/student/enrollment/ks-api/branches/KSAP-M8
 ks-core  https://svn.kuali.org/repos/student/enrollment/ks-core/branches/KSAP-M8
-ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/KSAP-M8
 ks-enroll  https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/KSAP-M8
+ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/KSAP-M8
 ks-deployments  https://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/KSAP-M8
 ks-ap  https://svn.kuali.org/repos/student/enrollment/ks-ap/branches/KSAP-M8
