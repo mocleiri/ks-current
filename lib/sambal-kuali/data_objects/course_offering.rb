@@ -28,13 +28,16 @@ class CourseOffering
 
     on CoursePlannerPage do |page|
 
-        if page.course_code_term(@planned_term, @course_code) != nil?
-          page.course_code_term_click(@planned_term, @course_code)
-          page.course_code_delete_click
-          page.delete_course.wait_until_present(5)
-          page.delete_course_click
-          page.refresh
-        end
+      begin
+        page.course_code_term(@planned_term, @course_code) != nil?
+        page.course_code_term_click(@planned_term, @course_code)
+        page.course_code_delete_click
+        page.delete_course.wait_until_present(5)
+        page.delete_course_click
+        page.refresh
+      rescue
+        #means that course was NOT found, BUT be careful as the rescue will hide errors if they occur in cleanup steps
+      end
       page.add_to_term(@planned_term)
       page.course_code_text.wait_until_present(5)
       page.course_code_text.set @course_code
@@ -47,25 +50,25 @@ class CourseOffering
 
   def add_course_to_future_term
     navigate_to_course_planner_home
-      on CoursePlannerPage do |page|
-          if page.course_code_term(@planned_term, @course_code) != nil?
-              page.course_code_term_click(@planned_term, @course_code)
-              page.course_code_delete_click
-              page.delete_course.wait_until_present(5)
-              page.delete_course_click
-              page.refresh
-          end
-        page.add_to_term(@planned_term)
-        page.course_code_text.wait_until_present(5)
-        page.course_code_text.set @course_code
-        page.credit.set @credit
-        page.notes.set @notes
-        page.add_to_plan
-        puts page.growl_text
+    on CoursePlannerPage do |page|
+      if page.course_code_term(@planned_term, @course_code) != nil?
+        page.course_code_term_click(@planned_term, @course_code)
+        page.course_code_delete_click
+        page.delete_course.wait_until_present(5)
+        page.delete_course_click
+        page.refresh
       end
+      page.add_to_term(@planned_term)
+      page.course_code_text.wait_until_present(5)
+      page.course_code_text.set @course_code
+      page.credit.set @credit
+      page.notes.set @notes
+      page.add_to_plan
+      puts page.growl_text
+    end
   end
 
-def edit_plan_item
+  def edit_plan_item
     on CoursePlannerPage do |page|
       if @course_code == "ENGL388"
         sleep 2
@@ -77,7 +80,7 @@ def edit_plan_item
         page.edit_plan_item_click
       end
     end
-end
+  end
 
   def set_search_entry
     navigate_to_course_search_home
