@@ -5,7 +5,6 @@ import com.sigmasys.kuali.ksa.service.atp.AtpService;
 import com.sigmasys.kuali.ksa.util.ContextUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.kuali.rice.core.api.criteria.LikePredicate;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.PredicateFactory;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -14,7 +13,6 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.core.atp.dto.AtpInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,7 +59,7 @@ public class RateRolloverHelper extends ViewHelperServiceImpl {
      * @param suggest   Suggestion string.
      * @return List of matching ATPs by name.
      */
-    private List<AtpModel> searchForAtps(String suggest) {
+    public List<AtpModel> searchForAtps(String suggest) {
 
         List<AtpModel> result = new ArrayList<AtpModel>();
 
@@ -83,7 +81,8 @@ public class RateRolloverHelper extends ViewHelperServiceImpl {
                 // Create a new AtpModel and add to the result:
                 AtpModel atp = new AtpModel();
 
-                atp.setAtpId(atpInfo.getName());
+                atp.setAtpId(atpInfo.getId());
+                atp.setAtpName(atpInfo.getName());
                 result.add(atp);
             }
 

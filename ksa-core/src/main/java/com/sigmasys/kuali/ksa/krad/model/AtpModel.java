@@ -17,6 +17,8 @@ public class AtpModel implements Serializable {
      * ID of this ATP.
      */
     private String atpId;
+    private String atpName;
+
 
 
     public String getAtpId() {
@@ -25,5 +27,13 @@ public class AtpModel implements Serializable {
 
     public void setAtpId(String atpId) {
         this.atpId = atpId;
+    }
+
+    public String getAtpName() {
+        return atpName;
+    }
+
+    public void setAtpName(String atpName) {
+        this.atpName = atpName;
     }
 }

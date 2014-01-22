@@ -28,7 +28,7 @@
         <property name="headerText" value="Fee Management"/>
         <property name="entryPageId" value="RatesPage"/>
         <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.RatesForm"/>
-        <!--<property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.PaymentPlanHelper"/>-->
+        <property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.RateRolloverHelper"/>
         <property name="navigation" ref="KsaFeeManagementNavigation"/>
         <property name="items">
             <list merge="true">
@@ -52,10 +52,10 @@
                 <bean parent="Uif-InputField" p:propertyName="academicTimePeriod"
                       p:label="Academic Time Period" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
                       p:maxLength="20" p:required="true">
-                    <!--<property name="suggest">
+                    <property name="suggest">
                         <bean parent="Uif-Suggest">
-                            <property name="valuePropertyName" value="id.id"/>
-                            <property name="labelPropertyName" value="description"/>
+                            <property name="valuePropertyName" value="atpName"/>
+                            <property name="labelPropertyName" value="atpName"/>
                             <property name="templateOptions">
                                 <map>
                                     <entry key="minLength" value="2"/>
@@ -64,12 +64,12 @@
                             </property>
                             <property name="suggestQuery">
                                 <bean parent="Uif-AttributeQueryConfig">
-                                    <property name="queryMethodToCall" value="getTransactionTypesForSuggest"/>
+                                    <property name="queryMethodToCall" value="searchForAtps"/>
                                 </bean>
                             </property>
                         </bean>
                     </property>
-                    -->
+
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="rateCatalogCode"
                       p:label="Rate Catalog Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"

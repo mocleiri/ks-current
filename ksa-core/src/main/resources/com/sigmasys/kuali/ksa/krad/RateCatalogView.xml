@@ -207,7 +207,7 @@
                                                     <property name="layoutManager.sequencePropertyName" value="id"/>
                                                     <property name="layoutManager.richTable.render" value="true"/>
                                                     <property name="layoutManager.renderSequenceField" value="false"/>
-                                                    <property name="renderAddLine" value="false" />
+                                                    <property name="renderAddLine" value="true" />
                                                     <property name="layoutManager.richTable.disableTableSort" value="false"/>
                                                     <property name="layoutManager.richTable.templateOptions">
                                                         <map merge="true">

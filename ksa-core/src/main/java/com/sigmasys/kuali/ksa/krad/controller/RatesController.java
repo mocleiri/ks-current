@@ -1,6 +1,8 @@
 package com.sigmasys.kuali.ksa.krad.controller;
 
 import com.sigmasys.kuali.ksa.krad.form.RatesForm;
+import com.sigmasys.kuali.ksa.krad.helper.RateRolloverHelper;
+import com.sigmasys.kuali.ksa.krad.model.AtpModel;
 import com.sigmasys.kuali.ksa.krad.model.RateModel;
 import com.sigmasys.kuali.ksa.model.fm.Rate;
 import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
@@ -69,12 +71,25 @@ public class RatesController extends GenericSearchController {
         Set<Rate> rates = new HashSet<Rate>();
 
         String atp = form.getAcademicTimePeriod();
-        if(!atpService.atpExists(atp)) {
+        AtpModel atpModel = null;
+        RateRolloverHelper helper = new RateRolloverHelper();
+
+        try {
+            List<AtpModel> atpModels = helper.searchForAtps(atp);
+            if(atpModels == null || atpModels.size() == 0) {
+                GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Academic Time Period '" + atp + "' not found");
+                return getUIFModelAndView(form);
+            } else if(atpModels.size() > 1) {
+                GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Multiple Academic Time Periods match string '" + atp + "'");
+                return getUIFModelAndView(form);
+            } else {
+                atpModel = atpModels.get(0);
+            }
+        } catch(Exception e) {
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Academic Time Period '" + atp + "' not found");
             return getUIFModelAndView(form);
         }
-
-        List<Rate> atpRates = rateService.getRatesByAtpId(atp);
+        List<Rate> atpRates = rateService.getRatesByAtpId(atpModel.getAtpId());
         rates.addAll(atpRates);
 
         String catalogCode = form.getRateCatalogCode();
