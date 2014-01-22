@@ -1,6 +1,10 @@
 package com.sigmasys.kuali.ksa.krad.model;
 
+import com.sigmasys.kuali.ksa.model.KeyPair;
 import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: tbornholtz
@@ -8,6 +12,8 @@ import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
  */
 public class RateCatalogModel {
     private RateCatalog rateCatalog;
+
+    private List<KeyPair> keyPairs;
 
     private String rateTypeId;
 
@@ -27,6 +33,7 @@ public class RateCatalogModel {
 
     public void setRateCatalog(RateCatalog rateCatalog) {
         this.rateCatalog = rateCatalog;
+        setKeyPairs(new ArrayList<KeyPair>(rateCatalog.getKeyPairs()));
         this.rateTypeId = rateCatalog.getRateType().getId().toString();
     }
 
@@ -71,6 +78,26 @@ public class RateCatalogModel {
         getRateCatalog().setLimitAmount(limitAmount);
     }
 
+    public List<KeyPair> getKeyPairs() {
+        if(keyPairs == null) {
+            keyPairs = new ArrayList<KeyPair>();
+        }
+        return keyPairs;
+    }
+
+    public void setKeyPairs(List<KeyPair> keyPairs) {
+        /*if(keyPairs != null) {
+            if(keyPairs.size() == 0) {
+                keyPairs.add(new KeyPair());
+            } else {
+                KeyPair kp = keyPairs.get(0);
+                if(kp != null && kp.getId() != null) {
+                    keyPairs.add(new KeyPair());
+                }
+            }
+        } */
+        this.keyPairs = keyPairs;
+    }
 }
 
 

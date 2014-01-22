@@ -200,6 +200,33 @@
                                         <property name="headerText" value="Name/Value Pairs"/>
                                         <property name="items">
                                             <list>
+                                                <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4">
+                                                    <property name="readOnly" value="false"/>
+                                                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.KeyPair"/>
+                                                    <property name="propertyName" value="keyPairs"/>
+                                                    <property name="layoutManager.sequencePropertyName" value="id"/>
+                                                    <property name="layoutManager.richTable.render" value="true"/>
+                                                    <property name="layoutManager.renderSequenceField" value="false"/>
+                                                    <property name="renderAddLine" value="false" />
+                                                    <property name="layoutManager.richTable.disableTableSort" value="false"/>
+                                                    <property name="layoutManager.richTable.templateOptions">
+                                                        <map merge="true">
+                                                            <entry key="bPaginate" value="false"/>
+                                                            <entry key="bInfo" value="false"/>
+                                                            <entry key="bFilter" value="false"/>
+                                                            <entry key="bSort" value="false" />
+                                                        </map>
+                                                    </property>
+                                                    <property name="renderAddBlankLineButton" value="true" />
+                                                    <property name="renderLineActions" value="true"/>
+                                                    <property name="items">
+                                                        <list>
+                                                            <bean parent="Uif-InputField" p:label="Name" p:propertyName="key"/>
+                                                            <bean parent="Uif-InputField" p:label="Value" p:propertyName="value"/>
+                                                        </list>
+                                                    </property>
+
+                                                </bean>
                                             </list>
                                         </property>
                                     </bean>
