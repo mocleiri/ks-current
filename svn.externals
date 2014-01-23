@@ -1,23 +1,6 @@
-#
-# The svn.externals file (indirectly) controls what local directories appear
-# in the checkout, and what actual location inside Subversion they represent
-# (by tying in with the svn:externals property).
-# 
-# This enables development streams to be independently managed and released 
-# while also providing a single spot to perform an aggregated Kuali Student checkout
-# and build.
-#
-# The SVN command for using this file to create SVN external definitions is
-# 
-# svn propset svn:externals -F svn.externals .
-#
-# *** IMPORTANT ***
-# You must rerun the svn propset command (shown above) and commit after editing any of
-# the external paths for the changes to take effect.
-#
-ks-api  https://svn.kuali.org/repos/student/enrollment/ks-api/branches/KSAP
-ks-core  https://svn.kuali.org/repos/student/enrollment/ks-core/branches/KSAP
-ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/KSAP
-ks-enroll  https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/KSAP
-ks-deployments  https://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/KSAP
-ks-ap  https://svn.kuali.org/repos/student/enrollment/ks-ap/trunk
+ks-ap https://svn.kuali.org/repos/student/enrollment/ks-ap/tags/builds/ks-ap-0.8/0.8.0-KSAP-FR2-M1/build-53
+ks-api https://svn.kuali.org/repos/student/enrollment/ks-api/tags/builds/ks-api-2.1/2.1.1-KSAP-FR2-M1/build-53
+ks-core https://svn.kuali.org/repos/student/enrollment/ks-core/tags/builds/ks-core-2.1/2.1.1-KSAP-FR2-M1/build-53
+ks-deployments https://svn.kuali.org/repos/student/enrollment/ks-deployments/tags/builds/ks-deployments-2.1/2.1.1-KSAP-FR2-M1/build-53
+ks-enroll https://svn.kuali.org/repos/student/enrollment/ks-enroll/tags/builds/ks-enroll-0.2/0.2.0-KSAP-FR2-M1/build-53
+ks-lum https://svn.kuali.org/repos/student/enrollment/ks-lum/tags/builds/ks-lum-2.1/2.1.1-KSAP-FR2-M1/build-53
