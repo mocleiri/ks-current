@@ -23,7 +23,8 @@ class ViewAcademicCalendar < BasePage
 
   element(:acal_event_list_div) { |b| b.frm.div(id: "acal-info-event") }
   element(:acal_event_list_link) { |b| b.link(id: "acal-info-event_toggle") }
-  element(:calendar_events_table) { |b| b.acal_event_list_div.table }
+  #element(:calendar_events_table) { |b| b.acal_event_list_div.table }
+  element(:calendar_events_table) { |b| b.frm.table(id: "acal-events-table") }
   element(:acal_holiday_div) { |b| b.frm.div(id: "acal-holidays") }
   element(:hcal_name_div) { |b| b.acal_holiday_div.div(data_label: "Holiday Calendar Name") }
   value(:hcal_name_text) { |b| b.hcal_name_div.span(index: 2).text }

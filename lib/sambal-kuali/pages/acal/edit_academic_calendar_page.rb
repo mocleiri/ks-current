@@ -98,7 +98,8 @@ class EditAcademicCalendar < BasePage
   def edit_end_date(row, value); row.cells[EDIT_END_DATE_COL].text_field.set(value); end
   def edit_end_time(row, value); row.cells[EDIT_END_TIME_COL].text_field.set(value); end
   def edit_end_ampm(row, value); row.cells[EDIT_END_TIME_AMPM_COL].radio.select(value.downcase); end
-  def delete(row); row.cells[EDIT_ACTION_COL].button(id: /acal-info-event_del_line*/).click; end
+  #def delete(row); row.cells[EDIT_ACTION_COL].button(id: /acal-info-event_del_line*/).click; end
+  def delete(row); row.cells[EDIT_ACTION_COL].a(id: /acal_event_delete_line*/).click; end
 
   #identify the row containing this event
   def target_event_row_in_edit(event_name)
