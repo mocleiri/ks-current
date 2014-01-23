@@ -102,11 +102,6 @@ class CourseOffering
     end
   end
 
-  def clear_search
-    on CourseSearch do |page|
-      page.clear
-    end
-  end
 
 
 end

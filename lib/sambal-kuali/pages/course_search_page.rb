@@ -9,7 +9,6 @@ class CourseSearch < BasePage
   element(:search_for_course) { |b| b.frm.text_field(id: "text_searchQuery_control") }
   element(:search_term) { |b| b.frm.select(name:"searchTerm") }
   action(:search) { |b| b.frm.button(id:"searchForCourses").click; b.loading.wait_while_present }
-  action(:clear) { |b| b.frm.button(id:"clearSearch").click }
   element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
 
   COURSE_CODE = 0

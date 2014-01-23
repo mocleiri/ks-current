@@ -3,26 +3,14 @@ When /^I search for a course$/ do
   @course_offering.course_search
 end
 
-When /^I enter the course in the search field$/ do
-  @course_offering = make CourseOffering
-  @course_offering.set_search_entry
 
-end
 When /^I search for a course with "(.*?)" text option$/ do |text|
   @course_offering = make CourseOffering
   @course_offering.course_search(text)
 end
 
 
-Then /^I clear the search entry$/ do
-  @course_offering.clear_search
-end
 
-Then /^the search entry should be cleared successfully$/ do
-  on CourseSearch do |page|
-       page.search_for_course.text.should == ""
-    end
-end
 
 Then /^the course (.*) appear in the search results$/ do |test_condition|
   on CourseSearch do |page|
@@ -46,8 +34,3 @@ Then /^courses containing  "(.*?)" text option appears$/ do |expected|
   end
 
 
-And /^the search results list should be cleared successfully$/ do
-  on CourseSearch do |page|
-    page.results_list.should == []
-  end
-end
