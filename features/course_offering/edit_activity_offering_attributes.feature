@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Edit Activity Offering Attributes
+@nightly @yellow_team
+Feature: CO.Edit Activity Offering Attributes
 
   Background:
     Given I am logged in as a Schedule Coordinator

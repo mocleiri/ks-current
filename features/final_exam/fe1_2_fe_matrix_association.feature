@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE1-2 Associate Final Exam Matrix with more than one term
+Feature: CO.FE1-2 Associate Final Exam Matrix with more than one term
   FE 1.2: As a Central Administrator I want to associate a matrix with one or more term types so that a matrix
   specific to a time of year or to an organization is matched to the appropriate term or subterm
 

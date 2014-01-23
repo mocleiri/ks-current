@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG7-2 Delete all statements of CO copied from CLU
+Feature: CO.ELIG7-2 Delete all statements of CO copied from CLU
 
   Background:
     Given I am logged in as admin

@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG7-5 Adding CO to empty CLU
+Feature: CO.ELIG7-5 Adding CO to empty CLU
 
   Background:
     Given I am logged in as admin

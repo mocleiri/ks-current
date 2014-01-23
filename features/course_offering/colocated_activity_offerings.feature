@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Colocated Activity Offerings
+@nightly @yellow_team
+Feature: CO.Colocated Activity Offerings
 
 Background:
   Given I am logged in as a Schedule Coordinator

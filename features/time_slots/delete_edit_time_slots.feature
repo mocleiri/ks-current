@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Delete and edit standard Time Slots
+@nightly @yellow_team
+Feature: CO.Delete and edit standard Time Slots
 
   As a Scheduling Coordinator, I want to edit existing Standard Time Slots for
   a particular Time Slot Type so that university scheduling policies will be enforced.

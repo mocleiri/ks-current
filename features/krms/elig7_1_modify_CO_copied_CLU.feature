@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG7-1 Modify CO copied from CLU
+Feature: CO.ELIG7-1 Modify CO copied from CLU
 
   Background:
     Given I am logged in as admin

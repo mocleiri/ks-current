@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Copy Activity Offering Clusters
+@nightly @yellow_team
+Feature: CO.Copy Activity Offering Clusters
 
 	RG 6.2
 

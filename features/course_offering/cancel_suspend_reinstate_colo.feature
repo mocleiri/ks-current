@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Cancel Suspend Reinstate Colocated AOs
+@nightly @yellow_team
+Feature: CO.Cancel Suspend Reinstate Colocated AOs
 
   CO 21.1: As an Administrator, I want to cancel one or more Colocated activity offerings so that they are no longer offered for the term
 

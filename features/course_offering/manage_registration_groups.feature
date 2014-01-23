@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Create registration groups
+@nightly @yellow_team
+Feature: CO.Create registration groups
 
 As an Administrator, I want to create registration groups for a Course Offering
 

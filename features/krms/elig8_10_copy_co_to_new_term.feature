@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG8-10 Copy CO to new Term
+Feature: CO.ELIG8-10 Copy CO to new Term
 
   Background:
     Given I am logged in as admin

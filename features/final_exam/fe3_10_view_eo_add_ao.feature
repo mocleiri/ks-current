@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE3-10 View Exam Offerings after added more Activity Offerings
+Feature: CO.FE3-10 View Exam Offerings after added more Activity Offerings
   FE 3.10: As a Central Administrator I want to create AO driven exam offerings dynamically after the bulk creation
   so that new exam offerings will be created as new Activity Offerings are created
 

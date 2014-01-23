@@ -1,5 +1,5 @@
 @concurrency @yellow_team
-Feature: EC.Course Offerings Concurrency
+Feature: CO.Course Offerings Concurrency
   Background:
     Given I have initiated two browser sessions with different users
 

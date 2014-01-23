@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.AZ Milestones
+@nightly @yellow_team
+Feature: CO.AZ Milestones
 
   Background:
     Given I am logged in as a Schedule Coordinator

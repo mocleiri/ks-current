@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Edit AO scheduling information as DSC
+@nightly @yellow_team
+Feature: CO.Edit AO scheduling information as DSC
 
   As a department schedule coordinator in a “needs-approval” institution,
   I want to edit the requested scheduling information of an AO and then confirm that those changes are saved

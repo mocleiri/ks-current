@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Holiday Calendar CRED
+@nightly @yellow_team
+Feature: CO.Holiday Calendar CRED
 
   Background:
     Given I am logged in as a Schedule Coordinator

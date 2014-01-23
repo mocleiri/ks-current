@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Display Schedule of Classes rendered by registration group
+@nightly @yellow_team
+Feature: CO.Display Schedule of Classes rendered by registration group
 
   As an Admin I want to display a published schedule of classes ordered by registration group within
   activity offering cluster for a specific term in order to understand the courses being offered,

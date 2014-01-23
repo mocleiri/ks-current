@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Cancel Suspend Reinstate AOs
+@nightly @yellow_team
+Feature: CO.Cancel Suspend Reinstate AOs
 
   As a user, I want to be able to cancel and suspend an activity offering so that it will no longer be offered, and reinstate it so that it will be offered.
 

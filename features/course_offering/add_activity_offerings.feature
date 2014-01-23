@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Add Activity Offerings to existing Course Offerings
+@nightly @yellow_team
+Feature: CO.Add Activity Offerings to existing Course Offerings
 
   As a Departmental administrator, I want to be able to add additional Activity Offerings either by copying or creating
   new Activity Offerings so that the Course Offering will have additional associated Activity Offerings for the term.

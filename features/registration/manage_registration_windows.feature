@@ -1,5 +1,5 @@
-@pending @red_team
-Feature: EC.Manage registration windows
+@nightly @red_team
+Feature: REG.Manage registration windows
 
   Background:
     Given I am logged in as a Schedule Coordinator

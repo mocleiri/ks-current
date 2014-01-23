@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE3-2 View Exam Offerings for AO not created when no Activity Offerings are defined
+Feature: CO.FE3-2 View Exam Offerings for AO not created when no Activity Offerings are defined
   FE 3.2 As a Central Administrator I want to create CO driven exam offerings dynamically after the bulk exam offering
   creation so that new exam offerings will be created as new Course Offerings are created
 

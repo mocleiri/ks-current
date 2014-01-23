@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Manage Activity Offerings - subterms
+@nightly @yellow_team
+Feature: CO.Manage Activity Offerings - subterms
 
   CO 26 - As a Departmental administrator, I want to be able to manage AOs in subterms
 

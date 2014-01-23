@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE2-2 Create Exam from AO or CO
+Feature: CO.FE2-2 Create Exam from AO or CO
   FE 2.2: As a Central Administrator I want to indicate for a course offering what entities determine the creation
   of an exam offering so that the exam offering can be created according to the intended scenario or pattern
 

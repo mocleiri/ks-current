@@ -1,5 +1,5 @@
 @wip @red_team
-Feature: EC.Register for course
+Feature: REG.Register for course
 
   As a student, I want to be able to add courses to my registration cart, including specifying
   course options where applicable. I also want to be able to edit and delete courses in my

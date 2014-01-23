@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Edit AO scheduling information as CSC
+@nightly @yellow_team
+Feature: CO.Edit AO scheduling information as CSC
 
   As a schedule coordinator, I want to edit the requested scheduling information of an AO
   and then confirm that those changes have been persisted

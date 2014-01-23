@@ -1,5 +1,5 @@
 @draft
-Feature: EC.Scheduling Information
+Feature: CO.Scheduling Information
 
   As a Central Administrator or Dept Administrator, I want to edit an Activity Offering so that I can change the AO's actual scheduling information (KSENROLL-2595)
 

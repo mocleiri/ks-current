@@ -1,5 +1,5 @@
-@draft @deprecated @KSENROLL-8286 @red_team
-Feature: EC.Jointly-defined Course Offering
+@draft @deprecated @KSENROLL-8286 @yellow_team
+Feature: CO.Jointly-defined Course Offering
 
   Background:
     Given I am logged in as a Schedule Coordinator

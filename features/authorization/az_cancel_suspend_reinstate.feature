@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.AZ for Cancel Suspend and Reinstate
+@nightly @yellow_team
+Feature: CO.AZ for Cancel Suspend and Reinstate
 
   This feature incorporates CO 21.2, 22.2 and 23.5
 
