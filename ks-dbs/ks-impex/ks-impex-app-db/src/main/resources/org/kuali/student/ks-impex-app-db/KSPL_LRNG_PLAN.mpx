@@ -1,3 +1,3 @@
 ID,OBJ_ID,VER_NBR,CREATEID,CREATETIME,UPDATEID,UPDATETIME,STUDENT_ID,RT_DESCR_ID,TYPE_ID,STATE,SHARED
-"testPlan1","obj-lp5","0","admin","2014-01-22T22:38:15.602+0000","${mpx.null}","${mpx.null}","admin","testPlan1Desc","kuali.academicplan.type.plan","${mpx.null}","1"
-"testPlan2","obj-lp2","0","student","2014-01-22T22:38:15.655+0000","${mpx.null}","${mpx.null}","student","testPlan2Desc","kuali.academicplan.type.plan","${mpx.null}","1"
+"testPlan1","obj-lp5","0","admin","2014-01-23T04:05:04.757+0000","${mpx.null}","${mpx.null}","admin","testPlan1Desc","kuali.academicplan.type.plan","${mpx.null}","1"
+"testPlan2","obj-lp2","0","student","2014-01-23T04:05:04.818+0000","${mpx.null}","${mpx.null}","student","testPlan2Desc","kuali.academicplan.type.plan","${mpx.null}","1"
