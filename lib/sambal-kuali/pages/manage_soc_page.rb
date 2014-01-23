@@ -53,7 +53,6 @@ class ManageSocPage < BasePage
   def soc_status
     last_completed_state = 'Draft'
     soc_status_table.rows[1..-1].each do |row|
-      puts row.cells[EFFECTIVE_DATE_COLUMN].text
       if row.cells[EFFECTIVE_DATE_COLUMN].text != ''
         last_completed_state = row.cells[STATE_COLUMN].text
       else
