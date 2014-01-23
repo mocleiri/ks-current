@@ -1,4 +1,4 @@
-@pending
+@nightly
 Feature: BT.Add course to planner
 
   Background:
