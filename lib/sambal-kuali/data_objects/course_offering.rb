@@ -51,12 +51,15 @@ class CourseOffering
   def add_course_to_future_term
     navigate_to_course_planner_home
     on CoursePlannerPage do |page|
-      if page.course_code_term(@planned_term, @course_code) != nil?
+      begin
+        page.course_code_term(@planned_term, @course_code) != nil?
         page.course_code_term_click(@planned_term, @course_code)
         page.course_code_delete_click
         page.delete_course.wait_until_present(5)
         page.delete_course_click
         page.refresh
+      rescue
+        #means that course was NOT found, BUT be careful as the rescue will hide errors if they occur in cleanup steps
       end
       page.add_to_term(@planned_term)
       page.course_code_text.wait_until_present(5)
