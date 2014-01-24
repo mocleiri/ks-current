@@ -166,7 +166,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         signup.setOfferingType(OfferingType.ACTIVITY_OFFERING);
         signup.setSession(session);
         signup.setOperation(FeeManagementSignupOperation.ADD_WITHOUT_PENALTY);
-        signup.setUnits(5);
+        signup.setUnits(new UnitNumber(5));
 
         persistenceService.persistEntity(signup);
 

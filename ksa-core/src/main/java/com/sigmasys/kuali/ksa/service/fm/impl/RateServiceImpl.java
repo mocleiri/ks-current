@@ -628,7 +628,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
         RateAmount rateAmount = new RateAmount();
         rateAmount.setAmount(defaultRateAmount);
         rateAmount.setTransactionTypeId(transactionTypeId);
-        rateAmount.setUnits(0);
+        rateAmount.setUnits(UnitNumber.ZERO);
 
         // Persisting RateAmount
         persistEntity(rateAmount);
@@ -1110,7 +1110,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
 
         boolean defaultAmountIsPresent = false;
 
-        Set<Integer> uniqueUnits = new HashSet<Integer>();
+        Set<UnitNumber> uniqueUnits = new HashSet<UnitNumber>();
 
         for (RateAmount rateAmount : rateAmounts) {
 
@@ -1967,7 +1967,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
      */
     @Override
     @PermissionsAllowed(Permission.READ_RATE)
-    public BigDecimal getAmountFromRate(Long rateId, int numUnits) {
+    public BigDecimal getAmountFromRate(Long rateId, UnitNumber numUnits) {
 
         // Get the Rate:
         Rate rate = getRate(rateId);
@@ -1981,7 +1981,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
         // Check the rate type and determine how to get the amount:
         RateType rateType = rate.getRateType();
 
-        if (rateType != null && numUnits > 0) {
+        if (rateType != null && numUnits.compareTo(UnitNumber.ZERO) > 0) {
 
             switch (rateType.getRateAmountType()) {
 
@@ -2007,7 +2007,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
      */
     @Override
     @PermissionsAllowed(Permission.READ_RATE)
-    public String getTransactionTypeIdFromRate(Long rateId, int numUnits) {
+    public String getTransactionTypeIdFromRate(Long rateId, UnitNumber numUnits) {
 
         // Get the Rate:
         Rate rate = getRate(rateId);
@@ -2019,7 +2019,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
         }
 
         // Get the matching RateAmount:
-        RateAmount rateAmount = (numUnits > 0) ? getRateAmount(rate, numUnits) : rate.getDefaultRateAmount();
+        RateAmount rateAmount = (numUnits.compareTo(UnitNumber.ZERO) > 0) ? getRateAmount(rate, numUnits) : rate.getDefaultRateAmount();
 
         return (rateAmount != null) ? rateAmount.getTransactionTypeId() : null;
     }
@@ -2033,7 +2033,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
      * @param numUnits Number of units to match.
      * @return RateAmount instance
      */
-    private RateAmount getRateAmount(Rate rate, int numUnits) {
+    private RateAmount getRateAmount(Rate rate, UnitNumber numUnits) {
 
         // Loop through the RateAmounts:
         if (CollectionUtils.isNotEmpty(rate.getRateAmounts())) {
@@ -2041,7 +2041,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
             for (RateAmount rateAmount : rate.getRateAmounts()) {
 
                 // Compare the number of units to locate a match:
-                if ((rateAmount.getUnits() != null) && (rateAmount.getUnits() == numUnits)) {
+                if (rateAmount.getUnits() != null && rateAmount.getUnits().compareTo(numUnits) == 0) {
 
                     // Match found:
                     return rateAmount;
@@ -2060,7 +2060,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
      * @param numUnits Number of units used for calculations.
      * @return Fixed rate amount for the given Rate.
      */
-    private BigDecimal calculateFixedRateAmount(Rate rate, int numUnits) {
+    private BigDecimal calculateFixedRateAmount(Rate rate, UnitNumber numUnits) {
 
         // Get the default amount:
         RateAmount rateAmount = rate.getDefaultRateAmount();
@@ -2073,16 +2073,16 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
             if (rate.isLimitAmount()) {
 
                 // Get the limit range or assign default values:
-                int minUnits = (rate.getMinLimitUnits() != null) ? rate.getMinLimitUnits() : 0;
-                int maxUnits = (rate.getMaxLimitUnits() != null) ? rate.getMaxLimitUnits() : Integer.MAX_VALUE;
+                UnitNumber minUnits = new UnitNumber(rate.getMinLimitUnits() != null ? rate.getMinLimitUnits() : 0);
+                UnitNumber maxUnits = new UnitNumber(rate.getMaxLimitUnits() != null ? rate.getMaxLimitUnits() : Integer.MAX_VALUE);
 
-                if (numUnits > maxUnits) {
+                if (numUnits.compareTo(maxUnits) > 0) {
 
                     // Calculate the amount:
-                    fixedRateAmount = rateAmount.getAmount().multiply(new BigDecimal(numUnits - maxUnits));
-                    fixedRateAmount = (rate.getLimitAmountValue() != null) ?
-                            fixedRateAmount.add(rate.getLimitAmountValue()) : fixedRateAmount;
-                } else if (numUnits >= minUnits) {
+                    fixedRateAmount = rateAmount.getAmount().multiply((numUnits.subtract(maxUnits)).getValue());
+                    fixedRateAmount = (rate.getLimitAmountValue() != null) ? fixedRateAmount.add(rate.getLimitAmountValue()) : fixedRateAmount;
+
+                } else if (numUnits.compareTo(minUnits) >= 0) {
 
                     // Use the limit amount:
                     fixedRateAmount = rate.getLimitAmountValue();
@@ -2092,7 +2092,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
             // Calculate the default fixed rate amount if it hasn't been assigned
             // by multiplying the default amount by the number of units:
             if (fixedRateAmount == null) {
-                fixedRateAmount = rateAmount.getAmount().multiply(new BigDecimal(numUnits));
+                fixedRateAmount = rateAmount.getAmount().multiply(numUnits.getValue());
             }
         }
 

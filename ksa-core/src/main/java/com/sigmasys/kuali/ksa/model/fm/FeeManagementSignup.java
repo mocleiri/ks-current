@@ -32,7 +32,7 @@ public class FeeManagementSignup implements Identifiable, KeyPairAware {
 
     private String atpId;
 
-    private Integer units;
+    private UnitNumber units;
 
     private Boolean isComplete;
 
@@ -113,11 +113,11 @@ public class FeeManagementSignup implements Identifiable, KeyPairAware {
     }
 
     @Column(name = "UNITS")
-    public Integer getUnits() {
+    public UnitNumber getUnits() {
         return units;
     }
 
-    public void setUnits(Integer units) {
+    public void setUnits(UnitNumber units) {
         this.units = units;
     }
 

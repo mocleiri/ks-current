@@ -557,7 +557,7 @@ public interface RateService {
      * @param numUnits Number of units.
      * @return The total amount from the Rate with the given ID.
      */
-    BigDecimal getAmountFromRate(Long rateId, int numUnits);
+    BigDecimal getAmountFromRate(Long rateId, UnitNumber numUnits);
 
     /**
      * Finds out the transaction type ID from RateAmount associated with a Rate
@@ -567,5 +567,5 @@ public interface RateService {
      * @param numUnits Number of units.
      * @return Transaction Type from the RateAmount.
      */
-    String getTransactionTypeIdFromRate(Long rateId, int numUnits);
+    String getTransactionTypeIdFromRate(Long rateId, UnitNumber numUnits);
 }

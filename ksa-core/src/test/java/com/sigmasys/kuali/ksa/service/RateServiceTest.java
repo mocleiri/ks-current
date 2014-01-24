@@ -1064,13 +1064,13 @@ public class RateServiceTest extends AbstractServiceTest {
 
         RateAmount amount1 = new RateAmount();
         amount1.setAmount(new BigDecimal(200.00));
-        amount1.setUnits(125);
+        amount1.setUnits(new UnitNumber(125));
         amount1.setTransactionTypeId(rateCatalog.getTransactionTypeId());
         amounts.add(amount1);
 
         RateAmount amount2 = new RateAmount();
         amount2.setAmount(new BigDecimal(100.00));
-        amount2.setUnits(275);
+        amount2.setUnits(new UnitNumber(275));
         amount2.setTransactionTypeId(rateCatalog.getTransactionTypeId());
         amounts.add(amount2);
 
@@ -1130,13 +1130,13 @@ public class RateServiceTest extends AbstractServiceTest {
 
         RateAmount amount1 = new RateAmount();
         amount1.setAmount(new BigDecimal(200.00));
-        amount1.setUnits(350);
+        amount1.setUnits(new UnitNumber(350));
         amount1.setTransactionTypeId(rateCatalog.getTransactionTypeId());
         amounts.add(amount1);
 
         RateAmount amount2 = new RateAmount();
         amount2.setAmount(new BigDecimal(100.00));
-        amount2.setUnits(125);
+        amount2.setUnits(new UnitNumber(125));
         amount2.setTransactionTypeId(rateCatalog.getTransactionTypeId());
         amounts.add(amount2);
 
@@ -1155,7 +1155,7 @@ public class RateServiceTest extends AbstractServiceTest {
             Assert.notNull(rateAmount.getRate());
             Assert.isTrue(rateAmount.getRate().getId().equals(rate.getId()));
 
-            if (rateAmount.getUnits() == 125) {
+            if (rateAmount.getUnits().compareTo(new UnitNumber(125)) == 0) {
                 rateService.deleteRateAmount(rateAmount.getId());
             }
 
@@ -1801,7 +1801,7 @@ public class RateServiceTest extends AbstractServiceTest {
 
         // Call the service method with a null Rate ID:
         try {
-            rateService.getAmountFromRate(null, 0);
+            rateService.getAmountFromRate(null, UnitNumber.ZERO);
             Assert.isTrue(false, "We should not be here. An exception has not been thrown.");
         } catch (IllegalArgumentException e) {
             String expectedErrorMsg = String.format("Invalid Rate ID %d in getAmountFromRate. Rate cannot be found.", null);
@@ -1821,7 +1821,7 @@ public class RateServiceTest extends AbstractServiceTest {
 
         // Call the service method with a null Rate ID:
         try {
-            rateService.getAmountFromRate(rateId, 0);
+            rateService.getAmountFromRate(rateId, UnitNumber.ZERO);
             Assert.isTrue(false, "We should not be here. An exception has not been thrown.");
         } catch (IllegalArgumentException e) {
             String expectedErrorMsg = String.format("Invalid Rate ID %d in getAmountFromRate. Rate cannot be found.", rateId);
@@ -1851,7 +1851,7 @@ public class RateServiceTest extends AbstractServiceTest {
         Long rateId = 0L;
 
         try {
-            rateService.getAmountFromRate(rateId, 0);
+            rateService.getAmountFromRate(rateId, UnitNumber.ZERO);
             Assert.isTrue(false, "We should not be here. An exception has not been thrown.");
         } catch (IllegalArgumentException e) {
             String expectedErrorMsg = String.format("Invalid Rate ID %d in getAmountFromRate. Rate cannot be found.", rateId);
@@ -1878,7 +1878,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.getDefaultRateAmount().setAmount(defaultAmount);
 
         // Call the service method:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
         BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
 
         // Validate that the amount from rate is as expected:
@@ -1901,7 +1901,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.getDefaultRateAmount().setAmount(defaultAmount);
 
         // Call the service method:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
         BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
 
         // Validate that the amount from rate is as expected:
@@ -1922,11 +1922,11 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.getDefaultRateAmount().setAmount(null);
 
         // Make sure that none of the RateAmounts match the number of units:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
 
         for (RateAmount rateAmount : rate.getRateAmounts()) {
             // Set the RateAmount number of units to a value different from numUnits:
-            rateAmount.setUnits(numUnits + 1);
+            rateAmount.setUnits(numUnits.add(new UnitNumber(1)));
         }
 
         // Call the service method:
@@ -1952,11 +1952,11 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.getDefaultRateAmount().setAmount(defaultAmount);
 
         // Make sure that none of the RateAmounts match the number of units:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
 
         for (RateAmount rateAmount : rate.getRateAmounts()) {
             // Set the RateAmount number of units to a value different from numUnits:
-            rateAmount.setUnits(numUnits + 1);
+            rateAmount.setUnits(numUnits.add(new UnitNumber(1)));
         }
 
         // Call the service method:
@@ -1981,7 +1981,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.getDefaultRateAmount().setAmount(null);
 
         // Call the service method:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
         BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
 
         // Validate:
@@ -2005,11 +2005,11 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(false);
 
         // Call the service method:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
         BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
 
         // Validate:
-        BigDecimal expectedAmount = defaultAmount.multiply(new BigDecimal(numUnits));
+        BigDecimal expectedAmount = defaultAmount.multiply(numUnits.getValue());
         Assert.notNull(amountFromRate, "Amount from Rate should not be null.");
         Assert.isTrue(amountFromRate.compareTo(expectedAmount) == 0, "Amount from Rate should be the default amount.");
     }
@@ -2033,7 +2033,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(true);
 
         // Call the service method:
-        int numUnits = 4;
+        UnitNumber numUnits = new UnitNumber(4);
         BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
 
         // Validate:
@@ -2051,7 +2051,9 @@ public class RateServiceTest extends AbstractServiceTest {
         _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         BigDecimal defaultAmount = new BigDecimal(24);
+
         int numUnits = 10;
+
         int minUnits = (numUnits - 7);
         int maxUnits = (numUnits - 3);
 
@@ -2064,7 +2066,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(true);
 
         // Call the service method:
-        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
+        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), new UnitNumber(numUnits));
 
         // Validate:
         BigDecimal expectedAmount = defaultAmount.multiply(new BigDecimal(numUnits - maxUnits));
@@ -2083,6 +2085,7 @@ public class RateServiceTest extends AbstractServiceTest {
         Rate rate = _createRate(rateCode, rateCatalogCode);
         BigDecimal defaultAmount = new BigDecimal(24);
         BigDecimal limitAmount = new BigDecimal(24);
+
         int numUnits = 10;
         int minUnits = (numUnits - 7);
         int maxUnits = (numUnits - 3);
@@ -2096,7 +2099,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(true);
 
         // Call the service method:
-        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
+        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), new UnitNumber(numUnits));
 
         // Validate:
         BigDecimal expectedAmount = defaultAmount.multiply(new BigDecimal(numUnits - maxUnits)).add(limitAmount);
@@ -2128,7 +2131,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(true);
 
         // Call the service method:
-        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
+        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), new UnitNumber(numUnits));
 
         // Validate:
         BigDecimal expectedAmount = defaultAmount.multiply(new BigDecimal(numUnits));
@@ -2161,7 +2164,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(true);
 
         // Call the service method:
-        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
+        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), new UnitNumber(numUnits));
 
         // Validate:
         Assert.notNull(amountFromRate, "Amount from Rate should not be null.");
@@ -2178,6 +2181,7 @@ public class RateServiceTest extends AbstractServiceTest {
         _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         BigDecimal defaultAmount = new BigDecimal(24);
+
         int numUnits = 4;
 
         rate.getRateType().setCode("fixed");
@@ -2188,7 +2192,7 @@ public class RateServiceTest extends AbstractServiceTest {
         rate.setLimitAmount(true);
 
         // Call the service method:
-        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), numUnits);
+        BigDecimal amountFromRate = rateService.getAmountFromRate(rate.getId(), new UnitNumber(numUnits));
 
         // Validate:
         BigDecimal expectedAmount = defaultAmount.multiply(new BigDecimal(numUnits));
@@ -2215,7 +2219,7 @@ public class RateServiceTest extends AbstractServiceTest {
 
         // Call the service method with a null Rate ID:
         try {
-            rateService.getTransactionTypeIdFromRate(null, 0);
+            rateService.getTransactionTypeIdFromRate(null, UnitNumber.ZERO);
             Assert.isTrue(false, "We should not be here. An exception has not been thrown.");
         } catch (IllegalArgumentException e) {
             String expectedErrorMsg = String.format("Invalid Rate ID %d in getTransactionTypeFromRate. Rate cannot be found.", null);
@@ -2235,7 +2239,7 @@ public class RateServiceTest extends AbstractServiceTest {
 
         // Call the service method with a null Rate ID:
         try {
-            rateService.getTransactionTypeIdFromRate(rateId, 0);
+            rateService.getTransactionTypeIdFromRate(rateId, UnitNumber.ZERO);
             Assert.isTrue(false, "We should not be here. An exception has not been thrown.");
         } catch (IllegalArgumentException e) {
             String expectedErrorMsg = String.format("Invalid Rate ID %d in getTransactionTypeFromRate. Rate cannot be found.", rateId);
@@ -2255,7 +2259,8 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
         RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
-        int numUnits = 4;
+
+        UnitNumber numUnits = new UnitNumber(4);
 
         rate.getDefaultRateAmount().setTransactionTypeId(null);
 
@@ -2275,7 +2280,8 @@ public class RateServiceTest extends AbstractServiceTest {
         RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
         Rate rate = _createRate(rateCode, rateCatalogCode);
         String transactionTypeId = "test-test";
-        int numUnits = 4;
+
+        UnitNumber numUnits = new UnitNumber(4);
 
         rate.getDefaultRateAmount().setTransactionTypeId(transactionTypeId);
 

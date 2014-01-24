@@ -1017,11 +1017,11 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public boolean compareNumberOfUnits(int numberOfUnits, String rateCodes, String rateTypeCodes,
                                         String signupOperations, String operator, BrmContext context) {
 
-        int signupUnits = 0;
+        UnitNumber signupUnits = UnitNumber.ZERO;
 
         FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
         if (signup != null) {
-            return compareObjects(signup.getUnits() != null ? signup.getUnits() : signupUnits, numberOfUnits, operator);
+            return compareObjects(signup.getUnits() != null ? signup.getUnits() : UnitNumber.ZERO, new UnitNumber(numberOfUnits), operator);
         }
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
@@ -1031,11 +1031,11 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         for (FeeManagementSignup fmSignup : signups) {
             if (fmSignup.getUnits() != null) {
-                signupUnits += fmSignup.getUnits();
+                signupUnits = signupUnits.add(fmSignup.getUnits());
             }
         }
 
-        return compareObjects(signupUnits, numberOfUnits, operator);
+        return compareObjects(signupUnits, new UnitNumber(numberOfUnits), operator);
     }
 
     /**
@@ -1053,7 +1053,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public boolean compareNumberOfTakenUnits(int numberOfUnits, String rateCodes, String rateTypeCodes,
                                              String signupOperations, String operator, BrmContext context) {
 
-        int takenUnits = 0;
+        UnitNumber takenUnits = UnitNumber.ZERO;
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -1062,11 +1062,11 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         for (FeeManagementSignup fmSignup : signups) {
             if (fmSignup.isTaken() && fmSignup.getUnits() != null) {
-                takenUnits += fmSignup.getUnits();
+                takenUnits = takenUnits.add(fmSignup.getUnits());
             }
         }
 
-        return compareObjects(takenUnits, numberOfUnits, operator);
+        return compareObjects(takenUnits, new UnitNumber(numberOfUnits), operator);
     }
 
     /**
@@ -1081,8 +1081,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean compareNumberOfTakenUnits(String rateCodes, String takenRateCodes, String operator, BrmContext context) {
 
-        int sessionUnits = 0;
-        int takenUnits = 0;
+        UnitNumber sessionUnits = UnitNumber.ZERO;
+        UnitNumber takenUnits = UnitNumber.ZERO;
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -1090,7 +1090,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         for (FeeManagementSignup signup : signups) {
             if (signup.getUnits() != null) {
-                sessionUnits += signup.getUnits();
+                sessionUnits = sessionUnits.add(signup.getUnits());
             }
         }
 
@@ -1098,7 +1098,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         for (FeeManagementSignup signup : signups) {
             if (signup.getUnits() != null && signup.isTaken()) {
-                takenUnits += signup.getUnits();
+                takenUnits = takenUnits.add(signup.getUnits());
             }
         }
 
@@ -1383,8 +1383,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                               String includedSignupOperations,
                                               String excludedSignupOperations,
                                               BrmContext context) {
-        int includedUnits = 0;
-        int excludedUnits = 0;
+        UnitNumber includedUnits = UnitNumber.ZERO;
+        UnitNumber excludedUnits = UnitNumber.ZERO;
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -1401,15 +1401,15 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (signupOperation != null && signup.getUnits() != null) {
                     if (includedOperations.contains(signupOperation.name())) {
-                        includedUnits += signup.getUnits();
+                        includedUnits = includedUnits.add(signup.getUnits());
                     } else if (excludedOperations.contains(signupOperation.name())) {
-                        excludedUnits += signup.getUnits();
+                        excludedUnits = excludedUnits.add(signup.getUnits());
                     }
                 }
             }
         }
 
-        setKeyPair(session, key, Integer.toString(includedUnits - excludedUnits));
+        setKeyPair(session, key, includedUnits.subtract(excludedUnits).toString());
     }
 
     /**
@@ -1427,7 +1427,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         try {
 
-            int units = 0;
+            UnitNumber units = UnitNumber.ZERO;
 
             FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -1447,12 +1447,12 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 for (FeeManagementSignup signup : signups) {
                     if (signup.getUnits() != null && (Boolean) method.invoke(signup)) {
-                        units += signup.getUnits();
+                        units = units.add(signup.getUnits());
                     }
                 }
             }
 
-            setKeyPair(session, key, Integer.toString(units));
+            setKeyPair(session, key, units.toString());
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -2055,7 +2055,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         Map<Long, Date> rateBaseDateMap = new HashMap<Long, Date>();
 
         // Map of [Rate ID, [Rate code, number of units]]
-        Map<Long, Pair<String, Integer>> rateUnitsMap = new HashMap<Long, Pair<String, Integer>>();
+        Map<Long, Pair<String, UnitNumber>> rateUnitsMap = new HashMap<Long, Pair<String, UnitNumber>>();
 
         List<String> rateSubCodeValues = CommonUtils.split(rateSubCodes, MULTI_VALUE_DELIMITER);
 
@@ -2088,20 +2088,20 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                         if (rateType != null && rateType.isGrouping()) {
 
-                            Pair<String, Integer> rateCodeUnits = rateUnitsMap.get(rate.getId());
+                            Pair<String, UnitNumber> rateCodeUnits = rateUnitsMap.get(rate.getId());
 
                             if (rateCodeUnits == null) {
-                                rateCodeUnits = new Pair<String, Integer>(rate.getCode(), 0);
+                                rateCodeUnits = new Pair<String, UnitNumber>(rate.getCode(), UnitNumber.ZERO);
                                 rateUnitsMap.put(rate.getId(), rateCodeUnits);
                             }
 
                             if (signup.getUnits() != null) {
-                                rateCodeUnits.setB(rateCodeUnits.getB() + signup.getUnits());
+                                rateCodeUnits.setB(rateCodeUnits.getB().add(signup.getUnits()));
                             }
 
                         } else {
 
-                            int numberOfUnits = (signup.getUnits() != null) ? signup.getUnits() : 0;
+                            UnitNumber numberOfUnits = (signup.getUnits() != null) ? signup.getUnits() : UnitNumber.ZERO;
 
                             BigDecimal amount = rateService.getAmountFromRate(rate.getId(), numberOfUnits);
 
@@ -2144,13 +2144,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         }
 
         // Creating Grouping Manifests
-        for (Map.Entry<Long, Pair<String, Integer>> entry : rateUnitsMap.entrySet()) {
+        for (Map.Entry<Long, Pair<String, UnitNumber>> entry : rateUnitsMap.entrySet()) {
 
             Long rateId = entry.getKey();
 
             String rateCode = entry.getValue().getA();
 
-            Integer numberOfUnits = entry.getValue().getB();
+            UnitNumber numberOfUnits = entry.getValue().getB();
 
             BigDecimal amount = rateService.getAmountFromRate(rateId, numberOfUnits);
 
@@ -2211,8 +2211,10 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
+        UnitNumber unitNumber = new UnitNumber(numberOfUnits);
+
         if (amount == null) {
-            amount = rateService.getAmountFromRate(rate.getId(), numberOfUnits);
+            amount = rateService.getAmountFromRate(rate.getId(), unitNumber);
         }
 
         Date currentDate = new Date();
@@ -2220,7 +2222,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         Date effectiveDate = rateService.getEffectiveDateFromRate(rate.getId(), currentDate);
         Date recognitionDate = rateService.getRecognitionDateFromRate(rate.getId(), currentDate);
 
-        String transactionTypeId = rateService.getTransactionTypeIdFromRate(rate.getId(), numberOfUnits);
+        String transactionTypeId = rateService.getTransactionTypeIdFromRate(rate.getId(), unitNumber);
 
         FeeManagementManifest manifest = fmService.createFeeManagementManifest(FeeManagementManifestType.CHARGE,
                 FeeManagementManifestStatus.PENDING,
@@ -2775,15 +2777,16 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      *
      * @param rateCodes List of rate codes separated by ","
      * @param context   BRM context
+     * @return a number of dropped units
      */
     @Override
-    public int countDroppedUnits(String rateCodes, BrmContext context) {
+    public UnitNumber countDroppedUnits(String rateCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, FeeManagementSignupOperation.DROP.name(), null);
 
-        int droppedUnits = 0;
+        UnitNumber droppedUnits = UnitNumber.ZERO;
 
         if (CollectionUtils.isNotEmpty(signups)) {
 
@@ -2794,7 +2797,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             for (FeeManagementSignup signup : signups) {
                 if (signup.getUnits() != null && sessionHasLateDropKey && keyPairService.keyPairExists(signup, key, value)) {
-                    droppedUnits += signup.getUnits();
+                    droppedUnits = droppedUnits.add(signup.getUnits());
                 }
             }
         }
@@ -2807,21 +2810,22 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      *
      * @param rateCodes List of rate codes separated by ","
      * @param context   BRM context
+     * @return a number of taken units
      */
     @Override
-    public int countTakenUnits(String rateCodes, BrmContext context) {
+    public UnitNumber countTakenUnits(String rateCodes, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, null, null);
 
-        int takenUnits = 0;
+        UnitNumber takenUnits = UnitNumber.ZERO;
 
         if (CollectionUtils.isNotEmpty(signups)) {
 
             for (FeeManagementSignup signup : signups) {
                 if (signup.isTaken() && signup.getUnits() != null) {
-                    takenUnits += signup.getUnits();
+                    takenUnits = takenUnits.add(signup.getUnits());
                 }
             }
         }

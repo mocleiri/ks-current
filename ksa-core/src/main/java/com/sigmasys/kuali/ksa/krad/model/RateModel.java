@@ -1,9 +1,6 @@
 package com.sigmasys.kuali.ksa.krad.model;
 
-import com.sigmasys.kuali.ksa.model.fm.Rate;
-import com.sigmasys.kuali.ksa.model.fm.RateAmount;
-import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
-import com.sigmasys.kuali.ksa.model.fm.TransactionDateType;
+import com.sigmasys.kuali.ksa.model.fm.*;
 import com.sigmasys.kuali.ksa.util.EnumUtils;
 
 import java.math.BigDecimal;
@@ -32,7 +29,7 @@ public class RateModel {
     }
 
     public Rate getRate() {
-        if(rate == null) {
+        if (rate == null) {
             rate = new Rate();
             rate.setDefaultRateAmount(new RateAmount());
         }
@@ -52,14 +49,14 @@ public class RateModel {
     }
 
     public BigDecimal getDefaultAmount() {
-        if(rateCatalog == null) {
+        if (rateCatalog == null) {
             // undefined logic, return zero
             return BigDecimal.ZERO;
         }
 
         BigDecimal minAmount = rateCatalog.getMinAmount();
         BigDecimal maxAmount = rateCatalog.getMaxAmount();
-        if(minAmount != null && maxAmount != null && minAmount.equals(maxAmount)) {
+        if (minAmount != null && maxAmount != null && minAmount.equals(maxAmount)) {
             return this.getDefaultRateAmount().getAmount();
         }
 
@@ -76,11 +73,11 @@ public class RateModel {
 
     public String getTransactionTypeId() {
         RateAmount rateAmount = this.getDefaultRateAmount();
-        if(rateAmount.getTransactionTypeId() != null) {
+        if (rateAmount.getTransactionTypeId() != null) {
             return rateAmount.getTransactionTypeId();
         }
 
-        if(getRateCatalog() != null && getRateCatalog().isTransactionTypeFinal()) {
+        if (getRateCatalog() != null && getRateCatalog().isTransactionTypeFinal()) {
 
             rateAmount.setTransactionTypeId(getRateCatalog().getTransactionTypeId());
         }
@@ -88,7 +85,7 @@ public class RateModel {
         return rateAmount.getTransactionTypeId();
     }
 
-    public void setTransactionTypeId(String transactionTypeId){
+    public void setTransactionTypeId(String transactionTypeId) {
         this.getDefaultRateAmount().setTransactionTypeId(transactionTypeId);
     }
 
@@ -130,7 +127,7 @@ public class RateModel {
 
     public List<RateAmount> getRateAmounts() {
         Set<RateAmount> rateAmounts = getRate().getRateAmounts();
-        if(rateAmounts == null) {
+        if (rateAmounts == null) {
             rateAmounts = new HashSet<RateAmount>();
             getRate().setRateAmounts(rateAmounts);
         }
@@ -152,7 +149,7 @@ public class RateModel {
 
     public String getTransactionDateType() {
         TransactionDateType transactionDateType = getRate().getTransactionDateType();
-        if(transactionDateType == null) {
+        if (transactionDateType == null) {
             return null;
         }
         return transactionDateType.getId();
@@ -164,15 +161,14 @@ public class RateModel {
 
     private RateAmount getDefaultRateAmount() {
         RateAmount amount = getRate().getDefaultRateAmount();
-        if(amount == null) {
+        if (amount == null) {
             amount = new RateAmount();
-            amount.setUnits(1);
+            amount.setUnits(new UnitNumber(1));
             getRate().setDefaultRateAmount(amount);
 
         }
         return amount;
     }
-
 
 
 }

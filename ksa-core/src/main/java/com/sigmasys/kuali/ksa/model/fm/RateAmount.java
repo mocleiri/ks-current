@@ -19,7 +19,7 @@ public class RateAmount implements Identifiable {
 
     private Long id;
 
-    private Integer units;
+    private UnitNumber units;
 
     private BigDecimal amount;
 
@@ -41,11 +41,11 @@ public class RateAmount implements Identifiable {
     }
 
     @Column(name = "UNITS")
-    public Integer getUnits() {
+    public UnitNumber getUnits() {
         return units;
     }
 
-    public void setUnits(Integer units) {
+    public void setUnits(UnitNumber units) {
         this.units = units;
     }
 

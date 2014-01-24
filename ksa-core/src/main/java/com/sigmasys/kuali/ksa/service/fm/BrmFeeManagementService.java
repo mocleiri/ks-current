@@ -689,15 +689,17 @@ public interface BrmFeeManagementService {
      *
      * @param rateCodes List of rate codes separated by ","
      * @param context   BRM context
+     * @return a number of dropped units
      */
-    int countDroppedUnits(String rateCodes, BrmContext context);
+    UnitNumber countDroppedUnits(String rateCodes, BrmContext context);
 
     /**
      * Counts the number of taken units for the specified rate codes.
      *
      * @param rateCodes List of rate codes separated by ","
      * @param context   BRM context
+     * @return a number of taken units
      */
-    int countTakenUnits(String rateCodes, BrmContext context);
+    UnitNumber countTakenUnits(String rateCodes, BrmContext context);
 
 }
