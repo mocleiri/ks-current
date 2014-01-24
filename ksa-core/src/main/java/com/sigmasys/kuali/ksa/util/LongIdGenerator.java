@@ -9,8 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class LongIdGenerator extends AbstractIdGenerator<Long> {
 
-    private static final AtomicLong longIdGenerator =
-            new AtomicLong((System.currentTimeMillis() - 1384922000000L) * 1000000);
+    private final AtomicLong longIdGenerator = new AtomicLong((System.currentTimeMillis() - 1384922000000L) * 1000000);
 
 
     @Override
@@ -18,7 +17,7 @@ public class LongIdGenerator extends AbstractIdGenerator<Long> {
         return generateLong();
     }
 
-    public static long generateLong() {
+    public long generateLong() {
         return Math.abs(longIdGenerator.incrementAndGet());
     }
 

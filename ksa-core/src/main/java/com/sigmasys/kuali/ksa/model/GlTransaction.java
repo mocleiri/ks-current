@@ -1,6 +1,7 @@
 package com.sigmasys.kuali.ksa.model;
 
 import com.sigmasys.kuali.ksa.util.EnumUtils;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -44,6 +45,9 @@ public class GlTransaction extends AbstractGlEntity {
 
     @Id
     @Column(name = "ID", nullable = false, updatable = false)
+    @GenericGenerator(name = Constants.ID_GENERATOR_NAME, strategy = Constants.ID_GENERATOR_CLASS)
+    @GeneratedValue(generator = Constants.ID_GENERATOR_NAME)
+    @Override
     public Long getId() {
         return id;
     }
@@ -120,6 +124,6 @@ public class GlTransaction extends AbstractGlEntity {
                 "}\n";
     }
 }
-	
+
 
 

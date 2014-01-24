@@ -3,8 +3,8 @@ package com.sigmasys.kuali.ksa.service;
 import com.sigmasys.kuali.ksa.annotation.AnnotationUtils;
 import com.sigmasys.kuali.ksa.annotation.Auditable;
 import com.sigmasys.kuali.ksa.model.*;
+import com.sigmasys.kuali.ksa.util.ActivityIdGenerator;
 import com.sigmasys.kuali.ksa.util.ContextUtils;
-import com.sigmasys.kuali.ksa.util.LongIdGenerator;
 import com.sigmasys.kuali.ksa.util.RequestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -260,7 +260,7 @@ public class AuditTrailInterceptor extends EmptyInterceptor {
                                      String oldValue, String newValue, String logDetail) {
 
         Activity activity = new Activity();
-        activity.setId(LongIdGenerator.generateLong());
+        activity.setId(ActivityIdGenerator.getInstance().generateId());
         activity.setEntityId(id.toString());
         activity.setEntityType(entityClass.getSimpleName());
         activity.setCreatorId(userId);

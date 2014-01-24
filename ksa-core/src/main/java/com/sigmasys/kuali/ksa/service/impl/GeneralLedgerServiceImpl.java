@@ -146,7 +146,6 @@ public class GeneralLedgerServiceImpl extends GenericPersistenceService implemen
         }
 
         GlTransaction glTransaction = new GlTransaction();
-        glTransaction.setId(LongIdGenerator.generateLong());
         glTransaction.setDate(new Date());
         glTransaction.setAmount(amount != null ? amount : BigDecimal.ZERO);
         glTransaction.setGlAccountId(glAccountId);
