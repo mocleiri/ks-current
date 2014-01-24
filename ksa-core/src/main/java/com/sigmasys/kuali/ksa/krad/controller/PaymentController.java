@@ -197,6 +197,7 @@ public class PaymentController extends GenericSearchController {
                 }
             }
         }
+
         // determine next screen and set up data
         if(form.isAllocatePayment()){
             form.setPageId(ALLOCATE_PAYMENT_PAGE);
@@ -217,6 +218,8 @@ public class PaymentController extends GenericSearchController {
             return performRedirect(form, "paymentView", props);
 
 
+        } else {
+            this.initPayment(form);
         }
 
         return getUIFModelAndView(form);
