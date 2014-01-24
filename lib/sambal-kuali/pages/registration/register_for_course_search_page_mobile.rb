@@ -1,21 +1,10 @@
-class RegisterForCourseSearchMobile < BasePage
-
+class RegisterForCourseSearchMobile < RegisterForCourseSearchBase
   page_url "#{$test_site}/kscr-poc/index.jsp"
   expected_element :cr_header_div
 
   def frm
     self.frame(id: "frame")
   end
-
-  element(:cr_header_div) { |b| b.frm.div(class: "kscr-Header") }
-  element(:search_link) { |b| b.cr_header_div.link(text: "Search") }
-  action(:search) { |b| b.search_link.click; b.loading.wait_while_present }
-  element(:cart_link) { |b| b.cr_header_div.link(text: "Cart") }
-  element(:schedule_link) { |b| b.cr_header_div.link(text: "Schedule") }
-  element(:change_term_link) { |b| b.frm.link(class: "kscr-TermContext-currentChange") }
-  action(:change_term) { |b| b.change_term_link.click; b.loading.wait_while_present }
-
-  element(:term_select) { |b| b.frm.select(id: "searchTerm") }
 
   element(:course_input_div){ |b| b.frm.div(class: "kscr-Search-query") }
   element(:course_input){ |b| b.frm.text_field(id: "searchCourses") }
