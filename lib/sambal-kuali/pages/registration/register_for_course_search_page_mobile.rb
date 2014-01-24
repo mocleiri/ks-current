@@ -3,6 +3,10 @@ class RegisterForCourseSearchMobile < BasePage
   page_url "#{$test_site}/kscr-poc/index.jsp"
   expected_element :cr_header_div
 
+  def frm
+    self.frame(id: "frame")
+  end
+
   element(:cr_header_div) { |b| b.frm.div(class: "kscr-Header") }
   element(:search_link) { |b| b.cr_header_div.link(text: "Search") }
   action(:search) { |b| b.search_link.click; b.loading.wait_while_present }
