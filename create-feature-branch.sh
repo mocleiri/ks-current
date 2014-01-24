@@ -27,7 +27,7 @@ where:
 
 <ks-api source branch>:             either trunk or branches/some_branch
 <aggregate name>:                   in branches mode this is the name of the branch for each module.
-                                    i.e. ks-enroll/brances/aggregate_name
+                                    i.e. ks-enroll/branches/aggregate_name
 <modules>:                          non-api based modules to apply, none if only api
 <in_branches>:                      1 if $module/branches/aggregate_name is the target module location.
                                     0 if $module is the target location.
@@ -37,7 +37,7 @@ where:
 <commit message>:                   commit message to use
 <source revision>:                  0 will find out the current revision.
                                     >0 will use the indicated revision.
-<recreate branches>:                1 will deleted any existing feature branch and replace it with
+<recreate branches>:                1 will delete any existing feature branch and replace it with
                                     the source branch
 <apply aggregate svn:externals>     0 will not apply;
                                     1 will apply svn:externals for the modules in the aggregate.
