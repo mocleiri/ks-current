@@ -1,4 +1,5 @@
 ID,OPTION_ID,ROR_ID
+"15046f22-96bc-4853-b077-db793fcfa80f","kuali.rollover.processing.log.successes","5b88a612-d027-429f-a9f3-b4241ed736c7"
 "206a4b62-1dcd-449b-ac6e-97a3e07a393b","kuali.rollover.processing.log.successes","0234f32a-e4f5-419d-b0da-0fba62fcbbb1"
 "2a53a533-0df6-45c9-a334-30381a18a4f5","kuali.rollover.processing.log.successes","12641403-ca57-4ac6-867c-547efecb40d3"
 "302f3e56-8e6e-4cf5-97d8-eae30272fcf4","kuali.rollover.whatcourses.ifnonewversion","12641403-ca57-4ac6-867c-547efecb40d3"
@@ -10,3 +11,5 @@ ID,OPTION_ID,ROR_ID
 "a4d1c7c3-55a8-4250-b99b-057c04774430","kuali.rollover.whatcourses.ifnonewversion","89e2173a-cd2e-41dd-b37d-55f6da68e2a5"
 "c0dc8b82-9c1b-4bb6-a193-24cfaffc0a7e","kuali.rollover.whatcourses.ifnonewversion","59001cd1-2edf-47d0-a007-00c7d583dc29"
 "d80b8887-6379-49b4-9122-970ea0b17740","kuali.rollover.processing.log.successes","59001cd1-2edf-47d0-a007-00c7d583dc29"
+"e17c2c93-002d-4003-8149-2af97ebaf643","kuali.rollover.option.targetterm.validated","5b88a612-d027-429f-a9f3-b4241ed736c7"
+"f0b57343-288c-4042-b354-f96e6a723250","kuali.rollover.whatcourses.ifnonewversion","5b88a612-d027-429f-a9f3-b4241ed736c7"
