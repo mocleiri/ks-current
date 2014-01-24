@@ -684,5 +684,20 @@ public interface BrmFeeManagementService {
      */
     void setManifestAmount(BigDecimal amount, String internalChargeId, BrmContext context);
 
+    /**
+     * Counts the number of dropped units for the specified rate codes.
+     *
+     * @param rateCodes List of rate codes separated by ","
+     * @param context   BRM context
+     */
+    int countDroppedUnits(String rateCodes, BrmContext context);
+
+    /**
+     * Counts the number of taken units for the specified rate codes.
+     *
+     * @param rateCodes List of rate codes separated by ","
+     * @param context   BRM context
+     */
+    int countTakenUnits(String rateCodes, BrmContext context);
 
 }

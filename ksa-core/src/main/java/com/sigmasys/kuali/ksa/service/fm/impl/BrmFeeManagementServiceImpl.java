@@ -51,7 +51,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
     private static final Log logger = LogFactory.getLog(BrmFeeManagementServiceImpl.class);
 
-    // Global variable names
+    // FM Global variable names
     private static final String FM_SESSION_VAR_NAME = "fmSession";
     private static final String FM_SIGNUP_VAR_NAME = "fmSignup";
 
@@ -2768,6 +2768,65 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 }
             }
         }
+    }
+
+    /**
+     * Counts the number of dropped units for the specified rate codes.
+     *
+     * @param rateCodes List of rate codes separated by ","
+     * @param context   BRM context
+     */
+    @Override
+    public int countDroppedUnits(String rateCodes, BrmContext context) {
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, FeeManagementSignupOperation.DROP.name(), null);
+
+        int droppedUnits = 0;
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            final String key = "late.penalty.drop";
+            final String value = "yes";
+
+            boolean sessionHasLateDropKey = keyPairService.keyPairExists(session, key, value);
+
+            for (FeeManagementSignup signup : signups) {
+                if (signup.getUnits() != null && sessionHasLateDropKey && keyPairService.keyPairExists(signup, key, value)) {
+                    droppedUnits += signup.getUnits();
+                }
+            }
+        }
+
+        return droppedUnits;
+    }
+
+    /**
+     * Counts the number of taken units for the specified rate codes.
+     *
+     * @param rateCodes List of rate codes separated by ","
+     * @param context   BRM context
+     */
+    @Override
+    public int countTakenUnits(String rateCodes, BrmContext context) {
+
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+
+        Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, null, null);
+
+        int takenUnits = 0;
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            for (FeeManagementSignup signup : signups) {
+                if (signup.isTaken() && signup.getUnits() != null) {
+                    takenUnits += signup.getUnits();
+                }
+            }
+        }
+
+        return takenUnits;
     }
 
 
