@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="KS-OrgPersonRelationInfoDetail-View" parent="Uif-Page" p:headerText="@{orgPersonRelation.orgInfo.longName}">
+		<property name="items">
+			<list>
+				<ref bean="KS-OrgPersonRelationInfoDetail-Section" />
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-OrgPersonRelationInfoDetail-Section" parent="Uif-VerticalBoxSection" p:width="500px">
+		<property name="items">
+			<list>
+				<bean parent="Uif-GridGroup">
+	                <property name="layoutManager.numberOfColumns" value="2"/>
+	                <property name="layoutManager.applyDefaultCellWidths" value="false" />
+	                <property name="style" value="margin-bottom:0;"/>
+	                <property name="items">
+                        <list>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.personName" p:label="Person" p:readOnly="true" />
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.typeInfo.name" p:label="Type" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.stateInfo.name" p:label="State" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.effectiveDate" p:label="Effective Date" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.expirationDate" p:label="Expiration Date" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.meta.createId" p:label="Created By" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.meta.createTime" p:label="Date Created" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.meta.updateId" p:label="Last Updated By" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.meta.updateTime" p:label="Last Update" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="orgPersonRelation.id" p:label="Identifier" p:readOnly="true"/>
+						</list>
+					</property>
+				</bean>				
+				<bean parent="Uif-HorizontalFieldGroup">
+					<property name="items">
+						<list>
+							<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Edit" p:navigateToPageId="KS-OrgPersonRelationInfoEdit-View" />
+							<bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="copy" p:actionLabel="Copy" 
+							p:actionParameters="orgPersonRelationId:@{orgPersonRelation.id}" p:ajaxSubmit="false" />
+							<bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="delete" p:actionLabel="Delete" 
+							p:actionParameters="orgPersonRelationId:@{orgPersonRelation.id}" p:ajaxSubmit="false" /> 
+							<bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="cancel" p:actionLabel="Back" 
+							p:actionParameters="returnViewName:KS-OrgPersonRelationInfoSearch-View"/>
+						</list>
+					</property>
+				</bean>	
+			</list>
+		</property>
+	</bean>
+</beans>

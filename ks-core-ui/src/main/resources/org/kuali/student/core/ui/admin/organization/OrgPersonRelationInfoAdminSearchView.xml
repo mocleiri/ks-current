@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	
+	<bean id="KS-OrgPersonRelationInfoSearch-View" parent="Uif-Page" p:headerText="Organization Person Relation Search">
+		<property name="items">
+			<list>
+				<ref bean="KS-OrgPersonRelationSearch-CriteriaSection" />
+				<ref bean="KS-OrgPersonRelationSearch-ResultSection" />
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-OrgPersonRelationSearch-CriteriaSection" parent="Uif-HorizontalBoxSection">
+        <property name="disclosure.render" value="false"/>
+        <property name="style" value="margin-bottom:0;"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-GridSubSection">
+                <property name="layoutManager.numberOfColumns" value="3"/>
+                <property name="layoutManager.applyDefaultCellWidths" value="false" />
+                <property name="style" value="margin-bottom:0;"/>
+                <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalFieldGroup">
+                                <property name="items">
+                                    <list> 
+                                        <bean parent="Uif-InputField" p:propertyName="keywordSearch" p:label="Organization">
+										      <property name="control">
+										      	<bean parent="Uif-TextControl" p:watermarkText="Enter Organization" />										      	
+										      </property>
+										      <property name="suggest">
+										          <bean parent="Uif-Suggest" p:render="true" p:sourcePropertyName="longName">
+										              <property name="suggestQuery">
+										                <bean parent="Uif-AttributeQueryConfig" 
+										                    p:dataObjectClassName="org.kuali.student.r2.core.organization.dto.OrgInfo"
+									                        p:queryMethodToCall="suggestOrganizationsByName" />									                      
+										              </property>										              
+										          </bean>
+									          </property>									          
+										</bean>
+										<bean parent="Uif-InputField" p:propertyName="personName" p:label="Person">
+											 <property name="control">
+										      	<bean parent="Uif-TextControl" p:watermarkText="Enter Person" />										      	
+										     </property>											  
+							        		 <property name="suggest">
+									         	<bean parent="Uif-Suggest" p:render="true" p:sourcePropertyName="name">
+									            	<property name="suggestQuery">
+									                <bean parent="Uif-AttributeQueryConfig" 
+									                    p:dataObjectClassName="org.kuali.rice.kim.api.identity.Person"
+								                        p:queryMethodToCall="suggestPersonsByName" />									                      
+									            	</property>										              
+									         	</bean>
+								           	 </property>								            	  
+								        </bean>
+										<bean parent="Uif-InputField" p:propertyName="resultSize" p:label="Items Per Page" p:width="auto" p:defaultValue="25">
+								          <property name="control">
+								            <bean parent="Uif-DropdownControl" p:options-ref="result-size-options"/>
+								          </property>								          
+								        </bean> 
+										<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Search" p:methodToCall="search"/>
+                                    </list>
+                                </property>
+                            </bean>                            
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Create New" p:methodToCall="create" p:style="float:right"/>
+            </list>
+        </property>
+    </bean>
+    
+    <util:list id="result-size-options">
+	    <bean parent="Uif-KeyLabelPair" p:key="25" p:value="25"/>
+	    <bean parent="Uif-KeyLabelPair" p:key="50" p:value="50"/>
+	    <bean parent="Uif-KeyLabelPair" p:key="100" p:value="100"/>
+	    <bean parent="Uif-KeyLabelPair" p:key="All" p:value="All"/>
+  	</util:list>
+  
+    <bean id="KS-OrgPersonRelationSearch-ResultSection" parent="Uif-VerticalBoxSection">
+        <property name="header.render" value="false" />
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <ref bean="KS-OrgPersonRelationLookup-Result"/>
+            </list>
+        </property>
+    </bean>
+ 
+    <bean id="KS-OrgPersonRelationLookup-Result" parent="Uif-TableCollectionSection"
+          p:layoutManager.numberOfColumns="6" p:renderAddLine="false">
+        <property name="collectionObjectClass" value="org.kuali.student.core.organization.ui.form.model.OrgPersonRelationUIModel" />
+        <property name="propertyName" value="orgPersonRelationUIModel" />        
+        <property name="layoutManager.renderSequenceField" value="false" />
+        <property name="layoutManager.applyDefaultCellWidths" value="false" />
+        <property name="layoutManager.applyAlternatingRowStyles" value="false" />
+        <property name="layoutManager.actionColumnPlacement" value="LEFT" />
+        <property name="items">
+            <list>
+            	<bean parent="Uif-DataField" p:propertyName="orgId" p:readOnlyDisplayReplacementPropertyName="orgInfo.longName" p:label="Organization"/>               
+                <bean parent="Uif-DataField" p:propertyName="personId" p:readOnlyDisplayReplacementPropertyName="personName" p:label="Person"/>		       	   
+		        <bean parent="Uif-DataField" p:propertyName="typeKey" p:readOnlyDisplayReplacementPropertyName="typeInfo.name" p:label="Type"/>
+		        <bean parent="Uif-DataField" p:propertyName="stateKey" p:readOnlyDisplayReplacementPropertyName="stateInfo.name" p:label="State"/>
+		        <bean parent="Uif-DataField" p:propertyName="effectiveDate" p:label="Effective Date"/>
+		        <bean parent="Uif-DataField" p:propertyName="expirationDate" p:label="Expiration Date"/>
+            </list>
+        </property>
+        <property name="layoutManager.actionFieldPrototype">
+            <bean parent="Uif-HorizontalFieldGroup" p:align="left" p:required="false" p:label="Actions" p:style="display:inline;"/>
+        </property>
+        <property name="lineActions">
+            <list>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="view" p:actionLabel="View" p:ajaxSubmit="false" 
+                    p:actionParameters="orgPersonRelationId:@{#line.id}"/>
+                
+            </list>
+        </property>
+    </bean>
+</beans>

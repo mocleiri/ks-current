@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<import resource="classpath:UifKSDefinitions.xml"/>	
+	
+	<bean id="KS-PersonAuthRequest-View" parent="KS-Uif-FormView">
+		<property name="id" value="personAuthorizationRequestView" />
+		<property name="headerText" value="Person Authorization Request" />
+		<property name="formClass"	value="org.kuali.student.core.organization.ui.form.PersonAuthorizationForm" />
+		<property name="viewHelperServiceClass" value="org.kuali.student.core.organization.ui.utils.OrganizationServiceHelper" />
+		<property name="renderHeader" value="false" />
+		<property name="renderFooter" value="false" />		
+		<property name="formPostUrl" value="personAuthorization" />
+		<property name="items">
+			<list>
+				<ref bean="KS-Person-Auth-Request-View" />
+				<ref bean="KS-Person-Auth-Request-Confirm-View" />
+				<ref bean="KS-Person-Auth-Response-View"/>
+				<ref bean="KS-Person-Auth-Detail-View"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="KS-Person-Auth-Request-View" parent="Uif-Page" p:headerText="Organization Authorization Request Submission">
+		<property name="items">
+			<list>
+				<ref bean="KS-Person-Auth-Request-Section" />
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Request-Section" parent="Uif-VerticalBoxSection" >
+		<property name="items">
+			<list>
+				<bean parent="Uif-GridGroup">
+	                <property name="layoutManager.numberOfColumns" value="2"/>
+	                <property name="layoutManager.applyDefaultCellWidths" value="false" />
+	                <property name="style" value="margin-bottom:0;"/>
+	                <property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" 
+								p:propertyName="submittedByName" p:label="Request Submitted By" p:required="true"
+								p:defaultValue="@{submittedByName}" p:readOnly="true">
+								 <property name="control">
+							      	<bean parent="Uif-TextControl" p:watermarkText="Enter Name" />										      	
+							     </property>											  
+				        		 <property name="suggest">
+						         	<bean parent="Uif-Suggest" p:render="true" p:sourcePropertyName="name">
+						            	<property name="suggestQuery">
+						                <bean parent="Uif-AttributeQueryConfig" 
+						                    p:dataObjectClassName="org.kuali.rice.kim.api.identity.Person"
+					                        p:queryMethodToCall="suggestPersonsByName" />									                      
+						            	</property>										              
+						         	</bean>
+					           	 </property>								            	  
+							</bean>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedForName" p:label="Request Authorization For" p:required="true" 
+								p:defaultValue="@{submittedByName}" p:readOnly="@{clarificationRequired}">
+								 <property name="control">
+							      	<bean parent="Uif-TextControl" p:watermarkText="Enter Name" />										      	
+							     </property>											  
+				        		 <property name="suggest">
+						         	<bean parent="Uif-Suggest" p:render="true" p:sourcePropertyName="name">
+						            	<property name="suggestQuery">
+						                <bean parent="Uif-AttributeQueryConfig" 
+						                    p:dataObjectClassName="org.kuali.rice.kim.api.identity.Person"
+					                        p:queryMethodToCall="suggestPersonsByName" />									                      
+						            	</property>										              
+						         	</bean>
+					           	 </property>								            	  
+							</bean>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="forOrganizationId" p:label="Department" p:required="true" p:readOnly="@{clarificationRequired}"
+								p:defaultValue="@{forOrganizationId}">
+								<property name="control">
+            						<bean parent="Uif-DropdownControl" p:size="5"/>
+          						</property>
+          						<property name="optionsFinder">
+					            	<bean class="org.kuali.student.core.organization.ui.lookup.keyvalues.DepartmentNameKeyValues"/>
+					          	</property>
+							</bean>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.effectiveDate" p:label="Requested Effective Date" p:required="true" 
+								p:defaultValue="@{effectiveDateString}" p:readOnly="@{clarificationRequired}">
+								<property name="control">
+            						<bean parent="Uif-DateControl"/>
+          						</property>
+							</bean>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.descr.plain" p:label="Notes" >		
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>					
+							</bean>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="formattedRationale" p:label="Approver Notes" p:readOnly="true" p:render="@{clarificationRequired}" >		
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>					
+							</bean>		
+							<bean parent="Uif-HorizontalFieldGroup">
+                                <property name="items">
+                                    <list>
+                                    	<bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="submit" p:actionLabel="Submit Request" />
+                                    	<bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="widthdraw" p:actionLabel="Cancel" p:render="@{clarificationRequired}"/>
+                                    </list>
+                                </property>
+                              </bean>						
+						</list>
+					</property>
+				</bean>				
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Request-Confirm-View" parent="Uif-Page" p:headerText="Authorization Request Submited">
+		<property name="items">
+			<list>
+				<ref bean="KS-Person-Auth-Request-Detail-Section" />
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Request-Detail-Section" parent="Uif-VerticalBoxSection">
+		<property name="items">
+			<list>
+				<bean parent="Uif-GridGroup">
+	                <property name="layoutManager.numberOfColumns" value="2"/>
+	                <property name="layoutManager.applyDefaultCellWidths" value="false" />
+	                <property name="style" value="margin-bottom:0;"/>
+	                <property name="items">
+                        <list>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedByName" p:label="Request Submitted By" p:readOnly="true" />
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedForName" p:label="Request Authorization For" p:readOnly="true"/>					        
+							<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="forOrganizationName" p:label="Department" />							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.effectiveDate" p:label="Requested Effective Date" p:readOnly="true"/>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="formattedDescription" p:label="Notes" p:readOnly="true">
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>	
+							</bean>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.meta.createTime" p:label="Date Submitted" p:readOnly="true"/>															
+						</list>
+					</property>
+				</bean>	
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Response-View" parent="Uif-Page" p:headerText="Organization Authorization Request Response">
+		<property name="items">
+			<list>
+				<ref bean="KS-Person-Auth-Response-View-Section" />
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Response-View-Section" parent="Uif-VerticalBoxSection">
+		<property name="items">
+			<list>
+				<bean parent="Uif-GridGroup">
+	                <property name="layoutManager.numberOfColumns" value="2"/>
+	                <property name="layoutManager.applyDefaultCellWidths" value="false" />	                
+	                <property name="style" value="margin-bottom:0;"/>
+	                <property name="items">
+                        <list>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedByName" p:label="Request Submitted By" p:readOnly="true" />
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedForName" p:label="Request Authorization For" p:readOnly="true"/>					        
+							<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="forOrganizationName" p:label="Department" />
+								<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="typeName" p:label="Type" />
+								<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="stateName" p:label="State" />							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.effectiveDate" p:label="Requested Effective Date" p:readOnly="true"/>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="formattedDescription" p:label="Notes" p:readOnly="true">
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>	
+							</bean>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.meta.createTime" p:label="Date Submitted" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.rationale.plain" p:label="Approver Notes" >
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>	
+							</bean>
+							<bean parent="Uif-HorizontalFieldGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Approve" p:methodToCall="performApproval" p:actionParameters="action:approved"/>
+                                        <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Deny" p:methodToCall="performApproval" p:actionParameters="action:denied"/>
+                                        <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Request Clarification" p:methodToCall="performApproval" p:actionParameters="action:clarification"/>                                        
+                                    </list>
+                                </property>
+                            </bean>															
+						</list>
+					</property>
+				</bean>	
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Detail-View" parent="Uif-Page" p:headerText="Person Authorization Detail">
+		<property name="items">
+			<list>
+				<ref bean="KS-Person-Auth-Detail-View-Section" />
+			</list>
+		</property>
+	</bean>
+	<bean id="KS-Person-Auth-Detail-View-Section" parent="Uif-VerticalBoxSection">
+		<property name="items">
+			<list>
+				<bean parent="Uif-GridGroup">
+					<property name="layoutManager.numberOfColumns" value="2" />
+					<property name="layoutManager.applyDefaultCellWidths"
+						value="false" />
+					<property name="style" value="margin-bottom:0;" />
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedByName" p:label="Request Submitted By" p:readOnly="true" />
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="submittedForName" p:label="Request Authorization For" p:readOnly="true"/>					        
+							<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="forOrganizationName" p:label="Department" p:readOnly="true"/>
+							<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="typeName" p:label="Type" p:readOnly="true"/>
+							<bean parent="Uif-DataField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true"
+								p:propertyName="stateName" p:label="State" p:readOnly="true"/>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.effectiveDate" p:label="Requested Effective Date" p:readOnly="true"/>							
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="formattedDescription" p:label="Notes" p:readOnly="true">
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>	
+							</bean>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="proposalInfo.meta.createTime" p:label="Date Submitted" p:readOnly="true"/>
+							<bean parent="Uif-InputField" p:labelPlacement="LEFT" p:fieldLabel.renderColon="true" p:style="align: right;"
+								p:propertyName="formattedRationale" p:label="Approver Notes" p:readOnly="true">
+								<property name="control">
+            						<bean parent="Uif-LargeTextAreaControl" />
+          						</property>	
+							</bean>
+							<bean parent="Uif-HorizontalFieldGroup">
+                                <property name="items">
+                                    <list>                                    												
+                                        <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Acknowledge" p:methodToCall="acknowledge" 
+                                        	p:render="@{renderAck}"/>
+                                    </list>
+                                </property>
+                            </bean>	
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>		
+</beans>

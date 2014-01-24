@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="ns:workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="ns:workflow resource:WorkflowData">
+
+	<documentTypes xmlns="ns:workflow/DocumentType"
+		xsi:schemaLocation="ns:workflow/DocumentType resource:DocumentType">
+
+		<documentType>
+			<name>AuthorizationRequestDocument</name>
+			<parent>KualiStudentDocument</parent>
+			<description>Person Authorization Request</description>
+			<label>Kuali Student Person Authorization</label>
+			<postProcessorName>org.kuali.student.lum.workflow.PersonAuthorizationPostProcessor</postProcessorName>
+			<docHandler>
+			${application.url}/portal.do?channelTitle=Person%20Authorization%20Request&amp;channelUrl=${application.url}/kr-krad/personAuthorization?viewId=personAuthorizationRequestView&amp;methodToCall=start
+			</docHandler>
+			<active>true</active>
+			<routePaths>
+				<routePath>
+					<start name="PreRoute" nextNode="Kuali Student CM Admin" />
+					<role name="Kuali Student CM Admin" />
+				</routePath>
+			</routePaths>
+			<routeNodes>
+				<start name="PreRoute">
+					<activationType>P</activationType>
+				</start>
+				<role name="Kuali Student CM Admin">
+					<activationType>P</activationType>
+				</role>
+			</routeNodes>
+		</documentType>
+	</documentTypes>
+</data>

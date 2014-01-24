@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    <context:annotation-config/>
+
+    <import resource="classpath:META-INF/default-property-config-context-test.xml"/>
+    <import resource="classpath:search-test-context.xml"/>
+
+    <bean id="systemPropertyConfigurer"
+          class="org.kuali.student.common.util.SystemPropertyConfigurer">
+        <property name="properties" value="${propertiesPrefix.systemProperties}"/>
+    </bean>
+
+    <bean id="AtomikosTxMgr"
+          class="com.atomikos.icatch.jta.UserTransactionManager"
+          init-method="init" destroy-method="close" depends-on="systemPropertyConfigurer" autowire-candidate="false" autowire="no">
+        <property name="forceShutdown" value="true" />
+        <property name="startupTransactionService" value="true" />
+        <property name="transactionTimeout" value="60" />
+    </bean>
+
+    <bean id="AtomikosUsrTx"
+          class="com.atomikos.icatch.jta.UserTransactionImp" depends-on="systemPropertyConfigurer"></bean>
+
+    <bean id="JtaTxManager"
+          class="org.springframework.transaction.jta.JtaTransactionManager" depends-on="systemPropertyConfigurer" autowire-candidate="false" autowire="no">
+        <property name="transactionManager" ref="AtomikosTxMgr" />
+        <property name="userTransaction" ref="AtomikosUsrTx" />
+        <property name="transactionSynchronizationName"
+                  value="SYNCHRONIZATION_ON_ACTUAL_TRANSACTION" />
+    </bean>
+
+    <bean id="dataSource"
+          class="org.kuali.student.common.test.spring.UniqueResourceAtomikosDataSourceBean" init-method="init"
+          destroy-method="close" depends-on="systemPropertyConfigurer">
+        <property name="uniqueResourceName" value="dataSource" />
+        <property name="xaDataSourceClassName"
+                  value="${jdbc.xaDataSourceClassName}" />
+        <property name="xaProperties" value="${propertiesPrefix.jdbc.xaDataSourceProperties}"/>
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
+    </bean>
+
+    <bean id="vendorAdapter" class="${jpa.vendorAdapter}" depends-on="propertyConfigurer">
+        <property name="databasePlatform"
+                  value="${jpa.databasePlatform}" />
+        <property name="showSql" value="${jpa.showSql}" />
+        <property name="generateDdl" value="${jpa.generateDdl}" />
+    </bean>
+
+    <!-- Default JPA EntityManagerFactory -->
+    <bean id="defaultEntityManagerFactory" abstract="true"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" autowire-candidate="false" autowire="byType">
+        <property name="jpaVendorAdapter" ref="vendorAdapter" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaPropertyMap" value="${propertiesPrefix.jpa.properties}"/>
+    </bean>
+
+    <bean id="entityManagerFactory" parent="defaultEntityManagerFactory" autowire-candidate="false" autowire="no">
+        <property name="persistenceUnitName" value="Organization"/>
+        <property name="persistenceXmlLocation" value="classpath:META-INF/organization-persistence.xml" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="entityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" autowire-candidate="false" autowire="no">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="typeDao" class="org.kuali.student.r2.common.class1.type.dao.TypeDao"/>
+    <bean id="typeTypeRelationDao" class="org.kuali.student.r2.common.class1.type.dao.TypeTypeRelationDao"/>
+
+    <bean id="typeServiceImpl" class="org.kuali.student.r2.common.class1.type.service.TypeServiceImpl">
+        <property name="typeDao" ref="typeDao"/>
+        <property name="typeTypeRelationDao" ref="typeTypeRelationDao"/>
+    </bean>
+
+    <bean id="enrollSearchableDao" class="org.kuali.student.r2.common.dao.impl.SearchableCrudDaoImpl">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="orgDao"
+          class="org.kuali.student.r2.core.organization.dao.OrgDao">
+        <property name="em" ref="entityManager" />
+    </bean>
+
+    <bean id="orgHierarchyDao"
+          class="org.kuali.student.r2.core.organization.dao.OrgHierarchyDao">
+        <property name="em" ref="entityManager" />
+    </bean>
+
+    <bean id="orgOrgRelationDao"
+          class="org.kuali.student.r2.core.organization.dao.OrgOrgRelationDao">
+        <property name="em" ref="entityManager" />
+    </bean>
+
+    <bean id="orgPersonRelationDao"
+          class="org.kuali.student.r2.core.organization.dao.OrgPersonRelationDao">
+        <property name="em" ref="entityManager" />
+    </bean>
+
+    <bean id="orgPositionRestrictionDao"
+          class="org.kuali.student.r2.core.organization.dao.OrgPositionRestrictionDao">
+        <property name="em" ref="entityManager" />
+    </bean>
+
+    <bean id="organizationHierarchySearch"
+          class="org.kuali.student.r1.core.organizationsearch.service.impl.OrganizationHierarchySearch">
+        <property name="orgDao" ref="orgDao"/>
+        <property name="orgOrgRelationDao" ref="orgOrgRelationDao" />
+    </bean>
+
+    <bean id="orgSearchManager"
+          class="org.kuali.student.r2.common.class1.search.SearchManagerImpl">
+        <constructor-arg index="0" value="classpath:organization-search-config.xml" />
+        <property name="dao" ref="enrollSearchableDao"/>
+    </bean>
+
+    <bean id="orgSearchServiceImpl"
+          class="org.kuali.student.r2.core.search.OrganizationSearchServiceImpl">
+        <property name="searchManager" ref="orgSearchManager" />
+        <property name="typeService" ref="typeServiceImpl" />
+        <property name="searchOperations">
+            <map>
+                <entry key="org.search.orgQuickViewByRelationTypeOrgTypeRelatedOrgIds" value-ref="organizationHierarchySearch"/>
+            </map>
+        </property>
+    </bean>
+
+
+    <bean id="descrTransform" class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+        <property name="renameAttributes">
+            <map>
+                <entry key="descr.plain" value="descrPlain"/>
+                <entry key="descr.formatted" value="descrFormatted"/>
+                <entry key="longDescr.plain" value="longDescrPlain"/>
+                <entry key="longDescr.formatted" value="longDescrFormatted"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="metaTransform" class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+        <property name="renameAttributes">
+            <map>
+                <entry key="meta.createId" value="createId"/>
+                <entry key="meta.createTime" value="createTime"/>
+                <entry key="meta.updateId" value="createId"/>
+                <entry key="meta.updateTime" value="updateTime"/>
+                <entry key="meta.versionInd" value="versionInd"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="keyword2LikeTransform" class="org.kuali.student.r2.common.criteria.transform.Keyword2LikeTransform">
+        <property name="keywordAttribute" value="keywordSearch" />
+        <property name="likeAttributes">
+            <list>
+                <value>name</value>
+                <value>descr.plain</value>
+                <value>descr.formatted</value>
+                <value>longDescr.plain</value>
+                <value>longDescr.formatted</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="coreCriteriaLookupService" class="org.kuali.student.r2.common.criteria.impl.CriteriaLookupServiceImpl">
+        <property name="criteriaLookupDao" ref="criterialookupDaoJpa"/>
+        <property name="predicateTransforms">
+            <list>
+                <ref bean="keyword2LikeTransform"/>
+                <ref bean="descrTransform"/>
+                <ref bean="metaTransform"/>
+                <ref bean="attributeTransform"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="orgSearchCriteria" parent="coreCriteriaLookupService">
+        <property name="predicateTransforms">
+            <list merge="true">
+                <bean class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+                    <property name="renameAttributes">
+                        <map>
+                            <entry key="stateKey" value="orgState"/>
+                            <entry key="typeKey" value="orgType"/>
+                        </map>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="orgHierarchySearchCriteria" parent="coreCriteriaLookupService">
+        <property name="predicateTransforms">
+            <list merge="true">
+                <bean class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+                    <property name="renameAttributes">
+                        <map>
+                            <entry key="stateKey" value="orgHierarchyState"/>
+                            <entry key="typeKey" value="orgHierarchyType"/>
+                        </map>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="orgOrgRelationSearchCriteria" parent="coreCriteriaLookupService">
+        <property name="predicateTransforms">
+            <list merge="true">
+                <bean class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+                    <property name="renameAttributes">
+                        <map>
+                            <entry key="stateKey" value="orgOrgRelationState"/>
+                            <entry key="typeKey" value="orgOrgRelationType"/>
+                        </map>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="orgPersonRelationSearchCriteria" parent="coreCriteriaLookupService">
+        <property name="predicateTransforms">
+            <list merge="true">
+                <bean class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+                    <property name="renameAttributes">
+                        <map>
+                            <entry key="stateKey" value="orgPersonRelationState"/>
+                            <entry key="typeKey" value="orgPersonRelationType"/>
+                        </map>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="organizationService"
+          class="org.kuali.student.r2.core.organization.service.impl.OrganizationServiceImpl">
+        <property name="orgDao" ref="orgDao" />
+        <property name="orgHierarchyDao" ref="orgHierarchyDao" />
+        <property name="orgOrgRelationDao" ref="orgOrgRelationDao"/>
+        <property name="orgPersonRelationDao" ref="orgPersonRelationDao"/>
+        <property name="orgPositionRestrictionDao" ref="orgPositionRestrictionDao"/>
+        <property name="orgCriteriaLookupService" ref="orgSearchCriteria"/>
+        <property name="orgHierarchyCriteriaLookupService" ref="orgHierarchySearchCriteria"/>
+        <property name="orgOrgRelationCriteriaLookupService" ref="orgOrgRelationSearchCriteria"/>
+        <property name="orgPersonRelationCriteriaLookupService" ref="orgPersonRelationSearchCriteria"/>
+        <property name="orgPositionRestrictionCriteriaLookupService" ref="coreCriteriaLookupService"/>
+        <property name="typeService"  ref="typeServiceImpl" />
+    </bean>
+
+    <bean id="organizationDataLoader"
+          class="org.kuali.student.r2.core.organization.service.OrganizationServiceDataLoader" autowire="default">
+        <property name="orgService" ref="organizationService"/>
+    </bean>
+
+    <bean id="orgAuthorizationService" class="org.kuali.student.r2.core.organization.service.decorators.OrganizationServiceAuthorizationDecorator">
+        <property name="nextDecorator" ref="organizationService" />
+        <property name="permissionService"  ref="roleAndPermissionService" />
+    </bean>
+
+    <bean id="organizationPermissionLoader"
+          class="org.kuali.student.r2.core.organization.service.OrgPermissionDataLoader"  autowire="default">
+    </bean>
+
+
+    <bean id="roleAndPermissionService" class="org.kuali.student.kim.permission.mock.RoleAndPermissionServiceMockImpl"/>
+</beans>
+

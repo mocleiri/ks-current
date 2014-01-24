@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<import resource="classpath:UifKSDefinitions.xml"/>	
+	
+	<bean id="KS-OrgPersonRelationInfoManage-View" parent="KS-Uif-FormView">
+		<property name="id" value="orgPersonRelationInfoManageView" />
+		<property name="headerText" value="Organization Person Relation" />
+		<property name="formClass"	value="org.kuali.student.core.organization.ui.form.OrgPersonRelationInfoAdminSearchForm" />
+		<property name="viewHelperServiceClass" value="org.kuali.student.core.organization.ui.utils.OrganizationServiceHelper" />
+		<property name="renderHeader" value="false" />
+		<property name="renderFooter" value="false" />		
+		<property name="formPostUrl" value="orgPersonRelationInfoAdminManage" />
+		<property name="entryPageId" value="KS-OrgPersonRelationInfoSearch-View" />
+		<property name="theme">
+      		<bean parent="KSTheme"/>
+    	</property>
+		<property name="items">
+			<list>
+				<ref bean="KS-OrgPersonRelationInfoSearch-View" />
+				<ref bean="KS-OrgPersonRelationInfoDetail-View" />
+				<ref bean="KS-OrgPersonRelationInfoEdit-View" />
+				<ref bean="KS-OrgPersonRelationInfoCreate-View" />
+			</list>
+		</property>
+	</bean>
+</beans>

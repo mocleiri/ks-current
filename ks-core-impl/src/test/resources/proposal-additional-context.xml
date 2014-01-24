@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 The Kuali Foundation Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 ">
+
+    <bean id="entityManager"
+          class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="searchableCrudDao" class="org.kuali.student.r2.common.dao.impl.SearchableCrudDaoImpl">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="searchManager"
+		class="org.kuali.student.r2.common.class1.search.SearchManagerImpl"
+		autowire="byType">
+        <property name="dao" ref="searchableCrudDao"/>
+		<constructor-arg index="0" value="classpath:proposal-search-config.xml" />
+	</bean>
+	
+    <bean id="dictionaryServiceDelegate" class="org.kuali.student.r1.common.dictionary.service.impl.DictionaryServiceImpl">
+        <constructor-arg index="0" value="classpath:ks-proposalInfo-dictionary-context.xml" />
+    </bean>
+
+ 	<bean id="proposalServiceValidator" class="org.kuali.student.r1.core.dictionary.service.MockDefaultValidatorImpl"/>
+
+	<bean id="validatorFactory"
+  		class="org.kuali.student.r2.common.validator.ValidatorFactory">
+  	 <property name="defaultValidator" ref="proposalServiceValidator"/>
+  	</bean>
+
+
+    <bean id="criterialookupDaoJpaCore" class="org.kuali.student.r2.common.criteria.impl.CriteriaLookupDaoJpaImpl">
+        <property name="entityManager" ref="entityManager"/>
+    </bean>
+
+    <bean id="proposalCriteriaLookupService" class="org.kuali.student.r2.common.criteria.impl.CriteriaLookupServiceImpl">
+        <property name="criteriaLookupDao" ref="criterialookupDaoJpaCore"/>
+        <property name="predicateTransforms">
+            <list>
+                <ref bean="proposalLkeyword2LikeTransform"/>
+                <ref bean="proposalDescrTransform"/>
+                <ref bean="proposalRationaleTransform"/>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="proposalLkeyword2LikeTransform" class="org.kuali.student.r2.common.criteria.transform.Keyword2LikeTransform">
+        <property name="keywordAttribute" value="keywordSearch" />
+        <property name="likeAttributes">
+            <list>
+                <value>name</value>
+                <value>detailDesc</value>
+                <value>rationale</value>
+            </list>
+        </property>
+    </bean>
+<!-- commenting this out because I cannot get it to work (norm wright)
+    <bean id="proposerPersonAndOrgTransform" class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+        <property name="renameAttributes">
+            <map>
+                <entry key="proposerPerson" value="proposerPerson.personId"/>
+                <entry key="proposerOrg" value="proposerOrg.orgId"/>
+            </map>
+        </property>
+    </bean>-->
+    <bean id="proposalDescrTransform" class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+        <property name="renameAttributes">
+            <map>
+                <entry key="descr.plain" value="detailDesc"/>
+                <entry key="descr.formatted" value="detailDesc"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="proposalRationaleTransform" class="org.kuali.student.r2.common.criteria.transform.RenameTransform">
+        <property name="renameAttributes">
+            <map>
+                <entry key="rationale.plain" value="rationale"/>
+                <entry key="rationale.formatted" value="rationale"/>
+            </map>
+        </property>
+    </bean>
+</beans>
