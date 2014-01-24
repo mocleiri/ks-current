@@ -1,3 +1,3 @@
 CATEGORY_ID,EFF_DT,EXPIR_DT,NAME,RT_DESCR_ID,OBJ_ID,VER_NBR
-"documentCategory.course","2000-01-01T00:00:00.000+0000","${mpx.null}","Course Documents","RT-DESC-DOCUMENT-2","C72E90E456F44D9990F5C37B0C465750","0"
-"documentCategory.proposal","2000-01-01T00:00:00.000+0000","${mpx.null}","Proposal Documents","RT-DESC-DOCUMENT-1","9574D1E895B64D4F9C7987393FCB2D60","0"
+"documentCategory.course","2000-01-01T00:00:00.000-0500","${mpx.null}","Course Documents","RT-DESC-DOCUMENT-2","C72E90E456F44D9990F5C37B0C465750","0"
+"documentCategory.proposal","2000-01-01T00:00:00.000-0500","${mpx.null}","Proposal Documents","RT-DESC-DOCUMENT-1","9574D1E895B64D4F9C7987393FCB2D60","0"
