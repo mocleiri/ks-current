@@ -121,6 +121,63 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         Assert.isTrue(session == updatedSession);
     }
 
+    @Test
+    public void javaRule1() throws Exception {
+
+        // Create an FM session and manifest:
+        FeeManagementSession session = createFmSession(1, true, false, false, false, FeeManagementManifestType.ORIGINAL);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSignup signup = session.getSignups().iterator().next();
+
+        Assert.notNull(signup);
+
+        // Calling BrmService with payment application rules
+        BrmContext context = new BrmContext();
+        context.setAccount(session.getAccount());
+        context.setGlobalVariable("fmSession", session);
+
+        String[] rateCodes = {
+                "cp.undergrad.resident.pt",
+                "cp.undergrad.nonresident.pt",
+                "cp.graduate.resident.pt",
+                "cp.graduate.nonresident.pt"
+        };
+
+        UnitNumber threshold = new UnitNumber(12);
+
+        for (String rateCode : rateCodes) {
+
+            List<Rate> rates = rateService.getRatesByCode(rateCode);
+
+            Assert.notNull(rates);
+            Assert.notEmpty(rates);
+
+            Rate rate = rateService.getRate(rateCode, "default", session.getAtpId());
+
+            Assert.notNull(rate);
+            Assert.notNull(rate.getId());
+
+            UnitNumber numberOfDroppedUnits = context.getFmService().countDroppedUnits(rateCode, context);
+            UnitNumber numberOfTakenUnits = context.getFmService().countTakenUnits(rateCode, context);
+
+            UnitNumber numberOfUnits = numberOfTakenUnits.add(numberOfDroppedUnits);
+
+            if (numberOfUnits.compareTo(threshold) > 0) {
+                numberOfDroppedUnits = numberOfDroppedUnits.subtract(numberOfUnits.subtract(threshold));
+            }
+
+            UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(new UnitNumber(5));
+
+            context.getFmService().chargeIncidentalRate(rateCode, "default", rateCode + ".default", numberOfUnitsToCharge, null, context);
+        }
+
+    }
+
 
     /********************************************************************************
      *
@@ -153,7 +210,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         session.setChargeStatus(FeeManagementSessionStatus.RECONCILED);
         session.setAccount(account);
 
-        session.setAtpId("19871");
+        session.setAtpId("20134");
 
         persistenceService.persistEntity(session);
 
@@ -162,7 +219,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         signup.setRegistrationId(new GuidGenerator().getNewGuid());
         signup.setCreationDate(new Date());
         signup.setEffectiveDate(new Date());
-        signup.setAtpId("19871");
+        signup.setAtpId("20134");
         signup.setOfferingType(OfferingType.ACTIVITY_OFFERING);
         signup.setSession(session);
         signup.setOperation(FeeManagementSignupOperation.ADD_WITHOUT_PENALTY);
@@ -270,7 +327,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
     private Rate _createRate(String rateCode, String subCode, String rateCatalogCode) throws Exception {
 
-        String atpId = "19871";
+        String atpId = "20134";
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_US);
 
@@ -361,8 +418,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         BigDecimal minLimitAmount = new BigDecimal(2.01);
         BigDecimal maxLimitAmount = new BigDecimal(200033.01);
 
-        //BigDecimal limitAmount = new BigDecimal(200.88);
-
         int minLimitUnits = 0;
         int maxLimitUnits = 10;
 
@@ -372,7 +427,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         RateCatalog rateCatalog = rateService.createRateCatalog(rateCatalogCode, rateTypeCode, transactionTypeId,
                 dateType, minAmount, maxAmount, minLimitAmount, maxLimitAmount, minLimitUnits, maxLimitUnits,
-                Arrays.asList("19871", "19872", "19873", "19874"), keyPairs, false, false, false, false, false, false);
+                Arrays.asList("19871", "19872", "19873", "19874", "20134"), keyPairs, false, false, false, false, false, false);
 
         Assert.notNull(rateCatalog);
         Assert.notNull(rateCatalog.getId());

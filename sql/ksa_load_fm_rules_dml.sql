@@ -27,6 +27,7 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  on session fire "FM Session 1" rule set
  on each session signup fire "FM Signup 2" rule set
  on session fire "FM Session 2" rule set
+ on session fire "FM Session 3" rule set
 ')!
 
 -- FM Signup 1 rule set --
@@ -552,7 +553,7 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 
 -- FM Session 3 Java-based rule set --
 
-Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (105, 'FM Session 3', 3,
+Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (105, 'FM Session 3', 2,
 'import java.util.*;
 import java.math.*;
 import com.sigmasys.kuali.ksa.model.*;
@@ -566,6 +567,35 @@ import org.apache.commons.lang.*;
 
 global FeeManagementSession fmSession;
 
+')!
+
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (9001, 'FM Session 3_1', 2, 10, null,
+'context : BrmContext(isInitialized())',
+'
+        String[] rateCodes = {
+                          "cp.undergrad.resident.pt",
+                          "cp.undergrad.nonresident.pt",
+                          "cp.graduate.resident.pt",
+                          "cp.graduate.nonresident.pt"
+                 };
+
+        UnitNumber threshold = new UnitNumber(12);
+
+        for (int i = 0; i < rateCodes.length; i++) {
+
+            UnitNumber numberOfDroppedUnits = context.getFmService().countDroppedUnits(rateCodes[i], context);
+            UnitNumber numberOfTakenUnits = context.getFmService().countTakenUnits(rateCodes[i], context);
+
+            UnitNumber numberOfUnits = numberOfTakenUnits.add(numberOfDroppedUnits);
+
+            if (numberOfUnits.compareTo(threshold) > 0) {
+                numberOfDroppedUnits = numberOfDroppedUnits.subtract(numberOfUnits.subtract(threshold));
+            }
+
+            UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(new UnitNumber(5));
+
+            context.getFmService().chargeIncidentalRate(rateCodes[i], "default", rateCodes[i] + ".default", numberOfUnitsToCharge, null, context);
+        }
 ')!
 
 -- FM rule associations
@@ -669,6 +699,9 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8003)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8004)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8005)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (104, 8006)!
+
+-- FM Session 3 rule set --
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (105, 9001)!
 
 
 -----------------------------------------------------------------------------------------------------------------------

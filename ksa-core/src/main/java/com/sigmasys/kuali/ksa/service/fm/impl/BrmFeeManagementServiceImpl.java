@@ -2196,7 +2196,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void chargeIncidentalRate(String rateCode,
                                      String rateSubCode,
                                      String internalChargeId,
-                                     int numberOfUnits,
+                                     UnitNumber numberOfUnits,
                                      BigDecimal amount,
                                      BrmContext context) {
 
@@ -2211,10 +2211,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        UnitNumber unitNumber = new UnitNumber(numberOfUnits);
-
         if (amount == null) {
-            amount = rateService.getAmountFromRate(rate.getId(), unitNumber);
+            amount = rateService.getAmountFromRate(rate.getId(), numberOfUnits);
         }
 
         Date currentDate = new Date();
@@ -2222,7 +2220,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         Date effectiveDate = rateService.getEffectiveDateFromRate(rate.getId(), currentDate);
         Date recognitionDate = rateService.getRecognitionDateFromRate(rate.getId(), currentDate);
 
-        String transactionTypeId = rateService.getTransactionTypeIdFromRate(rate.getId(), unitNumber);
+        String transactionTypeId = rateService.getTransactionTypeIdFromRate(rate.getId(), numberOfUnits);
 
         FeeManagementManifest manifest = fmService.createFeeManagementManifest(FeeManagementManifestType.CHARGE,
                 FeeManagementManifestStatus.PENDING,

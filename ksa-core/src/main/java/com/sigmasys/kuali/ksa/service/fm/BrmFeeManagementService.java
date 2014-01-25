@@ -541,7 +541,7 @@ public interface BrmFeeManagementService {
     void chargeIncidentalRate(String rateCode,
                               String rateSubCode,
                               String internalChargeId,
-                              int numberOfUnits,
+                              UnitNumber numberOfUnits,
                               BigDecimal amount,
                               BrmContext context);
 
