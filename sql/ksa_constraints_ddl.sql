@@ -86,12 +86,11 @@ alter table KSSA_FM_SIGNUP_KEY_PAIR add constraint FK_f35c4uwfwn9nuihubrubryqrq 
 alter table KSSA_FM_SIGNUP_KEY_PAIR add constraint FK_8empwnaevo2gj3nvvv2l6h799 foreign key (FM_SIGNUP_ID_FK) references KSSA_FM_SIGNUP;
 alter table KSSA_FM_SIGNUP_RATE add constraint FK_fh3bjqq7obfias749jef77g90 foreign key (RATE_ID_FK) references KSSA_RATE;
 alter table KSSA_FM_SIGNUP_RATE add constraint FK_2iqwwtphquog8crh6lrk40iei foreign key (FM_SIGNUP_ID_FK) references KSSA_FM_SIGNUP;
-alter table KSSA_FM_SIGNUP_RATE_AMOUNT add constraint FK_1621keodclft9nqolfjpikc0x foreign key (FM_SIGNUP_RATE_ID_FK) references KSSA_FM_SIGNUP_RATE;
 alter table KSSA_GL_BATCH_BASELINE add constraint FK_6vfoe8870gcc3g89iru5r3qee foreign key (GL_TYPE_ID_FK) references KSSA_GL_TYPE;
 alter table KSSA_GL_BREAKDOWN add constraint FK_igimx73mm08d9q3a0r0xjjv6u foreign key (GL_TYPE_ID_FK) references KSSA_GL_TYPE;
 alter table KSSA_GL_BREAKDOWN add constraint FK_3slcuwlfr4cpin7urgkj6eoox foreign key (TRANSACTION_TYPE_ID_FK, TRANSACTION_TYPE_SUB_CODE_FK) references KSSA_TRANSACTION_TYPE;
-alter table KSSA_GL_BREAKDOWN_OVERRIDE add constraint FK_5b4g2ghwetsdf4agptrhcddh9 foreign key (TRANSACTION_ID_FK) references KSSA_TRANSACTION;
 alter table KSSA_GL_BREAKDOWN_OVERRIDE add constraint FK_79x0v4eviwyrbuxiohongnkd4 foreign key (FM_MANIFEST_ID_FK) references KSSA_FM_MANIFEST;
+alter table KSSA_GL_BREAKDOWN_OVERRIDE add constraint FK_5b4g2ghwetsdf4agptrhcddh9 foreign key (TRANSACTION_ID_FK) references KSSA_TRANSACTION;
 alter table KSSA_GL_TRANSACTION add constraint FK_su2jjuk4e5o6nx4g4q3co3f8r foreign key (GL_RECOGNITION_PERIOD_ID_FK) references KSSA_GL_RECOGNITION_PERIOD;
 alter table KSSA_GL_TRANSACTION add constraint FK_n3woi85vtq6b49o4ef7iyltfm foreign key (GL_TRANSMISSION_ID_FK) references KSSA_GL_TRANSMISSION;
 alter table KSSA_GL_TRANSMISSION add constraint FK_8mko5up4hnngxb6v952fwlqva foreign key (GL_RECOGNITION_PERIOD_ID_FK) references KSSA_GL_RECOGNITION_PERIOD;
@@ -100,9 +99,9 @@ alter table KSSA_GL_TRANS_TRANSACTION add constraint FK_1my950k340rmx2c3ydexadmi
 alter table KSSA_INFORMATION add constraint FK_gy8g1avxg2det6j1tl283kuva foreign key (ACCESS_LEVEL_ID_FK) references KSSA_ACCESS_LEVEL;
 alter table KSSA_INFORMATION add constraint FK_jkmvsju06ltyhp1m4dhx7jt8p foreign key (ACNT_ID_FK) references KSSA_ACNT;
 alter table KSSA_INFORMATION add constraint FK_9w42lpdu788owfio9c1yv0ls foreign key (TRANSACTION_ID_FK) references KSSA_TRANSACTION;
+alter table KSSA_INFORMATION add constraint FK_ga8qrg1b82u3ni0olwintyqlj foreign key (FLAG_TYPE_ID_FK) references KSSA_FLAG_TYPE;
 alter table KSSA_INFORMATION add constraint FK_uhpxb6v7kivqiaqebsrktivo foreign key (NEXT_ID) references KSSA_INFORMATION;
 alter table KSSA_INFORMATION add constraint FK_apdxe9rlaruk7p1n1x8geltge foreign key (PREV_ID) references KSSA_INFORMATION;
-alter table KSSA_INFORMATION add constraint FK_ga8qrg1b82u3ni0olwintyqlj foreign key (FLAG_TYPE_ID_FK) references KSSA_FLAG_TYPE;
 alter table KSSA_IRS_1098T add constraint FK_qwl4b4v2oxppgrmh6r6fsjgrl foreign key (ACNT_ID_FK) references KSSA_ACNT;
 alter table KSSA_IRS_1098T add constraint FK_j0uib0dd0178l66216i5imjre foreign key (STUDENT_POSTAL_ADDRESS_ID_FK) references KSSA_POSTAL_ADDRESS;
 alter table KSSA_IRS_1098T add constraint FK_uyku2l4yahd2xk54noldsaoc foreign key (XML_ID_FK) references KSSA_XML;

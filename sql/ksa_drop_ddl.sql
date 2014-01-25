@@ -47,7 +47,6 @@ drop table KSSA_FM_SESSION_LOG cascade constraints;
 drop table KSSA_FM_SIGNUP cascade constraints;
 drop table KSSA_FM_SIGNUP_KEY_PAIR cascade constraints;
 drop table KSSA_FM_SIGNUP_RATE cascade constraints;
-drop table KSSA_FM_SIGNUP_RATE_AMOUNT cascade constraints;
 drop table KSSA_GL_BATCH_BASELINE cascade constraints;
 drop table KSSA_GL_BREAKDOWN cascade constraints;
 drop table KSSA_GL_BREAKDOWN_OVERRIDE cascade constraints;
