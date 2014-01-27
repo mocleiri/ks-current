@@ -14,6 +14,7 @@ import com.sigmasys.kuali.ksa.model.pb.PaymentBillingPlan;
 import com.sigmasys.kuali.ksa.model.tp.ThirdPartyPlan;
 import com.sigmasys.kuali.ksa.service.AccountBlockingService;
 import com.sigmasys.kuali.ksa.service.AccountService;
+import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
@@ -95,6 +96,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
     @Autowired
     private AccountBlockingService accountBlockingService;
+
+    @Autowired
+    private BrmFeeManagementService brmFeeManagementService;
 
 
     /**
@@ -219,8 +223,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     @Override
     @Transactional(readOnly = false)
     public FeeManagementSession processFeeManagementSession(Long feeManagementSessionId) {
-        // TODO: Figure out how to invoke the Rules Engine to perform Fee Management and create manifest:
-        return null;
+        return brmFeeManagementService.assessFees(feeManagementSessionId);
     }
 
     /**

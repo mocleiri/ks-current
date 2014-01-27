@@ -137,8 +137,25 @@ public class BrmPaymentServiceImpl extends GenericPersistenceService implements 
      */
     @Override
     public void removeAllocations(String inTransactionLists, String outTransactionList, BrmContext context) {
+
         List<Transaction> transactions = toList(inTransactionLists, context, false);
+
+        // If there is an allocation made against a transaction that is REFUND_REQUESTED then
+        // that allocation should not be cleared before payment application runs
+        for (Transaction transaction : new ArrayList<Transaction>(transactions)) {
+            List<Allocation> allocations = transactionService.getAllocations(transaction.getId());
+            for (Allocation allocation : allocations) {
+                List<Transaction> allocatedTransactions = allocation.getTransactions();
+                for (Transaction allocatedTransaction : allocatedTransactions) {
+                    if (allocatedTransaction.getStatus() == TransactionStatus.REFUND_REQUESTED) {
+                        transactions.remove(transaction);
+                    }
+                }
+            }
+        }
+
         List<GlTransaction> glTransactions = transactionService.removeAllocations(transactions);
+
         toList(outTransactionList, context, true).addAll(glTransactions);
     }
 
@@ -314,13 +331,18 @@ public class BrmPaymentServiceImpl extends GenericPersistenceService implements 
     @Override
     public void getActiveTransactions(String startDate, String endDate, String outTransactionList, BrmContext context) {
         try {
+
             SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_US);
+
             Date fromDate = dateFormat.parse(startDate);
             Date toDate = dateFormat.parse(endDate);
+
             String userId = context.getAccount().getId();
-            List<Transaction> transactions = transactionService.getTransactions(userId, fromDate, toDate,
-                    TransactionStatus.ACTIVE);
+
+            List<Transaction> transactions = transactionService.getTransactions(userId, fromDate, toDate, TransactionStatus.ACTIVE);
+
             context.getAttributes().put(outTransactionList, transactions);
+
         } catch (ParseException pe) {
             logger.error("Date format is incorrect: " + pe.getMessage(), pe);
             throw new IllegalArgumentException("Date format is incorrect: " + pe.getMessage(), pe);
