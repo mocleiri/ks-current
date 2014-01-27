@@ -1450,7 +1450,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     /**
      * Refreshes the transaction from the store and sets it on the manifest.
      *
-     * @param manifest An FM manifest which transactin to refresh.
+     * @param manifest An FM manifest which transaction to refresh.
      * @return A fresh copy of the transaction.
      */
     private Transaction refreshTransaction(FeeManagementManifest manifest) {
