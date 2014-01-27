@@ -165,4 +165,12 @@ public interface FeeManagementService {
      */
     FeeManagementSession getFeeManagementSession(Long sessionId);
 
+    /**
+     * Returns the oldest FeeManagementSession instance for a given Account ID.
+     *
+     * @param accountId Account ID
+     * @return FeeManagementSession instance
+     */
+    FeeManagementSession getOldestFeeManagementSession(String accountId);
+
 }

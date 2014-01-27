@@ -62,7 +62,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private static final Log logger = LogFactory.getLog(FeeManagementServiceImpl.class);
 
     // A query to get Manifests without regard to statuses. Status filtering can be added later:
-    private static final String GET_MANIFESTS_JOIN = "select m from FeeManagementManifest m " +
+    private static final String GET_MANIFESTS_SELECT = "select m from FeeManagementManifest m " +
             " left outer join fetch m.keyPairs kp " +
             " left outer join fetch m.tags t " +
             " left outer join fetch m.rate r " +
@@ -70,11 +70,13 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             " left outer join fetch m.linkedManifest lm ";
 
     // A query to get FM Sessions:
-    private static final String GET_FM_SESSION_JOIN = "select s from FeeManagementSession s " +
+    private static final String GET_SESSIONS_SELECT = "select s from FeeManagementSession s " +
+            " left outer join fetch s.account a " +
             " left outer join fetch s.prevSession ps " +
             " left outer join fetch s.nextSession ns " +
             " left outer join fetch s.keyPairs kp " +
-            " left outer join fetch s.account a ";
+            " left outer join fetch s.signups ss " +
+            " left outer join fetch s.manifests ms ";
 
     @Autowired
     private AccountService accountService;
@@ -399,7 +401,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         }
 
         // Create a query to select all FM Manifests linked to the given FM Session:
-        Query query = em.createQuery(GET_MANIFESTS_JOIN + " where m.session.id = :fmSessionId" +
+        Query query = em.createQuery(GET_MANIFESTS_SELECT + " where m.session.id = :fmSessionId" +
                 (typesExist ? " and m.typeCode in (:typeCodes)" : ""));
 
         query.setParameter("fmSessionId", feeManagementSessionId);
@@ -518,16 +520,29 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     @Override
     public FeeManagementSession getFeeManagementSession(Long sessionId) {
 
-        Query query = em.createQuery("select s from FeeManagementSession s " +
-                " left outer join fetch s.account " +
-                " left outer join fetch s.prevSession " +
-                " left outer join fetch s.nextSession " +
-                " left outer join fetch s.keyPairs " +
-                " left outer join fetch s.signups " +
-                " left outer join fetch s.manifests " +
-                " where s.id = :sessionId");
+        Query query = em.createQuery(GET_SESSIONS_SELECT + " where s.id = :sessionId");
 
         query.setParameter("sessionId", sessionId);
+
+        List<FeeManagementSession> sessions = query.getResultList();
+
+        return CollectionUtils.isNotEmpty(sessions) ? sessions.get(0) : null;
+    }
+
+    /**
+     * Returns the oldest FeeManagementSession instance for a given Account ID.
+     *
+     * @param accountId Account ID
+     * @return FeeManagementSession instance
+     */
+    @Override
+    public FeeManagementSession getOldestFeeManagementSession(String accountId) {
+
+        Query query = em.createQuery(GET_SESSIONS_SELECT + " where a.id = :accountId order by s.creationDate asc");
+
+        query.setParameter("accountId", accountId);
+
+        query.setMaxResults(1);
 
         List<FeeManagementSession> sessions = query.getResultList();
 
@@ -758,7 +773,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private FeeManagementSession getLastPriorFeeManagementSession(String accountId, String atpId) {
 
         // Create a query:
-        Query query = em.createQuery(GET_FM_SESSION_JOIN + " where s.account.id = :accountId and s.atpId = :atpId and s.nextSession is null ");
+        Query query = em.createQuery(GET_SESSIONS_SELECT + " where s.account.id = :accountId and s.atpId = :atpId and s.nextSession is null ");
 
         query.setParameter("accountId", accountId);
         query.setParameter("atpId", atpId);
@@ -778,7 +793,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private FeeManagementSession getFullFeeManagementSessionById(Long fmSessionId) {
 
         // Create a query:
-        Query query = em.createQuery(GET_FM_SESSION_JOIN + " where s.id = :id ");
+        Query query = em.createQuery(GET_SESSIONS_SELECT + " where s.id = :id ");
 
         query.setParameter("id", fmSessionId);
 
@@ -1769,11 +1784,10 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private boolean isReversal(FeeManagementManifest fmm1, FeeManagementManifest fmm2, boolean fullReversal) {
 
         // First check if the FM manifests point at each other:
-        boolean pointAtEachOther = fullReversal
-                ? (fmm1.getLinkedManifest() != null) && (fmm2.getLinkedManifest() != null)
-                && fmm1.getLinkedManifest().getId().equals(fmm2.getId()) &&
-                fmm2.getLinkedManifest().getId().equals(fmm1.getId())
-                : true;
+        boolean pointAtEachOther = !fullReversal ||
+                (fmm1.getLinkedManifest() != null && fmm2.getLinkedManifest() != null
+                        && fmm1.getLinkedManifest().getId().equals(fmm2.getId()) &&
+                        fmm2.getLinkedManifest().getId().equals(fmm1.getId()));
 
         // Check if the types are CHARGE and CANCEL
         if (pointAtEachOther) {
@@ -1784,10 +1798,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
             // Now check if the manifests match and have the same transactionTypeId and amount:
             if (statusesForReversal && manifestsMatch(fmm1, fmm2, true)) {
-                return fullReversal
-                        ? StringUtils.equals(fmm1.getTransactionTypeId(),
-                        fmm2.getTransactionTypeId()) && safeAmountsEqual(fmm1, fmm2)
-                        : true;
+                return !fullReversal ||
+                        (StringUtils.equals(fmm1.getTransactionTypeId(), fmm2.getTransactionTypeId()) &&
+                                safeAmountsEqual(fmm1, fmm2));
             }
         }
 

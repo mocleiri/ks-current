@@ -1165,7 +1165,7 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
                 throw new IllegalStateException(errMsg);
             }
             PermissionUtils.checkPermission(Permission.CREATE_INTERNALLY_LOCKED_ALLOCATION);
-        } else if (locked && !internallyLocked) {
+        } else if (locked) {
             PermissionUtils.checkPermission(Permission.CREATE_LOCKED_ALLOCATION);
         } else {
             PermissionUtils.checkPermission(Permission.CREATE_ALLOCATION);

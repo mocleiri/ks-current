@@ -4,23 +4,24 @@ import com.sigmasys.kuali.ksa.krad.form.QuickViewForm;
 import com.sigmasys.kuali.ksa.krad.model.MemoModel;
 import com.sigmasys.kuali.ksa.krad.util.AccountUtils;
 import com.sigmasys.kuali.ksa.model.*;
+import com.sigmasys.kuali.ksa.model.fm.FeeManagementSession;
 import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.InformationService;
 import com.sigmasys.kuali.ksa.service.PaymentService;
+import com.sigmasys.kuali.ksa.service.fm.FeeManagementService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Iterator;
@@ -45,6 +46,9 @@ public class QuickViewController extends GenericSearchController {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private FeeManagementService fmService;
 
 
     /**
@@ -148,11 +152,15 @@ public class QuickViewController extends GenericSearchController {
 
         String accountId = request.getParameter("actionParameters[userId]");
 
-        if (accountId != null && !accountId.trim().isEmpty()) {
-            paymentService.paymentApplication(accountId);
-
-            GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Payments successfully applied");
-
+        if (StringUtils.isNotBlank(accountId)) {
+            try {
+                paymentService.paymentApplication(accountId);
+                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Payments have been successfully applied");
+            } catch (Exception e) {
+                String errMsg = "'Failed to execute payments. " + e.getMessage();
+                GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, errMsg);
+                logger.error(errMsg, e);
+            }
         }
 
         populateForm(accountId, form);
@@ -169,17 +177,21 @@ public class QuickViewController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=ageDebt")
     public ModelAndView ageDebt(@ModelAttribute("KualiForm") QuickViewForm form) {
 
-        // do aging of transactions stuff...
         String accountId = form.getAccount().getId();
         boolean ignoreDeferment = Boolean.parseBoolean(form.getIgnoreDeferment());
 
-        if (accountId != null && !accountId.trim().isEmpty()) {
-            // age the indexed Account Transactions
-            accountService.ageDebt(accountId, ignoreDeferment);
-            // populate the form using the id
-            populateForm(accountId, form);
+        if (StringUtils.isNotBlank(accountId)) {
+            try {
+                accountService.ageDebt(accountId, ignoreDeferment);
+                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Debts have been successfully aged");
+            } catch (Exception e) {
+                String errMsg = "'Failed to age debts. " + e.getMessage();
+                GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, errMsg);
+                logger.error(errMsg, e);
+            }
         }
 
+        populateForm(accountId, form);
         return getUIFModelAndView(form);
     }
 
@@ -194,27 +206,33 @@ public class QuickViewController extends GenericSearchController {
 
         String accountId = form.getAccount().getId();
 
-        if (accountId != null && !accountId.trim().isEmpty()) {
-            // age the indexed Account Transactions
-            // TODO
-            // feeManagementService.assessFees(accountId);
-            // populate the form using the id
-            populateForm(accountId, form);
+        if (StringUtils.isNotBlank(accountId)) {
+            try {
+                FeeManagementSession fmSession = fmService.getOldestFeeManagementSession(accountId);
+                if (fmSession != null) {
+                    fmService.processFeeManagementSession(fmSession.getId());
+                    GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Fees have been successfully assessed");
+                } else {
+                    String errMsg = "FeeManagementSession could not be found for the account '" + accountId + "'";
+                    GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, errMsg);
+                    logger.error(errMsg);
+                }
+
+            } catch (Exception e) {
+                String errMsg = "'Failed to asses fees. " + e.getMessage();
+                GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, errMsg);
+                logger.error(errMsg, e);
+            }
         }
 
+        populateForm(accountId, form);
         return getUIFModelAndView(form);
     }
 
-    /**
-     * @param form
-     * @param result
-     * @param request
-     * @param response
-     * @return
-     */
+
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=insertMemo")
-    public ModelAndView insertMemo(@ModelAttribute("KualiForm") QuickViewForm form, BindingResult result,
-                                   HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView insertMemo(@ModelAttribute("KualiForm") QuickViewForm form) {
+
         MemoModel memoModel = form.getNewMemoModel();
 
         String accountId = form.getAccount().getId();
@@ -232,7 +250,9 @@ public class QuickViewController extends GenericSearchController {
             Long persistResult = informationService.persistInformation(memo);
 
             if (persistResult >= 0) {
+
                 String statusMsg = "Memo saved";
+
                 GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
 
                 List<Memo> memos = informationService.getMemos(accountId);
@@ -245,10 +265,11 @@ public class QuickViewController extends GenericSearchController {
                 String failedMsg = "Failed to add memo. result code: " + persistResult.toString();
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, failedMsg);
             }
-        } catch (Exception exp) {
-            String errMsg = "'Failed to add memo. " + exp.getLocalizedMessage();
+
+        } catch (Exception e) {
+            String errMsg = "'Failed to add memo. " + e.getMessage();
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, errMsg);
-            logger.error(errMsg);
+            logger.error(errMsg, e);
         }
 
         return getUIFModelAndView(form);
