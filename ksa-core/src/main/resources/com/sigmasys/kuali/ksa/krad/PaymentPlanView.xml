@@ -292,13 +292,13 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
-                    <bean parent="Uif-InputField" p:propertyName="openPeriodStartDate" p:labelPlacement="TOP" p:label="Start"  p:required="true"
+                    <bean id="openPeriodStartDate" parent="Uif-InputField" p:propertyName="openPeriodStartDate" p:labelPlacement="TOP" p:label="Start"  p:required="true"
                           p:constraintText="Format: mm/dd/yyyy">
                         <property name="control">
                             <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
                         </property>
                     </bean>
-                    <bean parent="Uif-InputField" p:propertyName="openPeriodEndDate" p:labelPlacement="TOP" p:label="End" p:required="true"
+                    <bean id="openPeriodEndDate" parent="Uif-InputField" p:propertyName="openPeriodEndDate" p:labelPlacement="TOP" p:label="End" p:required="true"
                           p:constraintText="Format: mm/dd/yyyy">
                         <property name="control">
                             <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
@@ -314,14 +314,15 @@
         <property name="headerText" value="Charge Period"/>
         <property name="items">
             <list>
+                <bean parent="Uif-LinkField" p:linkText="Same as Open Period" p:href="#" p:onClickScript="jQuery('#chargePeriodStartDate_control').val(jQuery('#openPeriodStartDate_control').val()); jQuery('#chargePeriodEndDate_control').val(jQuery('#openPeriodEndDate_control').val()); return false;"/>
                 <bean parent="Uif-HorizontalBoxSection"><property name="items"><list>
-                    <bean parent="Uif-InputField" p:propertyName="chargePeriodStartDate" p:labelPlacement="TOP" p:label="Start" p:required="true"
+                    <bean id="chargePeriodStartDate" parent="Uif-InputField" p:propertyName="chargePeriodStartDate" p:labelPlacement="TOP" p:label="Start" p:required="true"
                           p:constraintText="Format: mm/dd/yyyy">
                         <property name="control">
                             <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
                         </property>
                     </bean>
-                    <bean parent="Uif-InputField" p:propertyName="chargePeriodEndDate" p:labelPlacement="TOP" p:label="End" p:required="true"
+                    <bean id="chargePeriodEndDate" parent="Uif-InputField" p:propertyName="chargePeriodEndDate" p:labelPlacement="TOP" p:label="End" p:required="true"
                           p:constraintText="Format: mm/dd/yyyy">
                         <property name="control">
                             <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
