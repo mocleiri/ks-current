@@ -13,7 +13,7 @@ end
 
 
 And /^I view the details of the added course from edit plan item$/ do
-  @course_offering.edit_plan_item
+  @course_offering.edit_plan_item_verify_notes
 end
 
 
