@@ -8,6 +8,7 @@ import com.sigmasys.kuali.ksa.service.*;
 import com.sigmasys.kuali.ksa.service.brm.BrmContext;
 import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import com.sigmasys.kuali.ksa.util.TransactionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,6 +244,15 @@ public class PaymentServiceImpl extends GenericPersistenceService implements Pay
             String errMsg = "Account with ID = " + userId + " does not exist";
             logger.error(errMsg);
             throw new UserNotFoundException(errMsg);
+        }
+
+        // Removing deferment allocations
+        List<Deferment> deferments = transactionService.getDeferments(userId);
+
+        if (CollectionUtils.isNotEmpty(deferments)) {
+            for (Deferment deferment : deferments) {
+                transactionService.removeAllAllocations(deferment.getId());
+            }
         }
 
         // Calling BrmService with payment application rules
