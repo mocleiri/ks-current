@@ -19,6 +19,8 @@ class EditAcademicTerms < BasePage
 
   action(:get_term_index) { |term_name, b| b.acal_term_list_div.text_field(value: "#{term_name}").name[/\d+/]}
 
+  element(:add_key_date_button) { |b| b.frm.button(text: "Add Key Date") }
+
   def term_index_by_term_type(term_type)
     acal_term_list_div.link(text: /^#{term_type}$/).wait_until_present
     acal_term_list_div.link(text: /^#{term_type}$/).id[/\d+(?=_toggle)/]
@@ -134,18 +136,22 @@ class EditAcademicTerms < BasePage
   action(:key_date_group_add) { |index, b| b.frm.button(id: "acal-term-keydatesgroup_line#{index}_add").click; b.loading.wait_while_present}
 
   def key_date_exists?(term_type, key_date_group_type, key_date_type)
-    key_date_group_div(term_type, key_date_group_type).table.rows[2..-2].each do | row |
-      if row.cells[0].text == key_date_type
-        return true
+    if key_date_group_div(term_type, key_date_group_type).table.exists?
+      key_date_group_div(term_type, key_date_group_type).table.rows[2..-2].each do | row |
+        if row.cells[0].text == key_date_type
+          return true
+        end
       end
     end
     return false
   end
 
   def key_date_target_row(term_type, key_date_group_type, key_date_type)
-    key_date_group_div(term_type, key_date_group_type).table.rows[2..-2].each do | row |
-      if row.cells[0].text == key_date_type
-        return row
+    if key_date_group_div(term_type, key_date_group_type).table.exists?
+      key_date_group_div(term_type, key_date_group_type).table.rows[2..-2].each do | row |
+        if row.cells[0].text == key_date_type
+          return row
+        end
       end
     end
     return nil
@@ -156,17 +162,18 @@ class EditAcademicTerms < BasePage
 #  def add_key_date_add_row(term_index,key_date_group);  ;end
 
   #KeyDates
-  action(:key_date_dropdown_addline) { |term_index, key_date_group_index, b| b.frm.select(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].keyDateType")}
-  action(:key_date_start_date_addline) { |term_index, key_date_group_index, b| b.frm.text_field(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].startDate")}
-  action(:key_date_end_date_addline) { |term_index, key_date_group_index, b| b.frm.text_field(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].endDate")}
-  action(:key_date_starttime_addline) { |term_index, key_date_group_index, b| b.frm.text_field(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].startTime")}
-  action(:key_date_endtime_addline) { |term_index, key_date_group_index, b| b.frm.text_field(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].endTime")}
-  action(:key_date_starttimeampm_addline) { |term_index, key_date_group_index, b| b.frm.select(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].startTimeAmPm")}
-  action(:key_date_endtimeampm_addline) { |term_index, key_date_group_index, b| b.frm.select(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].endTimeAmPm")}
-  action(:key_date_allday_addline) { |term_index, key_date_group_index, b| b.frm.checkbox(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].allDay")}
-  action(:key_date_daterange_addline) { |term_index, key_date_group_index, b| b.frm.checkbox(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].dateRange")}
+  action(:key_date_dropdown_addline) { |term_index, key_date_group_index, b| b.frm.select(id: /key_date_type_line#{term_index}_line#{key_date_group_index}_line.*_control$/)}
+  action(:key_date_start_date_addline) { |term_index, key_date_group_index, b| b.frm.text_field(id: /key_date_start_date_line#{term_index}_line#{key_date_group_index}_line.*_control$/)}
+  action(:key_date_starttime_addline) { |term_index, key_date_group_index, b| b.frm.text_field(id: /key_date_start_time_line#{term_index}_line#{key_date_group_index}_line.*_control$/)}
+  action(:key_date_starttimeampm_addline) { |term_index, key_date_group_index, b| b.frm.fieldset(id: /key_date_start_time_ampm_line#{term_index}_line#{key_date_group_index}_line.*_fieldset$/)}
+  action(:key_date_end_date_addline) { |term_index, key_date_group_index, b| b.frm.text_field(id: /key_date_end_date_line#{term_index}_line#{key_date_group_index}_line.*_control$/)}
+  action(:key_date_endtime_addline) { |term_index, key_date_group_index, b| b.frm.text_field(id: /key_date_end_time_line#{term_index}_line#{key_date_group_index}_line.*_control$/)}
+  action(:key_date_endtimeampm_addline) { |term_index, key_date_group_index, b| b.frm.fieldset(id: /key_date_end_time_ampm_line#{term_index}_line#{key_date_group_index}_line.*_fieldset$/)}
 
-  action(:key_date_add) { |term_index, key_date_group_index, b| b.frm.link(id: "acal-term-keydates_line#{term_index}_line#{key_date_group_index}_add").click; b.loading.wait_while_present}
+  #action(:key_date_allday_addline) { |term_index, key_date_group_index, b| b.frm.checkbox(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].allDay")}
+  #action(:key_date_daterange_addline) { |term_index, key_date_group_index, b| b.frm.checkbox(name: "newCollectionLines['termWrapperList_#{term_index}_.keyDatesGroupWrappers_#{key_date_group_index}_.keydates'].dateRange")}
+  #
+  #action(:key_date_add) { |term_index, key_date_group_index, b| b.frm.link(id: "acal-term-keydates_line#{term_index}_line#{key_date_group_index}_add").click; b.loading.wait_while_present}
 
   KEY_DATE_TYPE_COL = 0
   START_DATE_COL = 1
