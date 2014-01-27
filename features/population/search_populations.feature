@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Search populations
+@nightly @yellow_team
+Feature: CO.Search populations
 
 In order to avoid creating a duplicate population (alternate: In order to modify an existing population)
 I want to search for a population

@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Create Course Offering cross-listed
+@nightly @yellow_team
+Feature: CO.Create Course Offering cross-listed
   CCO 1.1 "As a Department Scheduling Coordinator, I want to Create from Catalog a Course Offering which is defined
   in the CLU as Cross-listed so that I may complete my Course Offerings inventory for the Term."
 

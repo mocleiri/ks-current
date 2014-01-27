@@ -233,12 +233,12 @@ class ActivityOffering
     delivery_days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text
     if delivery_days != "" then
       #there are scheduling information
-      dl_list = get_existing_scheduling_information (ao_table_row)
-      dl_list.each do |dl_object|
-        if dl_object.isRDL then
-          @requested_scheduling_information_list[dl_object.dl_key] = dl_object
+      si_list = get_existing_scheduling_information (ao_table_row)
+      si_list.each do |si_object|
+        if si_object.isRSI then
+          @requested_scheduling_information_list[si_object.si_key] = si_object
         else
-          @actual_scheduling_information_list[dl_object.dl_key] = dl_object
+          @actual_scheduling_information_list[si_object.si_key] = si_object
         end
       end
     end
@@ -247,9 +247,9 @@ class ActivityOffering
   end
 
   def get_existing_scheduling_information(ao_table_row)
-    dl_list = []
-    is_rdl = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
-    dl_days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text.split("\n")
+    si_list = []
+    is_rsi = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
+    si_days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text.split("\n")
     st_times = ao_table_row.cells[ManageCourseOfferings::AO_ST_TIME].text.split("\n")
     end_times = ao_table_row.cells[ManageCourseOfferings::AO_END_TIME].text.split("\n")
     fac_names = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].text.split("\n")
@@ -265,12 +265,12 @@ class ActivityOffering
     rooms = ao_table_row.cells[ManageCourseOfferings::AO_ROOM].text.split("\n")
 
     i=0
-    dl_days.each do |day|
+    si_days.each do |day|
       st, st_ampm = st_times[i].split unless st_times[i].nil?
       et, et_ampm = end_times[i].split unless end_times[i].nil?
-      dl = make SchedulingInformation,
-                :isRDL => is_rdl,
-                :days => dl_days[i],
+      si = make SchedulingInformation,
+                :isRSI => is_rsi,
+                :days => si_days[i],
                 :start_time => st,
                 :start_time_ampm => st_ampm,
                 :end_time => et,
@@ -278,11 +278,11 @@ class ActivityOffering
                 :facility => fac_names[i],
                 :facility_long_name => fac_long_names[i],
                 :room => rooms[i]
-      dl_list << dl
+      si_list << si
       i += 1
     end
 
-    dl_list
+    si_list
   end
 
   #navigates activity offering edit page and updates activity offering based on class attributes
@@ -438,8 +438,8 @@ class ActivityOffering
       return nil
     end
 
-    #'save' vs 'save and process' determined by first rdl
-    first_rdl = opts[:requested_scheduling_information_list].values[0]
+    #'save' vs 'save and process' determined by first rsi
+    first_rsi = opts[:requested_scheduling_information_list].values[0]
     #list of requests added with updated keys
     requests_added = {}
 
@@ -995,15 +995,15 @@ end
 
 # stores test data for creating/editing and validating scheduling information data and provides convenience methods for navigation and data entry
 #
-# SchedulingInformation is a child of a ActivityOffering (Requested scheduling information - rdl and actual - adl)
+# SchedulingInformation is a child of a ActivityOffering (Requested scheduling information - rsi and actual - asi)
 #
 # class attributes are initialized with default data unless values are explicitly provided
 #
 # Typical usage: (with optional setting of explicit data value in [] )
 #
-# rdl_list[0] = make SchedulingInformation, :days=> M, ...
+# rsi_list[0] = make SchedulingInformation, :days=> M, ...
 #
-# @activity_offering.edit_offering :requested_scheduling_information_list = rdl_list
+# @activity_offering.edit_offering :requested_scheduling_information_list = rsi_list
 #
 #create generally called from ActivityOffering
 # Note the use of the ruby options hash pattern re: setting attribute values
@@ -1015,7 +1015,7 @@ class SchedulingInformation
   include Workflows
 
   #boolean - generally set using options hash
-  attr_accessor :tba, :process, :isRDL
+  attr_accessor :tba, :process, :isRSI
   #generally set using options hash
   attr_accessor :days,
                 :start_time,
@@ -1044,14 +1044,14 @@ class SchedulingInformation
   #    :room  => "126",
   #    :features_list  => [],
   #    :process => true,
-  #     :isRDL => true
+  #     :isRSI => true
   # }
   # initialize is generally called using TestFactory Foundry .make or .create methods
   def initialize(browser, opts={})
     @browser = browser
 
     defaults = {
-        :isRDL => true,
+        :isRSI => true,
         :tba  => false,
         :days  => "MWF",
         :std_ts => false,
@@ -1071,11 +1071,11 @@ class SchedulingInformation
 
   # adds Scheduling Information request based on class attributes
   #
-  # add must be completed by calling save or save_and_process (allows adding of multiple rdls)
+  # add must be completed by calling save or save_and_process (allows adding of multiple rsis)
   #
   # generally called from ActivityOffering class
   def create
-    if isRDL then
+    if isRSI then
       on ActivityOfferingMaintenance do |page|
         page.view_requested_scheduling_information
         sleep 2
@@ -1156,7 +1156,7 @@ class SchedulingInformation
   end
 
   def init_existing(ao_table_row)
-    @isRDL = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
+    @isRSI = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
     @days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text
     st_time = ao_table_row.cells[ManageCourseOfferings::AO_ST_TIME].text
     if st_time != "" then
@@ -1180,9 +1180,9 @@ class SchedulingInformation
   end
 
   # compares 2 instances of SchedulingInformation for field-equality
-  # note: by default, the comparison ignores the isRDL-field
+  # note: by default, the comparison ignores the isRSI-field
   # @example
-  #   SchedulingInformation.compare( @dl1, @dl2 )
+  #   SchedulingInformation.compare( @si1, @si2 )
   #
   # @param instance1 -- a SchedulingInformation object
   # @param instance2 -- a SchedulingInformation object
@@ -1190,7 +1190,7 @@ class SchedulingInformation
   def self.compare(instance1, instance2, opts={})
 
     defaults = {
-        :ignore_dl_type => true
+        :ignore_si_type => true
     }
     options = defaults.merge(opts)
 
@@ -1208,11 +1208,11 @@ class SchedulingInformation
       return false
     end
 
-    if options[:ignore_dl_type]
-      puts 'Ignoring isRDL while testing for equality'
+    if options[:ignore_si_type]
+      puts 'Ignoring isRSI while testing for equality'
     else
-      if instance1.isRDL != instance2.isRDL
-        puts 'NOT EQUAL: isRDL is different (' + instance1.isRDL.to_s + ":" + instance2.isRDL.to_s + ")"
+      if instance1.isRSI != instance2.isRSI
+        puts 'NOT EQUAL: isRSI is different (' + instance1.isRSI.to_s + ":" + instance2.isRSI.to_s + ")"
         return false
       end
     end
@@ -1269,11 +1269,11 @@ class SchedulingInformation
   end
 
   def edit(opts)
-    if isRDL then
+    if isRSI then
       on ActivityOfferingMaintenance do |page|
         page.view_requested_scheduling_information
-        target_row = page.target_rdl_row(dl_key)
-        page.edit_rdl_row(target_row)
+        target_row = page.target_rsi_row(si_key)
+        page.edit_rsi_row(target_row)
         sleep 2
 
         if opts[:tba]
@@ -1321,17 +1321,17 @@ class SchedulingInformation
   #def add(opts)
   #end
 
-  def dl_key
+  def si_key
     "#{@days}#{@start_time}#{@start_time_ampm}"
   end
 
   #similar method in page object?????
-  def target_row_by_dl_key
+  def target_row_by_si_key
     on ActivityOfferingMaintenance do |page|
       page.view_requested_scheduling_information
-      page.requested_logistics_table.rows.each do |row|
+      page.requested_sched_info_table.rows.each do |row|
         row_key = "#{row.cells[ActivityOfferingMaintenance::DAYS_COLUMN].text}#{row.cells[ActivityOfferingMaintenance::ST_TIME_COLUMN].text}".delete(' ')
-        return row unless row_key != dl_key
+        return row unless row_key != si_key
       end
     end
     return nil
@@ -1342,10 +1342,10 @@ class SchedulingInformation
   # generally called from ActivityOffering class - see ActivityOffering
   #
   # @param row
-  def delete_rdl
+  def delete_rsi
     on ActivityOfferingMaintenance do |page|
-      row = page.target_rdl_row(dl_key)
-      page.delete_rdl_row(row)
+      row = page.target_rsi_row(si_key)
+      page.delete_rsi_row(row)
     end
   end
 

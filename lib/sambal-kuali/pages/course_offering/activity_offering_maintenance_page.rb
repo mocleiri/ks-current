@@ -19,7 +19,7 @@ class ActivityOfferingMaintenance < BasePage
   element(:save_button) { |b| b.save_cancel_div.button(text: "Save Progress") }
   action(:save) { |b| sleep 2; b.loading.wait_while_present; sleep 2; b.save_button.click; b.loading.wait_while_present(120) }
   action(:send_to_scheduler_checkbox) { |b| b.frm.checkbox(id: "send_RDLs_to_scheduler_control") }
-  value(:send_RDLs_to_scheduler_msg) { |b| b.label(id: "send_RDLs_to_scheduler_label").text }
+  value(:send_RSIs_to_scheduler_msg) { |b| b.label(id: "send_RDLs_to_scheduler_label").text }
   action(:send_to_scheduler) { |b| b.send_to_scheduler_checkbox.set }
 
   element(:submit_button) { |b| b.save_cancel_div.button(text: "Update") }
@@ -77,8 +77,8 @@ class ActivityOfferingMaintenance < BasePage
 
   element(:mainpage_section){|b| b.frm.div(id:"ActivityOffering-MaintenanceView")}
 
-  element(:actual_logistics_div) { |b| b.frm.div(id: /^ActivityOffering-DeliveryLogistic.*-Actuals$/) }
-  element(:actual_logistics_table) { |b| b.actual_logistics_div.table() }
+  element(:actual_sched_info_div) { |b| b.frm.div(id: /^ActivityOffering-DeliveryLogistic.*-Actuals$/) }
+  element(:actual_sched_info_table) { |b| b.actual_sched_info_div.table() }
 
   TBA_COLUMN = 0
   DAYS_COLUMN = 1
@@ -87,19 +87,19 @@ class ActivityOfferingMaintenance < BasePage
   FACILITY_COLUMN = 4
   ROOM_COLUMN = 5
   FEATURES_COLUMN = 6
-  LOGISTICS_ACTION_COLUMN = 7
+  SCHED_INFO_ACTION_COLUMN = 7
 
-  element(:add_logistics_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-New") }
+  element(:add_sched_info_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-New") }
   element(:non_std_ts_control) { |b| b.span(id: "isApprovedForNonStandardTimeSlots_control") }
   element(:non_std_ts_checkbox) { |b| b.checkbox(id: "isApprovedForNonStandardTimeSlots_control") }
   element(:non_std_ts_checkbox_text) { |b| b.span(id: "isApprovedForNonStandardTimeSlots_control").text }
   element(:non_std_ts_text) { |b| b.label(id: "isApprovedForNonStandardTimeSlots_label").text }
   action(:approve_non_std_ts) { |b| b.non_std_ts_checkbox.set }
   action(:disallow_non_std_ts) { |b| b.non_std_ts_checkbox.clear }
-  element(:add_tba){ |b|b.add_logistics_div.div(data_label: "TBA").checkbox()}
-  element(:add_days) { |b| b.add_logistics_div.div(data_label: "Days").text_field() }
-  element(:add_start_time) { |b| b.add_logistics_div.div(data_label: "Start Time").text_field() }
-  element(:add_start_time_ampm) { |b| b.add_logistics_div.select(name: "document.newMaintainableObject.dataObject.newScheduleRequest.startTimeAMPM") }
+  element(:add_tba){ |b|b.add_sched_info_div.div(data_label: "TBA").checkbox()}
+  element(:add_days) { |b| b.add_sched_info_div.div(data_label: "Days").text_field() }
+  element(:add_start_time) { |b| b.add_sched_info_div.div(data_label: "Start Time").text_field() }
+  element(:add_start_time_ampm) { |b| b.add_sched_info_div.select(name: "document.newMaintainableObject.dataObject.newScheduleRequest.startTimeAMPM") }
 
   # END TIME WIDGETS
   # This field comes in 2 variants: 1) an "Input"-field, 2) a "Select"-list
@@ -111,9 +111,9 @@ class ActivityOfferingMaintenance < BasePage
   #       an AO which has been "approved for non-standard timeslots", you'll see it instead renders in the DOM as a "<select>" ()widget #2).
 
         # Widget #1 (input field)
-        element(:add_end_time_div) { |b| b.add_logistics_div.div(id: "rdl_endtime") }
+        element(:add_end_time_div) { |b| b.add_sched_info_div.div(id: "rdl_endtime") }
         element(:add_end_time) { |b| b.add_end_time_div.text_field() }
-        element(:add_end_time_ampm) { |b| b.add_logistics_div.select(name: "document.newMaintainableObject.dataObject.newScheduleRequest.endTimeAMPM") }
+        element(:add_end_time_ampm) { |b| b.add_sched_info_div.select(name: "document.newMaintainableObject.dataObject.newScheduleRequest.endTimeAMPM") }
 
         # Widget #2 (select list)
         element(:end_time_select) { |b| b.select(id: "rdl_endtime_control") }
@@ -122,10 +122,10 @@ class ActivityOfferingMaintenance < BasePage
         # error msg
         element(:end_time_error_msg) { |b| b.div(:data_for => "rdl_endtime_control").ul.li(class: "uif-errorMessageItem-field").text}
 
-  element(:add_facility) { |b| b.add_logistics_div.div(data_label: "Facility").text_field() }
-  action(:lookup_facility) { |b| b.add_logistics_div.div(data_label: "Facility").button().click; b.loading.wait_while_present }
-  element(:add_room) { |b| b.add_logistics_div.div(data_label: "Room").text_field() }
-  action(:lookup_room) { |b| b.add_logistics_div.div(data_label: "Room").button().click; b.loading.wait_while_present }
+  element(:add_facility) { |b| b.add_sched_info_div.div(data_label: "Facility").text_field() }
+  action(:lookup_facility) { |b| b.add_sched_info_div.div(data_label: "Facility").button().click; b.loading.wait_while_present }
+  element(:add_room) { |b| b.add_sched_info_div.div(data_label: "Room").text_field() }
+  action(:lookup_room) { |b| b.add_sched_info_div.div(data_label: "Room").button().click; b.loading.wait_while_present }
 
   action(:facility_features) { |b| b.frm.link(id: "ActivityOffering-DeliveryLogistic-New-Features-Section_toggle").click; b.loading.wait_while_present }
   element(:feature_list){ |b|b.frm.select(id: "featuresList_control")}
@@ -143,40 +143,40 @@ class ActivityOfferingMaintenance < BasePage
     end
   end
 
-  element(:delete_requested_scheduling_information_element) { |b| b.requested_logistics_table.link(text: "Delete") } #TODO: identify button by row (days + start_time)
+  element(:delete_requested_scheduling_information_element) { |b| b.requested_sched_info_table.link(text: "Delete") } #TODO: identify button by row (days + start_time)
   action(:delete_requested_scheduling_information) { |b| b.delete_requested_scheduling_information_element.click; b.loading.wait_while_present }
-  element(:requested_logistics_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-Requested") }
-  element(:requested_logistics_table) { |b| b.requested_logistics_div.table() }
+  element(:requested_sched_info_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-Requested") }
+  element(:requested_sched_info_table) { |b| b.requested_sched_info_div.table() }
 
   action(:select_end_time) { |time, b| b.link(text: /#{time}/).wait_until_present;b.link(text: /#{time}/).click }
 
-  def self.adl_table_accessor_maker(method_name, column)
+  def self.asi_table_accessor_maker(method_name, column)
     define_method method_name.to_s do |row|
       row.cells[column].text()
     end
   end
 
-  adl_table_accessor_maker :get_actual_logistics_tba, TBA_COLUMN
-  adl_table_accessor_maker :get_actual_logistics_days, DAYS_COLUMN
-  adl_table_accessor_maker :get_actual_logistics_start_time, ST_TIME_COLUMN
-  adl_table_accessor_maker :get_actual_logistics_end_time, END_TIME_COLUMN
-  adl_table_accessor_maker :get_actual_logistics_facility, FACILITY_COLUMN
-  adl_table_accessor_maker :get_actual_logistics_room, ROOM_COLUMN
-  adl_table_accessor_maker :get_actual_logistics_features, FEATURES_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_tba, TBA_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_days, DAYS_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_start_time, ST_TIME_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_end_time, END_TIME_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_facility, FACILITY_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_room, ROOM_COLUMN
+  asi_table_accessor_maker :get_actual_sched_info_features, FEATURES_COLUMN
 
-  def self.rdl_table_accessor_maker(method_name, column)
+  def self.rsi_table_accessor_maker(method_name, column)
     define_method method_name.to_s do |row|
       row.cells[column].text()
     end
   end
 
-  rdl_table_accessor_maker :get_requested_logistics_tba, TBA_COLUMN
-  rdl_table_accessor_maker :get_requested_logistics_days, DAYS_COLUMN
-  rdl_table_accessor_maker :get_requested_logistics_start_time, ST_TIME_COLUMN
-  rdl_table_accessor_maker :get_requested_logistics_end_time, END_TIME_COLUMN
-  rdl_table_accessor_maker :get_requested_logistics_facility, FACILITY_COLUMN
-  rdl_table_accessor_maker :get_requested_logistics_room, ROOM_COLUMN
-  rdl_table_accessor_maker :get_requested_logistics_features, FEATURES_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_tba, TBA_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_days, DAYS_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_start_time, ST_TIME_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_end_time, END_TIME_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_facility, FACILITY_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_room, ROOM_COLUMN
+  rsi_table_accessor_maker :get_requested_sched_info_features, FEATURES_COLUMN
 
   element(:personnel_div) { |b| b.frm.div(id: "ao-personnelgroup") }
   element(:personnel_table) { |b| b.frm.personnel_div.table() }
@@ -226,22 +226,22 @@ class ActivityOfferingMaintenance < BasePage
     select_ao_menu.select(ao_name)
   end
 
-  def target_rdl_row (key)
+  def target_rsi_row (key)
     view_requested_scheduling_information
-    requested_logistics_table.rows.each do |row|
+    requested_sched_info_table.rows.each do |row|
       row_key = "#{row.cells[DAYS_COLUMN].text.upcase.delete(' ')}#{row.cells[ST_TIME_COLUMN].text.upcase.delete(' ')}"
       return row unless row_key != key
     end
     return nil
   end
 
-  def edit_rdl_row(row)
+  def edit_rsi_row(row)
     row.cells[ACTIONS].link(text: "Edit").click
     loading.wait_while_present(120)
   end
 
-  def delete_rdl_row(row)
-    row.cells[LOGISTICS_ACTION_COLUMN].link(text: "Delete").click
+  def delete_rsi_row(row)
+    row.cells[SCHED_INFO_ACTION_COLUMN].link(text: "Delete").click
   end
 
   def get_inst_effort(id)
@@ -269,12 +269,12 @@ class ActivityOfferingMaintenance < BasePage
   value(:no_waitlists_msg) { |b| b.frm.div(id: "ActivityOfferingEdit-NoWaitlist").span(text: /Waitlists are deactivated/).text }
   element(:waitlist_section) { |b| b.frm.div(id: "ActivityOfferingEdit-WailtList-Info-Section") }
   element(:waitlist_checkbox) { |b| b.frm.checkbox(id: "ActivityOfferingEdit-HasWaitlist_control") }
-  element(:waitlist_confirmation_radio) { |b| b.waitlist_section.radio(index: 0) }
-  element(:waitlist_automatic_radio) { |b| b.waitlist_section.radio(index: 1) }
-  element(:waitlist_manual_radio) { |b| b.waitlist_section.radio(index: 2) }
+  element(:waitlist_confirmation_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.Confirmation') }
+  element(:waitlist_automatic_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.automatic') }
+  element(:waitlist_manual_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.manual') }
   element(:waitlist_limit_checkbox) { |b| b.waitlist_section.div(data_label: "Limit Waitlist Size").checkbox }
   element(:waitlist_limit) { |b| b.waitlist_section.text_field(id: "limit_waitlist_size_text_control") }
-  element(:waitlist_allow_hold_checkbox) { |b| b.waitlist_section.div(data_label: "Allow Hold List").checkbox }
+  element(:waitlist_allow_hold_checkbox) { |b| b.waitlist_section.checkbox(id: 'allow-hold-list-checkbox_control') }
 
   def waitlist_processing_type
     radio_list = waitlist_section.div(data_label: "Waitlist Type").fieldset.radios

@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Edit Course Offerings
+@nightly @yellow_team
+Feature: CO.Edit Course Offerings
   Background:
     Given I am logged in as a Schedule Coordinator
 

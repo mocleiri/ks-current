@@ -697,7 +697,7 @@ Then /^I do not have access to create a new joint offered course offering$/ do
   end
 end
 
-When /^there is a course with a co-located DL in my admin org/ do
+When /^there is a course with a co-located SI in my admin org/ do
   step "I am logged in as a Schedule Coordinator"
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"ENGL462", :term=>@term_for_test)
   @course_offering.manage_and_init
@@ -727,7 +727,7 @@ end
 When /^I have access to view requested scheduling information$/ do
   on ActivityOfferingMaintenance do |page|
     page.view_requested_scheduling_information
-    page.requested_logistics_table.present?.should == true
+    page.requested_sched_info_table.present?.should == true
   end
 end
 When /^I have access to delete requested scheduling information$/ do

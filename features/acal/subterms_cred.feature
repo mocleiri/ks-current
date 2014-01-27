@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Subterms CRED
+@nightly @yellow_team
+Feature: CO.Subterms CRED
 
   S16: Ability to manage academic subterms within academic calendars and terms
 

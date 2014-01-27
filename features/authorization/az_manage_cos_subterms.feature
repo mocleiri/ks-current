@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.AZ Manage Course Offerings with subterms
+@nightly @yellow_team
+Feature: CO.AZ Manage Course Offerings with subterms
 
   CO 26.6: As an administrator I want authorization applied to AOs associated with sub terms
 

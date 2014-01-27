@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG9-11 Delete
+Feature: CO.ELIG9-11 Delete
 
   Background:
     Given I am logged in as admin

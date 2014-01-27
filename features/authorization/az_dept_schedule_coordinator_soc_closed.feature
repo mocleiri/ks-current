@@ -1,5 +1,5 @@
-@wip @red_team
-Feature: EC.AZ Dept Schedule Coordinator SOC state Closed
+@wip @yellow_team
+Feature: CO.AZ Dept Schedule Coordinator SOC state Closed
 #TODO - cover list vs single CO view
   Background:
     Given I am logged in as a Department Schedule Coordinator

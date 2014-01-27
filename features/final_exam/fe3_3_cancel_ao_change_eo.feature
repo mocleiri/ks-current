@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE3-3 Cancelling an AO should cancel the EO depending on all the exam settings
+Feature: CO.FE3-3 Cancelling an AO should cancel the EO depending on all the exam settings
   FE 3.3 As a Central Administrator I want exam offerings to be Cancelled if the governing course offering or activity
   offering is cancelled after the bulk creation so that unnecessary exam offerings are removed
 

@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Add Activity Offerings to existing Course Offerings
+@nightly @yellow_team
+Feature: CO.Add Activity Offerings to existing Course Offerings
 
   As a Departmental administrator, I want to be able to add additional Activity Offerings either by copying or creating
   new Activity Offerings so that the Course Offering will have additional associated Activity Offerings for the term.
@@ -15,6 +15,6 @@ Feature: WC.Add Activity Offerings to existing Course Offerings
 
   Scenario: Copy Activity Offerings
     When I copy an AO with Actual Scheduling Information
-    Then the "ADLs" are successfully copied as RDLs in the new AO
+    Then the "ASIs" are successfully copied as RSIs in the new AO
     And I copy an AO with Requested Scheduling Information
-    Then the "RDLs" are successfully copied as RDLs in the new AO
+    Then the "RSIs" are successfully copied as RSIs in the new AO

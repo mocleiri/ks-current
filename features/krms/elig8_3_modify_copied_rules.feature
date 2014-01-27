@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG8-3 Modify the Copied rules on Activity Offering level
+Feature: CO.ELIG8-3 Modify the Copied rules on Activity Offering level
 
   Background:
     Given I am logged in as admin

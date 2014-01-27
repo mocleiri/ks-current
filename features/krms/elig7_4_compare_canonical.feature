@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG7-4 Compare to Canonical
+Feature: CO.ELIG7-4 Compare to Canonical
 
   Background:
     Given I am logged in as admin

@@ -1,5 +1,5 @@
 @rollover_terms
-Feature: WC.Rollover Terms
+Feature: CO.Rollover Terms
 
   Rollover required terms for manual testing
 

@@ -573,17 +573,15 @@ class KeyDate
       page.go_to_terms_tab
       page.open_term_section(@parent_key_date_group.term_type)
       if ! page.key_date_exists?(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type, @key_date_type) then
+        wait_until { page.add_key_date_button.present? }
+        page.add_key_date_button.click
+
         @term_index = page.term_index_by_term_type(@parent_key_date_group.term_type)
         key_date_group_index = page.key_date_group_index(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type)
 
-        page.key_date_dropdown_addline(@term_index,key_date_group_index).select @key_date_type
-        page.loading.wait_while_present
+        page.key_date_dropdown_addline( @term_index, key_date_group_index).select @key_date_type
         page.key_date_start_date_addline(@term_index,key_date_group_index).set @start_date
-        page.loading.wait_while_present
-
-        page.key_date_end_date_addline(@term_index,key_date_group_index).set @end_date #if @date_range
-
-        page.key_date_add(@term_index,key_date_group_index)
+        page.key_date_end_date_addline(@term_index,key_date_group_index).set @end_date
       else
         #TODO - need the opposite of set_options here
         edit :key_date_type => @key_date_type, :start_date => @start_date, :end_date  => @end_date, :start_time  => @start_time, :end_time  => @end_time, :start_time_ampm  => @start_time_ampm,  :end_time_ampm => @end_time_ampm
@@ -696,24 +694,24 @@ class CalendarEvent
 
     on EditAcademicCalendar do |page|
       page.open_events_section
-      wait_until { page.event_type.enabled? }
-      page.event_type.select @event_type
-      page.event_start_date.set @start_date
-      page.event_end_date.set @end_date
-      page.event_start_time.set @start_time
-      page.event_end_time.set @end_time
+      wait_until { page.add_event_button.present? }
+      page.add_event_button.click
+      page.add_event_type.select @event_type
+      page.add_event_start_date.set @start_date
+      page.add_event_end_date.set @end_date
+      page.add_event_start_time.set @start_time
+      page.add_event_end_time.set @end_time
       page.loading.wait_while_present
       if @start_time_ampm == "am"
-        page.event_start_am_set
+        page.add_event_start_am_set
       else
-        page.event_start_pm_set
+        page.add_event_start_pm_set
       end
       if @end_time_ampm == "am"
-        page.event_end_am_set
+        page.add_event_end_am_set
       else
-        page.event_end_pm_set
+        page.add_event_end_pm_set
       end
-      page.add_event.click
       page.save
 
     end

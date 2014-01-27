@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Delete cross-listed COs
+@nightly @yellow_team
+Feature: CO.Delete cross-listed COs
   As a user, I want to be able to delete a cross-listed course offering
   so that it will no longer be offered for the term.
 

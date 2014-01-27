@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Delete and edit standard Time Slots
+@nightly @yellow_team
+Feature: CO.Delete and edit standard Time Slots
 
   As a Scheduling Coordinator, I want to edit existing Standard Time Slots for
   a particular Time Slot Type so that university scheduling policies will be enforced.
@@ -55,21 +55,21 @@ Feature: WC.Delete and edit standard Time Slots
     And I add a Time Slot with the chosen Term Type
     Then the timeslots are saved
     And I attempt to edit the Time Slot omitting the start time
-    Then an error is displayed about the missing data
+    Then an error is displayed about the missing start time
 
     Scenario: Editing a standard time slot using incomplete data - omitting end time
     When I show time slots for a single term type
     And I add a Time Slot with the chosen Term Type
     Then the timeslots are saved
     And I attempt to edit the Time Slot omitting the end time
-    Then an error is displayed about the missing data
+    Then an error is displayed about the missing end time
 
     Scenario: Editing a standard time slot using incomplete data - omitting days
     When I show time slots for a single term type
     And I add a Time Slot with the chosen Term Type
     Then the timeslots are saved
     And I attempt to edit the Time Slot omitting the days
-    Then an error is displayed about the missing data
+    Then an error is displayed about the missing days
 
     Scenario: Editing an existing time slot that results in duplication
     When I add 2 different time slots to a single term type

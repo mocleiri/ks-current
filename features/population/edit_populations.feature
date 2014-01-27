@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Edit populations
+@nightly @yellow_team
+Feature: CO.Edit populations
 
 In order to reserve seats in a course offering for a group of students 
 I want to create populations and in order to effectively manage populations

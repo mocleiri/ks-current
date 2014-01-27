@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE3-7 View Exam Offerings only when the Exam Setting is set to Standard
+Feature: CO.FE3-7 View Exam Offerings only when the Exam Setting is set to Standard
   FE 3.7 As a Central Admin I want existing exam offerings to be deleted if the CO setting changes to "No final Exam"
   or "Alternative final assessment" after bulk creation but before the SoC is published so that exam offerings match
   CO exam settings

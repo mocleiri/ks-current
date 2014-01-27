@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Academic Calendar Terms
+@nightly @yellow_team
+Feature: CO.Academic Calendar Terms
   CO 2.17
 
   Background:

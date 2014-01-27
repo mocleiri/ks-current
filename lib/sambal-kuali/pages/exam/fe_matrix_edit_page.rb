@@ -44,15 +44,15 @@ class FEMatrixEdit < BasePage
   element(:cancel_proposition_link) { |b| b.proposition_section.a( text: /Cancel/)}
   action(:cancel_proposition) { |b| b.cancel_proposition_link.click; b.loading.wait_while_present}
 
-  element(:rdl_tba_checkbox) { |b| b.scheduling_information_section.checkbox( id: "FinalExam_tba_control")}
-  action(:rdl_tba) { |b| b.rdl_tba_checkbox.click}
-  element(:rdl_days) { |b| b.scheduling_information_section.select( id: "FinalExam_days_control")}
-  element(:rdl_starttime) { |b| b.scheduling_information_section.text_field( id: "FinalExam_starttime_control")}
-  element(:rdl_starttime_ampm) { |b| b.scheduling_information_section.select( id: "FinalExam_starttime_ampm_control")}
-  element(:rdl_endtime) { |b| b.scheduling_information_section.text_field( id: "FinalExam_endtime_control")}
-  element(:rdl_endtime_ampm) { |b| b.scheduling_information_section.select( id: "FinalExam_endtime_ampm_control")}
-  element(:rdl_facility) { |b| b.scheduling_information_section.text_field( id: "FinalExam_building_control")}
-  element(:rdl_room) { |b| b.scheduling_information_section.text_field( id: "FinalExam_room_control")}
+  element(:rsi_tba_checkbox) { |b| b.scheduling_information_section.checkbox( id: "FinalExam_tba_control")}
+  action(:rsi_tba) { |b| b.rsi_tba_checkbox.click}
+  element(:rsi_days) { |b| b.scheduling_information_section.select( id: "FinalExam_days_control")}
+  element(:rsi_starttime) { |b| b.scheduling_information_section.text_field( id: "FinalExam_starttime_control")}
+  element(:rsi_starttime_ampm) { |b| b.scheduling_information_section.select( id: "FinalExam_starttime_ampm_control")}
+  element(:rsi_endtime) { |b| b.scheduling_information_section.text_field( id: "FinalExam_endtime_control")}
+  element(:rsi_endtime_ampm) { |b| b.scheduling_information_section.select( id: "FinalExam_endtime_ampm_control")}
+  element(:rsi_facility) { |b| b.scheduling_information_section.text_field( id: "FinalExam_building_control")}
+  element(:rsi_room) { |b| b.scheduling_information_section.text_field( id: "FinalExam_room_control")}
 
   element(:update_rule_btn) { |b| b.fe_rule_maintenance_page.button( id: "KSFE-UpdateRule-Button")}
   action(:update_rule) { |b| b.update_rule_btn.click}

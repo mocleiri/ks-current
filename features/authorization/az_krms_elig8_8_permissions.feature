@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.AZ ELIG8-8 Permissions for specific users should change depending on the CO
+Feature: CO.AZ ELIG8-8 Permissions for specific users should change depending on the CO
 
   Background:
     Given I am logged in as a Department Schedule Coordinator

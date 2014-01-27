@@ -1,5 +1,5 @@
-@wip @red_team
-Feature: EC.State Propagation
+@wip @yellow_team
+Feature: CO.State Propagation
 
   Background:
     Given I am logged in as a Schedule Coordinator

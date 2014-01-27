@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG7-6 Delete statement or compound statement of CO copied from CLU
+Feature: CO.ELIG7-6 Delete statement or compound statement of CO copied from CLU
 
   Background:
     Given I am logged in as admin

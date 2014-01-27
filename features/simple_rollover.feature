@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Simple Rollover
+@nightly @yellow_team
+Feature: CO.Simple Rollover
 
 
   As a central administrator, I want to manually trigger the rollover process so that eligible course

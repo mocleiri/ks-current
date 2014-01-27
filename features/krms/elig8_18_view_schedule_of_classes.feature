@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG8-18 View changes made to AO or CO Requisites on Schedule of Classes
+Feature: CO.ELIG8-18 View changes made to AO or CO Requisites on Schedule of Classes
   ELIG 8.18 : As a Central Administrator I want to have Rules display in the Schedule of Classes so that students are
   able to see whether or not they will qualify for enrolment in a course prior to trying to enrol
 

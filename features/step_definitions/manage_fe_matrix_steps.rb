@@ -19,7 +19,7 @@ When /^I add a Common Final Exam course rule to the Final Exam Matrix$/ do
 end
 
 When /^I add Building and Room location data to the Requested Exam Offering Scheduling Information$/ do
-  @matrix.add_edit_rdl_info
+  @matrix.add_edit_rsi_info
 end
 
 When /^I add a Standard Final Exam timeslot rule to the Final Exam Matrix$/ do
@@ -176,7 +176,7 @@ end
 Then /^I should be able to choose any one of Day 1 to 6 for the rule$/ do
   on FEMatrixEdit do |page|
     for i in 1..6
-      page.rdl_days.option( value: "#{i}").text.should == "Day #{i}"
+      page.rsi_days.option( value: "#{i}").text.should == "Day #{i}"
     end
     page.cancel_rule
   end
@@ -236,7 +236,7 @@ Then /^I should be able to see the newly created timeslot rule in the Standard F
   on FEMatrixView do |page|
     requirements = page.get_standard_fe_requirements( @matrix.days)
     requirements.should match /#{@matrix.days} at #{@matrix.start_time} #{@matrix.time_ampm.upcase} - #{@matrix.end_time} #{@matrix.time_ampm.upcase}\./
-    page.get_standard_fe_day( @matrix.days).should match /#{@matrix.rdl_days}/
+    page.get_standard_fe_day( @matrix.days).should match /#{@matrix.rsi_days}/
     page.get_standard_fe_time( @matrix.days).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
   end
 end
@@ -245,7 +245,7 @@ Then /^I should be able to see the newly created text rule in the Standard Final
   @matrix.manage
   on FEMatrixView do |page|
     page.standard_fe_target_row( @matrix.free_text).should_not == nil
-    page.get_standard_fe_day( @matrix.free_text).should match /#{@matrix.rdl_days}/
+    page.get_standard_fe_day( @matrix.free_text).should match /#{@matrix.rsi_days}/
     page.get_standard_fe_time( @matrix.free_text).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
   end
 end
@@ -255,7 +255,7 @@ Then /^I should be able to see the edited timeslot rule in the Standard Final Ex
   on FEMatrixView do |page|
     requirements = page.get_standard_fe_requirements( @matrix.days)
     requirements.should match /#{@matrix.days} at #{@matrix.start_time} #{@matrix.time_ampm.upcase} - #{@matrix.end_time} #{@matrix.time_ampm.upcase}\./
-    page.get_standard_fe_day( @matrix.days).should match /#{@matrix.rdl_days}/
+    page.get_standard_fe_day( @matrix.days).should match /#{@matrix.rsi_days}/
     page.get_standard_fe_time( @matrix.days).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
   end
 end
@@ -264,7 +264,7 @@ Then /^I should be able to see the edited course rule in the Common Final Exam t
   @matrix.manage
   on FEMatrixView do |page|
     page.common_fe_target_row( @matrix.courses).should_not == nil
-    page.get_common_fe_day( @matrix.courses).should match /#{@matrix.rdl_days}/
+    page.get_common_fe_day( @matrix.courses).should match /#{@matrix.rsi_days}/
     page.get_common_fe_time( @matrix.courses).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
   end
 end
@@ -279,7 +279,7 @@ end
 Then /^I should be able to see the Common Final Exam rule with the multiple statements$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.get_common_fe_day( @matrix.courses).should match /#{@matrix.rdl_days}/
+    page.get_common_fe_day( @matrix.courses).should match /#{@matrix.rsi_days}/
     page.get_common_fe_time( @matrix.courses).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
   end
 end

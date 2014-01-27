@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG9-10 Add Statement and Create Group
+Feature: CO.ELIG9-10 Add Statement and Create Group
 
   Background:
     Given I am logged in as admin

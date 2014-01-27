@@ -1,8 +1,8 @@
 @nightly @blue_team
-Feature: SA.FE1-8 Add new rule to the Final Exam Matrix
+Feature: CO.FE1-8 Add new rule to the Final Exam Matrix
   FE 1.8 As a Central Administrator I want to specify an exam location for one or more exam offerings for course
   offering driven exam time slots so that predetermined common exam locations are preslotted in the exam offering
-  requested delivery logistics
+  requested sched_info
 
   Background:
     Given I am logged in as admin

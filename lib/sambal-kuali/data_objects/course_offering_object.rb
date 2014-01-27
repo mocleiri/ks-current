@@ -265,8 +265,8 @@ class CourseOffering
 
     if options[:delivery_format_list] != nil
       options[:delivery_format_list].each do |delivery_obj|
-        @delivery_format_list.each do |existing_dl|
-          existing_dl.update_delivery_format(delivery_obj) if existing_dl.format == delivery_obj.format
+        @delivery_format_list.each do |existing_si|
+          existing_si.update_delivery_format(delivery_obj) if existing_si.format == delivery_obj.format
         end
       end
     end

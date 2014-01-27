@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Delete joint-defined COs
+@nightly @yellow_team
+Feature: CO.Delete joint-defined COs
 
   As a user, I want to be able to delete a joint-defined course offering so that it will no longer be offered for the term.
 

@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE7-1 Academic Time Period
+Feature: CO.FE7-1 Academic Time Period
   FE 7.1: As a Central Administrator I want a final exam Academic Time Period associated with a term so that final
   examinations for the term can be scheduled and offered
 

@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Toolbar state
+@nightly @yellow_team
+Feature: CO.Toolbar state
 
   Background:
     Given I am logged in as a Schedule Coordinator

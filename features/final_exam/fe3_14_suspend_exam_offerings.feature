@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE3-14 Suspending Course Offering will suspend the Exam Offerings as well
+Feature: CO.FE3-14 Suspending Course Offering will suspend the Exam Offerings as well
   FE 3.14: As a Central Administrator I want exam offerings to be Suspended if the governing course offering or
   activity offering is suspended after the bulk creation so that unnecessary exam offerings are removed
 

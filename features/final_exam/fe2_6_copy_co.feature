@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE2-6 Create CO with FE and then copy
+Feature: CO.FE2-6 Create CO with FE and then copy
   FE 2.6: As a Central Administrator I want exam information to be copied when creating a course offering from copy
   so that exam settings are retained session over session until modified
 

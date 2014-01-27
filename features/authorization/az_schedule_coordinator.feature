@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.AZ Schedule Coordinator
+@nightly @yellow_team
+Feature: CO.AZ Schedule Coordinator
 
   Background:
     Given I am logged in as a Schedule Coordinator

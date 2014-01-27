@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG8-19 Modify the new rules on Activity Offering level
+Feature: CO.ELIG8-19 Modify the new rules on Activity Offering level
 
   Background:
     Given I am logged in as admin

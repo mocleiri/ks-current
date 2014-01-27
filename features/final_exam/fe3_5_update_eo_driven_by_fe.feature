@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE3-5 Update Exam Offerings based on Final Exam Driver
+Feature: CO.FE3-5 Update Exam Offerings based on Final Exam Driver
   FE 3-5 As a Central Adminstrator I want existing exam offerings to be deleted if the exam driver changes after the bulk creation but before the SoC is published so that exam offerings are in sync with their drivers
   to "No final Exam" or "Alternative final assessment" after bulk creation and after the SoC is published so that exam offerings match CO exam settings
 

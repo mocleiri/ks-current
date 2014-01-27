@@ -289,6 +289,7 @@ class Holiday
     options = defaults.merge(opts)
 
     on CreateEditHolidayCalendar do |page|
+      page.add_holiday
       if @type == "random"
         page.holiday_type.select page.select_random_holiday
         @type=page.holiday_type.value
@@ -319,8 +320,8 @@ class Holiday
         page.instructional.set
       end
       return if options[:defer_add]
-      page.add_link.click
-      page.adding.wait_while_present
+      #page.add_link.click
+      #page.adding.wait_while_present
       page.save if options[:exp_success]
     end
 

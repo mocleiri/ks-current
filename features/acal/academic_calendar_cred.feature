@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Academic Calendar CRED
+@nightly @yellow_team
+Feature: CO.Academic Calendar CRED
 
   Background:
     Given I am logged in as a Schedule Coordinator
@@ -44,10 +44,12 @@ Feature: EC.Academic Calendar CRED
     When I remove the events from the Academic Calendar
     Then the event list is updated when I view the Academic Calendar
 
+    @bug
   Scenario: Add a Holiday Calendar to an Academic Calendar
     When I add a Holiday Calendar to the Academic Calendar
     Then the Holiday Calendar is listed when I view the Academic Calendar
 
+    @bug
   Scenario: Remove a Holiday Calendar from an Academic Calendar
     Given I add a Holiday Calendar to the Academic Calendar
     When I remove the Holiday Calendar

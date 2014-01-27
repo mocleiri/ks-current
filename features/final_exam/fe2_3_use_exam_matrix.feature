@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE2-3 Use Exam Matrix or not
+Feature: CO.FE2-3 Use Exam Matrix or not
   FE 2.3 As a Central Administrator I want to identify if the exam offering(s) for a course offering will be
   scheduled according to a matrix or another means so that scheduling information for exam offerings can be
   appropriately populated

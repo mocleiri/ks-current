@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Student Authorization
+@nightly @yellow_team
+Feature: CO.Student Authorization
 
   Background:
     Given I am logged in as admin

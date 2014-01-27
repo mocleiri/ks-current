@@ -586,13 +586,13 @@ Given /^I create a course offering from catalog with a suspended activity offeri
 end
 
 Given /^I add requested scheduling information to the activity offering$/ do
-  @rdl_list = {}
-  @rdl_list["MTW"] = make SchedulingInformation, :days => "MTW",
+  @rsi_list = {}
+  @rsi_list["MTW"] = make SchedulingInformation, :days => "MTW",
                           :start_time => "10:00", :start_time_ampm => "am",
                           :end_time => "10:50", :end_time_ampm => "am",
                           :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
 
-  @activity_offering.edit :requested_scheduling_information_list => @rdl_list
+  @activity_offering.edit :requested_scheduling_information_list => @rsi_list
 
   @activity_offering.save
 end
@@ -614,11 +614,11 @@ Given /^the actual scheduling information are displayed for the updated activity
   @activity_offering.parent_course_offering.manage
 
   on ManageCourseOfferings do |page|
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_DAYS].text.should == (@rdl_list["MTW"]).days
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ST_TIME].text.should == "#{(@rdl_list["MTW"]).start_time} #{(@rdl_list["MTW"]).start_time_ampm.upcase}"
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_END_TIME].text.should == "#{(@rdl_list["MTW"]).end_time} #{(@rdl_list["MTW"]).end_time_ampm.upcase}"
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_BLDG].text.should == (@rdl_list["MTW"]).facility
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ROOM].text.should == (@rdl_list["MTW"]).room
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_DAYS].text.should == (@rsi_list["MTW"]).days
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ST_TIME].text.should == "#{(@rsi_list["MTW"]).start_time} #{(@rsi_list["MTW"]).start_time_ampm.upcase}"
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_END_TIME].text.should == "#{(@rsi_list["MTW"]).end_time} #{(@rsi_list["MTW"]).end_time_ampm.upcase}"
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_BLDG].text.should == (@rsi_list["MTW"]).facility
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ROOM].text.should == (@rsi_list["MTW"]).room
   end
 end
 
@@ -922,7 +922,7 @@ Then /^I am unable submit the activity offering to the scheduler$/ do
   @activity_offering.edit
 
   on ActivityOfferingMaintenance do |page|
-    page.send_RDLs_to_scheduler_msg.should match /Scheduling information cannot be sent to the scheduler/
+    page.send_RSIs_to_scheduler_msg.should match /Scheduling information cannot be sent to the scheduler/
     page.cancel
   end
 end

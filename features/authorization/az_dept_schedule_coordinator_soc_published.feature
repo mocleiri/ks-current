@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.AZ Dept Schedule Coordinator SOC state Published
+@nightly @yellow_team
+Feature: CO.AZ Dept Schedule Coordinator SOC state Published
 
   Background:
     Given I am logged in as a Department Schedule Coordinator

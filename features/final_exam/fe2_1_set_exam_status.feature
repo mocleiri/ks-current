@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.FE2-1 Set Exam Status
+Feature: CO.FE2-1 Set Exam Status
   FE 2.1: As a Central Administrator I want to override the exam settings on a course offering inherited from the
   canonical version so that a final examination can be set to be offered or not in a particular course offering
 

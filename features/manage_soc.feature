@@ -1,5 +1,5 @@
-@nightly @green_team
-Feature: WC.Manage SOC
+@nightly @yellow_team
+Feature: CO.Manage SOC
 
   MSR 2.6: As Central Administrator, I want to process scheduling information requests for all Activity Offerings within a selected Term
   so that scheduling information can be assigned (Mass Scheduling Event)

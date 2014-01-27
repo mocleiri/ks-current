@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG9-1 Data Setup
+Feature: CO.ELIG9-1 Data Setup
 
   Background:
     Given I am logged in as admin

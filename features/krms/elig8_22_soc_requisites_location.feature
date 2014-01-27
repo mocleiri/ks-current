@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: SA.ELIG8-22 Ensure that changes made to AO or CO Requisites displays differently on Schedule of Classes
+Feature: CO.ELIG8-22 Ensure that changes made to AO or CO Requisites displays differently on Schedule of Classes
   ELIG 8.22 : As a Central Administrator I want to have Rules display in the Schedule of Classes Cluster View so
   that students are able to see whether or not they will qualify for enrolment in a course prior to trying to enrol
 

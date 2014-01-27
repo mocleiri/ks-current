@@ -1,5 +1,5 @@
-@nightly @red_team
-Feature: EC.Create Seatpools
+@nightly @yellow_team
+Feature: CO.Create Seatpools
 
 As an Administrator, I want to create one or more seat pools and add to my Activity Offering 
 so that I can reserve seats in this Activity Offering for one or more populations of students.
