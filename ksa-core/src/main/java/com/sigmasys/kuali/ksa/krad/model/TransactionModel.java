@@ -828,4 +828,8 @@ public class TransactionModel extends Transaction {
         return !(getUnallocatedAmount().compareTo(BigDecimal.ZERO) <= 0) &&
                 !TransactionStatus.REFUND_REQUESTED.equals(parentTransaction.getStatus());
     }
+
+    public boolean isRefundRequested() {
+        return (TransactionStatus.REFUND_REQUESTED.equals(parentTransaction.getStatus()));
+    }
 }

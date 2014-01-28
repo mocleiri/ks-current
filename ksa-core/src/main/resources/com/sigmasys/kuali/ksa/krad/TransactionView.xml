@@ -364,6 +364,11 @@
                                     <bean parent="Uif-HorizontalBoxSection" p:style="float: right;">
                                         <property name="items">
                                             <list>
+                                                <bean parent="Uif-ImageField" p:source="../images/pause.png" p:style="float: right;" p:altText="" p:title="" p:render="@{#line.isRefundRequested()}">
+                                                    <property name="toolTip">
+                                                        <bean parent="Uif-Tooltip" p:tooltipContent="A refund has been requested against this transaction and is in process"/>
+                                                    </property>
+                                                </bean>
                                                 <bean parent="Uif-ImageField" p:source="../images/reverse.png" p:style="cursor:pointer; float: right;" p:altText="" p:title="" p:render="@{#line.isReversible()}"
                                                       p:onClickScript="showLightboxComponent('TransactionReverseLightbox@{#lineSuffix}');writeHiddenToForm('actionParameters[source]', 'runningBalance');">
                                                     <property name="toolTip">
@@ -667,6 +672,11 @@
                         <bean parent="Uif-HorizontalBoxSection" p:style="float: right;">
                             <property name="items">
                                 <list>
+                                    <bean parent="Uif-ImageField" p:source="../images/pause.png" p:style="float: right;" p:altText="" p:title="" p:render="@{#line.isRefundRequested()}">
+                                        <property name="toolTip">
+                                            <bean parent="Uif-Tooltip" p:tooltipContent="A refund has been requested against this transaction and is in process"/>
+                                        </property>
+                                    </bean>
                                     <bean parent="Uif-ImageField" p:source="../images/reverse.png" p:style="cursor:pointer; float: right;" p:altText="" p:title="" p:render="@{#line.isReversible()}"
                                           p:onClickScript="showLightboxComponent('TransactionReverseLightbox@{#lineSuffix}');writeHiddenToForm('actionParameters[source]', 'rollup');">
                                         <property name="toolTip">
