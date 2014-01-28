@@ -4,6 +4,7 @@ import com.sigmasys.kuali.ksa.config.ConfigService;
 import com.sigmasys.kuali.ksa.krad.form.SettingsForm;
 import com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel;
 import com.sigmasys.kuali.ksa.krad.model.CashLimitParameterModel;
+import com.sigmasys.kuali.ksa.krad.model.GlRecognitionPeriodModel;
 import com.sigmasys.kuali.ksa.krad.model.RefundTypeModel;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.model.Currency;
@@ -186,6 +187,14 @@ public class SettingsController extends GenericSearchController {
                 models.add(new RefundTypeModel(entity));
             }
             form.setRefundTypes(models);
+        } else if ("GLRecognitionPeriodPage".equals(pageId)) {
+            form.setAuditableEntity(new GlRecognitionPeriod());
+            List<GlRecognitionPeriod> entities = auditableEntityService.getAuditableEntities(GlRecognitionPeriod.class);
+            List<GlRecognitionPeriodModel> models = new ArrayList<GlRecognitionPeriodModel>(entities.size());
+            for (GlRecognitionPeriod entity : entities) {
+                models.add(new GlRecognitionPeriodModel(entity));
+            }
+            form.setGlRecognitionPeriodModels(models);
         }
 
         return getUIFModelAndView(form);
@@ -440,7 +449,7 @@ public class SettingsController extends GenericSearchController {
 
         } else if(success) {
             if(success) {
-                String statusMsg = "Refunt Types saved";
+                String statusMsg = "Refund Types saved";
                 GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
                 logger.info(statusMsg);
             }
@@ -452,5 +461,46 @@ public class SettingsController extends GenericSearchController {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=saveGlRecognitionPeriod")
+    public ModelAndView saveGlRecognitionPeriod(@ModelAttribute("KualiForm") SettingsForm form) {
+        List<GlRecognitionPeriodModel> parameters = form.getGlRecognitionPeriodModels();
+
+
+        boolean errors = false;
+        boolean success = false;
+
+        try {
+            for (GlRecognitionPeriodModel p : parameters) {
+                GlRecognitionPeriod parent = (GlRecognitionPeriod) p.getParentEntity();
+
+                auditableEntityService.persistAuditableEntity(parent);
+                success = true;
+            }
+
+        } catch (Throwable t) {
+            String statusMsg = "GL Recognition Periods did not update: " + t.getLocalizedMessage();
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.error(statusMsg + " " + t.getMessage());
+            errors = true;
+        }
+
+        if(success && errors) {
+            String statusMsg = "Some GL Recognition Periods saved, but others contained errors.";
+            GlobalVariables.getMessageMap().putWarning(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.info(statusMsg);
+
+        } else if(success) {
+            if(success) {
+                String statusMsg = "GL Recognition Periods saved";
+                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+                logger.info(statusMsg);
+            }
+
+        }
+
+
+        return getUIFModelAndView(form);
+
+    }
 
 }

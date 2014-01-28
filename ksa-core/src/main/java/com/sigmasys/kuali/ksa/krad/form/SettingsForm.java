@@ -2,6 +2,7 @@ package com.sigmasys.kuali.ksa.krad.form;
 
 import com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel;
 import com.sigmasys.kuali.ksa.krad.model.CashLimitParameterModel;
+import com.sigmasys.kuali.ksa.krad.model.GlRecognitionPeriodModel;
 import com.sigmasys.kuali.ksa.krad.model.RefundTypeModel;
 import com.sigmasys.kuali.ksa.krad.util.AuditTooltipUtil;
 import com.sigmasys.kuali.ksa.model.*;
@@ -25,6 +26,7 @@ public class SettingsForm extends AbstractViewModel {
 
     private List<RefundTypeModel> refundTypeModels;
 
+    private List<GlRecognitionPeriodModel> glRecognitionPeriodModels;
     /*
       Get/Set methods
     */
@@ -134,5 +136,13 @@ public class SettingsForm extends AbstractViewModel {
 
     public void setRefundTypes(List<RefundTypeModel> refundTypeModels) {
         this.refundTypeModels = refundTypeModels;
+    }
+
+    public List<GlRecognitionPeriodModel> getGlRecognitionPeriodModels() {
+        return glRecognitionPeriodModels;
+    }
+
+    public void setGlRecognitionPeriodModels(List<GlRecognitionPeriodModel> glRecognitionPeriodModels) {
+        this.glRecognitionPeriodModels = glRecognitionPeriodModels;
     }
 }
