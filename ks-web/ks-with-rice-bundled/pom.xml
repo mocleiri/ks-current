@@ -47,6 +47,7 @@
                     </systemProperties>
                     <webAppConfig>
                         <contextPath>/ks-with-rice-bundled-dev</contextPath>
+                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
                         <!-- Remove after KULRICE-11157 is fixed -->
                         <maxFormContentSize>-1</maxFormContentSize>
                     </webAppConfig>
@@ -278,6 +279,11 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.kuali.student.ap</groupId>
+            <artifactId>ks-ap-deployment-resources</artifactId>
+            <version>${ks.ap.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.kuali.student.enroll</groupId>
             <artifactId>ks-enroll-deployment-resources</artifactId>
             <version>${ks.enroll.version}</version>
@@ -357,6 +363,33 @@
             <version>${ks.api.version}</version>
             <classifier>sources</classifier>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kuali.student.ap</groupId>
+            <artifactId>ks-ap</artifactId>
+            <version>${ks.ap.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.kuali.student.ap</groupId>
+            <artifactId>ks-ap-framework</artifactId>
+            <version>${ks.ap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kuali.student.ap</groupId>
+            <artifactId>ks-ap-impl</artifactId>
+            <version>${ks.ap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kuali.student.ap</groupId>
+            <artifactId>ks-ap-ui</artifactId>
+            <version>${ks.ap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kuali.student.ap</groupId>
+            <artifactId>ks-ap-web</artifactId>
+            <version>${ks.ap.version}</version>
+            <type>war</type>
         </dependency>
         <dependency>
             <groupId>backport-util-concurrent</groupId>
