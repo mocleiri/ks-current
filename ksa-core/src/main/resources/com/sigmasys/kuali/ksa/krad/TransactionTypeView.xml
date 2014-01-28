@@ -556,6 +556,7 @@
 
     <bean id="glBreakdownList" parent="Uif-Disclosure-VerticalBoxSection" p:style="text-decoration:underline"> <!-- p:progressiveRender="@{#dp.type eq 'D'}"> -->
         <property name="headerText" value="Default General Ledger Breakdown"/>
+        <property name="instructionalText" value="Please ensure you click ADD on any General Ledger lines you create."/>
         <property name="items">
             <list>
                 <bean parent="Uif-Disclosure-TableCollectionSection"
