@@ -4,6 +4,7 @@ import com.sigmasys.kuali.ksa.config.ConfigService;
 import com.sigmasys.kuali.ksa.krad.form.SettingsForm;
 import com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel;
 import com.sigmasys.kuali.ksa.krad.model.CashLimitParameterModel;
+import com.sigmasys.kuali.ksa.krad.model.RefundTypeModel;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.model.Currency;
 import com.sigmasys.kuali.ksa.service.AuditableEntityService;
@@ -177,6 +178,14 @@ public class SettingsController extends GenericSearchController {
                 models.add(new CashLimitParameterModel(entity));
             }
             form.setCashLimitParameters(models);
+        } else if ("RefundTypePage".equals(pageId)) {
+            form.setAuditableEntity(new RefundType());
+            List<RefundType> entities = auditableEntityService.getAuditableEntities(RefundType.class);
+            List<RefundTypeModel> models = new ArrayList<RefundTypeModel>(entities.size());
+            for (RefundType entity : entities) {
+                models.add(new RefundTypeModel(entity));
+            }
+            form.setRefundTypes(models);
         }
 
         return getUIFModelAndView(form);
@@ -391,6 +400,48 @@ public class SettingsController extends GenericSearchController {
             if(success) {
                 String statusMsg = "Cash Limit Parameters saved";
                 GlobalVariables.getMessageMap().putInfo("SettingsView", RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+                logger.info(statusMsg);
+            }
+
+        }
+
+
+        return getUIFModelAndView(form);
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=saveRefundType")
+    public ModelAndView saveRefundType(@ModelAttribute("KualiForm") SettingsForm form) {
+        List<RefundTypeModel> parameters = form.getRefundTypes();
+
+
+        boolean errors = false;
+        boolean success = false;
+
+        try {
+            for (RefundTypeModel p : parameters) {
+                RefundType parent = (RefundType) p.getParentEntity();
+
+                auditableEntityService.persistAuditableEntity(parent);
+                success = true;
+            }
+
+        } catch (Throwable t) {
+            String statusMsg = "Refund Types did not update: " + t.getLocalizedMessage();
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.error(statusMsg + " " + t.getMessage());
+            errors = true;
+        }
+
+        if(success && errors) {
+            String statusMsg = "Some Refund Types saved, but others contained errors.";
+            GlobalVariables.getMessageMap().putWarning(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.info(statusMsg);
+
+        } else if(success) {
+            if(success) {
+                String statusMsg = "Refunt Types saved";
+                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
                 logger.info(statusMsg);
             }
 

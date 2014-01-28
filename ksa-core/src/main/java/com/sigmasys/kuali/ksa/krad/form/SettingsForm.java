@@ -2,6 +2,7 @@ package com.sigmasys.kuali.ksa.krad.form;
 
 import com.sigmasys.kuali.ksa.krad.model.AuditableEntityModel;
 import com.sigmasys.kuali.ksa.krad.model.CashLimitParameterModel;
+import com.sigmasys.kuali.ksa.krad.model.RefundTypeModel;
 import com.sigmasys.kuali.ksa.krad.util.AuditTooltipUtil;
 import com.sigmasys.kuali.ksa.model.*;
 
@@ -21,6 +22,8 @@ public class SettingsForm extends AbstractViewModel {
    private List<ConfigParameter> configParameters;
 
     private List<CashLimitParameterModel> cashLimitParameters;
+
+    private List<RefundTypeModel> refundTypeModels;
 
     /*
       Get/Set methods
@@ -97,6 +100,7 @@ public class SettingsForm extends AbstractViewModel {
         else if(parent instanceof Rollup){ return "Rollup Type"; }
         else if(parent instanceof TaxType) { return "Tax Type"; }
         else if(parent instanceof GeneralLedgerType) { return "General Ledger Type"; }
+        else if(parent instanceof RefundType) { return "Refund Type"; }
 
         return this.getSimpleType();
     }
@@ -122,5 +126,13 @@ public class SettingsForm extends AbstractViewModel {
             return "";
         }
         return AuditTooltipUtil.getAuditTooltip(entity.getParentEntity());
+    }
+
+    public List<RefundTypeModel> getRefundTypes() {
+        return refundTypeModels;
+    }
+
+    public void setRefundTypes(List<RefundTypeModel> refundTypeModels) {
+        this.refundTypeModels = refundTypeModels;
     }
 }

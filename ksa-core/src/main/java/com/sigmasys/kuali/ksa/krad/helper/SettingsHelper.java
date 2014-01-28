@@ -1,9 +1,12 @@
 package com.sigmasys.kuali.ksa.krad.helper;
 
 import com.sigmasys.kuali.ksa.model.Account;
+import com.sigmasys.kuali.ksa.model.CreditType;
+import com.sigmasys.kuali.ksa.model.DebitType;
 import com.sigmasys.kuali.ksa.model.Tag;
 import com.sigmasys.kuali.ksa.service.AccountService;
 import com.sigmasys.kuali.ksa.service.AuditableEntityService;
+import com.sigmasys.kuali.ksa.service.TransactionService;
 import com.sigmasys.kuali.ksa.util.ContextUtils;
 import org.kuali.rice.krad.uif.service.impl.ViewHelperServiceImpl;
 
@@ -14,6 +17,7 @@ public class SettingsHelper extends ViewHelperServiceImpl {
 
     private AccountService accountService;
     private AuditableEntityService auditableEntityService;
+    private TransactionService transactionService;
 
     public List<Account> getAccountsForSuggest(String suggest) {
         return getAccountService().getAccountsByNamePattern(suggest);
@@ -30,6 +34,14 @@ public class SettingsHelper extends ViewHelperServiceImpl {
         return tags;
     }
 
+    public List<CreditType> getPaymentsForSuggest(String suggest) {
+        return getTransactionService().getTransactionTypesByNamePattern(suggest, CreditType.class);
+    }
+
+    public List<DebitType> getChargesForSuggest(String suggest) {
+        return getTransactionService().getTransactionTypesByNamePattern(suggest, DebitType.class);
+    }
+
 
     private AccountService getAccountService() {
         if (accountService == null) {
@@ -43,6 +55,13 @@ public class SettingsHelper extends ViewHelperServiceImpl {
             auditableEntityService = ContextUtils.getBean(AuditableEntityService.class);
         }
         return auditableEntityService;
+    }
+
+    private TransactionService getTransactionService() {
+        if (transactionService == null) {
+            transactionService = ContextUtils.getBean(TransactionService.class);
+        }
+        return transactionService;
     }
 
 }

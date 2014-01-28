@@ -401,6 +401,22 @@
 
                 <!--End Cash Limit Parameters Page-->
 
+                <!--Begin Refund Type Page-->
+
+                <bean parent="Uif-Page" p:id="RefundTypePage" p:title="Refund Type Page">
+                    <property name="headerText" value="@{humanType}"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="tableSectionRefundType"/>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="saveRefundType"
+                                  p:actionLabel="Save"/>
+
+                        </list>
+                    </property>
+                </bean>
+
+                <!--End Refund Type Page-->
+
                 <!--Begin System Configuration Page-->
 
                 <bean parent="Uif-Page" p:id="SystemConfigurationPage" p:title="System Configuration">
@@ -483,6 +499,8 @@
                       p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=CashLimitParameterPage"/>
                 <bean parent="Uif-Link" p:linkText="General Ledger Type" p:target="_self"
                       p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=GeneralLedgerTypePage"/>
+                <bean parent="Uif-Link" p:linkText="Refund Type" p:target="_self"
+                      p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=RefundTypePage"/>
                 <bean parent="Uif-Link" p:linkText="System Configuration" p:target="_self"
                       p:href="settingsView?methodToCall=get&amp;viewId=SettingsView&amp;pageId=SystemConfigurationPage"/>
             </list>
@@ -892,6 +910,109 @@
                 <bean parent="Uif-InputField" p:label="Friendly Name" p:propertyName="name" p:width="15%"/>
                 <bean parent="Uif-InputField" p:label="Authority Name" p:propertyName="authorityName" p:width="15%"/>
                 <bean parent="Uif-InputField" p:label="XML Element" p:propertyName="xmlElement" p:width="15%"/>
+                <bean parent="Uif-ImageField" p:label="Audit" p:source="../images/audit_guy.png" p:altText="Audit Information" p:title="">
+                    <property name="toolTip">
+                        <bean parent="Uif-Tooltip" p:tooltipContent="@{getAuditTooltip(#line)}" p:width="30%"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="tableSectionRefundType" parent="Uif-Disclosure-TableCollectionSection"
+          p:layoutManager.numberOfColumns="7"
+          p:width="85%">
+        <property name="title" value="View @{humanType}"/>
+        <property name="readOnly" value="false"/>
+        <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.RefundTypeModel"/>
+        <property name="propertyName" value="refundTypes"/>
+        <property name="layoutManager.sequencePropertyName" value="id"/>
+        <property name="layoutManager.richTable.render" value="true"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.disableTableSort" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bPaginate" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <!--<bean parent="Uif-InputField" p:label="Symbol" p:propertyName="code" p:readOnly="true" p:render="@{!#isAddLine}"/> -->
+                <bean parent="Uif-InputField" p:label="Symbol" p:propertyName="code"><!-- p:render="@{#isAddLine}">-->
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="11" p:maxLength="10"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="id">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Name" p:propertyName="name">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"
+                              p:size="20" p:maxLength="100"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Description" p:propertyName="description">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl"
+                              p:rows="3" p:cols="40"
+                              p:watermarkText="Statement description..."/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="Debit Type" p:propertyName="debitType">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id.id"/>
+                            <property name="labelPropertyName" value="description"/>
+                            <property name="templateOptions">
+                                <map>
+                                    <entry key="minLength" value="2"/>
+                                    <entry key="delay" value="0"/>
+                                </map>
+                            </property>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <!--<property name="queryMethodArgumentFieldList" value="payment.effectiveDate"/>-->
+                                    <property name="queryMethodToCall" value="getChargesForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+
+                </bean>
+                <bean parent="Uif-InputField" p:label="Credit Type" p:propertyName="creditType">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="11" p:maxLength="10"/>
+                    </property>
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="id.id"/>
+                            <property name="labelPropertyName" value="description"/>
+                            <property name="templateOptions">
+                                <map>
+                                    <entry key="minLength" value="2"/>
+                                    <entry key="delay" value="0"/>
+                                </map>
+                            </property>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <!--<property name="queryMethodArgumentFieldList" value="payment.effectiveDate"/>-->
+                                    <property name="queryMethodToCall" value="getPaymentsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+
+                </bean>
                 <bean parent="Uif-ImageField" p:label="Audit" p:source="../images/audit_guy.png" p:altText="Audit Information" p:title="">
                     <property name="toolTip">
                         <bean parent="Uif-Tooltip" p:tooltipContent="@{getAuditTooltip(#line)}" p:width="30%"/>
