@@ -7,10 +7,17 @@ Feature: REG.Registration proof of concept
 
   Background:
     Given I am logged in as admin
-    Given I am using a mobile emulator website
 
-  Scenario: Display course search results and detail info
+  Scenario: Display course search results and detail info in mobile mode
+    Given I am using a mobile emulator website
     When I search for course offerings by using the supplied course offering code
     Then the course search results are displayed in mobile format
     When I select a course offering from the search results
     Then the course detail is displayed in mobile format
+
+  Scenario: Display course search results and detail info in tablet mode
+    Given I am using a tablet emulator website
+    When I search for course offerings by using the supplied course offering code
+    Then the course search results are displayed in tablet format
+    When I select a course offering from the search results
+    Then the course detail is displayed in tablet format
