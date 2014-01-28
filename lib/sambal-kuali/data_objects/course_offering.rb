@@ -91,7 +91,9 @@ class CourseOffering
       page.close_popup.wait_until_present(3)
       page.notes.set @notes
       page.save_click
+      sleep 2
       page.course_code_term_click(@planned_term, @course_code)
+
       page.view_course_summary_click
     end
   end

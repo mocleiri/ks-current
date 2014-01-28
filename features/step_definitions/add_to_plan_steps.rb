@@ -34,7 +34,7 @@ end
 
 
 
-Then  /^the course details with notes are displayed under view summary$/  do
+Then  /^the course with notes appears under the term on the planner$/  do
      @course_offering.verify_course_myplan
 end
 
