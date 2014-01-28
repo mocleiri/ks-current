@@ -2041,7 +2041,7 @@ public class RateServiceImpl extends GenericPersistenceService implements RateSe
             for (RateAmount rateAmount : rate.getRateAmounts()) {
 
                 // Compare the number of units to locate a match:
-                if (rateAmount.getUnits() != null && rateAmount.getUnits().compareTo(numUnits) == 0) {
+                if (rateAmount.getUnits() != null && numUnits != null && rateAmount.getUnits().compareTo(numUnits) == 0) {
 
                     // Match found:
                     return rateAmount;

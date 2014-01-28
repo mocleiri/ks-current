@@ -92,7 +92,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         GREATER_EQUAL(Operator.GREATER_EQUAL_OPERATOR),
         LESS_EQUAL(Operator.LESS_EQUAL_OPERATOR);
 
-        private static final String EQUAL_OPERATOR = "=";
+        private static final String EQUAL_OPERATOR = "==";
         private static final String UNEQUAL_OPERATOR = "!=";
         private static final String GREATER_OPERATOR = ">";
         private static final String LESS_OPERATOR = "<";
@@ -165,8 +165,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 Comparable object2;
 
                 if (operatorValue != Operator.EQUAL && operatorValue != Operator.UNEQUAL) {
-                    object1 = (keyPair.getValue() != null) ? new BigDecimal(keyPair.getValue()) : BigDecimal.ZERO;
-                    object2 = (value != null) ? new BigDecimal(value) : BigDecimal.ZERO;
+                    object1 = StringUtils.isNotBlank(keyPair.getValue()) ? new BigDecimal(keyPair.getValue()) : BigDecimal.ZERO;
+                    object2 = StringUtils.isNotBlank(value) ? new BigDecimal(value) : BigDecimal.ZERO;
                 } else {
                     object1 = CommonUtils.nvl(keyPair.getValue());
                     object2 = CommonUtils.nvl(value);
@@ -880,99 +880,107 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean compareSignupEffectiveDateToAtpMilestone(String milestoneName, String operator, BrmContext context) {
 
-        FeeManagementSignup signup = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
-        if (signup.getEffectiveDate() == null) {
-            String errMsg = "Signup effective date cannot be null";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
-        }
+        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
 
-        String atpId = signup.getAtpId();
+        Set<FeeManagementSignup> signups =
+                filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(), null, null, null, null, null);
 
-        if (atpId == null) {
-            FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
-            atpId = session.getAtpId();
-        }
+        for (FeeManagementSignup fmSignup : signups) {
 
-        if (StringUtils.isBlank(atpId)) {
-            String errMsg = "Neither FM signup nor session has a valid non-empty ATP ID";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
-        }
-
-        if (!atpService.atpExists(atpId)) {
-            String errMsg = "ATP ID = " + atpId + " does not exist";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
-        }
-
-        try {
-
-            Date signupDate = CalendarUtils.removeTime(signup.getEffectiveDate());
-
-            List<MilestoneInfo> milestones = atpService.getMilestonesForAtp(atpId, atpService.getAtpContextInfo());
-
-            for (MilestoneInfo milestone : milestones) {
-
-                if (milestoneName.equals(milestone.getName())) {
-
-                    Date milestoneStartDate = milestone.getStartDate();
-                    Date milestoneEndDate = milestone.getEndDate();
-
-                    if (milestoneStartDate != null && milestoneEndDate != null) {
-
-                        switch (EnumUtils.findById(Operator.class, operator)) {
-                            case EQUAL:
-                                if (signupDate.compareTo(milestoneStartDate) >= 0 && signupDate.compareTo(milestoneEndDate) <= 0) {
-                                    return true;
-                                }
-                                break;
-                            case UNEQUAL:
-                                if (signupDate.compareTo(milestoneStartDate) < 0 || signupDate.compareTo(milestoneEndDate) > 0) {
-                                    return true;
-                                }
-                                break;
-                            case GREATER:
-                                if (signupDate.compareTo(milestoneEndDate) > 0) {
-                                    return true;
-                                }
-                                break;
-                            case LESS:
-                                if (signupDate.compareTo(milestoneStartDate) < 0) {
-                                    return true;
-                                }
-                                break;
-                            case GREATER_EQUAL:
-                                if (signupDate.compareTo(milestoneEndDate) >= 0) {
-                                    return true;
-                                }
-                                break;
-                            case LESS_EQUAL:
-                                if (signupDate.compareTo(milestoneStartDate) <= 0) {
-                                    return true;
-                                }
-                        }
-                    }
-
-                    if (milestoneStartDate != null && milestoneEndDate == null) {
-                        if (compareObjects(signupDate, milestoneStartDate, operator)) {
-                            return true;
-                        }
-                    } else if (milestoneStartDate == null && milestoneEndDate != null) {
-                        if (compareObjects(signupDate, milestoneEndDate, operator)) {
-                            return true;
-                        }
-                    }
-
-                    break;
-                }
+            if (fmSignup.getEffectiveDate() == null) {
+                String errMsg = "Signup effective date cannot be null";
+                logger.error(errMsg);
+                throw new IllegalStateException(errMsg);
             }
 
+            String atpId = fmSignup.getAtpId();
 
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+            if (atpId == null) {
+                atpId = session.getAtpId();
+            }
+
+            if (StringUtils.isBlank(atpId)) {
+                String errMsg = "Neither FM signup nor session has a valid non-empty ATP ID";
+                logger.error(errMsg);
+                throw new IllegalStateException(errMsg);
+            }
+
+            if (!atpService.atpExists(atpId)) {
+                String errMsg = "ATP ID = " + atpId + " does not exist";
+                logger.error(errMsg);
+                throw new IllegalStateException(errMsg);
+            }
+
+            try {
+
+                Date signupDate = CalendarUtils.removeTime(fmSignup.getEffectiveDate());
+
+                List<MilestoneInfo> milestones = atpService.getMilestonesForAtp(atpId, atpService.getAtpContextInfo());
+
+                for (MilestoneInfo milestone : milestones) {
+
+                    if (milestoneName.equals(milestone.getName())) {
+
+                        Date milestoneStartDate = milestone.getStartDate();
+                        Date milestoneEndDate = milestone.getEndDate();
+
+                        if (milestoneStartDate != null && milestoneEndDate != null) {
+
+                            switch (EnumUtils.findById(Operator.class, operator)) {
+                                case EQUAL:
+                                    if (signupDate.compareTo(milestoneStartDate) >= 0 && signupDate.compareTo(milestoneEndDate) <= 0) {
+                                        return true;
+                                    }
+                                    break;
+                                case UNEQUAL:
+                                    if (signupDate.compareTo(milestoneStartDate) < 0 || signupDate.compareTo(milestoneEndDate) > 0) {
+                                        return true;
+                                    }
+                                    break;
+                                case GREATER:
+                                    if (signupDate.compareTo(milestoneEndDate) > 0) {
+                                        return true;
+                                    }
+                                    break;
+                                case LESS:
+                                    if (signupDate.compareTo(milestoneStartDate) < 0) {
+                                        return true;
+                                    }
+                                    break;
+                                case GREATER_EQUAL:
+                                    if (signupDate.compareTo(milestoneEndDate) >= 0) {
+                                        return true;
+                                    }
+                                    break;
+                                case LESS_EQUAL:
+                                    if (signupDate.compareTo(milestoneStartDate) <= 0) {
+                                        return true;
+                                    }
+                            }
+                        }
+
+                        if (milestoneStartDate != null && milestoneEndDate == null) {
+                            if (compareObjects(signupDate, milestoneStartDate, operator)) {
+                                return true;
+                            }
+                        } else if (milestoneStartDate == null && milestoneEndDate != null) {
+                            if (compareObjects(signupDate, milestoneEndDate, operator)) {
+                                return true;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+
+
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage(), e);
+            }
+
         }
 
         return false;

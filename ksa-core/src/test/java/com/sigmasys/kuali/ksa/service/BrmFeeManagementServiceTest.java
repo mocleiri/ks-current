@@ -6,6 +6,7 @@ import com.sigmasys.kuali.ksa.model.fm.*;
 import com.sigmasys.kuali.ksa.service.brm.BrmContext;
 import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
+import com.sigmasys.kuali.ksa.service.fm.FeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import com.sigmasys.kuali.ksa.util.GuidGenerator;
 import org.apache.commons.collections.CollectionUtils;
@@ -50,6 +51,9 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
     @Autowired
     private RateService rateService;
+
+    @Autowired
+    private FeeManagementService fmService;
 
     @Autowired
     private BrmFeeManagementService brmFmService;
@@ -117,6 +121,71 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Assert.notNull(updatedSession);
         Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees3() throws Exception {
+
+        Long sessionId = 501L;
+
+        // Create an FM session and manifest:
+        FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = brmFmService.assessFees(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees4() throws Exception {
+
+        Long sessionId = 502L;
+
+        // Create an FM session and manifest:
+        FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees5() throws Exception {
+
+        String userId = "user101";
+
+        FeeManagementSession session = fmService.getOldestFeeManagementSession(userId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.notNull(updatedSession.getAccount());
+        Assert.isTrue(updatedSession.getAccount().getId().equals(userId));
 
         Assert.isTrue(session == updatedSession);
     }

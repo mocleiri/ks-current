@@ -159,34 +159,34 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  add signup rate "public.policy.resident.differential", "default"
 ')!
 
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (9099, 'FM Rule TEST', 3, 8, null,
-'(Context is initialized)',
-'set session key "chargeable.credits" to number of units where signup operation is "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN" minus "DROP,DROP_WITHOUT_PENALTY,TRANSFER_OUT"
- set session key "taken.credits" to number of units where signup is taken
- mark preceding offerings as not taken
- mark signup as not taken
- mark signup as not complete
- remove rates ".*fee.*" from preceding offerings
- charge incidental rate "late.registration", "1" using id "late.registration"
- charge rates "late.registration", "1" in amount of 34.56% with types "", catalogs "", signup operations ""
- charge rates "late.registration", "" with types "", catalogs "", signup operations ""
- discount rate "late.registration", "1" by $10.67
- discount rate "late.registration", "1" by 99.91%
- replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
- remove signup rates ".*"
- add signup rate "late.registration", "1"
- replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
- remove signup rates ".*"
- add signup rate "late.registration", "1"
- mark signup rates ".*", "1" as not complete
- mark signup rates "late.registration", "1" as complete with types "", catalogs "", signup operations ""
- mark signup rates ".*", "1" as complete
- mark signup rates "late.registration", "" as not complete
- mark signup rates ".*", "" as not complete
- add rate "late.registration", "1" to signups with rates ".*", ".*", types "", catalogs "", signup operations ""
- mark session as review required
- mark session as review complete
-')!
+--Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (9099, 'FM Rule TEST', 3, 8, null,
+--'(Context is initialized)',
+--'set session key "chargeable.credits" to number of units where signup operation is "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN" minus "DROP,DROP_WITHOUT_PENALTY,TRANSFER_OUT"
+-- set session key "taken.credits" to number of units where signup is taken
+--mark preceding offerings as not taken
+--mark signup as not taken
+--mark signup as not complete
+--remove rates ".*fee.*" from preceding offerings
+--charge incidental rate "late.registration", "1" using id "late.registration"
+--charge rates "late.registration", "1" in amount of 34.56% with types "", catalogs "", signup operations ""
+--charge rates "late.registration", "" with types "", catalogs "", signup operations ""
+--discount rate "late.registration", "1" by $10.67
+--discount rate "late.registration", "1" by 99.91%
+--replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
+--remove signup rates ".*"
+--add signup rate "late.registration", "1"
+--replace signup rates ".*,late.fee,2", "" with "late.registration", "1"
+--remove signup rates ".*"
+--add signup rate "late.registration", "1"
+--mark signup rates ".*", "1" as not complete
+--mark signup rates "late.registration", "1" as complete with types "", catalogs "", signup operations ""
+--mark signup rates ".*", "1" as complete
+--mark signup rates "late.registration", "" as not complete
+--mark signup rates ".*", "" as not complete
+--add rate "late.registration", "1" to signups with rates ".*", ".*", types "", catalogs "", signup operations ""
+--mark session as review required
+--mark session as review complete
+--')!
 
 -- FM Session 1 rule set --
 
@@ -621,7 +621,7 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (101, 5015)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (101, 5016)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (101, 5017)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (101, 5018)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (101, 9099)!
+--Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (101, 9099)!
 
 -- FM Session 1 rule set --
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6001)!

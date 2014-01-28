@@ -20,7 +20,7 @@ import java.sql.Types;
  */
 public class UnitNumber extends Number implements UserType, Comparable<UnitNumber> {
 
-    public static final UnitNumber ZERO = new UnitNumber(0);
+    public static final UnitNumber ZERO = new UnitNumber(BigDecimal.ZERO);
 
     private BigDecimal unitNumber;
 
@@ -64,22 +64,22 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
 
     @Override
     public int intValue() {
-        return (unitNumber != null) ? unitNumber.intValue() : 0;
+        return (getValue() != null) ? getValue().intValue() : 0;
     }
 
     @Override
     public long longValue() {
-        return (unitNumber != null) ? unitNumber.longValue() : 0;
+        return (getValue() != null) ? getValue().longValue() : 0;
     }
 
     @Override
     public float floatValue() {
-        return (unitNumber != null) ? unitNumber.floatValue() : 0;
+        return (getValue() != null) ? getValue().floatValue() : 0;
     }
 
     @Override
     public double doubleValue() {
-        return (unitNumber != null) ? unitNumber.doubleValue() : 0;
+        return (getValue() != null) ? getValue().doubleValue() : 0;
     }
 
     @Override
@@ -161,7 +161,13 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
 
         BigDecimal objectValue = ((UnitNumber) object).getValue();
 
-        return getValue().compareTo(objectValue) == 0;
+        if (getValue() != null && objectValue != null) {
+            return getValue().compareTo(objectValue) == 0;
+        } else if (getValue() == null && objectValue == null) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -171,7 +177,14 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
 
     @Override
     public int compareTo(UnitNumber object) {
-        return (object != null) ? getValue().compareTo(object.getValue()) : 1;
+
+        if (getValue() == null && object.getValue() == null) {
+            return 0;
+        } else if (getValue() != null && object.getValue() != null) {
+            return getValue().compareTo(object.getValue());
+        }
+
+        return (getValue() != null) ? 1 : -1;
     }
 
     @Override
