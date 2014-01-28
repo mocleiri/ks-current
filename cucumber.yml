@@ -2,7 +2,7 @@ default: -r features --format pretty
 headless: HEADLESS=true --tags @nightly --tags ~@draft --tags ~@wip --tags ~@pending -r features
 headless_red_team: HEADLESS=true --tags @nightly --tags @red_team --tags ~@draft --tags ~@wip --tags ~@pending -r features
 headless_blue_team: HEADLESS=true --tags @nightly --tags @blue_team --tags ~@draft --tags ~@wip --tags ~@pending -r features
-headless_green_team: HEADLESS=true --tags @nightly --tags @green_team --tags ~@draft --tags ~@wip --tags ~@pending -r features
+headless_yellow_team: HEADLESS=true --tags @nightly --tags @yellow_team --tags ~@draft --tags ~@wip --tags ~@pending -r features
 headless_all: HEADLESS=true -r features
 parallel: HEADLESS=true --tags @nightly --tags ~@draft --tags ~@wip --tags ~@pending -r features
 headless_data: HEADLESS=true --tags @data_setup --tags ~@draft --tags ~@wip --tags ~@pending -r features
