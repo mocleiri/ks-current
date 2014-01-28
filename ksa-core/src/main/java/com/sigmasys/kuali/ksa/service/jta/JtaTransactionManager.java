@@ -25,6 +25,15 @@ public class JtaTransactionManager extends org.springframework.transaction.jta.J
         doRollback(status);
     }
 
+    /**
+     * Overrides the original method initTransactionSynchronizationRegistry() from Spring's JtaTransactionManager class.
+     * There is no need to support TransactionSynchronizationRegistry from JTA 1.1 in this application,
+     * therefore, this method is empty.
+     */
+    @Override
+    protected void initTransactionSynchronizationRegistry() {
+        // Do nothing
+    }
 
 }
 

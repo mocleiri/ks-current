@@ -21,12 +21,12 @@
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.2.5.RELEASE</spring.version>
-        <hibernate.version>4.2.7.Final</hibernate.version>
+        <spring.version>4.0.0.RELEASE</spring.version>
+        <hibernate.version>4.2.8.Final</hibernate.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <beanlib.hibernate.version>5.0.2beta</beanlib.hibernate.version>
-        <jta.version>1.0.1B</jta.version>
-        <atomikos.version>3.9.1</atomikos.version>
+        <jta.version>1.1</jta.version>
+        <atomikos.version>3.9.2</atomikos.version>
         <drools.version>5.5.0.Final</drools.version>
         <janino.version>2.5.16</janino.version>
         <kuali.rice.version>2.3.1</kuali.rice.version>
@@ -371,6 +371,13 @@
     </modules>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <!--dependency>
             <groupId>org.apache.ws.security</groupId>
