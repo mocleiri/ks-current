@@ -135,7 +135,7 @@ Then /^I should be able to view the calendars$/ do
     begin
       # only check the visible rows of the table, and skip the header
       page.results_table.rows[2..-2].each do |row|
-        row.link(text: "View").present?.should be_true
+        row.i(class: "ks-fontello-icon-eye").present?.should be_true
       end
     rescue Watir::Exception::UnknownObjectException
       # Means no search results on the page.
@@ -148,7 +148,7 @@ And /^I should not be able to edit a calendar$/ do
   on CalendarSearch do |page|
     begin
       page.results_table.rows.each do |row|
-        row.link(text: "Edit").present?.should be_false
+        row.i(class: "ks-fontello-icon-pencil").present?.should be_false
       end
     rescue Watir::Exception::UnknownObjectException
       # Means no search results on the page.
@@ -161,7 +161,7 @@ And /^I should not be able to copy a calendar$/ do
   on CalendarSearch do |page|
     begin
       page.results_table.rows.each do |row|
-        row.link(text: "Copy").present?.should be_false
+        row.i(class: "ks-fontello-icon-docs").present?.should be_false
       end
     rescue Watir::Exception::UnknownObjectException
       # Means no search results on the page.
@@ -176,7 +176,7 @@ Then /^I should be able to view the terms$/ do
       # only check the visible rows of the table, and skip the header
       last_row = page.showing_up_to.to_i - 1
       page.results_table.rows[1..last_row].each do |row|
-        row.link(text: "View").present?.should be_true
+        row.i(class: "ks-fontello-icon-eye").present?.should be_true
       end
     rescue Watir::Exception::UnknownObjectException
       # Means no search results on the page.
@@ -189,7 +189,7 @@ And /^I should not be able to edit a term$/ do
   on CalendarSearch do |page|
     begin
       page.results_table.rows.each do |row|
-        row.link(text: "Edit").present?.should be_false
+        row.i(class: "ks-fontello-icon-pencil").present?.should be_false
       end
     rescue Watir::Exception::UnknownObjectException
       # Means no search results on the page.

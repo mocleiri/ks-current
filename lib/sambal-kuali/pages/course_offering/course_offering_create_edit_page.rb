@@ -28,7 +28,7 @@ class CourseOfferingCreateEdit < BasePage
   action(:navigation_cancel_and_continue) { |b| b.nav_cancel_and_continue_element.wait_until_present; b.nav_cancel_and_continue_element.click; b.loading.wait_while_present }
   element(:edit_relatedCos_dropdown_list) { |b| b.frm.select(id: "edit_co_select_control") }
 
-  element(:suffix) { |b| b.frm.text_field(id: 'courseNumberSuffix_control') }
+  element(:suffix) { |b| b.frm.text_field(id: "courseNumberSuffix_control") }
 
   element(:grading_reg_opts_div) { |b| b.frm.div(id: "KS-GradingAndRegOptions") }
   element(:grading_option_div) { |b| b.frm.div(id: "gradingOptionId") }
@@ -109,7 +109,7 @@ class CourseOfferingCreateEdit < BasePage
   value(:new_final_exam_driver_value) { |b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_DRIVER_COLUMN].text}
   element(:new_final_exam_activity_select)  {|b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_ACTIVITY_COLUMN].select }
   value(:new_final_exam_activity_value) { |b| b.new_final_exam_activity_select.selected_options[0].text}
-  element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-2].cells[ACTIONS_COLUMN].link(text: "Delete") }
+  element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-2].cells[ACTIONS_COLUMN].i(class: "ks-fontello-icon-cancel") }
 
   element(:add_format_btn) { |b| b.frm.button(id: "KS-CourseOffering-FormatOfferingSubSection_add")}
   action(:add_format) { |b| b.add_format_btn.click; b.loading.wait_while_present }
@@ -147,7 +147,7 @@ class CourseOfferingCreateEdit < BasePage
   end
 
   def delete_delivery_format(format)
-    delivery_format_row(format).cells[ACTIONS_COLUMN].link(text: "Delete").click
+    delivery_format_row(format).cells[ACTIONS_COLUMN].i(class: "ks-fontello-icon-cancel").click
   end
 
   def select_random_option(sel_list)

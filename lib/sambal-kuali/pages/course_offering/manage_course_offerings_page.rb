@@ -188,7 +188,7 @@ class ManageCourseOfferings < BasePage
   end
 
   def copy_link(code,cluster_private_name = :default_cluster)
-    target_row(code, cluster_private_name).link(text: /\b#{Regexp.escape("Copy")}\b/)
+    target_row(code, cluster_private_name).i(class: "ks-fontello-icon-docs")
   end
 
   def copy(code, cluster_private_name = :default_cluster)
@@ -197,7 +197,7 @@ class ManageCourseOfferings < BasePage
   end
 
   def edit_link(code, cluster_private_name = :default_cluster)
-    target_row(code, cluster_private_name).link(text: /\b#{Regexp.escape("Edit")}\b/)
+    target_row(code, cluster_private_name).i(class: "ks-fontello-icon-pencil")
   end
 
   def edit(code, cluster_private_name = :default_cluster)
@@ -210,7 +210,7 @@ class ManageCourseOfferings < BasePage
   end
 
   def ao_requisites_link(code,cluster_private_name = :default_cluster)
-    target_row(code, cluster_private_name).link(text: /\b#{Regexp.escape("Requisites")}\b/)
+    target_row(code, cluster_private_name).i(class: "ks-fontello-icon-clipboard")
   end
 
   def ao_requisites(code, cluster_private_name = :default_cluster)

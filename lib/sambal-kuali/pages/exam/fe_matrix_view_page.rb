@@ -93,9 +93,9 @@ class FEMatrixView < BasePage
 
   def edit( requirements, exam_type)
     if exam_type == "Standard"
-      standard_fe_target_row( requirements).a(text: "Edit").click
+      standard_fe_target_row( requirements).i(class: "ks-fontello-icon-pencil").click
     else
-      common_fe_target_row( requirements).a(text: "Edit").click
+      common_fe_target_row( requirements).i(class: "ks-fontello-icon-pencil").click
     end
     loading.wait_while_present
   end
@@ -103,9 +103,9 @@ class FEMatrixView < BasePage
   def delete( requirements, exam_type)
     loading.wait_while_present
     if exam_type == "Standard"
-      standard_fe_target_row( requirements).a(text: "Delete").click
+      standard_fe_target_row( requirements).i(class: "ks-fontello-icon-cancel").click
     else
-      common_fe_target_row( requirements).a(text: "Delete").click
+      common_fe_target_row( requirements).i(class: "ks-fontello-icon-cancel").click
     end
     loading.wait_while_present
   end

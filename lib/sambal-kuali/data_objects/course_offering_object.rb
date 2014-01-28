@@ -465,7 +465,7 @@ class CourseOffering
       end
 
       on ManageCourseOfferingList do |page|
-        page.target_row(@course).link(text: "Manage").click
+        page.target_row(@course).i(class: "ks-fontello-icon-wrench").click
         page.loading.wait_while_present
       end
     rescue Watir::Wait::TimeoutError

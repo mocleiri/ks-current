@@ -47,7 +47,7 @@ class CreateEditHolidayCalendar < BasePage #Create/Edit are the same page (only 
   end
 
   def delete_holiday(holiday_type)
-    target_row(holiday_type).link(text: "Delete").click
+    target_row(holiday_type).i(class: "ks-fontello-icon-cancel").click
     loading.wait_while_present
   end
 

@@ -113,7 +113,7 @@ class ManageCourseOfferingList < BasePage
   end
 
   def copy_link(co_code)
-    target_row(co_code).link(text: "Copy")
+    target_row(co_code).i(class: "ks-fontello-icon-docs")
   end
 
   def edit(co_code)
@@ -122,11 +122,11 @@ class ManageCourseOfferingList < BasePage
   end
 
   def edit_link(co_code)
-    target_row(co_code).link(text: "Edit")
+    target_row(co_code).i(class: "ks-fontello-icon-pencil")
   end
 
   def manage_link(co_code)
-    target_row(co_code).link(text: "Manage")
+    target_row(co_code).i(class: "ks-fontello-icon-wrench")
   end
 
   def manage(co_code)

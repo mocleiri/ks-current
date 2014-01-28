@@ -236,12 +236,12 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def edit_rsi_row(row)
-    row.cells[ACTIONS].link(text: "Edit").click
+    row.cells[ACTIONS].i(class: "ks-fontello-icon-pencil").click
     loading.wait_while_present(120)
   end
 
   def delete_rsi_row(row)
-    row.cells[SCHED_INFO_ACTION_COLUMN].link(text: "Delete").click
+    row.cells[SCHED_INFO_ACTION_COLUMN].i(class: "ks-fontello-icon-cancel").click
   end
 
   def get_inst_effort(id)
@@ -357,7 +357,7 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def remove_seatpool(pop_name)
-    target_pool_row(pop_name).link(text: "delete").click
+    target_pool_row(pop_name).i(class: "ks-fontello-icon-cancel").click    #link(text: "delete").click
     loading.wait_while_present
   end
 

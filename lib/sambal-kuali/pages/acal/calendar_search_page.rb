@@ -53,28 +53,28 @@ class CalendarSearch < BasePage
   end
 
   def view calendar
-    results_table.row(text: /\b#{calendar}\b/).link(text: "View").click
+    results_table.row(text: /\b#{calendar}\b/).i(class: "ks-fontello-icon-eye").click
     loading.wait_while_present
   end
 
   def edit calendar
-    results_table.row(text: /\b#{calendar}\b/).link(text: "Edit").click
+    results_table.row(text: /\b#{calendar}\b/).i(class: "ks-fontello-icon-pencil").click
     loading.wait_while_present
   end
 
   def copy calendar
-    results_table.row(text: /\b#{calendar}\b/).link(text: "Copy").click
+    results_table.row(text: /\b#{calendar}\b/).i(class: "ks-fontello-icon-docs").click
     loading.wait_while_present
   end
 
   def delete calendar
-    results_table.row(text: /\b#{calendar}\b/).link(text: "Delete").click
+    results_table.row(text: /\b#{calendar}\b/).i(class: "ks-fontello-icon-cancel").click
     confirm_delete
     loading.wait_while_present
   end
 
   def hcal_delete calendar
-    results_table.row(text: /\b#{calendar}\b/).link(text: "Delete").click
+    results_table.row(text: /\b#{calendar}\b/).i(class: "ks-fontello-icon-cancel").click
     hcal_confirm_delete
     loading.wait_while_present
   end
