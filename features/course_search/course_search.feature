@@ -6,7 +6,7 @@ Feature: BT.Course Search
 
   Scenario: CS2.1.1 Successfully search for a course and clear search results
     When I search for a course
-    Then the course should appear in the search results
+    Then the course "should" appear in the search results
 
     #KSAP-241, KSAP-321
 
@@ -20,3 +20,12 @@ Feature: BT.Course Search
           | ENGLISH| ENGL     |
 
 
+  Scenario Outline: Search for courses by search term variation
+    When I search for a "<course_status>" "<course>" by "<term_selection>"
+    Then the course "<expected_result>" appear in the search results
+  Examples:
+    |course_status | course  |term_selection  |expected_result |
+    |  scheduled   | ENGL206 |Spring 2014     | should         |
+    |  scheduled   | ENGL206 |Scheduled terms | should         |
+    |  unscheduled | BSCI103 |Spring 2014     | should not     |
+    |  unscheduled | BSCI103 |Scheduled terms | should not     |

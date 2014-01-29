@@ -12,7 +12,7 @@ end
 
 
 
-Then /^the course (.*) appear in the search results$/ do |test_condition|
+Then /^the course "(.*?)" appear in the search results$/ do |test_condition|
   on CourseSearch do |page|
     if test_condition == "should"
       page.results_list.should include @course_offering.course_code
@@ -33,4 +33,8 @@ Then /^courses containing  "(.*?)" text option appears$/ do |expected|
   end
   end
 
+When /^I search for a "(.*?)" "(.*?)" by "(.*?)"$/ do |course_status,course, term_selection|
+    @course_offering = make CourseOffering, :course_code => course, :term_select => term_selection
+    @course_offering.course_search
+end
 
