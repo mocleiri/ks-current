@@ -292,7 +292,7 @@ class AcademicTerm
       when /Summer|Continuing Education/
         @term_name = "#{@term} #{calendar_year}" if @term_name.nil?
         @term_type = "#{@term}" if @term_type.nil?
-      else
+      when /Fall|Winter|Spring/
         @term_name = "#{@term} #{calendar_year}" if @term_name.nil?
         @term_type = "#{@term} Term" if @term_type.nil?
     end
@@ -301,6 +301,7 @@ class AcademicTerm
     if @subterm then
       @subterm_type = @term_type
       @term_type = "Subterm: #{@term_type}"
+      @term_name =  "#{@subterm_type} #{calendar_year}"
     end
   end
 
@@ -330,7 +331,7 @@ class AcademicTerm
 
       page.open_term_section(@term_type)
       term_index = page.term_index_by_term_type(@term_type)
-      page.term_name_edit(term_index).set @term_name
+      page.term_name_edit(term_index).set @term_name unless @subterm
 
       @key_date_group_list.each do |date_group|
         date_group.term_type = @term_type
