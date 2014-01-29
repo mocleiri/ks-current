@@ -8,7 +8,11 @@ class CourseOffering
   include Comparable
 
   COURSE_ARRAY = 0
-  attr_accessor :course_code,:credit,:notes; :planned_term
+  attr_accessor :course_code,
+                :credit,
+                :notes,
+                :planned_term,
+                :term_select
 
   def initialize(browser, opts={})
     @browser = browser
@@ -17,7 +21,8 @@ class CourseOffering
         :course_code=>"BSCI430",
         :credit=>3,
         :notes=>"#{random_alphanums(20).strip}_pub",
-        :planned_term=>"2013Fall"
+        :planned_term=>"2013Fall",
+        :term_select=>nil
     }
     options = defaults.merge(opts)
     set_options(options)
@@ -106,11 +111,14 @@ class CourseOffering
   end
 
 
-  def course_search (text=@course_code)
+  def course_search (text=@course_code, term_select=@term_select)
     navigate_to_course_search_home
     sleep 5
     on CourseSearch do |page|
       page.search_for_course.set text
+      if @term_select != nil
+        page.search_term_select.select term_select
+      end
       page.search
     end
   end

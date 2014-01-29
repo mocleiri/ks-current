@@ -9,9 +9,6 @@ When /^I search for a course with "(.*?)" text option$/ do |text|
   @course_offering.course_search(text)
 end
 
-
-
-
 Then /^the course "(.*?)" appear in the search results$/ do |test_condition|
   on CourseSearch do |page|
     if test_condition == "should"

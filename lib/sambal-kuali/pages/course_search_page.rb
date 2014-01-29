@@ -8,7 +8,7 @@ class CourseSearch < BasePage
   frame_element
 
   element(:search_for_course) { |b| b.frm.text_field(id: "text_searchQuery_control") }
-  #element(:search_term) { |b| b.frm.select(name:"searchTerm") }
+  element(:search_term_select) { |b| b.frm.select(name:"searchTerm") }
   action(:search) { |b| b.frm.button(id:"searchForCourses").click; b.loading.wait_while_present }
   element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
 

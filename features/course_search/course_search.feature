@@ -20,7 +20,7 @@ Feature: BT.Course Search
           | ENGLISH| ENGL     |
 
 
-  Scenario Outline: Search for courses by search term variation
+  Scenario Outline: Search for courses by search term variations
     When I search for a "<course_status>" "<course>" by "<term_selection>"
     Then the course "<expected_result>" appear in the search results
   Examples:
