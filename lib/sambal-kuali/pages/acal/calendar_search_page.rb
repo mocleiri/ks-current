@@ -49,7 +49,11 @@ class CalendarSearch < BasePage
   def search_for cal_or_term, nm, yr=""
     search_for_select.select cal_or_term
     setnameyear nm, yr
-    loading.wait_while_present
+    begin
+      search
+    rescue Timeout::Error => e
+      puts "rescued search..."
+    end
   end
 
   def view calendar
@@ -101,11 +105,6 @@ class CalendarSearch < BasePage
   def setnameyear nm, yr
     name.set nm
     year.set yr
-    begin
-      search
-    rescue Timeout::Error => e
-      puts "rescued search..."
-    end
   end
 
 end

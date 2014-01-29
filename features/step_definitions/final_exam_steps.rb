@@ -1,18 +1,18 @@
 When /^I change the final exam period start date to be before the term start date and save$/ do
-  @term = make AcademicTerm, :term_name => "Fall", :term_year => "2012"
-  @term.edit :change_exam_dates => true, :exam_start_date => "08/15/2012"
+  @term = make AcademicTerm, :term => "Fall", :term_year => "2012"
+  @term.edit :change_exam_dates => true, :exam_start_date => "08/15/2012", :exp_success => false
 end
 
 When /^I change the final exam period end date to be after the term end date and save$/ do
-  @term = make AcademicTerm, :term_name => "Fall", :term_year => "2012"
-  @term.edit :change_exam_dates => true, :exam_end_date => "12/20/2012"
+  @term = make AcademicTerm, :term => "Fall", :term_year => "2012"
+  @term.edit :change_exam_dates => true, :exam_end_date => "12/20/2012", :exp_success => false
 end
 
 When /^I add a final exam period to the new academic calender and save$/ do
   @calendar = create AcademicCalendar
 
   @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/20/#{@calendar.year}",
-               :end_date=>"12/10/#{@calendar.year}", :term_type => "Fall Term", :term_name => "Fall"
+               :end_date=>"12/10/#{@calendar.year}", :term => "Fall"
   @calendar.add_term @term
 
   @term.create_final_exam_period

@@ -60,3 +60,17 @@ When /^I do not have access to edit maximum enrollment$/ do
     page.total_maximum_enrollment.present?.should == false
   end
 end
+
+When /^I verify the exam periods for the milestones test fall and spring terms$/ do
+  @term = make AcademicTerm, :term => "Fall", :term_year => "2014"
+  @term.edit :include_non_active_days => true,  :defer_save => true
+  @term = make AcademicTerm, :term => "Spring", :term_year => "2015"
+  @term.edit :include_non_active_days => true , :do_navigation => false
+end
+
+When /^I verify the exam periods for the published test fall and spring terms$/ do
+  @term = make AcademicTerm, :term => "Fall", :term_year => "2015"
+  @term.edit :include_non_active_days => true,  :defer_save => true
+  @term = make AcademicTerm, :term => "Spring", :term_year => "2016"
+  @term.edit :include_non_active_days => true , :do_navigation => false
+end

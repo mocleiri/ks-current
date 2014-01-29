@@ -42,6 +42,7 @@ Feature: data_setup.Setup Environment
     And I Publish the SOC
     Then I verify that Close button is there for next action
     And I verify the related object state changes for Publish action
+    And I verify the exam periods for the milestones test fall and spring terms
 
   @smoke_test_setup
   Scenario: Set up a term in published state
@@ -61,6 +62,7 @@ Feature: data_setup.Setup Environment
     And I Publish the SOC
     Then I verify that Close button is there for next action
     And I verify the related object state changes for Publish action
+    And I verify the exam periods for the published test fall and spring terms
 
   Scenario: Set up a term in final edits state
     When I initiate a rollover to create a term in final edits state EC

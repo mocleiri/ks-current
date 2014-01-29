@@ -199,7 +199,7 @@ And /^I should not be able to edit a term$/ do
 end
 
 When /^I add a new term to the Academic Calendar$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year
+  @term = make AcademicTerm, :term => 'Fall', :term_year => @calendar.year
   @calendar.add_term(@term)
   @manage_soc = make ManageSoc, :term_code => @term.term_code
   @manage_soc.set_up_soc
@@ -224,10 +224,12 @@ When /^I add a new subterm to the Academic Calendar with a defined instructional
   @term.expected_instructional_days = @term.weekdays_in_term
 
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = create KeyDate, :parent_key_date_group => @keydategroup,
-                    :key_date_type => "Instructional Period",
-                    :start_date => @term.start_date,
-                    :end_date => @term.end_date
+  key_date = make KeyDate, :parent_key_date_group => @keydategroup,
+                  :key_date_type => "Instructional Period",
+                  :start_date => @term.start_date,
+                  :end_date => @term.end_date
+  @keydategroup.key_dates = [ key_date ]
+  @keydategroup.create
 end
 
 Then /^the term is listed when I view the Academic Calendar$/ do
@@ -420,8 +422,8 @@ Then /^I add an instructional Key Date$/ do
   key_date_list = []
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
   @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
-  key_date_list << @keydate
-  @keydategroup.create :key_dates=> key_date_list
+  @keydategroup.key_dates << @keydate
+  @keydategroup.create
 end
 
 Then /^I add an instructional Key Date to a subterm$/ do
@@ -443,7 +445,7 @@ Then /^I edit an instructional Key Date$/ do
 end
 
 Then /^I delete an instructional Key Date Group$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term_name => "Continuing Education Term 1", :term_type => "Continuing Education Term 1"
+  @term = make AcademicTerm, :term_year => @calendar.year, :term => "Continuing Education Term 1"
   @term.edit
 
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
@@ -452,7 +454,7 @@ end
 
 
 Then /^I delete an instructional Key Date$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term_name => "Continuing Education Term 1", :term_type => "Continuing Education Term 1"
+  @term = make AcademicTerm, :term_year => @calendar.year, :term => "Continuing Education Term 1"
   @term.edit
 
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
@@ -497,7 +499,7 @@ Then /^the Key Date Group is not listed with the academic term information$/ do
 end
 
 Then /^the Key Dates are copied without date values$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term_name => "Continuing Education Term 1", :term_type => "Continuing Education Term 1"
+  @term = make AcademicTerm, :term_year => @calendar.year, :term => "Continuing Education Term 1"
   @term.edit
 
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
