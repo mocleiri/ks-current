@@ -196,7 +196,7 @@ class EditAcademicTerms < BasePage
   #def set_key_date_is_all_day(row); row.cells[IS_ALL_DAY_COL].checkbox.set; end
   #def clear_key_date_is_range(row); row.cells[IS_DATE_RANGE_COL].checkbox.clear; end
   #def set_key_date_is_range(row); row.cells[IS_DATE_RANGE_COL].checkbox.set; end
-  def delete_key_date(row); row.cells[ACTION_COL].link(text: "Delete").click; end
+  def delete_key_date(row); row.cells[ACTION_COL].link(id: /key_date_delete_button/).click; end
 
   def key_date_start_date(row); row.cells[START_DATE_COL].text_field.value; end
   def key_date_start_time(row); row.cells[START_TIME_COL].text_field.value; end
