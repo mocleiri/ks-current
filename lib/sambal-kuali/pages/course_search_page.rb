@@ -8,12 +8,10 @@ class CourseSearch < BasePage
   frame_element
 
   element(:search_for_course) { |b| b.frm.text_field(id: "text_searchQuery_control") }
-  #element(:search_term) { |b| b.frm.select(name:"searchTerm") }
   action(:search) { |b| b.frm.button(id:"searchForCourses").click; b.loading.wait_while_present }
   element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
 
   #plus symbol representing the add to plan and bookmark
-  element(:planned_icon) {|b| b.td(class:"ksap-status-column").span(id:"3e9fb023-648b-40eb-86fe-c196bcd50949_status").span(text:"Planned") }
   element(:plus_symbol) { |b| b.frm.input(class:"uif-field uif-imageField ksap-add") }
   action(:plus_symbol_popover) { |b| b.plus_symbol.click}
 
@@ -62,11 +60,4 @@ class CourseSearch < BasePage
     results_list
 
   end
-
-=begin
-  def adding_notes
-    @browser.select_list(:class => "uif-dropdownControl", :index => 1).select("kuali.atp.2014Winter")
-
-  end
-=end
 end

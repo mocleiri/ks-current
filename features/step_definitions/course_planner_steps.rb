@@ -1,13 +1,13 @@
 When /^I add a fixed credit course with notes to current term$/ do
   @course_offering = make CourseOffering, :course_code => "BSCI430"
-  @course_offering.add_course_to_current_term
+  @course_offering.add_course_to_term
 end
 
 
 
 When /^I add a variable credit course with notes to a future term$/ do
   @course_offering = make CourseOffering, :course_code => "ENGL388", :credit => 5, :planned_term => "2014Summer1"
-  @course_offering.add_course_to_future_term
+  @course_offering.add_course_to_term
 end
 
 
@@ -19,7 +19,7 @@ end
 
 Then /^fixed credit and note details are displayed under the current term$/ do
   on CoursePlannerPage do |page|
-    page.edit_plan_cancel_link.wait_until_present(5)
+    page.edit_plan_cancel_link.wait_until_present
     page.view_notes_popover.should == @course_offering.notes
     page.course_code_current_term_credit.should == "#{@course_offering.credit}"
     page.edit_plan_cancel
@@ -43,7 +43,7 @@ end
 
 Then /^variable credit and note details are displayed under the future term$/ do
   on CoursePlannerPage do |page|
-    page.edit_plan_cancel_link.wait_until_present(5)
+    page.edit_plan_cancel_link.wait_until_present
     page.view_notes_popover.should == @course_offering.notes
     page.view_variable_credit_popover.should == "#{@course_offering.credit}"
     page.edit_plan_cancel

@@ -41,10 +41,8 @@ class CoursePlannerPage < BasePage
 
   #60 - Verify the course code availability in my plan
 
-  #element(:course_code_term_myplan)  { |b| b.div(id:"kuali-atp-2014Fall_planned_ENGL201_code").span(class: "uif-message") }
   action(:course_code_term_myplan_click) { |b| b.course_code_term_myplan.click}
-  element(:course_info_icon) { |b| b.div(class:"uif-group uif-boxGroup uif-verticalBoxGroup uif-boxSection ksap-term-future open ks-plan-TermsList-item ks-plan-TermsList-item--future ks-plan-TermsList-item--open")}
-  element(:info_icon) { |b| b.div(class:"uif-group uif-boxGroup uif-verticalBoxGroup uif-boxSection ksap-term-future open ks-plan-TermsList-item ks-plan-TermsList-item--future ks-plan-TermsList-item--open").img(class:"uif-helpImage coursenote uif-boxLayoutHorizontalItem")}
+  element(:info_icon) { |b| b.div(class:"uif-horizontalBoxLayout clearfix").img(class:"uif-helpImage coursenote uif-boxLayoutHorizontalItem")}
   element(:view_course_summary) {|b| b.td(class:"jquerybubblepopup-innerHtml").a(class:"uif-actionLink uif-boxLayoutVerticalItem clearfix")}
   action(:view_course_summary_click) {|b| b.view_course_summary.click}
   element(:notes_content) {|b| b.textarea(class:"uif-textAreaControl ksap-characterCount ks-plan-Note-input").text}
