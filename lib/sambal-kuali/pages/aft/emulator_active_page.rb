@@ -1,6 +1,6 @@
-class EmulatorPageActive < PageFactory
+class EmulatorActivePage < PageFactory
 
-  page_url "http://quirktools.com/screenfly/#u=http%3A//env12.ks.kuali.org/kscr-poc/index.jsp&w=1024&h=600"
+  page_url "http://quirktools.com/screenfly/#u=http%3A//env13.ks.kuali.org/kscr-poc/index.jsp&w=1024&h=600"
   expected_element :tools_div
 
   element(:tools_div) { |b| b.div(id: "screenfly-tools") }

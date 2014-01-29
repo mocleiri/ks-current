@@ -1,4 +1,4 @@
-class RegisterForCourseResultsMobile < RegisterForCourseSearchBase
+class RegisterForCourseResults < RegisterForCourseSearchBase
   page_url "#{$test_site}/kscr-poc/index.jsp"
 
   # all resolutions
@@ -16,12 +16,12 @@ class RegisterForCourseResultsMobile < RegisterForCourseSearchBase
   element(:details_message) { |b| b.results_message_div.h2}
 
   # mobile resolution only
-  element(:results_detail_section)  { |b| b.frm.section(class: "ng-scope") }
-  element(:results_detail_course)  { |b| b.results_detail_section.h1(class: "ng-binding") }
-  element(:results_detail_grading_options)  { |b| b.results_detail_section.p(index: 1) }
+  element(:results_detail_section)  { |b| b.frm.section(class: "kscr-Article ng-scope") }
+  element(:results_detail_course_code)  { |b| b.results_detail_section.h1(class: "kscr-Article-header ng-binding") }
+  element(:results_detail_grading_options)  { |b| b.results_detail_section.p(index: 0) }
 
-  # desktop resolution only
   def target_list_item_by_index(ind)
+    results_list_collection[ind].wait_until_present
     results_list_collection[ind]
   end
 
@@ -40,8 +40,4 @@ class RegisterForCourseResultsMobile < RegisterForCourseSearchBase
     item.span(class: "kscr-COItem-title").text
   end
 
-  def results_course_credits(index)
-    item = target_list_item_by_index(index)
-    item.span(class: "kscr-COItem-credits").text
-  end
 end

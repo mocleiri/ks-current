@@ -1,4 +1,4 @@
-class EmulatorPageMain < PageFactory
+class EmulatorMainPage < PageFactory
 
   page_url "http://quirktools.com/screenfly"
   expected_element :tools_div
