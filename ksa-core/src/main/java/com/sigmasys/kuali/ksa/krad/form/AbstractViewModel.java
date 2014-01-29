@@ -347,6 +347,10 @@ public abstract class AbstractViewModel extends UifFormBase {
         this.thirdPartyPlans = thirdPartyPlans;
     }
 
+    public boolean isAccountThirdParty() {
+        return (account != null && account instanceof ThirdPartyAccount);
+    }
+
     public String getThirdPartyTooltip() {
         StringBuilder html = new StringBuilder();
 

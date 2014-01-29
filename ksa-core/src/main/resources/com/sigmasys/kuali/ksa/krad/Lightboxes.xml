@@ -215,7 +215,7 @@
         </property>
     </bean>
 
-    <bean id="Ksa-ThirdPartyPlans" parent="Uif-HorizontalBoxGroup">
+    <bean id="Ksa-ThirdPartyPlans" parent="Uif-HorizontalBoxGroup" p:render="@{!isAccountThirdParty()}">
         <property name="items">
             <list>
                 <bean parent="Uif-ImageField" p:source="../images/party.png" p:style="cursor:pointer;" p:altText="" p:title=""
