@@ -784,11 +784,13 @@ end
 When /^I add a new key date with a date later than the Academic Term end date$/ do
   @term.edit
 
-  @keydategroup = create KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = create KeyDate, :parent_key_date_group => @keydategroup,
+  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
+  keydate = make KeyDate, :parent_key_date_group => @keydategroup,
                     :key_date_type => "First Day of Classes",
                     :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"),
                     :end_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
+  @keydategroup.key_dates = [ keydate ]
+  @keydategroup.create :exp_success => false
 
 end
 
