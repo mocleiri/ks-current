@@ -9,8 +9,8 @@ class EmulatorMainPage < PageFactory
   element(:site_submit_button) { |b| b.site_form.input(id: "go") }
   action(:site_submit) { |b| b.site_submit_button.click} #; b.loading.wait_while_present }  need new loading meth.
 
-  def display_website(site)
-    site_input.set site
+  def display_website
+    site_input.set "#{$test_site}/kscr-poc/index.jsp"
     site_submit
   end
 

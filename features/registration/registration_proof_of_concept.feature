@@ -1,4 +1,4 @@
-@red_team
+@nightly @red_team
 Feature: REG.Registration proof of concept
 
   As a student, I want to be able to search for a course from the Schedule of Classes.
