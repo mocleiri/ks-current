@@ -511,10 +511,9 @@ class KeyDateGroup
         page.adding.wait_while_present
       end
 
-      @key_dates.each do |key_date|
+      opts[:key_dates].each do |key_date|
         add_key_date(key_date)
       end
-
       page.save
     end
 
@@ -574,11 +573,13 @@ class KeyDate
       page.go_to_terms_tab
       page.open_term_section(@parent_key_date_group.term_type)
       if ! page.key_date_exists?(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type, @key_date_type) then
-        wait_until { page.add_key_date_button.present? }
-        page.add_key_date_button.click
-
         @term_index = page.term_index_by_term_type(@parent_key_date_group.term_type)
         key_date_group_index = page.key_date_group_index(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type)
+
+        if !page.key_date_dropdown_addline( @term_index, key_date_group_index).exists?
+          wait_until { page.add_key_date_button.present? }
+          page.add_key_date_button.click
+        end
 
         page.key_date_dropdown_addline( @term_index, key_date_group_index).select @key_date_type
         page.key_date_start_date_addline(@term_index,key_date_group_index).set @start_date

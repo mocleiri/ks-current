@@ -417,15 +417,20 @@ end
 Then /^I add an instructional Key Date$/ do
   @term.edit
 
-  @keydategroup = create KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = create KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
+  key_date_list = []
+  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
+  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
+  key_date_list << @keydate
+  @keydategroup.create :key_dates=> key_date_list
 end
 
 Then /^I add an instructional Key Date to a subterm$/ do
   @subterm_list[0].edit
-
-  @keydategroup = create KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
-  @keydate = create KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
+  key_date_list = []
+  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
+  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
+  key_date_list << @keydate
+  @keydategroup.create :key_dates=> key_date_list
 end
 
 
@@ -788,12 +793,11 @@ end
 When /^I add a new key date with a date later than the Academic Subterm end date$/ do
   @subterm_list[0].edit
 
-  @keydategroup = create KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
-  @keydate = create KeyDate, :parent_key_date_group => @keydategroup,
-                    :key_date_type => "First Day of Classes",
-                    :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"),
-                    :end_date => ""
-
+  key_date_list = []
+  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
+  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), :end_date => ""
+  key_date_list << @keydate
+  @keydategroup.create :key_dates=> key_date_list
 end
 
 
