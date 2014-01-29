@@ -190,6 +190,7 @@ class AcademicCalendar
     term_object.term_year = @year
     term_object.create
     @terms << term_object
+    on(EditAcademicTerms).save
   end
 
   def delete_term(term_object)
@@ -240,7 +241,7 @@ class AcademicTerm
   include StringFactory
   include Workflows
 
-  attr_accessor :term_type, :term_name,
+  attr_accessor :term, :term_type, :term_name,
                 :term_year, :start_date, :end_date,
                 :expected_instructional_days,
                 :key_date_groups,
@@ -262,15 +263,18 @@ class AcademicTerm
     #end
 
     defaults = {
+        :term => 'Fall',
         :start_date=>"09/02/#{calendar_year}",
         :end_date=>"09/24/#{calendar_year}",
-        :term_type=>"Fall Term",
+        :term_type=> nil,
+        :term_name => nil,
         :term_code => "#{calendar_year}08" ,
         :term_year=> calendar_year,
         :parent_term=> nil,
         :subterm=> false,
         :add_exam_period => true,
-        :key_date_group_list => []
+        :key_date_group_list => [],
+        :exam_period => nil
     }
 
     #A subterm can't use the same Key date Group as its parent, because when
@@ -283,7 +287,16 @@ class AcademicTerm
 
     options = defaults.merge(opts)
     set_options(options)
-    @term_name = "#{@term_type} #{calendar_year}" if @term_name.nil?
+
+    case @term
+      when /Summer|Continuing Education/
+        @term_name = "#{@term} #{calendar_year}" if @term_name.nil?
+        @term_type = "#{@term}" if @term_type.nil?
+      else
+        @term_name = "#{@term} #{calendar_year}" if @term_name.nil?
+        @term_type = "#{@term} Term" if @term_type.nil?
+    end
+
 
     if @subterm then
       @subterm_type = @term_type
@@ -316,6 +329,8 @@ class AcademicTerm
       end
 
       page.open_term_section(@term_type)
+      term_index = page.term_index_by_term_type(@term_type)
+      page.term_name_edit(term_index).set @term_name
 
       @key_date_group_list.each do |date_group|
         date_group.term_type = @term_type
@@ -341,12 +356,16 @@ class AcademicTerm
         :change_exam_dates => false,
         :exam_start_date => nil,
         :exam_end_date => nil,
-        :include_non_active_days => false
+        :include_non_active_days => false,
+        :defer_save => false,
+        :do_navigation => true
     }
     options = defaults.merge(opts)
 
-    search
-    on(CalendarSearch).edit @term_name
+    if options[:do_navigation]
+      search
+      on(CalendarSearch).edit @term_name
+    end
 
     term_index = 0
     on EditAcademicTerms do |page|
@@ -392,16 +411,14 @@ class AcademicTerm
 
     if options[:include_non_active_days] == true
       on EditAcademicTerms  do |page|
-        if page.exclude_saturday_toggle( @term_type).present?
-          page.set_exclude_saturday_toggle( @term_type)
-        end
-        if page.exclude_sunday_toggle( @term_type).present?
-          page.set_exclude_sunday_toggle( @term_type)
-        end
+          page.clear_exclude_saturday @term_type
+          page.clear_exclude_sunday @term_type
       end
     end
     on(EditAcademicTerms).terms_tab_link.click #close any open date pickers
-    on(EditAcademicTerms).save :exp_success => options[:exp_success] #unless options.length >= 1 #don't save if only :exp_success element
+    unless options[:defer_save]
+      on(EditAcademicTerms).save :exp_success => options[:exp_success]
+    end
 
     set_options(options)
   end
@@ -511,15 +528,17 @@ class KeyDateGroup
         page.adding.wait_while_present
       end
 
-      opts[:key_dates].each do |key_date|
+      @key_dates.each do |key_date|
         add_key_date(key_date)
       end
+
       page.save
     end
 
   end
 
   def add_key_date(key_date_object)
+    key_date_object.parent_key_date_group = self
     key_date_object.create
   end
   private :add_key_date
@@ -573,12 +592,12 @@ class KeyDate
       page.go_to_terms_tab
       page.open_term_section(@parent_key_date_group.term_type)
       if ! page.key_date_exists?(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type, @key_date_type) then
+
         @term_index = page.term_index_by_term_type(@parent_key_date_group.term_type)
         key_date_group_index = page.key_date_group_index(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type)
-
-        if !page.key_date_dropdown_addline( @term_index, key_date_group_index).exists?
-          wait_until { page.add_key_date_button.present? }
-          page.add_key_date_button.click
+        key_date_type = page.key_date_dropdown_addline( @term_index, key_date_group_index).selected_options[0].text
+        if key_date_type != 'Select Keydate Type'
+          page.key_date_button( @term_index, key_date_group_index).click
         end
 
         page.key_date_dropdown_addline( @term_index, key_date_group_index).select @key_date_type
