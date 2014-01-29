@@ -186,6 +186,9 @@ class HolidayCalendar
     @holiday_list.clear
     sleep 2
     on CreateEditHolidayCalendar do |page|
+      if !page.holiday_table.exists?
+        page.add_holiday
+      end
       page.holiday_table.rows[2..page.holiday_table.rows.count].each do |holiday_row|
         temp_holiday = make Holiday
         temp_holiday.init_holiday(holiday_row) unless holiday_row.cells[CreateEditHolidayCalendar::HOLIDAY_TYPE].text == ""
@@ -322,7 +325,7 @@ class Holiday
       return if options[:defer_add]
       #page.add_link.click
       #page.adding.wait_while_present
-      page.save if options[:exp_success]
+      page.save :exp_success => options[:exp_success]
     end
 
   end
