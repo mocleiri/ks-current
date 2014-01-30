@@ -800,7 +800,7 @@ When /^I add a new key date with a date later than the Academic Subterm end date
   key_date_list = []
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
   @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), :end_date => ""
-  @keydategroup.key_date_list << @keydate
+  @keydategroup.key_dates << @keydate
   @keydategroup.create
 end
 

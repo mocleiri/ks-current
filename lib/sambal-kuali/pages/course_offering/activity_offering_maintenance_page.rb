@@ -362,7 +362,7 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def remove_seatpool_by_index(sp_index)
-    seat_pools_table.rows[sp_index].link(text: "delete").click
+    seat_pools_table.rows[sp_index].link(class: /btn-link/).click
     loading.wait_while_present
   end
 
