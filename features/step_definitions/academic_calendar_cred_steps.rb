@@ -422,6 +422,8 @@ Then /^I add an instructional Key Date$/ do
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
   @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
   @keydategroup.key_dates << @keydate
+  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "Last Day of Classes", :start_date => "12/09/#{@term.term_year}", :end_date => ""
+  @keydategroup.key_dates << @keydate
   @keydategroup.create
 end
 

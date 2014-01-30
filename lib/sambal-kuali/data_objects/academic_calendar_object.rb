@@ -599,6 +599,7 @@ class KeyDate
 
         if !page.key_date_dropdown_addline( @term_index, key_date_group_index).exists?
           page.key_date_button( @term_index, key_date_group_index).click
+          sleep 1 #wait til new row
         end
 
         page.key_date_dropdown_addline( @term_index, key_date_group_index).select @key_date_type
