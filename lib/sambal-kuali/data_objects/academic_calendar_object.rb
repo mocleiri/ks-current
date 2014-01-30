@@ -596,8 +596,8 @@ class KeyDate
 
         @term_index = page.term_index_by_term_type(@parent_key_date_group.term_type)
         key_date_group_index = page.key_date_group_index(@parent_key_date_group.term_type, @parent_key_date_group.key_date_group_type)
-        key_date_type = page.key_date_dropdown_addline( @term_index, key_date_group_index).selected_options[0].text
-        if key_date_type != 'Select Keydate Type'
+
+        if !page.key_date_dropdown_addline( @term_index, key_date_group_index).exists?
           page.key_date_button( @term_index, key_date_group_index).click
         end
 
