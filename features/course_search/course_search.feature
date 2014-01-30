@@ -20,7 +20,7 @@ Feature: BT.Course Search
           | ENGLISH| ENGL     |
 
 
-  Scenario Outline: CS4.1 Search for courses by search term variations
+  Scenario Outline: CS4.1 Verify course search filters results correctly by term selection and course offering status
     When I search for a "<course_status>" "<course>" by "<term_selection>"
     Then the course "<expected_result>" appear in the search results
   Examples:
