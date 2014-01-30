@@ -17,7 +17,7 @@ class RegisterForCourseResults < RegisterForCourseSearchBase
 
   # mobile resolution only
   element(:results_detail_section)  { |b| b.frm.section(class: "kscr-Article ng-scope") }
-  element(:results_detail_course_code)  { |b| b.results_detail_section.h1(class: "kscr-Article-header ng-binding") }
+  element(:results_detail_course_code)  { |b| b.results_detail_section.h1(class: "kscr-COItem-headline") }
   element(:results_detail_grading_options)  { |b| b.results_detail_section.p(index: 0) }
 
   def target_list_item_by_index(ind)
