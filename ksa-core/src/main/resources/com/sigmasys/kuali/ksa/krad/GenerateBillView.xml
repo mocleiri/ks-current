@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005-2012 The Kuali Foundation
+
+    Licensed under the Educational Community License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl2.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="GenerateBillView" parent="Uif-KsaFormView" p:footer.render="false">
+        <property name="headerText" value="Generate Bill"/>
+        <property name="title" value="Generate Bill"/>
+        <property name="entryPageId" value="GenerateBillView"/>
+        <property name="navigation" ref="KsaReportingNavigation">
+        </property>
+        <property name="viewHelperServiceClass" value="com.sigmasys.kuali.ksa.krad.helper.KsaViewHelperImpl"/>
+
+        <property name="items">
+            <list merge="true">
+
+                <bean parent="Uif-Page" p:id="GenerateBillView" p:title="Generate Bill">
+                    <property name="headerText" value="Generate Bill"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Account ID" p:propertyName="billAccountId">
+                                <property name="suggest">
+                                    <bean parent="Uif-Suggest">
+                                        <property name="valuePropertyName" value="id"/>
+                                        <property name="labelPropertyName" value="id"/>
+                                        <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig">
+                                                <property name="queryMethodToCall" value="getAccountsForSuggest"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-HorizontalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-InputField" p:propertyName="billDate" p:label="Bill Date" p:labelPlacement="TOP" p:constraintText="Format: mm/dd/yyyy">
+                                            <property name="control">
+                                                <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-InputField" p:propertyName="startDate" p:label="Start Date" p:labelPlacement="TOP" p:constraintText="Format: mm/dd/yyyy">
+                                            <property name="control">
+                                                <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-InputField" p:propertyName="endDate" p:label="End Date" p:labelPlacement="TOP" p:constraintText="Format: mm/dd/yyyy">
+                                            <property name="control">
+                                                <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-HorizontalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-VerticalBoxGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-InputField" p:propertyName="showOnlyUnbilledTransactions">
+                                                        <property name="control">
+                                                            <bean parent="Uif-CheckboxControl" p:checkboxLabel="Show Unbilled Transactions"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-InputField" p:propertyName="showDeferments">
+                                                        <property name="control">
+                                                            <bean parent="Uif-CheckboxControl" p:checkboxLabel="Show Deferments"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-InputField" p:propertyName="showInternalTransactions">
+                                                        <property name="control">
+                                                            <bean parent="Uif-CheckboxControl" p:checkboxLabel="Show Internal Transactions"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-InputField" p:propertyName="runPaymentApplication">
+                                                        <property name="control">
+                                                            <bean parent="Uif-CheckboxControl" p:checkboxLabel="Run Payment Application"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-InputField" p:propertyName="showDependents">
+                                                        <property name="control">
+                                                            <bean parent="Uif-CheckboxControl" p:checkboxLabel="Produce Dependent Bills"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-InputField" p:propertyName="billMessage" p:label="Bill Message" p:labelPlacement="TOP">
+                                                        <property name="control">
+                                                            <bean parent="Uif-TextAreaControl" p:rows="5" p:cols="40"/>
+                                                        </property>
+                                                    </bean>
+
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-VerticalBoxGroup" p:headerText="Summarize">
+                                            <property name="items">
+                                                <list>
+
+                                                    <ref bean="rollupsOnSameDay"/>
+                                                    <ref bean="rollupsOnSameStatement"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="exportBill" p:actionLabel="Get Bill" p:ajaxSubmit="false" p:disableBlocking="true"/>
+                        </list>
+                    </property>
+                </bean>
+
+
+            </list>
+        </property>
+        <property name="formClass" value="com.sigmasys.kuali.ksa.krad.form.GenerateBillForm"/>
+    </bean>
+
+    <bean id="rollupsOnSameDay" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Rollups on same day" p:propertyName="newSameDayRollup">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="name"/>
+                            <property name="labelPropertyName" value="name"/>
+                            <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getRollupsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="addSameDayRollup" p:actionLabel="Add this Rollup"/>
+                <bean parent="Uif-ListCollectionGroup" >
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.Rollup"/>
+                    <property name="propertyName" value="rollupsOnSameDate"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalFieldGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-ActionLink" p:methodToCall="removeSameDay" p:actionParameters="rollupId:@{#line.id}">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image"
+                                                      p:source="../images/remove.png"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-InputField" p:propertyName="name"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="rollupsOnSameStatement" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Rollups on same statement" p:propertyName="newSameStatementRollup">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest">
+                            <property name="valuePropertyName" value="name"/>
+                            <property name="labelPropertyName" value="name"/>
+                            <property name="templateOptions" value="minLength:2,delay:0,html:true"/>
+                            <property name="suggestQuery">
+                                <bean parent="Uif-AttributeQueryConfig">
+                                    <property name="queryMethodToCall" value="getRollupsForSuggest"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton-Small" p:methodToCall="addSameStatementRollup" p:actionLabel="Add this Rollup"/>
+                <bean parent="Uif-ListCollectionGroup" >
+                    <property name="readOnly" value="true"/>
+                    <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.Rollup"/>
+                    <property name="propertyName" value="rollupsOnSameStatement"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalFieldGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-ActionLink" p:methodToCall="removeSameDay" p:actionParameters="rollupId:@{#line.id}">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image"
+                                                      p:source="../images/remove.png"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-InputField" p:propertyName="name"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

@@ -185,6 +185,8 @@
                       p:actionLabel="General Ledger Prior Batch"/>
                 <bean parent="Uif-NavigationActionLink" p:navigateToPageId="GeneralLedgerPendingPage"
                       p:actionLabel="General Ledger Pending"/>
+                <bean parent="Uif-Link" p:linkText="Generate Bill"
+                      p:href="generateBillView?methodToCall=get&amp;viewId=GenerateBillView"/>
             </list>
         </property>
     </bean>
