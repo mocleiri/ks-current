@@ -10,8 +10,9 @@ class BasePage < PageFactory
 
 
 # KSAP header
-      action(:plan) { |b| b.frm.link(text: "Plan").click }
-      action(:find_courses) { |b| b.frm.link(text: "Find Courses").click }
+      action(:plan_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Plan").click}
+      action(:course_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Find Courses").click}
+
       action(:audit_degree) { |b| b.frm.link(text: "Audit Degree").click }
 
 

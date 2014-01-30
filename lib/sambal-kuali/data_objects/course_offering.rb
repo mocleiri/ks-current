@@ -8,7 +8,7 @@ include Workflows
 include Comparable
 
 COURSE_ARRAY = 0
-attr_accessor :course_code,:credit,:notes; :planned_term; :term_select;
+attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select
 
 def initialize(browser, opts={})
   @browser = browser
@@ -42,7 +42,16 @@ def remove_code_from_term
   end
 end
 
-
+def course_search_to_planner
+     on CourseSearch  do |page|
+       page.plan_page_click
+     end
+     on CoursePlannerPage do |page|
+       page.course_planner_header.wait_until_present
+       remove_code_from_term
+       page.course_page_click
+     end
+end
 
 def add_course_to_term
   navigate_to_course_planner_home
@@ -81,9 +90,9 @@ def edit_plan_item
 end
 
 def set_search_entry
-  navigate_to_course_search_home
-  on CourseSearch do |page|
+    on CourseSearch do |page|
     page.search_for_course.set @course_code
+    page.search
   end
 end
 

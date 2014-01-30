@@ -1,4 +1,4 @@
-@pending
+@nightly
 Feature: BT.Add note to planner
 
   Background:
@@ -7,8 +7,9 @@ Feature: BT.Add note to planner
 
 
   Scenario: CS 1.5.1 Add notes to my plan from course search
-    Given there are courses listed in the search list
-    When I add the course with notes and term to myplan
+    Given The unscheduled planner
+    When I search for a course from course search
+    And  I add the course with notes and term to myplan
     Then the course with notes appears under the term on the planner
 
 

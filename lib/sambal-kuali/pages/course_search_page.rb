@@ -13,7 +13,6 @@ class CourseSearch < BasePage
   element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
 
   #plus symbol representing the add to plan and bookmark
-  element(:planned_icon) {|b| b.td(class:"ksap-status-column").span(id:"3e9fb023-648b-40eb-86fe-c196bcd50949_status").span(text:"Planned") }
   element(:plus_symbol) { |b| b.frm.input(class:"uif-field uif-imageField ksap-add") }
   action(:plus_symbol_popover) { |b| b.plus_symbol.click}
 
@@ -29,7 +28,6 @@ class CourseSearch < BasePage
 
   #Navigation plan to find course  and vice versa
   action(:plan_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Plan").click}
-  action(:course_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Find Courses").click}
 
 
   COURSE_CODE = 0
