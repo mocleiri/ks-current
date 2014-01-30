@@ -155,7 +155,7 @@
 							<bean parent="Uif-Disclosure-VerticalBoxSection">
 								<property name="items">
 									<list>
-										<bean id="reportYearSelectControl" parent="Uif-InputField-LabelTop" p:propertyName="reportYears" p:label="Period" p:fieldLabel.renderColon="false">
+										<bean p:id="reportYearSelectControl" parent="Uif-InputField-LabelTop" p:propertyName="reportYears" p:label="Period" p:fieldLabel.renderColon="false">
 											<property name="control">
 												<bean parent="Uif-DropdownControl" p:width="100%"	/>
 											</property>
@@ -171,7 +171,7 @@
 							<bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Generate Document" p:actionScript="onGenerate1098TClick('@{account.id}')"/>
 				
 							<!-- Document Generation error message -->
-							<bean id="documentGenerationErrorMessage" parent="Uif-Message" p:messageText="@{getDocumentGenerationError()}" p:hidden="@{getDocumentGenerationError() == null}" p:style="color: red"/>
+							<bean p:id="documentGenerationErrorMessage" parent="Uif-Message" p:messageText="@{getDocumentGenerationError()}" p:hidden="@{getDocumentGenerationError() == null}" p:style="color: red"/>
 						</list>
 					</property>
 				</bean>
@@ -234,7 +234,7 @@
 				<bean parent="Uif-Message" p:messageText="No saved documents." p:hidden="@{getHideNoSavedDocumentsMessage()}" p:style="font-size: larger"/>
 				
 				<!-- View Generated Document error message -->
-				<bean id="viewGeneratedDocumentErrorMessage" parent="Uif-Message" p:messageText="@{getViewGeneratedFormError()}" p:hidden="@{getViewGeneratedFormError() == null}" p:style="color: red"/>
+				<bean p:id="viewGeneratedDocumentErrorMessage" parent="Uif-Message" p:messageText="@{getViewGeneratedFormError()}" p:hidden="@{getViewGeneratedFormError() == null}" p:style="color: red"/>
 			</list>
 		</property>
 	</bean>

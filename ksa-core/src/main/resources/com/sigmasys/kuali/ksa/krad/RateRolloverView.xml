@@ -108,7 +108,7 @@
 				
 				<!-- Date Setting section -->
 				<!-- Null Dates option -->
-				<bean parent="Uif-InputField-LabelTop" id="radioNullDates" p:propertyName="nullDatesOption"
+				<bean parent="Uif-InputField-LabelTop" p:id="radioNullDates" p:propertyName="nullDatesOption"
 							p:onClickScript="writeHiddenToForm('selectedDateOption', 'nullDatesOption'); onClickRolloverRatesRadioNullDates();" 
 							p:label="Make date settings valid by" p:fieldLabel.renderColon="true">
 					<property name="control">
@@ -127,7 +127,7 @@
 					<property name="items">
 						<list>
 							<!-- Radio Button -->
-							<bean parent="Uif-InputField" id="radioAutoAdvancedDates" p:propertyName="autoAdvancedDatesOption"
+							<bean parent="Uif-InputField" p:id="radioAutoAdvancedDates" p:propertyName="autoAdvancedDatesOption"
 									p:onClickScript="writeHiddenToForm('selectedDateOption', 'autoAdvancedDatesOption'); onClickRolloverRatesRadioAutoAdvancedDates();">
 								<property name="control">
 									<bean parent="Uif-VerticalRadioControl">
@@ -141,7 +141,7 @@
 							</bean>
 							
 							<!-- Number of Days input field -->
-							<bean parent="Uif-InputField-LabelTop" id="inputNumDaysToAdvance" p:propertyName="numOfDaysToAdvance" p:label="Number of Days to Advance Dates" p:fieldLabel.renderColon="false" 
+							<bean parent="Uif-InputField-LabelTop" p:id="inputNumDaysToAdvance" p:propertyName="numOfDaysToAdvance" p:label="Number of Days to Advance Dates" p:fieldLabel.renderColon="false" 
 									p:style="margin-left: 20px;" p:hidden="@{selectedDateOption != 'autoAdvancedDatesOption'}"/>
 						</list>
 					</property>
@@ -152,7 +152,7 @@
 					<property name="items">
 						<list>
 							<!-- Radio Button -->
-							<bean parent="Uif-InputField" id="radioCustomDates" p:propertyName="customDatesOption"
+							<bean parent="Uif-InputField" p:id="radioCustomDates" p:propertyName="customDatesOption"
 									p:onClickScript="writeHiddenToForm('selectedDateOption', 'customDatesOption'); onClickRolloverRatesRadioCustomDates();">
 								<property name="control">
 									<bean parent="Uif-VerticalRadioControl">
@@ -166,7 +166,7 @@
 							</bean>
 							
 							<!-- Custom Transaction Date -->
-							<bean parent="Uif-InputField-LabelTop" id="customTransactionDate" p:propertyName="customTransactionDate" p:label="Transaction Date"
+							<bean parent="Uif-InputField-LabelTop" p:id="customTransactionDate" p:propertyName="customTransactionDate" p:label="Transaction Date"
 								  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy" p:style="margin-left: 20px;" p:hidden="@{selectedDateOption != 'customDatesOption'}">
 								<property name="control">
 									<bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
@@ -174,7 +174,7 @@
 							</bean>
 							
 							<!-- Custom Recognition Date -->
-							<bean parent="Uif-InputField-LabelTop" id="customRecognitionDate" p:propertyName="customRecognitionDate" p:label="Recognition Date"
+							<bean parent="Uif-InputField-LabelTop" p:id="customRecognitionDate" p:propertyName="customRecognitionDate" p:label="Recognition Date"
 								  p:fieldLabel.renderColon="false" p:constraintText="Format: mm/dd/yyyy" p:style="margin-left: 20px;" p:hidden="@{selectedDateOption != 'customDatesOption'}">
 								<property name="control">
 									<bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
