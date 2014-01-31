@@ -271,15 +271,11 @@ end
 class RegisterForCourseSearchBase < BasePage
   expected_element :cr_header_div
 
-  def frm
-    self.frame(id: "frame")
-  end
-
-  element(:cr_header_div) { |b| b.frm.div(class: "kscr-Header") }
+  element(:cr_header_div) { |b| b.div(class: "kscr-Header") }
   element(:search_link) { |b| b.cr_header_div.link(text: "Search") }
   action(:search) { |b| b.search_link.click; b.loading.wait_while_present }
   element(:cart_link) { |b| b.cr_header_div.link(text: "Cart") }
   element(:schedule_link) { |b| b.cr_header_div.link(text: "Schedule") }
-  element(:change_term_link) { |b| b.frm.link(class: "kscr-TermContext-currentChange") }
+  element(:change_term_link) { |b| b.link(class: "kscr-TermContext-currentChange") }
   action(:change_term) { |b| b.change_term_link.click; b.loading.wait_while_present }
 end
