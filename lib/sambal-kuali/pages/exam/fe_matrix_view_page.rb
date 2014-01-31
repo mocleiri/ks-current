@@ -37,16 +37,16 @@ class FEMatrixView < BasePage
 
   def standard_fe_target_row( requirements)
     row = nil
-    if standard_final_exam_table.row(text: /#{requirements}/).exists?
-      row = standard_final_exam_table.row(text: /#{requirements}/)
+    if standard_final_exam_table.row(text: /#{Regexp.escape(requirements)}/).exists?
+      row = standard_final_exam_table.row(text: /#{Regexp.escape(requirements)}/)
     end
     return row
   end
 
   def common_fe_target_row( requirements)
     row = nil
-    if common_final_exam_table.row(text: /#{requirements}/).exists?
-      row = common_final_exam_table.row(text: /#{requirements}/)
+    if common_final_exam_table.row(text: /#{Regexp.escape(requirements)}/).exists?
+      row = common_final_exam_table.row(text: /#{Regexp.escape(requirements)}/)
     end
     return row
   end
@@ -65,6 +65,14 @@ class FEMatrixView < BasePage
 
   def get_standard_fe_actions( requirements)
     standard_fe_target_row( requirements).cells[STANDARD_EXAM_ACTIONS].text
+  end
+
+  def get_standard_fe_actions_class( requirements, action_type)
+    if action_type == "Edit"
+      standard_fe_target_row( requirements).cells[STANDARD_EXAM_ACTIONS].i(class: "ks-fontello-icon-pencil")
+    else
+      standard_fe_target_row( requirements).cells[STANDARD_EXAM_ACTIONS].i(class: "ks-fontello-icon-cancel")
+    end
   end
 
   def get_common_fe_requirements( requirements)
@@ -89,6 +97,14 @@ class FEMatrixView < BasePage
 
   def get_common_fe_actions( requirements)
     common_fe_target_row( requirements).cells[COMMON_EXAM_ACTIONS].text
+  end
+
+  def get_common_fe_actions_class( requirements, action_type)
+    if action_type == "Edit"
+      common_fe_target_row( requirements).cells[COMMON_EXAM_ACTIONS].i(class: "ks-fontello-icon-pencil")
+    else
+      common_fe_target_row( requirements).cells[COMMON_EXAM_ACTIONS].i(class: "ks-fontello-icon-cancel")
+    end
   end
 
   def edit( requirements, exam_type)
