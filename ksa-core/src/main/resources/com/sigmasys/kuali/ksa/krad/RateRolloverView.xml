@@ -63,7 +63,8 @@
                 <bean parent="Uif-InputField-LabelTop" p:label="Academic Time Period" p:propertyName="atpRolloverFrom" p:required="true" p:style="margin-top: 25px;">
                     <property name="suggest">
                         <bean parent="Uif-Suggest">
-                            <property name="valuePropertyName" value="atpName"/>
+                            <property name="labelPropertyName" value="atpName"/>
+                            <property name="valuePropertyName" value="atpId"/>
                             <property name="templateOptions" value="minLength:2,delay:0"/>
                             <property name="suggestQuery">
                                 <bean parent="Uif-AttributeQueryConfig">
@@ -78,7 +79,10 @@
 				<bean parent="Uif-SecondaryActionButton" p:actionLabel="Get Information" p:methodToCall="getAtpFromInfo"/>
 				
 				<!-- ATP Rollover from information message -->
-				<bean parent="Uif-Message" p:messageText="@{atpRolloverFromInfo}" p:hidden="@{atpRolloverFromInfo == null}"/>
+				<bean parent="Uif-Message" p:messageText="@{atpRolloverFromInfo}" p:hidden="@{atpRolloverFromInfo == null}" p:style="margin-top: 20px;"/>
+				
+				<!-- ATP Rollover from error message -->
+				<bean parent="Uif-Message" p:messageText="@{atpRolloverFromError}" p:hidden="@{atpRolloverFromError == null}" p:style="color: red; margin-top: 20px;"/>
 			</list>
 		</property>
 	</bean>
@@ -95,7 +99,8 @@
                 <bean parent="Uif-InputField-LabelTop" p:label="Rollover to Academic Time Period" p:propertyName="atpRolloverTo" p:required="true">
                     <property name="suggest">
                         <bean parent="Uif-Suggest">
-                            <property name="valuePropertyName" value="atpName"/>
+                            <property name="labelPropertyName" value="atpName"/>
+                            <property name="valuePropertyName" value="atpId"/>
                             <property name="templateOptions" value="minLength:2,delay:0"/>
                             <property name="suggestQuery">
                                 <bean parent="Uif-AttributeQueryConfig">

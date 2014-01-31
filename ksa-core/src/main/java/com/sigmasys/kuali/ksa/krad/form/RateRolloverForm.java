@@ -47,6 +47,11 @@ public class RateRolloverForm extends AbstractViewModel {
     private String atpRolloverFromInfo;
 
     /**
+     * Roll over from ATP error message. For example, an error selecting ATPs.
+     */
+    private String atpRolloverFromError;
+
+    /**
      * Selected option of Date adjustment.
      */
     private String selectedDateOption;
@@ -173,5 +178,13 @@ public class RateRolloverForm extends AbstractViewModel {
 
     public void setCustomDatesOption(String customDatesOption) {
         this.customDatesOption = customDatesOption;
+    }
+
+    public String getAtpRolloverFromError() {
+        return atpRolloverFromError;
+    }
+
+    public void setAtpRolloverFromError(String atpRolloverFromError) {
+        this.atpRolloverFromError = atpRolloverFromError;
     }
 }
