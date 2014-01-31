@@ -719,6 +719,7 @@ class CalendarEvent
       page.open_events_section
       wait_until { page.add_event_button.present? }
       page.add_event_button.click
+      wait_until { page.add_event_type.present? }
       page.add_event_type.select @event_type
       page.add_event_start_date.set @start_date
       page.add_event_end_date.set @end_date
