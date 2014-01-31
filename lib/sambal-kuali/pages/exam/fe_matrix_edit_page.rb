@@ -28,14 +28,14 @@ class FEMatrixEdit < BasePage
   element(:delete_btn) { |b| b.toolbar_section.button( text: "Delete")}
   action(:delete) { |b| b.delete_btn.click; b.loading.wait_while_present}
 
-  element(:rule_dropdown) { |b| b.frm.select( name: /editTree.*proposition\.typeId/)}
+  element(:rule_dropdown) { |b| b.frm.select( id: /KRMS-PropositionType-Dropdown/)}
   element(:rule_days) { |b| b.proposition_section.text_field( name: /editTree.*proposition\.weekdays/)}
   element(:rule_starttime) { |b| b.proposition_section.text_field( name: /editTree.*proposition\.startTime/)}
   element(:rule_starttime_ampm) { |b| b.proposition_section.select( name: /editTree.*proposition\.startTimeAMPM/)}
   element(:rule_endtime) { |b| b.proposition_section.text_field( name: /editTree.*proposition\.endTime/)}
   element(:rule_endtime_ampm) { |b| b.proposition_section.select( name: /editTree.*proposition\.endTimeAMPM/)}
   element(:rule_freeformtext) { |b| b.frm.text_field( name: /editTree.*proposition\.termParameter/)}
-  element(:courses_type_dropdown) { |b| b.proposition_section.select( name: /editTree.*proposition\.multipleCourseType/)}
+  #element(:courses_type_dropdown) { |b| b.proposition_section.select( name: /editTree.*proposition\.multipleCourseType/)}
 
   element(:add_line_btn) { |b| b.frm.button( text: "Add")} #( id: "KRMS-ApprovedCourseStackedCollectionGroup_add")}
   action(:add_line) { |b| b.add_line_btn.click}
@@ -67,7 +67,7 @@ class FEMatrixEdit < BasePage
     lookup_results_table.row(text: /#{course}/)
   end
 
-  element(:lookup_search_btn) { |b| b.frm_popup.button( id: "button_search")}
+  element(:lookup_search_btn) { |b| b.frm_popup.button( text: "Search")} #revert this
   action(:lookup_search) { |b| b.lookup_search_btn.click}
 
 end

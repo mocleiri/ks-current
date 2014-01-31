@@ -186,12 +186,12 @@ end
 Then /^I can only view all the rules in the Final Exam Matrix$/ do
   on FEMatrixView do |page|
     page.standard_final_exam_table.rows[1..-2].each do |row|
-      page.get_standard_fe_actions_class( row.text, "Edit").exists?.should be_false
-      page.get_standard_fe_actions_class( row.text, "Delete").exists?.should be_false
+      row.link(id: /delete_rule/).present?.should be_false
+      row.link(id: /edit_rule/).present?.should be_false
     end
     page.common_final_exam_table.rows[1..-2].each do |row|
-      page.get_common_fe_actions_class( row.text, "Edit").exists?.should be_false
-      page.get_common_fe_actions_class( row.text, "Delete").exists?.should be_false
+      row.link(id: /delete_rule/).present?.should be_false
+      row.link(id: /edit_rule/).present?.should be_false
     end
   end
 end
@@ -206,12 +206,12 @@ end
 Then /^I have the option of editing or deleting rules in the Final Exam Matrix$/ do
   on FEMatrixView do |page|
     page.standard_final_exam_table.rows[1..-2].each do |row|
-      page.get_standard_fe_actions_class( row.text, "Edit").attribute_value('class').should == "ks-fontello-icon-pencil"
-      page.get_standard_fe_actions_class( row.text, "Delete").attribute_value('class').should == "ks-fontello-icon-cancel"
+      row.link(id: /delete_rule/).present?.should be_true
+      row.link(id: /edit_rule/).present?.should be_true
     end
     page.common_final_exam_table.rows[1..-2].each do |row|
-      page.get_common_fe_actions_class( row.text, "Edit").attribute_value('class').should == "ks-fontello-icon-pencil"
-      page.get_common_fe_actions_class( row.text, "Delete").attribute_value('class').should == "ks-fontello-icon-cancel"
+      row.link(id: /delete_rule/).present?.should be_true
+      row.link(id: /edit_rule/).present?.should be_true
     end
   end
 end

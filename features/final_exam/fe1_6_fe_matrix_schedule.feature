@@ -43,17 +43,16 @@ Feature: CO.FE1-6 Manage the Final Exam Matrix so that FEs can be Scheduled in p
 
   #FE1.6.EB7 (KSENROLL-9796)
   Scenario: Test that multiple statements can be added to one rule on the Final Exam Matrix
-    Given that I have a Final Exam Matrix with an existing Common Final Exam rule statement
-    When I add additional statements to the Common Final Exam rule on the Final Exam Matrix
+    Given I create a Final Exam Matrix with multiple rule statements
     Then I should be able to see the Common Final Exam rule with the multiple statements
 
   #FE1.6.EB8 (KSENROLL-9796)
   Scenario: Test that editing or adding rules and submitting multiple times works as expected
     Given I have a Final Exam Matrix to which I have added multiple Standard Final Exam rule statements
-    When I edit the newly created Standard Final Exam rules
+    When I edit the newly created Standard Final Exam rule statements
     Then I should be able to see all the changes I have made on the Final Exam Matrix
 
-  #FE1.6.EB9 (KSENROLL-9796)
+  #FE1.6.EB9 (KSENROLL-9796) #########
   Scenario: Test that deleting an existing rule works as expected
     When I delete an existing Standard Final Exam text rule to the Final Exam Matrix
     Then the deleted text rule should not exist on the Final Exam Matrix

@@ -131,13 +131,18 @@ class FEMatrixView < BasePage
     standard_final_exam_table.rows.each do |row|
       array << row.cells[EXAM_DAY].text
     end
+    array.delete_if{|item| !(item.match /Day/)}
     return array
   end
 
   def get_all_standard_fe_times_for_day( day)
     array = []
     standard_final_exam_table.rows.each do |row|
-      array << "#{row.cells[EXAM_TIME].text}" if row.cells[EXAM_DAY].text == day
+      if row.cells[EXAM_DAY].text == day
+        time_str = row.cells[EXAM_TIME].text
+        time = DateTime.strptime(time_str, '%I:%M %p')
+        array << time
+      end
     end
     return array
   end
