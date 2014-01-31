@@ -136,7 +136,9 @@ class EditAcademicTerms < BasePage
   action(:key_date_group_add) { |index, b| b.frm.button(id: "acal-term-keydatesgroup_line#{index}_add").click; b.loading.wait_while_present}
 
   def key_date_exists?(term_type, key_date_group_type, key_date_type)
-    if key_date_group_div(term_type, key_date_group_type).table.exists?
+    if !key_date_group_div(term_type, key_date_group_type).nil? &&
+      key_date_group_div(term_type, key_date_group_type).exists? &&
+      key_date_group_div(term_type, key_date_group_type).table.exists?
       key_date_group_div(term_type, key_date_group_type).table.rows[1..-2].each do | row |
         if row.cells[0].text == key_date_type
           return true

@@ -211,10 +211,12 @@ When /^I add a new term to the Academic Calendar with a defined instructional pe
   @term.expected_instructional_days = @term.weekdays_in_term
 
   @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = create KeyDate, :parent_key_date_group => @keydategroup,
+  @keydate = make KeyDate, :parent_key_date_group => @keydategroup,
                     :key_date_type => "Instructional Period",
                     :start_date => @term.start_date,
                     :end_date => @term.end_date
+  @keydategroup.key_dates <<  @keydate
+  @keydategroup.create
 end
 
 When /^I add a new subterm to the Academic Calendar with a defined instructional period$/ do
