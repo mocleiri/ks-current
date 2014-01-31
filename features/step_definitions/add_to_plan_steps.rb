@@ -1,5 +1,5 @@
 
-Given /^The unscheduled planner$/ do
+Given /^There is an existing unplanned course$/ do
   navigate_to_course_search_home
   @course_offering = make CourseOffering,  :planned_term=>"2014Spring", :course_code => "ENGL206"
   @course_offering.course_search_to_planner
@@ -40,16 +40,13 @@ end
 
 Then  /^the course with notes appears under the term on the planner$/ do
    on CoursePlannerPage do |page|
-        page.course_code_term(@course_offering.planned_term, @course_offering.course_code) != nil?
-
        #*********** Checking whether the information icon exists?************
-
-     if page.info_icon.exists?
+        page.info_icon.exists?.should == true
         page.course_code_term_click(@course_offering.planned_term, @course_offering.course_code)
         page.view_course_summary_click
         page.close_popup.wait_until_present
         page.notes_content.should == @course_offering.notes
         page.close_popup_click
-     end
+
      end
 end

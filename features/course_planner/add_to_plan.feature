@@ -7,7 +7,7 @@ Feature: BT.Add note to planner
 
 
   Scenario: CS 1.5.1 Add notes to my plan from course search
-    Given The unscheduled planner
+    Given There is an existing unplanned course
     When I search for a course from course search
     And  I add the course with notes and term to myplan
     Then the course with notes appears under the term on the planner
