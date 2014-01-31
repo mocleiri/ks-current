@@ -6,23 +6,21 @@ Feature: REG.Register for course
   registration cart.
 
   Background:
-    Given I am logged in as a Student (??admin in demo)
+    Given I am logged in as a Student
+  #CR 1.1 (KSENROLL-10318)
 
-  Scenario: Student must be able to add a course to their registration cart, selected from the term’s Schedule of Classes
+  Scenario: I want to enter course information into my list of selections so that I can indicate what I want to register for.
     When I add a course offering to my registration cart
-    Then the course is present in my schedule
-
+    Then the course is present in my cart
+  @wip
   Scenario: Student must be able to add a course to their registration cart, with options specified, selected from the term’s Schedule of Classes
     When I add a course to my registration cart and specify course options
     Then the course is present in my schedule, with the correct options
-
+  @wip
   Scenario: Student must be able to drop a course from their registration cart
     When I drop a course from my registration cart
-    Then the course is not present in my schedule
-
+    Then the course is not present in my cart
+  @wip
   Scenario: Student must be able to edit a course in their registration cart
     When I edit a course in my registration cart
     Then the modified course is present in my schedule
-
-  Scenario: (Persisting)
-

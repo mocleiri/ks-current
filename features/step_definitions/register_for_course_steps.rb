@@ -14,7 +14,7 @@ When /^I edit a course in my registration cart$/ do
   pending
 end
 
-Then /^the course is (present|not present) in my schedule$/  do |isPresent|
+Then /^the course is (present|not present) in my cart/  do |isPresent|
   pending
 end
 
