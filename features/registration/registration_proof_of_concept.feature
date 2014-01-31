@@ -6,17 +6,17 @@ Feature: REG.Registration proof of concept
   Clicking on one of the courses should bring up a detail of that course.
 
   Scenario: Display course search results and detail info in mobile mode
-    Given I am using a mobile emulator website
-    And I am logged into the mobile site as admin
+    Given I am using a mobile screen size
+    And I am logged into the POC site as admin
     When I search for course offerings by using a custom course offering code
     Then the course search results are displayed in mobile format
     When I select a course offering from the search results
     Then the course detail is displayed in mobile format
   @wip
   Scenario: Display course search results and detail info in tablet mode
-    Given I am using a tablet emulator website
-    And I am logged into the mobile site as admin
-    When I search for course offerings by using the supplied course offering code
+    Given I am using a tablet screen size
+    And I am logged into the POC site as admin
+    When I search for course offerings by using a custom course offering code
     Then the course search results are displayed in tablet format
     When I select a course offering from the search results
     Then the course detail is displayed in tablet format
