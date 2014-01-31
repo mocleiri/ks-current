@@ -7,8 +7,8 @@ Feature: REG.Register for course
 
   Background:
     Given I am logged in as a Student
-  #CR 1.1 (KSENROLL-10318)
 
+  #CR 1.1 (KSENROLL-11747)
   Scenario: I want to enter course information into my list of selections so that I can indicate what I want to register for.
     When I add a course offering to my registration cart
     Then the course is present in my cart
