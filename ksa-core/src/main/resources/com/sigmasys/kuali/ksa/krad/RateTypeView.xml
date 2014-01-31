@@ -81,7 +81,7 @@
 							</bean>
                             <bean parent="Uif-InputField" p:label="Description" p:propertyName="description">
 								<property name="control">
-									<bean parent="Uif-TextControl" p:textExpand="true" p:style="width: 90%"/>
+									<bean parent="Uif-TextControl" p:textExpand="true" p:style="width: 85%"/>
 								</property>
 							</bean>
                             <bean parent="Uif-InputField" p:label="Grouping" p:propertyName="grouping">
