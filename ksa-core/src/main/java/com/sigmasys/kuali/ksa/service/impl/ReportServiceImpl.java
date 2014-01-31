@@ -1225,14 +1225,20 @@ public class ReportServiceImpl extends GenericPersistenceService implements Repo
             throw new IllegalStateException(errMsg);
         }
 
-        Account accountEntity = accountService.getFullAccount(cashLimitEvent.getAccountId());
+        Account account = accountService.getFullAccount(cashLimitEvent.getAccountId());
 
-        // Create a copy of the Account object:
-        accountEntity = BeanUtils.getDeepCopy(accountEntity);
-
-        DirectChargeAccount account = (DirectChargeAccount) accountEntity;
         if (account == null) {
             String errMsg = "Account with ID = " + cashLimitEvent.getAccountId() + " does not exist";
+            logger.error(errMsg);
+            throw new UserNotFoundException(errMsg);
+        }
+
+        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
+        account.accept(accountVisitor);
+        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+
+        if (directChargeAccount == null) {
+            String errMsg = "DirectChargeAccount with ID = " + cashLimitEvent.getAccountId() + " does not exist";
             logger.error(errMsg);
             throw new UserNotFoundException(errMsg);
         }
@@ -1274,7 +1280,7 @@ public class ReportServiceImpl extends GenericPersistenceService implements Repo
         Irs8300.Payer payer = new Irs8300.Payer();
         Irs8300.Payer.Identity identity = new Irs8300.Payer.Identity();
 
-        identity.setDateOfBirth(CalendarUtils.toXmlGregorianCalendar(account.getDateOfBirth()));
+        identity.setDateOfBirth(CalendarUtils.toXmlGregorianCalendar(directChargeAccount.getDateOfBirth()));
 
         if (accountInfo != null) {
 

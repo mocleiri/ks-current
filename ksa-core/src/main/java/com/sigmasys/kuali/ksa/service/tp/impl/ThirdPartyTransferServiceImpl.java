@@ -10,6 +10,7 @@ import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.TransactionService;
 import com.sigmasys.kuali.ksa.service.TransactionTransferService;
 import com.sigmasys.kuali.ksa.service.impl.GenericPersistenceService;
+import com.sigmasys.kuali.ksa.service.impl.SimpleAccountVisitor;
 import com.sigmasys.kuali.ksa.service.tp.ThirdPartyTransferService;
 import com.sigmasys.kuali.ksa.util.CalendarUtils;
 import com.sigmasys.kuali.ksa.util.TransactionUtils;
@@ -180,7 +181,17 @@ public class ThirdPartyTransferServiceImpl extends GenericPersistenceService imp
         }
 
         Account account = accountService.getFullAccount(accountId);
-        if (account == null || !(account instanceof DirectChargeAccount)) {
+        if (account == null) {
+            String errMsg = "Account with ID = " + accountId + " does not exist";
+            logger.error(errMsg);
+            throw new UserNotFoundException(errMsg);
+        }
+
+        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
+        account.accept(accountVisitor);
+        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+
+        if (directChargeAccount == null) {
             String errMsg = "DirectChargeAccount with ID = " + accountId + " does not exist";
             logger.error(errMsg);
             throw new UserNotFoundException(errMsg);
@@ -188,7 +199,7 @@ public class ThirdPartyTransferServiceImpl extends GenericPersistenceService imp
 
         ThirdPartyPlanMember planMember = new ThirdPartyPlanMember();
 
-        planMember.setDirectChargeAccount((DirectChargeAccount) account);
+        planMember.setDirectChargeAccount(directChargeAccount);
         planMember.setAccountId(accountId);
         planMember.setPlan(thirdPartyPlan);
         planMember.setPriority(priority);
@@ -554,8 +565,14 @@ public class ThirdPartyTransferServiceImpl extends GenericPersistenceService imp
 
             // Creating a new transfer detail instance
             transferDetail = new ThirdPartyTransferDetail();
+
             transferDetail.setTransferGroupId(transactionTransferService.generateTransferGroupId());
-            transferDetail.setDirectChargeAccount((DirectChargeAccount) account);
+
+            SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
+            account.accept(accountVisitor);
+            DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+
+            transferDetail.setDirectChargeAccount(directChargeAccount);
             transferDetail.setAccountId(accountId);
             transferDetail.setPlan(thirdPartyPlan);
             transferDetail.setChargeStatus(ThirdPartyChargeStatus.ACTIVE);

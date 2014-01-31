@@ -211,8 +211,10 @@ public class AccountManagementController extends GenericSearchController {
 
         // Create a new AccountInformationHolder object:
         AccountInformationHolder accountInfo = new AccountInformationHolder();
-        Account account = new Account() {
-        };
+
+        // The default account type is DirectChargeAccount
+        ChargeableAccount account = new DirectChargeAccount();
+
         AccountProtectedInfo accountProtectedInfo = new AccountProtectedInfo();
         PersonName personName = new PersonName();
         PostalAddress postalAddress = new PostalAddress();
@@ -230,10 +232,7 @@ public class AccountManagementController extends GenericSearchController {
         account.setElectronicContacts(new HashSet<ElectronicContact>(Arrays.asList(electronicContact)));
         account.setCreditLimit(new BigDecimal(0));
         account.setStatusType(new AccountStatusType());
-
-        if (account instanceof ChargeableAccount) {
-            ((ChargeableAccount) account).setLatePeriod(new LatePeriod());
-        }
+        account.setLatePeriod(new LatePeriod());
 
         account.setAbleToAuthenticate(Boolean.TRUE);
         accountInfo.setAccountProtectedInfo(accountProtectedInfo);

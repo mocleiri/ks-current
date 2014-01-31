@@ -7,6 +7,7 @@ import com.sigmasys.kuali.ksa.model.pb.*;
 import com.sigmasys.kuali.ksa.model.security.Permission;
 import com.sigmasys.kuali.ksa.service.*;
 import com.sigmasys.kuali.ksa.service.impl.GenericPersistenceService;
+import com.sigmasys.kuali.ksa.service.impl.SimpleAccountVisitor;
 import com.sigmasys.kuali.ksa.service.pb.PaymentBillingService;
 import com.sigmasys.kuali.ksa.util.CalendarUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -158,7 +159,12 @@ public class PaymentBillingServiceImpl extends GenericPersistenceService impleme
         transferDetail.setInitiationDate(initiationDate);
         transferDetail.setMaxAmount(maxAmount);
         transferDetail.setPlanAmount(BigDecimal.ZERO);
-        transferDetail.setDirectChargeAccount((DirectChargeAccount) account);
+
+        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
+        account.accept(accountVisitor);
+        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+
+        transferDetail.setDirectChargeAccount(directChargeAccount);
         transferDetail.setPlan(billingPlan);
         transferDetail.setChargeStatus(PaymentBillingChargeStatus.INITIALIZED);
 
@@ -1563,7 +1569,13 @@ public class PaymentBillingServiceImpl extends GenericPersistenceService impleme
         billingQueue.setCreatorId(userSessionManager.getUserId());
         billingQueue.setCreationDate(new Date());
         billingQueue.setPlan(billingPlan);
-        billingQueue.setDirectChargeAccount((DirectChargeAccount) account);
+
+        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
+        account.accept(accountVisitor);
+        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+
+        billingQueue.setDirectChargeAccount(directChargeAccount);
+
         billingQueue.setInitiationDate(initiationDate);
         billingQueue.setForceReversal(forceReversal);
 

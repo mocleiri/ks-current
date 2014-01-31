@@ -1,5 +1,7 @@
 package com.sigmasys.kuali.ksa.model;
 
+import com.sigmasys.kuali.ksa.service.AccountVisitor;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,6 +18,16 @@ public class DirectChargeAccount extends ChargeableAccount {
      * Date of birth
      */
     private Date dateOfBirth;
+
+    /**
+     * Allows AccountVisitor to access this Account.
+     *
+     * @param visitor AccountVisitor instance
+     */
+    @Override
+    public void accept(AccountVisitor visitor) {
+        visitor.visit(this);
+    }
 
     @Temporal(TemporalType.DATE)
     @Column(name = "DATE_OF_BIRTH")

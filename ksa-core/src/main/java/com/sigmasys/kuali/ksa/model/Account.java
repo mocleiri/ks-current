@@ -1,6 +1,7 @@
 package com.sigmasys.kuali.ksa.model;
 
 import com.sigmasys.kuali.ksa.annotation.Auditable;
+import com.sigmasys.kuali.ksa.service.AccountVisitor;
 import com.sigmasys.kuali.ksa.util.BeanUtils;
 
 import javax.persistence.*;
@@ -108,6 +109,13 @@ public abstract class Account implements Identifiable, KeyPairAware {
      * Account Status Type
      */
     protected AccountStatusType statusType;
+
+    /**
+     * Allows AccountVisitor to access this Account.
+     *
+     * @param visitor AccountVisitor instance
+     */
+    public abstract void accept(AccountVisitor visitor);
 
 
     @Id

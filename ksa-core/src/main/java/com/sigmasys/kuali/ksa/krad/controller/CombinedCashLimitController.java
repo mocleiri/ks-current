@@ -6,6 +6,7 @@ import com.sigmasys.kuali.ksa.krad.model.CashLimitEventModel;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.service.CashLimitService;
 import com.sigmasys.kuali.ksa.service.ReportService;
+import com.sigmasys.kuali.ksa.service.impl.SimpleAccountVisitor;
 import com.sigmasys.kuali.ksa.util.ZipFileEntry;
 import com.sigmasys.kuali.ksa.util.ZipUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,7 +34,7 @@ import java.util.Set;
 
 /**
  * This controller serves requests from the "Batch - Combined Cash Limit" page.
- *
+ * <p/>
  * Created with IntelliJ IDEA.
  * User: Sergey
  * Date: 11/5/13
@@ -134,11 +135,11 @@ public class CombinedCashLimitController extends TransactionFilterController {
      * Invoked to download a Complete CashLimitEvent XML.
      * Returns null to stay on the same page after download starts.
      *
-     * @param form              Form object.
-     * @param response          HTTP response.
-     * @param cashLimitEventId  ID of a Cash Limit Event.
-     * @param accountId         ID of an Account for which the report is to be generated.
-     * @param eventDateString   String representation of the event date.
+     * @param form             Form object.
+     * @param response         HTTP response.
+     * @param cashLimitEventId ID of a Cash Limit Event.
+     * @param accountId        ID of an Account for which the report is to be generated.
+     * @param eventDateString  String representation of the event date.
      * @return null to stay on the same page after download starts.
      * @throws Exception If an error occurs.
      */
@@ -193,8 +194,8 @@ public class CombinedCashLimitController extends TransactionFilterController {
     /**
      * Invoked when the "Complete Selected" button is pressed.
      *
-     * @param form      The form object.
-     * @return          ModelAndView
+     * @param form The form object.
+     * @return ModelAndView
      * @throws Exception If an error occurs.
      */
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=completeSelectedAccounts")
@@ -232,8 +233,8 @@ public class CombinedCashLimitController extends TransactionFilterController {
     /**
      * Invoked when the "Ignore Selected" button is pressed.
      *
-     * @param form      The form object.
-     * @return          ModelAndView
+     * @param form The form object.
+     * @return ModelAndView
      * @throws Exception If an error occurs.
      */
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=ignoreSelectedAccounts")
@@ -265,8 +266,8 @@ public class CombinedCashLimitController extends TransactionFilterController {
     /**
      * Invoked when the "Enqueue Selected" button is pressed.
      *
-     * @param form      The form object.
-     * @return          ModelAndView
+     * @param form The form object.
+     * @return ModelAndView
      * @throws Exception If an error occurs.
      */
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=enqueueSelectedAccounts")
@@ -299,7 +300,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
      * Refreshes the underlying data model. This action happens after a filter
      * is changes and a refresh is required to apply the changed filter.
      *
-     * @param form  The form object.
+     * @param form The form object.
      */
     @Override
     protected void refreshModel(TransactionFilterForm form) {
@@ -308,11 +309,11 @@ public class CombinedCashLimitController extends TransactionFilterController {
         List<CashLimitEventModel> cashLimitEventModels = createCashLimitEventModelList(form);
 
         // Set the models on the form:
-        ((CashLimitForm)form).setCashLimitEvents(cashLimitEventModels);
+        ((CashLimitForm) form).setCashLimitEvents(cashLimitEventModels);
 
         // Remove the properties that must be reset on each refresh:
-        ((CashLimitForm)form).setLastCompletedCashLimitEventIds(null);
-        ((CashLimitForm)form).setFormSubmissionError(null);
+        ((CashLimitForm) form).setLastCompletedCashLimitEventIds(null);
+        ((CashLimitForm) form).setFormSubmissionError(null);
     }
 
 
@@ -325,7 +326,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
     /**
      * Creates a List of CashLimitEvent model objects.
      *
-     * @param form  The form object.
+     * @param form The form object.
      * @return A List of CashLimitEvent model objects.
      */
     private <T extends TransactionFilterForm> List<CashLimitEventModel> createCashLimitEventModelList(T form) {
@@ -338,7 +339,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
         if (CollectionUtils.isNotEmpty(accountIds)) {
 
             // Get the filtering values:
-            CashLimitForm thisForm = (CashLimitForm)form;
+            CashLimitForm thisForm = (CashLimitForm) form;
             CashLimitEventStatus filteringStatus = thisForm.getFilterCashLimitEventStatus();
             boolean applyDateRange = "RANGE".equals(thisForm.getDateRangeType());
             Date dateFrom = applyDateRange ? thisForm.getFilterDateFrom() : null;
@@ -381,13 +382,19 @@ public class CombinedCashLimitController extends TransactionFilterController {
 
         // Set up Account related information:
         String accountId = cashLimitEvent.getAccountId();
-        Account account = accountService.getFullAccount(accountId);
         String dateOfBirthString = null;
+
         AccountProtectedInfo accountProtectedInfo = accountService.getAccountProtectedInfo(accountId);
 
+        Account account = accountService.getFullAccount(accountId);
+
+        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
+        account.accept(accountVisitor);
+        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+
         // Format the date of birth as String:
-        if ((account instanceof DirectChargeAccount) && (((DirectChargeAccount)account).getDateOfBirth() != null)) {
-            dateOfBirthString = DATE_FORMAT.format(((DirectChargeAccount)account).getDateOfBirth());
+        if (directChargeAccount != null && directChargeAccount.getDateOfBirth() != null) {
+            dateOfBirthString = DATE_FORMAT.format(directChargeAccount.getDateOfBirth());
         }
 
         // Create a default AccountProtectedInfo if one is missing:
@@ -431,7 +438,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
     /**
      * Creates a name for a 8300 XML report.
      *
-     * @param cashLimitEvent    CashLimitEvent for which to generate a report file name.
+     * @param cashLimitEvent CashLimitEvent for which to generate a report file name.
      * @return Report file name.
      */
     private String generateReportFileName(CashLimitEvent cashLimitEvent) {
@@ -440,16 +447,15 @@ public class CombinedCashLimitController extends TransactionFilterController {
         String accountId = cashLimitEvent.getAccountId();
         String eventDateString = (cashLimitEvent.getEventDate() != null)
                 ? DATE_FORMAT.format(cashLimitEvent.getEventDate()) : null;
-        String reportFileName = String.format("%s--%d--Combined_Cash_Limit_%s.xml",
-                accountId, cashLimitEvent.getId(), StringUtils.defaultString(eventDateString));
 
-        return reportFileName;
+        return String.format("%s--%d--Combined_Cash_Limit_%s.xml",
+                accountId, cashLimitEvent.getId(), StringUtils.defaultString(eventDateString));
     }
 
     /**
      * Returns a List of selected CashLimitEventModel objects from the form.
      *
-     * @param form  The form object.
+     * @param form The form object.
      * @return A List of selected CashLimitEventModels.
      */
     private List<CashLimitEventModel> getSelectedCashLimitEvents(CashLimitForm form) {
@@ -502,7 +508,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
     /**
      * Creates a ZIP archive from the IRS Forms 8300 stored in the specified CashLimitEvents.
      *
-     * @param cashLimitEvents   A List of CashLimitEvents to use their IRS 8300 Forms for a ZIP archive.
+     * @param cashLimitEvents A List of CashLimitEvents to use their IRS 8300 Forms for a ZIP archive.
      * @return The new ZIP archive.
      */
     private File createForm8300Archive(List<CashLimitEvent> cashLimitEvents) {
@@ -510,12 +516,12 @@ public class CombinedCashLimitController extends TransactionFilterController {
         // Create a List of ZIP entries:
         List<ZipFileEntry> zipEntries = new ArrayList<ZipFileEntry>();
 
-        for(CashLimitEvent cashLimitEvent : cashLimitEvents) {
+        for (CashLimitEvent cashLimitEvent : cashLimitEvents) {
 
             // Check if the Form 8300 exists, add it to ZIP entries:
             String form8300 = (cashLimitEvent.getXmlDocument() != null) ? cashLimitEvent.getXmlDocument().getXml() : null;
 
-            if (StringUtils.isNotBlank(form8300)) {
+            if (form8300 != null) {
 
                 // Create a new ZipFileEntry:
                 String form8300FileName = generateReportFileName(cashLimitEvent);
