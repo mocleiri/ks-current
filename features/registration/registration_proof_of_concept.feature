@@ -1,10 +1,11 @@
-@nightly @red_team
+@wip @red_team
 Feature: REG.Registration proof of concept
 
   As a student, I want to be able to search for a course from the Schedule of Classes.
   The search results list should display properly depending on screen size.
   Clicking on one of the courses should bring up a detail of that course.
 
+  @wip
   Scenario: Display course search results and detail info in mobile mode
     Given I am using a mobile screen size
     And I am logged into the POC site as admin
