@@ -6,7 +6,7 @@ import com.sigmasys.kuali.ksa.krad.model.CashLimitEventModel;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.service.CashLimitService;
 import com.sigmasys.kuali.ksa.service.ReportService;
-import com.sigmasys.kuali.ksa.service.impl.SimpleAccountVisitor;
+import com.sigmasys.kuali.ksa.util.AccountUtils;
 import com.sigmasys.kuali.ksa.util.ZipFileEntry;
 import com.sigmasys.kuali.ksa.util.ZipUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,11 +35,8 @@ import java.util.Set;
 /**
  * This controller serves requests from the "Batch - Combined Cash Limit" page.
  * <p/>
- * Created with IntelliJ IDEA.
- * User: Sergey
- * Date: 11/5/13
- * Time: 2:48 AM
- * To change this template use File | Settings | File Templates.
+ *
+ * @author Sergey Godunov
  */
 @Controller
 @RequestMapping(value = "/batchCashLimitView")
@@ -388,9 +385,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
 
         Account account = accountService.getFullAccount(accountId);
 
-        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
-        account.accept(accountVisitor);
-        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+        DirectChargeAccount directChargeAccount = AccountUtils.cast(account, DirectChargeAccount.class);
 
         // Format the date of birth as String:
         if (directChargeAccount != null && directChargeAccount.getDateOfBirth() != null) {

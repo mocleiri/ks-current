@@ -7,6 +7,7 @@ import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.PersistenceService;
 import com.sigmasys.kuali.ksa.service.UserPreferenceService;
 import com.sigmasys.kuali.ksa.service.UserSessionManager;
+import com.sigmasys.kuali.ksa.util.AccountUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -294,7 +295,7 @@ public class AccountManagementController extends GenericSearchController {
       * Determines if the given Account has a Date of Birth and returns it. Otherwise, returns null.
       */
     protected Date getAccountDateOfBirth(Account account) {
-        return (account instanceof DirectChargeAccount) ? ((DirectChargeAccount) account).getDateOfBirth() : null;
+        return (account instanceof DirectChargeAccount) ? AccountUtils.cast(account, DirectChargeAccount.class).getDateOfBirth() : null;
     }
 
     /*

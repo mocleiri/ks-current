@@ -1233,9 +1233,7 @@ public class ReportServiceImpl extends GenericPersistenceService implements Repo
             throw new UserNotFoundException(errMsg);
         }
 
-        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
-        account.accept(accountVisitor);
-        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+        DirectChargeAccount directChargeAccount = AccountUtils.cast(account, DirectChargeAccount.class);
 
         if (directChargeAccount == null) {
             String errMsg = "DirectChargeAccount with ID = " + cashLimitEvent.getAccountId() + " does not exist";

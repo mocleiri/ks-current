@@ -10,8 +10,8 @@ import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.TransactionService;
 import com.sigmasys.kuali.ksa.service.TransactionTransferService;
 import com.sigmasys.kuali.ksa.service.impl.GenericPersistenceService;
-import com.sigmasys.kuali.ksa.service.impl.SimpleAccountVisitor;
 import com.sigmasys.kuali.ksa.service.tp.ThirdPartyTransferService;
+import com.sigmasys.kuali.ksa.util.AccountUtils;
 import com.sigmasys.kuali.ksa.util.CalendarUtils;
 import com.sigmasys.kuali.ksa.util.TransactionUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -187,9 +187,7 @@ public class ThirdPartyTransferServiceImpl extends GenericPersistenceService imp
             throw new UserNotFoundException(errMsg);
         }
 
-        SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
-        account.accept(accountVisitor);
-        DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
+        DirectChargeAccount directChargeAccount = AccountUtils.cast(account, DirectChargeAccount.class);
 
         if (directChargeAccount == null) {
             String errMsg = "DirectChargeAccount with ID = " + accountId + " does not exist";
@@ -568,11 +566,7 @@ public class ThirdPartyTransferServiceImpl extends GenericPersistenceService imp
 
             transferDetail.setTransferGroupId(transactionTransferService.generateTransferGroupId());
 
-            SimpleAccountVisitor accountVisitor = SimpleAccountVisitor.getInstance();
-            account.accept(accountVisitor);
-            DirectChargeAccount directChargeAccount = accountVisitor.getDirectChargeAccount();
-
-            transferDetail.setDirectChargeAccount(directChargeAccount);
+            transferDetail.setDirectChargeAccount(AccountUtils.cast(account, DirectChargeAccount.class));
             transferDetail.setAccountId(accountId);
             transferDetail.setPlan(thirdPartyPlan);
             transferDetail.setChargeStatus(ThirdPartyChargeStatus.ACTIVE);
