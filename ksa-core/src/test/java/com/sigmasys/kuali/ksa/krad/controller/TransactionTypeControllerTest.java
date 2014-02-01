@@ -1,7 +1,6 @@
 package com.sigmasys.kuali.ksa.krad.controller;
 
 
-import com.sigmasys.kuali.ksa.krad.form.SettingsForm;
 import com.sigmasys.kuali.ksa.krad.form.TransactionTypeForm;
 import com.sigmasys.kuali.ksa.krad.model.TransactionTypeGroupModel;
 import com.sigmasys.kuali.ksa.model.*;
@@ -83,7 +82,7 @@ public class TransactionTypeControllerTest extends AbstractServiceTest {
         // All of the transaction types are grouped by ID.
         // Sum them up to compare to the whole list.
         int count = 0;
-        for(TransactionTypeGroupModel group : form.getTransactionTypes()){
+        for (TransactionTypeGroupModel group : form.getTransactionTypes()) {
             count += group.getTransactionTypes().size();
         }
         Assert.isTrue(count == types.size());
@@ -92,7 +91,7 @@ public class TransactionTypeControllerTest extends AbstractServiceTest {
 
     @Test
     public void getDetail() throws Exception {
-// Passing request parameters needed to perform get() method
+
         MockHttpServletRequest request = getRequest();
 
         String id = "1001";
@@ -127,112 +126,15 @@ public class TransactionTypeControllerTest extends AbstractServiceTest {
         request.setParameter("userId", userId);
         request.setParameter("pageId", "TransactionTypeCreatePage");
 
-        List<GeneralLedgerType> gltypes = auditableEntityService.getAuditableEntities(GeneralLedgerType.class);
+        List<GeneralLedgerType> glTypes = auditableEntityService.getAuditableEntities(GeneralLedgerType.class);
+
+        Assert.notNull(glTypes);
 
         ModelAndView modelAndView = transactionTypeController.create(form, request);
 
         // Checking assertions
         Assert.notNull(modelAndView);
         Assert.notNull(form);
-
-        //Assert.notNull(form.getGlBreakdowns());
-        //Assert.isTrue(form.getGlBreakdowns().size() == gltypes.size());
-    }
-/*
-    @Test
-    public void getCurrencyDetail() throws Exception {
-
-        // Passing request parameters needed to perform get() method
-        MockHttpServletRequest request = getRequest();
-
-        request.setParameter("userId", userId);
-        request.setParameter("pageId", "CurrencyDetailsPage");
-        request.setParameter("entityId", "1");
-
-        ModelAndView modelAndView = settingsController.get(form, request);
-
-        // Checking assertions
-        Assert.notNull(modelAndView);
-        Assert.notNull(form);
-
-        Assert.notNull(form.getAuditableEntity());
-        Assert.isTrue("USD".equals(form.getAuditableEntity().getCode()), form.getAuditableEntity().getCode() + " isn't USD");
     }
 
-    @Test
-    public void insertCurrency() throws Exception {
-
-        Currency newCurr = new Currency();
-        newCurr.setCode("TEST");
-        newCurr.setDescription("Unit Test value");
-
-        form.setAuditableEntity(newCurr);
-        ModelAndView modelAndView = settingsController.insertAuditableEntity(form);
-
-        Assert.notNull(modelAndView);
-        Assert.notNull(form);
-        Assert.notNull(form.getStatusMessage());
-        Assert.isTrue(form.getStatusMessage().startsWith("Success:"));
-
-    }
-
-    @Test
-    public void getRollupList() throws Exception {
-
-        // Passing request parameters needed to perform get() method
-        MockHttpServletRequest request = getRequest();
-
-        request.setParameter("userId", userId);
-        request.setParameter("pageId", "RollupPage");
-
-        List<Rollup> rollups = persistenceService.getEntities(Rollup.class);
-
-        ModelAndView modelAndView = settingsController.get(form, request);
-
-        // Checking assertions
-        Assert.notNull(modelAndView);
-        Assert.notNull(form);
-
-        Assert.notNull(form.getAuditableEntities());
-        Assert.isTrue(form.getAuditableEntities().size() == rollups.size());
-        Assert.notEmpty(form.getAuditableEntities());
-    }
-
-    @Test
-    public void getRollupDetail() throws Exception {
-
-        // Passing request parameters needed to perform get() method
-        MockHttpServletRequest request = getRequest();
-
-        request.setParameter("userId", userId);
-        request.setParameter("pageId", "RollupDetailsPage");
-        request.setParameter("entityId", "1");
-
-        ModelAndView modelAndView = settingsController.get(form, request);
-
-        // Checking assertions
-        Assert.notNull(modelAndView);
-        Assert.notNull(form);
-
-        Assert.notNull(form.getAuditableEntity());
-        Assert.isTrue("Bookstore Charges".equals(form.getAuditableEntity().getName()), "'" + form.getAuditableEntity().getName() + "' isn't what is expected");
-    }
-
-    @Test
-    public void insertRollup() throws Exception {
-
-        Rollup rollup = new Rollup();
-        rollup.setCode("TEST");
-        rollup.setDescription("Unit Test value");
-
-        form.setAuditableEntity(rollup);
-        ModelAndView modelAndView = settingsController.insertAuditableEntity(form);
-
-        Assert.notNull(modelAndView);
-        Assert.notNull(form);
-        Assert.notNull(form.getStatusMessage());
-        Assert.isTrue(form.getStatusMessage().startsWith("Success:"));
-    }
-
-*/
 }

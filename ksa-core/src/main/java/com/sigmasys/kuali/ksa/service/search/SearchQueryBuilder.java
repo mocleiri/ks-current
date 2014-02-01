@@ -110,17 +110,23 @@ public class SearchQueryBuilder {
         StringBuilder sb = new StringBuilder();
 
         if (isCountQuery) {
-            sb.append("select " + getCountString() + " \n");
+            sb.append("select ");
+            sb.append(getCountString());
         } else {
-            sb.append(selectClause + " \n");
+            sb.append(selectClause);
         }
+
+        sb.append(" \n");
 
         // remove 'fetch' from fromClause
         String modifiedFromClause = getFromClause();
         if (!isUseNativeSql() && (isCountQuery || !isUseFetch())) {
             modifiedFromClause = modifiedFromClause.replaceAll(" fetch ", " ");
         }
-        sb.append(modifiedFromClause + " \n");
+
+        sb.append(modifiedFromClause);
+
+        sb.append(" \n");
 
         String where = buildWhereClause(searchCriteria);
         sb.append(where);
@@ -137,7 +143,10 @@ public class SearchQueryBuilder {
             } else {
                 sb.append("and ");
             }
-            sb.append("rownum <= " + searchCriteria.getMaxRows() + " \n");
+
+            sb.append("rownum <= ");
+            sb.append(searchCriteria.getMaxRows());
+            sb.append(" \n");
         }
 
         if (!isCountQuery && (isUseFetch() || isUseNativeSql())) {
@@ -464,7 +473,7 @@ public class SearchQueryBuilder {
     }
 
     public String getCountString() {
-        return countString != null && countString.length() > 0 ? countString : "count(*)";
+        return (countString != null && countString.length() > 0) ? countString : "count(*)";
     }
 
     public void setCountString(String countString) {

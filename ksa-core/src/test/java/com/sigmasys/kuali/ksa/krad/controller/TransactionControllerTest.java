@@ -101,13 +101,13 @@ public class TransactionControllerTest extends AbstractServiceTest {
         Assert.notNull(form);
 
         List<TransactionModel> rollups = form.getRollupTransactions();
+
         // Every rollup should have at least one transaction in it's sub list (otherwise, how did it get there
         for (TransactionModel rollup : rollups) {
             List<TransactionModel> subs = rollup.getSubTransactions();
             Assert.notNull(subs);
             Assert.isTrue(subs.size() > 0);
         }
-
 
     }
 
@@ -159,7 +159,6 @@ public class TransactionControllerTest extends AbstractServiceTest {
             }
             Assert.isTrue(found, f.getText() + " not found in form Alerts");
         }
-
 
     }
 }

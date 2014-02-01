@@ -6,13 +6,13 @@ import com.sigmasys.kuali.ksa.model.Information;
 import com.sigmasys.kuali.ksa.model.pb.PaymentBillingPlan;
 import com.sigmasys.kuali.ksa.model.pb.PaymentBillingQueue;
 import com.sigmasys.kuali.ksa.service.InformationService;
+import com.sigmasys.kuali.ksa.service.UserSessionManager;
 import com.sigmasys.kuali.ksa.service.hold.HoldService;
 import com.sigmasys.kuali.ksa.service.pb.PaymentBillingService;
 import com.sigmasys.kuali.ksa.service.tp.ThirdPartyTransferService;
 import com.sigmasys.kuali.ksa.util.ContextUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.core.hold.dto.AppliedHoldInfo;
 
@@ -36,7 +36,10 @@ public class AccountUtils {
 
     private static ThirdPartyTransferService thirdPartyTransferService;
 
+    private static UserSessionManager userSessionManager;
+
     public static void populateTransactionHeading(AbstractViewModel form, String userId) {
+
         if (holdService == null) {
             holdService = ContextUtils.getBean(HoldService.class);
         }
@@ -45,14 +48,17 @@ public class AccountUtils {
             informationService = ContextUtils.getBean(InformationService.class);
         }
 
-        if(paymentBillingService == null) {
+        if (paymentBillingService == null) {
             paymentBillingService = ContextUtils.getBean(PaymentBillingService.class);
         }
 
-        if(thirdPartyTransferService == null) {
+        if (thirdPartyTransferService == null) {
             thirdPartyTransferService = ContextUtils.getBean(ThirdPartyTransferService.class);
         }
 
+        if (userSessionManager == null) {
+            userSessionManager = ContextUtils.getBean(UserSessionManager.class);
+        }
 
         form.setAlertObjects(informationService.getAlerts(userId));
         form.setFlagObjects(informationService.getFlags(userId));
@@ -61,7 +67,7 @@ public class AccountUtils {
 
         List<PaymentBillingPlan> plans = paymentBillingService.getPaymentBillingPlansByAccountId(userId);
         List<PaymentBillingQueue> queues = paymentBillingService.getPaymentBillingQueues(userId, null);
-        for(PaymentBillingQueue queue : queues) {
+        for (PaymentBillingQueue queue : queues) {
             plans.add(queue.getPlan());
         }
         form.setPaymentBillingPlansForTooltip(plans);
@@ -72,7 +78,9 @@ public class AccountUtils {
     public static List<InformationModel> getHolds(String userId) throws RuntimeException {
 
         ContextInfo context = new ContextInfo();
-        String effectiveUser = GlobalVariables.getUserSession().getActualPerson().getPrincipalId();
+
+        String effectiveUser = userSessionManager.getUserId();
+
         context.setAuthenticatedPrincipalId(effectiveUser);
 
         List<InformationModel> models = new ArrayList<InformationModel>();

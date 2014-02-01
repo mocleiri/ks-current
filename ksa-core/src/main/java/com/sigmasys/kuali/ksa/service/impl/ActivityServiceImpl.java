@@ -92,7 +92,7 @@ public class ActivityServiceImpl extends GenericPersistenceService implements Ac
      */
     @Override
     public List<Activity> getActivities() {
-        return getActivities((String)null, UNLIMITED_ITEMS_NUMBER);
+        return getActivities(null, UNLIMITED_ITEMS_NUMBER);
     }
 
     /**
@@ -101,7 +101,7 @@ public class ActivityServiceImpl extends GenericPersistenceService implements Ac
      * @return List of activities
      */
     public List<Activity> getActivities(int limit) {
-        return getActivities((String) null, limit);
+        return getActivities(null, limit);
     }
 
     /**
@@ -127,11 +127,11 @@ public class ActivityServiceImpl extends GenericPersistenceService implements Ac
                 ((userId != null) ? " where act.creatorId = :userId " : "") +
                 " order by act.timestamp desc");
 
-        if(userId != null) {
+        if (userId != null) {
             query.setParameter("userId", userId);
         }
 
-        if(limit != UNLIMITED_ITEMS_NUMBER) {
+        if (limit != UNLIMITED_ITEMS_NUMBER) {
             query.setMaxResults(limit);
         }
 

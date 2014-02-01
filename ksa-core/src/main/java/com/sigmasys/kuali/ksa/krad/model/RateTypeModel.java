@@ -1,5 +1,6 @@
 package com.sigmasys.kuali.ksa.krad.model;
 
+import com.sigmasys.kuali.ksa.model.Constants;
 import com.sigmasys.kuali.ksa.model.fm.RateAmountType;
 import com.sigmasys.kuali.ksa.model.fm.RateType;
 import com.sigmasys.kuali.ksa.util.EnumUtils;
@@ -10,16 +11,10 @@ import java.text.SimpleDateFormat;
 /**
  * A model object to store information about a single row in the RateType table.
  *
- * User: Sergey
- * Date: 12/5/13
- * Time: 10:31 PM
+ * @author Sergey Godunov
  */
 public class RateTypeModel {
 
-    /**
-     * Date formatter for displayable dates.
-     */
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * The RateType object.
@@ -55,6 +50,7 @@ public class RateTypeModel {
 
     /**
      * Creates a new RateTypeModel with an underlying RateType.
+     *
      * @param rateType A RateType object.
      */
     public RateTypeModel(RateType rateType) {
@@ -103,6 +99,7 @@ public class RateTypeModel {
 
     /**
      * Returns the ID of the given model object. If a new object, the ID is <code>null</code>.
+     *
      * @return ID of the underlying RateType object or null if a new object.
      */
     public Long getId() {
@@ -115,12 +112,13 @@ public class RateTypeModel {
      * @return Auditing info as HTML.
      */
     public String getAuditingInfo() {
+        final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(Constants.DATE_FORMAT_EXPORT);
         return (rateType != null)
                 ? String.format("<b>Created By: </b>%s<br><b>Created On: </b>%s<br><b>Last Edited By: </b>%s<br><b>Last Edited On: </b>%s",
-                    StringUtils.defaultString(rateType.getCreatorId()),
-                    (rateType.getCreationDate() != null) ? DATE_FORMAT.format(rateType.getCreationDate()) : "",
-                    StringUtils.defaultString(rateType.getEditorId()),
-                    (rateType.getLastUpdate() != null) ? DATE_FORMAT.format(rateType.getLastUpdate()) : "")
+                StringUtils.defaultString(rateType.getCreatorId()),
+                (rateType.getCreationDate() != null) ? DATE_FORMAT.format(rateType.getCreationDate()) : "",
+                StringUtils.defaultString(rateType.getEditorId()),
+                (rateType.getLastUpdate() != null) ? DATE_FORMAT.format(rateType.getLastUpdate()) : "")
                 : "";
     }
 
@@ -137,7 +135,7 @@ public class RateTypeModel {
     }
 
     public String getRateAmountType() {
-        return (rateAmountType != null) ? rateAmountType.getId().toString() : "";
+        return (rateAmountType != null) ? rateAmountType.getId() : "";
     }
 
     public void setRateAmountType(String rateAmountType) {

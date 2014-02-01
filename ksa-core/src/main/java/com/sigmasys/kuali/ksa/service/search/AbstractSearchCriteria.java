@@ -69,6 +69,7 @@ public abstract class AbstractSearchCriteria implements Serializable {
         this.runCount = runCount;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends AbstractSearchCriteria> T copyTo(AbstractSearchCriteria sc) {
         sc.setName(name);
         sc.setMaxRows(maxRows);

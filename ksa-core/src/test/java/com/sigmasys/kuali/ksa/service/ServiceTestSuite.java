@@ -39,6 +39,7 @@ import org.junit.runners.Suite;
         TemplateControllerTest.class,
         SettingsControllerTest.class,
         SearchControllerTest.class,
+        TransactionControllerTest.class,
         TransactionTypeControllerTest.class,
         QuickViewControllerTest.class,
         AtpServiceTest.class,
