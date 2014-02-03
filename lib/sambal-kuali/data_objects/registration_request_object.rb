@@ -40,7 +40,11 @@ class RegistrationRequest
     options = defaults.merge(opts)
     update_options(options)
   end
-  
+
+  def create
+    return new RegistrationRequest
+  end
+
   def edit opts={}
     options = defaults.merge(opts)
     edit_student_id options
