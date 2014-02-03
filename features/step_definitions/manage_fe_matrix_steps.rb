@@ -1,11 +1,15 @@
 When /^I edit a Standard Final Exam rule on the matrix$/ do
   @matrix = make FinalExamMatrix
-  @matrix.edit :defer_save => true, :defer_submit => true
+  @matrix.add_rule :rule_obj =>  (make ExamMatrixRuleObject)
+  @matrix.rules[0].edit :defer_save => true, :defer_submit => true
 end
 
 When /^I edit a Common Final Exam rule on the matrix$/ do
   @matrix = make FinalExamMatrix, :exam_type => "Common", :rule_requirements => "PHYS270"
-  @matrix.edit :defer_save => true, :defer_submit => true
+  @matrix.add_rule :rule_obj =>  (make ExamMatrixRuleObject,
+              :exam_type => 'Common', :days => "MTW", :start_time => "01:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm")
+  @matrix.rules[0].edit :defer_save => true, :defer_submit => true
 end
 
 When /^I open the Final Exam Matrix for ([^"]*)$/ do |term|
@@ -14,16 +18,17 @@ When /^I open the Final Exam Matrix for ([^"]*)$/ do |term|
 end
 
 When /^I add a Common Final Exam course rule to the Final Exam Matrix$/ do
-  @matrix = create FinalExamMatrix, :rule => "If course is <Course>", :rule_requirements => "ENGL312",
-                   :exam_type => "Common", :courses => "ENGL312", :start_time => "08:00", :end_time => "10:00"
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  @matrix.add_rule :rule_obj => (make ExamMatrixRuleObject, :exam_type => "Common", :facility => '', :room => '' )
 end
 
 When /^I add Building and Room location data to the Requested Exam Offering Scheduling Information$/ do
-  @matrix.add_edit_rsi_info
+  @matrix.rules[0].edit :facility => 'MTH', :room => '0304'
 end
 
 When /^I add a Standard Final Exam timeslot rule to the Final Exam Matrix$/ do
-  @matrix = create FinalExamMatrix, :term_type => "Winter Term"
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  @matrix.add_rule :rule_obj => (make ExamMatrixRuleObject)
 end
 
 When /^I add a Standard Final Exam text rule to the Final Exam Matrix$/ do
@@ -32,47 +37,73 @@ When /^I add a Standard Final Exam text rule to the Final Exam Matrix$/ do
 end
 
 Given /^I have a Final Exam Matrix to which I have added multiple Standard Final Exam rule statements$/ do
-  @matrix_rule_list = []
-  @matrix_rule_list << (create FinalExamMatrix, :term_type => "Winter Term", :days => "TH", :start_time => "06:00",
-                   :end_time => "07:00", :time_ampm => "am", :rule_requirements => "TH at 06:00 AM - 07:00 AM")
+  #@matrix_rule_list = []
+  #@matrix_rule_list << (create FinalExamMatrix, :term_type => "Winter Term", :days => "TH", :start_time => "06:00",
+  #                 :end_time => "07:00", :time_ampm => "am", :rule_requirements => "TH at 06:00 AM - 07:00 AM")
+  #
+  #@matrix_rule_list << (create FinalExamMatrix, :term_type => "Winter Term", :rule => "Free Form Text",
+  #                             :free_text => "To test the editing of the statement",
+  #                             :rule_requirements => "To test the editing of the statement")
 
-  @matrix_rule_list << (create FinalExamMatrix, :term_type => "Winter Term", :rule => "Free Form Text",
-                               :free_text => "To test the editing of the statement",
-                               :rule_requirements => "To test the editing of the statement")
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject,
+                     :statement_option => ExamMatrixStatementObject::FREE_TEXT_OPTION,
+                     :free_text => "To test the editing of the statement")
+  statement << (make ExamMatrixStatementObject,
+                     :statement_option => ExamMatrixStatementObject::TIME_SLOT_OPTION,
+                     :statement_operator => 'And',
+                     :days => 'FS')
+
+  rule = make ExamMatrixRuleObject,
+              :exam_type => 'Standard', :days => "TH", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm",
+              :statements =>statement
+  @matrix.add_rule :rule_obj => rule
 end
 
 Given /^I have added a Standard Final Exam timeslot rule to the Final Exam Matrix$/ do
-  @matrix = create FinalExamMatrix, :term_type => "Winter Term", :days => "TH", :start_time => "06:00",
-                   :end_time => "07:00", :time_ampm => "am", :rule_requirements => "TH at 06:00 AM - 07:00 AM"
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  @matrix.add_rule :rule_obj => (make ExamMatrixRuleObject,  :days => "TH", :start_time => "06:00", :st_time_ampm => "am",
+                                      :end_time => "07:00", :end_time_ampm => "am")
+
+  #@matrix = create FinalExamMatrix, :term_type => "Winter Term",, :rule_requirements => "TH at 06:00 AM - 07:00 AM"
 end
 
 Given /^I have added a Common Final Exam course rule to the Final Exam Matrix$/ do
-  @matrix = create FinalExamMatrix, :rule => "If course is <Course>",
-         :exam_type => "Common", :courses => "CHEM272", :rule_requirements => "CHEM272"
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  @matrix.add_rule :rule_obj => (make ExamMatrixRuleObject, :exam_type => "Common")
+
+#  @matrix = create FinalExamMatrix, :rule => "If course is <Course>",
+#         :exam_type => "Common", :courses => "CHEM272", :rule_requirements => "CHEM272"
 end
 
 When /^I edit the Standard Final Exam rule$/ do
-  @matrix.edit :edit_statement => true, :days => "TWH", :rule_requirements => @matrix.rule_requirements
+  @matrix.rules[0].edit  :rsi_days => "Day 3"
+  @matrix.rules[0].statements[0].edit  :days => "F"
 end
 
 When /^I edit the Common Final Exam course rule$/ do
-  @matrix.edit :edit_statement => true, :courses => "CHEM277",
-               :rule_requirements => @matrix.rule_requirements
+  @matrix.rules[0].edit  :rsi_days => "Day 5"
+  @matrix.rules[0].statements[0].edit  :courses => "CHEM272"
 end
 
-When /^I edit the newly created Standard Final Exam rules$/ do
-  @matrix_rule_list[0].edit :edit_statement => true, :days => "TWH",
-                            :rule_requirements => @matrix_rule_list[0].rule_requirements
-  @matrix_rule_list[0].manage
-
-  @matrix_rule_list[1].edit :edit_statement => true, :free_text => "This statement has been edited",
-               :rule_requirements => @matrix_rule_list[1].rule_requirements
+When /^I edit the newly created Standard Final Exam rule statements$/ do
+  @matrix.rules[0].statements[1].edit :days => "TWH"
+  @matrix.rules[0].statements[0].edit :free_text => "This statement has been edited"
 end
 
 When /^I have a Standard Final Exam group with a rule statement in the Final Exam Matrix$/ do
-  @matrix = create FinalExamMatrix, :term_type => "Fall Term", :rule => "Free Form Text",
-                   :free_text => "To test whether statement is deleted",
-                   :rule_requirements => "To test whether statement is deleted"
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  statement = make ExamMatrixStatementObject,
+                   :statement_option => ExamMatrixStatementObject::FREE_TEXT_OPTION,
+                   :free_text => "To test whether statement is deleted"
+
+  rule = make ExamMatrixRuleObject,
+               :days => "TH", :start_time => "06:00", :st_time_ampm => "am",
+               :end_time => "07:00", :end_time_ampm => "am",
+               :statements => [ statement ]
+  @matrix.add_rule :rule_obj => rule
 end
 
 When /^I choose to edit the existing rule statement$/ do
@@ -81,21 +112,45 @@ When /^I choose to edit the existing rule statement$/ do
 end
 
 When /^I delete the statement and attempt to update the rule$/ do
-  @matrix.delete_statement :rule_requirements => @matrix.rule_requirements, :edit_in_progress => true
+  @matrix.rules[0].statements[0].delete :defer_submit => true
 end
 
 When /^I delete an existing Standard Final Exam text rule to the Final Exam Matrix$/ do
-  @matrix = create FinalExamMatrix, :term_type => "Winter Term", :rule => "Free Form Text",
-                   :free_text => "To test whether rule is deleted",
-                   :rule_requirements => "To test whether rule is deleted"
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  statement = (make ExamMatrixStatementObject,
+                     :statement_option => ExamMatrixStatementObject::FREE_TEXT_OPTION,
+                     :free_text => "To test whether rule is deleted")
+  rule = make ExamMatrixRuleObject,
+              :exam_type => 'Standard', :days => "WF", :start_time => "08:00", :st_time_ampm => "pm",
+              :end_time => "09:00", :end_time_ampm => "pm",
+              :statements => [ statement ]
+  @matrix.add_rule :rule_obj => rule
+  @deleted_rule_requirements = @matrix.rules[0].rule_requirements
 
-  @matrix.delete
+  @matrix.rules[0].delete
 end
 
-When /^that I have a Final Exam Matrix with an existing Common Final Exam rule statement$/ do
-  @matrix = create FinalExamMatrix, :term_type => "Winter Term", :rule => "If course is <Course>",
-                   :exam_type => "Common", :courses => "HIST111", :rule_requirements => "HIST111",
-                   :add_more_statements => true
+When /^I create a Final Exam Matrix with multiple rule statements$/ do
+  #@matrix = create FinalExamMatrix, :term_type => "Winter Term", :rule => "If course is <Course>",
+  #                 :exam_type => "Common", :courses => "HIST111", :rule_requirements => "HIST111",
+  #                 :add_more_statements => true
+
+  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject,
+                   :statement_option => ExamMatrixStatementObject::FREE_TEXT_OPTION,
+                   :free_text => "To test multi-statements")
+  statement << (make ExamMatrixStatementObject,
+                     :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :statement_operator => 'And',
+                     :courses => 'ENGL211')
+
+  rule = make ExamMatrixRuleObject,
+              :exam_type => 'Common', :days => "TH", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm",
+              :statements =>statement
+  @matrix.add_rule :rule_obj => rule
+
 end
 
 When /^I add additional statements to the Common Final Exam rule on the Final Exam Matrix$/ do
@@ -226,26 +281,24 @@ end
 Then /^I should be able to see the newly created course rule in the Common Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.common_fe_target_row( @matrix.courses).should_not == nil
+    page.common_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
   end
 end
 
 Then /^I should be able to see the location data for the exam specified in the course rule in the Common Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.common_fe_target_row( @matrix.courses).should_not == nil
-    page.get_common_fe_facility( @matrix.courses).should match /Mathematics Bldg/
-    page.get_common_fe_room( @matrix.courses).should match /0304/
+    page.common_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
+    page.get_common_fe_facility( @matrix.rules[0].rule_requirements).should match /Mathematics Bldg/
+    page.get_common_fe_room( @matrix.rules[0].rule_requirements).should match /0304/
   end
 end
 
 Then /^I should be able to see the newly created timeslot rule in the Standard Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    requirements = page.get_standard_fe_requirements( @matrix.days)
-    requirements.should match /#{@matrix.days} at #{@matrix.start_time} #{@matrix.time_ampm.upcase} - #{@matrix.end_time} #{@matrix.time_ampm.upcase}\./
-    page.get_standard_fe_day( @matrix.days).should match /#{@matrix.rsi_days}/
-    page.get_standard_fe_time( @matrix.days).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
+    page.get_standard_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_standard_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
@@ -261,19 +314,17 @@ end
 Then /^I should be able to see the edited timeslot rule in the Standard Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    requirements = page.get_standard_fe_requirements( @matrix.days)
-    requirements.should match /#{@matrix.days} at #{@matrix.start_time} #{@matrix.time_ampm.upcase} - #{@matrix.end_time} #{@matrix.time_ampm.upcase}\./
-    page.get_standard_fe_day( @matrix.days).should match /#{@matrix.rsi_days}/
-    page.get_standard_fe_time( @matrix.days).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
+    page.get_standard_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_standard_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
 Then /^I should be able to see the edited course rule in the Common Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.common_fe_target_row( @matrix.courses).should_not == nil
-    page.get_common_fe_day( @matrix.courses).should match /#{@matrix.rsi_days}/
-    page.get_common_fe_time( @matrix.courses).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
+    page.common_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
+    page.get_common_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_common_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.end_time_ampm.upcase}/
   end
 end
 
@@ -287,58 +338,47 @@ end
 Then /^I should be able to see the Common Final Exam rule with the multiple statements$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.get_common_fe_day( @matrix.courses).should match /#{@matrix.rsi_days}/
-    page.get_common_fe_time( @matrix.courses).should match /#{@matrix.start_time} #{@matrix.time_ampm.upcase}-#{@matrix.end_time} #{@matrix.time_ampm.upcase}/
+    page.get_common_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_common_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
 Then /^I should be able to see all the changes I have made on the Final Exam Matrix$/ do
-  @matrix_rule_list[1].manage
+  @matrix.manage
   on FEMatrixView do |page|
-    page.standard_final_exam_table.present?.should be_true
-    requirements = page.get_standard_fe_requirements( @matrix_rule_list[0].days)
-    requirements.should match /#{@matrix_rule_list[0].days} at #{@matrix_rule_list[0].start_time} #{@matrix_rule_list[0].time_ampm.upcase} - #{@matrix_rule_list[0].end_time} #{@matrix_rule_list[0].time_ampm.upcase}\./
-    page.get_standard_fe_requirements( @matrix_rule_list[1].free_text).should match /#{@matrix_rule_list[1].free_text}/
+    page.standard_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
   end
 end
 
 Then /^the deleted text rule should not exist on the Final Exam Matrix$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.standard_fe_target_row( @matrix.free_text).should == nil
+    page.standard_fe_target_row( @deleted_rule_requirements ).should == nil
+    page.cancel
   end
 end
 
 Then /^the rules should be sorted on the Days and Time columns$/ do
   on FEMatrixView do |page|
     array_of_days = page.get_all_standard_fe_days
-    ordered_days = array_of_days.shift
+    ordered_days = array_of_days.sort
+
+    (array_of_days <=> ordered_days).should == 0  #ie array is unchanged after sorting
+
     array_of_days.each do |day|
       ordered_days << "#{day}"
     end
-    for i in 1..6 do
+    for day_no in 1..6 do
       if i != 6
         j = i + 1
         ordered_days.should match /Day #{i}.*Day #{(j)}/m
         ordered_days.should_not match /Day #{(j)}.*Day #{i}/m
       end
 
-      array_of_times = page.get_all_standard_fe_times_for_day( "Day #{i}")
-      first_time = array_of_times.shift
-      if first_time =~ /^(\d\d:\d\d [AP]M)-(\d\d:\d\d [AP]M)$/
-        first_start_time = DateTime.strptime($1, '%I:%M %p')
-      end
-      array_of_times.each do |time|
-        if time =~ /^(\d\d:\d\d [AP]M)-(\d\d:\d\d [AP]M)$/
-          start_time = DateTime.strptime($1, '%I:%M %p')
-        end
-        if first_start_time.to_s < start_time.to_s
-          true
-        else
-          false
-        end
-        first_start_time = start_time
-      end
+      array_of_times = page.get_all_standard_fe_times_for_day( "Day #{day_no}")
+      sorted_times = array_of_times
+
+      (array_of_times <=> sorted_times).should == 0  #ie array is unchanged after sorting
     end
   end
 end
