@@ -723,6 +723,7 @@ class CalendarEvent
       page.open_events_section
       wait_until { page.add_event_button.present? }
       page.add_event_button.click
+      page.loading.wait_while_present
       wait_until { page.add_event_type.present? }
       page.add_event_type.select @event_type
       page.add_event_start_date.set @start_date
