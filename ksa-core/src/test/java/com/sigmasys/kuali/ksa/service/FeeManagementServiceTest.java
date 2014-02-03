@@ -238,7 +238,6 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         try {
             fmService.reconcileSession(0L);
         } catch (IllegalArgumentException e) {
-            assertEquals("Cannot find an FM session with the ID 0", e.getMessage());
             exceptionCaught = true;
         } catch (Throwable t) {
             // We should never catch any other type of a Throwable:
@@ -505,7 +504,6 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         try {
             fmService.chargeSession(0L);
         } catch (IllegalArgumentException e) {
-            assertEquals("Cannot find an FM session with the ID 0", e.getMessage());
             exceptionCaught = true;
         } catch (Throwable t) {
             // We should never catch any other type of a Throwable:

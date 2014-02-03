@@ -302,19 +302,19 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6024, 'FM Session 1_24', 3, 8, null,
 '(student is full-time and student is resident)',
-'replace signup rates "cp", "" with "cp.resident.ft", "default"')!
+'replace signup rates "cp.mandatory.fee.flag", "" with "cp.resident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6025, 'FM Session 1_25', 3, 8, null,
 '(student is full-time and student is nonresident)',
-'replace signup rates "cp", "" with "cp.nonresident.ft", "default"')!
+'replace signup rates "cp.mandatory.fee.flag", "" with "cp.nonresident.ft", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6026, 'FM Session 1_26', 3, 8, null,
 '(student is part-time and student is resident)',
-'replace signup rates "cp", "" with "cp.resident.pt", "default"')!
+'replace signup rates "cp.mandatory.fee.flag", "" with "cp.resident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6027, 'FM Session 1_27', 3, 8, null,
 '(student is part-time and student is nonresident)',
-'replace signup rates "cp", "" with "cp.nonresident.pt", "default"')!
+'replace signup rates "cp.mandatory.fee.flag", "" with "cp.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6028, 'FM Session 1_28', 3, 8, null,
 '(signup has rates "tech.fee.flag" and student is full-time)',

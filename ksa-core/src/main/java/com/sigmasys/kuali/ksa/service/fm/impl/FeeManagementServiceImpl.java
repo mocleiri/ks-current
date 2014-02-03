@@ -225,7 +225,10 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     @Override
     @Transactional(readOnly = false)
     public FeeManagementSession processFeeManagementSession(Long feeManagementSessionId) {
-        return brmFeeManagementService.assessFees(feeManagementSessionId);
+        FeeManagementSession session = brmFeeManagementService.assessFees(feeManagementSessionId);
+        reconcileSession(session);
+        chargeSession(session);
+        return session;
     }
 
     /**
@@ -262,16 +265,16 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     public FeeManagementReportInfo createFeeManagementReport(Long feeManagementSessionId) {
 
         // Find the FM Session:
-        FeeManagementSession fmSession = getEntity(feeManagementSessionId, FeeManagementSession.class);
+        FeeManagementSession session = getFeeManagementSessionById(feeManagementSessionId);
 
-        if (fmSession == null) {
+        if (session == null) {
             String errorMsg = String.format("Cannot find an FM Session with ID %d.", feeManagementSessionId);
             logger.error(errorMsg);
             throw new IllegalArgumentException(errorMsg);
         }
 
         // Create a new FeeManagementReportInfo object:
-        return createFeeManagementReportInfo(fmSession);
+        return createFeeManagementReportInfo(session);
     }
 
     /**
@@ -286,22 +289,33 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     public void reconcileSession(Long feeManagementSessionId) {
 
         // Get a FeeManagement session with the given ID:
-        FeeManagementSession currentSession = getFullFeeManagementSessionById(feeManagementSessionId);
+        FeeManagementSession session = getFeeManagementSessionById(feeManagementSessionId);
+
+        if (session == null) {
+            String errMsg = "FeeManagementSession with ID = " + feeManagementSessionId + " does not exist";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
+
+        reconcileSession(session);
+    }
+
+    protected void reconcileSession(FeeManagementSession session) {
 
         // Validate the FM session for reconciliation:
-        validateSessionForReconciliation(currentSession, feeManagementSessionId);
+        validateSessionForReconciliation(session, session.getId());
 
         // Get the last CHARGED FM Session:
-        FeeManagementSession lastChargedFmSession = getLastChargedSession(currentSession);
+        FeeManagementSession lastChargedFmSession = getLastChargedSession(session);
 
         // Get current FM Session's manifests:
-        List<FeeManagementManifest> currentManifests = getManifests(currentSession.getId(),
+        List<FeeManagementManifest> currentManifests = getManifests(session.getId(),
                 FeeManagementManifestType.CHARGE, FeeManagementManifestType.CANCELLATION, FeeManagementManifestType.DISCOUNT);
 
         // If there is a prior CHARGED FM Session, perform line adjustment:
         if (lastChargedFmSession != null) {
             // Perform line comparison and status adjustment.
-            processPriorSessionAdjustment(currentSession, lastChargedFmSession, currentManifests);
+            processPriorSessionAdjustment(session, lastChargedFmSession, currentManifests);
         }
 
         // Optionally, remove inverse manifests from the list of current manifests:
@@ -316,12 +330,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         validateCurrentReversals(currentManifests);
 
         // Updated the status of the current FM Session to RECONCILED or SIMULATED_RECONCILED:
-        FeeManagementSessionStatus newFmStatus = (currentSession.getStatus() == FeeManagementSessionStatus.CURRENT)
+        FeeManagementSessionStatus newFmStatus = (session.getStatus() == FeeManagementSessionStatus.CURRENT)
                 ? FeeManagementSessionStatus.RECONCILED : FeeManagementSessionStatus.SIMULATED_RECONCILED;
 
         // Update the entity:
-        currentSession.setChargeStatus(newFmStatus);
-        persistEntity(currentSession);
+        session.setChargeStatus(newFmStatus);
+        persistEntity(session);
     }
 
     /**
@@ -335,13 +349,24 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     public void chargeSession(Long feeManagementSessionId) {
 
         // Get a FeeManagement session with the given ID:
-        FeeManagementSession session = getFullFeeManagementSessionById(feeManagementSessionId);
+        FeeManagementSession session = getFeeManagementSessionById(feeManagementSessionId);
+
+        if (session == null) {
+            String errMsg = "FeeManagementSession with ID = " + feeManagementSessionId + " does not exist";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
+
+        chargeSession(session);
+    }
+
+    protected void chargeSession(FeeManagementSession session) {
 
         // Validate the FM Session for charge operation:
-        validateSessionForCharge(session, feeManagementSessionId);
+        validateSessionForCharge(session, session.getId());
 
         // Get all manifests for the session:
-        List<FeeManagementManifest> manifests = getManifests(feeManagementSessionId);
+        List<FeeManagementManifest> manifests = getManifests(session.getId());
         List<PaymentBillingTransferDetail> pbtDetails = new ArrayList<PaymentBillingTransferDetail>();
         List<ThirdPartyTransferDetail> tptDetails = new ArrayList<ThirdPartyTransferDetail>();
 
@@ -755,7 +780,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
                 // If there was a previous session, move on to it:
                 if (prevFmSessionId != null) {
-                    priorSession = getFullFeeManagementSessionById(prevFmSessionId);
+                    priorSession = getFeeManagementSessionById(prevFmSessionId);
                 }
             }
         }
@@ -790,7 +815,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param fmSessionId ID of a FeeManagementSession object.
      * @return A FeeManagementSession object with the given ID.
      */
-    private FeeManagementSession getFullFeeManagementSessionById(Long fmSessionId) {
+    private FeeManagementSession getFeeManagementSessionById(Long fmSessionId) {
 
         // Create a query:
         Query query = em.createQuery(GET_SESSIONS_SELECT + " where s.id = :id ");
