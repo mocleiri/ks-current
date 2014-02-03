@@ -13,10 +13,11 @@ Feature: REG.Register for course
     When I add a course offering to my registration cart
     Then the course is present in my cart
 
+  #CR 1.2 (KSENROLL-11748)
   @wip
-  Scenario: Student must be able to add a course to their registration cart, with options specified, selected from the term’s Schedule of Classes
+  Scenario: I want to indicate course parameters at the time I enter course information so I can register with my preferred options
     When I add a course to my registration cart and specify course options
-    Then the course is present in my schedule, with the correct options
+    Then the course is present in my cart, with the correct options
   @wip
   Scenario: Student must be able to drop a course from their registration cart
     When I drop a course from my registration cart
