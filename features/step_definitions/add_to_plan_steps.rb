@@ -1,5 +1,5 @@
-
 Given /^There is an existing unplanned course$/ do
+  navigate_to_maintenance_portal
   navigate_to_course_search_home
   @course_offering = make CourseOffering,  :planned_term=>"2014Spring", :course_code => "ENGL206"
   @course_offering.course_search_to_planner

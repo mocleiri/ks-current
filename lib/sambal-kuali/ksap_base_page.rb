@@ -24,7 +24,7 @@ class BasePage < PageFactory
 
       action(:action_list) { |b| b.link(title: "Action List").click }
       element(:logged_in_link) { |b| b.div(class: "ks-uif-viewHeader-container navbar-inverse navbar").link(class: "dropdown-toggle") }
-      #value(:logged_in_user) { |b| b.div(class: "ks-uif-viewHeader-container navbar-inverse navbar").link(class: "dropdown-toggle").text }
+      value(:logged_in_user) { |b| b.div(class: "ks-uif-viewHeader-container navbar-inverse navbar").link(class: "dropdown-toggle").text }
 
       element(:loading) { |b| b.image(alt: "Loading...") }
       element(:adding) { |b| b.frm.image(alt: "Adding Line...") }

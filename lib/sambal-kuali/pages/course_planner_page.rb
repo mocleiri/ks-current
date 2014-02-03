@@ -49,7 +49,7 @@ class CoursePlannerPage < BasePage
   element(:close_popup) {|b| b.td(class:"jquerypopover-innerHtml").img(class:"ksap-popup-close")}
   action (:close_popup_click) {|b| b.close_popup.click}
 
-  action(:course_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Find Courses").click}
+  #action(:course_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Find Courses").click}
 
 end
 

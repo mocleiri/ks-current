@@ -54,6 +54,7 @@ def course_search_to_planner
 end
 
 def add_course_to_term
+  navigate_to_maintenance_portal
   navigate_to_course_planner_home
   on CoursePlannerPage do |page|
     remove_code_from_term
@@ -98,6 +99,7 @@ end
 
 
 def course_search (text=@course_code, term_select=@term_select)
+  navigate_to_maintenance_portal
   navigate_to_course_search_home
   sleep 5
   on CourseSearch do |page|

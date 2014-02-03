@@ -27,7 +27,7 @@ class CourseSearch < BasePage
   element(:term) { |b| b.frm.div(id:"course_add_course_page").select(name:"termId") }
 
   #Navigation plan to find course  and vice versa
-  action(:plan_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Plan").click}
+  #action(:plan_page_click) {|b| b.div(id:"applicationNavigation").a(text:"Plan").click}
 
 
   COURSE_CODE = 0
