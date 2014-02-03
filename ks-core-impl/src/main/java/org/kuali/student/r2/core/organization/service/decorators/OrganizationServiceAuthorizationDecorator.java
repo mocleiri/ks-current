@@ -184,7 +184,11 @@ public class OrganizationServiceAuthorizationDecorator extends OrganizationServi
     private void fixContext (ContextInfo contextInfo) {
         if (contextInfo.getPrincipalId() == null) {
             contextInfo.setPrincipalId(SecurityUtils.getCurrentUserId());
-        }        
+        }
+        // TODO: KSCM-1467 find out why the current user is null in the security utils
+        if (contextInfo.getPrincipalId() == null) {
+            contextInfo.setPrincipalId("admin");
+        }
     }
     
     /*
@@ -196,7 +200,7 @@ public class OrganizationServiceAuthorizationDecorator extends OrganizationServi
                                  String permission,
                                  ContextInfo context) throws PermissionDeniedException, OperationFailedException {
         fixContext(context);
-        if (!permService.isAuthorized(context.getPrincipalId(),
+        if (!getPermissionService().isAuthorized(context.getPrincipalId(),
                 PermissionServiceConstants.KS_SYS_NAMESPACE, permission,
                 details)) {
             StringBuilder sb = new StringBuilder();
@@ -218,7 +222,10 @@ public class OrganizationServiceAuthorizationDecorator extends OrganizationServi
      * This method is intended to be overridden so implementing institutions can
      * add different information to the details
      *
+     * @param info org position restriction to use to pull  in details
+     * @param context of the user making the call
      * @return A non null map of permission details.
+     * @throws OperationFailedException
      */
     protected Map<String, String> addPermissionDetails(OrgPositionRestrictionInfo info, ContextInfo context)
             throws OperationFailedException {
@@ -233,6 +240,7 @@ public class OrganizationServiceAuthorizationDecorator extends OrganizationServi
      * @param permission
      * @param context
      * @throws PermissionDeniedException
+     * @throws org.kuali.student.r2.common.exceptions.OperationFailedException
      */
     protected void checkPermission(PermissionService permService,
                                    OrgPositionRestrictionInfo info,
