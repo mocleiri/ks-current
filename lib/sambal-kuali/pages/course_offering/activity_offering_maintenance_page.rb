@@ -143,8 +143,8 @@ class ActivityOfferingMaintenance < BasePage
     end
   end
 
-  element(:delete_requested_scheduling_information_element) { |b| b.requested_sched_info_table.link(text: "Delete") } #TODO: identify button by row (days + start_time)
-  action(:delete_requested_scheduling_information) { |b| b.delete_requested_scheduling_information_element.click; b.loading.wait_while_present }
+  element(:delete_requested_scheduling_information_element) { |b| b.requested_sched_info_table.link(id: /delete_schedule_request/) } #used only for AZ test
+
   element(:requested_sched_info_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-Requested") }
   element(:requested_sched_info_table) { |b| b.requested_sched_info_div.table() }
 
@@ -236,12 +236,12 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def edit_rsi_row(row)
-    row.cells[ACTIONS].i(class: "ks-fontello-icon-pencil").click
+    row.cells[ACTIONS].link(id: /edit_schedule_request_action_link/).click
     loading.wait_while_present(120)
   end
 
   def delete_rsi_row(row)
-    row.cells[SCHED_INFO_ACTION_COLUMN].i(class: "ks-fontello-icon-cancel").click
+    row.cells[SCHED_INFO_ACTION_COLUMN].link(id: /delete_schedule_request/).click
   end
 
   def get_inst_effort(id)
