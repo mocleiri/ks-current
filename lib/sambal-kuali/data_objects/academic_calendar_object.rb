@@ -110,8 +110,10 @@ class AcademicCalendar
 
         term_name = page.term_name_edit(index).value
         #strip term off the end (if there)
-        updated_term_name = term_name[/\S+(?= Term)/].nil? ? term_name : term_name[/\S+(?= Term)/]
-        page.term_name_edit(index).set "#{updated_term_name} #{updated_start_date[-4..-1]}" #eg Fall 2033
+        if term_name.index('Continuing').nil?
+          term_name = term_name[/\S+(?= Term)/].nil? ? term_name : term_name[/\S+(?= Term)/]
+        end
+        page.term_name_edit(index).set "#{term_name} #{updated_start_date[-4..-1]}" #eg Fall 2033
 
         index += 1
       end
