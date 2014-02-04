@@ -1996,7 +1996,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (CollectionUtils.isNotEmpty(signupRates)) {
 
-                    for (FeeManagementSignupRate signupRate : new HashSet<FeeManagementSignupRate>(signupRates)) {
+                    for (FeeManagementSignupRate signupRate : signupRates) {
 
                         Rate rate = signupRate.getRate();
 

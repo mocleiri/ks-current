@@ -55,11 +55,11 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
     }
 
     public UnitNumber multiply(UnitNumber unitNumber) {
-        return new UnitNumber(getValue().multiply(unitNumber.getValue()));
+        return new UnitNumber(getValue().multiply(unitNumber.getValue()).setScale(2, RoundingMode.HALF_DOWN));
     }
 
     public UnitNumber divide(UnitNumber unitNumber) {
-        return new UnitNumber(getValue().divide(unitNumber.getValue()));
+        return new UnitNumber(getValue().divide(unitNumber.getValue(), RoundingMode.HALF_DOWN));
     }
 
     @Override
