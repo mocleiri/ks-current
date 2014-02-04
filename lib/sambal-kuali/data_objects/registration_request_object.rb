@@ -10,14 +10,16 @@ class RegistrationRequest
   include StringFactory
   include Workflows
 
-  #generally set using options hash
+  #string - generally set using options hash
   attr_accessor :student_id,
                 :term_code,
                 :term_descr,              #TODO - get term descr from term_code so they are always in sync
-                :course_code,             # code or course_offering_object?
-                :reg_group,
-                :course_options_list,
-                :modify_course_options
+                :course_code,
+                :reg_group
+  #array - generally set using options hash
+  attr_accessor :course_options_list
+  #boolean - - generally set using options hash true/false
+  attr_accessor :modify_course_options
 
   # provides default data:
   #  defaults = {
@@ -41,13 +43,16 @@ class RegistrationRequest
       :course_code=>"CHEM231",
       :reg_group=>"1001",
       :course_options_list=> [ (make CourseOptions ) ],
-      :modify_course_options=> "false"
+      :modify_course_options=> false
     }
     options = defaults.merge(opts)
     update_options(options)
   end
 
   def create
+    if options[:modify_course_options] do
+      edit_course_options :course_options_list
+    end
     return new RegistrationRequest
   end
 
@@ -95,7 +100,38 @@ class RegistrationRequest
   end
   private :edit_reg_group
 
+  def edit_course_options(course_opts)
+    if course_opts.nil?
+      return nil
+    end
+    on CourseRegistration do |page|
+      page.set_credits course_opts.credit_option
+      page.set_credits course_opts.grading_option
+    end
+  end
+  private :edit_course_options
+
   class CourseOptions
-    #to be added
+
+    include Foundry
+    include DataFactory
+    include DateFactory
+    include StringFactory
+    include Workflows
+
+    attr_accessor :credit_option,
+                  :grading_option
+
+    def initialize(browser, opts={})
+      @browser = browser
+
+      defaults = {
+          :credit_option => "3",
+          :grading_option => "Letter"
+      }
+      options = defaults.merge(opts)
+      set_options(options)
+    end
+
   end
 end

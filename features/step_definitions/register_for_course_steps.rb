@@ -9,7 +9,7 @@ end
 When /^I add a course to my registration cart and specify course options$/ do
   # want to specify credits and grading option
   on CourseRegistration do
-    course_options_list << (make CourseOptions, :credit_option => 4, :grading_option => "Pass/Fail")
+    course_options_list << (make CourseOptions, :credit_option => "4", :grading_option => "Pass/Fail")
     @registration_request = create RegistrationRequest, :course_code => "", :reg_group => "", :course_options_list => course_options_list, :modify_course_options => true
     # above will include entering course_code, reg_group (& term if nec), and clicking Add to Cart, then changing the 2 options, and clicking Add to Cart again
   end
