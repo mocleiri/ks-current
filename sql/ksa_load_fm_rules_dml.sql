@@ -579,7 +579,9 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
                           "cp.graduate.nonresident.pt"
                  };
 
-        UnitNumber threshold = new UnitNumber(12);
+        final UnitNumber threshold = new UnitNumber(12);
+
+        final UnitNumber five = new UnitNumber(5);
 
         for (int i = 0; i < rateCodes.length; i++) {
 
@@ -592,7 +594,7 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
                 numberOfDroppedUnits = numberOfDroppedUnits.subtract(numberOfUnits.subtract(threshold));
             }
 
-            UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(new UnitNumber(5));
+            UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(five);
 
             context.getFmService().chargeIncidentalRate(rateCodes[i], "default", rateCodes[i] + ".default", numberOfUnitsToCharge, null, context);
         }
