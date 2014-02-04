@@ -690,11 +690,12 @@ When /^I view the Exam Offerings for the Course Offering$/ do
 end
 
 When /^I suspend an Activity Offering for a CO with a standard final exam driven by Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @course_offering.manage_and_init
+  @activity_offering = @course_offering.find_ao_obj_by_code('A')
   @activity_offering.suspend :navigate_to_page => false
 end
 
