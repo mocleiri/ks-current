@@ -18,10 +18,17 @@ When /^I add the course with notes and term to myplan$/ do
 Then /^the course should appear under current term with updated notes$/ do
   on CoursePlannerPage do |page|
      page.close_popup.wait_until_present
+  #***************Checking  whether the edited notes is updated*********************************************************
      page.notes_content.should == @course_offering.notes
      page.close_popup.wait_until_present
      page.close_popup_click
      sleep 2
+
+  #********Steps to verify, whether the course code is saved along with updated notes in the planner********************
+     @course_offering.verify_saved_course_code_notes
+     page.notes_content.should == @course_offering.notes
+     page.close_popup_click
+
   end
 end
 

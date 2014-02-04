@@ -53,6 +53,18 @@ def course_search_to_planner
      end
 end
 
+def verify_saved_course_code_notes
+  on CoursePlannerPage do |page|
+    page.course_page_click
+    page.plan_page_click
+    page.course_planner_header.wait_until_present
+    page.info_icon(@planned_term, @course_code).exists?.should == true
+    page.course_code_term_click(@planned_term, @course_code)
+    page.view_course_summary_click
+    page.close_popup.wait_until_present
+  end
+end
+
 def add_course_to_term
   navigate_to_maintenance_portal
   navigate_to_course_planner_home
