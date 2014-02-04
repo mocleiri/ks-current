@@ -1,8 +1,8 @@
-# module = ks-api branch Path = contrib/CM/ks-api/branches/org-service revision = 60190
-ks-api::contrib_CM_ks-api_branches_org-service::1e4aba27b9612ceb2cd7fa12b3148254907e51a4
-# module = ks-core branch Path = contrib/CM/ks-core/branches/org-service revision = 60190
-ks-core::contrib_CM_ks-core_branches_org-service::bd4fbdeb4eb36234e8bd47eb59150beebf6e37ce
-# module = ks-lum branch Path = contrib/CM/ks-lum/branches/org-service revision = 60190
-ks-lum::contrib_CM_ks-lum_branches_org-service::ee55a7b13633d623db1038ef79112f753c8e58d3
-# module = ks-deployments branch Path = contrib/CM/ks-deployments/branches/org-service revision = 60190
-ks-deployments::contrib_CM_ks-deployments_branches_org-service::099deb2c13f4c4a7fc103c0a601b8bc3f31b6a9e
+# module = ks-api branch Path = contrib/CM/ks-api/tags/builds/ks-api-2.0/2.0.2-cm-contrib-org/build-33 revision = 64531
+ks-api::contrib_CM_ks-api_tags_builds_ks-api-2.0_2.0.2-cm-contrib-org_build-33::adc33150c578f466f3f3307eedae2fbde2703ef4
+# module = ks-core branch Path = contrib/CM/ks-core/tags/builds/ks-core-2.0/2.0.2-cm-contrib-org/build-33 revision = 64531
+ks-core::contrib_CM_ks-core_tags_builds_ks-core-2.0_2.0.2-cm-contrib-org_build-33::a9b4154e58d818491f3028922de5bab6f7b6bbbf
+# module = ks-deployments branch Path = contrib/CM/ks-deployments/tags/builds/ks-deployments-2.0/2.0.2-cm-contrib-org/build-33 revision = 64531
+ks-deployments::contrib_CM_ks-deployments_tags_builds_ks-deployments-2.0_2.0.2-cm-contrib-org_build-33::076f1899ea170ec1b262d83e1b9c644dc24c3963
+# module = ks-lum branch Path = contrib/CM/ks-lum/tags/builds/ks-lum-2.0/2.0.2-cm-contrib-org/build-33 revision = 64531
+ks-lum::contrib_CM_ks-lum_tags_builds_ks-lum-2.0_2.0.2-cm-contrib-org_build-33::8da8b3c5a554c7c342eb12ee5154d7bb43fdcee8
