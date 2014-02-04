@@ -1130,7 +1130,7 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     defaults = {
         :section => "Student Eligibility & Prerequisite",
         :term => "201208",
-        :course => "ENGL304",
+        :course => "ENGL301",
         :activity => "A"
     }
 
