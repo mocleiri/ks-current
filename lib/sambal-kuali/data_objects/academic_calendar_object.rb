@@ -102,12 +102,18 @@ class AcademicCalendar
       index = 0
       term_section_div_list.each do |div|
         page.open_term_section_by_index(index)
-        updated_term_name = "#{page.term_name_edit(index).value} #{@year}"
-        page.term_name_edit(index).set updated_term_name
         start_date = page.term_start_date(index).value
-        page.term_start_date(index).set convert_date_to_updated_year(start_date, old_base_year)
+        updated_start_date = convert_date_to_updated_year(start_date, old_base_year)
+        page.term_start_date(index).set updated_start_date
         end_date = page.term_end_date(index).value
         page.term_end_date(index).set convert_date_to_updated_year(end_date, old_base_year)
+
+        term_name = page.term_name_edit(index).value
+        #strip term off the end (if there)
+        if term_name.index('Continuing').nil?
+          term_name = term_name[/\S+(?= Term)/].nil? ? term_name : term_name[/\S+(?= Term)/]
+        end
+        page.term_name_edit(index).set "#{term_name} #{updated_start_date[-4..-1]}" #eg Fall 2033
 
         index += 1
       end
@@ -719,6 +725,8 @@ class CalendarEvent
       page.open_events_section
       wait_until { page.add_event_button.present? }
       page.add_event_button.click
+      page.loading.wait_while_present
+      wait_until { page.add_event_type.present? }
       page.add_event_type.select @event_type
       page.add_event_start_date.set @start_date
       page.add_event_end_date.set @end_date

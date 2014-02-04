@@ -15,7 +15,9 @@ class RegistrationRequest
                 :term_code,
                 :term_descr,              #TODO - get term descr from term_code so they are always in sync
                 :course_code,             # code or course_offering_object?
-                :reg_group
+                :reg_group,
+                :course_options_list,
+                :modify_course_options
 
   # provides default data:
   #  defaults = {
@@ -23,7 +25,9 @@ class RegistrationRequest
   #    :term_code=>"201301",
   #    :term_descr=>"Spring 2013",
   #    :course_code=>"CHEM231",
-  #    :reg_group=>"1001"
+  #    :reg_group=>"1001",
+  #    :course_options_list=> [],
+  #    :modify_course_options=> false
   #  }
   # initialize is generally called using TestFactory Foundry .make or method
   
@@ -35,12 +39,18 @@ class RegistrationRequest
       :term_code=>"201301",
       :term_descr=>"Spring 2013",
       :course_code=>"CHEM231",
-      :reg_group=>"1001"
+      :reg_group=>"1001",
+      :course_options_list=> [ (make CourseOptions ) ],
+      :modify_course_options=> "false"
     }
     options = defaults.merge(opts)
     update_options(options)
   end
-  
+
+  def create
+    return new RegistrationRequest
+  end
+
   def edit opts={}
     options = defaults.merge(opts)
     edit_student_id options
@@ -85,4 +95,7 @@ class RegistrationRequest
   end
   private :edit_reg_group
 
+  class CourseOptions
+    #to be added
+  end
 end

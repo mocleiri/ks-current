@@ -20,6 +20,13 @@ class RegisterForCourseResults < RegisterForCourseSearchBase
   element(:results_detail_course_code)  { |b| b.results_detail_section.h1(class: "kscr-COItem-headline") }
   element(:results_detail_grading_options)  { |b| b.results_detail_section.p(index: 0) }
 
+  def target_list_item_by_course(course, reggroup)
+    results_list_collection.each do |li|
+      return li if li.course_number == course && li.reg_group == reggroup   #TODO define li.course and li.reg_group
+    end
+    return nil
+  end
+
   def target_list_item_by_index(ind)
     results_list_collection[ind].wait_until_present
     results_list_collection[ind]
