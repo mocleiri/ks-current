@@ -605,7 +605,7 @@ When /^I edit the Fall Term Exam Period to have less days than the Final Exam Ma
 end
 
 When /^there is more than one Activity Offering for the Course$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
 end
 
 When /^I cancel an Activity Offering for a CO with a standard final exam driven by Course Offering$/ do
@@ -617,7 +617,7 @@ When /^I cancel an Activity Offering for a CO with a standard final exam driven 
 end
 
 When /^I cancel an Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   delivery_format_list = []
   delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
