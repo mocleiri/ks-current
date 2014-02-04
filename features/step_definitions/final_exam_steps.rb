@@ -224,13 +224,13 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
 end
 
 Given /^there is an exsiting CO with a Standard Final Exam option$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 end
 
 Given /^that Activity Offerings exist for the selected Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 end
@@ -631,7 +631,7 @@ When /^I cancel an Activity Offering for a CO with a standard final exam driven 
 end
 
 Given /^that the Lecture AO that drives the exam is not in a cancelled state$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   delivery_format_list = []
   delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
@@ -647,7 +647,7 @@ When /^I cancel a Discussion Activity Offering for a CO with a standard final ex
 end
 
 When /^I cancel all Activity Offerings for a CO with a standard final exam driven by Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
@@ -668,7 +668,7 @@ When /^I reinstate the one or more Activity offerings for the CO$/ do
 end
 
 When /^I cancel all Activity Offerings for a CO with a standard final exam driven by Activity Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   delivery_format_list = []
   delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
