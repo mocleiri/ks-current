@@ -41,7 +41,7 @@ end
 Then  /^the course with notes appears under the term on the planner$/ do
    on CoursePlannerPage do |page|
        #*********** Checking whether the information icon exists?************
-        page.info_icon.exists?.should == true
+        page.info_icon(@course_offering.planned_term, @course_offering.course_code).exists?.should == true
         page.course_code_term_click(@course_offering.planned_term, @course_offering.course_code)
         page.view_course_summary_click
         page.close_popup.wait_until_present

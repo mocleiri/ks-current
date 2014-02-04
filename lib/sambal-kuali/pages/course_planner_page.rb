@@ -42,7 +42,7 @@ class CoursePlannerPage < BasePage
   #60 - Verify the course code availability in my plan
 
   action(:course_code_term_myplan_click) { |b| b.course_code_term_myplan.click}
-  element(:info_icon) { |b| b.img(id:"kuali-atp-2014Spring_planned_ENGL206_courseNote")}
+  action(:info_icon) { |term,code,b| b.img(id:"kuali-atp-#{term}_planned_#{code}_courseNote")}
   element(:view_course_summary) {|b| b.td(class:"jquerybubblepopup-innerHtml").a(class:"uif-actionLink uif-boxLayoutVerticalItem clearfix")}
   action(:view_course_summary_click) {|b| b.view_course_summary.click}
   element(:notes_content) {|b| b.textarea(class:"uif-textAreaControl ksap-characterCount ks-plan-Note-input").text}
