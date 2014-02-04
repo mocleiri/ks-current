@@ -217,7 +217,9 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
                 "cp.graduate.nonresident.pt"
         };
 
-        UnitNumber threshold = new UnitNumber(12);
+        final UnitNumber threshold = new UnitNumber(12);
+
+        final UnitNumber five = new UnitNumber(5);
 
         for (String rateCode : rateCodes) {
 
@@ -240,9 +242,11 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
                 numberOfDroppedUnits = numberOfDroppedUnits.subtract(numberOfUnits.subtract(threshold));
             }
 
-            UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(new UnitNumber(5));
+            UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(five);
 
-            context.getFmService().chargeIncidentalRate(rateCode, "default", rateCode + ".default", numberOfUnitsToCharge, null, context);
+            if (numberOfUnitsToCharge.compareTo(UnitNumber.ZERO) > 0) {
+                context.getFmService().chargeIncidentalRate(rateCode, "default", rateCode + ".default", numberOfUnitsToCharge, null, context);
+            }
         }
 
     }

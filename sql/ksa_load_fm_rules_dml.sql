@@ -570,7 +570,7 @@ global FeeManagementSession fmSession;
 ')!
 
 Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (9001, 'FM Session 3_1', 2, 10, null,
-'context : BrmContext(isInitialized())',
+'context : BrmContext(fmService.compareSessionKeyPair("late.drop.penalty","yes","==",context))',
 '
         String[] rateCodes = {
                           "cp.undergrad.resident.pt",
@@ -596,7 +596,9 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
 
             UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(five);
 
-            context.getFmService().chargeIncidentalRate(rateCodes[i], "default", rateCodes[i] + ".default", numberOfUnitsToCharge, null, context);
+            if (numberOfUnitsToCharge.compareTo(UnitNumber.ZERO) > 0) {
+               context.getFmService().chargeIncidentalRate(rateCodes[i], "default", rateCodes[i] + ".default", numberOfUnitsToCharge, null, context);
+            }
         }
 ')!
 
