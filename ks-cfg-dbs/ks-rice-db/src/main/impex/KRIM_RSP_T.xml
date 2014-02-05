@@ -48,6 +48,6 @@
     <KRIM_RSP_T ACTV_IND="Y"
         DESC_TXT="AuthorizationRequestDocument Review Responsibility"
         NM="AuthorizationRequestDocument Review Responsibility"
-        NMSPC_CD="KS-SYS" OBJ_ID="EDE5DA5FE21D2B9EE040440A9B9A31B0"
+        NMSPC_CD="KS-SYS" OBJ_ID="F1ACFBB52AE8630FE040440A9B9A2DBC"
         RSP_ID="KS20004" RSP_TMPL_ID="1" VER_NBR="1"/>
 </dataset>
