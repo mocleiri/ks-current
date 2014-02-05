@@ -136,7 +136,7 @@ When /^I add (standard|non-standard) RSIs for an AO as a (CSC|DSC)$/ do |tsType,
   # add new RSI row
   @activity_offering.edit
   if tsType=="standard"
-    si_obj = create SchedulingInformation, :std_ts => true, :days => "MWF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+    si_obj = create SchedulingInformation, :std_ts => true, :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm",
                     :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
     @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   elsif tsType=="non-standard"
