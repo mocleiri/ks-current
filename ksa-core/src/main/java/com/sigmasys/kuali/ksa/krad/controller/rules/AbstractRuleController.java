@@ -26,29 +26,5 @@ public abstract class AbstractRuleController extends GenericSearchController {
     @Autowired
     protected BrmPersistenceService brmPersistenceService;
 
-    protected void clearMessages(AbstractRuleViewModel viewModel) {
-        viewModel.setEditStatusMessage("");
-        viewModel.setAddStatusMessage("");
-    }
-
-    protected void setMessage(AbstractRuleViewModel viewModel, String message, boolean isNew) {
-        String htmlMessage = "<font color='green'>" + message + "</font>";
-        if (isNew) {
-            viewModel.setAddStatusMessage(htmlMessage);
-        } else {
-            viewModel.setEditStatusMessage(htmlMessage);
-        }
-    }
-
-    protected ModelAndView handleError(AbstractRuleViewModel viewModel, String errorMessage, boolean isNew) {
-        logger.error(errorMessage);
-        String htmlErrorMessage = "<font color='red'>" + errorMessage + "</font>";
-        if (isNew) {
-            viewModel.setAddStatusMessage(htmlErrorMessage);
-        } else {
-            viewModel.setEditStatusMessage(htmlErrorMessage);
-        }
-        return getUIFModelAndView(viewModel);
-    }
 
 }

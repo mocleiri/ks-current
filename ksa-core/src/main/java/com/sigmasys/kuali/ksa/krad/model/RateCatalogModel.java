@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: tbornholtz
- * Date: 1/9/14
+ * RateCatalogModel
+ *
+ * @author tbornholtz
  */
 public class RateCatalogModel {
     private RateCatalog rateCatalog;
@@ -25,7 +26,7 @@ public class RateCatalogModel {
     }
 
     public RateCatalog getRateCatalog() {
-        if(rateCatalog == null) {
+        if (rateCatalog == null) {
             this.rateCatalog = new RateCatalog();
         }
         return rateCatalog;
@@ -79,23 +80,13 @@ public class RateCatalogModel {
     }
 
     public List<KeyPair> getKeyPairs() {
-        if(keyPairs == null) {
+        if (keyPairs == null) {
             keyPairs = new ArrayList<KeyPair>();
         }
         return keyPairs;
     }
 
     public void setKeyPairs(List<KeyPair> keyPairs) {
-        /*if(keyPairs != null) {
-            if(keyPairs.size() == 0) {
-                keyPairs.add(new KeyPair());
-            } else {
-                KeyPair kp = keyPairs.get(0);
-                if(kp != null && kp.getId() != null) {
-                    keyPairs.add(new KeyPair());
-                }
-            }
-        } */
         this.keyPairs = keyPairs;
     }
 }

@@ -7,8 +7,6 @@ import com.sigmasys.kuali.ksa.service.fm.RateService;
 import com.sigmasys.kuali.ksa.util.CommonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,8 +28,6 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/rateTypeView")
 public class RateTypeController extends GenericSearchController {
-
-    private static final Log logger = LogFactory.getLog(RateTypeController.class);
 
 
     @Autowired

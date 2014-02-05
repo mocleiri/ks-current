@@ -62,7 +62,7 @@ public class AdminController extends GenericSearchController {
             int limit = -1;
             try {
                 limit = Integer.parseInt(limitString);
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 // don't care what happens if it wasn't a valid int.  Treat it as unlimited.
             }
 
@@ -89,7 +89,7 @@ public class AdminController extends GenericSearchController {
             int limit = -1;
             try {
                 limit = Integer.parseInt(limitString);
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 // don't care what happens if it wasn't a valid int.  Treat it as unlimited.
             }
 
@@ -111,7 +111,6 @@ public class AdminController extends GenericSearchController {
         for (Activity a : activities) {
 
             a.setLogDetail(StringEscapeUtils.escapeHtml(a.getLogDetail()));
-            //a.setLogDetail(a.getLogDetail().replaceAll("'", "&#39;"));
 
             Date timestamp = a.getTimestamp();
 

@@ -35,10 +35,12 @@
                         <bean parent="Uif-HeaderTwo" p:headerText="Business Rules"/>
                         <bean parent="Uif-NavigationActionLink"
                               p:navigateToPageId="EditRulePage"
-                              p:actionLabel="Edit Rule"/>
+                              p:actionLabel="Edit Rule"
+                              p:onClickScript="writeHiddenToForm('ruleSetName', '@{ruleSetName}');"/>
                         <bean parent="Uif-NavigationActionLink"
                               p:navigateToPageId="AddRulePage"
-                              p:actionLabel="Add Rule"/>
+                              p:actionLabel="Add Rule"
+                              p:onClickScript="writeHiddenToForm('ruleSetName', '@{ruleSetName}');"/>
                     </list>
                 </property>
             </bean>
@@ -65,11 +67,10 @@
         </property>
     </bean>
 
-    <bean id="addRulePanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+    <bean id="addRulePanel" p:id="addRulePanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="@{addStatusMessage}"/>
                 <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
                     <property name="items">
                         <list>
@@ -104,7 +105,7 @@
                       p:fieldLabel.renderColon="false">
                     <property name="bindingInfo.bindToForm" value="true"/>
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:size="5"/>
+                        <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder" value="@{getRuleTypeFinder()}"/>
                 </bean>
@@ -149,7 +150,8 @@
                     </property>
                 </bean>
                 <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="add"
-                      p:actionLabel="Add">
+                      p:actionLabel="Add"
+                      p:onClickScript="writeHiddenToForm('ruleSetName', '@{ruleSetName}');">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>ksa-form-button</value>
@@ -160,13 +162,11 @@
         </property>
     </bean>
 
-    <bean id="editRulePanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+    <bean id="editRulePanel" p:id="editRulePanel" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-
-                <bean parent="Uif-MessageField" p:messageText="@{editStatusMessage}"/>
-
                 <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
                     <property name="items">
                         <list>
@@ -182,8 +182,10 @@
                                 </property>
                                 <property name="optionsFinder" value="@{getNameFinder()}"/>
                             </bean>
-                            <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="select"
-                                  p:actionLabel="Load Rule">
+                            <bean parent="Uif-PrimaryActionButton-Small"
+                                  p:methodToCall="select"
+                                  p:actionLabel="Load Rule"
+                                  p:onClickScript="writeHiddenToForm('ruleSetName', '@{ruleSetName}');">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>ksa-form-button</value>
@@ -202,7 +204,7 @@
                       p:fieldLabel.renderColon="false">
                     <property name="bindingInfo.bindToForm" value="true"/>
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:size="5"/>
+                        <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder" value="@{getRuleTypeFinder()}"/>
                 </bean>
@@ -251,8 +253,10 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="update"
-                      p:actionLabel="Update">
+                <bean parent="Uif-PrimaryActionButton-Small"
+                      p:methodToCall="update"
+                      p:actionLabel="Update"
+                      p:onClickScript="writeHiddenToForm('ruleSetName', '@{ruleSetName}');">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>ksa-form-button</value>

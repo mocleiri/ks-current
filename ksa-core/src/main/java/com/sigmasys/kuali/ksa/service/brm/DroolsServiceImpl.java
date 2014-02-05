@@ -125,7 +125,7 @@ public class DroolsServiceImpl implements BrmService {
                 errorMessage.append(error).append(".\n");
             }
             logger.error(errorMessage);
-            throw new InvalidRulesException(errorMessage.toString().replaceAll("\\[\\d+\\] ", ""));
+            throw new InvalidRulesException(errorMessage.toString().replaceAll("\\[.*\\]", ""));
         }
     }
 

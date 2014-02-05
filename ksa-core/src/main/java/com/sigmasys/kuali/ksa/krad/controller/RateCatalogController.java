@@ -1,6 +1,5 @@
 package com.sigmasys.kuali.ksa.krad.controller;
 
-import com.sigmasys.kuali.ksa.exception.GenericException;
 import com.sigmasys.kuali.ksa.krad.form.RateCatalogForm;
 import com.sigmasys.kuali.ksa.krad.model.RateCatalogModel;
 import com.sigmasys.kuali.ksa.krad.util.AuditableEntityKeyValuesFinder;
@@ -9,8 +8,6 @@ import com.sigmasys.kuali.ksa.model.fm.RateCatalog;
 import com.sigmasys.kuali.ksa.model.fm.RateType;
 import com.sigmasys.kuali.ksa.service.PersistenceService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.keyvalues.KeyValuesFinder;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -29,15 +26,12 @@ import java.util.List;
 
 /**
  * Controller to server requests from the "Rate Catalog" page.
- * User: Sergey
- * Date: 12/4/13
- * Time: 10:49 PM
+ *
+ * @author Sergey Godunov
  */
 @Controller
 @RequestMapping(value = "/rateCatalogView")
 public class RateCatalogController extends GenericSearchController {
-
-    private static final Log logger = LogFactory.getLog(RateCatalogController.class);
 
     @Autowired
     private RateService rateService;
@@ -52,9 +46,7 @@ public class RateCatalogController extends GenericSearchController {
     @Override
     protected RateCatalogForm createInitialForm(HttpServletRequest request) {
         RateCatalogForm form = new RateCatalogForm();
-
         form.setRateTypeOptionsFinder(getRateTypeOptionsFinder());
-
         return form;
     }
 
@@ -70,14 +62,14 @@ public class RateCatalogController extends GenericSearchController {
         Long rateTypeId;
         try {
             rateTypeId = Long.valueOf(rateTypeString);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, rateTypeString + " is not a valid rate type");
             return getUIFModelAndView(form);
         }
 
         List<RateCatalog> rateCatalogList = rateService.getRateCatalogsByRateTypeId(rateTypeId);
         List<RateCatalogModel> models = new ArrayList<RateCatalogModel>();
-        for(RateCatalog rateCatalog : rateCatalogList) {
+        for (RateCatalog rateCatalog : rateCatalogList) {
             models.add(new RateCatalogModel(rateCatalog));
         }
 
@@ -96,47 +88,47 @@ public class RateCatalogController extends GenericSearchController {
         RateCatalog rateCatalog = null;
         List<KeyPair> keyPairs = null;
 
-        for(RateCatalogModel rateCatalogModel : form.getRateCatalogs()) {
+        for (RateCatalogModel rateCatalogModel : form.getRateCatalogs()) {
             Long rowId = rateCatalogModel.getRateCatalog().getId();
-            if(rateCatalogId == null && rowId == null) {
+            if (rateCatalogId == null && rowId == null) {
                 rateCatalog = rateCatalogModel.getRateCatalog();
                 keyPairs = rateCatalogModel.getKeyPairs();
                 break;
-            } else if(rateCatalogId.equals(rowId)) {
+            } else if (rateCatalogId != null && rateCatalogId.equals(rowId)) {
                 rateCatalog = rateCatalogModel.getRateCatalog();
                 keyPairs = rateCatalogModel.getKeyPairs();
                 break;
             }
         }
 
-        if(rateCatalog == null) {
+        if (rateCatalog == null) {
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Unable to find rate catalog for id: " + rateCatalogId);
             return getUIFModelAndView(form);
         }
 
-        if(rateCatalog.getId() == null) {
+        if (rateCatalog.getId() == null) {
             rateCatalog = rateService.createRateCatalog(rateCatalog.getCode(), rateCatalog.getRateType().getCode(), rateCatalog.getTransactionTypeId(), rateCatalog.getTransactionDateType(),
                     rateCatalog.getMinAmount(), rateCatalog.getMaxAmount(), rateCatalog.getMinLimitAmount(), rateCatalog.getMaxLimitAmount(), rateCatalog.getMinLimitUnits(),
                     rateCatalog.getMaxLimitUnits(), null, null, rateCatalog.isTransactionTypeFinal(), rateCatalog.isTransactionDateTypeFinal(), rateCatalog.isRecognitionDateDefinable(),
                     rateCatalog.isKeyPairFinal(), rateCatalog.isLimitAmount(), rateCatalog.isLimitAmount());
         } else {
-            try{
+            try {
                 rateService.validateRateCatalog(rateCatalog);
                 rateService.persistRateCatalog(rateCatalog);
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
             }
         }
 
         // Save the name value pairs
-        if(keyPairs != null) {
-            for(KeyPair keyPair : keyPairs) {
+        if (keyPairs != null) {
+            for (KeyPair keyPair : keyPairs) {
                 persistenceService.persistEntity(keyPair);
             }
             rateCatalog.setKeyPairs(new HashSet<KeyPair>(keyPairs));
-            try{
+            try {
                 rateService.persistRateCatalog(rateCatalog);
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
             }
         }

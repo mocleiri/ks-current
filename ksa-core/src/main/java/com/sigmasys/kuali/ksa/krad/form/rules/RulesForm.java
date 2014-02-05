@@ -2,9 +2,6 @@ package com.sigmasys.kuali.ksa.krad.form.rules;
 
 
 import com.sigmasys.kuali.ksa.model.rule.Rule;
-import org.kuali.rice.krad.keyvalues.KeyValuesFinder;
-
-import java.util.List;
 
 /**
  * This form contains the rules related entities and properties.

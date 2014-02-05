@@ -10,9 +10,7 @@ import java.util.List;
 /**
  * This is a form object behind the "Rate Types" page.
  *
- * User: Sergey
- * Date: 12/4/13
- * Time: 10:40 PM
+ * @author Sergey Godunov
  */
 public class RateTypeForm extends AbstractViewModel {
 

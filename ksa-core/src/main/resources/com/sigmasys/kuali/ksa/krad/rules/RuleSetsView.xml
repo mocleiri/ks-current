@@ -69,9 +69,6 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-
-                <bean parent="Uif-MessageField" p:messageText="@{addStatusMessage}"/>
-
                 <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
                     <property name="items">
                         <list>
@@ -107,7 +104,7 @@
                       p:fieldLabel.renderColon="false">
                     <property name="bindingInfo.bindToForm" value="true"/>
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:size="5"/>
+                        <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder" value="@{getRuleTypeFinder()}"/>
                 </bean>
@@ -151,9 +148,6 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-
-                <bean parent="Uif-MessageField" p:messageText="@{editStatusMessage}"/>
-
                 <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
                     <property name="items">
                         <list>
@@ -189,7 +183,7 @@
                       p:fieldLabel.renderColon="false">
                     <property name="bindingInfo.bindToForm" value="true"/>
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:size="5"/>
+                        <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder" value="@{getRuleTypeFinder()}"/>
                 </bean>

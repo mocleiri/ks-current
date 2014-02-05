@@ -1,13 +1,18 @@
 package com.sigmasys.kuali.ksa.krad.controller.rules;
 
+import com.sigmasys.kuali.ksa.exception.InvalidRulesException;
+import com.sigmasys.kuali.ksa.krad.controller.GenericSearchController;
 import com.sigmasys.kuali.ksa.krad.form.rules.RuleSetsForm;
 import com.sigmasys.kuali.ksa.model.rule.Rule;
 import com.sigmasys.kuali.ksa.model.rule.RuleSet;
 import com.sigmasys.kuali.ksa.model.rule.RuleType;
+import com.sigmasys.kuali.ksa.service.brm.BrmPersistenceService;
+import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +30,15 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(value = "/ruleSetsView")
-public class RuleSetsController extends AbstractRuleController {
+public class RuleSetsController extends GenericSearchController {
 
     private static final Log logger = LogFactory.getLog(RuleSetsController.class);
+
+    @Autowired
+    private BrmService brmService;
+
+    @Autowired
+    private BrmPersistenceService brmPersistenceService;
 
 
     private boolean ruleSetExists(String ruleSetName) {
@@ -49,7 +60,8 @@ public class RuleSetsController extends AbstractRuleController {
         ruleSetsForm.initNameFinder(brmPersistenceService.getRuleSetNames());
 
         List<RuleType> ruleTypes = brmPersistenceService.getRuleTypes();
-        if (ruleTypes != null) {
+
+        if (CollectionUtils.isNotEmpty(ruleTypes)) {
             List<String> ruleTypeNames = new ArrayList<String>(ruleTypes.size());
             for (RuleType ruleType : ruleTypes) {
                 ruleTypeNames.add(ruleType.getName());
@@ -58,8 +70,6 @@ public class RuleSetsController extends AbstractRuleController {
         }
 
         ruleSetsForm.setRuleSetName(StringUtils.isNotBlank(ruleSetName) ? ruleSetName : null);
-
-        clearMessages(ruleSetsForm);
 
         ruleSetsForm.setRuleSetHeader("");
 
@@ -73,9 +83,6 @@ public class RuleSetsController extends AbstractRuleController {
      */
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=get")
     public ModelAndView get(@ModelAttribute("KualiForm") RuleSetsForm form) {
-
-        logger.debug("Page ID = " + form.getPageId());
-
         return getUIFModelAndView(form);
     }
 
@@ -86,33 +93,41 @@ public class RuleSetsController extends AbstractRuleController {
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=update")
     public ModelAndView update(@ModelAttribute("KualiForm") RuleSetsForm form) {
 
-        clearMessages(form);
-
         if (form.getRuleSetId() == null) {
-            return handleError(form, "Rule Set ID is null", false);
+            return handleError(form, "Rule Set ID is null");
         }
 
         if (StringUtils.isBlank(form.getRuleSetName())) {
-            return handleError(form, "Rule Set name cannot be empty", false);
+            return handleError(form, "Rule Set name cannot be empty");
         }
 
         if (StringUtils.isBlank(form.getRuleSetHeader())) {
-            return handleError(form, "Rule Set header cannot be empty", false);
+            return handleError(form, "Rule Set header cannot be empty");
         }
 
         if (StringUtils.isBlank(form.getRuleType())) {
-            return handleError(form, "Rule Set type is required", false);
+            return handleError(form, "Rule Set type is required");
         }
 
         try {
+
             RuleSet ruleSet = new RuleSet();
+
             copyFormToRuleSet(form, ruleSet);
+
             brmPersistenceService.persistRuleSet(ruleSet);
+
             brmService.reloadRuleSets(ruleSet.getName());
-            setMessage(form, "Rule Set has been updated", false);
+
+            setMessage(form, "Rule Set has been updated");
             logger.info("Updated Rule Set => \n" + ruleSet);
+
+        } catch (InvalidRulesException e) {
+            logger.error(e.getMessage(), e);
+            String errMsg = "There are problems compiling the rules. Please check the rule syntax and try again.";
+            return handleError(form, errMsg);
         } catch (Exception e) {
-            return handleError(form, e.getMessage(), false);
+            return handleError(form, e);
         }
 
         return getUIFModelAndView(form);
@@ -125,20 +140,18 @@ public class RuleSetsController extends AbstractRuleController {
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=select")
     public ModelAndView select(@ModelAttribute("KualiForm") RuleSetsForm form) {
 
-        clearMessages(form);
-
         String ruleSetName = form.getRuleSetName();
         if (StringUtils.isBlank(ruleSetName)) {
             String errMsg = "Rule Set name must be specified";
             logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
+            return handleError(form, errMsg);
         }
 
         RuleSet ruleSet = brmPersistenceService.getRuleSet(ruleSetName);
         if (ruleSet == null) {
             String errMsg = "Rule Set specified by name '" + ruleSetName + "' does not exist";
             logger.error(errMsg);
-            return handleError(form, errMsg, false);
+            return handleError(form, errMsg);
         }
 
         copyRuleSetToForm(ruleSet, form);
@@ -167,7 +180,6 @@ public class RuleSetsController extends AbstractRuleController {
     public ModelAndView removeRule(@ModelAttribute("KualiForm") RuleSetsForm form,
                                    @RequestParam("ruleSetName") String ruleSetName,
                                    @RequestParam("ruleName") String ruleName) {
-        clearMessages(form);
 
         if (StringUtils.isBlank(ruleSetName)) {
             String errMsg = "'ruleSetName' request parameter is required";
@@ -182,34 +194,52 @@ public class RuleSetsController extends AbstractRuleController {
         }
 
         RuleSet ruleSet = brmPersistenceService.getRuleSet(ruleSetName);
+
         if (ruleSet == null) {
             String errMsg = "Rule Set with name '" + ruleSetName + " does not exist";
-            return handleError(form, errMsg, false);
+            return handleError(form, errMsg);
         }
 
         try {
+
             Set<Rule> rules = ruleSet.getRules();
+
             if (CollectionUtils.isNotEmpty(rules)) {
+
                 Rule ruleToRemove = null;
+
                 for (Rule rule : rules) {
                     if (ruleName.equals(rule.getName())) {
                         ruleToRemove = rule;
                         break;
                     }
                 }
+
                 if (ruleToRemove != null) {
+
                     rules.remove(ruleToRemove);
+
                     brmPersistenceService.persistRuleSet(ruleSet);
+
                     brmService.reloadRuleSets(ruleSetName);
+
                     form.setRuleSetName(ruleSetName);
+
                     select(form);
-                    setMessage(form, "Rule '" + ruleName + "' has been removed from Rule Set '" + ruleSetName + "'", false);
+
+                    setMessage(form, "Rule '" + ruleName + "' has been removed from Rule Set '" + ruleSetName + "'");
+
                 } else {
-                    return handleError(form, "Rule '" + ruleName + "' has not been found in Rule Set '" + ruleSetName + "'", false);
+                    return handleError(form, "Rule '" + ruleName + "' has not been found in Rule Set '" + ruleSetName + "'");
                 }
             }
+
+        } catch (InvalidRulesException e) {
+            logger.error(e.getMessage(), e);
+            String errMsg = "There are problems compiling the rules. Please check the rule syntax and try again.";
+            return handleError(form, errMsg);
         } catch (Exception e) {
-            return handleError(form, e.getMessage(), false);
+            return handleError(form, e);
         }
 
         return getUIFModelAndView(form);
@@ -222,22 +252,20 @@ public class RuleSetsController extends AbstractRuleController {
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=checkRuleNameExistence")
     public ModelAndView checkRuleSetNameExistence(@ModelAttribute("KualiForm") RuleSetsForm form) {
 
-        clearMessages(form);
-
         RuleSet ruleSet = form.getNewRuleSet();
         if (ruleSet == null) {
-            return handleError(form, "Rule Set cannot be null", true);
+            return handleError(form, "Rule Set cannot be null");
         }
 
         String ruleSetName = ruleSet.getName();
 
         if (StringUtils.isBlank(ruleSetName)) {
-            return handleError(form, "Rule Set name cannot be empty", true);
+            return handleError(form, "Rule Set name cannot be empty");
         } else if (ruleSetExists(ruleSetName)) {
-            return handleError(form, "Rule Set name '" + ruleSetName + "' already exists", true);
+            return handleError(form, "Rule Set name '" + ruleSetName + "' already exists");
         }
 
-        setMessage(form, "Rule Set name '" + ruleSetName + "' is available", true);
+        setMessage(form, "Rule Set name '" + ruleSetName + "' is available");
 
         return getUIFModelAndView(form);
     }
@@ -248,8 +276,6 @@ public class RuleSetsController extends AbstractRuleController {
      */
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=add")
     public ModelAndView add(@ModelAttribute("KualiForm") RuleSetsForm form) {
-
-        clearMessages(form);
 
         // TODO:
 

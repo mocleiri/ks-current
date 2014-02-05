@@ -78,9 +78,8 @@ public abstract class GenericSearchController extends UifControllerBase {
 
     protected ModelAndView handleError(AbstractViewModel viewModel, String errorMessage) {
         logger.error(errorMessage);
-        ModelAndView modelAndView = getUIFModelAndView(viewModel);
-        GlobalVariables.getMessageMap().putError(modelAndView.getViewName(), RiceKeyConstants.ERROR_CUSTOM, errorMessage);
-        return modelAndView;
+        GlobalVariables.getMessageMap().putError(viewModel.getViewId(), RiceKeyConstants.ERROR_CUSTOM, errorMessage);
+        return getUIFModelAndView(viewModel);
     }
 
     protected ModelAndView handleError(AbstractViewModel viewModel, Throwable t) {
@@ -88,8 +87,7 @@ public abstract class GenericSearchController extends UifControllerBase {
     }
 
     protected void setMessage(AbstractViewModel viewModel, String message) {
-        String htmlMessage = "<font color='green'>" + message + "</font>";
-        viewModel.setMessage(htmlMessage);
+        GlobalVariables.getMessageMap().putInfo(viewModel.getViewId(), RiceKeyConstants.ERROR_CUSTOM, message);
     }
 
 }
