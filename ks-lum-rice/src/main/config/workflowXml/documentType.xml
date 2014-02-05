@@ -236,6 +236,15 @@
         </role>
       </routeNodes>
     </documentType>
+    <!-- TODO ajani -->
+    <documentType>
+      <name>kuali.proposal.type.course.modify.current.version</name>
+      <parent>kuali.proposal.type.course.modify</parent>
+      <description>Credit Course Edit Current Version</description>
+      <label>Credit Course Edit Current Version</label>
+      <postProcessorName>org.kuali.student.lum.workflow.CoursePostProcessorBase</postProcessorName>
+      <active>true</active>      
+    </documentType>
     <documentType>
       <name>kuali.proposal.type.course.create</name>
       <parent>CluCreditCourseParentDocument</parent>
@@ -328,7 +337,7 @@
           <finalApproval>false</finalApproval>
         </start>
       </routeNodes>
-    </documentType>
+    </documentType>    
 <!-- END CREDIT COURSE DOCUMENTS -->
 <!-- Program Documents -->
     <documentType>
