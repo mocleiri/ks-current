@@ -278,7 +278,6 @@ class AcademicTerm
         :term_year=> calendar_year,
         :parent_term=> nil,
         :subterm=> false,
-        :add_exam_period => true,
         :key_date_group_list => [],
         :exam_period => nil
     }
@@ -344,7 +343,10 @@ class AcademicTerm
         date_group.create
       end
 
-      create_final_exam_period unless @add_exam_period == false
+      if @exam_period != nil
+        add_exam_period @exam_period
+      end
+
     end
   end
 
@@ -359,10 +361,7 @@ class AcademicTerm
   def edit(opts = {})
     defaults = {
         :exp_success=> true,
-        :exam_period => false,
-        :change_exam_dates => false,
-        :exam_start_date => nil,
-        :exam_end_date => nil,
+        :exam_period => nil,
         :include_non_active_days => false,
         :defer_save => false,
         :do_navigation => true
@@ -398,30 +397,6 @@ class AcademicTerm
       end
     end
 
-    if options[:exam_period] == true
-      create_final_exam_period
-    end
-
-    if options[:change_exam_dates] == true and options[:exam_start_date] != nil
-      on EditAcademicTerms do |page|
-        create_final_exam_period if page.add_exam_period_btn( @term_type).present?
-        page.set_exam_start_date @term_type, options[:exam_start_date]
-      end
-    end
-
-    if options[:change_exam_dates] == true and options[:exam_end_date] != nil
-      on EditAcademicTerms do |page|
-        create_final_exam_period if page.add_exam_period_btn( @term_type).present?
-        page.set_exam_end_date @term_type, options[:exam_end_date]
-      end
-    end
-
-    if options[:include_non_active_days] == true
-      on EditAcademicTerms  do |page|
-          page.clear_exclude_saturday @term_type
-          page.clear_exclude_sunday @term_type
-      end
-    end
     on(EditAcademicTerms).terms_tab_link.click #close any open date pickers
     unless options[:defer_save]
       on(EditAcademicTerms).save :exp_success => options[:exp_success]
@@ -479,17 +454,12 @@ class AcademicTerm
     weekdays
   end
 
-  def create_final_exam_period
-    on EditAcademicTerms do |page|
-      page.open_term_section(@term_type)
-      page.loading.wait_while_present
-      if page.add_exam_period_btn( @term_type).present?
-        page.add_exam_period @term_type
-        page.set_exam_start_date @term_type, @start_date
-        page.set_exam_end_date @term_type, @end_date
-        page.save :exp_success => false
-      end
-    end
+  #Added a def due to some steps that create a term with no exam period first and then later needs to add the exam
+  #   period without having to run @term.create again
+  def add_exam_period( exam_period_object)
+    exam_period_object.calendar_year = @term_year
+    exam_period_object.term_type = @term_type
+    exam_period_object.create
   end
 end
 
@@ -804,3 +774,102 @@ class CalendarEvent
 
 end
 
+class ExamPeriod
+  include Foundry
+  include DataFactory
+  include DateFactory
+  include StringFactory
+  include Workflows
+
+  attr_accessor :start_date, :end_date, :exclude_saturday, :exclude_sunday, :term_type, :calendar_year
+
+  def initialize(browser,opts = {})
+    @browser = browser
+
+    calendar_year = opts[:calendar_year]
+
+    defaults = {
+      :start_date => "09/02/#{calendar_year}",
+      :end_date => "09/24/#{calendar_year}",
+      :exclude_saturday => false,
+      :exclude_sunday => false
+    }
+
+    options = defaults.merge(opts)
+    set_options(options)
+
+  end
+
+  def create()
+
+    on EditAcademicTerms do |page|
+      page.open_term_section(@term_type)
+      page.loading.wait_while_present
+
+      if page.add_exam_period_btn( @term_type).present?
+        page.add_exam_period @term_type
+      end
+
+      page.set_exam_start_date @term_type, @start_date
+      page.set_exam_end_date @term_type, @end_date
+      page.set_exclude_saturday @term_type unless @exclude_saturday == false
+      page.set_exclude_sunday @term_type unless @exclude_sunday == false
+
+      page.save
+    end
+  end
+
+  def edit opts={}
+
+    defaults = {
+        :start_date => nil,
+        :end_date => nil,
+        :exclude_saturday => false,
+        :exclude_sunday => false,
+        :include_saturday => false,
+        :include_sunday => false,
+        :exp_success => true
+    }
+    options = defaults.merge(opts)
+
+    on EditAcademicTerms do |page|
+      page.open_term_section(@term_type)
+      page.loading.wait_while_present
+
+      if options[:start_date] != nil
+        page.set_exam_start_date @term_type, options[:start_date]
+      end
+
+      if options[:end_date] != nil
+        page.set_exam_end_date @term_type, options[:end_date]
+      end
+
+      if options[:exclude_saturday]
+        page.set_exclude_saturday @term_type
+      elsif options[:include_saturday]
+        page.clear_exclude_saturday @term_type
+      end
+
+      if options[:exclude_sunday]
+        page.set_exclude_sunday @term_type
+      elsif options[:include_sunday]
+        page.clear_exclude_sunday @term_type
+      end
+
+      page.save :exp_success => options[:exp_success]
+    end
+
+    set_options(options)
+  end
+
+  def delete
+    on EditAcademicTerms do |page|
+      page.open_term_section(@term_type)
+      page.loading.wait_while_present
+
+      page.exam_delete @term_type
+
+      page.save
+    end
+  end
+end
