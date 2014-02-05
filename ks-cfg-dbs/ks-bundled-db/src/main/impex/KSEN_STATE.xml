@@ -244,48 +244,48 @@
         DESCR_PLAIN="Org-Person relation is active"
         ID="kuali.org.hierarchy.state.active"
         LIFECYCLE_KEY="kuali.org.person.relation.lifecycle"
-        NAME="Active" OBJ_ID="EDE5DA5FE3382B9EE040440A9B9A31B0" VER_NBR="0"/>
+        NAME="Active" OBJ_ID="F1ACFBB52C03630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Org-Person relation is no longer active, i.e. the person is no longer in that position"
         DESCR_PLAIN="Org-Person relation is no longer active, i.e. the person is no longer in that position"
         ID="kuali.org.hierarchy.state.inactive"
         LIFECYCLE_KEY="kuali.org.person.relation.lifecycle"
-        NAME="Inactive" OBJ_ID="EDE5DA5FE3392B9EE040440A9B9A31B0" VER_NBR="0"/>
+        NAME="Inactive" OBJ_ID="F1ACFBB52C04630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Org-Org relation is active"
         DESCR_PLAIN="Org-Org relation is active"
         ID="kuali.org.org.relation.state.active"
         LIFECYCLE_KEY="kuali.org.org.relation.lifecycle" NAME="Active"
-        OBJ_ID="EDE5DA5FE3342B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52BFF630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Org-Org relation is no longer active"
         DESCR_PLAIN="Org-Org relation is no longer active"
         ID="kuali.org.org.relation.state.inactive"
         LIFECYCLE_KEY="kuali.org.org.relation.lifecycle" NAME="Inactive"
-        OBJ_ID="EDE5DA5FE3352B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52C00630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Org-Person relation is active"
         DESCR_PLAIN="Org-Person relation is active"
         ID="kuali.org.person.relation.state.active"
         LIFECYCLE_KEY="kuali.org.person.relation.lifecycle"
-        NAME="Active" OBJ_ID="EDE5DA5FE3362B9EE040440A9B9A31B0" VER_NBR="0"/>
+        NAME="Active" OBJ_ID="F1ACFBB52C01630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Org-Person relation is no longer active, i.e. the person is no longer in that position"
         DESCR_PLAIN="Org-Person relation is no longer active, i.e. the person is no longer in that position"
         ID="kuali.org.person.relation.state.inactive"
         LIFECYCLE_KEY="kuali.org.person.relation.lifecycle"
-        NAME="Inactive" OBJ_ID="EDE5DA5FE3372B9EE040440A9B9A31B0" VER_NBR="0"/>
+        NAME="Inactive" OBJ_ID="F1ACFBB52C02630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Organization is active"
         DESCR_PLAIN="Organization is active" ID="kuali.org.state.active"
         LIFECYCLE_KEY="kuali.org.lifecycle" NAME="Active"
-        OBJ_ID="EDE5DA5FE3322B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52BFD630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Organization is inactive"
         DESCR_PLAIN="Organization is inactive"
         ID="kuali.org.state.inactive"
         LIFECYCLE_KEY="kuali.org.lifecycle" NAME="Inactive"
-        OBJ_ID="EDE5DA5FE3332B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52BFE630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20120716000000"
         DESCR_FORMATTED="A default state for this Population Rule"
         DESCR_PLAIN="A default state for this Population Rule"
@@ -349,31 +349,31 @@
         DESCR_PLAIN="Proposal has been approved.  Typically this means the proposal has completed workflow and the final approval has been made."
         ID="kuali.proposal.state.approved"
         LIFECYCLE_KEY="kuali.proposal.lifecycle" NAME="Approved"
-        OBJ_ID="EDE5DA5FE3412B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52C0C630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Proposal sent back for&#xa;clarification.  Typically this means the proposal has sent back for&#xa;clarification and  final approval has not been made."
         DESCR_PLAIN="Proposal sent back for clarification.&#xa;Typically this means the proposal has sent back for clarification and&#xa;final approval has not been made."
         ID="kuali.proposal.state.clarification"
         LIFECYCLE_KEY="kuali.proposal.lifecycle" NAME="Clarification"
-        OBJ_ID="EDE5DA5FE3432B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52C0E630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Proposal is in draft. I.e. the proposer is still working on it and it has not yet beeen submittted"
         DESCR_PLAIN="Proposal is in draft mode. I.e. the proposer is still working on it and it has not yet beeen submittted"
         ID="kuali.proposal.state.draft"
         LIFECYCLE_KEY="kuali.proposal.lifecycle" NAME="Draft"
-        OBJ_ID="EDE5DA5FE33F2B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52C0A630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Proposal has not been approved.  Typically this means the proposal has completed workflow and the final decision was to not approve the proposal."
         DESCR_PLAIN="Proposal has not been approved.  Typically this means the proposal has completed workflow and the final decision was to not approve the proposal."
         ID="kuali.proposal.state.not.approved"
         LIFECYCLE_KEY="kuali.proposal.lifecycle" NAME="Not Approved"
-        OBJ_ID="EDE5DA5FE3422B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52C0D630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20130101000000"
         DESCR_FORMATTED="Proposal has been submitted for approval.  Typically this means that the proposal is being routed through workflow and has not yet been acted upon."
         DESCR_PLAIN="Proposal has been submitted for approval.  Typically this means that the proposal is being routed through workflow and has not yet been acted upon."
         ID="kuali.proposal.state.submitted"
         LIFECYCLE_KEY="kuali.proposal.lifecycle" NAME="Submitted"
-        OBJ_ID="EDE5DA5FE3402B9EE040440A9B9A31B0" VER_NBR="0"/>
+        OBJ_ID="F1ACFBB52C0B630FE040440A9B9A2DBC" VER_NBR="0"/>
     <KSEN_STATE CREATEID="SYSTEMLOADER" CREATETIME="20120813000000"
         DESCR_FORMATTED="The request has been created"
         DESCR_PLAIN="The request has been created"
