@@ -81,60 +81,6 @@ insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (99, 99)!
 
 
 -----------------------------------------------------------------------------------------------------------------------
--- Inserting Fee Management rules --
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (1, 'Rule 1', 3, 0, null,
-'(Major is "EMBA" and Section is "EM11" with status "")',
-'Use code "1179" to charge $31280.36
- Use code "1121" to charge $386.36
- Set status to "C", key pair "MAND_FEES" to "Y" where section is "EM11"')!
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (2, 'Rule 2', 3, 1, null,
-'(Key pair "member-code" is "12,22,42")',
-'Use code "1060" to charge $199.38')!
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (3, 'Rule 3', 3, 20, null,
-'(LU code is "ENTS[0-9A-Z]{4}" with status "")',
-'Use code "1180" to charge $950
- Set status to "C", key pair "MAND_FEES" to "Y" where code is "ENTS[0-9A-Z]{4}"')!
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (4, 'Rule 4', 3, 0, null,
- '(Section is "BR[0-9A-Z]{2}" with status "" and Student is resident)',
- 'Use "1186" to charge $525 per credit where section is "BR[0-9A-Z]{2}" with status ""
-  Use code "1187" to charge $53
-  Set status to "C", key pair "MAND_FEES" to "Y" where section is "BR[0-9A-Z]{2}"')!
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (5, 'Rule 5', 3, 0, null,
- '(Section is "BR[0-9A-Z]{2}" with status "" and Student is not resident)',
- 'Use "1186" to charge $1131.00 per credit where section is "BR[0-9A-Z]{2}" with status ""
-  Use code "1187" to charge $53
-  Set status to "C", key pair "MAND_FEES" to "Y" where section is "BR[0-9A-Z]{2}"')!
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (6, 'Rule 6', 3, 0, null,
- '(Key pair "member-code" is "10,11,12,13,14,15,16,17,18,19,20" and Student is resident and Number of credits > 9 with status "")',
- 'Use code "1000" to charge $3483.00
-  Set status to "C", key pair "MAND_FEES" to "Y" where status is ""')!
-
-Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (7, 'Rule 7', 3, 0, null,
- '(Key pair "member-code" is "10,11,12,13,14,15,16,17,18,19,20" and Student is not resident and Number of credits > 9 with status "")',
- 'Use code "1020" to charge $12168.48
-  Set status to "C", key pair "MAND_FEES" to "Y" where status is ""')!
-
-
-Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (1, 'Fee Management', 3,
-'import java.util.*;
-import java.math.*;
-import com.sigmasys.kuali.ksa.model.*;
-import com.sigmasys.kuali.ksa.model.rule.*;
-import com.sigmasys.kuali.ksa.service.brm.*;
-
-expander ksa.dsl
-
-global FeeBase feeBase;
-
-')!
-
------------------------------------------------------------------------------------------------------------------------
 --- Inserting Account Blocking rules ---
 
 Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (2, 'Account Blocking', 3,
@@ -212,15 +158,6 @@ Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) va
  Use hold issue type "kuali.hold.issue.type.financial", hold issue name "Unpaid Tuition Prior Term" to create hold "Unpaid Tuition" with description "" expiring in 17 days
 ')!
 
-
---- PA associations
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 1)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 2)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 3)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 4)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 5)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 6)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (1, 7)!
 
 -- AB associations
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (2, 8)!

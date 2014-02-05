@@ -62,11 +62,11 @@ public class BrmServiceTest extends AbstractServiceTest {
     @Test
     public void addRules() throws Exception {
 
-        RuleSet ruleSet = brmPersistenceService.getRuleSet("Fee Management");
+        RuleSet ruleSet = brmPersistenceService.getRuleSet("Payment Bouncing");
 
         Assert.notNull(ruleSet);
         Assert.notEmpty(ruleSet.getRules());
-        Assert.isTrue(1L == ruleSet.getId());
+        Assert.isTrue(3L == ruleSet.getId());
 
         int initialSize = ruleSet.getRules().size();
 
@@ -81,7 +81,7 @@ public class BrmServiceTest extends AbstractServiceTest {
             rules.add(rule);
         }
 
-        ruleSet = brmPersistenceService.addRulesToRuleSet(1L, rules.toArray(new Rule[rules.size()]));
+        ruleSet = brmPersistenceService.addRulesToRuleSet(3L, rules.toArray(new Rule[rules.size()]));
 
         Assert.notNull(ruleSet);
         Assert.notEmpty(ruleSet.getRules());
@@ -92,11 +92,11 @@ public class BrmServiceTest extends AbstractServiceTest {
     @Test
     public void removeRules() throws Exception {
 
-        RuleSet ruleSet = brmPersistenceService.getRuleSet("Fee Management");
+        RuleSet ruleSet = brmPersistenceService.getRuleSet("Payment Bouncing");
 
         Assert.notNull(ruleSet);
         Assert.notEmpty(ruleSet.getRules());
-        Assert.isTrue(1L == ruleSet.getId());
+        Assert.isTrue(3L == ruleSet.getId());
 
         Set<Rule> rules = ruleSet.getRules();
         List<Long> idsToRemove = new ArrayList<Long>(rules.size());
@@ -105,7 +105,7 @@ public class BrmServiceTest extends AbstractServiceTest {
             idsToRemove.add(rule.getId());
         }
 
-        ruleSet = brmPersistenceService.deleteRulesFromRuleSet(1L, idsToRemove.toArray(new Long[idsToRemove.size()]));
+        ruleSet = brmPersistenceService.deleteRulesFromRuleSet(3L, idsToRemove.toArray(new Long[idsToRemove.size()]));
 
         Assert.notNull(ruleSet);
         Assert.isTrue(CollectionUtils.isEmpty(ruleSet.getRules()));
@@ -115,11 +115,11 @@ public class BrmServiceTest extends AbstractServiceTest {
     @Test
     public void persistRule() throws Exception {
 
-        RuleSet ruleSet = brmPersistenceService.getRuleSet(1L);
+        RuleSet ruleSet = brmPersistenceService.getRuleSet(3L);
 
         Assert.notNull(ruleSet);
         Assert.notEmpty(ruleSet.getRules());
-        Assert.isTrue("Fee Management".equals(ruleSet.getName()));
+        Assert.isTrue("Payment Bouncing".equals(ruleSet.getName()));
 
         Rule rule = ruleSet.getRules().iterator().next();
 
@@ -143,25 +143,37 @@ public class BrmServiceTest extends AbstractServiceTest {
     @Test
     public void getRuleSetNamesByRuleNames() throws Exception {
 
-        String[] ruleNames = {"Rule 1", "Rule 2", "Rule 3", "Payment Application Rule"};
+        String[] ruleNames = {"Bounce 1", "Bounce 2", "Bounce 3", "Payment Application Rule"};
 
         List<String> ruleSetNames = brmPersistenceService.getRuleSetNamesByRuleNames(ruleNames);
 
         Assert.notNull(ruleSetNames);
         Assert.notEmpty(ruleSetNames);
+
         Assert.isTrue(ruleSetNames.size() > 1);
 
         boolean hasPaymentApplication = false;
+        boolean hasPaymentBouncing = false;
+
         for (String ruleSetName : ruleSetNames) {
+
             logger.debug("Rule set name = " + ruleSetName);
+
             Assert.notNull(ruleSetName);
             Assert.isTrue(ruleSetName.trim().length() > 0);
+
             if ("Payment Application".equals(ruleSetName)) {
                 hasPaymentApplication = true;
             }
+
+            if ("Payment Bouncing".equals(ruleSetName)) {
+                hasPaymentBouncing = true;
+            }
+
         }
 
         Assert.isTrue(hasPaymentApplication);
+        Assert.isTrue(hasPaymentBouncing);
     }
 
     @Test
@@ -174,11 +186,15 @@ public class BrmServiceTest extends AbstractServiceTest {
         Assert.isTrue(ruleTypes.size() > 1);
 
         boolean hasDslr = false;
+
         for (RuleType ruleType : ruleTypes) {
+
             logger.debug("Rule type = " + ruleType);
+
             Assert.notNull(ruleType);
             Assert.notNull(ruleType.getId());
             Assert.notNull(ruleType.getName());
+
             if (RuleTypeEnum.DSLR.getId().equals(ruleType.getName())) {
                 hasDslr = true;
             }
@@ -190,7 +206,7 @@ public class BrmServiceTest extends AbstractServiceTest {
     @Test
     public void getRuleNamesByRuleSetName() throws Exception {
 
-        String ruleSetName = "Payment Application";
+        String ruleSetName = "Payment Bouncing";
 
         List<String> ruleNames = brmPersistenceService.getRuleNames(ruleSetName);
 
@@ -198,11 +214,15 @@ public class BrmServiceTest extends AbstractServiceTest {
         Assert.notEmpty(ruleNames);
 
         boolean hasPaymentApplicationRule = false;
+
         for (String ruleName : ruleNames) {
+
             logger.debug("Rule name = " + ruleName);
+
             Assert.notNull(ruleName);
             Assert.isTrue(ruleName.trim().length() > 0);
-            if ("Payment Application Rule".equals(ruleName)) {
+
+            if ("Bounce 2".equals(ruleName)) {
                 hasPaymentApplicationRule = true;
             }
         }
