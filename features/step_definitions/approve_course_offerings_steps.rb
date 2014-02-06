@@ -995,10 +995,9 @@ end
 
 Given /^a new academic term has an activity offering in approved status$/ do
     @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
-    @term = make AcademicTerm, :term_year => @calendar.year
+    exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
+    @term = make AcademicTerm, :term_year => @calendar.year, :exam_period => exam_period
     @calendar.add_term(@term)
-
-    @term.create_final_exam_period
 
     @manage_soc = make ManageSoc, :term_code => @term.term_code
     @manage_soc.set_up_soc
