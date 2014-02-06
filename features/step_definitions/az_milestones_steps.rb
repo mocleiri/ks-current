@@ -63,14 +63,22 @@ end
 
 When /^I verify the exam periods for the milestones test fall and spring terms$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2014"
-  @term.edit :include_non_active_days => true,  :defer_save => true
+  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @term.edit :defer_save => true
+  @exam_period.edit :include_saturday => true, :include_sunday => true
   @term = make AcademicTerm, :term => "Spring", :term_year => "2015"
-  @term.edit :include_non_active_days => true , :do_navigation => false
+  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @term.edit :defer_save => true
+  @exam_period.edit :include_saturday => true, :include_sunday => true
 end
 
 When /^I verify the exam periods for the published test fall and spring terms$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2015"
-  @term.edit :include_non_active_days => true,  :defer_save => true
+  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @term.edit :defer_save => true
+  @exam_period.edit :include_saturday => true, :include_sunday => true
   @term = make AcademicTerm, :term => "Spring", :term_year => "2016"
-  @term.edit :include_non_active_days => true , :do_navigation => false
+  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @term.edit :defer_save => true
+  @exam_period.edit :include_saturday => true, :include_sunday => true
 end

@@ -23,9 +23,14 @@ When /^I edit a course in my registration cart$/ do
   pending
 end
 
-Then /^the course is (present|not present) in my cart$/  do |isPresent|
+Then /^the course is (present|not present) in my cart$/  do |presence|
+  #this is POC page being reused
   on RegisterForCourseResults do |page|
-    page.target_list_item_by_course(@reg_request.course_code, @reg_request.reg_group).should_not be_nil
+    if presence == "present"
+      page.target_list_item_by_course(@reg_request.course_code, @reg_request.reg_group).should_not be_nil
+    else
+      page.target_list_item_by_course(@reg_request.course_code, @reg_request.reg_group).should be_nil
+    end
   end
 end
 

@@ -1,32 +1,32 @@
 When /^I change the final exam period start date to be before the term start date and save$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2012"
-  @term.edit :change_exam_dates => true, :exam_start_date => "08/15/2012", :exp_success => false
+  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @term.edit :defer_save => true
+  @exam_period.edit :start_date => "08/15/2012"
 end
 
 When /^I change the final exam period end date to be after the term end date and save$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2012"
-  @term.edit :change_exam_dates => true, :exam_end_date => "12/20/2012", :exp_success => false
+  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @term.edit :defer_save => true
+  @exam_period.edit :end_date => "12/20/2012"
 end
 
 When /^I add a final exam period to the new academic calender and save$/ do
   @calendar = create AcademicCalendar
-
+  exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
   @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/20/#{@calendar.year}",
-               :end_date=>"12/10/#{@calendar.year}", :term => "Fall"
+               :end_date=>"12/10/#{@calendar.year}", :term => "Fall", :exam_period => exam_period
   @calendar.add_term @term
-
-  @term.create_final_exam_period
 end
 
 When /^I copy a newly created academic calendar that has a defined final exam period$/ do
-  @source_calendar = make AcademicCalendar
-  @source_calendar.create
-
+  @source_calendar = create AcademicCalendar
+  #@source_calendar.
+  exam_period = make ExamPeriod, :start_date=>"12/11/#{@source_calendar.year}", :end_date=>"12/20/#{@source_calendar.year}"
   @term = make AcademicTerm, :term_year => @source_calendar.year, :start_date=>"09/20/#{@source_calendar.year}",
-               :end_date=>"12/10/#{@source_calendar.year}"
+               :end_date=>"12/10/#{@source_calendar.year}", :exam_period => exam_period
   @source_calendar.add_term @term
-
-  @term.create_final_exam_period
 
   @calendar = make AcademicCalendar, :year => "#{@source_calendar.year.to_i + 1}"
   @calendar.copy_from @source_calendar.name
@@ -105,7 +105,7 @@ end
 
 When /^I create an Academic Calendar and add an official term$/ do
   @calendar = create AcademicCalendar
-  @term = make AcademicTerm, :term_year => @calendar.year, :add_exam_period => false
+  @term = make AcademicTerm, :term_year => @calendar.year
   @calendar.add_term(@term)
   @term.make_official
   @manage_soc = make ManageSoc, :term_code => @term.term_code
@@ -113,7 +113,9 @@ When /^I create an Academic Calendar and add an official term$/ do
 end
 
 When /^I have created a Final Exam Period for the term in the newly created Academic Calendar$/ do
-  @term.edit :exam_period => true
+  @exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
+  @term.edit
+  @term.add_exam_period @exam_period
 end
 
 When /^I have multiple Course Offerings each with a different Exam Offering in the source term$/ do
@@ -583,25 +585,36 @@ When /^I view the Exam Offerings for a CO created from catalog with a standard f
 end
 
 When /^I add an Exam Period to the term$/ do
-  @term.edit :exam_period => true
+  @exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
+  @term.edit
+  @term.add_exam_period @exam_period
 end
 
 When /^I uncheck the toggle for the Exclude Saturday or Exclude Sunday fields in the term's Exam Period and Save the data$/ do
-  @term.edit :exam_period => true, :include_non_active_days => true
+  @exam_period.edit :include_saturday => true, :include_sunday => true
 end
 
 When /^I edit the Fall Term Exam Period to have fewer days than the Final Exam Matrix days and I save the data$/ do
+  @exam_period = make ExamPeriod, :start_date => "12/11/#{@calendar.year}", :end_date => "12/18/#{@calendar.year}"
   @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/29/#{@calendar.year}",
                :end_date=>"12/10/#{@calendar.year}"
-  @term.edit :exam_period => true, :change_exam_dates => true, :exam_start_date => "12/05/#{@calendar.year}",
-             :exp_success=> false
+  @term.edit
+  @term.add_exam_period @exam_period
+
+  @term.edit
+  @exam_period.edit :start_date => "12/13/#{@calendar.year}", :exp_success=> false
 end
 
 When /^I edit the Fall Term Exam Period to have less days than the Final Exam Matrix days not including Saturday and Sunday and then include these non-active days$/ do
+  @exam_period = make ExamPeriod, :start_date => "12/11/#{@calendar.year}", :end_date => "12/18/#{@calendar.year}"
   @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/29/#{@calendar.year}",
                :end_date=>"12/10/#{@calendar.year}"
-  @term.edit :exam_period => true, :include_non_active_days => true, :change_exam_dates => true,
-             :exam_start_date => "12/05/#{@calendar.year}", :exp_success=> true
+
+  @term.edit
+  @term.add_exam_period @exam_period
+
+  @term.edit
+  @exam_period.edit :start_date => "12/13/#{@calendar.year}", :include_saturday => true, :include_sunday => true
 end
 
 When /^there is more than one Activity Offering for the Course$/ do
@@ -764,8 +777,8 @@ Then /^the final exam period for the Fall Term is listed when I view the Academi
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
     page.open_term_section(@term.term_type)
-    page.get_exam_start_date( @term.term_type).should match /#{@term.start_date}/
-    page.get_exam_end_date( @term.term_type).should match /#{@term.end_date}/
+    page.get_exam_start_date( @term.term_type).should match /12\/11\/#{@term.term_year}/
+    page.get_exam_end_date( @term.term_type).should match /12\/20\/#{@term.term_year}/
   end
 end
 
@@ -1175,6 +1188,7 @@ Then /^the Exclude Saturday or Exclude Sunday fields should be unchecked and inc
   on(CalendarSearch).view @term.term_name
   on ViewAcademicTerms do |page|
     page.open_term_section(@term.term_type)
+    sleep 30
     page.get_exclude_saturday_value(@term.term_type).should == "false"
     page.get_exclude_sunday_value(@term.term_type).should == "false"
   end
