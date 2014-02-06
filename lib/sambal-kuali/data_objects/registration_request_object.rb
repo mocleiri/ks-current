@@ -50,7 +50,7 @@ class RegistrationRequest
   end
 
   def create
-    if options[:modify_course_options]
+    if options[:modify_course_options] do
       edit_course_options :course_options_list
     end
     return new RegistrationRequest
