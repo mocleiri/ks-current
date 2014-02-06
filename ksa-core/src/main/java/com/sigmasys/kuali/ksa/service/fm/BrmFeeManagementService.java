@@ -156,12 +156,12 @@ public interface BrmFeeManagementService {
     /**
      * Compares the FeeManagementSignup effective date to the signup or session ATP milestone.
      *
-     * @param milestoneName Milestone name
+     * @param milestoneType Milestone type
      * @param operator      Relational operator. For example, "==" or "!="
      * @param context       BRM context
      * @return boolean value
      */
-    boolean compareSignupEffectiveDateToAtpMilestone(String milestoneName, String operator, BrmContext context);
+    boolean compareSignupEffectiveDateToAtpMilestone(String milestoneType, String operator, BrmContext context);
 
     /**
      * Compares the number of FeeManagementSignup objects to the given number.

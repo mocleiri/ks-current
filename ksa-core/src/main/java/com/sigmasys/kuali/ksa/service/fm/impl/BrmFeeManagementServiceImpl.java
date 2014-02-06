@@ -647,7 +647,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
+
             Set<FeeManagementSignupRate> signupRates = signup.getSignupRates();
+
             if (CollectionUtils.isNotEmpty(signupRates)) {
                 for (FeeManagementSignupRate signupRate : signupRates) {
                     Rate rate = signupRate.getRate();
@@ -656,6 +658,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                     }
                 }
             }
+
             return false;
         }
 
@@ -801,12 +804,16 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
+
             FeeManagementSignupOperation signupOperation = signup.getOperation();
+
             if (signupOperation != null) {
                 if (operationValues.contains(signupOperation.name())) {
                     return true;
                 }
             }
+
+            return false;
         }
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
@@ -872,13 +879,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     /**
      * Compares the FeeManagementSignup effective date to the signup or session ATP milestone.
      *
-     * @param milestoneName Milestone name
+     * @param milestoneType Milestone type
      * @param operator      Relational operator. For example, "==" or "!="
      * @param context       BRM context
      * @return boolean value
      */
     @Override
-    public boolean compareSignupEffectiveDateToAtpMilestone(String milestoneName, String operator, BrmContext context) {
+    public boolean compareSignupEffectiveDateToAtpMilestone(String milestoneType, String operator, BrmContext context) {
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
 
@@ -921,10 +928,10 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 for (MilestoneInfo milestone : milestones) {
 
-                    if (milestoneName.equals(milestone.getName())) {
+                    if (milestoneType.equals(milestone.getTypeKey())) {
 
-                        Date milestoneStartDate = milestone.getStartDate();
-                        Date milestoneEndDate = milestone.getEndDate();
+                        Date milestoneStartDate = CalendarUtils.removeTime(milestone.getStartDate());
+                        Date milestoneEndDate = CalendarUtils.removeTime(milestone.getEndDate());
 
                         if (milestoneStartDate != null && milestoneEndDate != null) {
 
@@ -1221,6 +1228,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public boolean signupHasRates(String rateCodes, BrmContext context) {
 
         FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+
         if (signup != null) {
             return CollectionUtils.isNotEmpty(filterSignups(Arrays.asList(signup), rateCodes, null, null, null, null));
         }
@@ -1308,12 +1316,15 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
+
             OfferingType offeringType = signup.getOfferingType();
             if (offeringType != null) {
                 if (offeringTypeValues.contains(offeringType.name())) {
                     return true;
                 }
             }
+
+            return false;
         }
 
         FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
