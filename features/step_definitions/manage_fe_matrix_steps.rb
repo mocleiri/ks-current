@@ -108,7 +108,7 @@ end
 
 When /^I choose to edit the existing rule statement$/ do
   @matrix.manage
-  on(FEMatrixView).edit @matrix.rule_requirements, @matrix.exam_type
+  on(FEMatrixView).edit @matrix.rules[0].rule_requirements, @matrix.rules[0].exam_type
 end
 
 When /^I delete the statement and attempt to update the rule$/ do
