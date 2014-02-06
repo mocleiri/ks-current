@@ -99,8 +99,9 @@ class ActivityOfferingMaintenance < BasePage
   element(:add_tba){ |b|b.add_sched_info_div.checkbox(id: 'rdl_tba_control')}
   element(:add_days) { |b| b.add_sched_info_div.text_field(id: 'rdl_days_control') }
   element(:add_start_time) { |b| b.add_sched_info_div.text_field(id: 'rdl_starttime_control') }
-  element(:add_start_time_am) { |b| b.add_sched_info_div.radio(id: 'rdl_startTimeAmPm_control_0') }
-  element(:add_start_time_pm) { |b| b.add_sched_info_div.radio(id: 'rdl_startTimeAmPm_control_1') }
+  #element(:add_start_time_am) { |b| b.add_sched_info_div.radio(id: 'rdl_startTimeAmPm_control_0') }
+  #element(:add_start_time_pm) { |b| b.add_sched_info_div.radio(id: 'rdl_startTimeAmPm_control_1') }
+
   # END TIME WIDGETS
   # This field comes in 2 variants: 1) an "Input"-field, 2) a "Select"-list
   # Only 1 variant is displayed for any given variation of these variables: 1) the logged-in user, 2) whether or not the AO has been approved for "non standard"
@@ -113,8 +114,8 @@ class ActivityOfferingMaintenance < BasePage
         # Widget #1 (input field)
         element(:add_end_time_div) { |b| b.add_sched_info_div.div(id: "rdl_endtime") }
         element(:add_end_time) { |b| b.add_sched_info_div.text_field(id: 'rdl_endtime_control') }
-        element(:add_end_time_am) { |b| b.add_sched_info_div.radio(id: 'rdl_endTimeAmPm_control_0') }
-        element(:add_end_time_pm) { |b| b.add_sched_info_div.radio(id: 'rdl_endTimeAmPm_control_1') }
+        #element(:add_end_time_am) { |b| b.add_sched_info_div.radio(id: 'rdl_endTimeAmPm_control_0') }
+        #element(:add_end_time_pm) { |b| b.add_sched_info_div.radio(id: 'rdl_endTimeAmPm_control_1') }
 
         # Widget #2 (select list)
         element(:end_time_select) { |b| b.select(id: "rdl_endtime_control") }
