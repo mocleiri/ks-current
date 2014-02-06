@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 The Kuali Foundation Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+
+
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+    <!-- This file allows the overriding of beans that are common in all KS modules(core, lum etc...) -->
+    <!--
+	<bean id="identityServiceClient" class="org.kuali.rice.ksb.messaging.KSBClientProxyFactoryBean">
+		<property name="serviceEndpointInterface" value="org.kuali.rice.kim.service.IdentityService" />
+		<property name="serviceQName" value="{http://rice.kuali.org/wsdl/kim}kimIdentityServiceSOAP" />
+	</bean>
+	-->
+    <bean id="ksCacheManager" class="net.sf.ehcache.CacheManager">
+        <constructor-arg index="0" type="java.net.URL" value="${ks.cache.config.file}"/>
+    </bean>
+
+    <bean id="enumMethodCacheAdvisor" class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="enumCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.enum.enable.caching}"/>
+    </bean>
+
+    <bean id="atpMethodCacheAdvisor" class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="atpCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.atp.enable.caching}"/>
+    </bean>
+
+    <bean id="orgMethodCacheAdvisor" class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="orgCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.org.enable.caching}"/>
+    </bean>
+
+    <bean id="lrcMethodCacheAdvisor" class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="lrcCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.lrc.enable.caching}"/>
+    </bean>
+
+    <bean id="statementMethodCacheAdvisor" class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="statementCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.statement.enable.caching}"/>
+    </bean>
+
+    <bean id="luMethodCacheAdvisor" class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="luCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.lu.enable.caching}"/>
+    </bean>
+
+    <bean id="searchFormMethodCacheAdvisor"
+          class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="searchFormCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.searchForm.enable.caching}"/>
+    </bean>
+
+    <bean id="academicCalendarCacheAdvisor" class="org.kuali.student.myplan.util.QueryMethodArgsCacheAdvice">
+        <property name="cacheName" value="academicCalendarCache"/>
+        <property name="cacheManager" ref="ksCacheManager"/>
+        <property name="enabled" value="${ks.academicCalendar.enable.caching}"/>
+    </bean>
+
+    <!--  MyPlan Cache beans -->
+    <bean id="myplanCacheManager" class="net.sf.ehcache.CacheManager">
+        <constructor-arg index="0" type="java.net.URL" value="${myplan.cache.config.file}"/>
+    </bean>
+
+    <bean id="degreeAuditMethodCacheAdvisor"
+          class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="degreeAuditCache"/>
+        <property name="cacheManager" ref="myplanCacheManager"/>
+        <property name="enabled" value="${ks.degreeAudit.enable.caching}"/>
+    </bean>
+
+    <bean id="courseSearchMethodCacheAdvisor"
+          class="org.kuali.student.common.util.spring.MethodArgsToObjectEhcacheAdvice">
+        <property name="cacheName" value="courseSearchCache"/>
+        <property name="cacheManager" ref="myplanCacheManager"/>
+        <property name="enabled" value="${myplan.courseSearch.enable.caching}"/>
+    </bean>
+
+    <bean id="courseOfferingSearchMethodCacheAdvisor" class="org.kuali.student.myplan.util.QueryMethodArgsCacheAdvice">
+        <property name="cacheName" value="courseOfferingCache"/>
+        <property name="cacheManager" ref="myplanCacheManager"/>
+        <property name="enabled" value="${ks.courseOffering.enable.caching}"/>
+    </bean>
+
+    <bean id="SWSClientCacheAdvisor" class="org.kuali.student.myplan.util.QueryMethodArgsCacheAdvice">
+        <property name="cacheName" value="SWSClientCache"/>
+        <property name="cacheManager" ref="myplanCacheManager"/>
+        <property name="enabled" value="${ks.courseOffering.enable.caching}"/>
+    </bean>
+
+
+    <bean id="academicRecordCacheAdvisor" class="org.kuali.student.myplan.util.QueryMethodArgsCacheAdvice">
+        <property name="cacheName" value="academicRecordCache"/>
+        <property name="cacheManager" ref="myplanCacheManager"/>
+        <property name="enabled" value="${ks.academicRecord.enable.caching}"/>
+    </bean>
+
+    <!-- AOP intercepts -->
+    <aop:config>
+        <aop:aspect id="enumCacheAroundSearch" ref="enumMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  edu.uw.kuali.student.service.impl.*.search*(..))"
+                        method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.*.addEnumeratedValue*(..))"
+                    method="invalidateCache"/>
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.*.updateEnumeratedValue*(..))"
+                    method="invalidateCache"/>
+        </aop:aspect>
+        <aop:aspect id="atpCacheAroundSearch" ref="atpMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.getAtp*(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.search*(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.add*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.update*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.create*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.delete*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.atp.service.impl.*.remove*(..))"
+                        method="invalidateCache"/>
+        </aop:aspect>
+        <aop:aspect id="orgCacheAroundSearch" ref="orgMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.organization.service.impl.*.search*(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.organization.service.impl.*.add*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.organization.service.impl.*.update*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.organization.service.impl.*.create*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.organization.service.impl.*.delete*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.core.class1.organization.service.impl.*.remove*(..))"
+                        method="invalidateCache"/>
+        </aop:aspect>
+        <aop:aspect id="lrcCacheAroundSearch" ref="lrcMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.search*(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.add*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.update*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.create*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.delete*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.remove*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lrc.service.impl.*.get*(..))"
+                        method="invalidateCache"/>
+        </aop:aspect>
+        <aop:aspect id="statementCacheAroundSearch" ref="statementMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.search*(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.translate*(..))"
+                        method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.getNaturalLanguageFor*(..))"
+                    method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.getReqComponentTypesForStatementType*(..))"
+                    method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.update*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.create*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r1.core.statement.service.impl.*.delete*(..))"
+                        method="invalidateCache"/>
+        </aop:aspect>
+
+        <aop:aspect id="luCacheAroundSearch" ref="luMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lu.service.impl.*.search(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lu.service.impl.*.get*(..))"
+                        method="getFromCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lu.service.impl.*.update*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lu.service.impl.*.create*(..))"
+                        method="invalidateCache"/>
+            <aop:around pointcut="execution(*  org.kuali.student.r2.lum.lu.service.impl.*.delete*(..))"
+                        method="invalidateCache"/>
+        </aop:aspect>
+
+        <aop:aspect id="academicCalendarCacheAroundSearch" ref="academicCalendarCacheAdvisor">
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwAcademicCalendarServiceImpl.searchForTerms(..))"
+                    method="getFromCache"/>
+        </aop:aspect>
+
+        <!--
+        <aop:aspect id="courseSearchFormCache" ref="searchFormMethodCacheAdvisor">
+            <aop:around pointcut="execution(*  org.kuali.student.myplan.course.controller.CourseSearchController.getCreditByID(..))" method="getFromCache" />
+            <aop:around pointcut="execution(*  org.kuali.student.myplan.course.controller.CourseSearchStrategy.fetchCourseDivisions())" method="getFromCache" />
+        </aop:aspect>
+        -->
+
+        <aop:aspect id="courseOfferingAroundSearch" ref="courseOfferingSearchMethodCacheAdvisor">
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl.getActivityOffering(..))"
+                    method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl.searchForCourseOfferings(..))"
+                    method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl.getCourseOfferingIdsByTermAndSubjectArea(..))"
+                    method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl.getCourseOfferingsByCourseAndTerm(..))"
+                    method="getFromCache"/>
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl.getActivityOfferingDisplaysForCourseOffering(..))"
+                    method="getFromCache"/>
+        </aop:aspect>
+
+
+        <!-- TODO: This should be removed once we build cache pre fetch on course offering -->
+        <aop:aspect id="SWSClientAround" ref="SWSClientCacheAdvisor">
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl.getSecondarySections(..))"
+                    method="getFromCache"/>
+        </aop:aspect>
+
+
+        <aop:aspect id="academicRecordAroundSearch" ref="academicRecordCacheAdvisor">
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.UwAcademicRecordServiceImpl.getCompletedCourseRecords(..))"
+                    method="getFromCache"/>
+
+        </aop:aspect>
+
+        <aop:aspect id="courseSearchCacheAroundSearch" ref="courseSearchMethodCacheAdvisor">
+            <aop:around
+                    pointcut="execution(*  org.kuali.student.myplan.course.controller.CourseSearchController.getCreditMap(..))"
+                    method="getFromCache"/>
+        </aop:aspect>
+
+        <aop:aspect id="degreeAuditAroundSearch" ref="degreeAuditMethodCacheAdvisor">
+            <aop:around
+                    pointcut="execution(*  edu.uw.kuali.student.service.impl.DegreeAuditServiceImpl.getAuditPrograms(..))"
+                    method="getFromCache"/>
+
+        </aop:aspect>
+
+    </aop:config>
+
+    <bean id="ks.messageServiceMock" class="org.kuali.student.core.messages.service.impl.MessageServiceMock">
+        <property name="messageFiles">
+            <list>
+                <value>classpath:org\kuali\student\common\ui\gwt-messages.xml</value>
+                <value>classpath:org\kuali\student\core\ui\gwt-messages.xml</value>
+                <value>classpath:org\kuali\student\lum\lu\ui\course\gwt-messages.xml</value>
+            </list>
+        </property>
+    </bean>
+</beans>
