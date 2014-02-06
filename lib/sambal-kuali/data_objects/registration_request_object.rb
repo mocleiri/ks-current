@@ -31,7 +31,7 @@ class RegistrationRequest
   #    :course_options_list=> [],
   #    :modify_course_options=> false
   #  }
-  # initialize is generally called using TestFactory Foundry .make or method
+  # initialize is generally called using TestFactory Foundry .make or .create methods
   
   def initialize(browser, opts={})
     @browser = browser
