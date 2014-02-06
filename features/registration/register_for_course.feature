@@ -20,7 +20,8 @@ Feature: REG.Register for course
 
   #CR 1.4 (KSENROLL-11809)
   Scenario: I want to remove a course from my selections because I don’t want to register for it anymore
-    When I drop a course from my registration cart
+    When I add a course offering to my registration cart
+    And I drop the course from my registration cart
     Then the course is not present in my cart
 
   Scenario: Student must be able to edit a course in their registration cart

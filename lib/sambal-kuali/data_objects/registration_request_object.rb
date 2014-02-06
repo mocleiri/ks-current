@@ -100,6 +100,12 @@ class RegistrationRequest
   end
   private :edit_reg_group
 
+  def remove_from_cart
+    on CourseRegistration do |page|
+      page.remove_course
+    end
+  end
+
   def edit_course_options(course_opts)
     if course_opts.nil?
       return nil
