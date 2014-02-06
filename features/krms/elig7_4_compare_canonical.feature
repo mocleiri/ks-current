@@ -28,10 +28,13 @@ Feature: CO.ELIG7-4 Compare to Canonical
     And I want to edit the Student Eligibility & Prerequisite section
     And I add a course statement after node "B" with course "HIST210"
     Then the info message "Course Offering Rule differs from Catalog Rule" should be present
-    When I commit changes made to the proposition
+    And I commit changes made to the proposition
 
   #ELIG7.4.EB5 (KSENROLL-7174)
   Scenario: Confirm that the selected course's CO and CLU have the different text after edit
     When I navigate to the Student Eligibility & Prerequisite section for course "BSCI202" in the historic term
+    And I want to edit the Student Eligibility & Prerequisite section
+    And I add a course statement after node "B" with course "HIST210"
+    And I commit and return to see the changes made to the proposition
     And I want to compare the CO to the CLU for the Student Eligibility & Prerequisite section
     Then the CO and CLU should differ with text "Must have successfully completed HIST210"

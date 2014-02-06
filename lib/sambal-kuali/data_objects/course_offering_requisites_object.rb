@@ -59,7 +59,8 @@ class CORequisitesData
   end
 
   def navigate_to_mco_requisites
-    @course_offering = make CourseOffering, {:course => @course, :term => @term}
+    #@course_offering = make CourseOffering, {:course => @course, :term => @term}
+    @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => @course)
     @course_offering.manage
     on ManageCourseOfferings do |page|
       page.loading.wait_while_present(200)
