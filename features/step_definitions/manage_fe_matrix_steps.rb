@@ -365,13 +365,9 @@ Then /^the rules should be sorted on the Days and Time columns$/ do
 
     array_of_days.should <=> ordered_days #.should == 0  #ie array is unchanged after sorting
 
-    array_of_days.each do |day|
-      puts day
-    end
     for day_no in 1..6 do
       array_of_times = page.get_all_standard_fe_times_for_day( "Day #{day_no}")
       sorted_times = array_of_times.sort
-      puts "#{day_no} - #{array_of_times}"
       array_of_times.should <=> sorted_times #).should == 0  #ie array is unchanged after sorting
     end
   end
