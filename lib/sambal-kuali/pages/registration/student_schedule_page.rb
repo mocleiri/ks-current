@@ -1,4 +1,0 @@
-class StudentSchedule < RegisterForCourseBase
-
-
-end
