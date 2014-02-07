@@ -29,12 +29,12 @@
 
 # FM macros
 
-[keyword][]student is resident = session key "residency" is "in.state"
-[keyword][]student is nonresident = session key "residency" is "out.of.state"
-[keyword][]student is full-time = session key "study.load" is "ft"
-[keyword][]student is part-time = session key "study.load" is "pt"
-[keyword][]student is undergraduate = session key "study.level" is "undergraduate"
-[keyword][]student is graduate = session key "study.level" is "graduate"
+#[keyword][]student is resident = session key "residency" is "in.state"
+#[keyword][]student is nonresident = session key "residency" is "out.of.state"
+#[keyword][]student is full-time = session key "study.load" is "ft"
+#[keyword][]student is part-time = session key "study.load" is "pt"
+#[keyword][]student is undergraduate = session key "study.level" is "undergraduate"
+#[keyword][]student is graduate = session key "study.level" is "graduate"
 
 # LHS definitions
 [when][]account key "{key}" is "{value}" = fmService.compareAccountKeyPair("{key}","{value}","==",context)
@@ -43,7 +43,15 @@
 [when][]account key "{key}" gte {value} = fmService.compareAccountKeyPair("{key}","{value}",">=",context)
 [when][]account key "{key}" lt {value} = fmService.compareAccountKeyPair("{key}","{value}","<",context)
 [when][]account key "{key}" lte {value} = fmService.compareAccountKeyPair("{key}","{value}","<=",context)
+
 [when][]session key "{key}" is "{value}" = fmService.compareSessionKeyPair("{key}","{value}","==",context)
+[when][]student is resident = fmService.compareSessionKeyPair("residency","in.state","==",context)
+[when][]student is nonresident = fmService.compareSessionKeyPair("residency","out.of.state","==",context)
+[when][]student is full-time = fmService.compareSessionKeyPair("study.load","ft","==",context)
+[when][]student is part-time = fmService.compareSessionKeyPair("study.load","pt","==",context)
+[when][]student is undergraduate = fmService.compareSessionKeyPair("study.level","undergraduate","==",context)
+[when][]student is graduate = fmService.compareSessionKeyPair("study.level","graduate","==",context)
+
 [when][]session key "{key}" is not "{value}" = fmService.compareSessionKeyPair("{key}","{value}","!=",context)
 [when][]session key "{key}" gt {value} = fmService.compareSessionKeyPair("{key}","{value}",">",context)
 [when][]session key "{key}" gte {value} = fmService.compareSessionKeyPair("{key}","{value}",">=",context)

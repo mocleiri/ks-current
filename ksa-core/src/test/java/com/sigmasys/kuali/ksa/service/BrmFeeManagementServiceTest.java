@@ -104,7 +104,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         // Calling BrmService with payment application rules
         BrmContext context = new BrmContext();
         context.setAccount(session.getAccount());
-        context.setGlobalVariable("fmSession", session);
+        context.setAttribute("fmSession", session);
 
         FeeManagementSession updatedSession = null;
 
@@ -114,9 +114,9 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         Assert.notEmpty(signups);
 
         for (FeeManagementSignup fmSignup : signups) {
-            context.setGlobalVariable("fmSignup", fmSignup);
+            context.setAttribute("fmSignup", fmSignup);
             brmService.fireRules("FM Signup 1", context);
-            updatedSession = context.getGlobalVariable("fmSession");
+            updatedSession = context.getAttribute("fmSession");
         }
 
         Assert.notNull(updatedSession);
@@ -208,7 +208,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         // Calling BrmService with payment application rules
         BrmContext context = new BrmContext();
         context.setAccount(session.getAccount());
-        context.setGlobalVariable("fmSession", session);
+        context.setAttribute("fmSession", session);
 
         String[] rateCodes = {
                 "cp.undergrad.resident.pt",

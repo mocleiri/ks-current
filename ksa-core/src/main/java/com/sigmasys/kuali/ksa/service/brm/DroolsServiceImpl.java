@@ -129,17 +129,17 @@ public class DroolsServiceImpl implements BrmService {
         }
     }
 
-    private <T extends BrmContext> T fireRules(KnowledgeBase knowledgeBase, T droolsContext) {
+    private <T extends BrmContext> T fireRules(KnowledgeBase knowledgeBase, T brmContext) {
         try {
             StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
             session.addEventListener(loggingAgendaEventListener);
-            Map<String, Object> globalParams = droolsContext.getGlobalVariables();
+            Map<String, Object> globalParams = brmContext.getGlobalVariables();
             if (globalParams != null) {
                 for (Map.Entry<String, Object> entry : globalParams.entrySet()) {
                     session.setGlobal(entry.getKey(), entry.getValue());
                 }
             }
-            Command command = CommandFactory.newInsert(droolsContext, DROOLS_CONTEXT_NAME);
+            Command command = CommandFactory.newInsert(brmContext, DROOLS_CONTEXT_NAME);
             ExecutionResults results = session.execute(CommandFactory.newBatchExecution(Arrays.asList(command)));
             return (T) results.getValue(DROOLS_CONTEXT_NAME);
         } catch (Throwable t) {

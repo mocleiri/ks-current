@@ -191,14 +191,14 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         keyPairService.addKeyPairs(entity, new KeyPair(key, value));
     }
 
-    private <T> T getGlobalVariable(BrmContext context, String variableName) {
-        return context.getGlobalVariable(variableName);
+    private <T> T getAttribute(BrmContext context, String attributeName) {
+        return context.getAttribute(attributeName);
     }
 
-    private <T> T getRequiredGlobalVariable(BrmContext context, String variableName) {
-        T variable = getGlobalVariable(context, variableName);
+    private <T> T getRequiredAttribute(BrmContext context, String attributeName) {
+        T variable = getAttribute(context, attributeName);
         if (variable == null) {
-            String errMsg = "Global variable '" + variableName + "' has not been found";
+            String errMsg = "Attribute '" + attributeName + "' has not been found";
             logger.error(errMsg);
             throw new IllegalStateException(errMsg);
         }
@@ -421,49 +421,31 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 }
             }
 
-            Collection intersection = null;
+            Collection intersection = signups;
 
             if (StringUtils.isNotEmpty(rateCodes)) {
                 intersection = CollectionUtils.intersection(signups, rateCodeSignups);
             }
 
             if (StringUtils.isNotEmpty(rateTypeCodes)) {
-                if (intersection != null) {
-                    intersection = CollectionUtils.intersection(intersection, rateTypeCodeSignups);
-                } else {
-                    intersection = rateTypeCodeSignups;
-                }
+                intersection = CollectionUtils.intersection(intersection, rateTypeCodeSignups);
             }
 
             if (StringUtils.isNotEmpty(rateCatalogCodes)) {
-                if (intersection != null) {
-                    intersection = CollectionUtils.intersection(intersection, rateCatalogCodeSignups);
-                } else {
-                    intersection = rateCatalogCodeSignups;
-                }
+                intersection = CollectionUtils.intersection(intersection, rateCatalogCodeSignups);
             }
 
 
             if (StringUtils.isNotEmpty(signupOperations)) {
-                if (intersection != null) {
-                    intersection = CollectionUtils.intersection(intersection, operationSignups);
-                } else {
-                    intersection = operationSignups;
-                }
+                intersection = CollectionUtils.intersection(intersection, operationSignups);
             }
 
             if (StringUtils.isNotEmpty(offeringIds)) {
-                if (intersection != null) {
-                    intersection = CollectionUtils.intersection(intersection, offeringIdSignups);
-                } else {
-                    intersection = operationSignups;
-                }
+                intersection = CollectionUtils.intersection(intersection, offeringIdSignups);
             }
 
-            if (intersection != null) {
-                for (Object signupRef : intersection) {
-                    filteredSignups.add((FeeManagementSignup) signupRef);
-                }
+            for (Object signupRef : intersection) {
+                filteredSignups.add((FeeManagementSignup) signupRef);
             }
         }
 
@@ -529,12 +511,14 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         // Calling BrmService with payment application rules
         BrmContext brmContext = new BrmContext();
+
         brmContext.setAccount(session.getAccount());
-        brmContext.setGlobalVariable(FM_SESSION_VAR_NAME, session);
+
+        brmContext.setAttribute(FM_SESSION_VAR_NAME, session);
 
         brmService.fireRules(Constants.BRM_FM_MAIN_RULE_SET_NAME, brmContext);
 
-        return brmContext.getGlobalVariable(FM_SESSION_VAR_NAME);
+        return brmContext.getAttribute(FM_SESSION_VAR_NAME);
     }
 
     /**
@@ -545,7 +529,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      */
     @Override
     public void fireSessionRuleSet(String ruleSetName, BrmContext context) {
-        context.getGlobalVariables().remove(FM_SIGNUP_VAR_NAME);
+        context.getAttributes().remove(FM_SIGNUP_VAR_NAME);
         brmService.fireRules(ruleSetName, context);
     }
 
@@ -558,13 +542,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void fireSignupRuleSet(String ruleSetName, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
         if (CollectionUtils.isNotEmpty(signups)) {
             for (FeeManagementSignup signup : signups) {
-                context.setGlobalVariable(FM_SIGNUP_VAR_NAME, signup);
+                context.setAttribute(FM_SIGNUP_VAR_NAME, signup);
                 brmService.fireRules(ruleSetName, context);
             }
         }
@@ -595,7 +579,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      */
     @Override
     public boolean compareSessionKeyPair(String key, String value, String operator, BrmContext context) {
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         return compareKeyPair(session, key, value, operator);
     }
 
@@ -611,13 +595,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean compareSignupKeyPair(String key, String value, String operator, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return compareKeyPair(signup, key, value, operator);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -644,7 +628,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean compareSignupRateKeyPair(String key, String value, String operator, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
 
@@ -662,7 +646,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             return false;
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -731,7 +715,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      */
     @Override
     public boolean compareSessionAtp(String atpId, String operator, BrmContext context) {
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         String sessionAtpId = session.getAtpId();
         if (sessionAtpId == null) {
             String errMsg = "FeeManagementSession ATP ID cannot be null";
@@ -801,7 +785,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         List<String> operationValues = CommonUtils.split(signupOperations, MULTI_VALUE_DELIMITER);
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
 
@@ -816,7 +800,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             return false;
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -850,13 +834,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             Date dateValue = new SimpleDateFormat(Constants.DATE_FORMAT_US).parse(date);
 
-            FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+            FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
             if (signup != null) {
                 return compareObjects(signup.getEffectiveDate(), dateValue, operator);
             }
 
-            FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+            FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
             Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -887,9 +871,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean compareSignupEffectiveDateToAtpMilestone(String milestoneType, String operator, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(), null, null, null, null, null);
@@ -1009,7 +993,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public boolean compareNumberOfSignups(int numberOfSignups, String rateCodes, String rateTypeCodes,
                                           String signupOperations, String operator, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups(session.getSignups(), rateCodes, rateTypeCodes, null, signupOperations, null);
@@ -1034,12 +1018,12 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         UnitNumber signupUnits = UnitNumber.ZERO;
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
         if (signup != null) {
             return compareObjects(signup.getUnits() != null ? signup.getUnits() : UnitNumber.ZERO, new UnitNumber(numberOfUnits), operator);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups(session.getSignups(), rateCodes, rateTypeCodes, null, signupOperations, null);
@@ -1070,7 +1054,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         UnitNumber takenUnits = UnitNumber.ZERO;
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups(session.getSignups(), rateCodes, rateTypeCodes, null, signupOperations, null);
@@ -1099,7 +1083,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         UnitNumber sessionUnits = UnitNumber.ZERO;
         UnitNumber takenUnits = UnitNumber.ZERO;
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, null, null);
 
@@ -1135,7 +1119,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         BigDecimal sessionAmount = BigDecimal.ZERO;
         BigDecimal takenAmount = BigDecimal.ZERO;
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, null, null);
 
@@ -1163,13 +1147,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean signupIsTaken(BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return signup.isTaken();
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1194,13 +1178,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean signupIsComplete(BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return signup.isComplete();
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1227,13 +1211,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean signupHasRates(String rateCodes, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return CollectionUtils.isNotEmpty(filterSignups(Arrays.asList(signup), rateCodes, null, null, null, null));
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         return CollectionUtils.isNotEmpty(filterSignups(session.getSignups(), rateCodes, null, null, null, null));
     }
@@ -1248,13 +1232,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean signupHasRateTypes(String rateTypeCodes, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return CollectionUtils.isNotEmpty(filterSignups(Arrays.asList(signup), null, rateTypeCodes, null, null, null));
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         return CollectionUtils.isNotEmpty(filterSignups(session.getSignups(), null, rateTypeCodes, null, null, null));
     }
@@ -1269,13 +1253,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean signupHasRateCatalogs(String rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return CollectionUtils.isNotEmpty(filterSignups(Arrays.asList(signup), null, null, rateCatalogCodes, null, null));
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         return CollectionUtils.isNotEmpty(filterSignups(session.getSignups(), null, null, rateCatalogCodes, null, null));
     }
@@ -1290,13 +1274,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean signupHasOfferingIds(String offeringIds, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             return CollectionUtils.isNotEmpty(filterSignups(Arrays.asList(signup), null, null, null, null, offeringIds));
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         return CollectionUtils.isNotEmpty(filterSignups(session.getSignups(), null, null, null, null, offeringIds));
     }
@@ -1313,7 +1297,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         List<String> offeringTypeValues = CommonUtils.split(offeringTypes, MULTI_VALUE_DELIMITER);
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
 
@@ -1327,7 +1311,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             return false;
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1355,7 +1339,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public boolean manifestHasRates(String rateCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         return CollectionUtils.isNotEmpty(filterManifests(session.getManifests(), rateCodes, null, null));
     }
@@ -1384,7 +1368,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      */
     @Override
     public void setSessionKeyPair(String key, String value, BrmContext context) {
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         setKeyPair(session, key, value);
     }
 
@@ -1405,7 +1389,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         UnitNumber includedUnits = UnitNumber.ZERO;
         UnitNumber excludedUnits = UnitNumber.ZERO;
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1448,7 +1432,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             UnitNumber units = UnitNumber.ZERO;
 
-            FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+            FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
             Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1489,13 +1473,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setSignupKeyPair(String key, String value, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             setKeyPair(signup, key, value);
         } else {
 
-            FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+            FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
             Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1515,7 +1499,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      */
     @Override
     public void setSessionReviewRequired(boolean isReviewRequired, BrmContext context) {
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         session.setReviewRequired(isReviewRequired);
     }
 
@@ -1527,7 +1511,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      */
     @Override
     public void setSessionReviewComplete(boolean isReviewComplete, BrmContext context) {
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         session.setReviewComplete(isReviewComplete);
     }
 
@@ -1540,13 +1524,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setSignupComplete(boolean isComplete, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             signup.setComplete(isComplete);
         } else {
 
-            FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+            FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
             Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1578,9 +1562,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                        boolean isComplete,
                                        BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
@@ -1624,7 +1608,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setSessionSignupsComplete(boolean isComplete, String signupOperations, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1654,13 +1638,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setSignupTaken(boolean isTaken, BrmContext context) {
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
             signup.setTaken(isTaken);
         } else {
 
-            FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+            FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
             Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1683,7 +1667,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setSessionSignupsTaken(boolean isTaken, String signupOperations, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1715,9 +1699,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setPrecedingOfferingsComplete(boolean isComplete, String signupOperations, BrmContext context) {
 
-        FeeManagementSignup signup = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1751,9 +1735,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void setPrecedingOfferingsTaken(boolean isTaken, String signupOperations, BrmContext context) {
 
-        FeeManagementSignup signup = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
@@ -1790,9 +1774,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                                   String rateCatalogCodes,
                                                   BrmContext context) {
 
-        FeeManagementSignup signup = getRequiredGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(),
                 rateCodes, rateTypeCodes, rateCatalogCodes, null, signup.getOfferingId());
@@ -1833,9 +1817,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void removeRates(String rateCodes, String rateTypeCodes, String rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
@@ -1871,7 +1855,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public void addRate(String rateCode, String rateSubCode, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         String atpId = session.getAtpId();
 
@@ -1882,7 +1866,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         if (signup != null) {
 
@@ -1926,7 +1910,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                         String signupOperations,
                         BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         String atpId = session.getAtpId();
 
@@ -1937,7 +1921,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Set<FeeManagementSignup> signups =
                 filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
@@ -1980,7 +1964,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void replaceRates(String rateCodes, String rateSubCodes, String newRateCode, String
             newRateSubCode, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         String atpId = session.getAtpId();
 
@@ -1991,7 +1975,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSignup signup = getGlobalVariable(context, FM_SIGNUP_VAR_NAME);
+        FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
         Collection<FeeManagementSignup> signups = (signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups();
 
@@ -2057,7 +2041,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(), rateCodes, rateTypeCodes,
                 rateCatalogCodes, signupOperations, null);
@@ -2219,7 +2203,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                      BigDecimal amount,
                                      BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Rate rate = rateService.getRate(rateCode, rateSubCode, session.getAtpId());
 
@@ -2284,7 +2268,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2364,7 +2348,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void addTagsToManifests(String tagCodes, String rateCodes, String rateTypeCodes, String
             rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2404,7 +2388,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2440,7 +2424,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void addRollupToManifests(String rollupCode, String rateCodes, String rateTypeCodes, String
             rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2479,7 +2463,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2515,7 +2499,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void setManifestEffectiveDate(String effectiveDate, String rateCodes, String rateTypeCodes, String
             rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2555,7 +2539,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2592,7 +2576,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void setManifestRecognitionDate(String recognitionDate, String rateCodes, String rateTypeCodes, String
             rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2632,7 +2616,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2669,7 +2653,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void setManifestGlAccount(String glAccountId, String rateCodes, String rateTypeCodes, String
             rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2707,7 +2691,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2743,7 +2727,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void setManifestAmount(BigDecimal amount, String rateCodes, String rateTypeCodes, String
             rateCatalogCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2774,7 +2758,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             throw new IllegalArgumentException(errMsg);
         }
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementManifest> manifests = session.getManifests();
 
@@ -2799,7 +2783,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public UnitNumber countDroppedUnits(String rateCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, FeeManagementSignupOperation.DROP.name(), null);
 
@@ -2832,7 +2816,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     @Override
     public UnitNumber countTakenUnits(String rateCodes, BrmContext context) {
 
-        FeeManagementSession session = getRequiredGlobalVariable(context, FM_SESSION_VAR_NAME);
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
         Set<FeeManagementSignup> signups = filterSignups(session.getSignups(), rateCodes, null, null, null, null);
 
