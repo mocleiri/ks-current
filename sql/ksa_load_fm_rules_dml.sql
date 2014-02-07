@@ -115,8 +115,8 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 '(signup operation is "DROP" and signup date is on or after atp milestone "kuali.atp.milestone.firstDayOfClass" and signup date is on or before atp milestone "kuali.atp.milestone.lastDayForPenaltyDrop")',
 'mark preceding offerings as not taken
  mark signup as not taken
- set signup key "late.penalty" to "yes"
- set session key "late.penalty" to "yes"
+ set signup key "late.drop.penalty" to "yes"
+ set session key "late.drop.penalty" to "yes"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late drop - ignored', 5011, 'FM Signup 1_11', 3, 10, null,
