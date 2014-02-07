@@ -370,13 +370,13 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7002, 'FM Signup 2_2', 3, 10, null,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is full-time and student is undergraduate)',
 'add signup rate "sg.facilities.ft", "default"
- add signup rate "sg.administrative.fee", "default"
+ add signup rate "sg.fee", "default"
  ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7003, 'FM Signup 2_3', 3, 10, null,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is part-time and student is undergraduate)',
 'add signup rate "sg.facilities.pt", "default"
- add signup rate "sg.administrative.fee", "default"
+ add signup rate "sg.fee", "default"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7004, 'FM Signup 2_4', 3, 10, null,
