@@ -528,7 +528,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context     BRM context
      */
     @Override
-    public void fireSessionRuleSet(String ruleSetName, BrmContext context) {
+    public synchronized void fireSessionRuleSet(String ruleSetName, BrmContext context) {
         context.getAttributes().remove(FM_SIGNUP_VAR_NAME);
         brmService.fireRules(ruleSetName, context);
     }
@@ -540,7 +540,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * @param context     BRM context
      */
     @Override
-    public void fireSignupRuleSet(String ruleSetName, BrmContext context) {
+    public synchronized void fireSignupRuleSet(String ruleSetName, BrmContext context) {
 
         FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
@@ -1501,6 +1501,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void setSessionReviewRequired(boolean isReviewRequired, BrmContext context) {
         FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         session.setReviewRequired(isReviewRequired);
+        persistEntity(session);
     }
 
     /**
@@ -1513,6 +1514,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     public void setSessionReviewComplete(boolean isReviewComplete, BrmContext context) {
         FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
         session.setReviewComplete(isReviewComplete);
+        persistEntity(session);
     }
 
     /**
@@ -1528,6 +1530,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         if (signup != null) {
             signup.setComplete(isComplete);
+            persistEntity(signup);
         } else {
 
             FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
@@ -1537,6 +1540,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             if (CollectionUtils.isNotEmpty(signups)) {
                 for (FeeManagementSignup fmSignup : signups) {
                     fmSignup.setComplete(isComplete);
+                    persistEntity(fmSignup);
                 }
             }
         }
@@ -1589,6 +1593,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                         if (rateSubCodesComply) {
                             signupRate.setComplete(isComplete);
+                            persistEntity(signupRate);
                         }
                     }
                 }
@@ -1624,6 +1629,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (!signupOperationsExist || (signupOperation != null && signupOperationValues.contains(signupOperation.name()))) {
                     fmSignup.setComplete(isComplete);
+                    persistEntity(fmSignup);
                 }
             }
         }
@@ -1642,6 +1648,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         if (signup != null) {
             signup.setTaken(isTaken);
+            persistEntity(signup);
         } else {
 
             FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
@@ -1651,6 +1658,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             if (CollectionUtils.isNotEmpty(signups)) {
                 for (FeeManagementSignup fmSignup : signups) {
                     fmSignup.setTaken(isTaken);
+                    persistEntity(fmSignup);
                 }
             }
         }
@@ -1683,6 +1691,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (!signupOperationsExist || (signupOperation != null && signupOperationValues.contains(signupOperation.name()))) {
                     fmSignup.setTaken(isTaken);
+                    persistEntity(fmSignup);
                 }
             }
         }
@@ -1719,6 +1728,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (offeringId.equals(signup.getOfferingId()) && effectiveDate.before(signup.getEffectiveDate()) && operationsComply) {
                     fmSignup.setComplete(isComplete);
+                    persistEntity(fmSignup);
                 }
             }
         }
@@ -1755,6 +1765,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (offeringId.equals(signup.getOfferingId()) && effectiveDate.before(signup.getEffectiveDate()) && operationsComply) {
                     fmSignup.setTaken(isTaken);
+                    persistEntity(fmSignup);
                 }
             }
         }
@@ -2321,6 +2332,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                     addManifestToSession(newManifest, session);
 
                     newManifests.add(newManifest);
+
+                    persistEntity(manifest);
+                    persistEntity(newManifest);
                 }
             }
 
@@ -2329,6 +2343,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                     BigDecimal newAmount = amount.divide(new BigDecimal(newManifests.size()), RoundingMode.HALF_DOWN);
                     for (FeeManagementManifest newManifest : newManifests) {
                         newManifest.setAmount(newAmount);
+                        persistEntity(newManifest);
                     }
                 }
             }
