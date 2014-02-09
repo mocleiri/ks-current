@@ -1,61 +1,33 @@
+
+@import 'variables.less';
+@import 'ksboot/mixins.less';
+@import 'ksboot/ks-fonts.less';
+@import 'ksboot/buttons.less';
+
+
+
 /* Space out content a bit */
 body {
   //padding-top: 20px;
-  padding-bottom: 20px;
+  //padding-bottom: 20px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
 .footer {
-  padding-left: 15px;
-  padding-right: 15px;
+  //padding-left: 15px;
+  //padding-right: 15px;
 }
 
-/* Custom page header */
-.header {
-  margin-bottom: 5px;
-  padding: 0.2em;
-  background-color: #000000;
-  color: #ffffff;
-  height: 2.5em;
-
+.ks-mobile-remove-icon {
+    border-left: @dottedLineBorder;
+    font-size: 2.2em;
+    margin-right: 0.3em;
+    padding: 0.1em;
 }
 
-.kscr-header-container{
-    background-color: #B9B9B9;
-}
-.kscr-searchTerm{
-    padding-left: 0.5em;
-}
-
-.kscr-header-title{
-    padding-left: 2em;
-}
-
-.kscr-logo{
-     background-image:url('../images/logo_kuali_k_only.png');
-     background-repeat: no-repeat;
-     background-size: 2.2em auto;
-     padding: 0.5em;
-}
-
-.navigation{
-   float: right;
-}
-
-.navigation a{
-   font-size: 1.7em;
-   flex: auto;
-   color: #fff;
-
-}
-
-.navigation a:hover, a:focus{
-    color: #d3d3d3;
-    outline: none;
-    text-decoration:none;
-}
+/******* Mobile header  *********/
 
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
@@ -65,12 +37,62 @@ body {
   padding-bottom: 19px;
 }
 
+.header {
+  margin-bottom: 5px;
+  padding: 0.2em;
+  background-color: @black;
+  color: @white;
+
+}
+
+.kscr-header-container{
+    background-color: #B9B9B9;
+}
+
+.kscr-header-title{
+    padding-left: 2em;
+}
+
+.kscr-searchTerm{
+    padding-left: 0.5em;
+}
+
+#searchTerm{
+    padding: 0.6em 0.1em;
+}
+
+.kscr-logo{
+     background-image:url('../images/logo_kuali_k_only.png');
+     background-repeat: no-repeat;
+     background-size: 2.2em auto;
+     padding: 0.5em;
+}
+/******* End header *********/
+
 /* Custom page footer */
 .footer {
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
+
+/******* Mobile Navigation  *********/
+
+.navigation{
+   float: right;
+    a{
+      font-size: 1.7em;
+      flex: auto;
+      color: #fff;
+
+    }
+    a:hover, a:focus{
+       color: @grayLight;
+       outline: none;
+       text-decoration:none;
+    }
+}
+
 
 /* Customize container */
 @media (min-width: 768px) {
@@ -116,14 +138,36 @@ body {
   }
 }
 
+/******* My Cart Section  *********/
+.ks-Register-button{
+   margin: -3em 2em 0 0;
+}
+
+.kscr-cart{
+    padding: 1em 0.7em 0;
+}
+
+.kscr-cart-header{
+  background-color: @grayLighter;
+  padding: 0.4em;
+}
+
+.kscr-cart-header-title{
+  padding-left: 0.1em;
+}
+
 .kscr-cart-course {
-    background-color: #EEE;
+    background-color: @grayLighter;
     margin: 10px;
 }
 
+/******* End My Cart Section  *********/
+
+
+/******* Course Section  *********/
 .kscr-course-header {
-    background-color: #CCC;
-    padding: 5px;
+    background-color: @grayMedium;
+    padding-left: 0.5em;
 }
 
 .kscr-course-header .remove {
@@ -131,23 +175,31 @@ body {
 }
 
 .kscr-course-info {
-    border-bottom: 1px dotted #000;
+    border-bottom: @dottedLineBorder;
     padding: 5px;
 }
 
+.kscr-course-info-edit{
+   padding: 0 0.5em 0.5em;
+}
+/******* End Course Section  *********/
+
+/******* Additional Options Section  *********/
 .kscr-adding-header{
-    background-color: #EEE;
+    background-color: @grayLighter;
     padding: 0.1em 0.1em 0.1em 0.5em;
 }
 
-.kscr-AdditionalOpions-buttons{
+.kscr-AdditionalOptions{
+    padding-left: 1em;
+}
+
+.kscr-AdditionalOptions-buttons{
    float: right;
    padding-right: 1em;
 }
+/******* End Additional Options Section  *********/
 
-#searchTerm{
-    padding: 0.6em 0.1em;
-}
 
 @font-face {
     font-family: 'Glyphicons Halflings';
