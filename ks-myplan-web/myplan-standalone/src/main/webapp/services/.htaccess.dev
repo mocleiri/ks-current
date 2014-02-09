@@ -1,0 +1,8 @@
+#
+#  Turn off PubCookie
+#
+satisfy any
+AuthType none
+order deny,allow
+allow from all
+

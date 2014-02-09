@@ -1,0 +1,47 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         monitoring="autodetect"
+         updateCheck="false"
+         name="myplanCacheManager"
+         dynamicConfig="true">
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <defaultCache
+            maxElementsInMemory="10"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            overflowToDisk="true"
+            statistics="true"/>
+
+    <cache name="courseSearchCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="true"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="900"
+           statistics="true"/>
+
+    <!-- 6 Hours -->
+    <cache name="courseOfferingCache" maxElementsInMemory="5000" eternal="false" overflowToDisk="true"
+           timeToIdleSeconds="0" timeToLiveSeconds="21600" statistics="true"/>
+
+    <!-- 1 min -->
+    <!-- this cache is just to reduce the call to sws as both course offering and activity offering
+         for primary section calls the same sws URL. The subsequent calls should be cached in course
+         offeringCache -->
+    <cache name="SWSClientCache" maxElementsInMemory="5000" eternal="false" overflowToDisk="true"
+           timeToIdleSeconds="0" timeToLiveSeconds="60" statistics="true"/>
+
+
+    <!-- 12 Hours -->
+    <cache name="academicCalendarCache" maxElementsInMemory="5000" eternal="false" overflowToDisk="true"
+           timeToIdleSeconds="0" timeToLiveSeconds="43200" statistics="true"/>
+    <!-- 12 Hours -->
+    <cache name="academicRecordCache" maxElementsInMemory="5000" eternal="false" overflowToDisk="true"
+           timeToIdleSeconds="0" timeToLiveSeconds="3600" statistics="true"/>
+
+    <cache name="degreeAuditCache" maxElementsInMemory="5000" eternal="false" overflowToDisk="true"
+           timeToIdleSeconds="0" timeToLiveSeconds="3600" statistics="true"/>
+</ehcache>

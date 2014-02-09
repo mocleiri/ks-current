@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://student.kuali.org/xsd/dictionary-extension http://student.kuali.org/xsd/dictionary-extension/dictionary-extension.xsd">
+
+    <import resource="classpath:ks-PlanItemInfo-dictionary.xml"/>
+
+    <bean id="PlanItemInfo.descr.formatted" parent="PlanItemInfo.descr.formatted-parent">
+        <property name="validCharactersConstraint" ref="uw.AnyCharacterPatternConstraint"/>
+    </bean>
+
+    <bean id="PlanItemInfo.descr.plain" parent="PlanItemInfo.descr.plain-parent">
+        <property name="validCharactersConstraint" ref="uw.AnyCharacterPatternConstraint"/>
+    </bean>
+
+    <bean id="uw.AnyCharacterPatternConstraint"
+          class="org.kuali.rice.krad.datadictionary.validation.constraint.AnyCharacterPatternConstraint">
+        <property name="value"
+                  value="^[A-Za-z0-9.,&gt;&lt;_\\/\-\?\+=(){}\[\];:'&quot;&amp;%$\^~`\*#@!|\t\n\r\xA0 ]*$"/>
+    </bean>
+
+</beans>
