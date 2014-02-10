@@ -1,4 +1,4 @@
-class RegisterForCourseSearch < RegisterForCourseSearchBase
+class RegisterForCourseSearch < RegisterForCourseBase
   page_url "#{$test_site}/kscr-poc/index.jsp"
   expected_element :cr_header_div
 
