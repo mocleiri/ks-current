@@ -268,7 +268,7 @@ module RegistrationWindowsConstants
   METHOD_UNIFORM_SLOTTED_WINDOW = "Uniform Slotted Window"
 end
 
-endclass RegisterForCourseBase < BasePage
+class RegisterForCourseBase < BasePage
 
   expected_element :cr_header_div
 
@@ -281,4 +281,5 @@ endclass RegisterForCourseBase < BasePage
   def select_term(term)
     term_select.select(term)
   end
+end
 

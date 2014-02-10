@@ -1,4 +1,4 @@
-class RegisterForCourseResults < RegisterForCourseSearchBase
+class RegisterForCourseResults < RegisterForCourseBase
   page_url "#{$test_site}/kscr-poc/index.jsp"
 
   # all resolutions
