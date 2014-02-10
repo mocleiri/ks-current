@@ -159,7 +159,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late add.', 5019, 'FM Signup 1_19', 3, 10, null,
-'(signup date is after before atp milestone "kuali.atp.milestone.firstDayOfClass" and signup operation is "ADD")',
+'(signup date is after atp milestone "kuali.atp.milestone.firstDayOfClass" and signup operation is "ADD")',
 'set session key "late.registration" to "true"
  mark signup as taken
 ')!
