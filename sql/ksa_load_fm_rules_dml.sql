@@ -49,13 +49,13 @@ expander ksa.dsl
 
 ')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Regular signup add before first day of class.', 5001, 'FM Signup 1_1', 3, 10, null,
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Regular signup add before first day of class.', 5001, 'FM Signup 1_1', 3, 20, null,
 '(signup date is on or before atp milestone "kuali.atp.milestone.firstDayOfClass" and signup operation is "ADD")',
 'set session key "early.registration" to "true"
  mark signup as taken
 ')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Regular signup awop or transfer.', 5002, 'FM Signup 1_2', 3, 10, null,
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Regular signup awop or transfer.', 5002, 'FM Signup 1_2', 3, 20, null,
 '(signup operation is "ADD_WITHOUT_PENALTY,TRANSFER_IN")',
 'set session key "early.registration" to "true"
  mark signup as taken
@@ -157,7 +157,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
  add signup rate "public.policy.resident.differential", "default"
 ')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late add', 5019, 'FM Signup 1_19', 3, 10, null,
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late add', 5019, 'FM Signup 1_19', 3, 20, null,
 '(signup date is after atp milestone "kuali.atp.milestone.firstDayOfClass" and signup operation is "ADD")',
 'set session key "late.registration" to "true"
  mark signup as taken

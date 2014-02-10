@@ -546,8 +546,38 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         Set<FeeManagementSignup> signups = session.getSignups();
 
+        List<FeeManagementSignup> signupsList = new ArrayList<FeeManagementSignup>(signups);
+
+        // Sorting signups by the effective date in the ascending order
+        Collections.sort(signupsList, new Comparator<FeeManagementSignup>() {
+            @Override
+            public int compare(FeeManagementSignup signup1, FeeManagementSignup signup2) {
+
+                if (signup1 == null && signup2 == null) {
+                    return 0;
+                } else if (signup1 != null && signup2 == null) {
+                    return 1;
+                } else if (signup1 == null) {
+                    return -1;
+                }
+
+                Date effectiveDate1 = signup1.getEffectiveDate();
+                Date effectiveDate2 = signup2.getEffectiveDate();
+
+                if (effectiveDate1 == null && effectiveDate2 == null) {
+                    return 0;
+                } else if (effectiveDate1 != null && effectiveDate2 == null) {
+                    return 1;
+                } else if (effectiveDate1 == null) {
+                    return -1;
+                }
+
+                return effectiveDate1.compareTo(effectiveDate2);
+            }
+        });
+
         if (CollectionUtils.isNotEmpty(signups)) {
-            for (FeeManagementSignup signup : signups) {
+            for (FeeManagementSignup signup : signupsList) {
                 context.setAttribute(FM_SIGNUP_VAR_NAME, signup);
                 brmService.fireRules(ruleSetName, context);
             }
