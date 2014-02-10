@@ -157,6 +157,14 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
  add signup rate "public.policy.resident.differential", "default"
 ')!
 
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late add.', 5019, 'FM Signup 1_19', 3, 10, null,
+'(signup date is after before atp milestone "kuali.atp.milestone.firstDayOfClass" and signup operation is "ADD")',
+'set session key "late.registration" to "true"
+ mark signup as taken
+')!
+
+
 --Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('', 9099, 'FM Rule TEST', 3, 8, null,
 --'(Context is initialized)',
 --'set session key "chargeable.credits" to number of units where signup operation is "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN" minus "DROP,DROP_WITHOUT_PENALTY,TRANSFER_OUT"
@@ -370,25 +378,25 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7002, 'FM Signup 2_2', 3, 10, null,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is full-time and student is undergraduate)',
 'add signup rate "sg.facilities.ft", "default"
- add signup rate "sg.fee", "default"
  ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7003, 'FM Signup 2_3', 3, 10, null,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is part-time and student is undergraduate)',
 'add signup rate "sg.facilities.pt", "default"
- add signup rate "sg.fee", "default"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7004, 'FM Signup 2_4', 3, 10, null,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is full-time and student is graduate)',
 'add signup rate "sg.facilities.ft", "default"
  add signup rate "sg.fee.graduate.ft", "default"
+ remove signup rates "sg.fee"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is SG and incurs SG reg fee', 7005, 'FM Signup 2_5', 3, 10, null,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is part-time and student is graduate)',
 'add signup rate "sg.facilities.pt", "default"
  add signup rate "sg.fee.graduate.pt", "default"
+  remove signup rates "sg.fee"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7006, 'FM Signup 2_6', 3, 10, null,
