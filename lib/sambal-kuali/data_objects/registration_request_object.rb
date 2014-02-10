@@ -31,7 +31,7 @@ class RegistrationRequest
   #    :course_options_list=> [],
   #    :modify_course_options=> false
   #  }
-  # initialize is generally called using TestFactory Foundry .make or method
+  # initialize is generally called using TestFactory Foundry .make or .create methods
   
   def initialize(browser, opts={})
     @browser = browser
@@ -99,6 +99,12 @@ class RegistrationRequest
     end
   end
   private :edit_reg_group
+
+  def remove_from_cart
+    on CourseRegistration do |page|
+      page.remove_course
+    end
+  end
 
   def edit_course_options(course_opts)
     if course_opts.nil?

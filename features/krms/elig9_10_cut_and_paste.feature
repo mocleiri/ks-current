@@ -23,8 +23,8 @@ Feature: CO.ELIG9-10 Cut and Paste
     And I cut the group containing node "B" and paste it after node "F"
     Then there should be a dropdown with value "OR" before node "B."
     When I switch to the other tab on the page
-    Then the text area should contain "A OR D OR E OR F OR (B AND C) OR G"
+    Then the text area should contain "(A OR D) OR E OR F OR (B AND C) OR G"
     When I commit and return to see the changes made to the proposition
     And I want to edit the Corequisite section
     And I switch to the other tab on the page
-    Then the text area should contain "A OR B OR C OR D OR (E AND F) OR G"
+    Then the text area should contain "(A OR B) OR C OR D OR (E AND F) OR G"

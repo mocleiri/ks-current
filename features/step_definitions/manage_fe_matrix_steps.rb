@@ -108,7 +108,7 @@ end
 
 When /^I choose to edit the existing rule statement$/ do
   @matrix.manage
-  on(FEMatrixView).edit @matrix.rule_requirements, @matrix.exam_type
+  on(FEMatrixView).edit @matrix.rules[0].rule_requirements, @matrix.rules[0].exam_type
 end
 
 When /^I delete the statement and attempt to update the rule$/ do
@@ -363,22 +363,12 @@ Then /^the rules should be sorted on the Days and Time columns$/ do
     array_of_days = page.get_all_standard_fe_days
     ordered_days = array_of_days.sort
 
-    (array_of_days <=> ordered_days).should == 0  #ie array is unchanged after sorting
+    array_of_days.should <=> ordered_days #.should == 0  #ie array is unchanged after sorting
 
-    array_of_days.each do |day|
-      ordered_days << "#{day}"
-    end
     for day_no in 1..6 do
-      if i != 6
-        j = i + 1
-        ordered_days.should match /Day #{i}.*Day #{(j)}/m
-        ordered_days.should_not match /Day #{(j)}.*Day #{i}/m
-      end
-
       array_of_times = page.get_all_standard_fe_times_for_day( "Day #{day_no}")
-      sorted_times = array_of_times
-
-      (array_of_times <=> sorted_times).should == 0  #ie array is unchanged after sorting
+      sorted_times = array_of_times.sort
+      array_of_times.should <=> sorted_times #).should == 0  #ie array is unchanged after sorting
     end
   end
 end

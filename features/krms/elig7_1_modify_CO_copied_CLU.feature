@@ -22,13 +22,13 @@ Feature: CO.ELIG7-1 Modify CO copied from CLU
   #ELIG7.1.EB3 (KSENROLL-7245)
   Scenario: Test whether editing newly added statements persists to the database
     When I want to edit the Student Eligibility & Prerequisite section
-    And I edit node "C" by adding course "BSCI103"
+    And I edit node "B" by adding course "BSCI103"
     And I commit and return to see the changes made to the proposition
-    Then the agenda page's text should match "all courses from,BSCI103,ENGL313,HIST110"
+    Then the agenda page's text should match "minimum of 1 course from,BSCI103,BSCI339,BSCI399"
 
   #ELIG7.1.EB4 (KSENROLL-7245)
   Scenario: Test whether deleting statements persists to the database
     When I want to edit the Student Eligibility & Prerequisite section
-    And I delete node "C" in the tree
+    And I delete node "A" in the tree
     And I commit and return to see the changes made to the proposition
-    Then the agenda page's text should not match "all courses from,BSCI103,ENGL313,HIST110"
+    Then the agenda page's text should not match "BSCI106"

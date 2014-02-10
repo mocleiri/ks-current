@@ -1,5 +1,5 @@
 When /^I add a course offering to my registration cart$/ do
-  @reg_request = make RegistrationRequest :student_id=>"student",
+  @reg_request = create RegistrationRequest :student_id=>"student",
                                           :term_code=>"201301",
                                           :term_descr=>"Spring 2013",
                                           :course_code=>"CHEM231",
@@ -7,16 +7,13 @@ When /^I add a course offering to my registration cart$/ do
 end
 
 When /^I add a course to my registration cart and specify course options$/ do
-  # want to specify credits and grading option
-  on CourseRegistration do
-    course_options_list << (make CourseOptions, :credit_option => "4", :grading_option => "Pass/Fail")
-    @registration_request = create RegistrationRequest, :course_code => "", :reg_group => "", :course_options_list => course_options_list, :modify_course_options => true
-    # above will include entering course_code, reg_group (& term if nec), and clicking Add to Cart, then changing the 2 options, and clicking Add to Cart again
-  end
+  course_options_list << (make CourseOptions, :credit_option => "4", :grading_option => "Pass/Fail")
+  @reg_request = create RegistrationRequest, :student_id => "student", :term_code => "201301", :course_options_list => course_options_list, :modify_course_options => true
+  # above will include entering course_code, reg_group (& term if nec), and clicking Add to Cart, then changing the 2 options, and clicking Add to Cart again
 end
 
-When /^I drop a course from my registration cart$/ do
-  pending
+When /^I drop the course from my registration cart$/ do
+  @reg_request.remove_from_cart
 end
 
 When /^I edit a course in my registration cart$/ do
@@ -36,8 +33,8 @@ end
 
 Then /^the course is present in my cart, with the correct options$/  do
   on CourseRegistration do |page|
-    page.get_credit_option(@registration_request).should == course_options_list.credit_option
-    page.get_grading_option(@registration_request).should == course_options_list.grading_option
+    page.get_credit_option(@reg_request).should == course_options_list.credit_option
+    page.get_grading_option(@reg_request).should == course_options_list.grading_option
     #do we need to quit or remove course?
   end
 end

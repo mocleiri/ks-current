@@ -8,7 +8,7 @@ end
 When /^I navigate to the agendas page for a CO that I cannot edit and open the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
   @prereq = make AOPreparationPrerequisiteRule, :term => "201208", :course => "PHYS420"
-  @prereq.navigate_to_ao_requisites
+  @prereq.navigate_to_ao_requisites( true)
 end
 
 When /^I copy and edit the Course Offering rule to the Student Eligibility & Prerequisite section$/ do
@@ -45,7 +45,7 @@ end
 When /^I replace the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
   @prereq = make AOPreparationPrerequisiteRule
-  @prereq.sepr_replace_co_rule
+  @prereq.sepr_replace_co_rule( true)
 end
 
 When /^I edit and update the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
@@ -57,7 +57,7 @@ end
 When /^I edit the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "D"
   @prereq = make AOPreparationPrerequisiteRule, :activity => "D"
-  @prereq.sepr_edit_replaced_co_rule
+  @prereq.sepr_edit_replaced_co_rule( true)
 end
 
 When /^I commit the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
@@ -266,13 +266,13 @@ end
 
 ###General steps###
 Given /^I have made changes to multiple AO Requisites for the same course offering$/ do
-  @course_offering = make CourseOffering, :term => "201208", :course => "CHEM277"
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
   @activityOR = make AORequisitesData
-  @activityOR.make_changes_to_multiple_ao_reqs
+  @activityOR.make_changes_to_multiple_ao_reqs( @course_offering.course)
 end
 
 When /^I copy a course offering from an existing offering that had changes made to its activity offerings$/ do
-  @copyCO = create CourseOffering, :term => "201301", :course => "CHEM277", :create_from_existing => @course_offering
+  @copyCO = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201301", :course => @course_offering.course)
 end
 
 Then /^the copied course offering should have the same AO Requisites as the original$/ do
@@ -323,17 +323,17 @@ end
 
 Then /^I should be able to use all the function buttons on the Edit Rule tab$/ do
   on ManageAORequisites do |page|
-    @activityOR.move_around( "B", "out")
-    page.edit_tree_section.span(:text => /.*B\..*/).id.should match @activityOR.test_node_level( "secondary")
+    @activityOR.move_around( "E", "out")
+    page.edit_tree_section.span(:text => /.*E\..*/).id.should match @activityOR.test_node_level( "secondary")
 
-    @activityOR.move_around( "B", "up")
-    page.edit_tree_section.text.should match /.*B\..+C\..*/m
+    @activityOR.move_around( "D", "up")
+    page.edit_tree_section.text.should match /.*D\..+E\..*/m
 
     @activityOR.move_around( "A", "down")
-    page.edit_tree_section.text.should match /.*[BC]\..+A\..*/m
+    page.edit_tree_section.text.should match /.*[C]\..+A\..*/m
 
-    @activityOR.move_around( "E", "up in")
-    page.edit_tree_section.text.should match /.*E\..+C\..*/m
+    @activityOR.move_around( "B", "up in")
+    page.edit_tree_section.text.should match /.*B\..+C\..*/m
 
     @activityOR.delete_statement( "E")
     page.edit_tree_section.text.should_not match /.*E\..*/

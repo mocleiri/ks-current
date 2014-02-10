@@ -61,8 +61,13 @@ class AORequisitesData
     set_options(options)
   end
 
-  def navigate_to_ao_requisites
-    @course_offering = make CourseOffering, {:course => @course, :term => @term}
+  def navigate_to_ao_requisites( only_view_ao_requisites = false)
+    if only_view_ao_requisites
+      @course_offering = make CourseOffering, {:course => @course, :term => @term}
+    else
+      @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => @course)
+    end
+
     @course_offering.manage
     on ManageCourseOfferings do |page|
       page.loading.wait_while_present(200)
@@ -559,21 +564,21 @@ class AORequisitesData
     end
   end
 
-  def make_changes_to_multiple_ao_reqs
-    @prereq = make AOPreparationPrerequisiteRule, :course => "CHEM277"
-    @prereq.sepr_copy_edit_co_rule_for_copy
+  def make_changes_to_multiple_ao_reqs( course)
+    @prereq = make AOPreparationPrerequisiteRule, :course => course
+    @prereq.sepr_copy_edit_co_rule_for_copy( true)
     commit_changes
 
-    @coreq = make AOCorequisiteRule, :course => "CHEM277"
-    @coreq.cr_suppress_co_rule
+    @coreq = make AOCorequisiteRule, :course => course
+    @coreq.cr_suppress_co_rule( true)
     commit_changes
 
-    @antireq = make AOAntirequisiteRule, :course => "CHEM277", :activity => "D"
-    @antireq.ar_add_ao_rule_for_copy
+    @antireq = make AOAntirequisiteRule, :course => course, :activity => "D"
+    @antireq.ar_add_ao_rule_for_copy( true)
     commit_changes
 
-    @coreq2 = make AOCorequisiteRule, :course => "CHEM277", :activity => "D"
-    @coreq2.cr_replace_co_rule_for_copy
+    @coreq2 = make AOCorequisiteRule, :course => course, :activity => "D"
+    @coreq2.cr_replace_co_rule_for_copy( true)
     commit_changes
   end
 end
@@ -600,8 +605,8 @@ class AOAntirequisiteRule < AORequisitesData
     set_options(options)
   end
 
-  def ar_copy_edit_co_rule
-    navigate_to_ao_requisites
+  def ar_copy_edit_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -611,8 +616,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_copy_co_rule
-    navigate_to_ao_requisites
+  def ar_copy_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -624,8 +629,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_revert_copy_co_rule
-    ar_copy_co_rule
+  def ar_revert_copy_co_rule( only_view_ao_requisites = false)
+    ar_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_revert_link.exists?
         page.loading.wait_while_present
@@ -634,8 +639,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_revert_copy_edit_co_rule
-    ar_copy_edit_co_rule
+  def ar_revert_copy_edit_co_rule( only_view_ao_requisites = false)
+    ar_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_revert_link.exists?
         page.loading.wait_while_present
@@ -644,8 +649,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_revert_add_ao_rule
-    ar_add_ao_rule
+  def ar_revert_add_ao_rule( only_view_ao_requisites = false)
+    ar_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_revert_link.exists?
         page.loading.wait_while_present
@@ -654,8 +659,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_add_ao_rule
-    navigate_to_ao_requisites
+  def ar_add_ao_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_add_link.exists?
         page.loading.wait_while_present
@@ -665,8 +670,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_add_ao_rule_for_copy
-    navigate_to_ao_requisites
+  def ar_add_ao_rule_for_copy( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_add_link.exists?
         page.loading.wait_while_present
@@ -676,8 +681,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_replace_co_rule
-    navigate_to_ao_requisites
+  def ar_replace_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_replace_link.exists?
         page.loading.wait_while_present
@@ -687,8 +692,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_edit_replaced_co_rule
-    ar_replace_co_rule
+  def ar_edit_replaced_co_rule ( only_view_ao_requisites = false)
+    ar_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.antireq_edit_link.exists?
@@ -698,8 +703,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_edit_update_replaced_co_rule
-    ar_replace_co_rule
+  def ar_edit_update_replaced_co_rule  ( only_view_ao_requisites = false)
+    ar_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.antireq_edit_link.exists?
@@ -710,8 +715,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_suppress_co_rule
-    navigate_to_ao_requisites
+  def ar_suppress_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_suppress_link.exists?
         page.loading.wait_while_present
@@ -720,8 +725,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_suppress_added_ao_rule
-    ar_add_ao_rule
+  def ar_suppress_added_ao_rule   ( only_view_ao_requisites = false)
+    ar_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -730,8 +735,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_suppress_copied_co_rule
-    ar_copy_co_rule
+  def ar_suppress_copied_co_rule  ( only_view_ao_requisites = false)
+    ar_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -740,8 +745,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_suppress_copied_edited_co_rule
-    ar_copy_edit_co_rule
+  def ar_suppress_copied_edited_co_rule    ( only_view_ao_requisites = false)
+    ar_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -750,8 +755,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_view_catalog_co_rule
-    navigate_to_ao_requisites
+  def ar_view_catalog_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_view_link.exists?
         page.loading.wait_while_present
@@ -760,8 +765,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_compare_catalog_co_ao_rule
-    ar_copy_co_rule
+  def ar_compare_catalog_co_ao_rule   ( only_view_ao_requisites = false)
+    ar_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_compare_link.exists?
         page.loading.wait_while_present
@@ -770,8 +775,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_compare_ao_to_clu_co_rule
-    ar_replace_co_rule
+  def ar_compare_ao_to_clu_co_rule    ( only_view_ao_requisites = false)
+    ar_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_compare_link.exists?
         page.loading.wait_while_present
@@ -780,8 +785,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_compare_new_ao_to_clu_co_rule
-    ar_add_ao_rule
+  def ar_compare_new_ao_to_clu_co_rule    ( only_view_ao_requisites = false)
+    ar_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_compare_link.exists?
         page.loading.wait_while_present
@@ -790,8 +795,8 @@ class AOAntirequisiteRule < AORequisitesData
     end
   end
 
-  def ar_revert_replaced_co_rule
-    ar_replace_co_rule
+  def ar_revert_replaced_co_rule   ( only_view_ao_requisites = false)
+    ar_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.antireq_revert_link.exists?
         page.loading.wait_while_present
@@ -877,8 +882,8 @@ class AOCorequisiteRule < AORequisitesData
     set_options(options)
   end
 
-  def cr_copy_edit_co_rule
-    navigate_to_ao_requisites
+  def cr_copy_edit_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -888,8 +893,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_copy_co_rule
-    navigate_to_ao_requisites
+  def cr_copy_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -901,8 +906,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_revert_copy_co_rule
-    cr_copy_co_rule
+  def cr_revert_copy_co_rule     ( only_view_ao_requisites = false)
+    cr_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_revert_link.exists?
         page.loading.wait_while_present
@@ -911,8 +916,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_revert_copy_edit_co_rule
-    cr_copy_edit_co_rule
+  def cr_revert_copy_edit_co_rule  ( only_view_ao_requisites = false)
+    cr_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_revert_link.exists?
         page.loading.wait_while_present
@@ -921,8 +926,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_revert_add_ao_rule
-    cr_add_ao_rule
+  def cr_revert_add_ao_rule    ( only_view_ao_requisites = false)
+    cr_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_revert_link.exists?
         page.loading.wait_while_present
@@ -931,8 +936,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_add_ao_rule
-    navigate_to_ao_requisites
+  def cr_add_ao_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_add_link.exists?
         page.loading.wait_while_present
@@ -942,8 +947,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_replace_co_rule
-    navigate_to_ao_requisites
+  def cr_replace_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_replace_link.exists?
         page.loading.wait_while_present
@@ -953,8 +958,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_replace_co_rule_for_copy
-    navigate_to_ao_requisites
+  def cr_replace_co_rule_for_copy( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_replace_link.exists?
         page.loading.wait_while_present
@@ -964,8 +969,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_edit_replaced_co_rule
-    cr_replace_co_rule
+  def cr_edit_replaced_co_rule       ( only_view_ao_requisites = false)
+    cr_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.coreq_edit_link.exists?
@@ -975,8 +980,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_edit_update_replaced_co_rule
-    cr_replace_co_rule
+  def cr_edit_update_replaced_co_rule   ( only_view_ao_requisites = false)
+    cr_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.coreq_edit_link.exists?
@@ -987,8 +992,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_suppress_added_ao_rule
-    cr_add_ao_rule
+  def cr_suppress_added_ao_rule   ( only_view_ao_requisites = false)
+    cr_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -997,8 +1002,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_suppress_co_rule
-    navigate_to_ao_requisites
+  def cr_suppress_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_suppress_link.exists?
         page.loading.wait_while_present
@@ -1007,8 +1012,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_suppress_copied_co_rule
-    cr_copy_co_rule
+  def cr_suppress_copied_co_rule       ( only_view_ao_requisites = false)
+    cr_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1017,8 +1022,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_suppress_copied_edited_co_rule
-    cr_copy_edit_co_rule
+  def cr_suppress_copied_edited_co_rule  ( only_view_ao_requisites = false)
+    cr_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1027,8 +1032,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_view_catalog_co_rule
-    navigate_to_ao_requisites
+  def cr_view_catalog_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_view_link.exists?
         page.loading.wait_while_present
@@ -1037,8 +1042,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_compare_catalog_co_ao_rule
-    cr_copy_co_rule
+  def cr_compare_catalog_co_ao_rule       ( only_view_ao_requisites = false)
+    cr_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_compare_link.exists?
         page.loading.wait_while_present
@@ -1047,8 +1052,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_compare_ao_to_clu_co_rule
-    cr_replace_co_rule
+  def cr_compare_ao_to_clu_co_rule    ( only_view_ao_requisites = false)
+    cr_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_compare_link.exists?
         page.loading.wait_while_present
@@ -1057,8 +1062,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_compare_new_ao_to_clu_co_rule
-    cr_add_ao_rule
+  def cr_compare_new_ao_to_clu_co_rule    ( only_view_ao_requisites = false)
+    cr_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_compare_link.exists?
         page.loading.wait_while_present
@@ -1067,8 +1072,8 @@ class AOCorequisiteRule < AORequisitesData
     end
   end
 
-  def cr_revert_replaced_co_rule
-    cr_replace_co_rule
+  def cr_revert_replaced_co_rule       ( only_view_ao_requisites = false)
+    cr_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.coreq_revert_link.exists?
         page.loading.wait_while_present
@@ -1130,7 +1135,7 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     defaults = {
         :section => "Student Eligibility & Prerequisite",
         :term => "201208",
-        :course => "ENGL301",
+        :course => "ENGL304",
         :activity => "A"
     }
 
@@ -1139,8 +1144,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     set_options(options)
   end
 
-  def sepr_copy_edit_co_rule
-    navigate_to_ao_requisites
+  def sepr_copy_edit_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1150,8 +1155,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_copy_edit_co_rule
-    navigate_to_ao_requisites
+  def rp_copy_edit_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1161,8 +1166,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_copy_edit_co_rule_for_copy
-    navigate_to_ao_requisites
+  def sepr_copy_edit_co_rule_for_copy( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1172,8 +1177,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_copy_edit_co_rule_for_copy
-    navigate_to_ao_requisites
+  def rp_copy_edit_co_rule_for_copy( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1183,8 +1188,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_copy_co_rule
-    navigate_to_ao_requisites
+  def sepr_copy_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1196,8 +1201,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_copy_co_rule
-    navigate_to_ao_requisites
+  def rp_copy_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1209,8 +1214,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_revert_copy_co_rule
-    sepr_copy_co_rule
+  def sepr_revert_copy_co_rule( only_view_ao_requisites = false)
+    sepr_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_revert_link.exists?
         page.loading.wait_while_present
@@ -1219,8 +1224,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_revert_copy_co_rule
-    rp_copy_co_rule
+  def rp_revert_copy_co_rule( only_view_ao_requisites = false)
+    rp_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_revert_link.exists?
         page.loading.wait_while_present
@@ -1229,8 +1234,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_revert_copy_edit_co_rule
-    sepr_copy_edit_co_rule
+  def sepr_revert_copy_edit_co_rule( only_view_ao_requisites = false)
+    sepr_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_revert_link.exists?
         page.loading.wait_while_present
@@ -1239,8 +1244,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_revert_copy_edit_co_rule
-    rp_copy_edit_co_rule
+  def rp_revert_copy_edit_co_rule( only_view_ao_requisites = false)
+    rp_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_revert_link.exists?
         page.loading.wait_while_present
@@ -1249,8 +1254,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_revert_add_ao_rule
-    sepr_add_ao_rule
+  def sepr_revert_add_ao_rule( only_view_ao_requisites = false)
+    sepr_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_revert_link.exists?
         page.loading.wait_while_present
@@ -1259,8 +1264,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_revert_add_ao_rule
-    rp_add_ao_rule
+  def rp_revert_add_ao_rule ( only_view_ao_requisites = false)
+    rp_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_revert_link.exists?
         page.loading.wait_while_present
@@ -1269,8 +1274,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_add_ao_rule
-    navigate_to_ao_requisites
+  def sepr_add_ao_rule   ( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_add_link.exists?
         page.loading.wait_while_present
@@ -1280,8 +1285,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_add_ao_rule
-    navigate_to_ao_requisites
+  def rp_add_ao_rule  ( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_add_link.exists?
         page.loading.wait_while_present
@@ -1291,8 +1296,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_replace_co_rule
-    navigate_to_ao_requisites
+  def sepr_replace_co_rule  ( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_replace_link.exists?
         page.loading.wait_while_present
@@ -1302,8 +1307,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_replace_co_rule
-    navigate_to_ao_requisites
+  def rp_replace_co_rule   ( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_replace_link.exists?
         page.loading.wait_while_present
@@ -1313,9 +1318,9 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_edit_replaced_co_rule
-    sepr_replace_co_rule
-    commit_changes( true)
+  def sepr_edit_replaced_co_rule( only_view_ao_requisites = false)
+    sepr_replace_co_rule( only_view_ao_requisites)
+    commit_changes( true) if !only_view_ao_requisites
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_link.exists?
         page.loading.wait_while_present
@@ -1324,8 +1329,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_edit_replaced_co_rule
-    rp_replace_co_rule
+  def rp_edit_replaced_co_rule ( only_view_ao_requisites = false)
+    rp_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.prep_edit_link.exists?
@@ -1335,8 +1340,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_edit_update_replaced_co_rule
-    sepr_replace_co_rule
+  def sepr_edit_update_replaced_co_rule   ( only_view_ao_requisites = false)
+    sepr_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_link.exists?
@@ -1347,8 +1352,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_edit_update_replaced_co_rule
-    rp_replace_co_rule
+  def rp_edit_update_replaced_co_rule    ( only_view_ao_requisites = false)
+    rp_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.prep_edit_link.exists?
@@ -1359,8 +1364,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_suppress_added_ao_rule
-    sepr_add_ao_rule
+  def sepr_suppress_added_ao_rule    ( only_view_ao_requisites = false)
+    sepr_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1369,8 +1374,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_suppress_added_ao_rule
-    rp_add_ao_rule
+  def rp_suppress_added_ao_rule( only_view_ao_requisites = false)
+    rp_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1379,8 +1384,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_suppress_co_rule
-    navigate_to_ao_requisites
+  def sepr_suppress_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_suppress_link.exists?
         page.loading.wait_while_present
@@ -1389,8 +1394,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_suppress_co_rule
-    navigate_to_ao_requisites
+  def rp_suppress_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_suppress_link.exists?
         page.loading.wait_while_present
@@ -1399,8 +1404,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_suppress_copied_co_rule
-    sepr_copy_co_rule
+  def sepr_suppress_copied_co_rule( only_view_ao_requisites = false)
+    sepr_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1409,8 +1414,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_suppress_copied_co_rule
-    rp_copy_co_rule
+  def rp_suppress_copied_co_rule( only_view_ao_requisites = false)
+    rp_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1419,8 +1424,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_suppress_copied_edited_co_rule
-    sepr_copy_edit_co_rule
+  def sepr_suppress_copied_edited_co_rule( only_view_ao_requisites = false)
+    sepr_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1429,8 +1434,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_suppress_copied_edited_co_rule
-    rp_copy_edit_co_rule
+  def rp_suppress_copied_edited_co_rule( only_view_ao_requisites = false)
+    rp_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1439,8 +1444,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_suppress_committed_copied_edited_co_rule
-    sepr_copy_edit_co_rule
+  def sepr_suppress_committed_copied_edited_co_rule( only_view_ao_requisites = false)
+    sepr_copy_edit_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_suppress_link.exists?
@@ -1450,8 +1455,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_suppress_committed_copied_edited_co_rule
-    rp_copy_edit_co_rule
+  def rp_suppress_committed_copied_edited_co_rule( only_view_ao_requisites = false)
+    rp_copy_edit_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.prep_edit_suppress_link.exists?
@@ -1461,8 +1466,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_view_catalog_co_rule
-    navigate_to_ao_requisites
+  def sepr_view_catalog_co_rule ( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_view_link.exists?
         page.loading.wait_while_present
@@ -1471,8 +1476,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_view_catalog_co_rule
-    navigate_to_ao_requisites
+  def rp_view_catalog_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_view_link.exists?
         page.loading.wait_while_present
@@ -1481,8 +1486,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_compare_catalog_co_ao_rule
-    sepr_copy_co_rule
+  def sepr_compare_catalog_co_ao_rule( only_view_ao_requisites = false)
+    sepr_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_compare_link.exists?
         page.loading.wait_while_present
@@ -1491,8 +1496,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_compare_catalog_co_ao_rule
-    rp_copy_co_rule
+  def rp_compare_catalog_co_ao_rule( only_view_ao_requisites = false)
+    rp_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_compare_link.exists?
         page.loading.wait_while_present
@@ -1501,8 +1506,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_compare_ao_to_clu_co_rule
-    sepr_replace_co_rule
+  def sepr_compare_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    sepr_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_compare_link.exists?
         page.loading.wait_while_present
@@ -1511,8 +1516,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_compare_ao_to_clu_co_rule
-    rp_replace_co_rule
+  def rp_compare_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    rp_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_compare_link.exists?
         page.loading.wait_while_present
@@ -1521,8 +1526,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_compare_new_ao_to_clu_co_rule
-    sepr_add_ao_rule
+  def sepr_compare_new_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    sepr_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_compare_link.exists?
         page.loading.wait_while_present
@@ -1531,8 +1536,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_compare_new_ao_to_clu_co_rule
-    rp_add_ao_rule
+  def rp_compare_new_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    rp_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_compare_link.exists?
         page.loading.wait_while_present
@@ -1541,8 +1546,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def sepr_revert_replaced_co_rule
-    sepr_replace_co_rule
+  def sepr_revert_replaced_co_rule( only_view_ao_requisites = false)
+    sepr_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prereq_revert_link.exists?
         page.loading.wait_while_present
@@ -1551,8 +1556,8 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     end
   end
 
-  def rp_revert_replaced_co_rule
-    rp_replace_co_rule
+  def rp_revert_replaced_co_rule( only_view_ao_requisites = false)
+    rp_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.prep_revert_link.exists?
         page.loading.wait_while_present
@@ -1560,17 +1565,6 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       end
     end
   end
-
-  #def sepr_modify_copied_co_rule
-  #  navigate_to_ao_requisites
-  #  on ActivityOfferingRequisites do |page|
-  #    if page.prereq_copy_edit_link.exists?
-  #      page.loading.wait_while_present
-  #      page.prereq_copy_edit
-  #      add_statements_to_rule
-  #    end
-  #  end
-  #end
 
   def add_statements_to_rule
     rp_sepr_course_rule( "add", "", "ENGL101")
@@ -1867,8 +1861,8 @@ class AORepeatCreditRule < AORequisitesData
     set_options(options)
   end
 
-  def rc_copy_edit_co_rule
-    navigate_to_ao_requisites
+  def rc_copy_edit_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1878,8 +1872,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_copy_co_rule
-    navigate_to_ao_requisites
+  def rc_copy_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -1891,8 +1885,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_revert_copy_co_rule
-    rc_copy_co_rule
+  def rc_revert_copy_co_rule( only_view_ao_requisites = false)
+    rc_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_revert_link.exists?
         page.loading.wait_while_present
@@ -1901,8 +1895,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_revert_copy_edit_co_rule
-    rc_copy_edit_co_rule
+  def rc_revert_copy_edit_co_rule( only_view_ao_requisites = false)
+    rc_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_revert_link.exists?
         page.loading.wait_while_present
@@ -1911,8 +1905,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_revert_add_ao_rule
-    rc_add_ao_rule
+  def rc_revert_add_ao_rule( only_view_ao_requisites = false)
+    rc_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_revert_link.exists?
         page.loading.wait_while_present
@@ -1921,8 +1915,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_add_ao_rule
-    navigate_to_ao_requisites
+  def rc_add_ao_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_add_link.exists?
         page.loading.wait_while_present
@@ -1932,8 +1926,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_replace_co_rule
-    navigate_to_ao_requisites
+  def rc_replace_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_replace_link.exists?
         page.loading.wait_while_present
@@ -1943,8 +1937,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_edit_replaced_co_rule
-    rc_replace_co_rule
+  def rc_edit_replaced_co_rule( only_view_ao_requisites = false)
+    rc_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.repeat_edit_link.exists?
@@ -1954,8 +1948,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_edit_update_replaced_co_rule
-    rc_replace_co_rule
+  def rc_edit_update_replaced_co_rule( only_view_ao_requisites = false)
+    rc_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.repeat_edit_link.exists?
@@ -1966,8 +1960,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_suppress_added_ao_rule
-    rc_add_ao_rule
+  def rc_suppress_added_ao_rule( only_view_ao_requisites = false)
+    rc_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1976,8 +1970,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_suppress_co_rule
-    navigate_to_ao_requisites
+  def rc_suppress_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_suppress_link.exists?
         page.loading.wait_while_present
@@ -1986,8 +1980,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_suppress_copied_co_rule
-    rc_copy_co_rule
+  def rc_suppress_copied_co_rule ( only_view_ao_requisites = false)
+    rc_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -1996,8 +1990,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_suppress_copied_edited_co_rule
-    rc_copy_edit_co_rule
+  def rc_suppress_copied_edited_co_rule( only_view_ao_requisites = false)
+    rc_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -2006,8 +2000,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_view_catalog_co_rule
-    navigate_to_ao_requisites
+  def rc_view_catalog_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_view_link.exists?
         page.loading.wait_while_present
@@ -2016,8 +2010,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_compare_catalog_co_ao_rule
-    rc_copy_co_rule
+  def rc_compare_catalog_co_ao_rule( only_view_ao_requisites = false)
+    rc_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_compare_link.exists?
         page.loading.wait_while_present
@@ -2026,8 +2020,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_compare_ao_to_clu_co_rule
-    rc_replace_co_rule
+  def rc_compare_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    rc_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_compare_link.exists?
         page.loading.wait_while_present
@@ -2036,8 +2030,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_compare_new_ao_to_clu_co_rule
-    rc_add_ao_rule
+  def rc_compare_new_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    rc_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_compare_link.exists?
         page.loading.wait_while_present
@@ -2046,8 +2040,8 @@ class AORepeatCreditRule < AORequisitesData
     end
   end
 
-  def rc_revert_replaced_co_rule
-    rc_replace_co_rule
+  def rc_revert_replaced_co_rule( only_view_ao_requisites = false)
+    rc_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.repeat_revert_link.exists?
         page.loading.wait_while_present
@@ -2105,8 +2099,8 @@ class AORestrictCreditRule < AORequisitesData
     set_options(options)
   end
 
-  def crc_copy_edit_co_rule
-    navigate_to_ao_requisites
+  def crc_copy_edit_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -2116,8 +2110,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_copy_co_rule
-    navigate_to_ao_requisites
+  def crc_copy_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_copy_edit_link.exists?
         page.loading.wait_while_present
@@ -2129,8 +2123,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_revert_copy_co_rule
-    crc_copy_co_rule
+  def crc_revert_copy_co_rule( only_view_ao_requisites = false)
+    crc_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_revert_link.exists?
         page.loading.wait_while_present
@@ -2139,8 +2133,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_revert_copy_edit_co_rule
-    crc_copy_edit_co_rule
+  def crc_revert_copy_edit_co_rule( only_view_ao_requisites = false)
+    crc_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_revert_link.exists?
         page.loading.wait_while_present
@@ -2149,8 +2143,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_revert_add_ao_rule
-    crc_add_ao_rule
+  def crc_revert_add_ao_rule( only_view_ao_requisites = false)
+    crc_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_revert_link.exists?
         page.loading.wait_while_present
@@ -2159,8 +2153,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_add_ao_rule
-    navigate_to_ao_requisites
+  def crc_add_ao_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_add_link.exists?
         page.loading.wait_while_present
@@ -2170,8 +2164,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_replace_co_rule
-    navigate_to_ao_requisites
+  def crc_replace_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_replace_link.exists?
         page.loading.wait_while_present
@@ -2181,8 +2175,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_edit_replaced_co_rule
-    crc_replace_co_rule
+  def crc_edit_replaced_co_rule( only_view_ao_requisites = false)
+    crc_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.restrict_edit_link.exists?
@@ -2192,8 +2186,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_edit_update_replaced_co_rule
-    crc_replace_co_rule
+  def crc_edit_update_replaced_co_rule( only_view_ao_requisites = false)
+    crc_replace_co_rule( only_view_ao_requisites)
     commit_changes( true)
     on ActivityOfferingRequisites do |page|
       if page.restrict_edit_link.exists?
@@ -2204,8 +2198,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_suppress_added_ao_rule
-    crc_add_ao_rule
+  def crc_suppress_added_ao_rule( only_view_ao_requisites = false)
+    crc_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -2214,8 +2208,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_suppress_co_rule
-    navigate_to_ao_requisites
+  def crc_suppress_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_suppress_link.exists?
         page.loading.wait_while_present
@@ -2224,8 +2218,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_suppress_copied_co_rule
-    crc_copy_co_rule
+  def crc_suppress_copied_co_rule( only_view_ao_requisites = false)
+    crc_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -2234,8 +2228,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_suppress_copied_edited_co_rule
-    crc_copy_edit_co_rule
+  def crc_suppress_copied_edited_co_rule( only_view_ao_requisites = false)
+    crc_copy_edit_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_edit_suppress_link.exists?
         page.loading.wait_while_present
@@ -2244,8 +2238,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_view_catalog_co_rule
-    navigate_to_ao_requisites
+  def crc_view_catalog_co_rule( only_view_ao_requisites = false)
+    navigate_to_ao_requisites( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_view_link.exists?
         page.loading.wait_while_present
@@ -2254,8 +2248,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_compare_catalog_co_ao_rule
-    crc_copy_co_rule
+  def crc_compare_catalog_co_ao_rule( only_view_ao_requisites = false)
+    crc_copy_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_compare_link.exists?
         page.loading.wait_while_present
@@ -2264,8 +2258,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_compare_ao_to_clu_co_rule
-    crc_replace_co_rule
+  def crc_compare_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    crc_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_compare_link.exists?
         page.loading.wait_while_present
@@ -2274,8 +2268,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_compare_new_ao_to_clu_co_rule
-    crc_add_ao_rule
+  def crc_compare_new_ao_to_clu_co_rule( only_view_ao_requisites = false)
+    crc_add_ao_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_compare_link.exists?
         page.loading.wait_while_present
@@ -2284,8 +2278,8 @@ class AORestrictCreditRule < AORequisitesData
     end
   end
 
-  def crc_revert_replaced_co_rule
-    crc_replace_co_rule
+  def crc_revert_replaced_co_rule( only_view_ao_requisites = false)
+    crc_replace_co_rule( only_view_ao_requisites)
     on ActivityOfferingRequisites do |page|
       if page.restrict_revert_link.exists?
         page.loading.wait_while_present

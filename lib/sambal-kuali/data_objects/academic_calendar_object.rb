@@ -828,7 +828,8 @@ class ExamPeriod
         :exclude_sunday => false,
         :include_saturday => false,
         :include_sunday => false,
-        :exp_success => true
+        :exp_success => true,
+        :defer_save => false
     }
     options = defaults.merge(opts)
 
@@ -856,7 +857,9 @@ class ExamPeriod
         page.clear_exclude_sunday @term_type
       end
 
-      page.save :exp_success => options[:exp_success]
+      if options[:defer_save] == false
+        page.save :exp_success => options[:exp_success]
+      end
     end
 
     set_options(options)
