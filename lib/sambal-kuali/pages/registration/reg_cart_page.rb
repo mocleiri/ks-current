@@ -16,7 +16,7 @@ class RegistrationCart < RegisterForCourseBase
   element(:course_info) { |b,course_code,reg_code| b.div(id: "course_info_#{course_code}_#{reg_code}").text }
   element(:edit_course_options_link) { |b,course_code,reg_code| b.link(id: "edit_#{course_code}_#{reg_code}") }
   action(:edit_course_options) { |b,course_code,reg_code| b.edit_course_options_link(course_code,reg_code).click }
-  element(:course_schedule) { |b,course_code,reg_code| b.div(id: "schedule_#{course_code}_#{reg_code}").text }
+  element(:course_schedule) { |b,course_code,reg_code,index| b.div(id: "schedule_#{course_code}_#{reg_code}_#{index}").text }
 
   # EDIT COURSE OPTIONS DISCLOSURE
   element(:credits_selection) { |b,course_code,reg_code| b.select(id: "credits_#{course_code}_#{reg_code}") }
