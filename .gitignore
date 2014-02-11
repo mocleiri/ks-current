@@ -1,0 +1,12 @@
+bin
+target
+.project
+.classpath
+.settings
+.pydevproject
+/do-not-commit
+*.dump
+*.patch
+scripts/svn-tools
+*.swp
+*~
