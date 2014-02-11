@@ -72,33 +72,38 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 80 percent', 5004, 'FM Signup 1_4', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw80")',
+'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw80" and signup date is after atp milestone "kuali.atp.milestone.withdraw60")',
 'set session key "withdrawn" to "yes"
  set session key "80percent" to "yes"
+ mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 60 percent', 5005, 'FM Signup 1_5', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw60")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw60" and signup date is after atp milestone "kuali.atp.milestone.withdraw40")',
 'set session key "withdrawn" to "yes"
  set session key "60percent" to "yes"
+ mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 40 percent', 5006, 'FM Signup 1_6', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw40")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw40" and signup date is after atp milestone "kuali.atp.milestone.withdraw20")',
 'set session key "withdrawn" to "yes"
  set session key "40percent" to "yes"
+ mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 20 percent', 5007, 'FM Signup 1_7', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw20")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw20" and signup date is after atp milestone "kuali.atp.milestone.withdraw00")',
 'set session key "withdrawn" to "yes"
  set session key "20percent" to "yes"
+ mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 0 percent', 5008, 'FM Signup 1_8', 3, 10, null,
 '(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw0")',
 'set session key "withdrawn" to "yes"
  set session key "0percent" to "yes"
+ mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Legal drop before first day of class', 5009, 'FM Signup 1_9', 3, 10, null,
@@ -129,7 +134,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'set session key "withdrawn" to "yes"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is in an MBA section so remove incompatible regular tuition rate.', 5013, 'FM Signup 1_13', 3, 10, null,
-'(signup has rates "mba.cohort.flag, regular" and session key "cohort.code" is "EM.." and session key "major.code" is ".*MBA")',
+'(signup has rates "mba.cohort.flag, regular" and session key "cohort.code" is "EM.." and session key "major.code" is ".*mba")',
 'remove signup rates "regular"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is in MBA classes but is not MBA student so remove MBA rate', 5014, 'FM Signup 1_14', 3, 10, null,
@@ -137,7 +142,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'remove signup rates "mba.cohort.flag"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is not MBA so remove cohort rates', 5015, 'FM Signup 1_15', 3, 10, null,
-'(session key "major.code" is not ".*MBA")',
+'(session key "major.code" is not ".*mba")',
 'remove signup rates "mba.cohort.flag"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is not a Cybersecurity student to remove that rate', 5016, 'FM Signup 1_16', 3, 10, null,
@@ -317,11 +322,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'replace signup rates "regular", "" with "sg.graduate.nonresident", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('em11 cohort rate applied', 6063, 'FM Session 2_14', 3, 8, null,
-'(session key "cohort.code" is "EM11" and session key "major.code" is ".*MBA")',
+'(session key "cohort.code" is "EM11" and session key "major.code" is ".*mba")',
 'replace signup rates "mba.cohort.flag", "" with "mba.cohort.em11", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('em12 cohort rate applied', 6064, 'FM Session 2_15', 3, 8, null,
-'(session key "cohort.code" is "EM12" and session key "major.code" is ".*MBA")',
+'(session key "cohort.code" is "EM12" and session key "major.code" is ".*mba")',
 'replace signup rates "mba.cohort.flag", "" with "mba.cohort.em12", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Full time resident CP fees applied', 6065, 'FM Session 2_16', 3, 8, null,
