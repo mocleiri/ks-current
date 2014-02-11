@@ -578,7 +578,7 @@ expander ksa.dsl
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Charge regular tuition', 8001, 'FM Session 3_1', 3, 6, null,
 '(Context is initialized)',
-'charge rates "", "" with types "tuition.credits.fixed,tuition.flat", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"')!
+'charge rates of taken signups "", "" with types "tuition.credits.fixed,tuition.flat", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Charge regular fees', 8002, 'FM Session 3_2', 3, 8, null,
 '(Context is initialized)',
