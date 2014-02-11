@@ -58,9 +58,13 @@ class CORequisitesData
     set_options(options)
   end
 
-  def navigate_to_mco_requisites
-    #@course_offering = make CourseOffering, {:course => @course, :term => @term}
-    @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => @course)
+  def navigate_to_mco_requisites( only_view_ao_requisites = false)
+    if only_view_ao_requisites
+      @course_offering = make CourseOffering, {:course => @course, :term => @term}
+    else
+      @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => @course)
+    end
+
     @course_offering.manage
     on ManageCourseOfferings do |page|
       page.loading.wait_while_present(200)

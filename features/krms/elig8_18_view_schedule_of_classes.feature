@@ -6,21 +6,21 @@ Feature: CO.ELIG8-18 View changes made to AO or CO Requisites on Schedule of Cla
   Background:
     Given I am logged in as admin
 
-  #ELIG8.18.EB1 (KSENROLL-9795)
-  Scenario: Verify that the Schedule of Classes shows the ref data when no changes are made to the CO Requisites
-    Given I have made no chages to the CO Requisites of a course
-    And I am using the schedule of classes page
-    When I search for course offerings by course
-    And I select a course that has existing course offering requisites
-    Then the course offering requisites should be displayed with the course data
-
-  #ELIG8.18.EB2 (KSENROLL-9795)
-  Scenario: Test that adding an AO Requisite will add detail to the SoC AO table
-    Given I add a text rule to the Antirequisite section
-    And I am using the schedule of classes page
-    When I search for course offerings by course
-    And I select a course that has existing activity offering level requisites
-    Then the activity offering requisites should be displayed with the correct activity
+#  #ELIG8.18.EB1 (KSENROLL-9795)
+#  Scenario: Verify that the Schedule of Classes shows the ref data when no changes are made to the CO Requisites
+#    Given I have made no chages to the CO Requisites of a course
+#    And I am using the schedule of classes page
+#    When I search for course offerings by course
+#    And I select a course that has existing course offering requisites
+#    Then the course offering requisites should be displayed with the course data
+#
+#  #ELIG8.18.EB2 (KSENROLL-9795)
+#  Scenario: Test that adding an AO Requisite will add detail to the SoC AO table
+#    Given I add a text rule to the Antirequisite section
+#    And I am using the schedule of classes page
+#    When I search for course offerings by course
+#    And I select a course that has existing activity offering level requisites
+#    Then the activity offering requisites should be displayed with the correct activity
 
   #ELIG8.18.EB3 (KSENROLL-9795)
   Scenario: Test that suppressing the Corequisite rule for AO A is displayed on the Schedule of Classes
