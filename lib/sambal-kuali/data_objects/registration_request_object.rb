@@ -15,7 +15,7 @@ class RegistrationRequest
                 :term_code,
                 :term_descr,              #TODO - get term descr from term_code so they are always in sync
                 :course_code,
-                :reg_group
+                :reg_group_code
   #array - generally set using options hash
   attr_accessor :course_options_list
   #boolean - - generally set using options hash true/false
@@ -27,7 +27,7 @@ class RegistrationRequest
   #    :term_code=>"201301",
   #    :term_descr=>"Spring 2013",
   #    :course_code=>"CHEM231",
-  #    :reg_group=>"1001",
+  #    :reg_group_code=>"1001",
   #    :course_options_list=> [],
   #    :modify_course_options=> false
   #  }
@@ -41,7 +41,7 @@ class RegistrationRequest
       :term_code=>"201301",
       :term_descr=>"Spring 2013",
       :course_code=>"CHEM231",
-      :reg_group=>"1001",
+      :reg_group_code=>"1001",
       :course_options_list=> [ (make CourseOptions ) ],
       :modify_course_options=> false
     }
@@ -50,10 +50,15 @@ class RegistrationRequest
   end
 
   def create
-    if options[:modify_course_options]
-      edit_course_options :course_options_list
+    on RegistrationCart do |page|
+      page.course_code.set @course_code
+      page.reg_group_code.set @reg_group_code
+      page.add_to_cart
+      if @modify_course_options
+        edit_course_options :course_options_list
+      end
+      #return new RegistrationRequest
     end
-    return new RegistrationRequest
   end
 
   def edit opts={}
@@ -94,7 +99,7 @@ class RegistrationRequest
   private :edit_course_code
 
   def edit_reg_group opts={}
-    if opts[:reg_group].nil?
+    if opts[:reg_group_code].nil?
       return nil
     end
   end

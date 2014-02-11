@@ -6,7 +6,7 @@ Feature: REG.Register for course
   registration cart.
 
   Background:
-    Given I am logged in as a Student
+#    Given I am logged in as a Student
 
   #CR 1.1 (KSENROLL-11747)  CR 1.3 (KSENROLL-11812)
   Scenario: I want to enter course information into my list of selections so that I can indicate what I want to register for.
@@ -24,6 +24,7 @@ Feature: REG.Register for course
     And I drop the course from my registration cart
     Then the course is not present in my cart
 
-  Scenario: Student must be able to edit a course in their registration cart
+  #CR 1.5 (KSENROLL-11810)
+  Scenario: I want to change the course parameters for my selections so I can register with preferred options
     When I edit a course in my registration cart
-    Then the modified course is present in my schedule
+    Then the modified course is present in my cart

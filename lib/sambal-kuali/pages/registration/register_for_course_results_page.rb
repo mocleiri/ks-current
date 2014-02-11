@@ -22,7 +22,7 @@ class RegisterForCourseResults < RegisterForCourseBase
 
   def target_list_item_by_course(course, reggroup)
     results_list_collection.each do |li|
-      return li if li.course_number == course && li.reg_group == reggroup   #TODO define li.course and li.reg_group
+      return li if li.course_number == course && li.reg_group_code == reggroup   #TODO define li.course and li.reg_group_code
     end
     return nil
   end
