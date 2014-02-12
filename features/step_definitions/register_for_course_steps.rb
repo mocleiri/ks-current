@@ -1,7 +1,7 @@
 When /^I add a course offering to my registration cart$/ do
   @reg_request = make RegistrationRequest, :student_id=>"student",
-                                           :term_code=>"201301",
-                                           :term_descr=>"Spring 2013",
+                                           :term_code=>"201201",
+                                           :term_descr=>"Spring 2012",
                                            :course_code=>"CHEM231",
                                            :reg_group_code=>"1001"
   @reg_request.create
@@ -26,7 +26,7 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
     if presence == "present"
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
-      page.target_list_item_by_course(@reg_request.course_code, @reg_request.reg_group_code).should be_nil
+      page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should be_nil
     end
   end
 end

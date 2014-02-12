@@ -24,8 +24,8 @@ class RegistrationRequest
   # provides default data:
   #  defaults = {
   #    :student_id=>"student",
-  #    :term_code=>"201301",
-  #    :term_descr=>"Spring 2013",
+  #    :term_code=>"201201",
+  #    :term_descr=>"Spring 2012",
   #    :course_code=>"CHEM231",
   #    :reg_group_code=>"1001",
   #    :course_options_list=> [],
@@ -38,8 +38,8 @@ class RegistrationRequest
 
     defaults = {
       :student_id=>"student",
-      :term_code=>"201301",
-      :term_descr=>"Spring 2013",
+      :term_code=>"201201",
+      :term_descr=>"Spring 2012",
       :course_code=>"CHEM231",
       :reg_group_code=>"1001",
       :course_options_list=> [ (make CourseOptions ) ],
@@ -51,6 +51,7 @@ class RegistrationRequest
 
   def create
     on RegistrationCart do |page|
+      page.select_term @term_descr
       page.course_code.set @course_code
       page.reg_group_code.set @reg_group_code
       page.add_to_cart
