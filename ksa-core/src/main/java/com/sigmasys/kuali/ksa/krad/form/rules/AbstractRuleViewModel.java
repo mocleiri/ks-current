@@ -14,20 +14,16 @@ import java.util.List;
  */
 public abstract class AbstractRuleViewModel extends AbstractViewModel {
 
-    protected String ruleType;
+    protected final StringValueFinder nameFinder = new StringValueFinder();
+    protected final StringValueFinder ruleTypeFinder = new StringValueFinder();
 
-    protected String editStatusMessage;
-    protected String addStatusMessage;
+    protected String ruleType;
 
     protected String newRuleType;
 
     protected String ruleSetName;
 
     protected String description;
-
-    protected final StringValueFinder nameFinder = new StringValueFinder();
-    protected final StringValueFinder ruleTypeFinder = new StringValueFinder();
-
 
     public String getRuleType() {
         return ruleType;
@@ -45,28 +41,12 @@ public abstract class AbstractRuleViewModel extends AbstractViewModel {
         ruleTypeFinder.initValues(ruleTypes);
     }
 
-    public String getEditStatusMessage() {
-        return editStatusMessage;
-    }
-
-    public void setEditStatusMessage(String editStatusMessage) {
-        this.editStatusMessage = editStatusMessage;
-    }
-
     public KeyValuesFinder getNameFinder() {
         return nameFinder;
     }
 
     public KeyValuesFinder getRuleTypeFinder() {
         return ruleTypeFinder;
-    }
-
-    public String getAddStatusMessage() {
-        return addStatusMessage;
-    }
-
-    public void setAddStatusMessage(String addStatusMessage) {
-        this.addStatusMessage = addStatusMessage;
     }
 
     public String getNewRuleType() {
@@ -76,7 +56,6 @@ public abstract class AbstractRuleViewModel extends AbstractViewModel {
     public void setNewRuleType(String newRuleType) {
         this.newRuleType = newRuleType;
     }
-
 
     public String getRuleSetName() {
         return ruleSetName;

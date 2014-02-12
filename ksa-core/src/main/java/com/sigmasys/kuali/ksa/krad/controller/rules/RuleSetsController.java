@@ -1,18 +1,14 @@
 package com.sigmasys.kuali.ksa.krad.controller.rules;
 
 import com.sigmasys.kuali.ksa.exception.InvalidRulesException;
-import com.sigmasys.kuali.ksa.krad.controller.GenericSearchController;
 import com.sigmasys.kuali.ksa.krad.form.rules.RuleSetsForm;
 import com.sigmasys.kuali.ksa.model.rule.Rule;
 import com.sigmasys.kuali.ksa.model.rule.RuleSet;
 import com.sigmasys.kuali.ksa.model.rule.RuleType;
-import com.sigmasys.kuali.ksa.service.brm.BrmPersistenceService;
-import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,20 +26,9 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(value = "/ruleSetsView")
-public class RuleSetsController extends GenericSearchController {
+public class RuleSetsController extends AbstractRuleController {
 
     private static final Log logger = LogFactory.getLog(RuleSetsController.class);
-
-    @Autowired
-    private BrmService brmService;
-
-    @Autowired
-    private BrmPersistenceService brmPersistenceService;
-
-
-    private boolean ruleSetExists(String ruleSetName) {
-        return StringUtils.isNotBlank(ruleSetName) && brmPersistenceService.getRuleSet(ruleSetName) != null;
-    }
 
     /**
      * @see org.kuali.rice.krad.web.controller.UifControllerBase#createInitialForm(javax.servlet.http.HttpServletRequest)
@@ -277,7 +262,63 @@ public class RuleSetsController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=add")
     public ModelAndView add(@ModelAttribute("KualiForm") RuleSetsForm form) {
 
-        // TODO:
+        RuleSet ruleSet = form.getNewRuleSet();
+
+        if (ruleSet == null) {
+            return handleError(form, "Rule Set cannot be null");
+        }
+
+        String ruleSetName = ruleSet.getName();
+
+        if (StringUtils.isBlank(ruleSetName)) {
+
+            return handleError(form, "Rule Set name cannot be empty");
+
+        } else if (!ruleExists(ruleSetName)) {
+
+            if (StringUtils.isBlank(ruleSet.getHeader())) {
+                return handleError(form, "Rule Set header cannot be empty");
+            }
+
+            if (StringUtils.isBlank(ruleSet.getDescription())) {
+                return handleError(form, "Rule Set description cannot be empty");
+            }
+
+            String ruleTypeName = form.getNewRuleType();
+
+            if (StringUtils.isBlank(ruleTypeName)) {
+                return handleError(form, "Rule Set type is required");
+            }
+
+            RuleType ruleType = brmPersistenceService.getRuleType(ruleTypeName);
+
+            if (ruleType == null) {
+                return handleError(form, "Rule Set type '" + ruleTypeName + "' does not exist");
+            }
+
+            ruleSet.setType(ruleType);
+
+            try {
+
+                brmPersistenceService.persistRuleSet(ruleSet);
+
+                reloadRuleSets(form, true);
+
+                setMessage(form, "A new Rule Set has been created");
+
+                logger.info("Added Rule => \n" + ruleSet);
+
+            } catch (InvalidRulesException e) {
+                logger.error(e.getMessage(), e);
+                String errMsg = "There are problems compiling the rule set. Please check the rule syntax and try again.";
+                return handleError(form, errMsg);
+            } catch (Exception e) {
+                return handleError(form, e);
+            }
+
+        } else {
+            return handleError(form, "Rule Set with name = '" + ruleSetName + "' already exists");
+        }
 
         return getUIFModelAndView(form);
     }

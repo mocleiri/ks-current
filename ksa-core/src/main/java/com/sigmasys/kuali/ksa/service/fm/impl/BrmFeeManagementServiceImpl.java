@@ -267,10 +267,10 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         if (signupRates == null) {
             signupRates = new HashSet<FeeManagementSignupRate>();
+            signup.setSignupRates(signupRates);
         }
 
         signupRates.add(signupRate);
-        signup.setSignupRates(signupRates);
 
         persistEntity(signup);
     }

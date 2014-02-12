@@ -1,17 +1,13 @@
 package com.sigmasys.kuali.ksa.krad.controller.rules;
 
 import com.sigmasys.kuali.ksa.exception.InvalidRulesException;
-import com.sigmasys.kuali.ksa.krad.controller.GenericSearchController;
 import com.sigmasys.kuali.ksa.krad.form.rules.RulesForm;
 import com.sigmasys.kuali.ksa.model.rule.Rule;
 import com.sigmasys.kuali.ksa.model.rule.RuleType;
-import com.sigmasys.kuali.ksa.service.brm.BrmPersistenceService;
-import com.sigmasys.kuali.ksa.service.brm.BrmService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,20 +26,10 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/rulesView")
-public class RulesController extends GenericSearchController {
+public class RulesController extends AbstractRuleController {
 
     private static final Log logger = LogFactory.getLog(RulesController.class);
 
-    @Autowired
-    private BrmService brmService;
-
-    @Autowired
-    private BrmPersistenceService brmPersistenceService;
-
-
-    private boolean ruleExists(String ruleName) {
-        return StringUtils.isNotBlank(ruleName) && brmPersistenceService.getRule(ruleName) != null;
-    }
 
     /**
      * @see org.kuali.rice.krad.web.controller.UifControllerBase#createInitialForm(javax.servlet.http.HttpServletRequest)
@@ -152,6 +138,7 @@ public class RulesController extends GenericSearchController {
     public ModelAndView select(@ModelAttribute("KualiForm") RulesForm form) {
 
         String ruleName = form.getRuleName();
+
         if (StringUtils.isBlank(ruleName)) {
             String errMsg = "Rule name must be specified";
             logger.error(errMsg);
@@ -193,6 +180,7 @@ public class RulesController extends GenericSearchController {
     public ModelAndView checkRuleNameExistence(@ModelAttribute("KualiForm") RulesForm form) {
 
         Rule rule = form.getNewRule();
+
         if (rule == null) {
             return handleError(form, "Rule cannot be null");
         }
@@ -218,6 +206,7 @@ public class RulesController extends GenericSearchController {
     public ModelAndView add(@ModelAttribute("KualiForm") RulesForm form) {
 
         Rule rule = form.getNewRule();
+
         if (rule == null) {
             return handleError(form, "Rule cannot be null");
         }
@@ -239,11 +228,13 @@ public class RulesController extends GenericSearchController {
             }
 
             String ruleTypeName = form.getNewRuleType();
+
             if (StringUtils.isBlank(ruleTypeName)) {
                 return handleError(form, "Rule type is required");
             }
 
             RuleType ruleType = brmPersistenceService.getRuleType(ruleTypeName);
+
             if (ruleType == null) {
                 return handleError(form, "Rule type '" + ruleTypeName + "' does not exist");
             }
@@ -301,19 +292,6 @@ public class RulesController extends GenericSearchController {
             throw new IllegalStateException(errMsg);
         }
         rule.setType(ruleType);
-    }
-
-    private void reloadRuleSets(RulesForm form, boolean isNewRule) {
-        String ruleSetName = form.getRuleSetName();
-        if (StringUtils.isNotBlank(ruleSetName)) {
-            brmService.reloadRuleSets(ruleSetName);
-        } else {
-            String ruleName = isNewRule ? form.getNewRule().getName() : form.getRuleName();
-            List<String> ruleSetNames = brmPersistenceService.getRuleSetNamesByRuleNames(ruleName);
-            if (CollectionUtils.isNotEmpty(ruleSetNames)) {
-                brmService.reloadRuleSets(ruleSetNames.toArray(new String[ruleSetNames.size()]));
-            }
-        }
     }
 
 }
