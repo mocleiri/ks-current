@@ -150,14 +150,14 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'remove signup rates "cybersecurity.leadership"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is resident Public Policy student so remove regular and add pp', 5017, 'FM Signup 1_17', 3, 10, null,
-'(session key "major.code" is "mapo|mamg|mpps|bmpo|posi|lmpo" and signup key "residency" is "in.state")',
+'(student is resident and session key "major.code" is "(mapo|mamg|mpps|bmpo|posi|lmpo)")',
 'remove signup rates "regular"
  add signup rate "public.policy.resident", "default"
  add signup rate "public.policy.resident.differential", "default"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is nonresident Public Policy student so remove regular and add pp', 5018, 'FM Signup 1_18', 3, 10, null,
-'(session key "major.code" is "mapo|mamg|mpps|bmpo|posi|lmpo" and signup key "residency" is "out.of.state")',
+'(student is nonresident and session key "major.code" is "(mapo|mamg|mpps|bmpo|posi|lmpo)")',
 'remove signup rates "regular"
  add signup rate "public.policy.resident", "default"
  add signup rate "public.policy.resident.differential", "default"

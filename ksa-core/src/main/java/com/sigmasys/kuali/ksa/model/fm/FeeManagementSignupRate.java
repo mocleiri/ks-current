@@ -39,7 +39,7 @@ public class FeeManagementSignupRate implements Identifiable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FM_SIGNUP_ID_FK", nullable = false)
+    @JoinColumn(name = "FM_SIGNUP_ID_FK")
     public FeeManagementSignup getSignup() {
         return signup;
     }
@@ -49,7 +49,7 @@ public class FeeManagementSignupRate implements Identifiable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RATE_ID_FK", nullable = false)
+    @JoinColumn(name = "RATE_ID_FK")
     public Rate getRate() {
         return rate;
     }
