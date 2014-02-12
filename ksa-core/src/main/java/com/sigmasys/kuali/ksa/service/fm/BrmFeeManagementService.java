@@ -435,6 +435,16 @@ public interface BrmFeeManagementService {
     void setPrecedingOfferingsComplete(boolean isComplete, String signupOperations, BrmContext context);
 
     /**
+     * Sets "isComplete" to true or false on all immediate preceding FeeManagementSignup objects from FeeManagementSession
+     * that have certain signup operations with the same Offering ID.
+     *
+     * @param isComplete       Boolean value
+     * @param signupOperations List of signup operation values separated by ","
+     * @param context          BRM context
+     */
+    void setImmediatePrecedingOfferingsComplete(boolean isComplete, String signupOperations, BrmContext context);
+
+    /**
      * Sets "isTaken" to true or false on all preceding FeeManagementSignup objects from FeeManagementSession
      * that have certain signup operations with the same Offering ID.
      *
@@ -443,6 +453,16 @@ public interface BrmFeeManagementService {
      * @param context          BRM context
      */
     void setPrecedingOfferingsTaken(boolean isTaken, String signupOperations, BrmContext context);
+
+    /**
+     * Sets "isTaken" to true or false on all immediate preceding FeeManagementSignup objects from FeeManagementSession
+     * that have certain signup operations with the same Offering ID.
+     *
+     * @param isTaken          Boolean value
+     * @param signupOperations List of signup operation values separated by ","
+     * @param context          BRM context
+     */
+    void setImmediatePrecedingOfferingsTaken(boolean isTaken, String signupOperations, BrmContext context);
 
     /**
      * Removes rates from all preceding signups (offerings) based on the given parameters.

@@ -142,6 +142,12 @@
 [then][]mark preceding offerings as taken = context.getFmService().setPrecedingOfferingsTaken(true,null,context);
 [then][]mark preceding offerings as not taken = context.getFmService().setPrecedingOfferingsTaken(false,null,context);
 [then][]mark preceding offerings with operation "{operations}" as taken = context.getFmService().setPrecedingOfferingsTaken(true,"{operations}",context);
+[then][]mark immediate preceding offerings as complete = context.getFmService().setImmediatePrecedingOfferingsComplete(true,null,context);
+[then][]mark immediate preceding offerings as not complete = context.getFmService().setImmediatePrecedingOfferingsComplete(false,null,context);
+[then][]mark immediate preceding offerings with operation "{operations}" as complete = context.getFmService().setImmediatePrecedingOfferingsComplete(true,"{operations}",context);
+[then][]mark immediate preceding offerings as taken = context.getFmService().setImmediatePrecedingOfferingsTaken(true,null,context);
+[then][]mark immediate preceding offerings as not taken = context.getFmService().setImmediatePrecedingOfferingsTaken(false,null,context);
+[then][]mark immediate preceding offerings with operation "{operations}" as taken = context.getFmService().setImmediatePrecedingOfferingsTaken(true,"{operations}",context);
 [then][]add signup rate "{rateCode}", "{rateSubCode}" = context.getFmService().addRate("{rateCode}","{rateSubCode}",context);
 [then][]add rate "{rateCode}", "{rateSubCode}" to signups with rates "{rateCodes}", "{rateSubCodes}", types "{rateTypeCodes}", catalogs "{rateCatalogCodes}", signup operations "{signupOperations}" = context.getFmService().addRate("{rateCode}","{rateSubCode}", "{rateCodes}","{rateSubCodes}","{rateTypeCodes}","{rateCatalogCodes}","{signupOperations}",context);
 [then][]replace signup rates "{rateCodes}", "{rateSubCodes}" with "{newRateCode}", "{newRateSubCode}" = context.getFmService().replaceRates("{rateCodes}","{rateSubCodes}","{newRateCode}","{newRateSubCode}",context);

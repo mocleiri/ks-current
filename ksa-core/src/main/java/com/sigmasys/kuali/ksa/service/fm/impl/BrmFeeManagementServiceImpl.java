@@ -567,32 +567,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         List<FeeManagementSignup> signupsList = new ArrayList<FeeManagementSignup>(signups);
 
         // Sorting signups by the effective date in the ascending order
-        Collections.sort(signupsList, new Comparator<FeeManagementSignup>() {
-            @Override
-            public int compare(FeeManagementSignup signup1, FeeManagementSignup signup2) {
-
-                if (signup1 == null && signup2 == null) {
-                    return 0;
-                } else if (signup1 != null && signup2 == null) {
-                    return 1;
-                } else if (signup1 == null) {
-                    return -1;
-                }
-
-                Date effectiveDate1 = signup1.getEffectiveDate();
-                Date effectiveDate2 = signup2.getEffectiveDate();
-
-                if (effectiveDate1 == null && effectiveDate2 == null) {
-                    return 0;
-                } else if (effectiveDate1 != null && effectiveDate2 == null) {
-                    return 1;
-                } else if (effectiveDate1 == null) {
-                    return -1;
-                }
-
-                return effectiveDate1.compareTo(effectiveDate2);
-            }
-        });
+        Collections.sort(signupsList, SignupEffectiveDateComparator.getInstance());
 
         if (CollectionUtils.isNotEmpty(signups)) {
             for (FeeManagementSignup signup : signupsList) {
@@ -1783,6 +1758,57 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
     }
 
     /**
+     * Sets "isComplete" to true or false on all immediate preceding FeeManagementSignup objects from FeeManagementSession
+     * that have certain signup operations with the same Offering ID.
+     *
+     * @param isComplete       Boolean value
+     * @param signupOperations List of signup operation values separated by ","
+     * @param context          BRM context
+     */
+    @Override
+    public void setImmediatePrecedingOfferingsComplete(boolean isComplete, String signupOperations, BrmContext context) {
+
+        FeeManagementSignup signup = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
+
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
+
+        Set<FeeManagementSignup> signups = session.getSignups();
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            List<FeeManagementSignup> signupsList = new ArrayList<FeeManagementSignup>(signups);
+
+            // Sorting signups by the effective date in the descending order
+            Collections.sort(signupsList, Collections.reverseOrder(SignupEffectiveDateComparator.getInstance()));
+
+            List<String> signupOperationValues = CommonUtils.split(signupOperations, MULTI_VALUE_DELIMITER);
+
+            Date precedingEffectiveDate = null;
+
+            for (FeeManagementSignup fmSignup : signupsList) {
+
+                String offeringId = fmSignup.getOfferingId();
+                FeeManagementSignupOperation signupOperation = fmSignup.getOperation();
+                Date effectiveDate = fmSignup.getEffectiveDate();
+
+                boolean operationsComply = StringUtils.isEmpty(signupOperations) || signupOperationValues.contains(signupOperation.name());
+
+                if (offeringId.equals(signup.getOfferingId()) && effectiveDate.before(signup.getEffectiveDate()) && operationsComply) {
+
+                    if (precedingEffectiveDate == null) {
+                        precedingEffectiveDate = effectiveDate;
+                    } else if (effectiveDate.before(precedingEffectiveDate)) {
+                        break;
+                    }
+
+                    fmSignup.setComplete(isComplete);
+                    //persistEntity(fmSignup);
+                }
+            }
+        }
+    }
+
+    /**
      * Sets "isTaken" to true or false on all preceding FeeManagementSignup objects from FeeManagementSession
      * that have certain signup operations with the same Offering ID.
      *
@@ -1812,6 +1838,57 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                 boolean operationsComply = StringUtils.isEmpty(signupOperations) || signupOperationValues.contains(signupOperation.name());
 
                 if (offeringId.equals(signup.getOfferingId()) && effectiveDate.before(signup.getEffectiveDate()) && operationsComply) {
+                    fmSignup.setTaken(isTaken);
+                    //persistEntity(fmSignup);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets "isTaken" to true or false on all immediate preceding FeeManagementSignup objects from FeeManagementSession
+     * that have certain signup operations with the same Offering ID.
+     *
+     * @param isTaken          Boolean value
+     * @param signupOperations List of signup operation values separated by ","
+     * @param context          BRM context
+     */
+    @Override
+    public void setImmediatePrecedingOfferingsTaken(boolean isTaken, String signupOperations, BrmContext context) {
+
+        FeeManagementSignup signup = getRequiredAttribute(context, FM_SIGNUP_VAR_NAME);
+
+        FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
+
+        Set<FeeManagementSignup> signups = session.getSignups();
+
+        if (CollectionUtils.isNotEmpty(signups)) {
+
+            List<FeeManagementSignup> signupsList = new ArrayList<FeeManagementSignup>(signups);
+
+            // Sorting signups by the effective date in the descending order
+            Collections.sort(signupsList, Collections.reverseOrder(SignupEffectiveDateComparator.getInstance()));
+
+            List<String> signupOperationValues = CommonUtils.split(signupOperations, MULTI_VALUE_DELIMITER);
+
+            Date precedingEffectiveDate = null;
+
+            for (FeeManagementSignup fmSignup : signupsList) {
+
+                String offeringId = fmSignup.getOfferingId();
+                FeeManagementSignupOperation signupOperation = fmSignup.getOperation();
+                Date effectiveDate = fmSignup.getEffectiveDate();
+
+                boolean operationsComply = StringUtils.isEmpty(signupOperations) || signupOperationValues.contains(signupOperation.name());
+
+                if (offeringId.equals(signup.getOfferingId()) && effectiveDate.before(signup.getEffectiveDate()) && operationsComply) {
+
+                    if (precedingEffectiveDate == null) {
+                        precedingEffectiveDate = effectiveDate;
+                    } else if (effectiveDate.before(precedingEffectiveDate)) {
+                        break;
+                    }
+
                     fmSignup.setTaken(isTaken);
                     //persistEntity(fmSignup);
                 }
