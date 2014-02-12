@@ -122,7 +122,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 mark signup as not taken
 set signup key "late.drop.penalty" to "yes"
 set session key "late.drop.penalty" to "yes"
-mark signup as complete
+mark signup rates "", "" as complete
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late drop - ignored', 5011, 'FM Signup 1_11', 3, 10, null,
@@ -218,7 +218,7 @@ expander ksa.dsl
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late fee charge', 6001, 'FM Session 1_1', 3, 10, null,
-'(signup operation is "ADD" and signup date is after atp milestone "kuali.atp.milestone.firstDayOfClass" and session key "early.registration" is not "true")',
+'(session key "late.registration" is "true" and session key "early.registration" is not "true")',
 'charge incidental rate "late.fee", "default" using id "late.fee"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('UG student has more than 12 units so is full time', 6002, 'FM Session 1_2', 3, 10, null,
