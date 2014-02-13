@@ -191,7 +191,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     @Test
     public void assesFees6() throws Exception {
 
-        Long sessionId = 22L;
+        Long sessionId = 21L;
 
         // Create an FM session and manifest:
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
@@ -211,6 +211,27 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
     @Test
     public void assesFees7() throws Exception {
+
+        Long sessionId = 22L;
+
+        // Create an FM session and manifest:
+        FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees8() throws Exception {
 
         String userId = "user101";
 

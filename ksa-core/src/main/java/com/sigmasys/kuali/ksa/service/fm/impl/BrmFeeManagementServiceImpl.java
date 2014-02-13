@@ -1919,6 +1919,10 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         if (CollectionUtils.isNotEmpty(signups)) {
 
+            List<String> rateCodeValues = CommonUtils.split(rateCodes, MULTI_VALUE_DELIMITER);
+            List<String> rateTypeCodeValues = CommonUtils.split(rateTypeCodes, MULTI_VALUE_DELIMITER);
+            List<String> rateCatalogCodeValues = CommonUtils.split(rateCatalogCodes, MULTI_VALUE_DELIMITER);
+
             for (FeeManagementSignup fmSignup : signups) {
 
                 Set<FeeManagementSignupRate> signupRates = fmSignup.getSignupRates();
@@ -1927,14 +1931,31 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                     for (FeeManagementSignupRate signupRate : new HashSet<FeeManagementSignupRate>(signupRates)) {
 
-                        if (fmSignup.getEffectiveDate().compareTo(signup.getEffectiveDate()) < 0 ||
-                                fmSignup.getId().equals(signup.getId())) {
+                        Rate rate = signupRate.getRate();
 
-                            if (signupRate.getId() != null) {
-                                deleteEntity(signupRate.getId(), FeeManagementSignupRate.class);
+                        RateType rateType = rate.getRateType();
+
+                        RateCatalog rateCatalog = rate.getRateCatalogAtp().getRateCatalog();
+
+                        boolean rateCodesComply = StringUtils.isEmpty(rateCodes) ||
+                                matchesPatterns(rate.getCode(), rateCodeValues);
+
+                        boolean rateTypeCodesComply = StringUtils.isEmpty(rateTypeCodes) ||
+                                matchesPatterns(rateType.getCode(), rateTypeCodeValues);
+
+                        boolean rateCatalogCodesComply = StringUtils.isEmpty(rateCatalogCodes) ||
+                                matchesPatterns(rateCatalog.getCode(), rateCatalogCodeValues);
+
+                        if (rateCodesComply && rateTypeCodesComply && rateCatalogCodesComply) {
+
+                            if (fmSignup.getEffectiveDate().compareTo(signup.getEffectiveDate()) < 0) {
+
+                                if (signupRate.getId() != null) {
+                                    deleteEntity(signupRate.getId(), FeeManagementSignupRate.class);
+                                }
+
+                                signupRates.remove(signupRate);
                             }
-
-                            signupRates.remove(signupRate);
                         }
                     }
                 }
@@ -1957,11 +1978,13 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
-        Set<FeeManagementSignup> signups =
-                filterSignups((signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups(),
-                        rateCodes, rateTypeCodes, rateCatalogCodes, null, null);
+        Collection<FeeManagementSignup> signups = (signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups();
 
         if (CollectionUtils.isNotEmpty(signups)) {
+
+            List<String> rateCodeValues = CommonUtils.split(rateCodes, MULTI_VALUE_DELIMITER);
+            List<String> rateTypeCodeValues = CommonUtils.split(rateTypeCodes, MULTI_VALUE_DELIMITER);
+            List<String> rateCatalogCodeValues = CommonUtils.split(rateCatalogCodes, MULTI_VALUE_DELIMITER);
 
             for (FeeManagementSignup fmSignup : signups) {
 
@@ -1971,11 +1994,29 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                     for (FeeManagementSignupRate signupRate : new HashSet<FeeManagementSignupRate>(signupRates)) {
 
-                        if (signupRate.getId() != null) {
-                            deleteEntity(signupRate.getId(), FeeManagementSignupRate.class);
-                        }
+                        Rate rate = signupRate.getRate();
 
-                        signupRates.remove(signupRate);
+                        RateType rateType = rate.getRateType();
+
+                        RateCatalog rateCatalog = rate.getRateCatalogAtp().getRateCatalog();
+
+                        boolean rateCodesComply = StringUtils.isEmpty(rateCodes) ||
+                                matchesPatterns(rate.getCode(), rateCodeValues);
+
+                        boolean rateTypeCodesComply = StringUtils.isEmpty(rateTypeCodes) ||
+                                matchesPatterns(rateType.getCode(), rateTypeCodeValues);
+
+                        boolean rateCatalogCodesComply = StringUtils.isEmpty(rateCatalogCodes) ||
+                                matchesPatterns(rateCatalog.getCode(), rateCatalogCodeValues);
+
+                        if (rateCodesComply && rateTypeCodesComply && rateCatalogCodesComply) {
+
+                            if (signupRate.getId() != null) {
+                                deleteEntity(signupRate.getId(), FeeManagementSignupRate.class);
+                            }
+
+                            signupRates.remove(signupRate);
+                        }
                     }
                 }
             }
