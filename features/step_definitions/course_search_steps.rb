@@ -35,3 +35,21 @@ When /^I search for a "(.*?)" "(.*?)" by "(.*?)"$/ do |course_status,course, ter
     @course_offering.course_search
 end
 
+
+When /^I search for a course and code separated by spaces$/ do
+  @course_offering = make CourseOffering, :search_text => "ENGL 799"
+  @course_offering.course_search_with_search_text
+end
+
+
+Then /^the results should return the specific course code\.$/ do
+pending # express the regexp above with the code you wish you had
+end
+
+And /^also return results for search by course and search by code$/ do
+  on CourseSearch do |page|
+    page.multiple_page_check("ENGL").should be_true
+    page.multiple_page_check("799").should be_true
+  end
+end
+

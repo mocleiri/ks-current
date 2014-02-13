@@ -29,3 +29,22 @@ Feature: BT.Course Search
     |  scheduled   | ENGL206 |Scheduled terms | should         |
     |  unscheduled | BSCI103 |Spring 2014     | should not     |
     |  unscheduled | BSCI103 |Scheduled terms | should not     |
+
+  #KSAP-692
+  @draft
+  Scenario Outline: CS3.1 Verify searches for specific course codes returns the correct results.
+    When I search for a course with "<text>" text option
+    Then courses containing  "<expected>" text option appears
+  Examples:
+    | text     | expected |
+    | ENGL799  | ENGL799  |
+    |"ENGL 799"| ENGL799  |
+
+    @draft @wip
+  Scenario: CS 3.2 Verify search for course and code separated by spaces returns the correct results
+    When I search for a course and code separated by spaces
+    #Then the results should return the specific course code.
+    And also return results for search by course and search by code
+
+
+
