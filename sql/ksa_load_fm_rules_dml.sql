@@ -401,7 +401,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 '(session key "campus" is "sg" and signup has rates "sg.fee" and student is part-time and student is graduate)',
 'add signup rate "sg.facilities.pt", "default"
  add signup rate "sg.fee.graduate.pt", "default"
-  remove signup rates "sg.fee"
+ remove signup rates "sg.fee"
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7006, 'FM Signup 2_6', 3, 10, null,
