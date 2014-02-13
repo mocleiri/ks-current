@@ -234,10 +234,11 @@ public class RuleSetsController extends AbstractRuleController {
      * @param form RulesForm
      * @return ModelAndView instance
      */
-    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=checkRuleNameExistence")
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=checkRuleSetNameExistence")
     public ModelAndView checkRuleSetNameExistence(@ModelAttribute("KualiForm") RuleSetsForm form) {
 
         RuleSet ruleSet = form.getNewRuleSet();
+
         if (ruleSet == null) {
             return handleError(form, "Rule Set cannot be null");
         }
@@ -274,7 +275,7 @@ public class RuleSetsController extends AbstractRuleController {
 
             return handleError(form, "Rule Set name cannot be empty");
 
-        } else if (!ruleExists(ruleSetName)) {
+        } else if (!ruleSetExists(ruleSetName)) {
 
             if (StringUtils.isBlank(ruleSet.getHeader())) {
                 return handleError(form, "Rule Set header cannot be empty");
@@ -339,8 +340,9 @@ public class RuleSetsController extends AbstractRuleController {
                 }
             });
             form.setRules(rules);
+        } else {
+            form.setRules(Collections.<Rule>emptyList());
         }
-
     }
 
     private void copyFormToRuleSet(RuleSetsForm form, RuleSet ruleSet) {

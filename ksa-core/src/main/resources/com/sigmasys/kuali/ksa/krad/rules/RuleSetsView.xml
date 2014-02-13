@@ -65,7 +65,8 @@
         </property>
     </bean>
 
-    <bean id="addRuleSetPanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+    <bean id="addRuleSetPanel" p:id="addRuleSetPanel" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -112,7 +113,7 @@
                 <bean parent="Uif-InputField" p:propertyName="newRuleSet.description"
                       p:label="Rule Set Description"
                       p:labelPlacement="TOP"
-                      p:required="false"
+                      p:required="true"
                       p:fieldLabel.renderColon="false">
                     <property name="bindingInfo.bindToForm" value="true"/>
                     <property name="control">
@@ -144,7 +145,8 @@
         </property>
     </bean>
 
-    <bean id="editRuleSetPanel" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+    <bean id="editRuleSetPanel" p:id="editRuleSetPanel" parent="Uif-VerticalBoxSection"
+          p:layoutManager.orientation="VERTICAL">
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -191,7 +193,7 @@
                 <bean parent="Uif-InputField" p:propertyName="description"
                       p:label="Rule Set Description"
                       p:labelPlacement="TOP"
-                      p:required="false"
+                      p:required="true"
                       p:fieldLabel.renderColon="false">
                     <property name="bindingInfo.bindToForm" value="true"/>
                     <property name="control">

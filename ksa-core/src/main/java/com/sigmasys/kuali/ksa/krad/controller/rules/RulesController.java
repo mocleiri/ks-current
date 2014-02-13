@@ -3,7 +3,9 @@ package com.sigmasys.kuali.ksa.krad.controller.rules;
 import com.sigmasys.kuali.ksa.exception.InvalidRulesException;
 import com.sigmasys.kuali.ksa.krad.form.rules.RulesForm;
 import com.sigmasys.kuali.ksa.model.rule.Rule;
+import com.sigmasys.kuali.ksa.model.rule.RuleSet;
 import com.sigmasys.kuali.ksa.model.rule.RuleType;
+import com.sigmasys.kuali.ksa.util.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -16,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A controller for managing KSA business rules.
@@ -50,9 +51,7 @@ public class RulesController extends AbstractRuleController {
         List<String> ruleNames = StringUtils.isNotBlank(rulesForm.getRuleSetName()) ?
                 brmPersistenceService.getRuleNames(rulesForm.getRuleSetName()) : brmPersistenceService.getRuleNames();
 
-        if (CollectionUtils.isNotEmpty(ruleNames)) {
-            rulesForm.initNameFinder(ruleNames);
-        }
+        rulesForm.initNameFinder(ruleNames != null ? ruleNames : Collections.<String>emptyList());
 
         List<RuleType> ruleTypes = brmPersistenceService.getRuleTypes();
 
@@ -211,6 +210,10 @@ public class RulesController extends AbstractRuleController {
             return handleError(form, "Rule cannot be null");
         }
 
+        if (rule.getId() != null) {
+            rule.setId(null);
+        }
+
         String ruleName = rule.getName();
 
         if (StringUtils.isBlank(ruleName)) {
@@ -243,7 +246,19 @@ public class RulesController extends AbstractRuleController {
 
             try {
 
-                brmPersistenceService.persistRule(rule);
+                rule = BeanUtils.getDeepCopy(rule);
+
+                String ruleSetName = form.getRuleSetName();
+
+                if (StringUtils.isNotBlank(ruleSetName)) {
+                    RuleSet ruleSet = brmPersistenceService.getRuleSet(ruleSetName);
+                    if (ruleSet == null) {
+                        return handleError(form, "Rule set '" + ruleSetName + "' does not exist");
+                    }
+                    brmPersistenceService.addRulesToRuleSet(ruleSet.getId(), rule);
+                } else {
+                    brmPersistenceService.persistRule(rule);
+                }
 
                 reloadRuleSets(form, true);
 
