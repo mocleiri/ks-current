@@ -36,7 +36,6 @@ import java.util.*;
 @RequestMapping(value = "/paymentPlanView")
 public class PaymentPlanController extends GenericSearchController {
 
-    private static final String PAYMENT_PLAN_VIEW = "PaymentPlanView";
     private static final String TRANSFER_TYPE_FIELD = "PaymentPlanViewTransferType";
     private static final String RESPONSIBLE_ACCOUNT_FIELD = "PaymentPlanViewResponsibleAccount";
     private static final String RESPONSIBLE_ACCOUNT_SUGGEST = "PaymentPlanViewResponsibleAccountSuggest";
@@ -401,6 +400,7 @@ public class PaymentPlanController extends GenericSearchController {
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=batchPaymentBilling")
     public ModelAndView batchPaymentBilling(@ModelAttribute("KualiForm") PaymentPlanForm form) {
+
         PaymentBillingPlan plan = form.getPaymentBillingPlan();
 
         if (plan == null) {
@@ -443,14 +443,12 @@ public class PaymentPlanController extends GenericSearchController {
 
         Date today = new Date();
         int addedCount = 0;
-        int errorCount = 0;
         for (String account : accountList) {
             try {
                 paymentBillingService.createPaymentBillingQueue(plan.getId(), account, plan.getMaxAmount(), today, false);
                 addedCount++;
             } catch (IllegalArgumentException e) {
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
-                errorCount++;
             }
         }
 
@@ -515,7 +513,6 @@ public class PaymentPlanController extends GenericSearchController {
             return getUIFModelAndView(form);
         }
 
-        Date today = new Date();
         int newCount = 0;
         int enrollCount = 0;
         int reversalCount = 0;
@@ -760,6 +757,7 @@ public class PaymentPlanController extends GenericSearchController {
     }
 
     private void populateThirdPartyForm(PaymentPlanForm form) {
+
         List<ThirdPartyAccount> accounts = form.getFilterThirdPartyAccounts();
         List<ThirdPartyPlan> plans = form.getFilterThirdPartyPlans();
 
@@ -912,9 +910,9 @@ public class PaymentPlanController extends GenericSearchController {
         plan.setPaymentRoundingType(roundingType);
 
         ScheduleType scheduleType = EnumUtils.findById(ScheduleType.class, form.getLateMembership());
+
         if (scheduleType == null) {
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Late Membership is a required field");
-            errors = true;
             return getUIFModelAndView(form);
         }
 
@@ -939,7 +937,9 @@ public class PaymentPlanController extends GenericSearchController {
 
 
         List<PaymentBillingDateModel> billingModels = form.getPaymentBillingDates();
+
         for (PaymentBillingDateModel model : billingModels) {
+
             String rollupIdString = model.getRollupId();
             Long rollupId = null;
             try {
@@ -948,8 +948,9 @@ public class PaymentPlanController extends GenericSearchController {
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Rollup is required.  '" + rollupIdString + "' is not a valid rollup");
                 errors = true;
             }
+
             if (!errors) {
-                PaymentBillingDate newBillingDate = paymentBillingService.createPaymentBillingDate(planId, rollupId, model.getPercentage(), model.getEffectiveDate());
+                paymentBillingService.createPaymentBillingDate(planId, rollupId, model.getPercentage(), model.getEffectiveDate());
             }
         }
 
@@ -1064,13 +1065,11 @@ public class PaymentPlanController extends GenericSearchController {
                     plan.setCode(plan.getCode().substring(0, 20));
                 }
 
-
                 persistenceService.persistEntity(plan);
 
                 GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Third Party Plan updated");
             }
         }
-
 
         return getUIFModelAndView(form);
     }
