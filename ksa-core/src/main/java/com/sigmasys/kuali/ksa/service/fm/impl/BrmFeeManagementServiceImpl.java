@@ -2220,8 +2220,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
-        Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(), rateCodes, rateTypeCodes,
-                rateCatalogCodes, signupOperations, null);
+        Set<FeeManagementSignup> signups = session.getIncompleteSignups();
 
         if (useTakenSignups != null) {
             for (FeeManagementSignup signup : new HashSet<FeeManagementSignup>(signups)) {
@@ -2237,7 +2236,12 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
         // Map of [Rate ID, [Rate code, number of units]]
         Map<Long, Pair<String, UnitNumber>> rateUnitsMap = new HashMap<Long, Pair<String, UnitNumber>>();
 
+        List<String> rateCodeValues = CommonUtils.split(rateCodes, MULTI_VALUE_DELIMITER);
         List<String> rateSubCodeValues = CommonUtils.split(rateSubCodes, MULTI_VALUE_DELIMITER);
+        List<String> rateTypeCodeValues = CommonUtils.split(rateTypeCodes, MULTI_VALUE_DELIMITER);
+        List<String> rateCatalogCodeValues = CommonUtils.split(rateCatalogCodes, MULTI_VALUE_DELIMITER);
+
+        final Date initialBaseDate = new Date(System.currentTimeMillis() * 1000000);
 
         for (FeeManagementSignup signup : signups) {
 
@@ -2249,24 +2253,35 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                     Rate rate = signupRate.getRate();
 
+                    RateType rateType = rate.getRateType();
+
+                    RateCatalog rateCatalog = rate.getRateCatalogAtp().getRateCatalog();
+
+                    boolean rateCodesComply = StringUtils.isEmpty(rateCodes) ||
+                            matchesPatterns(rate.getCode(), rateCodeValues);
+
+                    boolean rateTypeCodesComply = StringUtils.isEmpty(rateTypeCodes) ||
+                            matchesPatterns(rateType.getCode(), rateTypeCodeValues);
+
+                    boolean rateCatalogCodesComply = StringUtils.isEmpty(rateCatalogCodes) ||
+                            matchesPatterns(rateCatalog.getCode(), rateCatalogCodeValues);
+
                     boolean rateSubCodesComply = StringUtils.isEmpty(rateSubCodes) ||
                             matchesPatterns(rate.getSubCode(), rateSubCodeValues);
 
-                    if (rateSubCodesComply) {
+                    if (rateCodesComply && rateSubCodesComply && rateTypeCodesComply && rateCatalogCodesComply) {
 
                         Date baseDate = rateBaseDateMap.get(rate.getId());
 
                         if (baseDate == null) {
-                            baseDate = new Date(System.currentTimeMillis() * 1000000);
+                            baseDate = initialBaseDate;
                         }
 
                         if (signup.getEffectiveDate().before(baseDate)) {
                             rateBaseDateMap.put(rate.getId(), signup.getEffectiveDate());
                         }
 
-                        RateType rateType = rate.getRateType();
-
-                        if (rateType != null && rateType.isGrouping()) {
+                        if (rateType.isGrouping()) {
 
                             Pair<String, UnitNumber> rateCodeUnits = rateUnitsMap.get(rate.getId());
 
@@ -2311,7 +2326,6 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                         }
 
                         signupRate.setComplete(true);
-
                         //persistEntity(signupRate);
                     }
                 }

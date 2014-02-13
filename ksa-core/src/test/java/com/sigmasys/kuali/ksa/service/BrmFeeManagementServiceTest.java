@@ -126,7 +126,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees3() throws Exception {
+    public void assesFees501() throws Exception {
 
         Long sessionId = 501L;
 
@@ -147,7 +147,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees4() throws Exception {
+    public void assesFees502() throws Exception {
 
         Long sessionId = 502L;
 
@@ -168,7 +168,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees5() throws Exception {
+    public void assesFees503() throws Exception {
 
         Long sessionId = 503L;
 
@@ -189,7 +189,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees6() throws Exception {
+    public void assesFees21() throws Exception {
 
         Long sessionId = 21L;
 
@@ -210,7 +210,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees7() throws Exception {
+    public void assesFees22() throws Exception {
 
         Long sessionId = 22L;
 
@@ -231,7 +231,28 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees8() throws Exception {
+    public void assesFees9() throws Exception {
+
+        Long sessionId = 9L;
+
+        // Create an FM session and manifest:
+        FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees101() throws Exception {
 
         String userId = "user101";
 
