@@ -220,7 +220,7 @@
                         <bean parent="Uif-VerticalBoxGroup">
                             <property name="items">
                                 <list>
-                                    <bean parent="Uif-InputField" p:propertyName="rate.atpId" p:labelPlacement="TOP" p:label="Academic Time Period Code"/>
+                                    <bean parent="Uif-InputField" p:propertyName="atpDescription" p:labelPlacement="TOP" p:label="Academic Time Period" p:readOnly="true"/>
                                     <bean parent="Uif-InputField" p:propertyName="defaultAmount" p:labelPlacement="TOP" p:label="Default Amount" p:readOnly="@{#line.getDefaultAmountReadOnly()}"/>
                                     <bean parent="Uif-InputField" p:propertyName="transactionTypeId" p:labelPlacement="TOP" p:label="Transaction Type Code" p:readOnly="@{#line.getTransactionTypeIdReadOnly()}"/>
                                     <bean parent="Uif-HorizontalBoxSection">
@@ -265,7 +265,13 @@
         <property name="items">
             <list>
                 <bean parent="Uif-InputField" p:label="New Academic Time Period" p:propertyName="rolloverAcademicPeriod"/>
-                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="rolloverTransactionDateType"/>
+                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="rolloverTransactionDateType">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder" value="@{getTransactionDateTypeFinder()}"/>
+                </bean>
+
                 <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rolloverTransactionDate" p:constraintText="Format: mm/dd/yyyy">
                     <property name="control">
                         <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
@@ -285,6 +291,7 @@
     <bean id="flexibleRateAmounts" parent="Uif-Disclosure-VerticalBoxSection" p:style="width: 80%;">
         <property name="headerText" value="Flexible Rate Amounts"/>
         <property name="readOnly" value="false"/>
+        <property name="render" value="@{#line.getFlexible()}"/>
 
         <property name="items">
             <list>
@@ -327,7 +334,12 @@
 
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="transactionDateType"/>
+                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="transactionDateType">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:width="100%"/>
+                    </property>
+                    <property name="optionsFinder" value="@{getTransactionDateTypeFinder()}"/>
+                </bean>
                 <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rate.transactionDate" p:constraintText="Format: mm/dd/yyyy">
                     <property name="control">
                         <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
@@ -344,7 +356,7 @@
     </bean>
 
     <bean id="ratePlateauParameters" parent="Uif-Disclosure-VerticalBoxSection" >
-        <property name="headerText" value="Effective Date Parameters"/>
+        <property name="headerText" value="Rate Plateau Parameters"/>
         <property name="readOnly" value="false"/>
 
         <property name="items">

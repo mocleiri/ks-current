@@ -1,7 +1,9 @@
 package com.sigmasys.kuali.ksa.krad.form;
 
 import com.sigmasys.kuali.ksa.krad.model.RateModel;
-import com.sigmasys.kuali.ksa.model.fm.Rate;
+import com.sigmasys.kuali.ksa.krad.util.IdentifiableKeyValuesFinder;
+import com.sigmasys.kuali.ksa.model.fm.TransactionDateType;
+import org.kuali.rice.krad.keyvalues.KeyValuesFinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,4 +67,9 @@ public class RatesForm extends AbstractViewModel {
     public void setRates(List<RateModel> rates) {
         this.rates = rates;
     }
+
+    public KeyValuesFinder getTransactionDateTypeFinder() {
+        return new IdentifiableKeyValuesFinder<TransactionDateType>(TransactionDateType.class);
+    }
+
 }

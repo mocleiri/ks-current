@@ -125,8 +125,15 @@ public class RatesController extends GenericSearchController {
         List<RateModel> rateModels = new ArrayList<RateModel>(rateList.size());
         for(Rate rate : rateList) {
             RateModel m = new RateModel(rate);
+
             RateCatalog rc = rateService.getRateCatalogByRateId(rate.getId());
             m.setRateCatalog(rc);
+
+            // this should always be true but just in case, don't set the atp if it doesn't match.
+            if(atpModel.getAtpId().equals(rate.getAtpId())) {
+                m.setAtp(atpModel);
+            }
+
             rateModels.add(m);
         }
         form.setRates(rateModels);

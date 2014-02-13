@@ -19,6 +19,7 @@ public class RateModel {
     private String rolloverTransactionDateType;
     private Date rolloverTransactionDate;
     private Date rolloverRecognitionDate;
+    private AtpModel atp;
 
     public RateModel() {
 
@@ -168,6 +169,37 @@ public class RateModel {
 
         }
         return amount;
+    }
+
+
+    public AtpModel getAtp() {
+        if(atp == null) {
+            atp = new AtpModel();
+        }
+        return atp;
+    }
+
+    public void setAtp(AtpModel atp) {
+        this.atp = atp;
+    }
+
+    public String getAtpDescription() {
+        if(getAtp().getAtpName() != null) {
+            return getAtp().getAtpName();
+        } else {
+            return getRate().getAtpId();
+        }
+
+    }
+
+
+    public boolean getFlexible() {
+        String code = getRate().getCode();
+
+        if(code == null) {
+            return false;
+        }
+        return code.endsWith("flexible");
     }
 
 
