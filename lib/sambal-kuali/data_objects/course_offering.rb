@@ -8,7 +8,7 @@ include Workflows
 include Comparable
 
 COURSE_ARRAY = 0
-attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select
+attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text
 
 def initialize(browser, opts={})
   @browser = browser
@@ -17,9 +17,12 @@ def initialize(browser, opts={})
       :course_code=>"BSCI430",
       :credit=>3,
       :notes=>"#{random_alphanums(20).strip}_pub",
-      :planned_term=>"2013Fall",
+      :planned_term=>"2014Winter",
       :term=> "Spring 2014",
-      :term_select=>nil
+      :term_select=>nil,
+      :course_desc =>nil,
+      :course_name =>nil,
+      :search_text =>nil
   }
   options = defaults.merge(opts)
   set_options(options)
@@ -137,8 +140,24 @@ def select_add_to_plan
   end
 end
 
+
+
+
+#############################
+
+def course_search_with_search_text(text=@search_text, term_select=@term_select)
+  navigate_to_maintenance_portal
+  navigate_to_course_search_home
+  sleep 5
+  on CourseSearch do |page|
+    page.search_for_course.set text
+    if @term_select != nil
+      page.search_term_select.select term_select
+    end
+    page.search
+  end
 end
 
 
 
-
+end
