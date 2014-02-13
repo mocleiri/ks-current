@@ -915,17 +915,16 @@ public class PaymentPlanController extends GenericSearchController {
         if (scheduleType == null) {
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Late Membership is a required field");
             errors = true;
+            return getUIFModelAndView(form);
         }
+
+
         plan.setScheduleType(scheduleType);
 
         plan.setTransferType(transferType);
 
         plan.setFlatFeeDebitTypeId(form.getFlatFeeTransactionType());
         plan.setVariableFeeDebitTypeId(form.getVariableFeeTransactionType());
-
-        if (errors) {
-            return getUIFModelAndView(form);
-        }
 
         Long planId = paymentBillingService.persistPaymentBillingPlan(plan);
         plan.setId(planId);
