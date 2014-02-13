@@ -12,6 +12,7 @@ Feature: REG.Register for course
   Scenario: I want to enter course information into my list of selections so that I can indicate what I want to register for.
     When I add a course offering to my registration cart
     Then the course is present in my cart
+    And I can view the details of my selection
 
   #CR 1.2 (KSENROLL-11748)
   Scenario: I want to indicate course parameters at the time I enter course information so I can register with my preferred options

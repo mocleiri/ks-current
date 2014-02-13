@@ -42,3 +42,15 @@ end
 Then /^the modified course is present in my cart$/  do
   pending
 end
+
+And /^I? ?can view the details of my selections?$/ do
+  on RegistrationCart do |page|
+    page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry I"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options_list[0].credit_option} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options_list[0].grading_option}"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0).should include "DIS"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0).should include "M 3:00 pm - 3:50 pm CHM"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1).should include "TH 11:00 am - 12:15 pm EGR"
+  end
+end
