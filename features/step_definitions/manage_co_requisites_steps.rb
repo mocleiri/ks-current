@@ -29,7 +29,7 @@ When /^I add a new course offering rule to a course$/ do
   @courseOR = make CORequisitesData
   @antireq = make AntirequisiteRule, :section => "Antirequisite", :term => @course_offering.term,
                   :course => @course_offering.course
-  @antireq.navigate_to_mco_requisites
+  @antireq.navigate_to_mco_requisites( true)
   @antireq.ar_edit_add( "add")
   @antireq.ar_text_rule( "add", "", "Added Antirequisite on CO level")
   @antireq.commit_changes
@@ -162,7 +162,7 @@ When /^I add a new course offering requisite to a course$/ do
   @courseOR = make CORequisitesData
   @prereq = make PreparationPrerequisiteRule, :section => "Recommended Preparation", :term => @course_offering.term,
                  :course => @course_offering.course
-  @prereq.navigate_to_mco_requisites( true)
+  @prereq.navigate_to_mco_requisites
   @prereq.rp_edit_add( "add")
   @prereq.rp_sepr_text_rule( "add", "", "Added Recommended Prep on CO level")
   @prereq.commit_changes
