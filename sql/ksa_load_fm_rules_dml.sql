@@ -219,7 +219,7 @@ expander ksa.dsl
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late fee charge', 6001, 'FM Session 1_1', 3, 10, null,
 '(session key "late.registration" is "true" and session key "early.registration" is not "true")',
-'charge incidental rate "late.fee", "default" using id "late.fee"')!
+'charge incidental rate "late.registration", "default" using id "late.registration"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('UG student has more than 12 units so is full time', 6002, 'FM Session 1_2', 3, 10, null,
 '(number of taken units gte 12 with rates "", types "", signup operations "" and student is undergraduate)',
