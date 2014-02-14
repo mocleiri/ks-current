@@ -44,7 +44,7 @@ Feature: CO.Holiday Calendar CRED
     Given I create a holiday calendar by copying an existing calendar from search
     When I update holiday dates
     Then the holiday dates are updated when I view the Holiday Calendar
-
+  @bug @KSENROLL-11911
   Scenario: Delete holidays on a Holiday Calendar
     Given I create a holiday calendar by copying an existing calendar from search
     When I remove holidays from the Holiday Calendar
