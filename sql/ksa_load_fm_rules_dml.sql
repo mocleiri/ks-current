@@ -142,11 +142,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'remove signup rates "mba.cohort.flag"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is not MBA so remove cohort rates', 5015, 'FM Signup 1_15', 3, 10, null,
-'(session key "major.code" is not ".*mba")',
+'(session key "major.code" is not ".*mba" and signup has rates "mba.cohort.flag")',
 'remove signup rates "mba.cohort.flag"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is not a Cybersecurity student to remove that rate', 5016, 'FM Signup 1_16', 3, 10, null,
-'(session key "major.code" is not "z077")',
+'(session key "major.code" is not "z077" and signup has rates "cybersecurity.leadership")',
 'remove signup rates "cybersecurity.leadership"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is resident Public Policy student so remove regular and add pp', 5017, 'FM Signup 1_17', 3, 10, null,
@@ -464,7 +464,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'mark signup as complete')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('All academic service fees are removed due to more than ESL classes being taken', 7045, 'FM Signup 3_6', 3, 9, null,
-'(session key "academic.service.remove" is "y")',
+'(session key "academic.service.remove" is "y" and signup has rates "academic.service.fee")',
 'remove signup rates "academic.service.fee"')!
 
 
