@@ -656,6 +656,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 
             UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(five);
 
+            context.getLogger().info("numberOfUnits = " + numberOfUnits);
+            context.getLogger().info("numberOfDroppedUnits = " + numberOfDroppedUnits);
+            context.getLogger().info("numberOfTakenUnits = " + numberOfTakenUnits);
+            context.getLogger().info("numberOfUnitsToCharge = " + numberOfUnitsToCharge);
+
             if (numberOfUnitsToCharge.compareTo(UnitNumber.ZERO) > 0) {
                context.getFmService().chargeIncidentalRate(rateCodes[i], "default", rateCodes[i] + ".default", numberOfUnitsToCharge, null, context);
             }

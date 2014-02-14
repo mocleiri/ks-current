@@ -6,6 +6,8 @@ import com.sigmasys.kuali.ksa.service.atp.AtpService;
 import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
 import com.sigmasys.kuali.ksa.service.hold.HoldService;
 import com.sigmasys.kuali.ksa.util.ContextUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -17,6 +19,8 @@ import java.util.Map;
  * @author Michael Ivanov
  */
 public class BrmContext implements Serializable {
+
+    private static final Log logger = LogFactory.getLog(BrmContext.class);
 
     private Account account;
 
@@ -110,6 +114,10 @@ public class BrmContext implements Serializable {
 
     public InformationService getInformationService() {
         return getService(InformationService.class);
+    }
+
+    public Log getLogger() {
+        return logger;
     }
 
     protected <T> T getService(Class<T> serviceType) {

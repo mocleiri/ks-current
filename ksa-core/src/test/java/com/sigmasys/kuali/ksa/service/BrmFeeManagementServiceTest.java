@@ -130,7 +130,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Long sessionId = 501L;
 
-        // Create an FM session and manifest:
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
         Assert.notNull(session);
@@ -151,7 +150,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Long sessionId = 502L;
 
-        // Create an FM session and manifest:
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
         Assert.notNull(session);
@@ -172,7 +170,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Long sessionId = 503L;
 
-        // Create an FM session and manifest:
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
         Assert.notNull(session);
@@ -193,7 +190,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Long sessionId = 21L;
 
-        // Create an FM session and manifest:
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
         Assert.notNull(session);
@@ -214,7 +210,26 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Long sessionId = 22L;
 
-        // Create an FM session and manifest:
+        FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees3() throws Exception {
+
+        Long sessionId = 3L;
+
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
         Assert.notNull(session);
@@ -235,7 +250,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Long sessionId = 9L;
 
-        // Create an FM session and manifest:
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
         Assert.notNull(session);
@@ -289,6 +303,35 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         Assert.notNull(signup);
 
+        javaRule(session);
+    }
+
+    @Test
+    public void javaRule2() throws Exception {
+
+        Long sessionId = 9L;
+
+        FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        javaRule(session);
+    }
+
+
+    /**
+     * *****************************************************************************
+     * <p/>
+     * Helper methods
+     * <p/>
+     * ******************************************************************************
+     */
+
+    protected void javaRule(FeeManagementSession session) {
+
         // Calling BrmService with payment application rules
         BrmContext context = new BrmContext();
         context.setAccount(session.getAccount());
@@ -328,6 +371,11 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
             UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(five);
 
+            context.getLogger().info("numberOfUnits = " + numberOfUnits);
+            context.getLogger().info("numberOfDroppedUnits = " + numberOfDroppedUnits);
+            context.getLogger().info("numberOfTakenUnits = " + numberOfTakenUnits);
+            context.getLogger().info("numberOfUnitsToCharge = " + numberOfUnitsToCharge);
+
             if (numberOfUnitsToCharge.compareTo(UnitNumber.ZERO) > 0) {
                 context.getFmService().chargeIncidentalRate(rateCode, "default", rateCode + ".default", numberOfUnitsToCharge, null, context);
             }
@@ -335,12 +383,6 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
     }
 
-
-    /********************************************************************************
-     *
-     * Helper methods for "chargeSession"
-     *
-     ********************************************************************************/
 
     /**
      * Creates an FM Session, Manifests, Linked Manifests, Transactions and Implicated Transactions.
