@@ -7,7 +7,7 @@ class CoursePlannerPage < BasePage
 
 
   expected_element :course_planner_header
-  element(:course_planner_header) { |b| b.div(text: "Winter 2014 - Summer I 2014") }
+  element(:course_planner_header) { |b| b.div(text: "Fall 2013 - Summer I 2014") }
 
   #10 - planner page elements
   action(:add_to_term) { |term,b| b.div(id: "#{term}_planned_add").a(class: "uif-actionLink uif-boxLayoutHorizontalItem").click }
