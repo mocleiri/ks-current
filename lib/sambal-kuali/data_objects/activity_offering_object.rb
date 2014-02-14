@@ -190,15 +190,15 @@ class ActivityOffering
       pre_add_ao_list = page.codes_list
       post_add_ao_list = []
       #if page.codes_list.length == 0
-      sleep 2
+      #sleep 2
       page.add_activity
       page.format.select @format unless @format.nil?
       page.loading.wait_while_present
-      sleep 2
+      page.activity_type.wait_until_present
       page.activity_type.select @activity_type unless @format.nil?
       page.quantity.set "1"
       page.complete_add_activity
-      sleep 2
+      sleep 1
       post_add_ao_list = page.codes_list
       #end
       new_code =  post_add_ao_list - pre_add_ao_list
@@ -541,13 +541,15 @@ class ActivityOffering
   private :edit_waitlist_config
 
   def add_personnel person
-    person.add
+    person.create
     @personnel_list << person
   end
 
   def delete_personnel person
-    row = person.target_row_by_personnel_id
-    row.cells[ActivityOfferingMaintenance::PERS_ACTION_COLUMN].link.click()
+    on ActivityOfferingMaintenance do |page|
+      page.update_person_name(person.id,'blah, blah')
+      page.delete_personnel(person.id)
+    end
   end
 
   #completes activity offering edit operation
@@ -838,9 +840,8 @@ class SeatPool
   # @param [Array] list of populations used in seatpools already added
   def add_seatpool(pops_used_list)
     on ActivityOfferingMaintenance do |page|
-      add_index = page.add_pool_row_index
       if @population_name != ""
-        page.lookup_population_name(add_index)
+        page.add_lookup_population_name
 
         #TODO should really call Population.search_for_pop
         on ActivePopulationLookup do |page|
@@ -861,9 +862,9 @@ class SeatPool
         end
 
       end
-      page.update_priority_by_index(add_index, @priority)
-      page.update_seats_by_index(add_index, @seats)
-      page.update_expiration_milestone_by_index(add_index, @expiration_milestone)
+      page.add_pool_priority @priority
+      page.add_pool_seats @seats
+      page.add_pool_expiration_milestone @expiration_milestone
     end
   end
 end
@@ -926,21 +927,12 @@ class Personnel
 
   def create
     on ActivityOfferingMaintenance do |page|
-      page.personnel_table.rows[1].cells[PERSONNEL_ID_COLUMN].text_field.set @id
-      page.personnel_table.rows[1].cells[PERSONNEL_NAME_COLUMN].text_field.set @name
-      page.personnel_table.rows[1].cells[PERSONNEL_AFFILIATION_COLUMN].select().select(@affiliation)
-      page.personnel_table.rows[1].cells[PERSONNEL_INST_EFFORT_COLUMN].text_field.set @inst_effort
-      #page.add_personnel
-    end
-  end
-
-  def add
-    on ActivityOfferingMaintenance do |page|
       page.add_personnel
-      page.personnel_table.rows[-2].cells[PERSONNEL_ID_COLUMN].text_field.set @id
-      page.personnel_table.rows[-2].cells[PERSONNEL_NAME_COLUMN].text_field.set @name
-      page.personnel_table.rows[-2].cells[PERSONNEL_AFFILIATION_COLUMN].select().select(@affiliation)
-      page.personnel_table.rows[-2].cells[PERSONNEL_INST_EFFORT_COLUMN].text_field.set @inst_effort
+      page.loading.wait_while_present
+      page.add_personnel_id.set @id
+      page.add_personnel_name.set @name
+      page.add_personnel_affiliation.select(@affiliation)
+      page.add_personnel_inst_effort.set @inst_effort
     end
   end
 

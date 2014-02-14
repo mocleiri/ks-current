@@ -1,15 +1,14 @@
-#Scenario: Edit Activity Offering Information attributes
 Given /^I am editing the information attributes for an activity offering$/ do
-  # Modify Total Maximum Enrollment to 50
   @activity_offering.edit :max_enrollment => 50
 end
 
 When /^I edit an activity offering code/ do
-  @activity_offering.edit :code => @prev_code + @prev_code
+  @orig_code = @activity_offering.code
+  @activity_offering.edit :code => @activity_offering.code + @activity_offering.code
 end
 
 When /^I revert the change to the activity code/ do
-  @activity_offering.edit :code => @prev_code, :edit_already_started => true
+  @activity_offering.edit :code => @orig_code, :edit_already_started => true
 end
 
 Then /^the activity offering code change is persisted/ do
@@ -26,6 +25,7 @@ And /^I submit the AO changes$/ do
   #validate the success-growl is being shown
   on ManageCourseOfferings do |page|
     page.growl_text.should == "Activity Offering modified."
+    page.growl_div.div(class: "jGrowl-close").click
   end
 end
 
@@ -85,7 +85,7 @@ When /^I jump to the (next|previous) AO without saving the changes$/ do |directi
 end
 
 When /^I jump to an arbitrary AO without saving the changes$/ do
-  target = "Discussion E"
+  target = "Lecture C"
   on ActivityOfferingMaintenance do |page|
     page.jump_to_ao(target)
     page.continue_without_saving
@@ -97,7 +97,7 @@ When /^I jump to an arbitrary AO without saving the changes$/ do
 end
 
 When /^I save the changes and jump to an arbitrary AO$/ do
-  target = "Discussion E"
+  target = "Lecture C"
   on ActivityOfferingMaintenance do |page|
     page.jump_to_ao(target)
     page.save_and_continue
@@ -116,7 +116,7 @@ end
 
 When /^I jump to an arbitrary AO but cancel the change$/ do
   on ActivityOfferingMaintenance do |page|
-    target = "Discussion E"
+    target = "Lecture C"
     page.jump_to_ao(target)
     page.cancel_save
   end
@@ -139,19 +139,19 @@ Then /^the changes of the Personnel attributes are persisted$/ do
   @activity_offering.edit
   personnel = @activity_offering.personnel_list[0]
   personnel.should_not == nil
-  row = personnel.target_row_by_personnel_id
-  row.should_not == nil
-  row.cells[Personnel::PERSONNEL_NAME_COLUMN].text_field.value.should == personnel.name
-  row.cells[Personnel::PERSONNEL_AFFILIATION_COLUMN].select.selected_options[0].text.should == personnel.affiliation
-  row.cells[Personnel::PERSONNEL_INST_EFFORT_COLUMN].text_field.value.to_i.should == personnel.inst_effort
+  on ActivityOfferingMaintenance do |page|
+    page.person_name(personnel.id).should == personnel.name
+    page.person_affiliation(personnel.id).should == personnel.affiliation
+    page.person_inst_effort(personnel.id).should == personnel.inst_effort.to_s
+  end
 end
 
 Then /^the deleted Personnel line should not be present$/ do
   @course_offering.manage
   @activity_offering.edit
-  person = make Personnel, :id => "B.MORAYMAR", :name => "BARR, MORAYMA", :affiliation => "Instructor", :inst_effort => 100
-  row = person.target_row_by_personnel_id
-  row.should == nil
+  on ActivityOfferingMaintenance do |page|
+    page.target_person_row(@person.id).nil?.should be_true
+  end
 end
 
 When /^I add Personnel attributes$/ do
@@ -162,38 +162,42 @@ end
 
 When(/^I delete Personnel attributes$/) do
   @activity_offering.edit
-  person = make Personnel, :id => "S.DAVIDB", :name => "SMITH, DAVID", :affiliation => "Instructor", :inst_effort => 30
-  @activity_offering.add_personnel person
-  person = make Personnel, :id => "B.MORAYMAR", :name => "BARR, MORAYMA", :affiliation => "Instructor", :inst_effort => 100
-  @activity_offering.delete_personnel person
+  @person = make Personnel, :id => "O.JEFFREYF" #in reference data
+  @activity_offering.delete_personnel @person
 end
 
 When /^I change Miscellaneous Activity Offering attributes$/ do
-  @activity_offering.edit :requires_evaluation => !(@prev_req_ev), :honors_course => !(@prev_hon_flg), :course_url => "www.kuali.org"
+  @activity_offering.edit
+
+  on ActivityOfferingMaintenance do |page|
+    page.requires_evaluation.set?.should be_false
+    page.honors_flag.set?.should be_false
+    page.course_url.value.should == 'null'
+  end
+
+  @activity_offering.edit :edit_already_started => true,
+                          :requires_evaluation => true,
+                          :honors_course => true,
+                          :course_url => "www.kuali.org"
 end
 
 Then /^the miscellaneous changes are persisted$/ do
   @course_offering.manage
   @activity_offering.edit
   on ActivityOfferingMaintenance do |page|
-    page.requires_evaluation.set?.should_not == @prev_req_ev
-    page.honors_flag.set?.should_not == @prev_hon_flg
-    page.course_url == @prev_course_url
+    page.requires_evaluation.set?.should ==  @activity_offering.requires_evaluation
+    page.honors_flag.set?.should == @activity_offering.honors_course
+    page.course_url.value.should == @activity_offering.course_url
   end
 end
 
 Given /^I manage a given Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :course=>"ENGL222")
-  @course_offering.manage_and_init
+  @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :course=>"ENGL244")
+  #@course_offering.manage
 end
 
-# Get activity offering A and force flags to false, so we can be sure that setting them to true later is a valid test
 Given /^I edit an Activity Offering$/ do
-  @activity_offering = @course_offering.get_ao_obj_by_code("B")
-  @prev_req_ev = @activity_offering.requires_evaluation
-  @prev_hon_flg = @activity_offering.honors_course
-  @prev_code = @activity_offering.code
-  @prev_course_url = @activity_offering.course_url
+  @activity_offering = make ActivityOffering, :parent_offering => @course_offering, :code => 'B'
 end
 
 Given /^I edit an Activity Offering that has available subterms$/ do

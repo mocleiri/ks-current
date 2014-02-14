@@ -14,6 +14,11 @@ class ActivityOfferingMaintenance < BasePage
   action(:next_ao) { |b| b.frm.link(id: "edit_ao_next").click; b.loading.wait_while_present }
   element(:next_ao_text) { |b| b.frm.link(id: "edit_ao_next").text }
 
+  def jump_to_ao(ao_name)
+    select_ao_menu.select(ao_name)
+  end
+
+  #sticky footer
   element(:sticky_footer) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") }
   element(:save_cancel_div) { |b| b.frm.div(id: "ActivityOfferingEdit_SubmitCancel") }
   element(:save_button) { |b| b.save_cancel_div.button(text: "Save Progress") }
@@ -28,6 +33,7 @@ class ActivityOfferingMaintenance < BasePage
   element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter", index: 1) }
   element(:send_revised_scheduling_information_checkbox) { |b| b.sticky_footer_div.checkbox(name: "document.newMaintainableObject.dataObject.sendRDLsToSchedulerAfterMSE") }
   action(:send_revised_scheduling_information) { |b| b.send_revised_scheduling_information_checkbox.click }
+  #end sticky footer
 
   #unsaved changes dialog - appears when navigating between AOs
   element(:save_continue_alert_div) { |b| b.frm.div(id: "ActivityOfferingEdit-NavigationConfirmation") }
@@ -77,6 +83,7 @@ class ActivityOfferingMaintenance < BasePage
 
   element(:mainpage_section){|b| b.frm.div(id:"ActivityOffering-MaintenanceView")}
 
+  #END Scheduling Info section
   element(:actual_sched_info_div) { |b| b.frm.div(id: /^ActivityOffering-DeliveryLogistic.*-Actuals$/) }
   element(:actual_sched_info_table) { |b| b.actual_sched_info_div.table() }
 
@@ -99,8 +106,6 @@ class ActivityOfferingMaintenance < BasePage
   element(:add_tba){ |b|b.add_sched_info_div.checkbox(id: 'rdl_tba_control')}
   element(:add_days) { |b| b.add_sched_info_div.text_field(id: 'rdl_days_control') }
   element(:add_start_time) { |b| b.add_sched_info_div.text_field(id: 'rdl_starttime_control') }
-  #element(:add_start_time_am) { |b| b.add_sched_info_div.radio(id: 'rdl_startTimeAmPm_control_0') }
-  #element(:add_start_time_pm) { |b| b.add_sched_info_div.radio(id: 'rdl_startTimeAmPm_control_1') }
 
   # END TIME WIDGETS
   # This field comes in 2 variants: 1) an "Input"-field, 2) a "Select"-list
@@ -111,26 +116,21 @@ class ActivityOfferingMaintenance < BasePage
   #       press the "down"-key you see the DOM gets dynamically populated with a "<ul>"-tag (widget #1).  However, if you log in as DSC(carol) and you edit
   #       an AO which has been "approved for non-standard timeslots", you'll see it instead renders in the DOM as a "<select>" ()widget #2).
 
-        # Widget #1 (input field)
-        element(:add_end_time_div) { |b| b.add_sched_info_div.div(id: "rdl_endtime") }
-        element(:add_end_time) { |b| b.add_sched_info_div.text_field(id: 'rdl_endtime_control') }
-        #element(:add_end_time_am) { |b| b.add_sched_info_div.radio(id: 'rdl_endTimeAmPm_control_0') }
-        #element(:add_end_time_pm) { |b| b.add_sched_info_div.radio(id: 'rdl_endTimeAmPm_control_1') }
+  # Widget #1 (input field)
+  element(:add_end_time_div) { |b| b.add_sched_info_div.div(id: "rdl_endtime") }
+  element(:add_end_time) { |b| b.add_sched_info_div.text_field(id: 'rdl_endtime_control') }
 
-        # Widget #2 (select list)
-        element(:end_time_select) { |b| b.select(id: "rdl_endtime_control") }
-        action(:end_time_select_populate_list) { |b| b.add_start_time.fire_event "onblur"; sleep 3; }
+  # Widget #2 (select list)
+  element(:end_time_select) { |b| b.select(id: "rdl_endtime_control") }
+  action(:end_time_select_populate_list) { |b| b.add_start_time.fire_event "onblur"; sleep 3; }
+  action(:select_end_time) { |time, b| b.link(text: /#{time}/).wait_until_present;b.link(text: /#{time}/).click }
 
-        # error msg
-        element(:end_time_error_msg) { |b| b.div(:data_for => "rdl_endtime_control").ul.li(class: "uif-errorMessageItem-field").text}
+  element(:end_time_error_msg) { |b| b.div(id: 'rdl_endtime_errors').ul.li(class: "uif-errorMessageItem-field").text}
 
-  element(:add_facility) { |b| b.add_sched_info_div.div(data_label: "Facility").text_field() }
-  action(:lookup_facility) { |b| b.add_sched_info_div.div(data_label: "Facility").button().click; b.loading.wait_while_present }
-  element(:add_room) { |b| b.add_sched_info_div.div(data_label: "Room").text_field() }
-  action(:lookup_room) { |b| b.add_sched_info_div.div(data_label: "Room").button().click; b.loading.wait_while_present }
-
-  action(:facility_features) { |b| b.frm.link(id: "ActivityOffering-DeliveryLogistic-New-Features-Section_toggle").click; b.loading.wait_while_present }
-  element(:feature_list){ |b|b.frm.select(id: "featuresList_control")}
+  element(:add_facility) { |b| b.add_sched_info_div.text_field(id: 'rdl_bldg_control') }
+  action(:lookup_facility) { |b| b.add_sched_info_div.div(id: 'rdl_bldg').button().click; b.loading.wait_while_present }
+  element(:add_room) { |b| b.add_sched_info_div.text_field(id: 'rdl_room_control') }
+  action(:lookup_room) { |b| b.add_sched_info_div.div(id: 'rdl_room').button().click; b.loading.wait_while_present }
 
   element(:add_new_scheduling_information_button) { |b| b.button(id: "add_rdl_button") }
   action(:add_new_scheduling_information) { |b| b.add_new_scheduling_information_button.click; b.adding.wait_while_present }
@@ -150,83 +150,21 @@ class ActivityOfferingMaintenance < BasePage
   element(:requested_sched_info_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-Requested") }
   element(:requested_sched_info_table) { |b| b.requested_sched_info_div.table() }
 
-  action(:select_end_time) { |time, b| b.link(text: /#{time}/).wait_until_present;b.link(text: /#{time}/).click }
+  action(:get_actual_sched_info_tba) { |row,b| row.cells[TBA_COLUMN].text }
+  action(:get_actual_sched_info_days) { |row,b| row.cells[DAYS_COLUMN].text }
+  action(:get_actual_sched_info_start_time) { |row,b| row.cells[ST_TIME_COLUMN].text }
+  action(:get_actual_sched_info_end_time) { |row,b| row.cells[END_TIME_COLUMN].text }
+  action(:get_actual_sched_info_facility) { |row,b| row.cells[FACILITY_COLUMN].text }
+  action(:get_actual_sched_info_room) { |row,b| row.cells[ROOM_COLUMN].text }
+  action(:get_actual_sched_info_features) { |row,b| row.cells[FEATURES_COLUMN].text }
 
-  def self.asi_table_accessor_maker(method_name, column)
-    define_method method_name.to_s do |row|
-      row.cells[column].text()
-    end
-  end
-
-  asi_table_accessor_maker :get_actual_sched_info_tba, TBA_COLUMN
-  asi_table_accessor_maker :get_actual_sched_info_days, DAYS_COLUMN
-  asi_table_accessor_maker :get_actual_sched_info_start_time, ST_TIME_COLUMN
-  asi_table_accessor_maker :get_actual_sched_info_end_time, END_TIME_COLUMN
-  asi_table_accessor_maker :get_actual_sched_info_facility, FACILITY_COLUMN
-  asi_table_accessor_maker :get_actual_sched_info_room, ROOM_COLUMN
-  asi_table_accessor_maker :get_actual_sched_info_features, FEATURES_COLUMN
-
-  def self.rsi_table_accessor_maker(method_name, column)
-    define_method method_name.to_s do |row|
-      row.cells[column].text()
-    end
-  end
-
-  rsi_table_accessor_maker :get_requested_sched_info_tba, TBA_COLUMN
-  rsi_table_accessor_maker :get_requested_sched_info_days, DAYS_COLUMN
-  rsi_table_accessor_maker :get_requested_sched_info_start_time, ST_TIME_COLUMN
-  rsi_table_accessor_maker :get_requested_sched_info_end_time, END_TIME_COLUMN
-  rsi_table_accessor_maker :get_requested_sched_info_facility, FACILITY_COLUMN
-  rsi_table_accessor_maker :get_requested_sched_info_room, ROOM_COLUMN
-  rsi_table_accessor_maker :get_requested_sched_info_features, FEATURES_COLUMN
-
-  element(:personnel_div) { |b| b.frm.div(id: "ao-personnelgroup") }
-  element(:personnel_table) { |b| b.frm.personnel_div.table() }
-  ID_COLUMN = 0
-  PERS_NAME_COLUMN = 1
-  AFFILIATION_COLUMN = 2
-  INST_EFFORT_COLUMN = 3
-  PERS_ACTION_COLUMN = 4
-
-  def get_affiliation(id)
-    target_person_row(id).cells[AFFILIATION_COLUMN].text
-  end
-
-  element(:personnel_id) { |b| b.personnel_div.text_field(name: "document.newMaintainableObject.dataObject.instructors[0].offeringInstructorInfo.personId") }
-  element(:personnel_name) { |b| b.personnel_div.text_field(name: "document.newMaintainableObject.dataObject.instructors[0].offeringInstructorInfo.personName") }
-  element(:personnel_effort) { |b| b.personnel_div.text_field(name: "document.newMaintainableObject.dataObject.instructors[0].sEffort") }
-
-  element(:add_person_id) { |b| b.personnel_table.rows[1].cells[ID_COLUMN].text_field() }
-
-  action(:lookup_person) { |b| b.personnel_table.rows[1].cells[ID_COLUMN].button().click; b.loading.wait_while_present }
-  element(:add_affiliation) { |b| b.personnel_table.rows[1].cells[AFFILIATION_COLUMN].select() }
-  element(:add_inst_effort) { |b| b.personnel_table.rows[1].cells[INST_EFFORT_COLUMN].text_field() }
-  action(:delete_personnel_element) { |b| b.personnel_table.rows[1].cells[PERS_ACTION_COLUMN].button() }
-  action(:delete_personnel) { |b| b.delete_personnel_element.click; b.loading.wait_while_present }
-
-  element(:add_personnel_element) { |b| b.frm.button(id: "ao-personnelgroup-addline") }
-  action(:add_personnel) { |b| b.add_personnel_element.click; b.loading.wait_while_present }
-
-  TBA = 0
-  DAYS = 1
-  START_TIME = 2
-  END_TIME = 3
-  FACILITY = 4
-  ROOM = 5
-  FEATURES = 6
-  ACTIONS = 7
-
-  def get_cluster_error_msgs(private_name = :default_cluster)
-    msg_list = []
-    frm.ul(class: "uif-clientMessageItems").lis(class:  "uif-errorMessageItem-field").each do |li|
-      msg_list <<  li.text()
-    end
-    msg_list.to_s
-  end
-
-  def jump_to_ao(ao_name)
-    select_ao_menu.select(ao_name)
-  end
+  action(:get_requested_sched_info_tba) { |row,b| row.cells[TBA_COLUMN].text }
+  action(:get_requested_sched_info_days) { |row,b| row.cells[DAYS_COLUMN].text }
+  action(:get_requested_sched_info_start_time) { |row,b| row.cells[ST_TIME_COLUMN].text }
+  action(:get_requested_sched_info_end_time) { |row,b| row.cells[END_TIME_COLUMN].text }
+  action(:get_requested_sched_info_facility) { |row,b| row.cells[FACILITY_COLUMN].text }
+  action(:get_requested_sched_info_room) { |row,b| row.cells[ROOM_COLUMN].text }
+  action(:get_requested_sched_info_features) { |row,b| row.cells[FEATURES_COLUMN].text }
 
   def target_rsi_row (key)
     view_requested_scheduling_information
@@ -245,28 +183,48 @@ class ActivityOfferingMaintenance < BasePage
   def delete_rsi_row(row)
     row.cells[SCHED_INFO_ACTION_COLUMN].link(id: /delete_schedule_request/).click
   end
+  #END Scheduling Info section
 
-  def get_inst_effort(id)
-    target_person_row(id).cells[INST_EFFORT_COLUMN].text_field.value
+  #Personnel section
+  element(:personnel_div) { |b| b.frm.div(id: "ao-personnelgroup") }
+  element(:personnel_table) { |b| b.frm.personnel_div.table() }
+
+  ID_COLUMN = 0
+  PERS_NAME_COLUMN = 1
+  AFFILIATION_COLUMN = 2
+  INST_EFFORT_COLUMN = 3
+  PERS_ACTION_COLUMN = 4
+
+  element(:add_personnel_id) { |b| b.personnel_table.rows[-2].text_field(id: /personnel_id_line/) }
+  action(:add_lookup_person) { |b| b.personnel_table.rows[-2].div(id: /personnel_id_line/).button().click; b.loading.wait_while_present }
+  element(:add_personnel_name) { |b| b.personnel_table.rows[-2].text_field(id: /personnel_name_line/) }
+  element(:add_personnel_affiliation) { |b| b.personnel_table.rows[-2].select(id: /personnel_affiliation_line/) }
+  element(:add_personnel_inst_effort) { |b| b.personnel_table.rows[-2].text_field(id: /personnel_allocation_line/) }
+
+  element(:add_personnel_element) { |b| b.frm.button(id: "ao-personnelgroup-addline") }
+  action(:add_personnel) { |b| b.add_personnel_element.click; b.loading.wait_while_present }
+
+  action(:delete_personnel_element) { |id,b| b.target_person_row(id).link(id: /delete_personnel_line/) }
+  action(:delete_personnel) { |id,b| b.delete_personnel_element(id).click; b.loading.wait_while_present }
+
+  def target_person_row(id)
+    row = nil
+    personnel_table.rows[1..-2].each do |row|
+      row_key = row.text_field(id: /personnel_id_line/).value
+      return row if row_key == id
+    end
+    return nil
   end
 
-  def get_affiliation(id)
-    target_person_row(id).cells[AFFILIATION_COLUMN].select.selected_options[0].text
-    #target_person_row(id).cells[AFFILIATION_COLUMN].text
-  end
+  action(:person_name) { |id,b| b.target_person_row(id).text_field(id: /personnel_name_line/).value }
+  action(:update_person_name) { |id,name,b| b.target_person_row(id).text_field(id: /personnel_name_line/).set name }
 
-  def update_affiliation(id, affiliation)
-    target_person_row(id).select affiliation
-  end
-  
-  def update_inst_effort(id, effort)
-    target_person_row(id).text_field.set effort
-  end
+  action(:person_affiliation) { |id,b| b.target_person_row(id).select(id: /personnel_affiliation_line/).selected_options[0].text }
+  action(:update_person_affiliation) { |id,affiliation,b| b.target_person_row(id)..select(id: /personnel_affiliation_line/).select(affiliation) }
 
-  def delete_id(id)
-    target_person_row(id).button.click
-    loading.wait_while_present
-  end
+  action(:person_inst_effort) { |id,b| b.target_person_row(id).text_field(id: /personnel_allocation_line/).value }
+  action(:update_person_inst_effort) { |id,effort,b| b.target_person_row(id).text_field(id: /personnel_allocation_line/).set effort }
+  #END Personnel section
 
   value(:no_waitlists_msg) { |b| b.frm.div(id: "ActivityOfferingEdit-NoWaitlist").span(text: /Waitlists are deactivated/).text }
   element(:waitlist_section) { |b| b.frm.div(id: "ActivityOfferingEdit-WailtList-Info-Section") }
@@ -286,10 +244,13 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   #for some users/soc states waitlists are read-only
-  value(:waitlists_active?) { |b| b.frm.div(data_label: "Waitlist Active").span(text: "Yes").exists? }
-  value(:waitlists_processing) { |b| b.frm.div(data_label: "Waitlist Processing").span(index: 2).text }
-  value(:waitlists_max_size) { |b| b.frm.div(data_label: "Waitlist Max Size").span(index: 2).text }
-  value(:waitlists_allow_holds?) { |b| b.frm.div(data_label: "Allow Holds in Waitlist").span(text: "Yes").exists? }
+  value(:waitlists_active?) { |b| b.frm.div(id: 'waitlist_active_ro').span(text: "Yes").exists? }
+  value(:waitlists_processing) { |b| b.frm.div(id: 'waitlist_proc_ro').span(data_parent: 'waitlist_proc_ro').text }
+  value(:waitlists_max_size) { |b| b.frm.div(id: 'waitlist_max_size_ro').span(data_parent: 'waitlist_max_size_ro').text }
+  value(:waitlists_allow_holds?) { |b| b.frm.div(id: 'waitlist_holds_ro').span(data_parent: 'waitlist_holds_ro').exists? }
+
+  element(:seat_pools_div) { |b| b.frm.div(id: "ao-seatpoolgroup") }
+  element(:seat_pools_table) { |b| b.frm.table(id: "ao-seatpoolgroup-table") }
 
   PRIORITY_COLUMN = 0
   SEATS_COLUMN = 1
@@ -298,64 +259,38 @@ class ActivityOfferingMaintenance < BasePage
   EXP_MILESTONE_COLUMN = 4
   SEATS_ACTION_COLUMN = 5
 
-  def pool_percentage(pop_name)
-    target_pool_row(pop_name).div(id: /seatLimitPercent_line/).text
-  end
-
-  value(:seat_pool_count) { |b| b.frm.div(data_label: "Seat Pools").span(index: 2).text }
-  value(:seats_remaining_span) { |b| b.frm.div(id: "seatsRemaining").span(index: 2) }
+  value(:seat_pool_count) { |b| b.frm.div(id: 'seatpoolCount').span(data_parent: 'seatpoolCount').text }
+  value(:seats_remaining_span) { |b| b.frm.div(id: "seatsRemaining").span(data_parent: "seatsRemaining") }
   value(:seats_remaining) { |b| b.seats_remaining_span.text }
   value(:percent_seats_remaining) { |b| b.seats_remaining_span.text[/\d+(?=%)/] }
   value(:seat_count_remaining) { |b| b.seats_remaining_span.text[/\d+(?=.S)/] }
   value(:max_enrollment_count) { |b| b.frm.div(id: "seatsRemaining").text[/\d+(?=\))/] }
   value(:seatpoolname){|b| b.frm.div(id: "ao-seatpoolgroup").table.rows[1].cells[3].text_field.value}
 
-  def target_person_row(id)
-    personnel_table.row(text: /#{Regexp.escape(id.to_s)}/)
-  end
-
   #seat pool validation elements
   element(:seatpool_error_list) { |b| b.frm.ul(class: "uif-validationMessagesList") }
   element(:seatpool_info_list) { |b| b.frm.ul(class: "uif-validationMessagesList") }
   value(:seatpool_first_msg) { |b| b.seatpool_info_list.li.text }
 
-  element(:add_pool_priority) { |b| b.seat_pools_table.rows[1].cells[PRIORITY_COLUMN].text_field() }
-  element(:add_pool_seats) { |b| b.seat_pools_table.rows[1].cells[SEATS_COLUMN].text_field() }
-  value(:add_pool_name)  { |b| b.seat_pools_table.rows[1].cells[POP_NAME_COLUMN].text_field().text }
+  element(:add_pool_priority) { |b| b.seat_pools_table.rows[-2].cells[PRIORITY_COLUMN].text_field() }
+  element(:add_pool_seats) { |b| b.seat_pools_table.rows[-2].cells[SEATS_COLUMN].text_field() }
+  value(:add_pool_name)  { |b| b.seat_pools_table.rows[-2].cells[POP_NAME_COLUMN].text_field().text }
   
-  action(:lookup_population_name) { |index, b| b.seat_pools_table.rows[index].button(title: "Search Field").click; b.loading.wait_while_present }
-  
-  element(:add_pool_expiration_milestone) { |b| b.seat_pools_table.rows[1].cells[EXP_MILESTONE_COLUMN].select() }
+  action(:add_lookup_population_name) { |b| b.seat_pools_table.rows[-2].button(title: "Search Field").click; b.loading.wait_while_present }
+  element(:add_pool_expiration_milestone) { |b| b.seat_pools_table.rows[-2].cells[EXP_MILESTONE_COLUMN].select() }
+
   element(:add_pool_element) { |b| b.frm.button(id: "ao-seatpoolgroupZ_add")}
   action(:add_seat_pool) { |b| b.add_pool_element.click; b.loading.wait_while_present }
 
-  element(:seat_pools_div) { |b| b.frm.div(id: "ao-seatpoolgroup") }
-  element(:seat_pools_table) { |b| b.frm.table(id: "ao-seatpoolgroup-table") }
-
   def target_pool_row(pop_name)
-    #seat_pools_table.row(text: /#{Regexp.escape(pop_name)}/)
-   # i = 0
-   # seat_pools_table.rows.each do |row|
-   #   if i > 0
     seat_pools_table.rows[1..seat_pools_table.rows.count].each do |row|
         if (row.cells[POP_NAME_COLUMN].text_field.value =~ /#{pop_name}/)
           return row
         end
       end
-      #i+=1
-    #end
   end
-
-  def add_pool_row_index
-   add_seat_pool
-   sp_index=1
-   seat_pools_table.rows[1..seat_pools_table.rows.count].each do |row|
-        if (row.cells[POP_NAME_COLUMN].text_field.value == "")
-          return sp_index
-        end
-     sp_index+=1
-   end
-   return sp_index
+  def pool_percentage(pop_name)
+    target_pool_row(pop_name).div(id: /seatLimitPercent_line/).text
   end
 
   def remove_seatpool(pop_name)
@@ -373,28 +308,13 @@ class ActivityOfferingMaintenance < BasePage
     target_pool_row(pop_name).cells[PRIORITY_COLUMN].text_field.fire_event "onblur"
   end
 
-  def update_priority_by_index(sp_index, priority)
-    seat_pools_table.rows[sp_index].cells[PRIORITY_COLUMN].text_field.set priority
-    seat_pools_table.rows[sp_index].cells[PRIORITY_COLUMN].text_field.fire_event "onblur"
-  end
-
   def update_seats(pop_name, seats)
     target_pool_row(pop_name).cells[SEATS_COLUMN].text_field.set seats
     target_pool_row(pop_name).cells[SEATS_COLUMN].text_field.fire_event "onblur"
   end
 
-  def update_seats_by_index(sp_index, seats)
-    seat_pools_table.rows[sp_index].cells[SEATS_COLUMN].text_field.set seats
-    seat_pools_table.rows[sp_index].cells[SEATS_COLUMN].text_field.fire_event "onblur"
-  end
-
-
-  def update_expiration_milestone(pop_name, milestone)
+   def update_expiration_milestone(pop_name, milestone)
     target_pool_row(pop_name).cells[EXP_MILESTONE_COLUMN].select.select(milestone)
-  end
-
-  def update_expiration_milestone_by_index(sp_index, milestone)
-    seat_pools_table.rows[sp_index].cells[EXP_MILESTONE_COLUMN].select.select(milestone)
   end
 
   def get_priority(pop_name)
@@ -409,9 +329,9 @@ class ActivityOfferingMaintenance < BasePage
     target_pool_row(pop_name).cells[EXP_MILESTONE_COLUMN].select.selected_options[0].text #cell is hard-coded, getting this value was very problematic
   end
 
-  element(:course_url) { |b| b.frm.text_field(name: "document.newMaintainableObject.dataObject.aoInfo.activityOfferingURL") }
-  element(:requires_evaluation) { |b| b.frm.checkbox(name: "document.newMaintainableObject.dataObject.aoInfo.isEvaluated") }
-  element(:honors_flag) { |b| b.frm.checkbox(name: "document.newMaintainableObject.dataObject.aoInfo.isHonorsOffering") }
+  element(:course_url) { |b| b.frm.text_field(id: "course_url_control") }
+  element(:requires_evaluation) { |b| b.frm.checkbox(id: "is_evaluated_control") }
+  element(:honors_flag) { |b| b.frm.checkbox(id: "is_honors_offering_control") }
 
   #validation error dialog
   element(:validation_error_dialog_div)  { |b| b.frm.div(class: "fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened") }
