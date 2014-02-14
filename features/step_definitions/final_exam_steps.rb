@@ -116,6 +116,7 @@ When /^I have created a Final Exam Period for the term in the newly created Acad
   @exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
   @term.edit
   @term.add_exam_period @exam_period
+  @term.save
 end
 
 When /^I have multiple Course Offerings each with a different Exam Offering in the source term$/ do
@@ -588,33 +589,20 @@ When /^I add an Exam Period to the term$/ do
   @exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
   @term.edit
   @term.add_exam_period @exam_period
+  @term.save
 end
 
-When /^I uncheck the toggle for the Exclude Saturday or Exclude Sunday fields in the term's Exam Period and Save the data$/ do
+When /^I deselect Exclude Saturday and Exclude Sunday for the Exam Period$/ do
   @exam_period.edit :include_saturday => true, :include_sunday => true
 end
 
-When /^I edit the Fall Term Exam Period to have fewer days than the Final Exam Matrix days and I save the data$/ do
-  @exam_period = make ExamPeriod, :start_date => "12/11/#{@calendar.year}", :end_date => "12/18/#{@calendar.year}"
-  @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/29/#{@calendar.year}",
-               :end_date=>"12/10/#{@calendar.year}"
-  @term.edit
+When /^I create a Fall Term Exam Period with 2 fewer days than the number of Final Exam Matrix days$/ do
+  @exam_period = make ExamPeriod, :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
+  @term = create AcademicTerm, :term_year => @calendar.year, :start_date=>"09/01/#{@calendar.year}",
+               :end_date=>"12/20/#{@calendar.year}"
+  @term.edit :defer_save => true
   @term.add_exam_period @exam_period
-
-  @term.edit
-  @exam_period.edit :start_date => "12/13/#{@calendar.year}", :exp_success=> false
-end
-
-When /^I edit the Fall Term Exam Period to have less days than the Final Exam Matrix days not including Saturday and Sunday and then include these non-active days$/ do
-  @exam_period = make ExamPeriod, :start_date => "12/11/#{@calendar.year}", :end_date => "12/18/#{@calendar.year}"
-  @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/29/#{@calendar.year}",
-               :end_date=>"12/10/#{@calendar.year}"
-
-  @term.edit
-  @term.add_exam_period @exam_period
-
-  @term.edit
-  @exam_period.edit :start_date => "12/13/#{@calendar.year}", :include_saturday => true, :include_sunday => true
+  @term.save :exp_success => false
 end
 
 When /^there is more than one Activity Offering for the Course$/ do
@@ -758,7 +746,6 @@ end
 Then /^an error in the Final Exam section is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
     page.get_exam_error_message( @term.term_type).should match /#{exp_msg}/
-    page.cancel
   end
 end
 
@@ -1183,7 +1170,7 @@ Then /^the Exclude Saturday and Exclude Sunday toggles should be selected by def
   end
 end
 
-Then /^the Exclude Saturday or Exclude Sunday fields should be unchecked and included in the Exam Period when I return to view the term$/ do
+Then /^the Exclude Saturday or Exclude Sunday fields should be deselected when view the term$/ do
   @term.search
   on(CalendarSearch).view @term.term_name
   on ViewAcademicTerms do |page|

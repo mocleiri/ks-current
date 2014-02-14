@@ -43,7 +43,7 @@ class AcademicCalendar
     defaults = {
         :name=>random_alphanums.strip,
         :year=>  calendar_year,
-        :start_date=>"09/01/#{calendar_year}",
+        :start_date=>"08/20/#{calendar_year}",
         :end_date=>"06/25/#{calendar_year + 1}",
         :terms => [],
         :holiday_calendar_list => []
@@ -53,7 +53,7 @@ class AcademicCalendar
   end
 
   #navigates to Create Calendar page and creates academic calendar from blank
-  def create
+  def create opts={}
     go_to_academic_calendar
     on CreateAcadCalendar do |page|
       page.start_blank_calendar
@@ -62,7 +62,7 @@ class AcademicCalendar
       page.academic_calendar_name.set @name
       page.calendar_start_date.set @start_date
       page.calendar_end_date.set @end_date
-      page.save
+      page.save unless opts[:defer_save]
     end
   end
 
@@ -348,6 +348,7 @@ class AcademicTerm
       end
 
     end
+    save
   end
 
   #checks to see if group already exists   NOT being called!
@@ -355,6 +356,14 @@ class AcademicTerm
     key_date_group_object.term_type = @term_type
     key_date_group_object.create
     @key_date_group_list <<  key_date_group_object
+  end
+
+  def save opts = {}
+    defaults = {
+        :exp_success=> true,
+    }
+    options = defaults.merge(opts)
+    on(EditAcademicTerms).save :exp_success => options[:exp_success]
   end
 
   ##
@@ -456,7 +465,7 @@ class AcademicTerm
 
   #Added a def due to some steps that create a term with no exam period first and then later needs to add the exam
   #   period without having to run @term.create again
-  def add_exam_period( exam_period_object)
+  def add_exam_period  exam_period_object
     exam_period_object.calendar_year = @term_year
     exam_period_object.term_type = @term_type
     exam_period_object.create
@@ -781,7 +790,7 @@ class ExamPeriod
   include StringFactory
   include Workflows
 
-  attr_accessor :start_date, :end_date, :exclude_saturday, :exclude_sunday, :term_type, :calendar_year
+  attr_accessor :start_date, :end_date, :exclude_saturday, :exclude_sunday, :term_type, :calendar_year, :length_ex_weekend
 
   def initialize(browser,opts = {})
     @browser = browser
@@ -792,7 +801,8 @@ class ExamPeriod
       :start_date => "09/02/#{calendar_year}",
       :end_date => "09/24/#{calendar_year}",
       :exclude_saturday => false,
-      :exclude_sunday => false
+      :exclude_sunday => false,
+      :length_ex_weekend => 0 #if not zero, calc start/end dates
     }
 
     options = defaults.merge(opts)
@@ -810,12 +820,17 @@ class ExamPeriod
         page.add_exam_period @term_type
       end
 
+      if @length_ex_weekend > 0
+        @start_date = calc_start_date_wednesday(@start_date)
+        @end_date = calc_end_date_ex_weekends(@start_date, @length_ex_weekend)
+      end
+
       page.set_exam_start_date @term_type, @start_date
       page.set_exam_end_date @term_type, @end_date
       page.set_exclude_saturday @term_type unless @exclude_saturday == false
       page.set_exclude_sunday @term_type unless @exclude_sunday == false
 
-      page.save
+      #page.save -- page won't save if dates aren't correct, need to save separately
     end
   end
 
@@ -874,5 +889,26 @@ class ExamPeriod
 
       page.save
     end
+  end
+
+  def calc_start_date_wednesday(start_date)
+    s_date = Date.strptime( start_date , '%m/%d/%Y')
+    #while (s_date.saturday? or s_date.sunday?) do
+    while !s_date.wednesday? do
+      s_date += 1
+    end
+    s_date.strftime("%m/%d/%Y")
+  end
+
+  #assumes start_date is a weekday (M-F)
+  def calc_end_date_ex_weekends(start_date, no_of_days)
+    end_date = Date.strptime( start_date , '%m/%d/%Y')
+    while no_of_days > 1 do
+      end_date += 1
+      unless (end_date.saturday? or end_date.sunday?)
+        no_of_days -= 1
+      end
+    end
+    end_date.strftime("%m/%d/%Y")
   end
 end

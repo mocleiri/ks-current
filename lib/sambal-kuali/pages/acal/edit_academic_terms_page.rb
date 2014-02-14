@@ -31,14 +31,22 @@ class EditAcademicTerms < BasePage
   end
 
   def open_term_section(term_type)
-    link =  acal_term_list_div.link(text: /#{term_type}/)
-    if link.image(alt: "collapse").visible? then # collapse means collapsed
-      link.click
+    term_section_div_list.each do |term_div|
+      toggle_link = term_div.link(id: /^term_section_line\d+_toggle$/)
+      if toggle_link.text == term_type
+        toggle_link.click if toggle_link.image(alt: "collapse").visible?
+        return
+      end
     end
+    raise "#{term_type} section not found on Edit Term page"
+    #link =  acal_term_list_div.link(text: /#{term_type}/)
+    #if link.image(alt: "collapse").visible? then # collapse means collapsed
+    #  link.click
+    #end
   end
 
   def open_term_section_by_index(term_index)
-    link =  div.link(id: "term_section_line#{term_index}_toggle")
+    link =  link(id: "term_section_line#{term_index}_toggle")
     if link.image(alt: "collapse").visible? then # collapse means collapsed
       link.click
     end
