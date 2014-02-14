@@ -244,7 +244,7 @@
                                                 -->
                                                 <ref bean="flexibleRateAmounts"/>
                                                 <ref bean="effectiveDateParameters"/>
-                                                <ref bean="ratePlateauParameters"/>
+                                                <ref bean="rateLimitParameters"/>
                                             </list>
                                         </property>
                                     </bean>
@@ -355,21 +355,42 @@
         </property>
     </bean>
 
-    <bean id="ratePlateauParameters" parent="Uif-Disclosure-VerticalBoxSection" >
-        <property name="headerText" value="Rate Plateau Parameters"/>
+    <bean id="rateLimitParameters" parent="Uif-Disclosure-VerticalBoxSection" >
+        <property name="headerText" value="Rate Limit Parameters"/>
         <property name="readOnly" value="false"/>
 
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:label="Rates derived from this model will have a defined plateau" p:propertyName="isLimitAmount">
+                <bean parent="Uif-InputField" p:label="Is this a limit rate?" p:propertyName="isLimitAmount">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
                 </bean>
 
-                <bean parent="Uif-InputField" p:label="Plateau Amount" p:propertyName="rate.limitAmountValue"/>
-                <bean parent="Uif-InputField" p:label="Minimum Units" p:propertyName="rate.minLimitUnits"/>
-                <bean parent="Uif-InputField" p:label="Maximum Units" p:propertyName="rate.maxLimitUnits"/>
+                <bean parent="Uif-HorizontalBoxSection">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message" p:messageText="A limit of " />
+                            <bean parent="Uif-InputField" p:propertyName="rate.limitAmountValue">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:size="6"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-Message" p:messageText="will apply between" />
+                            <bean parent="Uif-InputField" p:propertyName="rate.minLimitUnits">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:size="6"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-Message" p:messageText="and" />
+                            <bean parent="Uif-InputField" p:propertyName="rate.maxLimitUnits">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:size="6"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
