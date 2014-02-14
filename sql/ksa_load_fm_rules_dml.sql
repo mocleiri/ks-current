@@ -120,8 +120,8 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 '(signup operation is "DROP" and signup date is on or after atp milestone "kuali.atp.milestone.firstDayOfClass" and signup date is on or before atp milestone "kuali.atp.milestone.lastDayForPenaltyDrop")',
 'mark preceding offerings as not taken
 mark signup as not taken
-set signup key "late.drop.penalty" to "yes"
-set session key "late.drop.penalty" to "yes"
+set signup key "late.penalty.drop" to "yes"
+set session key "late.penalty.drop" to "yes"
 mark signup rates "", "" as complete
 ')!
 
@@ -134,11 +134,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'set session key "withdrawn" to "yes"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is in an MBA section so remove incompatible regular tuition rate.', 5013, 'FM Signup 1_13', 3, 10, null,
-'(signup has rates "mba.cohort.flag, regular" and session key "cohort.code" is "EM.." and session key "major.code" is ".*mba")',
+'(signup has rates "mba.cohort.flag, regular" and session key "cohort.code" is "em.." and session key "major.code" is ".*mba")',
 'remove signup rates "regular"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is in MBA classes but is not MBA student so remove MBA rate', 5014, 'FM Signup 1_14', 3, 10, null,
-'(signup has rates "mba.cohort.flag, regular" and session key "cohort.code" is not "EM..")',
+'(signup has rates "mba.cohort.flag, regular" and session key "cohort.code" is not "em..")',
 'remove signup rates "mba.cohort.flag"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is not MBA so remove cohort rates', 5015, 'FM Signup 1_15', 3, 10, null,
@@ -322,11 +322,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'replace signup rates "regular", "" with "sg.graduate.nonresident", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('em11 cohort rate applied', 6063, 'FM Session 2_14', 3, 8, null,
-'(session key "cohort.code" is "EM11" and session key "major.code" is ".*mba")',
+'(session key "cohort.code" is "em11" and session key "major.code" is ".*mba")',
 'replace signup rates "mba.cohort.flag", "" with "mba.cohort.em11", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('em12 cohort rate applied', 6064, 'FM Session 2_15', 3, 8, null,
-'(session key "cohort.code" is "EM12" and session key "major.code" is ".*mba")',
+'(session key "cohort.code" is "em12" and session key "major.code" is ".*mba")',
 'replace signup rates "mba.cohort.flag", "" with "mba.cohort.em12", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Full time resident CP fees applied', 6065, 'FM Session 2_16', 3, 8, null,
@@ -444,23 +444,23 @@ expander ksa.dsl
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop does not affect calculation so is ignored', 7040, 'FM Signup 3_1', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.undergrad.resident.ft,cp.graduate.resident.ft,cp.undergrad.nonresident.ft")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "cp.undergrad.resident.ft,cp.graduate.resident.ft,cp.undergrad.nonresident.ft")',
 'mark signup as complete')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop does not affect calculation so is ignored', 7041, 'FM Signup 3_2', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em11" and manifest has rates "mba.cohort.em11")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.em11" and manifest has rates "mba.cohort.em11")',
 'mark signup as complete')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop does not affect calculation so is ignored', 7042, 'FM Signup 3_3', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em12" and manifest has rates "mba.cohort.em12")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.em12" and manifest has rates "mba.cohort.em12")',
 'mark signup as complete')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop does not affect calculation so is ignored', 7043, 'FM Signup 3_4', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em13" and manifest has rates "mba.cohort.em13")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.em13" and manifest has rates "mba.cohort.em13")',
 'mark signup as complete')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop does not affect calculation so is ignored', 7044, 'FM Signup 3_5', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.ac01" and manifest has rates "mba.cohort.ac01")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.ac01" and manifest has rates "mba.cohort.ac01")',
 'mark signup as complete')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('All academic service fees are removed due to more than ESL classes being taken', 7045, 'FM Signup 3_6', 3, 9, null,
@@ -487,79 +487,79 @@ expander ksa.dsl
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7070, 'FM Signup 4_1', 3, 4, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.ac01")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.ac01")',
 'charge rates "mba.cohort.ac01", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7071, 'FM Signup 4_2', 3, 4, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em11")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.em11")',
 'charge rates "mba.cohort.em11", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7072, 'FM Signup 4_3', 3, 4, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em12")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.em12")',
 'charge rates "mba.cohort.em12", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7073, 'FM Signup 4_4', 3, 4, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "mba.cohort.em13")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "mba.cohort.em13")',
 'charge rates "mba.cohort.em13", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7074, 'FM Signup 4_5', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.undergrad.resident.pt")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "cp.undergrad.resident.pt")',
 'charge rates "cp.undergrad.resident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7075, 'FM Signup 4_6', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.graduate.resident.pt")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "cp.graduate.resident.pt")',
 'charge rates "cp.graduate.resident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7076, 'FM Signup 4_7', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.undergrad.nonresident.pt")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "cp.undergrad.nonresident.pt")',
 'charge rates "cp.undergrad.nonresident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7077, 'FM Signup 4_8', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cp.graduate.nonresident.pt")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "cp.graduate.nonresident.pt")',
 'charge rates "cp.graduate.nonresident.pt", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7078, 'FM Signup 4_9', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "sg.grad.resident")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "sg.grad.resident")',
 'charge rates "sg.grad.resident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7079, 'FM Signup 4_10', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "sg.grad.nonresident")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "sg.grad.nonresident")',
 'charge rates "sg.grad.nonresident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7080, 'FM Signup 4_11', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "baltimore.mba")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "baltimore.mba")',
 'charge rates "baltimore.mba", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7081, 'FM Signup 4_12', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.resident")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "public.policy.resident")',
 'charge rates "public.policy.resident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7082, 'FM Signup 4_13', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.resident.differential")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "public.policy.resident.differential")',
 'charge rates "public.policy.resident.differential", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7083, 'FM Signup 4_14', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.nonresident")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "public.policy.nonresident")',
 'charge rates "public.policy.nonresident", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7084, 'FM Signup 4_15', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "public.policy.nonresident.differential")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "public.policy.nonresident.differential")',
 'charge rates "public.policy.nonresident.differential", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7085, 'FM Signup 4_16', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "cybersecurity.leadership")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "cybersecurity.leadership")',
 'charge rates "cybersecurity.leadership", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7086, 'FM Signup 4_17', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "enpm")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "enpm")',
 'charge rates "enpm", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7087, 'FM Signup 4_18', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "dc.weekend")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "dc.weekend")',
 'charge rates "dc.weekend", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Illegal drop incurs 20 percent penalty', 7088, 'FM Signup 4_19', 3, 5, null,
-'(signup operation is "DROP" and signup key "late.drop.penalty" is "yes" and signup has rates "dc.weeknight")',
+'(signup operation is "DROP" and signup key "late.penalty.drop" is "yes" and signup has rates "dc.weeknight")',
 'charge rates "dc.weeknight", "" in amount of 20% with types "", catalogs "", signup operations "DROP"')!
 
 
@@ -630,7 +630,7 @@ import org.apache.commons.lang.*;
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('', 9001, 'FM Session 4_1', 2, 10, null,
-'context : BrmContext(fmService.compareSessionKeyPair("late.drop.penalty","yes","==",context))',
+'context : BrmContext(fmService.compareSessionKeyPair("late.penalty.drop","yes","==",context))',
 '
         String[] rateCodes = {
                           "cp.undergrad.resident.pt",
