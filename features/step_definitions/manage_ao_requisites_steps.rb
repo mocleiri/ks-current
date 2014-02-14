@@ -8,7 +8,7 @@ end
 When /^I navigate to the agendas page for a CO that I cannot edit and open the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
   @prereq = make AOPreparationPrerequisiteRule, :term => "201208", :course => "PHYS420"
-  @prereq.navigate_to_ao_requisites
+  @prereq.navigate_to_ao_requisites( true)
 end
 
 When /^I copy and edit the Course Offering rule to the Student Eligibility & Prerequisite section$/ do
@@ -45,7 +45,7 @@ end
 When /^I replace the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
   @prereq = make AOPreparationPrerequisiteRule
-  @prereq.sepr_replace_co_rule
+  @prereq.sepr_replace_co_rule( true)
 end
 
 When /^I edit and update the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
@@ -57,7 +57,7 @@ end
 When /^I edit the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "D"
   @prereq = make AOPreparationPrerequisiteRule, :activity => "D"
-  @prereq.sepr_edit_replaced_co_rule
+  @prereq.sepr_edit_replaced_co_rule( true)
 end
 
 When /^I commit the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
@@ -323,6 +323,9 @@ end
 
 Then /^I should be able to use all the function buttons on the Edit Rule tab$/ do
   on ManageAORequisites do |page|
+    page.logic_tab.click
+    puts page.preview_tree_section.text
+
     @activityOR.move_around( "B", "out")
     page.edit_tree_section.span(:text => /.*B\..*/).id.should match @activityOR.test_node_level( "secondary")
 
