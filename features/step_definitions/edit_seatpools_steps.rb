@@ -154,8 +154,8 @@ Then /^the activity offering is updated when saved$/ do
     page.course_url.value.should == @activity_offering.course_url
 
     @activity_offering.personnel_list.each do |p|
-      page.get_affiliation(p.id).should == p.affiliation.to_s
-      page.get_inst_effort(p.id).should == p.inst_effort.to_s
+      page.person_affiliation(p.id).should == p.affiliation.to_s
+      page.person_inst_effort(p.id).should == p.inst_effort.to_s
     end
 
     @activity_offering.seat_pool_list.values.each do |seatpool|

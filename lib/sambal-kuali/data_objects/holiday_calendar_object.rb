@@ -125,7 +125,8 @@ class HolidayCalendar
 
   def edit(opts={})
     defaults = {
-        :exp_success=> true
+        :exp_success=> true,
+        :defer_save=> false
     }
     options = defaults.merge(opts)
     search
@@ -143,7 +144,7 @@ class HolidayCalendar
       on(CreateEditHolidayCalendar).end_date.set options[:end_date]
     end
 
-    on(CreateEditHolidayCalendar).save :exp_success => options[:exp_success]
+    on(CreateEditHolidayCalendar).save :exp_success => options[:exp_success] unless options[:defer_save]
     set_options(options) if options[:exp_success]
 
   end
@@ -239,7 +240,7 @@ class HolidayCalendar
   end
 
   def delete_holidays(opts)
-    edit
+    edit :defer_save => true
     opts[:holiday_type_list].each do |holiday_type|
       on(CreateEditHolidayCalendar).delete_holiday(holiday_type)
       @holiday_list.delete(get_holiday_obj_by_type(holiday_type))

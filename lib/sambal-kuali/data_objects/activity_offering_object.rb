@@ -862,9 +862,9 @@ class SeatPool
         end
 
       end
-      page.add_pool_priority @priority
-      page.add_pool_seats @seats
-      page.add_pool_expiration_milestone @expiration_milestone
+      page.add_pool_priority.set @priority
+      page.add_pool_seats.set @seats
+      page.add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
     end
   end
 end
