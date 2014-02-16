@@ -1,7 +1,7 @@
-class KradCourseLogistics < BasePage
+class CmCourseLogistics < BasePage
 
   wrapper_elements # needed for loading and saving waits
-  krad_elements
+  cm_elements
 
 #TERM
   element(:term_any) { |b| b.checkbox(value: 'kuali.atp.season.Any') }

@@ -1,7 +1,7 @@
-class KradCourseRequisites < BasePage
+class CmCourseRequisites < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
   action(:expand_all_rule_sections) { |b| b.link(text: '[+] expand all').click; b.add_rule_link.wait_until_present }
   element(:add_rule_link) { |b| b.link(text: 'Add Rule') }

@@ -1,7 +1,7 @@
-class KradCourseInformation < BasePage
+class CmCourseInformation < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
   element(:proposal_title) { |b| b.text_field(name: 'document.newMaintainableObject.proposal.name') }
   element(:proposal_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.proposal.name', class: 'uif-textControl required error') }

@@ -1,7 +1,7 @@
-class KradInitialPageAdmin < BasePage
+class CmInitialPageAdmin < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
 #  element(:create_course) {|b| b.text_field(id: /^KS-CourseView-createCourseInitialPage/)}
   action(:blank_proposal) {|b| b.div(id:'KS-createCourseInitialPage-CMStartOptions').input(id:'KS-createCourseInitialPage-CMStartOptions_control_0')}

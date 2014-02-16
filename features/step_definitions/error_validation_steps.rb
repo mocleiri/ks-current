@@ -1,8 +1,8 @@
 Given(/^I set the proposal title and course title to blank$/) do
-  @course_proposal = make KradCourseProposalObject, proposal_title: '', course_title: ''
+  @course_proposal = make CourseProposalObject, proposal_title: '', course_title: ''
 
-  on(KradCurriculum).course_information
-  on KradCourseInformation do |page|
+  on(CmCurriculum).course_information
+  on CmCourseInformation do |page|
     page.proposal_title.fit @proposal_title
     page.course_title.fit @course_title
     page.save_and_continue
@@ -11,26 +11,26 @@ Given(/^I set the proposal title and course title to blank$/) do
 end
 
 Then(/^I should see the error message for proposal title$/) do
-  on(KradCourseInformation).proposal_title_error_state.should be_true
+  on(CmCourseInformation).proposal_title_error_state.should be_true
 end
 
 Then(/^I should see the error message for course title$/) do
-  on(KradCourseInformation).course_title_error_state.should be_true
+  on(CmCourseInformation).course_title_error_state.should be_true
 end
 
 Given(/^I have a course proposal with a missing required field$/) do
-  @course_proposal = make KradCourseProposalObject, [course_number: nil, description_rationale: nil,
+  @course_proposal = make CmCourseProposalObject, [course_number: nil, description_rationale: nil,
           proposal_rationale: nil, curriculum_oversight: nil,#].sample
           assessment_scale: nil, final_exam_status: nil].sample
           #[description_rationale: '', proposal_rationale: ''].sample
 
 
-  @course_proposal.KradCourseProposalRequired
+  @course_proposal.CmCourseProposalRequired
 end
 
 When(/^I submit the course proposal on the review proposal page$/) do
-  on(KradCurriculum).review_proposal
-  on KradReviewProposal do |page|
+  on(CmCurriculum).review_proposal
+  on CmReviewProposal do |page|
     page.submit
   end
 end

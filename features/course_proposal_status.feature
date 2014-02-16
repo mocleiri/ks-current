@@ -5,7 +5,7 @@ Feature: View status of Course Propsoal
 
   Background:
     Given I am logged in as Fred
-    And I create a course proposal in krad
+    And I create a course proposal
 
   Scenario: Saving a course proposal should make the status Saved
     Then I should see the status of the course proposal is Saved

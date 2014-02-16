@@ -54,7 +54,7 @@ class BasePage < PageFactory
     #  element(:frm_popup) { |b| b.frame(:class=>"fancybox-iframe")}
     #end
 
-    def krad_elements
+    def cm_elements
 
       links('Course Information', 'Governance', 'Course Logistics',
              'Learning Objectives', 'Course Requisites', 'Active Dates', 'Financials', 'Supporting Documents', 'Review Proposal')

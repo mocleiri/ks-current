@@ -1,7 +1,7 @@
-class KradCurriculum < BasePage
+class CmCurriculum < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
   links('Create a Course', 'Find a Course', 'Find a Course Proposal', 'Course Set Management',
         'Learning Objective Categories')

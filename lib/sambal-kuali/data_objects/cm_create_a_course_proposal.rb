@@ -1,4 +1,4 @@
-class KradCourseProposalObject < DataObject
+class CmCourseProposalObject < DataObject
 
   include DateFactory
   include StringFactory
@@ -112,13 +112,13 @@ class KradCourseProposalObject < DataObject
   end
 
   def create
-    on KradRice do |create|
+    on CmRice do |create|
       puts @assessment_a_f.inspect
-      create.krad_curriculum_management
+      create.curriculum_management
     end
 
-    on(KradCurriculum).create_a_course
-    on KradCourseInformation do |create|
+    on(CmCurriculum).create_a_course
+    on CmCourseInformation do |create|
       create.course_information unless create.current_page('Course Information').exists?
 
       #BUG KSCM-1240
@@ -139,7 +139,7 @@ class KradCourseProposalObject < DataObject
   end  #create
 
   def create_course_proposal_required
-    on KradCourseInformation do |page|
+    on CmCourseInformation do |page|
       page.course_information unless page.current_page('Course Information').exists?
 
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
@@ -148,7 +148,7 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradGovernance do |page|
+    on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
 
       fill_out page, :curriculum_oversight
@@ -156,7 +156,7 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradCourseLogistics do |page|
+    on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
 
       page.loading_wait
@@ -184,7 +184,7 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradActiveDates do |page|
+    on CmActiveDates do |page|
       page.active_dates unless page.current_page('Active Dates').exists?
       page.start_term.fit @start_term
       page.pilot_course.fit @pilot_course
@@ -199,7 +199,7 @@ class KradCourseProposalObject < DataObject
   end # required proposal
 
   def course_proposal_nonrequired
-    on KradCourseInformation do |page|
+    on CmCourseInformation do |page|
       page.course_information unless page.current_page('Course Information').exists?
       page.loading_wait
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
@@ -218,7 +218,7 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradGovernance do |page|
+    on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
 
       fill_out page, :location_all, :location_extended, :location_north, :location_south
@@ -229,7 +229,7 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradCourseLogistics do |page|
+    on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
       fill_out page, :term_any, :term_fall, :term_spring, :term_summer,
                :audit, :pass_fail_transcript_grade,
@@ -239,13 +239,13 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradLearningObjectives do |page|
+    on CmLearningObjectives do |page|
       page.learning_objectives unless page.current_page('Learning Objectives').exists?
       # TODO:: NEED TO MAKE TESTS FOR THIS PAGE
       page.save_and_continue
     end
 
-    on KradCourseRequisites do |page|
+    on CmCourseRequisites do |page|
       page.course_requisites unless page.current_page('Course Requisites').exists?
 
   #Private methods do to complexity of adding rules
@@ -265,7 +265,7 @@ class KradCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on KradAuthorsCollaborators do |page|
+    on CmAuthorsCollaborators do |page|
       page.authors_collaborators unless page.current_page('Authors Collaborators').exists?
       # Adding author name in private method do to complexity of advanced search adding
       adding_author_name
@@ -281,7 +281,7 @@ class KradCourseProposalObject < DataObject
   #Used for Advanced Search to "Return Value" of the result that matches
   #Defaults to 4th Column to match instructor display name but can be altered for different advacned search results by passing in a number of the column
   def return_search_result(search_result_value_to_match, row_number=3)
-    on KradCourseRequisites do |page|
+    on CmCourseRequisites do |page|
     page.search_results_table.rows.each do |row|
         if row.cells[row_number].text == search_result_value_to_match
           row.cells[0].link(text: 'return value').click
@@ -297,7 +297,7 @@ class KradCourseProposalObject < DataObject
 
   #Used to fill out the outcome type by setting the @outcome_type adding multiple outcomes will require to pass in the outcome level for multiple fields
   def set_outcome_type(outcome_level='0')
-    on KradCourseLogistics do |page|
+    on CmCourseLogistics do |page|
       page.credit_value(outcome_level).set @outcome_value if @outcome_type == 'Fixed'
       page.credit_value_max(outcome_level).set credit_value_max if @outcome_type == 'Range'
       page.credit_value_min(outcome_level).set credit_value_min if @outcome_type == 'Range'
@@ -320,7 +320,7 @@ class KradCourseProposalObject < DataObject
 
 #COURSE INFORMATION
   def add_joint_offering
-    on KradCourseInformation do |page|
+    on CmCourseInformation do |page|
       if @joint_offering_adding_data == 'auto_lookup'
         page.add_another_course
         page.joint_offering_number.fit @joint_offering_number
@@ -341,7 +341,7 @@ class KradCourseProposalObject < DataObject
   end
 
   def add_instructor
-    on KradCourseInformation do |page|
+    on CmCourseInformation do |page|
       if instructor_adding_method == 'advanced' or instructor_adding_method == 'adv_name' or instructor_adding_method == 'adv_username'
         page.instructor_advanced_search
         page.adv_name.fit @instructor_last_name if instructor_adding_method == 'adv_name' or instructor_adding_method == 'advanced'
@@ -366,7 +366,7 @@ class KradCourseProposalObject < DataObject
 
 #GOVERNANCE
   def adding_admin_organization
-    on KradGovernance do |page|
+    on CmGovernance do |page|
       if admin_org_adding_method == 'auto_lookup'
         page.administering_organization.fit @administering_organization
         #TODO: uncomment this when bug KSCM-1204 is fixed for auto lookup on administering org text field
@@ -388,7 +388,7 @@ class KradCourseProposalObject < DataObject
 
 #COURSE REQUISITES
   def adding_rule_student_eligibility
-    on KradCourseRequisites do |page| unless @student_eligibility_rule.nil?
+    on CmCourseRequisites do |page| unless @student_eligibility_rule.nil?
           page.expand_all_rule_sections
       #STUDENT ELIGIBILITY
       page.add_rule_student_eligibility
@@ -427,7 +427,7 @@ class KradCourseProposalObject < DataObject
   end
 
   def adding_rule_corequisite
-    on KradCourseRequisites do |page| unless @corequisite_rule.nil?
+    on CmCourseRequisites do |page| unless @corequisite_rule.nil?
       page.expand_all_rule_section
       page.add_rule_corequisite
       page.add_statement
@@ -461,7 +461,7 @@ class KradCourseProposalObject < DataObject
   end
 
   def adding_rule_recommended_preparation_rule
-    on KradCourseRequisites do |page| unless @recommended_preparation_rule.nil?
+    on CmCourseRequisites do |page| unless @recommended_preparation_rule.nil?
 
     page.expand_all_rule_sections
     page.add_rule_recommended_prep
@@ -493,7 +493,7 @@ class KradCourseProposalObject < DataObject
   end
 
   def adding_rule_antirequisite
-    on KradCourseRequisites do |page| unless @antirequisite_rule.nil?
+    on CmCourseRequisites do |page| unless @antirequisite_rule.nil?
       page.expand_all_rule_sections
       page.add_rule_antirequisite
       page.add_statement
@@ -526,7 +526,7 @@ class KradCourseProposalObject < DataObject
   end
 
   def adding_rule_repeatable_for_credit
-    on KradCourseRequisites do |page| unless @repeatable_for_credit_rule.nil?
+    on CmCourseRequisites do |page| unless @repeatable_for_credit_rule.nil?
       page.expand_all_rule_sections
       page.add_rule_repeatable_for_credit
       page.add_statement
@@ -546,7 +546,7 @@ class KradCourseProposalObject < DataObject
   end
 
   def adding_course_that_restricts_credits
-    on KradCourseRequisites do |page| unless @course_that_restricts_credits_rule.nil?
+    on CmCourseRequisites do |page| unless @course_that_restricts_credits_rule.nil?
       page.expand_all_rule_sections
       page.add_rule_restricts_credits
       page.add_statement
@@ -579,7 +579,7 @@ class KradCourseProposalObject < DataObject
 
   #AUTHORS AND COLLABORATORS
     def adding_author_name
-      on KradAuthorsCollaborators do |page|
+      on CmAuthorsCollaborators do |page|
         # Need to use auto lookup because when watir types in the parentheses are removed from text field
         if author_name_method == 'auto_lookup'
           page.author_name.fit @author_name_search

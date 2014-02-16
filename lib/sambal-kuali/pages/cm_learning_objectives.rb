@@ -1,7 +1,7 @@
-class KradLearningObjectives < BasePage
+class CmLearningObjectives < BasePage
 
   wrapper_elements
-  krad_elements # for loading
+  cm_elements # for loading
 
   action(:lookup_multiple_lines) { |b| b.link(text: 'Lookup/Add Multiple Lines').click }
   #SEARCH POPUP

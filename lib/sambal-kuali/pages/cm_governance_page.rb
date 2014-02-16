@@ -1,7 +1,7 @@
-class KradGovernance < BasePage
+class CmGovernance < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
 #CAMPUS LOCATIONS
   element(:location_north) { |b| b.checkbox(value: 'NO') }

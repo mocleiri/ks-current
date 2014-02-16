@@ -1,7 +1,7 @@
-class KradAuthorsCollaborators < BasePage
+class CmAuthorsCollaborators < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
   element(:author_name) { |b| b.text_field(name: 'newCollectionLines[\'document.newMaintainableObject.collaboratorWrappers\'].displayName') }
   element(:author_permission) { |b| b.select_list(name: 'newCollectionLines[\'document.newMaintainableObject.collaboratorWrappers\'].permission') }
