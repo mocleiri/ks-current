@@ -1,7 +1,7 @@
-class KradActiveDates < BasePage
+class CmActiveDates < BasePage
 
   wrapper_elements
-  krad_elements
+  cm_elements
 
   # Example of options 'Spring 1980', 'Fall 1985'
   element(:start_term) {|b| b.select_list(name: 'document.newMaintainableObject.dataObject.startTerm') }
