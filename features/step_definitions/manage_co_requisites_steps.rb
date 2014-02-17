@@ -162,7 +162,7 @@ When /^I add a new course offering requisite to a course$/ do
   @courseOR = make CORequisitesData
   @prereq = make PreparationPrerequisiteRule, :section => "Recommended Preparation", :term => @course_offering.term,
                  :course => @course_offering.course
-  @prereq.navigate_to_mco_requisites
+  @prereq.navigate_to_mco_requisites( true)
   @prereq.rp_edit_add( "add")
   @prereq.rp_sepr_text_rule( "add", "", "Added Recommended Prep on CO level")
   @prereq.commit_changes

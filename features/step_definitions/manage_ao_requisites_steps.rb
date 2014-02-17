@@ -101,7 +101,7 @@ When /^I edit a course offering requisite at the AO level by adding a new text s
   end
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "B"
   @prereq = make AOPreparationPrerequisiteRule, :activity => "B", :term => @course_offering.term, :course => @course_offering.course
-  @prereq.navigate_to_ao_requisites
+  @prereq.navigate_to_ao_requisites( true)
   on ActivityOfferingRequisites do |page|
     if page.prereq_copy_edit_link.exists?
       page.loading.wait_while_present
@@ -217,7 +217,7 @@ When /^I add a text rule to the Antirequisite section$/ do
   end
   @activityOR = make AORequisitesData, :section => "Antirequisite"
   @antireq = make AOAntirequisiteRule, :term => @course_offering.term, :course => @course_offering.course
-  @antireq.navigate_to_ao_requisites
+  @antireq.navigate_to_ao_requisites( true)
   on ActivityOfferingRequisites do |page|
     if page.antireq_add_link.exists?
       page.loading.wait_while_present
@@ -239,7 +239,7 @@ When /^I suppress a course offering rule for a specific activity in a course$/ d
   end
   @activityOR = make AORequisitesData, :section => "Corequisite"
   @coreq = make AOCorequisiteRule, :term => @course_offering.term, :course => @course_offering.course
-  @coreq.cr_suppress_co_rule
+  @coreq.cr_suppress_co_rule( true)
   @coreq.commit_changes
 end
 
