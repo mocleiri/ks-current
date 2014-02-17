@@ -403,7 +403,7 @@ public class PaymentPlanController extends GenericSearchController {
 
         PaymentBillingPlan plan = form.getPaymentBillingPlan();
 
-        if (plan == null) {
+        if (plan == null || plan.getId() == null) {
             String planString = form.getPlanName();
 
             List<PaymentBillingPlan> plans = paymentBillingService.getPaymentBillingPlansByNamePattern(planString);
@@ -414,7 +414,7 @@ public class PaymentPlanController extends GenericSearchController {
 
         }
 
-        if (plan == null) {
+        if (plan == null || plan.getId() == null) {
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "No plan selected");
             return getUIFModelAndView(form);
         }
