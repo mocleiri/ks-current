@@ -63,22 +63,20 @@ end
 
 When /^I verify the exam periods for the milestones test fall and spring terms$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2014"
-  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @exam_period = make ExamPeriod, :parent_term => @term, :term_type => @term.term_type, :calendar_year => @term.term_year
   @term.edit :defer_save => true
   @exam_period.edit :include_saturday => true, :include_sunday => true, :defer_save => true
-  @term = make AcademicTerm, :term => "Spring", :term_year => "2015"
-  @exam_period.term_type = @term.term_type
-  @exam_period.calendar_year = @term.term_year
+  @term = make AcademicTerm, :parent_term => @term, :term => "Spring", :term_year => "2015"
+  @exam_period = make ExamPeriod, :parent_term => @term, :term_type => @term.term_type, :calendar_year => @term.term_year
   @exam_period.edit :include_saturday => true, :include_sunday => true
 end
 
 When /^I verify the exam periods for the published test fall and spring terms$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2015"
-  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @exam_period = make ExamPeriod, :parent_term => @term, :term_type => @term.term_type, :calendar_year => @term.term_year
   @term.edit :defer_save => true
   @exam_period.edit :include_saturday => true, :include_sunday => true, :defer_save => true
   @term = make AcademicTerm, :term => "Spring", :term_year => "2016"
-  @exam_period.term_type = @term.term_type
-  @exam_period.calendar_year = @term.term_year
+  @exam_period = make ExamPeriod, :parent_term => @term, :term_type => @term.term_type, :calendar_year => @term.term_year
   @exam_period.edit :include_saturday => true, :include_sunday => true
 end
