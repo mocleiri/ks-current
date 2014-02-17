@@ -7,7 +7,7 @@ Feature: Create a Course Proposal
 
   Scenario: Create a course proposal
     When I create a course proposal
-  # Then I should see the Initial Page
+    Then I should see the Initial Page
     Then I should see data in the proposal title on course information
     And I should see data in the course title on course information
 
