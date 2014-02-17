@@ -1,28 +1,27 @@
 #-----
 # S1
 #-----
-Given /^I create a course proposal in krad$/ do
-  @course_proposal = create KradCourseProposalObject
+Given /^I create a course proposal$/ do
+  @course_proposal = create CmCourseProposalObject
 end
 
 Given /^I create a course proposal$/ do
-  @course_proposal = create KradCourseProposalObject
+  @course_proposal = create CmCourseProposalObject
 end
 
 Given /^I create a course proposal from blank$/ do
-  @course_proposal = create KradCourseProposalObject
+  @course_proposal = create CmCourseProposalObject
 end
 
 Given /^I should see the Initial Page$/ do
-  on KradInitialPageAdmin do |page|
+  on CmInitialPageAdmin do |page|
     page.blank_proposal
     page.curriculum_review_process.checkbox.click
   end
-  #@course_proposal = create KradCourseProposalObject
 end
 
 Then /^I should see data in the proposal title on course information$/ do
-  on KradCourseInformation do |page|
+  on CmCourseInformation do |page|
     page.course_information
     page.proposal_title.value.should == @course_proposal.proposal_title
     #TODO:: add in validation for assessment_scale
@@ -30,7 +29,7 @@ Then /^I should see data in the proposal title on course information$/ do
 end
 
 And /^I should see data in the course title on course information$/ do
-  on KradCourseInformation do |page|
+  on CmCourseInformation do |page|
     page.course_information
     page.course_title.value.should == @course_proposal.course_title
   end
@@ -47,7 +46,7 @@ Given /^I complete the required fields on the course proposal$/ do
 
   #@course_proposal.KradCourseProposalRequired
   #@course_proposal.create_course_proposal_required
-  @course_proposal  = create KradCourseProposalObject,
+  @course_proposal  = create CmCourseProposalObject,
                            #REQUIRED
                            #COURSE INFORMATION
                            #proposal_title: random_alphanums(10,'test proposal title '),
@@ -87,9 +86,9 @@ Given /^I complete the required fields on the course proposal$/ do
 end
 
 Then /^I should see data in required fields for the course proposal$/ do
-  on(KradCurriculum).course_information
+  on(Curriculum).course_information
 
-  on KradCourseInformation do |page|
+  on CmCourseInformation do |page|
     page.subject_code.value.should == @course_proposal.subject_code
     page.course_number.value.should == @course_proposal.course_number
 
@@ -101,12 +100,12 @@ Then /^I should see data in required fields for the course proposal$/ do
     page.proposal_rationale.value.should == @course_proposal.proposal_rationale
   end
 
-  on KradGovernance do |page|
+  on CmGovernance do |page|
     page.governance
     page.curriculum_oversight_when_added(@course_proposal.curriculum_oversight).should be_present
   end
 
-  on KradCourseLogistics do |page|
+  on CmCourseLogistics do |page|
     page.course_logistics
 
     page.exam_standard.should be_checked unless @course_proposal.exam_standard.nil?
@@ -133,7 +132,7 @@ Then /^I should see data in required fields for the course proposal$/ do
     page.assessment_satisfactory.should be_checked if @course_proposal.assessment_satisfactory == :set
   end
 
-  on KradActiveDates do |page|
+  on CmActiveDates do |page|
     page.active_dates
     page.start_term.selected?(@course_proposal.start_term).should == true unless @course_proposal.start_term.nil?
     page.pilot_course.should be_checked
@@ -147,7 +146,7 @@ end
 Given /^I complete all the fields on the course proposal$/ do
   #@course_proposal.KradCourseProposalNonrequired
   #@course_proposal.course_proposal_nonrequired
-  @course_proposal  = create KradCourseProposalObject,
+  @course_proposal  = create CmCourseProposalObject,
 
                              subject_code: 'MATH',
                              course_number: rand(100..999).to_s,
@@ -270,7 +269,7 @@ Given /^I complete all the fields on the course proposal$/ do
 end
 
 Then /^I should see data in all non required fields for the course proposal$/ do
-  on KradCourseInformation do |page|
+  on CmCourseInformation do |page|
     page.course_information
     page.transcript_course_title.value.should == @course_proposal.transcript_course_title
     #page.subject_code.value.should == @course_proposal.subject_code
@@ -282,7 +281,7 @@ Then /^I should see data in all non required fields for the course proposal$/ do
     page.added_instructor_name.value.should == @course_proposal.instructor_display_name
   end
 
-  on KradGovernance do |page|
+  on CmGovernance do |page|
     page.governance
     #@course_proposal.verify_text_field(page, 'added_administering_organization' )
     page.added_administering_organization.value.should == @course_proposal.administering_organization unless @course_proposal.administering_organization.nil?
@@ -292,7 +291,7 @@ Then /^I should see data in all non required fields for the course proposal$/ do
     page.location_all.should be_checked if @course_proposal.location_all == 'set'
   end
 
-  on KradCourseLogistics do |page|
+  on cmCourseLogistics do |page|
     page.course_logistics
     page.term_any.should be_checked if @course_proposal.term_any == 'set'
     page.term_fall.should be_checked if @course_proposal.term_fall == 'set'
@@ -317,7 +316,7 @@ Then /^I should see data in all non required fields for the course proposal$/ do
   #  page.learning_objectives
   #end
 
-  on KradCourseRequisites do |page|
+  on CmCourseRequisites do |page|
     page.course_requisites
 
     page.course_requisite_added_rule(@course_proposal.student_eligibility_rule_with_value).should be_present unless @course_proposal.student_eligibility_rule.nil?
@@ -337,7 +336,7 @@ Then /^I should see data in all non required fields for the course proposal$/ do
 
   end
 
-    on KradAuthorsCollaborators do |page|
+    on CmAuthorsCollaborators do |page|
     page.authors_collaborators
     page.added_author_information('edit').should be_present if @course_proposal.author_permission == 'Edit, Comments, View'
     page.added_author_information('comment').should be_present if @course_proposal.author_permission == 'Comments, View'
@@ -356,7 +355,7 @@ end
 # S4
 #-----
 When /^I complete all fields on the course proposal with advanced search$/ do
-  @course_proposal  = create KradCourseProposalObject,
+  @course_proposal  = create CmCourseProposalObject,
 
                              subject_code: 'MATH',
                              course_number: rand(100..999).to_s,
@@ -493,7 +492,7 @@ end
 #-----
 
 When /^I complete all fields on the course proposal with auto\-lookup$/ do
-  @course_proposal  = create KradCourseProposalObject,
+  @course_proposal  = create CmCourseProposalObject,
                            subject_code: 'MATH',
                            course_number: rand(100..999).to_s,
                            transcript_course_title:  random_alphanums(5,'test transcript'),
