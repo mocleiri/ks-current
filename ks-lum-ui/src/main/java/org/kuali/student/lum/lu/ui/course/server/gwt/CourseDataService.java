@@ -109,23 +109,38 @@ public class CourseDataService extends AbstractDataService {
 
                 if (isLatestVersion(courseInfo.getVersion().getVersionIndId(), contextInfo)) {
                     String courseIndId = courseInfo.getVersion().getVersionIndId();
-
+                    
                     //Get the currentCourse from the service
                     VersionDisplayInfo versionInfo = courseService.getCurrentVersion(CourseServiceConstants.COURSE_NAMESPACE_URI, courseIndId, contextInfo);
                     CourseInfo originalCourseInfo = courseService.getCourse(versionInfo.getId(), contextInfo);
 
-                    //Save the start and end terms from the old version and put into filter properties
                     String startTerm = originalCourseInfo.getStartTerm();
-                    String endTerm = originalCourseInfo.getEndTerm();
-                    Map<String, String> proposalAttributes = new HashMap<String, String>();
-                    if (startTerm != null)
-                        proposalAttributes.put("prevStartTerm", startTerm);
-                    if (endTerm != null)
-                        proposalAttributes.put("prevEndTerm", endTerm);
+                    String endTerm = originalCourseInfo.getEndTerm();                    
 
-                    properties.put(ProposalWorkflowFilter.PROPOSAL_ATTRIBUTES, proposalAttributes);
+                    // DON'SAVE start and end terms if we are modifying the current term!
+					if (!CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION
+							.equals((String) properties.get(ProposalWorkflowFilter.WORKFLOW_DOC_TYPE))) {
+						// Save the start and end terms from the old version and
+						// put into filter properties
+						Map<String, String>  proposalAttributes = new HashMap<String, String>();
+						if (startTerm != null)
+							proposalAttributes.put("prevStartTerm", startTerm);
+						if (endTerm != null)
+							proposalAttributes.put("prevEndTerm", endTerm);
+
+						properties.put(ProposalWorkflowFilter.PROPOSAL_ATTRIBUTES, proposalAttributes);
+						properties.put(ProposalWorkflowFilter.PROPOSAL_ATTRIBUTES, proposalAttributes);
+
+					}
 
                     courseInfo = courseService.createNewCourseVersion(courseInfo.getVersion().getVersionIndId(), courseInfo.getVersion().getVersionComment(), contextInfo);
+                    
+					if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals((String) properties
+									.get(ProposalWorkflowFilter.WORKFLOW_DOC_TYPE))) {						
+						courseInfo.setStartTerm(startTerm);
+						courseInfo.setEndTerm(endTerm);
+						courseInfo = courseService.updateCourse(courseInfo.getId(), courseInfo, contextInfo);
+					}
                 } else {
                     throw new OperationFailedException("Error creating new version for course, this course is currently under modification.");
                 }

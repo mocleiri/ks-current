@@ -17,7 +17,7 @@ import org.kuali.rice.kew.framework.postprocessor.DocumentRouteStatusChange;
 import org.kuali.rice.kew.framework.postprocessor.IDocumentEvent;
 import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
 import org.kuali.student.r1.core.statement.dto.StatementTreeViewInfo;
-
+import org.kuali.student.r1.lum.course.service.CourseServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.DtoConstants;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -25,6 +25,7 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.AttributeHelper;
 import org.kuali.student.r2.common.util.ContextUtils;
 import org.kuali.student.r2.core.proposal.dto.ProposalInfo;
+import org.kuali.student.r2.core.versionmanagement.dto.VersionDisplayInfo;
 import org.kuali.student.r2.lum.clu.CLUConstants;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
@@ -217,9 +218,6 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
                 return DtoConstants.STATE_RETIRED;
             }   
             return null;  // returning null indicates no change in course state required
-        } else if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(docType) && 
-        		KewApiConstants.ROUTE_HEADER_PROCESSED_CD.equals(newWorkflowStatusCode)){
-        	return getCourseStateFromNewState(currentCluState, DtoConstants.STATE_PROCESSED);
         } else {
             //  The following is for Create, Modify, and Admin Modify proposals.    
             if (StringUtils.equals(KewApiConstants.ROUTE_HEADER_SAVED_CD, newWorkflowStatusCode)) {
@@ -234,7 +232,11 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
                  */
                 return getCourseStateFromNewState(currentCluState, DtoConstants.STATE_NOT_APPROVED);
             } else if (KewApiConstants.ROUTE_HEADER_PROCESSED_CD.equals(newWorkflowStatusCode)) {
-                return getCourseStateFromNewState(currentCluState, DtoConstants.STATE_ACTIVE);
+            	if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(docType)){
+                	return getCourseStateFromNewState(currentCluState, DtoConstants.STATE_PROCESSED);
+                } else {
+                	return getCourseStateFromNewState(currentCluState, DtoConstants.STATE_ACTIVE);
+                }
             } else if (KewApiConstants.ROUTE_HEADER_EXCEPTION_CD.equals(newWorkflowStatusCode)) {
                 return getCourseStateFromNewState(currentCluState, DtoConstants.STATE_DRAFT);
             } else {
@@ -272,6 +274,16 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         requiresSave |= preProcessCourseSave(iDocumentEvent, courseInfo);
 
         if (requiresSave) {
+        	
+        	// If modify to current version, get current course and modify with updated course
+        	if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(proposalInfo.getType())){
+        		VersionDisplayInfo currentCourse = courseService.getCurrentVersion(CourseServiceConstants.COURSE_NAMESPACE_URI, courseInfo.getVersion().getVersionIndId(), ContextUtils.getContextInfo());
+        		CourseInfo currentCourseInfo = courseService.getCourse(currentCourse.getId(), ContextUtils.getContextInfo());        		
+        		currentCourseInfo.setDescr(courseInfo.getDescr());
+        		
+        		getCourseService().updateCourse(currentCourse.getId(), currentCourseInfo, ContextUtils.getContextInfo());
+            }        	
+
             getCourseService().updateCourse(courseInfo.getId(), courseInfo, ContextUtils.getContextInfo());
             
             //For a newly approved course (w/no prior active versions), make the new course the current version.

@@ -93,6 +93,7 @@ import org.kuali.student.lum.lu.ui.course.client.service.CreditCourseProposalRpc
 import org.kuali.student.r1.common.assembly.data.Data;
 import org.kuali.student.r1.common.assembly.data.Metadata;
 import org.kuali.student.r1.common.assembly.data.QueryPath;
+import org.kuali.student.r1.common.assembly.data.Data.StringKey;
 import org.kuali.student.r1.common.rice.StudentIdentityConstants;
 import org.kuali.student.r1.common.rice.authorization.PermissionType;
 import org.kuali.student.r1.core.statement.dto.StatementTypeInfo;
@@ -321,12 +322,6 @@ public class CourseProposalController extends MenuEditableSectionController impl
 		    			currentDocType = CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_ADMIN;
 		    		}
 		    		
-		    		// TODO ajani
-		    		//Check for change to this version type
-		    		if(CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(cluProposalModel.get(cfg.getProposalPath()+"/type"))){
-		    			currentDocType = CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION;
-		    		}
-		    		
 		    		//Get the state for save action
 		    		String dtoState = getStateforSaveAction(cluProposalModel); 
 		    		
@@ -458,20 +453,21 @@ public class CourseProposalController extends MenuEditableSectionController impl
                         public void onModelReady(DataModel model) {
                             //Only display if this is a modification
                             String proposalType = model.get("proposal/type");
-                            if ((proposalType != null) && ((proposalType.equals(CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY))|| 
-                            		(proposalType.equals(CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION)))) {
+                            if ((proposalType != null) && ((proposalType.equals(CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY)))) {
                                 KSLabel descLabel = new KSLabel();
                                 descLabel.setText(Application.getApplicationContext().getUILabel("course", LUUIConstants.FINAL_APPROVAL_DIALOG));
                                 if (workflowUtil.getApproveDialogue() != null) {
 
                                     workflowUtil.getApproveDialogue().addWidget(descLabel);
                                 }
-                                workflowUtil.addApproveDialogField("", "startTerm", cfg.generateMessageInfo(LUUIConstants.PROPOSAL_START_TERM), modelDefinition, true, true);
-                                workflowUtil.addApproveDialogField("proposal", "prevEndTerm", cfg.generateMessageInfo(LUUIConstants.PROPOSAL_PREV_END_TERM), modelDefinition, false);
-
+                                
+                            	workflowUtil.addApproveDialogField("", "startTerm", cfg.generateMessageInfo(LUUIConstants.PROPOSAL_START_TERM), modelDefinition, true, true);
+                            	workflowUtil.addApproveDialogField("proposal", "prevEndTerm", cfg.generateMessageInfo(LUUIConstants.PROPOSAL_PREV_END_TERM), modelDefinition, false);
+                                
                                 workflowUtil.updateApproveFields();
                                 workflowUtil.progressiveEnableFields();
-                            } else {
+                            } else {                            	
+                            	// Change to current version request would also come here
                                 // All other types of proposals need to go here
                                 // Ignore this field (so blanket approve works if this is a new course proposal 
                                 // and not a modification)
@@ -625,7 +621,7 @@ public class CourseProposalController extends MenuEditableSectionController impl
                 	// ??? why result would be null ever?
                     if (result != null) 
                         comparisonModel.setRoot(result);
-
+                    
                     reqDataModel.retrieveStatementTypes(cluProposalModel.<String>get("id"), new Callback<Boolean>() {
                    		@Override
                    		public void exec(Boolean result) {
@@ -695,7 +691,15 @@ public class CourseProposalController extends MenuEditableSectionController impl
         
         cluProposalRpcServiceAsync.saveData(cluProposalModel.getRoot(), new AsyncCallback<DataSaveResult>() {
 			public void onSuccess(DataSaveResult result) {
+
 				cluProposalModel.setRoot(result.getValue());
+				
+				// TODO ajani
+	    		//Check for change to this version type
+	    		if(CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(cluProposalModel.get(cfg.getProposalPath()+"/type"))){
+	    			currentDocType = CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION;
+	    		}
+	    		
 				setHeaderTitle();
 		        setLastUpdated();
 		        //add to recently viewed now that we know the id of proposal
@@ -760,6 +764,7 @@ public class CourseProposalController extends MenuEditableSectionController impl
 				cluProposalModel.setRoot(result.getValue());
 		        setHeaderTitle();
 		        setLastUpdated();
+		        
 		        //add to recently viewed now that we know the id of proposal
 		        ViewContext docContext = new ViewContext();
 		        docContext.setId((String) cluProposalModel.get(cfg.getProposalPath()+"/id"));
