@@ -253,7 +253,7 @@ class AcademicTerm
                 :key_date_groups,
                 :parent_calendar,
                 :parent_term, :subterm, :subterm_type,
-                :term_code
+                :term_code, :exam_period
 
   WINTER_TERM_TYPE = "Winter Term"
   FALL_TERM_TYPE = "Fall Term"
@@ -466,8 +466,7 @@ class AcademicTerm
   #Added a def due to some steps that create a term with no exam period first and then later needs to add the exam
   #   period without having to run @term.create again
   def add_exam_period  exam_period_object
-    exam_period_object.calendar_year = @term_year
-    exam_period_object.term_type = @term_type
+    exam_period_object.parent_term = self
     exam_period_object.create
   end
 end
@@ -790,18 +789,20 @@ class ExamPeriod
   include StringFactory
   include Workflows
 
-  attr_accessor :start_date, :end_date, :exclude_saturday, :exclude_sunday, :term_type, :calendar_year, :length_ex_weekend
+  attr_accessor :parent_term, :start_date, :end_date, :exclude_saturday,
+                :exclude_sunday, :term_type, :calendar_year, :length_ex_weekend
 
   def initialize(browser,opts = {})
     @browser = browser
 
-    calendar_year = opts[:calendar_year]
+    calendar_year = opts[:parent_term].term_year
 
     defaults = {
+      :parent_term => nil,
       :start_date => "09/02/#{calendar_year}",
       :end_date => "09/24/#{calendar_year}",
-      :exclude_saturday => false,
-      :exclude_sunday => false,
+      :exclude_saturday => true,
+      :exclude_sunday => true,
       :length_ex_weekend => 0 #if not zero, calc start/end dates
     }
 
@@ -827,8 +828,8 @@ class ExamPeriod
 
       page.set_exam_start_date @term_type, @start_date
       page.set_exam_end_date @term_type, @end_date
-      page.set_exclude_saturday @term_type unless @exclude_saturday == false
-      page.set_exclude_sunday @term_type unless @exclude_sunday == false
+      page.set_exclude_saturday @term_type unless @exclude_saturday == true
+      page.set_exclude_sunday @term_type unless @exclude_sunday == true
 
       #page.save -- page won't save if dates aren't correct, need to save separately
     end
@@ -837,12 +838,6 @@ class ExamPeriod
   def edit opts={}
 
     defaults = {
-        :start_date => nil,
-        :end_date => nil,
-        :exclude_saturday => false,
-        :exclude_sunday => false,
-        :include_saturday => false,
-        :include_sunday => false,
         :exp_success => true,
         :defer_save => false
     }
@@ -860,19 +855,19 @@ class ExamPeriod
         page.set_exam_end_date @term_type, options[:end_date]
       end
 
-      if options[:exclude_saturday]
-        page.set_exclude_saturday @term_type
-      elsif options[:include_saturday]
+      if !options[:exclude_saturday]
         page.clear_exclude_saturday @term_type
+      else
+        page.set_exclude_saturday @term_type
       end
 
-      if options[:exclude_sunday]
-        page.set_exclude_sunday @term_type
-      elsif options[:include_sunday]
+      if !options[:exclude_sunday]
         page.clear_exclude_sunday @term_type
+      else
+        page.set_exclude_sunday @term_type
       end
 
-      if options[:defer_save] == false
+      if !options[:defer_save]
         page.save :exp_success => options[:exp_success]
       end
     end
