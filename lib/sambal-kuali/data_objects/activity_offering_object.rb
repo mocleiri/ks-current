@@ -840,6 +840,8 @@ class SeatPool
   # @param [Array] list of populations used in seatpools already added
   def add_seatpool(pops_used_list)
     on ActivityOfferingMaintenance do |page|
+      page.add_pool_priority.set @priority
+      page.add_pool_seats.set @seats
       if @population_name != ""
         page.add_lookup_population_name
 
@@ -862,9 +864,8 @@ class SeatPool
         end
 
       end
-      page.add_pool_priority.set @priority
-      page.add_pool_seats.set @seats
       page.add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
+      page.add_pool_seats.click #fire js event to update seats remaining
     end
   end
 end
