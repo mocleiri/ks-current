@@ -790,7 +790,7 @@ class ExamPeriod
   include Workflows
 
   attr_accessor :parent_term, :start_date, :end_date, :exclude_saturday,
-                :exclude_sunday, :term_type, :calendar_year, :length_ex_weekend
+                :exclude_sunday, :length_ex_weekend
 
   def initialize(browser,opts = {})
     @browser = browser
