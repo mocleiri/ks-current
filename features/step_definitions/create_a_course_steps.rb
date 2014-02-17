@@ -5,13 +5,13 @@ Given /^I create a course proposal$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
-Given /^I create a course proposal$/ do
-  @course_proposal = create CmCourseProposalObject
-end
-
 Given /^I create a course proposal from blank$/ do
   @course_proposal = create CmCourseProposalObject
 end
+
+Given /^I should see a blank course proposal$/ do
+  @course_proposal = create CmCourseProposalObject
+  end
 
 Given /^I should see the Initial Page$/ do
   on CmInitialPageAdmin do |page|
