@@ -36,9 +36,9 @@ class PerformRollover < BasePage
   #continue_wo_exams_dialog
   element(:continue_wo_exams_dialog_div)  { |b| b.frm.div(class: "fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened") }
   # previous line, must use class to id - This is the parent in KRAD > parent="Uif-VerticalBoxGroup" - cant ID it
-  element(:continue_wo_exams_dialog_confirm_button) { |b| b.continue_wo_exams_dialog_div.radio }
+  element(:continue_wo_exams_dialog_confirm_button) { |b| b.continue_wo_exams_dialog_div.button(id: 'noExamPeriodButton') }
   element(:continue_wo_exams_dialog_confirm) { |b| b.continue_wo_exams_dialog_confirm_button.click; b.loading.wait_while_present }
-  element(:continue_wo_exams_dialog_cancel_button) { |b| b.continue_wo_exams_dialog_div.radio(index: 1) }
+  element(:continue_wo_exams_dialog_cancel_button) { |b| b.continue_wo_exams_dialog_div.link }
   element(:continue_wo_exams_dialog_cancel) { |b| b.continue_wo_exams_dialog_cancel_button.click; b.loading.wait_while_present }
   #end - continue_wo_exams_dialog
 
