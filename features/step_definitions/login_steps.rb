@@ -17,3 +17,7 @@ end
 Given /^I am logged in as Fred$/ do
   log_in 'fred', 'fred'
 end
+
+Given /^I am logged in as Curriculum Specialist$/ do
+  log_in '', ''
+end

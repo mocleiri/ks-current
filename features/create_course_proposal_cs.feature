@@ -1,7 +1,7 @@
 Feature: Create a Course Proposal as a Curriculum Specialist
 
   Background:
-    Given I am logged in as Fred
+    Given I am logged in as Curriculum Specialist
     And I create a course proposal
 
   Scenario: Create Course Proposal from blank
