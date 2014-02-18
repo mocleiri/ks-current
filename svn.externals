@@ -15,6 +15,7 @@
 # You must rerun the svn propset command (shown above) and commit after editing any of
 # the external paths for the changes to take effect.
 #
+ks-ap  https://svn.kuali.org/repos/student/enrollment/ks-ap/branches/rice-2.4-mx-upgrade
 ks-api  https://svn.kuali.org/repos/student/enrollment/ks-api/branches/rice-2.4-mx-upgrade
 ks-core  https://svn.kuali.org/repos/student/enrollment/ks-core/branches/rice-2.4-mx-upgrade
 ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/rice-2.4-mx-upgrade
