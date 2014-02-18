@@ -20,23 +20,23 @@ import org.kuali.student.r2.common.infc.CurrencyAmount;
 import java.io.Serializable;
 
 /**
- * This structure is used to capture flexible unit rate amounts by
- * grouping amounts with a number of units.
+ * This structure is used to capture flexible credit rate amounts by
+ * grouping amounts with credits.
  *
  * @author Kuali Student Services
  */
 
-public interface FlexibleUnitAmount
+public interface FlexibleCreditAmount
     extends Serializable {
 
     /**
-     * The number of units as a decimal number.
+     * The number of credits as a decimal number.
      * 
-     * @return the number of units
-     * @name Units
+     * @return the number of credits
+     * @name Credits
      * @required
      */
-    public String getUnits();
+    public String getCredits();
 
     /**
      * The amount.
@@ -46,14 +46,4 @@ public interface FlexibleUnitAmount
      * @required
      */
     public CurrencyAmount getAmount();
-
-    /**
-     * Gets another override transaction code. This can be the same
-     * transaction code defined in the Rate. Or, the transaction code
-     * can differ on a unit by unit basis (USC) if not final.
-     *
-     * @return the transaction code
-     * @name Transaction Code
-     */
-    public String getTransactionCode();
 }

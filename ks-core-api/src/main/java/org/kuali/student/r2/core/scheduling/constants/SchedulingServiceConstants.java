@@ -58,7 +58,6 @@ public class SchedulingServiceConstants {
 
     // schedule transaction types
     public static final String SCHEDULE_TRANSACTION_TYPE_REQUEST_TRANSACTION = "kuali.scheduling.schedule.transaction.type.request";
-    public static final String SCHEDULE_TRANSACTION_TYPE_RELEASE_TRANSACTION = "kuali.scheduling.schedule.transaction.type.release";
 
     // schedule batch types
     public static final String SCHEDULE_BATCH_TYPE_BATCH = "kuali.scheduling.schedule.batch.type.schedule.batch";
