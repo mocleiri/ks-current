@@ -99,8 +99,8 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
     }
 
     @Override
-    public void applyAuthorizationAndPresentationLogic(View view, Component component, ViewModel model) {
-        super.applyAuthorizationAndPresentationLogic(view, component, model);
+    public void performCustomApplyModel(Component component, Object model) {
+        super.performCustomApplyModel(component, model);
 
         if(component instanceof Group) {
             Group group = (Group) component;
@@ -259,6 +259,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
         return true;
     }
 
+    @Override
     protected boolean performAddLineValidation(View view, CollectionGroup collectionGroup, Object model,
                                                Object addLine) {
         if(LUKRMSConstants.KSKRMS_PROPERTY_NAME_CLUS.equals(collectionGroup.getPropertyName())){
@@ -358,7 +359,8 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
         return true;
     }
 
-    protected void processAfterAddLine(View view, CollectionGroup collectionGroup, Object model, Object addLine,
+    @Override
+    public void processAfterAddLine(View view, CollectionGroup collectionGroup, Object model, Object addLine,
                                        boolean isValidLine) {
 
         if(LUKRMSConstants.KSKRMS_PROPERTY_NAME_CLUS.equals(collectionGroup.getPropertyName())){

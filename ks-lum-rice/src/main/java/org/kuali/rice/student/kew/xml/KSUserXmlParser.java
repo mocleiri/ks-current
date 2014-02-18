@@ -34,7 +34,8 @@ import org.kuali.rice.kim.impl.identity.entity.EntityBo;
 import org.kuali.rice.kim.impl.identity.name.EntityNameBo;
 import org.kuali.rice.kim.impl.identity.principal.PrincipalBo;
 import org.kuali.rice.kim.impl.identity.type.EntityTypeContactInfoBo;
-import org.kuali.rice.krad.service.KRADServiceLocator;
+import org.kuali.rice.kns.service.KNSServiceLocator;
+import org.kuali.rice.krad.data.KradDataServiceLocator;
 import org.kuali.rice.krad.service.SequenceAccessorService;
 
 
@@ -66,7 +67,7 @@ public class KSUserXmlParser extends UserXmlParser {
 	
     @Override
     protected EntityBo constructEntity(Element userElement) {
-        SequenceAccessorService sas = KRADServiceLocator.getSequenceAccessorService();
+        SequenceAccessorService sas = KNSServiceLocator.getSequenceAccessorService();
     	
     	String firstName = userElement.getChildTextTrim(GIVEN_NAME_ELEMENT, NAMESPACE);
         String lastName = userElement.getChildTextTrim(LAST_NAME_ELEMENT, NAMESPACE);
@@ -151,8 +152,8 @@ public class KSUserXmlParser extends UserXmlParser {
 
 			entity.getNames().add(name);
 		}
-		
-		KRADServiceLocator.getBusinessObjectService().save(entity);
+
+        KradDataServiceLocator.getDataObjectService().save(entity);
 		
 		String emailAddress = userElement.getChildTextTrim(EMAIL_ELEMENT, NAMESPACE);
 		if (!StringUtils.isBlank(emailAddress)) {
@@ -167,7 +168,7 @@ public class KSUserXmlParser extends UserXmlParser {
 			email.setDefaultValue(true);
 			email.setEntityId(entity.getId());
 
-			KRADServiceLocator.getBusinessObjectService().save(email);
+			KradDataServiceLocator.getDataObjectService().save(email);
 		}
 		
 		return entity;
@@ -196,7 +197,7 @@ public class KSUserXmlParser extends UserXmlParser {
 		} catch (GeneralSecurityException e) {
 			LOG.warn("Error hashing password.",e);
 		}
-		KRADServiceLocator.getBusinessObjectService().save(principal);
+        KradDataServiceLocator.getDataObjectService().save(principal);
 		
 		return principal;
     }
