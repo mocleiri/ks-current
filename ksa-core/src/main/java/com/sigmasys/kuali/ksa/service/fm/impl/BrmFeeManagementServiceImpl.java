@@ -2154,7 +2154,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         FeeManagementSignup signup = getAttribute(context, FM_SIGNUP_VAR_NAME);
 
-        Collection<FeeManagementSignup> signups = (signup != null) ? Arrays.asList(signup) : session.getIncompleteSignups();
+        Collection<FeeManagementSignup> signups = (signup != null) ? Arrays.asList(signup) : session.getSignups();
 
         if (CollectionUtils.isNotEmpty(signups)) {
 
@@ -2164,7 +2164,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             for (FeeManagementSignup fmSignup : signups) {
 
-                Set<FeeManagementSignupRate> signupRates = fmSignup.getIncompleteSignupRates();
+                Set<FeeManagementSignupRate> signupRates = fmSignup.getSignupRates();
 
                 if (CollectionUtils.isNotEmpty(signupRates)) {
 
