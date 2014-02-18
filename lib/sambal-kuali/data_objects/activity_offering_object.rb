@@ -840,6 +840,7 @@ class SeatPool
   # @param [Array] list of populations used in seatpools already added
   def add_seatpool(pops_used_list)
     on ActivityOfferingMaintenance do |page|
+      page.add_seat_pool unless page.add_pool_name == '' #check to see if blank line is already there
       page.add_pool_priority.set @priority
       page.add_pool_seats.set @seats
       if @population_name != ""

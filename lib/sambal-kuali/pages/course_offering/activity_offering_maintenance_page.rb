@@ -274,7 +274,7 @@ class ActivityOfferingMaintenance < BasePage
 
   element(:add_pool_priority) { |b| b.seat_pools_table.rows[-2].cells[PRIORITY_COLUMN].text_field() }
   element(:add_pool_seats) { |b| b.seat_pools_table.rows[-2].cells[SEATS_COLUMN].text_field() }
-  value(:add_pool_name)  { |b| b.seat_pools_table.rows[-2].cells[POP_NAME_COLUMN].text_field().text }
+  value(:add_pool_name)  { |b| b.seat_pools_table.rows[-2].cells[POP_NAME_COLUMN].text_field().value }
   
   action(:add_lookup_population_name) { |b| b.seat_pools_table.rows[-2].button(title: "Search Field").click; b.loading.wait_while_present }
   element(:add_pool_expiration_milestone) { |b| b.seat_pools_table.rows[-2].cells[EXP_MILESTONE_COLUMN].select() }
