@@ -34,6 +34,7 @@
         <url>http://ci.rice.kuali.org</url>
     </ciManagement>
     <properties>
+        <ks.ap.version>2.0.0-rice24upgrade-SNAPSHOT</ks.api.version>
         <ks.api.version>2.0.0-rice24upgrade-SNAPSHOT</ks.api.version>
         <ks.core.version>2.0.0-rice24upgrade-SNAPSHOT</ks.core.version>
         <ks.enroll.version>1.0.0-rice24upgrade-SNAPSHOT</ks.enroll.version>
