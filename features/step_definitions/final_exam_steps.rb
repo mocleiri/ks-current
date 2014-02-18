@@ -1,31 +1,35 @@
 When /^I change the final exam period start date to be before the term start date and save$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2012"
-  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @exam_period = make ExamPeriod, :parent_term => @term
   @term.edit :defer_save => true
   @exam_period.edit :start_date => "08/15/2012"
 end
 
 When /^I change the final exam period end date to be after the term end date and save$/ do
   @term = make AcademicTerm, :term => "Fall", :term_year => "2012"
-  @exam_period = make ExamPeriod, :term_type => @term.term_type, :calendar_year => @term.term_year
+  @exam_period = make ExamPeriod, :parent_term => @term
   @term.edit :defer_save => true
   @exam_period.edit :end_date => "12/20/2012"
 end
 
 When /^I add a final exam period to the new academic calender and save$/ do
   @calendar = create AcademicCalendar
-  exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
   @term = make AcademicTerm, :term_year => @calendar.year, :start_date=>"08/20/#{@calendar.year}",
-               :end_date=>"12/10/#{@calendar.year}", :term => "Fall", :exam_period => exam_period
+               :end_date=>"12/10/#{@calendar.year}", :term => "Fall"
+  exam_period = make ExamPeriod, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+                     :end_date=>"12/20/#{@calendar.year}"
+  @term.exam_period = exam_period
   @calendar.add_term @term
 end
 
 When /^I copy a newly created academic calendar that has a defined final exam period$/ do
   @source_calendar = create AcademicCalendar
   #@source_calendar.
-  exam_period = make ExamPeriod, :start_date=>"12/11/#{@source_calendar.year}", :end_date=>"12/20/#{@source_calendar.year}"
   @term = make AcademicTerm, :term_year => @source_calendar.year, :start_date=>"09/20/#{@source_calendar.year}",
-               :end_date=>"12/10/#{@source_calendar.year}", :exam_period => exam_period
+               :end_date=>"12/10/#{@source_calendar.year}"
+  exam_period = make ExamPeriod, :parent_term => @term, :start_date=>"12/11/#{@source_calendar.year}",
+                     :end_date=>"12/20/#{@source_calendar.year}"
+  @term.exam_period = exam_period
   @source_calendar.add_term @term
 
   @calendar = make AcademicCalendar, :year => "#{@source_calendar.year.to_i + 1}"
@@ -113,7 +117,8 @@ When /^I create an Academic Calendar and add an official term$/ do
 end
 
 When /^I have created a Final Exam Period for the term in the newly created Academic Calendar$/ do
-  @exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
+  @exam_period = make ExamPeriod, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+                      :end_date=>"12/20/#{@calendar.year}"
   @term.edit
   @term.add_exam_period @exam_period
   @term.save
@@ -184,7 +189,7 @@ end
 
 When /^I rollover the term to a new academic term that has no exam period$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #, :name => "TWj64w1q3e"
-  @term_target = make AcademicTerm, :term_year => @calendar_target.year, :add_exam_period => false
+  @term_target = make AcademicTerm, :term_year => @calendar_target.year
   @calendar_target.add_term(@term_target)
   @term_target.make_official
 
@@ -586,20 +591,21 @@ When /^I view the Exam Offerings for a CO created from catalog with a standard f
 end
 
 When /^I add an Exam Period to the term$/ do
-  @exam_period = make ExamPeriod, :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
+  @exam_period = make ExamPeriod, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+                      :end_date=>"12/20/#{@calendar.year}"
   @term.edit
   @term.add_exam_period @exam_period
   @term.save
 end
 
 When /^I deselect Exclude Saturday and Exclude Sunday for the Exam Period$/ do
-  @exam_period.edit :include_saturday => true, :include_sunday => true
+  @exam_period.edit :exclude_saturday => false, :exclude_sunday => false
 end
 
 When /^I create a Fall Term Exam Period with 2 fewer days than the number of Final Exam Matrix days$/ do
-  @exam_period = make ExamPeriod, :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
   @term = create AcademicTerm, :term_year => @calendar.year, :start_date=>"09/01/#{@calendar.year}",
-               :end_date=>"12/20/#{@calendar.year}"
+                 :end_date=>"12/20/#{@calendar.year}"
+  @exam_period = make ExamPeriod, :parent_term => @term, :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
   @term.edit :defer_save => true
   @term.add_exam_period @exam_period
   @term.save :exp_success => false

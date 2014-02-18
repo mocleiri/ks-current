@@ -814,11 +814,11 @@ class ExamPeriod
   def create()
 
     on EditAcademicTerms do |page|
-      page.open_term_section(@term_type)
+      page.open_term_section(@parent_term.term_type)
       page.loading.wait_while_present
 
-      if page.add_exam_period_btn( @term_type).present?
-        page.add_exam_period @term_type
+      if page.add_exam_period_btn( @parent_term.term_type).present?
+        page.add_exam_period @parent_term.term_type
       end
 
       if @length_ex_weekend > 0
@@ -826,10 +826,10 @@ class ExamPeriod
         @end_date = calc_end_date_ex_weekends(@start_date, @length_ex_weekend)
       end
 
-      page.set_exam_start_date @term_type, @start_date
-      page.set_exam_end_date @term_type, @end_date
-      page.set_exclude_saturday @term_type unless @exclude_saturday == true
-      page.set_exclude_sunday @term_type unless @exclude_sunday == true
+      page.set_exam_start_date @parent_term.term_type, @start_date
+      page.set_exam_end_date @parent_term.term_type, @end_date
+      page.set_exclude_saturday @parent_term.term_type unless @exclude_saturday == true
+      page.set_exclude_sunday @parent_term.term_type unless @exclude_sunday == true
 
       #page.save -- page won't save if dates aren't correct, need to save separately
     end
@@ -844,27 +844,27 @@ class ExamPeriod
     options = defaults.merge(opts)
 
     on EditAcademicTerms do |page|
-      page.open_term_section(@term_type)
+      page.open_term_section(@parent_term.term_type)
       page.loading.wait_while_present
 
       if options[:start_date] != nil
-        page.set_exam_start_date @term_type, options[:start_date]
+        page.set_exam_start_date @parent_term.term_type, options[:start_date]
       end
 
       if options[:end_date] != nil
-        page.set_exam_end_date @term_type, options[:end_date]
+        page.set_exam_end_date @parent_term.term_type, options[:end_date]
       end
 
       if !options[:exclude_saturday]
-        page.clear_exclude_saturday @term_type
+        page.clear_exclude_saturday @parent_term.term_type
       else
-        page.set_exclude_saturday @term_type
+        page.set_exclude_saturday @parent_term.term_type
       end
 
       if !options[:exclude_sunday]
-        page.clear_exclude_sunday @term_type
+        page.clear_exclude_sunday @parent_term.term_type
       else
-        page.set_exclude_sunday @term_type
+        page.set_exclude_sunday @parent_term.term_type
       end
 
       if !options[:defer_save]
@@ -877,10 +877,10 @@ class ExamPeriod
 
   def delete
     on EditAcademicTerms do |page|
-      page.open_term_section(@term_type)
+      page.open_term_section(@parent_term.term_type)
       page.loading.wait_while_present
 
-      page.exam_delete @term_type
+      page.exam_delete @parent_term.term_type
 
       page.save
     end
