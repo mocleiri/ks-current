@@ -2,7 +2,7 @@
 source "https://rubygems.org"
 
 
-gem "test-factory", "~> 0.4.1"
+gem "test-factory", "~> 0.4.3"
 gem "watir-webdriver", "~> 0.6.2"
 gem "cucumber", "~> 1.2.1"
 gem "rspec", "~> 2.12.0"
