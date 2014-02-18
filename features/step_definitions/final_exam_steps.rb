@@ -110,6 +110,8 @@ end
 When /^I create an Academic Calendar and add an official term$/ do
   @calendar = create AcademicCalendar
   @term = make AcademicTerm, :term_year => @calendar.year
+  exam_period = make ExamPeriod, :parent_term => @term
+  @term.exam_period = exam_period
   @calendar.add_term(@term)
   @term.make_official
   @manage_soc = make ManageSoc, :term_code => @term.term_code
@@ -205,6 +207,8 @@ end
 When /^I rollover the term to a new academic term that has an exam period$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1
   @term_target = make AcademicTerm, :term_year => @calendar_target.year
+  exam_period = make ExamPeriod, :parent_term => @term_target
+  @term_target.exam_period = exam_period
   @calendar_target.add_term(@term_target)
   @term_target.make_official
 
@@ -238,7 +242,7 @@ Given /^there is an exsiting CO with a Standard Final Exam option$/ do
 end
 
 Given /^that Activity Offerings exist for the selected Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
   @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 end
@@ -260,7 +264,7 @@ Then /^I should be able to select the View Exam Offerings link on the Manage CO 
   end
 end
 
-Then /^see Exam Offerings for the each Activity Offering of the Course with a status of ([^"]*)$/ do |exp_state|
+Then /^see Exam Offerings for each Activity Offering of the Course with a status of ([^"]*)$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
     array = page.return_array_of_ao_codes
@@ -1066,19 +1070,24 @@ end
 Then /^the EO for the suspended AO in the Exam Offering for Activity Offering table should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
+    no_of_eos = 0
     array = page.return_array_of_ao_codes
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code).should match /#{exp_state}/
+        if code == @activity_offering.code
+          page.eo_by_ao_status(code).should match /#{exp_state}/
+          no_of_eos += 1
+        end
       end
-      no_of_eos = array.length
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+        if code == @activity_offering.code
+          page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+          no_of_eos += 1
+        end
       end
-      no_of_eos = array.length
     end
     no_of_eos.should == 1
   end

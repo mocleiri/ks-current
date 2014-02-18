@@ -295,6 +295,7 @@ class ExamMatrixStatementObject
     on FEMatrixEdit do |page|
       page.add_statement
       page.rule_dropdown.select @statement_option
+      page.loading.wait_while_present
 
       if @statement_option == TIME_SLOT_OPTION
         set_standard_rule
@@ -330,6 +331,7 @@ class ExamMatrixStatementObject
       page.edit
       page.loading.wait_while_present
       page.rule_dropdown.select options[:statement_option] unless options[:statement_option].nil?
+      page.loading.wait_while_present
       #now update depending on statement option (after change)
       stmt_opt = options[:statement_option].nil? ? @statement_option : options[:statement_option]
       case stmt_opt
@@ -446,6 +448,7 @@ class ExamMatrixStatementObject
   def set_standard_rule
     on FEMatrixEdit do |page|
       page.rule_dropdown.select TIME_SLOT_OPTION
+      page.loading.wait_while_present
       page.rule_days.set @days
       page.rule_starttime.set @start_time
       page.rule_starttime_ampm.select @st_time_ampm
@@ -459,6 +462,7 @@ class ExamMatrixStatementObject
       page.loading.wait_while_present
       if @statement_option == COURSE_OPTION
         page.rule_dropdown.select COURSE_OPTION
+        page.loading.wait_while_present
         page.proposition_section.a( text: /Advanced Search/).click
         page.lookup_course_code.when_present.set @courses
         page.lookup_search
@@ -466,6 +470,7 @@ class ExamMatrixStatementObject
         page.return_course_code(@courses).a( text: /Select/).click
       elsif @statement_option == COURSES_OPTION
         page.rule_dropdown.select COURSES_OPTION
+        page.loading.wait_while_present
         courses_array = @courses.split(/,/)
         courses_array.each do |course|
           page.loading.wait_while_present
@@ -484,6 +489,7 @@ class ExamMatrixStatementObject
   def set_free_text_rule
     on FEMatrixEdit do |page|
       page.rule_dropdown.select FREE_TEXT_OPTION
+      page.loading.wait_while_present
       page.rule_freeformtext.set @free_text
     end
   end
