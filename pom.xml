@@ -166,6 +166,15 @@
             </modules>
         </profile>
         <profile>
+            <id>test-only</id>
+            <modules>
+                <module>ks-api</module>
+                <module>ks-core</module>
+                <module>ks-lum</module>
+                <module>ks-enroll</module>
+            </modules>
+        </profile>
+        <profile>
             <id>jdk7-with-jdk6-bytecode</id>
             <modules>
                 <module>ks-deployments</module>
