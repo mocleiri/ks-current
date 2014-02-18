@@ -323,29 +323,26 @@ end
 
 Then /^I should be able to use all the function buttons on the Edit Rule tab$/ do
   on ManageAORequisites do |page|
-    page.logic_tab.click
-    puts page.preview_tree_section.text
-
-    @activityOR.move_around( "B", "out")
-    page.edit_tree_section.span(:text => /.*B\..*/).id.should match @activityOR.test_node_level( "secondary")
+    @activityOR.move_around( "A", "out")
+    page.edit_tree_section.span(:text => /.*A\..*/).id.should match @activityOR.test_node_level( "primary")
 
     @activityOR.move_around( "B", "up")
-    page.edit_tree_section.text.should match /.*B\..+C\..*/m
+    page.edit_tree_section.text.should match /.*B\..+A\..*/m
 
-    @activityOR.move_around( "A", "down")
-    page.edit_tree_section.text.should match /.*[BC]\..+A\..*/m
-
-    @activityOR.move_around( "E", "up in")
+    @activityOR.move_around( "C", "down")
     page.edit_tree_section.text.should match /.*E\..+C\..*/m
 
-    @activityOR.delete_statement( "E")
-    page.edit_tree_section.text.should_not match /.*E\..*/
+    @activityOR.move_around( "B", "up in")
+    page.edit_tree_section.text.should match /.*B\..+C\..*/m
 
-    @activityOR.copy_cut_paste( "A", "D", "cut")
-    page.edit_tree_section.text.should match /.*D\..+A\..*/m
+    @activityOR.delete_statement( "C")
+    page.edit_tree_section.text.should_not match /.*C\..*/
 
-    @activityOR.copy_cut_paste( "B", "A", "copy")
-    page.edit_tree_section.text.should match /.*B\..+A\..+F\..*/m
+    @activityOR.copy_cut_paste( "B", "D", "cut")
+    page.edit_tree_section.text.should match /.*D\..+B\..*/m
+
+    @activityOR.copy_cut_paste( "E", "B", "copy")
+    page.edit_tree_section.text.should match /.*E\..+B\..+F\..*/m
 
     @activityOR.add_new_node( "add", "F")
     page.rule_dropdown.when_present.select /Free Form Text/
@@ -353,7 +350,7 @@ Then /^I should be able to use all the function buttons on the Edit Rule tab$/ d
     page.preview_btn
     page.edit_tree_section.text.should match /.*F\..+G\..*/m
 
-    @activityOR.add_new_node( "group", "C")
+    @activityOR.add_new_node( "group", "A")
     page.rule_dropdown.when_present.select /Free Form Text/
     page.free_text_field.when_present.set "new group can be created"
     page.preview_btn
