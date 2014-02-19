@@ -843,6 +843,7 @@ class SeatPool
       page.add_seat_pool unless page.add_pool_name == '' #check to see if blank line is already there
       page.add_pool_priority.set @priority
       page.add_pool_seats.set @seats
+      page.add_pool_seats.fire_event "onblur"
       if @population_name != ""
         page.add_lookup_population_name
 
@@ -866,7 +867,6 @@ class SeatPool
 
       end
       page.add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
-      page.add_pool_seats.click #fire js event to update seats remaining
     end
   end
 end
