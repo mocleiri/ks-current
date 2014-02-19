@@ -1,5 +1,7 @@
 class RegistrationCart < RegisterForCourseBase
 
+  page_url "#{$test_site}/registration/index.jsp#/myCart"
+
   expected_element :item_count
 
   element(:item_count) { |b| b.span(id: "course_count") }
@@ -26,7 +28,7 @@ class RegistrationCart < RegisterForCourseBase
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
-  def remove_from_cart(course_code, reg_group_code)
+  def remove_course_from_cart(course_code, reg_group_code)
     remove_course_link(course_code,reg_group_code).click
   end
 

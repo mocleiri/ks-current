@@ -17,11 +17,11 @@ When /^I add a course to my registration cart and specify course options$/ do
 end
 
 When /^I drop the course from my registration cart$/ do
-  page.target_list_item_by_course(@reg_request.course_code, @reg_request.reg_group_code).remove_from_cart   #?? need to chg. "target"s
+  @reg_request.remove_from_cart
 end
 
 When /^I edit a course in my registration cart$/ do
-  pending
+  #pending
 end
 
 Then /^the course is (present|not present) in my cart$/  do |presence|
@@ -43,7 +43,7 @@ Then /^the course is present in my cart, with the correct options$/  do
 end
 
 Then /^the modified course is present in my cart$/  do
-  pending
+  #pending
 end
 
 And /^I? ?can view the details of my selections?$/ do

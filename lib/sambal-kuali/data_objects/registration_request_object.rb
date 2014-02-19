@@ -49,7 +49,7 @@ class RegistrationRequest
   end
 
   def create
-    on RegistrationCart do |page|
+    visit RegistrationCart do |page|
       page.select_term @term_descr
       page.course_code.set @course_code
       page.reg_group_code.set @reg_group_code
@@ -106,8 +106,8 @@ class RegistrationRequest
   private :edit_reg_group
 
   def remove_from_cart
-    on CourseRegistration do |page|
-      page.remove_course
+    on RegistrationCart do |page|
+      page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
 
