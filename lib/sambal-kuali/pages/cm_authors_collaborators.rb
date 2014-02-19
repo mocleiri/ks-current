@@ -11,4 +11,4 @@ class CmAuthorsCollaborators < BasePage
   action(:delete_author) { |b| b.button(text: 'delete').click }
   action(:added_author_information) { |text_present, b| b.span(text: text_present) }
   # view, comment, edit, fyi, false, true, <complete_username>
-end
+end    #class
