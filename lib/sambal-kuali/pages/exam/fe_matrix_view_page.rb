@@ -35,93 +35,97 @@ class FEMatrixView < BasePage
   element(:common_final_exam_table) { |b| b.common_final_exam_section.table}
   action(:add_common_fe_rule) { |b| b.common_final_exam_section.a( text: "Add").click; b.loading.wait_while_present}
 
-  def standard_fe_target_row( requirements)
-    row = nil
-    if standard_final_exam_table.row(text: /#{Regexp.escape(requirements)}/).exists?
-      row = standard_final_exam_table.row(text: /#{Regexp.escape(requirements)}/)
+  def standard_fe_target_row( rule_obj)
+    rows = standard_final_exam_table.rows(text: /#{Regexp.escape(rule_obj.rule_requirements)}/)
+    rows.each do |row|
+      if row.text =~ /#{Regexp.escape(rule_obj.rsi_days)}.*#{Regexp.escape(rule_obj.start_time)}.*#{Regexp.escape(rule_obj.end_time)}/m
+        return row
+      end
     end
-    return row
+    return nil
   end
 
-  def common_fe_target_row( requirements)
-    row = nil
-    if common_final_exam_table.row(text: /#{Regexp.escape(requirements)}/).exists?
-      row = common_final_exam_table.row(text: /#{Regexp.escape(requirements)}/)
+  def common_fe_target_row( rule_obj)
+    rows = common_final_exam_table.rows(text: /#{Regexp.escape(rule_obj.rule_requirements)}/)
+    rows.each do |row|
+      if row.text =~ /#{Regexp.escape(rule_obj.rsi_days)}.*#{Regexp.escape(rule_obj.start_time)}.*#{Regexp.escape(rule_obj.end_time)}/m
+        return row
+      end
     end
-    return row
+    return nil
   end
 
-  def get_standard_fe_requirements( requirements)
-    standard_fe_target_row( requirements).cells[COURSE_REQUIREMENTS].text
+  def get_standard_fe_requirements( rule_obj)
+    standard_fe_target_row( rule_obj).cells[COURSE_REQUIREMENTS].text
   end
 
-  def get_standard_fe_day( requirements)
-    standard_fe_target_row( requirements).cells[EXAM_DAY].text
+  def get_standard_fe_day( rule_obj)
+    standard_fe_target_row( rule_obj).cells[EXAM_DAY].text
   end
 
-  def get_standard_fe_time( requirements)
-    standard_fe_target_row( requirements).cells[EXAM_TIME].text
+  def get_standard_fe_time( rule_obj)
+    standard_fe_target_row( rule_obj).cells[EXAM_TIME].text
   end
 
-  def get_standard_fe_actions( requirements)
-    standard_fe_target_row( requirements).cells[STANDARD_EXAM_ACTIONS].text
+  def get_standard_fe_actions( rule_obj)
+    standard_fe_target_row( rule_obj).cells[STANDARD_EXAM_ACTIONS].text
   end
 
-  def get_standard_fe_actions_class( requirements, action_type)
+  def get_standard_fe_actions_class( rule_obj, action_type)
     if action_type == "Edit"
-      standard_fe_target_row( requirements).cells[STANDARD_EXAM_ACTIONS].i(class: "ks-fontello-icon-pencil")
+      standard_fe_target_row( rule_obj).cells[STANDARD_EXAM_ACTIONS].i(class: "ks-fontello-icon-pencil")
     else
-      standard_fe_target_row( requirements).cells[STANDARD_EXAM_ACTIONS].i(class: "ks-fontello-icon-cancel")
+      standard_fe_target_row( rule_obj).cells[STANDARD_EXAM_ACTIONS].i(class: "ks-fontello-icon-cancel")
     end
   end
 
-  def get_common_fe_requirements( requirements)
-    common_fe_target_row( requirements).cells[COURSE_REQUIREMENTS].text
+  def get_common_fe_requirements( rule_obj)
+    common_fe_target_row( rule_obj).cells[COURSE_REQUIREMENTS].text
   end
 
-  def get_common_fe_day( requirements)
-    common_fe_target_row( requirements).cells[EXAM_DAY].text
+  def get_common_fe_day( rule_obj)
+    common_fe_target_row( rule_obj).cells[EXAM_DAY].text
   end
 
-  def get_common_fe_time( requirements)
-    common_fe_target_row( requirements).cells[EXAM_TIME].text
+  def get_common_fe_time( rule_obj)
+    common_fe_target_row( rule_obj).cells[EXAM_TIME].text
   end
 
-  def get_common_fe_facility( requirements)
-    common_fe_target_row( requirements).cells[COMMON_EXAM_BLDG].text
+  def get_common_fe_facility( rule_obj)
+    common_fe_target_row( rule_obj).cells[COMMON_EXAM_BLDG].text
   end
 
-  def get_common_fe_room( requirements)
-    common_fe_target_row( requirements).cells[COMMON_EXAM_ROOM].text
+  def get_common_fe_room( rule_obj)
+    common_fe_target_row( rule_obj).cells[COMMON_EXAM_ROOM].text
   end
 
-  def get_common_fe_actions( requirements)
-    common_fe_target_row( requirements).cells[COMMON_EXAM_ACTIONS].text
+  def get_common_fe_actions( rule_obj)
+    common_fe_target_row( rule_obj).cells[COMMON_EXAM_ACTIONS].text
   end
 
-  def get_common_fe_actions_class( requirements, action_type)
+  def get_common_fe_actions_class( rule_obj, action_type)
     if action_type == "Edit"
-      common_fe_target_row( requirements).cells[COMMON_EXAM_ACTIONS].i(class: "ks-fontello-icon-pencil")
+      common_fe_target_row( rule_obj).cells[COMMON_EXAM_ACTIONS].i(class: "ks-fontello-icon-pencil")
     else
-      common_fe_target_row( requirements).cells[COMMON_EXAM_ACTIONS].i(class: "ks-fontello-icon-cancel")
+      common_fe_target_row( rule_obj).cells[COMMON_EXAM_ACTIONS].i(class: "ks-fontello-icon-cancel")
     end
   end
 
-  def edit( requirements, exam_type)
+  def edit( rule_obj, exam_type)
     if exam_type == "Standard"
-      standard_fe_target_row( requirements).i(class: "ks-fontello-icon-pencil").click
+      standard_fe_target_row( rule_obj).i(class: "ks-fontello-icon-pencil").click
     else
-      common_fe_target_row( requirements).i(class: "ks-fontello-icon-pencil").click
+      common_fe_target_row( rule_obj).i(class: "ks-fontello-icon-pencil").click
     end
     loading.wait_while_present
   end
 
-  def delete( requirements, exam_type)
+  def delete( rule_obj, exam_type)
     loading.wait_while_present
     if exam_type == "Standard"
-      standard_fe_target_row( requirements).i(class: "ks-fontello-icon-cancel").click
+      standard_fe_target_row( rule_obj).i(class: "ks-fontello-icon-cancel").click
     else
-      common_fe_target_row( requirements).i(class: "ks-fontello-icon-cancel").click
+      common_fe_target_row( rule_obj).i(class: "ks-fontello-icon-cancel").click
     end
     loading.wait_while_present
   end

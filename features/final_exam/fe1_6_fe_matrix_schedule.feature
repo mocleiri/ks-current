@@ -29,6 +29,7 @@ Feature: CO.FE1-6 Manage the Final Exam Matrix so that FEs can be Scheduled in p
     Then I should be able to see the edited course rule in the Common Final Exam table
 
   #FE1.6.EB5 (KSENROLL-9796)
+  @bug @KSENROLL-11955
   Scenario: Test that the Days are sorted from beginning to end in the table
     Given there is an Academic Term associated with a Final Exam matrix
     When I view the Standard Final Exam rules on the Final Exam Matrix
@@ -52,7 +53,7 @@ Feature: CO.FE1-6 Manage the Final Exam Matrix so that FEs can be Scheduled in p
     When I edit the newly created Standard Final Exam rule statements
     Then I should be able to see all the changes I have made on the Final Exam Matrix
 
-  #FE1.6.EB9 (KSENROLL-9796) #########
+  #FE1.6.EB9 (KSENROLL-9796)
   Scenario: Test that deleting an existing rule works as expected
     When I delete an existing Standard Final Exam text rule to the Final Exam Matrix
     Then the deleted text rule should not exist on the Final Exam Matrix

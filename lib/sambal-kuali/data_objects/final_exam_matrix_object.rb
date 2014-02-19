@@ -157,7 +157,7 @@ class ExamMatrixRuleObject
     options = defaults.merge(opts)
 
     @parent_exam_matrix.manage unless options[:navigate_to_page] == false
-    on(FEMatrixView).edit rule_requirements, @exam_type
+    on(FEMatrixView).edit self, @exam_type
 
     on FEMatrixEdit do |page|
       if options[:rsi_days] != nil
@@ -219,7 +219,7 @@ class ExamMatrixRuleObject
     @parent_exam_matrix.manage
 
     on FEMatrixView do |page|
-      page.delete rule_requirements, @exam_type
+      page.delete self, @exam_type
     end
 
     unless options[:defer_submit]
@@ -258,7 +258,7 @@ class ExamMatrixStatementObject
 
   attr_accessor :parent_rule, :courses, :days, :start_time, :st_time_ampm,
                 :end_time, :end_time_ampm, :free_text, :courses, :courses_type,
-                :statement_operator, :statement_option
+                :statement_operator, :statement_option, :rsi_days
 
   TIME_SLOT_OPTION = 'If Course meets on <timeslot>'
   FREE_TEXT_OPTION = 'Free Form Text'
@@ -323,7 +323,7 @@ class ExamMatrixStatementObject
 
     if options[:navigate_to_page]
       parent_matrix.manage
-      on(FEMatrixView).edit @parent_rule.rule_requirements, @parent_rule.exam_type
+      on(FEMatrixView).edit @parent_rule, @parent_rule.exam_type
     end
 
     on FEMatrixEdit do |page|
