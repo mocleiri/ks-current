@@ -2220,7 +2220,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
-        Set<FeeManagementSignup> signups = session.getIncompleteSignups();
+        Set<FeeManagementSignup> signups = filterSignups(session.getIncompleteSignups(),
+                rateCodes, rateTypeCodes, rateCatalogCodes, signupOperations, null);
 
         if (useTakenSignups != null) {
             for (FeeManagementSignup signup : new HashSet<FeeManagementSignup>(signups)) {
@@ -2301,7 +2302,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                             BigDecimal amount = rateService.getAmountFromRate(rate.getId(), numberOfUnits);
 
                             if (percentage != null) {
-                                amount = amount.divide(Constants.BIG_DECIMAL_HUNDRED).multiply(amount).setScale(2, RoundingMode.HALF_DOWN);
+                                amount = amount.divide(Constants.BIG_DECIMAL_HUNDRED).multiply(percentage).setScale(2, RoundingMode.HALF_DOWN);
                             }
 
                             Date effectiveDate = rateService.getEffectiveDateFromRate(rate.getId(), signup.getEffectiveDate());
@@ -2350,7 +2351,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             BigDecimal amount = rateService.getAmountFromRate(rateId, numberOfUnits);
 
             if (percentage != null) {
-                amount = amount.divide(Constants.BIG_DECIMAL_HUNDRED).multiply(amount).setScale(2, RoundingMode.HALF_DOWN);
+                amount = amount.divide(Constants.BIG_DECIMAL_HUNDRED).multiply(percentage).setScale(2, RoundingMode.HALF_DOWN);
             }
 
             Date effectiveDate = rateService.getEffectiveDateFromRate(rateId, rateBaseDateMap.get(rateId));
