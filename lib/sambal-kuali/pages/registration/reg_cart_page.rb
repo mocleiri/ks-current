@@ -22,7 +22,7 @@ class RegistrationCart < RegisterForCourseBase
   element(:credits_selection) { |course_code,reg_group_code,b| b.select(id: "credits_#{course_code}_#{reg_group_code}") }
   element(:grading_selection) { |course_code,reg_group_code,b| b.select(id: "grading_#{course_code}_#{reg_group_code}") }
   element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "save_#{course_code}_#{reg_group_code}") }
-  action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
+  #action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
@@ -38,4 +38,8 @@ class RegistrationCart < RegisterForCourseBase
     grading_selection(course_code, reg_group_code).select(grading_option)
   end
 
+  def save_edits(course_code, reg_group_code)
+    sleep 1
+    edit_save_button(course_code,reg_group_code).click
+  end
 end

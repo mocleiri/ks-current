@@ -8,8 +8,11 @@ When /^I add a course offering to my registration cart$/ do
 end
 
 When /^I add a course to my registration cart and specify course options$/ do
-  course_options_list << (make CourseOptions, :credit_option => "4", :grading_option => "Pass/Fail")
-  @reg_request = create RegistrationRequest, :student_id => "student", :term_code => "201301", :course_options_list => course_options_list, :modify_course_options => true
+  course_options = (make CourseOptions, :credit_option => "4.0", :grading_option => "Pass/Fail")
+  @reg_request = create RegistrationRequest, :student_id => "student", :term_code => "201201",
+                        :term_descr=>"Spring 2012",
+                        :course_code=>"CHEM237",
+                        :reg_group_code=>"1001", :course_options => course_options, :modify_course_options => true
   # above will include entering course_code, reg_group_code (& term if nec), and clicking Add to Cart, then changing the 2 options, and clicking Add to Cart again
 end
 
@@ -32,9 +35,9 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
 end
 
 Then /^the course is present in my cart, with the correct options$/  do
-  on CourseRegistration do |page|
-    page.get_credit_option(@reg_request).should == course_options_list.credit_option
-    page.get_grading_option(@reg_request).should == course_options_list.grading_option
+  on RegistrationCart do |page|
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     #do we need to quit or remove course?
   end
 end
@@ -46,8 +49,8 @@ end
 And /^I? ?can view the details of my selections?$/ do
   on RegistrationCart do |page|
     page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry I"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options_list[0].credit_option} credits"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options_list[0].grading_option}"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0).should include "DIS"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0).should include "M 3:00 pm - 3:50 pm CHM"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"

@@ -17,7 +17,7 @@ class RegistrationRequest
                 :course_code,
                 :reg_group_code
   #array - generally set using options hash
-  attr_accessor :course_options_list
+  attr_accessor :course_options
   #boolean - - generally set using options hash true/false
   attr_accessor :modify_course_options
 
@@ -28,7 +28,6 @@ class RegistrationRequest
   #    :term_descr=>"Spring 2012",
   #    :course_code=>"CHEM231",
   #    :reg_group_code=>"1001",
-  #    :course_options_list=> [],
   #    :modify_course_options=> false
   #  }
   # initialize is generally called using TestFactory Foundry .make or .create methods
@@ -42,7 +41,7 @@ class RegistrationRequest
       :term_descr=>"Spring 2012",
       :course_code=>"CHEM231",
       :reg_group_code=>"1001",
-      :course_options_list=> [ (make CourseOptions ) ],
+      :course_options=> (make CourseOptions),
       :modify_course_options=> false
     }
     options = defaults.merge(opts)
@@ -56,7 +55,7 @@ class RegistrationRequest
       page.reg_group_code.set @reg_group_code
       page.add_to_cart
       if @modify_course_options
-        edit_course_options :course_options_list
+        edit_course_options
       end
       #return new RegistrationRequest
     end
@@ -112,17 +111,20 @@ class RegistrationRequest
     end
   end
 
-  def edit_course_options(course_opts)
-    if course_opts.nil?
+  def edit_course_options
+    if @course_options.nil?
       return nil
     end
-    on CourseRegistration do |page|
-      page.set_credits course_opts.credit_option
-      page.set_credits course_opts.grading_option
+    on RegistrationCart do |page|
+      page.edit_course_options @course_code,@reg_group_code
+      page.select_credits @course_code,@reg_group_code,@course_options.credit_option
+      page.select_grading @course_code,@reg_group_code,@course_options.grading_option
+      page.save_edits @course_code,@reg_group_code
     end
   end
   private :edit_course_options
 
+end
   class CourseOptions
 
     include Foundry
@@ -138,7 +140,7 @@ class RegistrationRequest
       @browser = browser
 
       defaults = {
-          :credit_option => "3",
+          :credit_option => "3.0",
           :grading_option => "Letter"
       }
       options = defaults.merge(opts)
@@ -146,4 +148,4 @@ class RegistrationRequest
     end
 
   end
-end
+
