@@ -72,35 +72,35 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 80 percent', 5004, 'FM Signup 1_4', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw80" and signup date is after atp milestone "kuali.atp.milestone.withdraw60")',
+'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw80" and signup date is before atp milestone "kuali.atp.milestone.withdraw60")',
 'set session key "withdrawn" to "yes"
  set session key "80percent" to "yes"
  mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 60 percent', 5005, 'FM Signup 1_5', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw60" and signup date is after atp milestone "kuali.atp.milestone.withdraw40")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw60" and signup date is before atp milestone "kuali.atp.milestone.withdraw40")',
 'set session key "withdrawn" to "yes"
  set session key "60percent" to "yes"
  mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 40 percent', 5006, 'FM Signup 1_6', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw40" and signup date is after atp milestone "kuali.atp.milestone.withdraw20")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw40" and signup date is before atp milestone "kuali.atp.milestone.withdraw20")',
 'set session key "withdrawn" to "yes"
  set session key "40percent" to "yes"
  mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 20 percent', 5007, 'FM Signup 1_7', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw20" and signup date is after atp milestone "kuali.atp.milestone.withdraw00")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw20" and signup date is before atp milestone "kuali.atp.milestone.withdraw00")',
 'set session key "withdrawn" to "yes"
  set session key "20percent" to "yes"
  mark preceding offerings as not taken
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('withdrawal at 0 percent', 5008, 'FM Signup 1_8', 3, 10, null,
-'(signup operation is "WITHDRAW" and signup date is after atp milestone "kuali.atp.milestone.withdraw0")',
+'(signup operation is "WITHDRAW" and signup date is on or after atp milestone "kuali.atp.milestone.withdraw0")',
 'set session key "withdrawn" to "yes"
  set session key "0percent" to "yes"
  mark preceding offerings as not taken
