@@ -1,19 +1,13 @@
 package org.kuali.student.ap.academicplan.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
-import org.kuali.student.ap.academicplan.infc.DegreeMap;
-import org.kuali.student.ap.academicplan.infc.Placeholder;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
 
 @Entity
@@ -22,38 +16,49 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 
 	// id, obj_id, ver_nbr "covered" by BaseVersionEntity
 	// by MetaEntity and it's superclass(ses).
-	// QUESTION: why is the id set specifically in the toDto? Wouldn't the Meta take care of it? 
+
 	
 	
-    // If the OneToMany uses a foreign key in the target object's table JPA requires that the relationship be bi-directional 
-    // (inverse ManyToOne relationship must be defined in the target object), and the source object must use the mappedBy 
-    // attribute to define the mapping. 
-    // so here we are using the degreeMap property.
+// If the OneToMany uses a foreign key in the target object's table JPA requires that the relationship be bi-directional 
+// (inverse ManyToOne relationship must be defined in the target object), and the source object must use the mappedBy 
+// attribute to define the mapping. 
+// so here we are using the degreeMap property.
 	
-	  @ManyToOne(fetch=FetchType.LAZY)  
-	    @JoinColumns({
-	        @JoinColumn(name="DM_ID", referencedColumnName="ID"),
-	        @JoinColumn(name="DM_EFF_DT", referencedColumnName="EFF_DT")
-	    })
-	  private DegreeMap degreeMap;
+//	  @ManyToOne(fetch=FetchType.LAZY)  
+//	    @JoinColumns({
+//	        @JoinColumn(name="DM_ID", referencedColumnName="ID"),
+//	        @JoinColumn(name="DM_EFF_DT", referencedColumnName="EFF_DT")
+//	    })
+//	  private DegreeMap degreeMap;
+//	
+//	  @OneToOne(fetch = FetchType.LAZY)
+//	  @JoinColumn(name = "REQ_REF_OBJ_ID")
+//	  private Placeholder placeholder;
 	
-	  @OneToOne(fetch = FetchType.LAZY)
-	  @JoinColumn(name = "REQ_REF_OBJ_ID")
-	  private Placeholder placeholder;
+	
+	  @Column(name="DM_ID")
+	  private String degreeMapId;
 	  
-	  // what to do about the REF_OJB_TYPE_KEY
-	    
+	  @Column(name="DM_EFFDT")
+	  private Date degreeMapEffectiveDate;
+	  	    
 	  @Column(name="DISPLAY_TERM_ID")
 	  private String displayTermId;
 	  
 	  @Column(name="ITEM_SEQ")
 	  private int itemSeq;
-	    
+	  	    
+	  @Column(name="REQ_REF_OBJ_ID")
+	  private String refObjectId;
+	  
+	  @Column(name="REF_OBJ_TYPE_KEY")
+	  private String refObjectTypeKey;
+	  
 	  @Column(name="DESCR")
 	  private String descr;
 	  
 	  @Column(name="CREDIT")
-	    private BigDecimal credit;
+	  private BigDecimal credit;
 	  
 	  @Column(name="CRITICAL")
 	  private boolean critical;
@@ -88,31 +93,31 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
     
     public DegreeMapRequirementEntity(DegreeMapRequirementInfo dto) {
         super();
-        //here I need to do some work.
-        // to add all the fields that are not in the super
-        // basically the opposite of toDTO
-        
-        /*
-         *         DegreeMapRequirementInfo dto = new DegreeMapRequirementInfo();
-
+ 
         //TODO
-        // why am I dealing with this? I thought the meta had the id?
-        dto.setId(getId());
-        dto.setCredit(getCredit());
-        dto.setCritical(isCritical());
-        dto.setDegreeMap(getDegreeMap());
-        dto.setDescr(getDescr());
-        dto.setMinimumGrade(getMinimumGrade());
-        dto.setDegreeMap(this.getDegreeMap());
-        dto.setMilestone(this.isMilestone());
-        dto.setDescr(this.getDescr());
-        dto.setSeqKey(this.getSeqKey());
-        dto.setSeqNo(this.getSeqNo());
-        dto.setYearSeq(this.getYearSeq());
-        dto.setTermTypeKey(this.getTermTypeKey());
-        return dto;
-         */
+        // would I want to set the id
+        // or would I want to create a new one?
+        this.setId(dto.getId());
+       
+        this.setCredit(dto.getCredit());
+        this.setCritical(dto.isCritical());
+        this.setDegreeMapEffectiveDate(dto.getDegreeMapEffectiveDate());
+        this.setDegreeMapId(dto.getDegreeMapId());
+        this.setDescr(dto.getDescr());
+        this.setDisplayTermId(dto.getDisplayTermId());
+        this.setItemSeq(dto.getItemSeq());
+        this.setMilestone(dto.isMilestone());
+        this.setMininumGrade(dto.getMinimumGrade());
+        this.setNotes(dto.getNotes());
+        this.setRefObjectTypeKey(dto.getRefObjectTypeKey());
+        this.setRefObjectId(dto.getRefObjectId());
+        this.setRequiredTermId(dto.getRequiredTermId());
+        this.setSuggestedTermId(dto.getSuggestedTermId());
+        this.setSeqKey(dto.getSeqKey());
+        this.setSeqNo(dto.getSeqNo());      
+
     }
+    
     
 	public static DegreeMapRequirementEntity create(DegreeMapRequirementInfo dto) {
 
@@ -123,7 +128,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
     
     @Override
     public String toString() {
-        return String.format("Requirement id:  %s, descr: % . TODO: Provide more details.", this.getId(), this.getDescr());
+        return String.format("Requirement id:  %s, degreeMapId: %s, degreeMapEffectiveDate %d, descr: %s. ", this.getId(), this.getDegreeMapId(), this.getDegreeMapId(), this.getDescr());
     }
 
     
@@ -134,21 +139,28 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
     public DegreeMapRequirementInfo toDto() {
         DegreeMapRequirementInfo dto = new DegreeMapRequirementInfo();
 
-        dto.setId(getId());
+        
         dto.setCredit(getCredit());
         dto.setCritical(isCritical());
-        dto.setDegreeMap(getDegreeMap());
-   //     dto.setDescr(getDescr());
+        dto.setDegreeMapEffectiveDate(getDegreeMapEffectiveDate());
+        dto.setDegreeMapId(getDegreeMapId());
+        dto.setDescr(getDescr());
+        dto.setDisplayTermId(getDisplayTermId());
+        dto.setItemSeq(getItemSeq());
+        dto.setMilestone(isMilestone());
         dto.setMinimumGrade(getMinimumGrade());
-        dto.setDegreeMap(this.getDegreeMap());
-        dto.setMilestone(this.isMilestone());
-    ///    dto.setDescr(this.getDescr());
-        dto.setSeqKey(this.getSeqKey());
-        dto.setSeqNo(this.getSeqNo());
-   //     dto.setYearSeq(this.getYearSeq());
-   //     dto.setTermTypeKey(this.getTermTypeKey());
+        dto.setNotes(getNotes());
+        dto.setRefObjectTypeKey(getRefObjectTypeKey());
+        dto.setRefObjectId(getRefObjectId());
+        dto.setRefObjectId(getRefObjectId());
+        dto.setRequiredTermId(getRequiredTermId());
+        dto.setSuggestedTermId(getSuggestedTermId());
+        dto.setSeqKey(getSeqKey());
+        dto.setSeqNo(getSeqNo());      
+
         return dto;
     }
+
 
 
 
@@ -159,16 +171,44 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 
 	public void setDisplayTermId(String displayTermId) {
 		this.displayTermId = displayTermId;
+	}	
+
+	public String getDegreeMapId() {
+		return degreeMapId;
 	}
 
 
-	public DegreeMap getDegreeMap() {
-		return degreeMap;
+	public void setDegreeMapId(String degreeMapId) {
+		this.degreeMapId = degreeMapId;
 	}
 
 
-	public void setDegreeMap(DegreeMap degreeMap) {
-		this.degreeMap = degreeMap;
+	public Date getDegreeMapEffectiveDate() {
+		return degreeMapEffectiveDate;
+	}
+
+
+	public void setDegreeMapEffectiveDate(Date degreeMapEffectiveDate) {
+		this.degreeMapEffectiveDate = degreeMapEffectiveDate;
+	}
+
+	public String getRefObjectTypeKey() {
+		return refObjectTypeKey;
+	}
+
+
+	public void setRefObjectTypeKey(String refObjectTypeKey) {
+		this.refObjectTypeKey = refObjectTypeKey;
+	}
+
+
+	public String getRefObjectId() {
+		return refObjectId;
+	}
+
+
+	public void setRefObjectId(String refObjectId) {
+		this.refObjectId = refObjectId;
 	}
 
 
@@ -226,16 +266,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	}
 
 
-	public Placeholder getPlaceholder() {
-		return placeholder;
-	}
-
-
-	public void setPlaceholder(Placeholder placeholder) {
-		this.placeholder = placeholder;
-	}
-
-
+	
 	public int getItemSeq() {
 		return itemSeq;
 	}
@@ -307,28 +338,18 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         if (! other.getId().equals(this.getId())) {
             return this.getId().compareTo(other.getId());
         }
-
-//TODO
-// would we ever have the same id but different degree map id or effective date?
-// I'm thinking every time we have a new effective date we would want to generate a new
-// set of requirements and would want those to have a new set of ids, which would be unique...?
-// Did we discuss what the id for the degree map requirements would look like?
-        
-       
-        DegreeMap this_dm = this.getDegreeMap();
-        DegreeMap other_dm = other.getDegreeMap();
-        
+               
         // compare the degree map id
-        if (!other_dm.getId().equals(this_dm.getId())){
-        	return this_dm.getId().compareTo(other_dm.getId());
+        if (!other.getDegreeMapId().equals(this.getDegreeMapId())){
+        	return this.getDegreeMapId().compareTo(other.getDegreeMapId());
         }
         
         // compare the degree map effective date
-        if (!other_dm.getEffectiveDate().equals(this_dm.getEffectiveDate())){
-        	return this_dm.getEffectiveDate().compareTo(other_dm.getEffectiveDate());
+        if (!other.getDegreeMapEffectiveDate().equals(this.getDegreeMapEffectiveDate())){
+        	return this.getDegreeMapEffectiveDate().compareTo(other.getDegreeMapEffectiveDate());
         }
         
-
+        // if they are all the same, it's the same requirement.
         return 0;
     }
 }
