@@ -1,6 +1,7 @@
 package org.kuali.student.ap.academicplan.infc;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.kuali.student.r2.common.infc.HasId;
 
@@ -11,6 +12,27 @@ import org.kuali.student.r2.common.infc.HasId;
  */
 public interface DegreeMapRequirement extends HasId {  
     
+	/**
+	 * The Id of the degree map
+	 * @name the degree map id
+	 */
+	
+	public String getDegreeMapId();
+	
+	
+	/**
+	 * The degree map effective date
+	 * @name the degree map effective date
+	 */
+	public Date getDegreeMapEffectiveDate();
+	
+	
+	/**
+	 * The degree map
+	 * @name the degree map
+	 */
+	
+	public DegreeMap getDegreeMap();
     
     /**
      * The term (first year winter, second year spring, etc...)
@@ -52,7 +74,7 @@ public interface DegreeMapRequirement extends HasId {
      * Type of the Reference Object
      * @name Reference Object Type
      */
-    public String getRefObjectType();
+    public String getRefObjectTypeKey();
     
     /**
      * the requirement description

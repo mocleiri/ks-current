@@ -1,6 +1,7 @@
 package org.kuali.student.ap.academicplan.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,7 +25,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "displayTermId", "itemSeq","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
+@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId", "degreeMapEffectiveDate", "displayTermId", "itemSeq","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
 
 public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	
@@ -40,6 +41,12 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
     @XmlElement
     private DegreeMap degreeMap;
     
+    @XmlElement
+    private String degreeMapId;
+    
+    @XmlElement
+    private Date degreeMapEffectiveDate;
+    
     @XmlAttribute
     private String displayTermId;
     
@@ -50,7 +57,7 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
     private String refObjectId;
 
     @XmlElement
-    private String refObjectType;
+    private String refObjectTypeKey;
     
     @XmlAttribute
     private String descr; 
@@ -98,6 +105,27 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	}
 
 	
+	
+	public String getDegreeMapId() {
+		return degreeMapId;
+	}
+
+
+	public void setDegreeMapId(String degreeMapId) {
+		this.degreeMapId = degreeMapId;
+	}
+
+
+	public Date getDegreeMapEffectiveDate() {
+		return degreeMapEffectiveDate;
+	}
+
+
+	public void setDegreeMapEffectiveDate(Date degreeMapEffectiveDate) {
+		this.degreeMapEffectiveDate = degreeMapEffectiveDate;
+	}
+
+
 	public DegreeMap getDegreeMap() {
 		return degreeMap;
 	}
@@ -129,13 +157,13 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	}
 
 
-	public String getRefObjectType() {
-		return refObjectType;
+	public String getRefObjectTypeKey() {
+		return refObjectTypeKey;
 	}
 
 
-	public void setRefObjectType(String refObjectType) {
-		this.refObjectType = refObjectType;
+	public void setRefObjectTypeKey(String refObjectTypeKey) {
+		this.refObjectTypeKey = refObjectTypeKey;
 	}
 
 
@@ -238,7 +266,6 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	public void setRequiredTermId(String requiredTermId) {
 		this.requiredTermId = requiredTermId;
 	}
-
 
 	
 	public String getNotes() {
