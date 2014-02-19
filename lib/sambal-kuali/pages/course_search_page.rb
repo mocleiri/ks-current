@@ -13,6 +13,10 @@ class CourseSearch < BasePage
     #element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
     element(:results_table) { |b| b.table(id: "course_search_results") }
     ################
+    element(:results_list_previous_enabled) { |b| b.a(id: "course_search_results_previous")}
+    element(:results_list_previous_click) { |b| b.results_list_previous_enabled.click }
+    element(:results_list_previous_disabled) { |b| b.a(class:"previous fg-button ui-button ui-state-default ui-state-disabled")}
+
     element(:results_list_next_enabled) { |b| b.a(id: "course_search_results_next") }
     element(:results_list_next_click) { |b| b.results_list_next_enabled.click }
     element(:results_list_next_disabled) { |b| b.a(class: "next fg-button ui-button ui-state-default ui-state-disabled") }
@@ -47,6 +51,7 @@ class CourseSearch < BasePage
 
 
     def results_list
+
       list = []
       results_table.rows.each do |row|
         sleep(1)
@@ -73,56 +78,47 @@ class CourseSearch < BasePage
 
 
 
-
     def multiple_page_check(search_text)
 
-      search_results_validation(search_text)
-
-=begin
-Uncomment after KSAP-802 is resolved
-         begin
         unless results_list_next_disabled.exists?
+          search_results_validation(search_text)
+          results_table.wait_until_present
           results_list_next_enabled.click
-          results_table.wait_until_present(5)
-          get_links_on_page_with_index(search_text)
+          results_table.wait_until_present
         end
-         end until results_list_next_disabled.exists?
-=end
+        search_results_validation(search_text)
     end
 
     def search_results_validation(search_text)
 
       sleep 2
       no_of_rows = results_table.rows.length-1
-
+     # puts no_of_rows.length
+      puts search_text
       for index in 1..no_of_rows do
         sleep 2
+        results_table.wait_until_present
         course_code = results_table.rows[index].cells[COURSE_CODE].text
         course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
-          course_code_result_link(course_code).click
-          back_to_search_results.wait_until_present(5)
+        course_code_result_link(course_code).click
+        back_to_search_results.wait_until_present
         course_description_text = course_description(course_code).downcase
-          back_to_search_results.click
-          sleep 2
+        back_to_search_results.click
+        sleep 2
 
-        if course_code.include? search_text
-          true
-        elsif course_name.include? search_text
-          true
-        elsif course_description_text.include? search_text
-          true
+        if course_code.include? (search_text).downcase
+        true
+        elsif course_name.include? (search_text).downcase
+        true
+        elsif course_description_text.include? (search_text).downcase
+        true
         else
-          false
+        false
         end
 
-      end
 
+     end
 
-
-
-    end
-
-
-
+     end
 end
 

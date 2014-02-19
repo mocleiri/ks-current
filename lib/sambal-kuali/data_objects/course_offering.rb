@@ -131,7 +131,8 @@ def select_add_to_plan
     page.plus_symbol.wait_until_present
     page.plus_symbol_popover
     page.adding_plan
-    sleep(2)
+    #sleep(2)
+    page.term.wait_until_present
     page.term.select @term
     page.add_to_plan_credit.set @credit
     page.add_to_plan_notes.set @notes
@@ -159,5 +160,23 @@ def course_search_with_search_text(text=@search_text, term_select=@term_select)
 end
 
 
+  def multi_text_search(expected)
+    on CourseSearch do |page|
+    split_name = expected.split(' ')
+    puts split_name.length
+    if  split_name.length > 1
+      for index in 0 ... split_name.size
+        puts  "split_name[#{index}] = #{split_name[index].inspect}"
+        page.multiple_page_check("#{split_name[index]}")
+        unless page.results_list_previous_disabled.exists?
+          page.results_table.wait_until_present
+          page.results_list_previous_enabled.click
+        end
+      end
+    end
+
+    page.search_results_validation("#{split_name[index]}")
+      end
+  end
 
 end
