@@ -10,7 +10,7 @@ import org.kuali.student.r2.common.infc.HasId;
  *
  * @Author mguilla
  */
-public interface DegreeMapRequirement extends HasId {  
+public interface DegreeMapRequirement extends HasId, TypedObjectReference {  
     
 	/**
 	 * The Id of the degree map
@@ -64,17 +64,17 @@ public interface DegreeMapRequirement extends HasId {
     
     public int getSeqNo();
    
-    /**
-     * Id to the reference object e.g Course, Placeholder etc
-     * @name Reference Object Id
-     */
-    public String getRefObjectId();
-
-    /**
-     * Type of the Reference Object
-     * @name Reference Object Type
-     */
-    public String getRefObjectTypeKey();
+//    /**
+//     * Id to the reference object e.g Course, Placeholder etc
+//     * @name Reference Object Id
+//     */
+//    public String getRefObjectId();
+//
+//    /**
+//     * Type of the Reference Object
+//     * @name Reference Object Type
+//     */
+//    public String getRefObjectTypeKey();
     
     /**
      * the requirement description

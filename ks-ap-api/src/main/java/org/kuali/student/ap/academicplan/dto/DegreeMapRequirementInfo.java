@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId", "degreeMapEffectiveDate", "displayTermId", "itemSeq","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
+@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId", "degreeMapEffectiveDate", "displayTermId", "itemSeq", "refObjectId", "refObjectType","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
 
 public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	
