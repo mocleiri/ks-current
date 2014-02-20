@@ -19,9 +19,10 @@ expander ksa.dsl
 
 ')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('', 5000, 'FM Main Rule', 3, 20, null,
+Insert into KSSA_RULE (ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values (5000, 'FM Main Rule', 3, 20, null,
 '(Context is initialized)',
-'on each session signup fire "FM Signup 1" rule set
+'write log INFO "Fee Assessment rules are being processed..."
+ on each session signup fire "FM Signup 1" rule set
  on session fire "FM Session 1" rule set
  on session fire "FM Session 2" rule set
  on each session signup fire "FM Signup 2" rule set
@@ -29,6 +30,7 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
  on each session signup fire "FM Signup 4" rule set
  on session fire "FM Session 3" rule set
  on session fire "FM Session 4" rule set
+ write log INFO "Fee Assessment rules have been processed"
 ')!
 
 -- FM Signup 1 rule set --
@@ -652,10 +654,10 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 
             UnitNumber numberOfUnitsToCharge = numberOfDroppedUnits.divide(five);
 
-            context.getLogger().info("numberOfUnits = " + numberOfUnits);
-            context.getLogger().info("numberOfDroppedUnits = " + numberOfDroppedUnits);
-            context.getLogger().info("numberOfTakenUnits = " + numberOfTakenUnits);
-            context.getLogger().info("numberOfUnitsToCharge = " + numberOfUnitsToCharge);
+            context.getLogger().info("Rate code = " +  rateCodes[i] + ", numberOfUnits = " + numberOfUnits);
+            context.getLogger().info("Rate code = " +  rateCodes[i] + ", numberOfDroppedUnits = " + numberOfDroppedUnits);
+            context.getLogger().info("Rate code = " +  rateCodes[i] + ", numberOfTakenUnits = " + numberOfTakenUnits);
+            context.getLogger().info("Rate code = " +  rateCodes[i] + ", numberOfUnitsToCharge = " + numberOfUnitsToCharge);
 
             if (numberOfUnitsToCharge.compareTo(UnitNumber.ZERO) > 0) {
                context.getFmService().chargeIncidentalRate(rateCodes[i], "default", rateCodes[i] + ".default", numberOfUnitsToCharge, null, context);

@@ -115,6 +115,8 @@
 
 
 # RHS definitions
+[then][]write log {level} "{message}" = context.getFmService().writeSessionLog("{level}","{message}",context);
+[then][]write log "{message}" = context.getFmService().writeSessionLog("INFO","{message}",context);
 [then][]on session fire "{ruleSetName}" rule set = context.getFmService().fireSessionRuleSet("{ruleSetName}",context);
 [then][]on each session signup fire "{ruleSetName}" rule set = context.getFmService().fireSignupRuleSet("{ruleSetName}",context);
 [then][]set account key "{key}" to "{value}" = context.getFmService().setAccountKeyPair("{key}","{value}",context);

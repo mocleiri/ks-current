@@ -722,4 +722,14 @@ public interface BrmFeeManagementService {
      */
     UnitNumber countTakenUnits(String rateCodes, BrmContext context);
 
+    /**
+     * Writes the given message with the specified log level to the database by creating a
+     * FeeManagementSessionLog persistent instance.
+     *
+     * @param level   FeeManagementSessionLogLevel value
+     * @param message A log entry text
+     * @param context BRM context
+     */
+    void writeSessionLog(String level, String message, BrmContext context);
+
 }

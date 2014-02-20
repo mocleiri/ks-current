@@ -6,6 +6,7 @@ import com.sigmasys.kuali.ksa.util.EnumUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Fee management session log model.
@@ -22,6 +23,8 @@ public class FeeManagementSessionLog implements Identifiable {
     private FeeManagementSession session;
 
     private String text;
+
+    private Date creationDate;
 
     private FeeManagementSessionLogLevel logLevel;
 
@@ -64,6 +67,15 @@ public class FeeManagementSessionLog implements Identifiable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Column(name = "CREATION_DATE")
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Column(name = "LEVEL_CODE", length = 10)
