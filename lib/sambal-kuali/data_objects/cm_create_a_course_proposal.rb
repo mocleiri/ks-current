@@ -118,8 +118,9 @@ class CmCourseProposalObject < DataObject
     end
 
     on(CmCurriculum).create_a_course
-    on CmCourseInformation do |create|
-      create.course_information unless create.current_page('Course Information').exists?
+    on CmCourseInfo do |create|
+    on(CmCreateCourseStart).continue
+      create.courseinfo unless create.current_page('CourseInfo').exists?
 
       #BUG KSCM-1240
       #create.expand_course_listing_section
@@ -139,8 +140,8 @@ class CmCourseProposalObject < DataObject
   end  #create
 
   def create_course_proposal_required
-    on CmCourseInformation do |page|
-      page.course_information unless page.current_page('Course Information').exists?
+    on CmCourseInfo do |page|
+      page.courseinfo unless page.current_page('CourseInfo').exists?
 
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
 
@@ -156,8 +157,8 @@ class CmCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on CmCourseLogistics do |page|
-      page.course_logistics unless page.current_page('Course Logistics').exists?
+    on CmLogistics do |page|
+      page.logistics unless page.current_page('Logistics').exists?
 
       page.loading_wait
       page.add_outcome unless @outcome_type.nil?
@@ -199,8 +200,8 @@ class CmCourseProposalObject < DataObject
   end # required proposal
 
   def course_proposal_nonrequired
-    on CmCourseInformation do |page|
-      page.course_information unless page.current_page('Course Information').exists?
+    on CmCourseInfo do |page|
+      page.courseinfo unless page.current_page('CourseInfo').exists?
       page.loading_wait
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
 
@@ -229,8 +230,8 @@ class CmCourseProposalObject < DataObject
       page.save_and_continue
     end
 
-    on CmCourseLogistics do |page|
-      page.course_logistics unless page.current_page('Course Logistics').exists?
+    on CmLogistics do |page|
+      page.logistics unless page.current_page('Logistics').exists?
       fill_out page, :term_any, :term_fall, :term_spring, :term_summer,
                :audit, :pass_fail_transcript_grade,
                :duration_type, :duration_count,
@@ -297,7 +298,7 @@ class CmCourseProposalObject < DataObject
 
   #Used to fill out the outcome type by setting the @outcome_type adding multiple outcomes will require to pass in the outcome level for multiple fields
   def set_outcome_type(outcome_level='0')
-    on CmCourseLogistics do |page|
+    on CmLogistics do |page|
       page.credit_value(outcome_level).set @outcome_value if @outcome_type == 'Fixed'
       page.credit_value_max(outcome_level).set credit_value_max if @outcome_type == 'Range'
       page.credit_value_min(outcome_level).set credit_value_min if @outcome_type == 'Range'
@@ -320,7 +321,7 @@ class CmCourseProposalObject < DataObject
 
 #COURSE INFORMATION
   def add_joint_offering
-    on CmCourseInformation do |page|
+    on CmCourseInfo do |page|
       if @joint_offering_adding_data == 'auto_lookup'
         page.add_another_course
         page.joint_offering_number.fit @joint_offering_number
@@ -341,7 +342,7 @@ class CmCourseProposalObject < DataObject
   end
 
   def add_instructor
-    on CmCourseInformation do |page|
+    on CmCourseInfo do |page|
       if instructor_adding_method == 'advanced' or instructor_adding_method == 'adv_name' or instructor_adding_method == 'adv_username'
         page.instructor_advanced_search
         page.adv_name.fit @instructor_last_name if instructor_adding_method == 'adv_name' or instructor_adding_method == 'advanced'

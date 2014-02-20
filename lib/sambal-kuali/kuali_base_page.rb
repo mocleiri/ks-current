@@ -56,7 +56,7 @@ class BasePage < PageFactory
 
     def cm_elements
 
-      links('Course Information', 'Governance', 'Course Logistics',
+      links('CourseInfo', 'Governance', 'Logistics',
              'Learning Objectives', 'Course Requisites', 'Active Dates', 'Financials', 'Supporting Documents', 'Review Proposal')
       action(:authors_collaborators) { |b| b.link(text: 'Authors & Collaborators').click }
 

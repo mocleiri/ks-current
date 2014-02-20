@@ -21,16 +21,16 @@ Given /^I should see the Initial Page$/ do
 end
 
 Then /^I should see data in the proposal title on course information$/ do
-  on CmCourseInformation do |page|
-    page.course_information
+  on CmCourseInfo do |page|
+    page.courseinfo
     page.proposal_title.value.should == @course_proposal.proposal_title
     #TODO:: add in validation for assessment_scale
   end
 end
 
 And /^I should see data in the course title on course information$/ do
-  on CmCourseInformation do |page|
-    page.course_information
+  on CmCourseInfo do |page|
+    page.courseinfo
     page.course_title.value.should == @course_proposal.course_title
   end
 end
@@ -86,9 +86,9 @@ Given /^I complete the required fields on the course proposal$/ do
 end
 
 Then /^I should see data in required fields for the course proposal$/ do
-  on(Curriculum).course_information
+  on(Curriculum).courseinfo
 
-  on CmCourseInformation do |page|
+  on CmCourseInfo do |page|
     page.subject_code.value.should == @course_proposal.subject_code
     page.course_number.value.should == @course_proposal.course_number
 
@@ -105,8 +105,8 @@ Then /^I should see data in required fields for the course proposal$/ do
     page.curriculum_oversight_when_added(@course_proposal.curriculum_oversight).should be_present
   end
 
-  on CmCourseLogistics do |page|
-    page.course_logistics
+  on CmLogistics do |page|
+    page.logistics
 
     page.exam_standard.should be_checked unless @course_proposal.exam_standard.nil?
     page.exam_alternate.should be_checked  unless @course_proposal.exam_alternate.nil?
@@ -269,8 +269,8 @@ Given /^I complete all the fields on the course proposal$/ do
 end
 
 Then /^I should see data in all non required fields for the course proposal$/ do
-  on CmCourseInformation do |page|
-    page.course_information
+  on CmCourseInfo do |page|
+    page.courseinfo
     page.transcript_course_title.value.should == @course_proposal.transcript_course_title
     #page.subject_code.value.should == @course_proposal.subject_code
     #@course_proposal.verify_text_field(page, 'course_listing_subject', 'course_listing_number', 'joint_offering_number')
@@ -291,8 +291,8 @@ Then /^I should see data in all non required fields for the course proposal$/ do
     page.location_all.should be_checked if @course_proposal.location_all == 'set'
   end
 
-  on cmCourseLogistics do |page|
-    page.course_logistics
+  on CmLogistics do |page|
+    page.logistics
     page.term_any.should be_checked if @course_proposal.term_any == 'set'
     page.term_fall.should be_checked if @course_proposal.term_fall == 'set'
     page.term_spring.should be_checked if @course_proposal.term_spring == 'set'
