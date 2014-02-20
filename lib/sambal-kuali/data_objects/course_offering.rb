@@ -167,16 +167,17 @@ end
     if  split_name.length > 1
       for index in 0 ... split_name.size
         puts  "split_name[#{index}] = #{split_name[index].inspect}"
-        page.multiple_page_check("#{split_name[index]}")
+        page.check_all_results_data_for_text("#{split_name[index]}")
         unless page.results_list_previous_disabled.exists?
           page.results_table.wait_until_present
           page.results_list_previous_enabled.click
         end
       end
-    end
+    else
 
-    page.search_results_validation("#{split_name[index]}")
-      end
+    page.results_list_validation("#{split_name[index]}")
+    end
+    end
   end
 
 end

@@ -119,7 +119,7 @@ end
 
 Then /^course title or course description containing "(.*?)"text option should appear$/ do |text|
   on CourseSearch do |page|
-     page.multiple_page_check(text).should be_true
+     page.check_all_results_data_for_text(text).should be_true
      end
 end
 
@@ -132,11 +132,18 @@ end
 
   Then(/^course code or course title or course description containing any word of "(.*?)"text option should appear$/) do |expected|
     @course_offering = make CourseOffering
-    #********Working on to include should  in this stepdefinition*******
-    @course_offering.multi_text_search(expected)
+    @course_offering.multi_text_search(expected).should be_true
+     puts "returns true"
+end
+
+#------------------------------------------------------------------------------------------------------------------------------------
+
+When /^I search for a course with "(.*?)" level option$/ do |test|
 
 end
 
 
+Then /^courses containing "(.*?)" level option appears$/ do |test|
 
+ end
 

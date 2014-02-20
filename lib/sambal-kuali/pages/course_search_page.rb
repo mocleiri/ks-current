@@ -75,28 +75,13 @@ class CourseSearch < BasePage
       trimmed_array_list
     end
 
-
-
-
-    def multiple_page_check(search_text)
-
-        unless results_list_next_disabled.exists?
-          search_results_validation(search_text)
-          results_table.wait_until_present
-          results_list_next_enabled.click
-          results_table.wait_until_present
-        end
-        search_results_validation(search_text)
-    end
-
-    def search_results_validation(search_text)
-
-      sleep 2
+    def results_list_validation(search_text)
+      results_table.wait_until_present
       no_of_rows = results_table.rows.length-1
-     # puts no_of_rows.length
+      # puts no_of_rows.length
       puts search_text
       for index in 1..no_of_rows do
-        sleep 2
+
         results_table.wait_until_present
         course_code = results_table.rows[index].cells[COURSE_CODE].text
         course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
@@ -104,21 +89,26 @@ class CourseSearch < BasePage
         back_to_search_results.wait_until_present
         course_description_text = course_description(course_code).downcase
         back_to_search_results.click
-        sleep 2
-
-        if course_code.include? (search_text).downcase
-        true
-        elsif course_name.include? (search_text).downcase
-        true
-        elsif course_description_text.include? (search_text).downcase
-        true
-        else
-        false
+        results_table.wait_until_present
+        if ((course_code.downcase).include? (search_text).downcase)
+          puts "in course code"
+        else ((course_name.include? (search_text).downcase )||(course_description_text.include? (search_text).downcase))
+          puts "in CT or D"
         end
+      end
+    end
 
 
-     end
+    def check_all_results_data_for_text(search_text)
 
-     end
+      unless results_list_next_disabled.exists?
+        results_list_validation(search_text)
+        results_table.wait_until_present
+        results_list_next_enabled.click
+        results_table.wait_until_present
+      end
+      results_list_validation(search_text)
+    end
+
 end
 
