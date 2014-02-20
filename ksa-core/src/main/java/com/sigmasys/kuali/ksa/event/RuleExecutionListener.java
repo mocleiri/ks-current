@@ -7,12 +7,12 @@ package com.sigmasys.kuali.ksa.event;
  *
  * @author Michael Ivanov
  */
-public abstract class RuleExecutionListener implements EventListener<RuleExecutionEvent> {
+public abstract class RuleExecutionListener<T extends RuleExecutionEvent> implements EventListener<T> {
 
-    public abstract void onLoad(RuleExecutionEvent event);
+    public abstract void onLoad(T event);
 
     @Override
-    public void handleEvent(RuleExecutionEvent event) {
+    public void handleEvent(T event) {
         onLoad(event);
     }
 }

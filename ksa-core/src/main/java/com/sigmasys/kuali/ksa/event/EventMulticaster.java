@@ -46,22 +46,41 @@ public class EventMulticaster {
     }
 
     protected Class getEventClass(EventListener eventListener) throws ClassCastException {
+
         Class<?> listenerClass = eventListener.getClass();
+
+        Type genericSuperclass = listenerClass.getGenericSuperclass();
+
+        Class<?> eventClass = getEventClass(genericSuperclass);
+        if (eventClass != null) {
+            return eventClass;
+        }
+
         do {
             Type[] genericInterfaces = listenerClass.getGenericInterfaces();
             for (Type genericInterface : genericInterfaces) {
-                if (genericInterface instanceof ParameterizedType) {
-                    ParameterizedType interfaceType = (ParameterizedType) genericInterface;
-                    if (EventListener.class.equals(interfaceType.getRawType())) {
-                        Type[] genericTypes = interfaceType.getActualTypeArguments();
-                        if (genericTypes != null && genericTypes.length > 0) {
-                            return (Class<?>) genericTypes[0];
-                        }
-                    }
+                eventClass = getEventClass(genericInterface);
+                if (eventClass != null) {
+                    return eventClass;
                 }
             }
             listenerClass = listenerClass.getSuperclass();
         } while (listenerClass != null);
+
+        return null;
+    }
+
+    protected Class<?> getEventClass(Type genericType) {
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+            if (actualTypeArguments != null && actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class<?>) {
+                Class<?> eventClass = (Class<?>) actualTypeArguments[0];
+                if (EventObject.class.isAssignableFrom(eventClass)) {
+                    return eventClass;
+                }
+            }
+        }
         return null;
     }
 

@@ -9,7 +9,7 @@ import java.util.EventObject;
  *
  * @author Michael Ivanov
  */
-public class RuleExecutionEvent extends EventObject {
+public abstract class RuleExecutionEvent extends EventObject {
 
     public RuleExecutionEvent(Rule rule) {
         super(rule);

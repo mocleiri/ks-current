@@ -1,5 +1,6 @@
 package com.sigmasys.kuali.ksa.service.brm;
 
+import com.sigmasys.kuali.ksa.event.*;
 import com.sigmasys.kuali.ksa.model.rule.Rule;
 import com.sigmasys.kuali.ksa.util.BeanUtils;
 import com.sigmasys.kuali.ksa.util.CommonUtils;
@@ -43,15 +44,19 @@ public class LoggingAgendaEventListener extends DefaultAgendaEventListener {
 
     @Override
     public void beforeActivationFired(BeforeActivationFiredEvent event) {
-        super.beforeActivationFired(event);
         Rule rule = getRule(event);
         logger.info("The rule [" + rule.getName() + "][" + CommonUtils.nvl(rule.getDescription()) + "] is being fired...");
+        // Firing BeforeRuleExecutionEvent event
+        EventMulticaster.getInstance().fireEvent(new BeforeRuleExecutionEvent(rule));
+        super.beforeActivationFired(event);
     }
 
     @Override
     public void afterActivationFired(AfterActivationFiredEvent event) {
         super.afterActivationFired(event);
         Rule rule = getRule(event);
+        // Firing AfterRuleExecutionEvent event
+        EventMulticaster.getInstance().fireEvent(new AfterRuleExecutionEvent(rule));
         logger.info("The rule [" + rule.getName() + "][" + CommonUtils.nvl(rule.getDescription()) + "] has been fired");
     }
 

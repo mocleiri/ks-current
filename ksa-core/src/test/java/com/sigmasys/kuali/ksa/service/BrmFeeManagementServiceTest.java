@@ -166,9 +166,9 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void assesFees503() throws Exception {
+    public void assesFees7() throws Exception {
 
-        Long sessionId = 503L;
+        Long sessionId = 7L;
 
         FeeManagementSession session = fmService.getFeeManagementSession(sessionId);
 
