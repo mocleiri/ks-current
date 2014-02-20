@@ -20,11 +20,19 @@ class RegistrationCart < RegisterForCourseBase
   action(:edit_course_options) { |course_code,reg_group_code,b| b.edit_course_options_link(course_code,reg_group_code).click }
   element(:course_schedule) { |course_code,reg_group_code,index,b| b.div(id: "schedule_#{course_code}_#{reg_group_code}_#{index}").text }
 
+  # ADD NEW ITEM OPTIONS MODAL DIALOG
+  element(:new_item_credits_selection) { |b| b.select(id: "newItemCredits") }
+  element(:new_item_grading_selection) { |b| b.select(id: "newItemGrading") }
+  element(:new_item_save_button) { |b| b.button(id: "newItemSave") }
+  action(:save_new_item) { |b| b.new_item_save_button.click }
+  element(:new_item_cancel_link) { |b| b.link(id: "newItemCancel") }
+  action(:cancel_new_item) { |b| b.new_item_cancel_link.click }
+
   # EDIT COURSE OPTIONS DISCLOSURE
   element(:credits_selection) { |course_code,reg_group_code,b| b.select(id: "credits_#{course_code}_#{reg_group_code}") }
   element(:grading_selection) { |course_code,reg_group_code,b| b.select(id: "grading_#{course_code}_#{reg_group_code}") }
   element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "save_#{course_code}_#{reg_group_code}") }
-  #action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
+  action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
@@ -32,16 +40,23 @@ class RegistrationCart < RegisterForCourseBase
     remove_course_link(course_code,reg_group_code).click
   end
 
-  def select_credits(course_code, reg_group_code, credits)
+  def select_credits_on_new_item(credits)
+    new_item_credits_selection.select(credits)
+  end
+
+  def select_grading_on_new_item(grading_option)
+    new_item_grading_selection.select(grading_option)
+  end
+
+  def select_credits_on_edit(course_code, reg_group_code, credits)
     credits_selection(course_code, reg_group_code).select(credits)
   end
 
-  def select_grading(course_code, reg_group_code, grading_option)
+  def select_grading_on_edit(course_code, reg_group_code, grading_option)
     grading_selection(course_code, reg_group_code).select(grading_option)
   end
 
-  def save_edits(course_code, reg_group_code)
-    sleep 1
-    edit_save_button(course_code,reg_group_code).click
-  end
+  #def save_edits(course_code, reg_group_code)
+  #  edit_save_button(course_code,reg_group_code).click
+  #end
 end

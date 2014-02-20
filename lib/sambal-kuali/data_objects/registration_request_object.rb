@@ -54,9 +54,9 @@ class RegistrationRequest
       page.course_code.set @course_code
       page.reg_group_code.set @reg_group_code
       page.add_to_cart
-      if @modify_course_options
+      #if @modify_course_options
         edit_course_options
-      end
+      #end
       #return new RegistrationRequest
     end
   end
@@ -116,9 +116,9 @@ class RegistrationRequest
       return nil
     end
     on RegistrationCart do |page|
-      page.edit_course_options @course_code,@reg_group_code
-      page.select_credits @course_code,@reg_group_code,@course_options.credit_option
-      page.select_grading @course_code,@reg_group_code,@course_options.grading_option
+      #page.edit_course_options @course_code,@reg_group_code
+      page.select_credits_on_edit @course_code,@reg_group_code,@course_options.credit_option
+      page.select_grading_on_edit @course_code,@reg_group_code,@course_options.grading_option
       page.save_edits @course_code,@reg_group_code
     end
   end
