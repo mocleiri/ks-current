@@ -119,10 +119,10 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Penalty drop', 5010, 'FM Signup 1_10', 3, 10, null,
 '(signup operation is "DROP" and signup date is on or after atp milestone "kuali.atp.milestone.firstDayOfClass" and signup date is on or before atp milestone "kuali.atp.milestone.lastDayForPenaltyDrop")',
 'mark preceding offerings as not taken
-mark signup as not taken
-set signup key "late.penalty.drop" to "yes"
-set session key "late.penalty.drop" to "yes"
-mark signup rates "", "" as complete
+ mark signup as not taken
+ set signup key "late.penalty.drop" to "yes"
+ set session key "late.penalty.drop" to "yes"
+ mark signup rates "", "" as complete
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Late drop - ignored', 5011, 'FM Signup 1_11', 3, 10, null,
@@ -406,19 +406,19 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7006, 'FM Signup 2_6', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.resident.ft")',
-'add signup rate "cp.undergrad.resident.ft.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.resident.ft.frostburg.discount", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7007, 'FM Signup 2_7', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.resident.pt")',
-'add signup rate "cp.undergrad.resident.pt.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.resident.pt.frostburg.discount", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7008, 'FM Signup 2_8', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.nonresident.ft")',
-'add signup rate "cp.undergrad.nonresident.ft.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.nonresident.ft.frostburg.discount", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7009, 'FM Signup 2_9', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.nonresident.pt")',
-'add signup rate "cp.undergrad.nonresident.pt.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.nonresident.pt.frostburg.discount", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student already has mandatory fees so incurred tech fees removed', 7010, 'FM Signup 2_10', 3, 10, null,
 '(signup has rates "tech.fee.[..]" and signup has rates "cp.(resident|nonresident|graduate).[f|p]t")',
