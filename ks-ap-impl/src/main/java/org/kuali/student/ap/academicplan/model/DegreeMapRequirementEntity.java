@@ -152,7 +152,6 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         dto.setNotes(getNotes());
         dto.setRefObjectTypeKey(getRefObjectTypeKey());
         dto.setRefObjectId(getRefObjectId());
-        dto.setRefObjectId(getRefObjectId());
         dto.setRequiredTermId(getRequiredTermId());
         dto.setSuggestedTermId(getSuggestedTermId());
         dto.setSeqKey(getSeqKey());
