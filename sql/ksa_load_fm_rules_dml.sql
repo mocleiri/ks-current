@@ -247,9 +247,13 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 '(number of taken units lt 9 with rates "", types "", signup operations "" and session key "study.level" is "doctoral")',
 'set session key "study.load" to "pt"')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('cybersecurity rate applied', 6008, 'FM Session 1_8', 3, 10, null,
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Cybersecurity rate applied', 6008, 'FM Session 1_8', 3, 10, null,
 '(session key "major.code" is "z077" and signup has rates "cybersecurity.leadership")',
 'remove signup rates "regular"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Remove mandatory fees for all Collaborative Engineering Student', 6009, 'FM Session 1_9', 3, 10, null,
+'(session key "major.code" is "(0909f|0910f|0909u|0909s)")',
+'remove signup rates "cp.mandatory.fee.flag"')!
 
 
 -- FM Session 2 rule set --
@@ -700,6 +704,7 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6005)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6006)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6007)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6008)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6009)!
 
 -- FM Session 2 rule set --
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 6050)!
