@@ -13,9 +13,9 @@ import org.kuali.student.r2.common.infc.HasMeta;
  */
 public interface DegreeMap extends HasId, HasMeta {
 	
-// what does getProgram() return?
-//	public Program getProgram();
-// using String and ProgramId in the meantime.
+//TODO
+// This needs to extend LearningPlan instead
+// and it looks like all that it will have is getRequirements?
 	
 	/**
      * @name ProgramId

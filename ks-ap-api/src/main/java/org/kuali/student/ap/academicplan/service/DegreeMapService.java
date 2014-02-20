@@ -7,6 +7,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -46,10 +47,13 @@ public interface DegreeMapService {
 
     public StatusInfo deleteRequirement(@WebParam(name = "requirementId") String requirementId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
+    public List<DegreeMapInfo> search(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException,
+    	MissingParameterException, OperationFailedException, PermissionDeniedException;
+
     
-    // NOT SURE WHAT TO DO ABOUT THE SEARCH WITH QueryByCritera.
-   
-//    public DegreeMapInfo createDegreeMap(@WebParam(name = "degreeMap") DegreeMapInfo degreeMap,
+    //  public List<DegreeMapRequirementInfo> search(QueryByCriteria criteria)
+    
+    //    public DegreeMapInfo createDegreeMap(@WebParam(name = "degreeMap") DegreeMapInfo degreeMap,
 //    		@WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 //    
 //    public DegreeMapInfo updateDegreeMap(@WebParam(name = "degreeMapId") String degreeMapId, @WebParam(name = "DegreeMap") DegreeMapInfo DegreeMap, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
