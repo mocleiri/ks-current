@@ -2,13 +2,9 @@ package org.kuali.student.ap.academicplan.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
-import org.kuali.student.ap.academicplan.infc.DegreeMapRequirement;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
 
 @Entity
@@ -39,9 +35,9 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 	@Column(name = "PARM3")
 	private String parm3;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "OBJ_ID")
-	private DegreeMapRequirement degreeMapRequirement;
+//	@OneToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "OBJ_ID")
+//	private DegreeMapRequirement degreeMapRequirement;
     
 
 	//TODO
@@ -113,13 +109,13 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 		this.parm3 = parm3;
 	}
 
-	public DegreeMapRequirement getDegreeMapRequirement() {
-		return degreeMapRequirement;
-	}
-
-	public void setDegreeMapRequirement(DegreeMapRequirement degreeMapRequirement) {
-		this.degreeMapRequirement = degreeMapRequirement;
-	}
+//	public DegreeMapRequirement getDegreeMapRequirement() {
+//		return degreeMapRequirement;
+//	}
+//
+//	public void setDegreeMapRequirement(DegreeMapRequirement degreeMapRequirement) {
+//		this.degreeMapRequirement = degreeMapRequirement;
+//	}
 
 	@Override
     public int compareTo(PlaceholderEntity other) {

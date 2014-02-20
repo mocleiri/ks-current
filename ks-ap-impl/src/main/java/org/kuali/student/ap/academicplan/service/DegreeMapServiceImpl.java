@@ -7,9 +7,12 @@ import java.util.List;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.ap.academicplan.dao.DegreeMapDao;
 import org.kuali.student.ap.academicplan.dao.DegreeMapRequirementDao;
+import org.kuali.student.ap.academicplan.dao.PlaceholderDao;
 import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
+import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
 import org.kuali.student.ap.academicplan.model.DegreeMapRequirementEntity;
+import org.kuali.student.ap.academicplan.model.PlaceholderEntity;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -30,6 +33,7 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 
 	private DegreeMapDao degreeMapDao; // OR MAYBE THIS ONE I DON'T HAVE IN HERE BECUASE WE'LL USE A LEARNING PLAN DAO????
 	private DegreeMapRequirementDao degreeMapRequirementDao;
+	private PlaceholderDao placeholderDao;
 
 
 	public DegreeMapDao getDegreeMapDao() {
@@ -47,6 +51,15 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	public void setDegreeMapRequirementDao(
 			DegreeMapRequirementDao degreeMapRequirementDao) {
 		this.degreeMapRequirementDao = degreeMapRequirementDao;
+	}
+	
+
+	public PlaceholderDao getPlaceholderDao() {
+		return placeholderDao;
+	}
+
+	public void setPlaceholderDao(PlaceholderDao placeholderDao) {
+		this.placeholderDao = placeholderDao;
 	}
 
 	@Override
@@ -240,6 +253,94 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 		degreeMapRequirementDao.remove(dme);
 		return status;
 
+	}
+	
+
+	// THESE WILL NEED TO BE MOVED TO ACADEMIC PLAN SERVICE
+	
+	@Override
+	public PlaceholderInfo getPlaceholder(String placeholderId,
+			ContextInfo context) throws DoesNotExistException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException {
+		
+		PlaceholderEntity placeholder = placeholderDao.find(placeholderId);
+		if (null == placeholder) {
+			throw new DoesNotExistException(String.format("Placeholder with id Id [%s] does not exist", placeholderId));
+		}
+		
+		return placeholder.toDto();
+	}
+	
+
+	@Override
+	public PlaceholderInfo createPlaceholder(PlaceholderInfo placeholder,
+			ContextInfo context) throws AlreadyExistsException,
+			DataValidationErrorException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException {
+
+		PlaceholderEntity pe = new PlaceholderEntity();
+		String placeholderId = UUIDHelper.genStringUUID();	
+		
+		pe.setId(placeholderId);
+
+		pe.setTypeKey(placeholder.getTypeKey());
+		pe.setParm1(placeholder.getParm1());
+		pe.setParm2(placeholder.getParm2());
+		pe.setParm3(placeholder.getParm3());
+	
+		placeholderDao.persist(pe);
+		return placeholderDao.find(placeholderId).toDto();
+		
+	}
+	
+
+	
+	@Override
+	public PlaceholderInfo updatePlaceholder(String placeholderId,
+			PlaceholderInfo placeholder, ContextInfo context)
+			throws DataValidationErrorException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException, DoesNotExistException {
+
+		PlaceholderEntity placeholderEntity = placeholderDao.find(placeholderId);
+		if (placeholderEntity == null ){
+			throw new DoesNotExistException(placeholderId);
+		}
+		
+		if (placeholder == null){
+			throw new MissingParameterException("placeholder is null.");
+		}
+		
+		placeholderEntity.setTypeKey(placeholder.getTypeKey());
+		placeholderEntity.setParm1(placeholder.getParm1());
+		placeholderEntity.setParm2(placeholder.getParm2());
+		placeholderEntity.setParm3(placeholder.getParm3());				
+		
+		placeholderDao.update(placeholderEntity);
+		return placeholderDao.find(placeholderId).toDto();
+		
+	}
+	
+	
+
+	@Override
+	public StatusInfo deletePlaceholder(String placeholderId,
+			ContextInfo context) throws DoesNotExistException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
+		
+		StatusInfo status = new StatusInfo();
+		status.setSuccess(true);
+		
+		PlaceholderEntity pe = placeholderDao.find(placeholderId);
+		if (pe == null ) {
+			throw new DoesNotExistException(String.format("Placeholder with id Id [%s] does not exist", placeholderId));
+		}
+
+		placeholderDao.remove(pe);
+		return status;
 	}
 
 
