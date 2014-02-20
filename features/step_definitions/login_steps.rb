@@ -19,5 +19,5 @@ Given /^I am logged in as Fred$/ do
 end
 
 Given /^I am logged in as Curriculum Specialist$/ do
-  log_in '', ''
+  log_in 'alice', 'alice'
 end

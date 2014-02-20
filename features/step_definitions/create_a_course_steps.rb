@@ -14,10 +14,20 @@ Given /^I should see a blank course proposal$/ do
   end
 
 Given /^I should see the Initial Page$/ do
-  on CmInitialPageAdmin do |page|
+  on CmCreateCourseStart do |page|
     page.blank_proposal
     page.curriculum_review_process.checkbox.click
   end
+end
+
+Given /^I cancel create a course$/ do
+  On CmCreateCourseStart do |page|
+    page.cancel.click
+  end
+end
+
+Given /^I should see CM Home$/ do
+  page.ksfunctionalhome
 end
 
 Then /^I should see data in the proposal title on course information$/ do
