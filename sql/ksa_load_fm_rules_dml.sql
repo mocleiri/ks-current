@@ -406,19 +406,31 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7006, 'FM Signup 2_6', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.resident.ft")',
-'add signup rate "collaborative.engineering.resident.ft.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.resident.ft.frostburg.discount", "default"
+replace signup rates "cp.undergrad.resident.ft", "default" with "colab.undergrad.resident.ft", "default"
+
+')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7007, 'FM Signup 2_7', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.resident.pt")',
-'add signup rate "collaborative.engineering.resident.pt.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.resident.pt.frostburg.discount", "default"
+replace signup rates "cp.undergrad.resident.pt", "default" with "colab.undergrad.resident.pt", "default"
+
+')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7008, 'FM Signup 2_8', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.nonresident.ft")',
-'add signup rate "collaborative.engineering.nonresident.ft.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.nonresident.ft.frostburg.discount", "default"
+replace signup rates "cp.undergrad.nonresident.ft", "default" with "colab.undergrad.nonresident.ft", "default"
+
+')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Frostburg student receives discount major 0909F', 7009, 'FM Signup 2_9', 3, 10, null,
 '(session key "major.code" is "0909f" and signup has rates "cp.undergrad.nonresident.pt")',
-'add signup rate "collaborative.engineering.nonresident.pt.frostburg.discount", "default"')!
+'add signup rate "collaborative.engineering.nonresident.pt.frostburg.discount", "default"
+replace signup rates "cp.undergrad.nonresident.pt", "default" with "colab.undergrad.nonresident.pt", "default"
+
+')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student already has mandatory fees so incurred tech fees removed', 7010, 'FM Signup 2_10', 3, 10, null,
 '(signup has rates "tech.fee.[..]" and signup has rates "cp.(resident|nonresident|graduate).[f|p]t")',
