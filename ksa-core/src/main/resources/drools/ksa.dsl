@@ -183,7 +183,7 @@
 [then][]discount rate "{rateCode1}", "{rateSubCode1}" by ${amount} using "{rateCode2}", "{rateSubCode2}" = context.getFmService().discountManifestRate("{rateCode1}","{rateSubCode1}","{rateCode2}","{rateSubCode2}",new BigDecimal({amount}),false,context);
 [then][]discount rate "{rateCode1}", "{rateSubCode1}" by ${amount} = context.getFmService().discountManifestRate("{rateCode1}","{rateSubCode1}","{rateCode1}","{rateSubCode1}",new BigDecimal({amount}),false,context);
 [then][]discount rate "{rateCode1}", "{rateSubCode1}" by {percentage}% using "{rateCode2}", "{rateSubCode2}" = context.getFmService().discountManifestRate("{rateCode1}","{rateSubCode1}","{rateCode2}","{rateSubCode2}",new BigDecimal({amount}),true,context);
-[then][]discount rate "{rateCode1}", "{rateSubCode1}" by {percentage}% = context.getFmService().discountManifestRate("{rateCode1}","{rateSubCode1}","{rateCode1}","{rateSubCode1}",new BigDecimal({amount}),true,context);
+[then][]discount rate "{rateCode1}", "{rateSubCode1}" by {percentage}% = context.getFmService().discountManifestRate("{rateCode1}","{rateSubCode1}","{rateCode1}","{rateSubCode1}",new BigDecimal({percentage}),true,context);
 
 
 
