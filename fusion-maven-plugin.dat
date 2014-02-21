@@ -1,0 +1,10 @@
+# module = ks-api branch Path = enrollment/ks-api/branches/KSAP revision = 41042
+ks-api::enrollment_ks-api_branches_KSAP::UNKNOWN
+# module = ks-core branch Path = enrollment/ks-core/branches/KSAP revision = 41042
+ks-core::enrollment_ks-core_branches_KSAP::UNKNOWN
+# module = ks-lum branch Path = enrollment/ks-lum/branches/KSAP revision = 41042
+ks-lum::enrollment_ks-lum_branches_KSAP::UNKNOWN
+# module = ks-enroll branch Path = enrollment/ks-enroll/branches/KSAP revision = 41042
+ks-enroll::enrollment_ks-enroll_branches_KSAP::UNKNOWN
+# module = ks-deployments branch Path = enrollment/ks-deployments/branches/KSAP revision = 41042
+ks-deployments::enrollment_ks-deployments_branches_KSAP::UNKNOWN
