@@ -1,6 +1,5 @@
 package com.sigmasys.kuali.ksa.service.brm;
 
-import com.sigmasys.kuali.ksa.exception.InvalidRulesException;
 import com.sigmasys.kuali.ksa.model.Pair;
 import com.sigmasys.kuali.ksa.model.SortOrder;
 import com.sigmasys.kuali.ksa.model.rule.Rule;
@@ -141,6 +140,7 @@ public class BrmPersistenceServiceImpl extends GenericPersistenceService impleme
     public RuleSet addRulesToRuleSet(Long ruleSetId, Rule... rules) {
 
         RuleSet ruleSet = getRuleSet(ruleSetId);
+
         if (ruleSet == null) {
             String errMsg = "Rule Set with ID = " + ruleSetId + " does not exist";
             logger.error(errMsg);
@@ -154,12 +154,14 @@ public class BrmPersistenceServiceImpl extends GenericPersistenceService impleme
         }
 
         for (Rule rule : rules) {
+
             if (!ruleTypeId.equals(rule.getType().getId())) {
                 String errMsg = "Rule Set's type '" + ruleSet.getType().getName() +
                         "' does not match Rule's type '" + rule.getType().getName() + "'";
                 logger.error(errMsg);
-                throw new InvalidRulesException(errMsg);
+                throw new IllegalStateException(errMsg);
             }
+
             persistRule(rule);
             ruleSet.getRules().add(rule);
         }
@@ -238,21 +240,30 @@ public class BrmPersistenceServiceImpl extends GenericPersistenceService impleme
      */
     @Override
     public List<String> getRuleNames(String ruleSetName) {
+
         RuleSet ruleSet = getRuleSet("name", ruleSetName);
+
         if (ruleSet == null) {
             String errMsg = "Cannot find Rule Set with name '" + ruleSetName + "'";
             logger.error(errMsg);
             throw new IllegalArgumentException(ruleSetName);
         }
+
         Set<Rule> rules = ruleSet.getRules();
+
         if (rules != null) {
+
             List<String> ruleNames = new ArrayList<String>(rules.size());
+
             for (Rule rule : rules) {
                 ruleNames.add(rule.getName());
             }
+
             Collections.sort(ruleNames);
+
             return ruleNames;
         }
+
         return Collections.emptyList();
     }
 
