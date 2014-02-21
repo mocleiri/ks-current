@@ -75,3 +75,4 @@ TYP_ID,NM,NMSPC_CD,SRVC_NM,ACTV,VER_NBR
 "KS-KRMS-TYP-55673","kuali.krms.action.type.requested.delivery.logistic","KS-SYS","actionTypeService","Y","0"
 "KS-KRMS-TYP-55674","kuali.krms.termresolver.type.final.exam","KS-SYS","termresolverTypeService","Y","0"
 "KS-KRMS-TYP-55747","kuali.krms.termresolver.type.course","KS-SYS","termresolverTypeService","Y","0"
+"KS-KRMS-TYP-55748","kuali.krms.proposition.type.exam.freeform.text","KS-SYS","simplePropositionTypeService","Y","0"

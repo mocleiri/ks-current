@@ -314,3 +314,8 @@ NL_TMPL_ID,LANG_CD,NL_USAGE_ID,TYP_ID,TMPL,VER_NBR
 "KS-KRMS-NL-TMPL-55698","en","KS-KRMS-NL-USAGE-1000","KS-KRMS-TYP-55672","$courseCluSet.getCluSetAsCode()","0"
 "KS-KRMS-NL-TMPL-55699","en","KS-KRMS-NL-USAGE-1004","KS-KRMS-TYP-55672","If course is part of <Courses>","0"
 "KS-KRMS-NL-TMPL-55700","en","KS-KRMS-NL-USAGE-1005","KS-KRMS-TYP-55672","#if($courseCluSet.getCluSet().getIsReusable())$courseCluSet.getCluSet().getName()#{else}$courseCluSet.getCluSetAsCode()#end","0"
+"KS-KRMS-NL-TMPL-55749","en","KS-KRMS-NL-USAGE-1005","KS-KRMS-TYP-55748","$freeText","0"
+"KS-KRMS-NL-TMPL-55750","en","KS-KRMS-NL-USAGE-1002","KS-KRMS-TYP-55748","Free Form Text","0"
+"KS-KRMS-NL-TMPL-55751","en","KS-KRMS-NL-USAGE-1004","KS-KRMS-TYP-55748","Free Form Text","0"
+"KS-KRMS-NL-TMPL-55752","en","KS-KRMS-NL-USAGE-1003","KS-KRMS-TYP-55748","$freeText","0"
+"KS-KRMS-NL-TMPL-55753","en","KS-KRMS-NL-USAGE-1000","KS-KRMS-TYP-55748","$freeText","0"
