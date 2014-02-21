@@ -138,12 +138,15 @@ end
 
 #------------------------------------------------------------------------------------------------------------------------------------
 
-When /^I search for a course with "(.*?)" level option$/ do |test|
-
+When /^I search for a course with "(.*?)" level option$/ do |level|
+  @course_offering = make CourseOffering
+  @course_offering.course_search(level)
 end
 
 
-Then /^courses containing "(.*?)" level option appears$/ do |test|
-
+Then /^courses containing "(.*?)" level option appears$/ do |text|
+  on CourseSearch do |page|
+    page.check_all_results_data_for_text(text).should be_true
+  end
  end
 

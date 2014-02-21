@@ -68,12 +68,9 @@ Feature: BT.Course Search
             |engl  lit                     |
             #Multi page search with 3 words
             |Inorganic ecology beekeeping |
+
   # KSAP_ 819, US- 618
   @draft
-  Scenario Outline:6.1- Successfully list any course with the search level
-        When I search for a course with "<text>" level option
-        Then courses containing "<text>" level option appears
-        Examples:
-          |text|
-          |2XX |
-          |200 |
+  Scenario:6.1- Successfully list any course with the search level
+        When I search for a course with "2xx" level option
+        Then courses containing "/2\d\d" level option appears

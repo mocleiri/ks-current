@@ -13,6 +13,7 @@ class CourseSearch < BasePage
     #element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
     element(:results_table) { |b| b.table(id: "course_search_results") }
     ################
+    element(:result_pagination) {|b| b.div(id:"course_search_results_paginate")}
     element(:results_list_previous_enabled) { |b| b.a(id: "course_search_results_previous")}
     element(:results_list_previous_click) { |b| b.results_list_previous_enabled.click }
     element(:results_list_previous_disabled) { |b| b.a(class:"previous fg-button ui-button ui-state-default ui-state-disabled")}
@@ -76,13 +77,46 @@ class CourseSearch < BasePage
     end
 
     def results_list_validation(search_text)
-      results_table.wait_until_present
+       sleep(1)
+       no_of_rows = results_table.rows.length-1
+       puts search_text
+      for index in 1..no_of_rows do
+        sleep(2)
+        course_code = results_table.rows[index].cells[COURSE_CODE].text
+        course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
+        course_code_result_link(course_code).click
+        back_to_search_results.wait_until_present
+        course_description_text = course_description(course_code).downcase
+        back_to_search_results.click
+        sleep(1)
+        if ((course_code.downcase).include? (search_text).downcase)
+        else ((course_name.include? (search_text).downcase )||(course_description_text.include? (search_text).downcase))
+        end
+      end
+    end
+
+
+    def check_all_results_data_for_text(search_text)
+        unless results_list_next_disabled.exists?
+        results_list_validation(search_text)
+        results_list_next_enabled.wait_until_present
+        results_list_next_click
+        results_table.wait_until_present
+        end
+        results_list_validation(search_text)
+    end
+
+
+#************************** Course Level Search--KSAP- 832  and US 618*********************
+
+    def results_list_level_validation(text)
+      result_pagination.wait_until_present (5)
       no_of_rows = results_table.rows.length-1
       # puts no_of_rows.length
       puts search_text
       for index in 1..no_of_rows do
 
-        results_table.wait_until_present
+        result_pagination.wait_until_present (5)
         course_code = results_table.rows[index].cells[COURSE_CODE].text
         course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
         course_code_result_link(course_code).click
@@ -90,25 +124,12 @@ class CourseSearch < BasePage
         course_description_text = course_description(course_code).downcase
         back_to_search_results.click
         results_table.wait_until_present
-        if ((course_code.downcase).include? (search_text).downcase)
-          puts "in course code"
-        else ((course_name.include? (search_text).downcase )||(course_description_text.include? (search_text).downcase))
+          if text.match(course_code)
+           puts "in course code"
+          else (text.match(course_name)) ||(text.match(course_description) )
           puts "in CT or D"
-        end
+          end
       end
     end
 
-
-    def check_all_results_data_for_text(search_text)
-
-      unless results_list_next_disabled.exists?
-        results_list_validation(search_text)
-        results_table.wait_until_present
-        results_list_next_enabled.click
-        results_table.wait_until_present
-      end
-      results_list_validation(search_text)
-    end
-
-end
-
+   end
