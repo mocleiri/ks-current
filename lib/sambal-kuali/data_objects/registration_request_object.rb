@@ -28,7 +28,7 @@ class RegistrationRequest
   #    :term_descr=>"Spring 2012",
   #    :course_code=>"CHEM231",
   #    :reg_group_code=>"1001",
-  #    :modify_course_options=> false
+  #    :modify_course_options=> false   This refers only to modifying during add to cart operation
   #  }
   # initialize is generally called using TestFactory Foundry .make or .create methods
   
@@ -51,11 +51,11 @@ class RegistrationRequest
   def create
     visit RegistrationCart do |page|
       page.select_term @term_descr
-      page.course_code.set @course_code
-      page.reg_group_code.set @reg_group_code
+      page.course_code_input.set @course_code
+      page.reg_group_code_input.set @reg_group_code
       page.add_to_cart
       #if @modify_course_options
-        edit_course_options
+        edit_course_options_on_new_item
       #end
       #return new RegistrationRequest
     end
@@ -111,20 +111,34 @@ class RegistrationRequest
     end
   end
 
-  def edit_course_options
+  def edit_course_options_on_new_item
     if @course_options.nil?
       return nil
     end
     on RegistrationCart do |page|
       #page.edit_course_options @course_code,@reg_group_code
-      page.select_credits_on_edit @course_code,@reg_group_code,@course_options.credit_option
-      page.select_grading_on_edit @course_code,@reg_group_code,@course_options.grading_option
+      page.select_credits_on_new_item @course_options.credit_option
+      page.select_grading_on_new_item @course_options.grading_option
+      page.save_new_item
+    end
+  end
+  private :edit_course_options_on_new_item
+
+  def edit_course_options_in_cart
+    if @course_options.nil?
+      return nil
+    end
+    on RegistrationCart do |page|
+      page.edit_course_options @course_code,@reg_group_code
+      page.select_credits_in_cart @course_code,@reg_group_code,@course_options.credit_option
+      page.select_grading_in_cart @course_code,@reg_group_code,@course_options.grading_option
       page.save_edits @course_code,@reg_group_code
     end
   end
-  private :edit_course_options
+  private :edit_course_options_in_cart
 
 end
+
   class CourseOptions
 
     include Foundry

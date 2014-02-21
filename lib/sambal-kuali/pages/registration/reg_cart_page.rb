@@ -2,19 +2,23 @@ class RegistrationCart < RegisterForCourseBase
 
   page_url "#{$test_site}/registration/index.jsp#/myCart"
 
-  expected_element :item_count
+  expected_element :credit_count_title
 
-  element(:item_count) { |b| b.span(id: "course_count") }
+  #element(:item_count) { |b| b.span(id: "course_count") }
+  element(:credit_count_title) { |b| b.span(id: "credit_count_title") }
   element(:register_button) { |b| b.button(id: "register") }
   action(:register) { |b| b.register_button.click }
 
-  element(:course_code) { |b| b.text_field(id: "courseCode") }
-  element(:reg_group_code) { |b| b.text_field(id: "regCode") }
+  element(:course_code_input) { |b| b.text_field(id: "courseCode") }
+  element(:reg_group_code_input) { |b| b.text_field(id: "regCode") }
   element(:submit_button) { |b| b.button(id: "submit") }
   action(:add_to_cart) { |b| b.submit_button.click }
 
+  element(:credit_count_header) { |b| b.span(id: "credit_count_register_for_header") }
+
   element(:remove_course_link) { |course_code,reg_group_code,b| b.link(id: "remove_#{course_code}_#{reg_group_code}") }
-  element(:course_title) { |course_code,reg_group_code,b| b.p(id: "title_#{course_code}_#{reg_group_code}").text }
+  element(:course_code) { |course_code,reg_group_code,b| b.p(span: "course_code_#{course_code}_#{reg_group_code}").text }
+  element(:course_title) { |course_code,reg_group_code,b| b.div(id: "title_#{course_code}_#{reg_group_code}").text }
   element(:course_info) { |course_code,reg_group_code,b| b.div(id: "course_info_#{course_code}_#{reg_group_code}").text }
   element(:edit_course_options_link) { |course_code,reg_group_code,b| b.link(id: "edit_#{course_code}_#{reg_group_code}") }
   action(:edit_course_options) { |course_code,reg_group_code,b| b.edit_course_options_link(course_code,reg_group_code).click }
@@ -48,11 +52,11 @@ class RegistrationCart < RegisterForCourseBase
     new_item_grading_selection.select(grading_option)
   end
 
-  def select_credits_on_edit(course_code, reg_group_code, credits)
+  def select_credits_in_cart(course_code, reg_group_code, credits)
     credits_selection(course_code, reg_group_code).select(credits)
   end
 
-  def select_grading_on_edit(course_code, reg_group_code, grading_option)
+  def select_grading_in_cart(course_code, reg_group_code, grading_option)
     grading_selection(course_code, reg_group_code).select(grading_option)
   end
 

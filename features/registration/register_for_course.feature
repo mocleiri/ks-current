@@ -27,5 +27,6 @@ Feature: REG.Register for course
 
   #CR 1.5 (KSENROLL-11810)
   Scenario: I want to change the course parameters for my selections so I can register with preferred options
-    When I edit a course in my registration cart
+    When I add a course offering to my registration cart
+    And I edit the course in my registration cart
     Then the modified course is present in my cart

@@ -20,8 +20,11 @@ When /^I drop the course from my registration cart$/ do
   @reg_request.remove_from_cart
 end
 
-When /^I edit a course in my registration cart$/ do
-  #pending
+And /^I edit the course in my registration cart$/ do
+  #@course_options = :credit_option => "4.0", :grading_option => "Pass/Fail"
+  @reg_request.course_options.credit_option = "4.0"
+  @reg_request.course_options.grading_option = "Pass/Fail"
+  @reg_request.edit_course_options_in_cart
 end
 
 Then /^the course is (present|not present) in my cart$/  do |presence|
@@ -29,7 +32,11 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
     if presence == "present"
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
-      page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should be_nil
+      begin
+        ! page.course_title(@reg_request.course_code, @reg_request.reg_group_code).present?
+      rescue Watir::Exception::UnknownObjectException
+        # the course is not there: good
+      end
     end
   end
 end
@@ -44,6 +51,10 @@ end
 
 Then /^the modified course is present in my cart$/  do
   #pending
+end
+
+And /^A successfully removed message appears$/ do
+  #pending ?? for CR 1.4
 end
 
 And /^I? ?can view the details of my selections?$/ do
