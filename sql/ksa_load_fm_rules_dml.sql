@@ -485,7 +485,6 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 '(session key "academic.service.remove" is "y" and signup has rates "academic.service.fee")',
 'remove signup rates "academic.service.fee"')!
 
-
 -- FM Signup 4 rule set --
 
 Insert into KSSA_RULE_SET (ID, NAME, RULE_TYPE_ID_FK, HEADER) values (180, 'FM Signup 4', 3,
@@ -614,6 +613,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'charge rates "", "" in amount of 80% with types "tuition.credits.fixed", catalogs "", signup operations "WITHDRAW"
  charge rates "mba.cohort..*", "" in amount of 80% with types "", catalogs "", signup operations "WITHDRAW"
 ')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('', 8007, 'FM Session 3_7', 3, 20, null,
+'(signup has rates "colab.undergrad.resident.ft" and session key "major.code" is "0909f")',
+'charge rates of taken signups "colab.undergrad.resident.ft", "" with types "", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"')!
+
 
 -- FM Session 4 Java-based rule set --
 
@@ -774,6 +778,7 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (190, 8003)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (190, 8004)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (190, 8005)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (190, 8006)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (190, 8007)!
 
 -- FM Session 4 rule set --
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (200, 9001)!
