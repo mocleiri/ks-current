@@ -11,6 +11,7 @@ import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
+import org.kuali.student.ap.academicplan.dto.PlaceholderInstanceInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
@@ -54,6 +55,8 @@ public interface DegreeMapService {
     
     // THESE BELONG IN ACADEMIC PLAN SERVICE BUT PUTTING THEM HERE FOR NOW
     
+// PLACEHOLDER
+    
     public PlaceholderInfo getPlaceholder(@WebParam(name = "placeholderId") String placeholderId,  @WebParam(name = "context") ContextInfo context) 
     		throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
     
@@ -66,13 +69,22 @@ public interface DegreeMapService {
     public StatusInfo deletePlaceholder(@WebParam(name = "placeholderId") String placeholderId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     
-    //TODO
-    // MISSING THE ONES FOR PLACEHOLDER INSTANCE
+// PLACEHOLDER INSTANCE
+    
+    public PlaceholderInstanceInfo getPlaceholderInstance(@WebParam(name = "placeholderInstanceId") String placeholderInstanceId,  @WebParam(name = "context") ContextInfo context) 
+    		throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+    
+    public PlaceholderInstanceInfo createPlaceholderInstance(@WebParam(name = "placeholderInstanceInfo") PlaceholderInstanceInfo placeholderInstanceId,
+    		@WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+
+    public PlaceholderInstanceInfo updatePlaceholderInstance(@WebParam(name = "placeholderInstanceId") String placeholderInstanceId, @WebParam(name = "placeholderInstanceId") PlaceholderInstanceInfo PlaceholderInstance, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+
+
+    public StatusInfo deletePlaceholderInstance(@WebParam(name = "placeholderInstanceId") String placeholderInstanceId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+
     
     
-    
-    
-    //    public DegreeMapInfo createDegreeMap(@WebParam(name = "degreeMap") DegreeMapInfo degreeMap,
+//    public DegreeMapInfo createDegreeMap(@WebParam(name = "degreeMap") DegreeMapInfo degreeMap,
 //    		@WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 //    
 //    public DegreeMapInfo updateDegreeMap(@WebParam(name = "degreeMapId") String degreeMapId, @WebParam(name = "DegreeMap") DegreeMapInfo DegreeMap, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
