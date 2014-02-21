@@ -15,9 +15,9 @@
 # You must rerun the svn propset command (shown above) and commit after editing any of
 # the external paths for the changes to take effect.
 #
-ks-api  https://svn.kuali.org/repos/student/enrollment/ks-api/branches/CM-KRAD-MERGE
-ks-core  https://svn.kuali.org/repos/student/enrollment/ks-core/branches/CM-KRAD-MERGE
-ks-lum  https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/CM-KRAD-MERGE
-ks-enroll  https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/CM-KRAD-MERGE
-ks-ap https://svn.kuali.org/repos/student/enrollment/ks-ap/branches/CM-KRAD-MERGE
-ks-deployments  https://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/CM-KRAD-MERGE
+ks-api https://svn.kuali.org/repos/student/enrollment/ks-api/branches/inactive/CM-KRAD-MERGE
+ks-core https://svn.kuali.org/repos/student/enrollment/ks-core/branches/inactive/CM-KRAD-MERGE
+ks-lum https://svn.kuali.org/repos/student/enrollment/ks-lum/branches/inactive/CM-KRAD-MERGE
+ks-enroll https://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/inactive/CM-KRAD-MERGE
+ks-ap https://svn.kuali.org/repos/student/enrollment/ks-ap/branches/inactive/CM-KRAD-MERGE
+ks-deployments https://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/inactive/CM-KRAD-MERGE
