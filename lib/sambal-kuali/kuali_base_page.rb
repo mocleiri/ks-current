@@ -56,8 +56,8 @@ class BasePage < PageFactory
 
     def cm_elements
 
-      links('CourseInfo', 'Governance', 'Logistics',
-             'Learning Objectives', 'Course Requisites', 'Active Dates', 'Financials', 'Supporting Documents', 'Review Proposal')
+      links('Course Information', 'Governance', 'Course Logistics',
+             'Learning Objectives', 'Course Requisites', 'Active Dates', 'Financials', 'Authors & Collaborators', 'Supporting Documents', 'Review Proposal')
       action(:authors_collaborators) { |b| b.link(text: 'Authors & Collaborators').click }
 
       action(:current_page) {|link_text, b| b.li(class: 'uif-navigationItem uif-navigationItem-current').link(text: "#{link_text}")}
