@@ -63,11 +63,6 @@ class ManageCourseOfferingList < BasePage
     loading.wait_while_present
   end
 
-  def target_row(co_code)
-    course_offering_results_table.wait_until_present(60)
-    course_offering_results_table.row(text: /\b#{Regexp.escape(co_code)}\b/)
-  end
-
   def row_by_status(costatus)
     course_offering_results_table.row(text: /\b#{Regexp.escape(costatus)}\b/)
   end
@@ -81,19 +76,14 @@ class ManageCourseOfferingList < BasePage
     end
   end
 
-  def co_row_status(target_row)
-    target_row.cells[CO_STATUS_COLUMN].text
-  end
-
   def co_status(co_code)
-    target_row = target_row(co_code)
-    co_row_status(target_row)
+     @browser.span(id: "co_status_#{co_code}_control").text
   end
 
   def crosslist_tooltip_text(co_code)
     retVal = ""
 
-    crosslist_tooltip_text = target_row(co_code)[CO_CODE_COLUMN].img.alt
+    crosslist_tooltip_text = div(id: "view_co_#{co_code}").img.alt
     if crosslist_tooltip_text != nil
       retVal = crosslist_tooltip_text
     end
@@ -107,29 +97,37 @@ class ManageCourseOfferingList < BasePage
     crosslist_tooltip_text.split( "<br>" ).reject! { |e| e.empty? }
   end
 
+  def select_co_checkbox(co_code)
+    @browser.checkbox(id: "checkbx_co_#{co_code}")
+  end
+
   def copy(co_code)
+    copy_link(co_code).wait_until_present
+    copy_link(co_code).focus
     copy_link(co_code).click
-    loading.wait_while_present(220)
+    loading.wait_while_present(30)
   end
 
   def copy_link(co_code)
-    target_row(co_code).i(class: "ks-fontello-icon-docs")
+    @browser.link(id: "copy_co_#{co_code}")
   end
 
   def edit(co_code)
+    edit_link(co_code).focus
     edit_link(co_code).click
     loading.wait_while_present(120)
   end
 
   def edit_link(co_code)
-    target_row(co_code).i(class: "ks-fontello-icon-pencil")
+    @browser.link(id: "edit_co_#{co_code}")
   end
 
   def manage_link(co_code)
-    target_row(co_code).i(class: "ks-fontello-icon-wrench")
+    @browser.link(id: "manage_co_#{co_code}")
   end
 
   def manage(co_code)
+    manage_link(co_code).focus
     manage_link(co_code).click
     loading.wait_while_present(120)
   end
@@ -143,7 +141,9 @@ class ManageCourseOfferingList < BasePage
 
   def select_cos(code_list)
     code_list.each do |code|
-      target_row(code.upcase).checkbox.set
+      select_co_checkbox(code).focus
+      select_co_checkbox(code).set
+      #target_row(code.upcase).checkbox.set
     end
   end
 
@@ -162,15 +162,18 @@ class ManageCourseOfferingList < BasePage
 
   def deselect_cos(code_list)
     code_list.each do |code|
-      target_row(code).checkbox.clear
+      select_co_checkbox(code).focus
+      select_co_checkbox(code).clear
     end
   end
 
   def select_co(code)
-    target_row(code).checkbox.set
+    select_co_checkbox(code).focus
+    select_co_checkbox(code).set
   end
 
   def deselect_co(code)
-    target_row(code).checkbox.clear
+    select_co_checkbox(code).focus
+    select_co_checkbox(code).clear
   end
 end

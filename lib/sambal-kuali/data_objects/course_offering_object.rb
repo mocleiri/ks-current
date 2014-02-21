@@ -465,8 +465,7 @@ class CourseOffering
       end
 
       on ManageCourseOfferingList do |page|
-        page.target_row(@course).i(class: "ks-fontello-icon-wrench").click
-        page.loading.wait_while_present
+        page.manage(@course)
       end
     rescue Watir::Wait::TimeoutError
       #means was single CO returned (or nothing returned), AO list is already displayed

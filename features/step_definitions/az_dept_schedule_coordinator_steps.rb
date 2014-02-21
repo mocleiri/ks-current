@@ -631,8 +631,7 @@ Then /^I do not have access to select the "([^"]*)" course offering for approve,
     page.approve_course_offering_button.enabled?.should be_false
     #page.create_course_offering_button.enabled?.should be_false
     #page.draft_activity_button.enabled?.should be_false
-    co_row = page.target_row(@course_offering.course)
-    page.co_row_status(co_row).should == co_status
+    page.co_status(@course_offering.course).should == co_status
     co_row.checkbox.present?.should be_false
   end
 end
