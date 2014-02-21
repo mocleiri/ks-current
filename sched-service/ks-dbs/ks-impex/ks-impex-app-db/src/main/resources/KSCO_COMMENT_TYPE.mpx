@@ -1,0 +1,12 @@
+TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
+"commentType.kuali.lu.type.CreditCourse.draft","Credit Course Proposal","2000-01-01T00:00:00.000+0000","${mpx.null}","Proposal","45500ED8C8C6416B94EEAD768BA4EB18","0"
+"commentType.kuali.lu.type.CreditCourse.submitted","Credit Course Submitted","2000-01-01T00:00:00.000+0000","${mpx.null}","Submitted","E43F822F10EA4373AA0A4B9C1C0F4AA8","0"
+"kuali.comment.type.generalRemarks","General Comment","2000-01-01T00:00:00.000+0000","${mpx.null}","General","070C3A3A4E31466296CDF6942D4C1370","0"
+"kuali.comment.type.workflowDecisionRationale.acknowledge","Decision Rationale Ack","2000-01-01T00:00:00.000+0000","${mpx.null}","Ack Decision","F2E6DD1D53924426A098351940C9D623","0"
+"kuali.comment.type.workflowDecisionRationale.approve","Decision Rationale Approve","2000-01-01T00:00:00.000+0000","${mpx.null}","Approve Decision ","4A20C314DA564F08A67DD00160FCBEF3","0"
+"kuali.comment.type.workflowDecisionRationale.blanketApprove","Decision Rationale Blanket Approve Proposal","2000-01-01T00:00:00.000+0000","${mpx.null}","Blanket Approve","E9252EBABFDE4CC9B0E52EFD46C216A1","0"
+"kuali.comment.type.workflowDecisionRationale.cancelWorkflow","Decision Rationale Cancel Proposal","2000-01-01T00:00:00.000+0000","${mpx.null}","Cancel Proposal","E9252EBABFDE4CC9B0E52EFD46C216A2","0"
+"kuali.comment.type.workflowDecisionRationale.fyi","Decision Rationale FYI","2000-01-01T00:00:00.000+0000","${mpx.null}","FYI Decision","85D0300653AB4214B0568D1E551CC599","0"
+"kuali.comment.type.workflowDecisionRationale.reject","Decision Rationale Reject","2000-01-01T00:00:00.000+0000","${mpx.null}","Reject Decision","D8A842CEA5A5467FAD62EAC43E797937","0"
+"kuali.comment.type.workflowDecisionRationale.return","Decision Rationale Return","2000-01-01T00:00:00.000+0000","${mpx.null}","Return Decision","929A69F16C3C48D6A7363E233CE75E33","0"
+"kuali.comment.type.workflowDecisionRationale.withdraw","Decision Rationale Withdraw","2000-01-01T00:00:00.000+0000","${mpx.null}","Withdraw Decision","E9252EBABFDE4CC9B0E52EFD46C216C2","0"
