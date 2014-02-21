@@ -13,11 +13,11 @@ Feature: CO.Edit AO scheduling information as CSC
     Then the AO's scheduling information shows the new schedule
 
   Scenario: Add standard RSIs for an AO
-    When I add standard RSIs for an AO as a CSC
+    When I add standard RSIs for an AO
     Then the AO's scheduling information shows the new schedule
 
   Scenario: Add non-standard RSIs for an AO
-    When I add non-standard RSIs for an AO as a CSC
+    When I add non-standard RSIs for an AO
     Then the AO's scheduling information shows the new schedule
 
   Scenario: Add an RSI using incomplete scheduling information - times only

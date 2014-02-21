@@ -1048,15 +1048,15 @@ class SchedulingInformation
         :isRSI => true,
         :tba  => false,
         :days  => "MWF",
-        :std_ts => false,
-        :start_time  => "01:00",
-        :start_time_ampm  => "pm",
-        :end_time  => "02:00",
-        :end_time_ampm  => "pm",
-        :facility  => "ARM",
-        :facility_long_name  => "Reckord Armory",
-        :room  => "0126",
-        :features_list  => []
+        :start_time  => "10:00",
+        :start_time_ampm  => "am",
+        :end_time  => "10:50",
+        :end_time_ampm  => "am",
+        :facility  => "PHYS",
+        :facility_long_name  => "PHYS",
+        :room  => "4102",
+        :features_list  => [],
+        :use_std_ts => false
         #     :process => true
     }
     options = defaults.merge(opts)
@@ -1072,14 +1072,7 @@ class SchedulingInformation
     if isRSI then
       on ActivityOfferingMaintenance do |page|
         page.view_requested_scheduling_information
-        sleep 2
-        ns_ts_allowed = !page.non_std_ts_text.nil? && page.non_std_ts_text=="true"
-        # if non-standard TS allowed, then treat DSC as CSC
-        if @dsc then
-          if ns_ts_allowed
-            @dsc=false
-          end
-        end
+        page.add_tba.wait_until_present
 
         @end_time_ampm.upcase! unless @end_time_ampm.nil?
         @start_time_ampm.upcase! unless @start_time_ampm.nil?
@@ -1097,7 +1090,7 @@ class SchedulingInformation
           sleep 2
         end
 
-        if @start_time != nil then
+        if @start_time != nil
           page.add_start_time.click
           page.loading.wait_while_present
           page.add_start_time.set @start_time + " " + @start_time_ampm
@@ -1106,28 +1099,14 @@ class SchedulingInformation
         end
 
         if @end_time != nil then
-          if @dsc
-            approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.checked?
-            if approved_for_nonStandard_timeslots
-              page.add_end_time_div.click
-              page.add_end_time.wait_until_present
-              page.add_end_time.set "#{@end_time} #{@end_time_ampm}"
-            else
-              page.end_time_select_populate_list
-              page.end_time_select.select("#{@end_time} #{@end_time_ampm.upcase}")
-            end
-          else
+          #approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.checked?
+          if @use_std_ts
             page.end_time_select_populate_list
-
-            if @std_ts then
-              page.add_end_time.set @end_time.to_s[0]
-              page.loading.wait_while_present
-              hr,min = @end_time.split(":")
-              if hr.length == 1 then
-                hr="0"+hr
-              end
-              page.select_end_time("#{hr}:#{min} #{@end_time_ampm.upcase}")
-            end
+            page.add_end_time.set @end_time.to_s[0]
+            page.loading.wait_while_present
+            formatted_end_time = DateTime.strptime("#{@end_time} #{@end_time_ampm}", '%I:%M %p').strftime( '%I:%M %p' )
+            page.select_end_time(formatted_end_time)
+          else
             page.add_end_time.set @end_time + " " + @end_time_ampm
           end
         end

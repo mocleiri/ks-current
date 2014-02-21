@@ -587,11 +587,7 @@ end
 
 Given /^I add requested scheduling information to the activity offering$/ do
   @rsi_list = {}
-  @rsi_list["MTW"] = make SchedulingInformation, :days => "MTW",
-                          :start_time => "10:00", :start_time_ampm => "am",
-                          :end_time => "10:50", :end_time_ampm => "am",
-                          :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
-
+  @rsi_list["MTW"] = make SchedulingInformation, :days => "MTW"
   @activity_offering.edit :requested_scheduling_information_list => @rsi_list
 
   @activity_offering.save

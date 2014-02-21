@@ -43,8 +43,9 @@ When /^I add RSIs for an AO specifying (times|times and facility|times and room)
 
   # add new RSI row
   @activity_offering.edit
-  si_obj = create SchedulingInformation, :days => "TH", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
-                  :facility => optional_field_facility, :facility_long_name => optional_field_facility, :room => optional_field_room
+  si_obj = create SchedulingInformation, :days => "TH",
+                  :facility => optional_field_facility,
+                  :facility_long_name => optional_field_facility, :room => optional_field_room
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   # if entering an invalid combination, need to stay on page to see the error message, so skip the page submit
   @activity_offering.save unless optional_field == "times and room"
@@ -100,20 +101,10 @@ end
 When /^I add RSIs for an AO$/ do
   # add new RSI row
   @activity_offering.edit
-  si_obj = create SchedulingInformation, :days => "TH", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
-                  :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102"
+  si_obj = create SchedulingInformation, :days => "TH"
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   @activity_offering.save
 end
-
-#When /^I add standard RSIs for an AO$/ do
-#  # add new RSI row
-#  @activity_offering.edit
-#  si_obj = create SchedulingInformation, :days => "MWF", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
-#                  :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => true
-#  @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
-#  @activity_offering.save
-#end
 
 When /^I add RSIs for an AO checking the TBA flag$/ do
   # add new TBA RSI row
@@ -132,16 +123,16 @@ And /^I delete the original RSIs$/ do
   @activity_offering.save
 end
 
-When /^I add (standard|non-standard) RSIs for an AO as a (CSC|DSC)$/ do |tsType, role|
+When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
   # add new RSI row
   @activity_offering.edit
   if tsType=="standard"
-    si_obj = create SchedulingInformation, :std_ts => true, :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm",
-                    :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
+    si_obj = create SchedulingInformation, :use_std_ts => true,
+                    :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
     @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   elsif tsType=="non-standard"
-    si_obj = create SchedulingInformation, :std_ts => false, :days => "TH", :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm",
-                    :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
+    si_obj = create SchedulingInformation, :use_std_ts => false, :days => "TH",
+                    :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
     @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   end
   @activity_offering.save
@@ -165,8 +156,7 @@ When /^I edit an Activity Offering with non-standard time slots (approved|not ap
   else
     course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :term => "201301", :course=>"ENGL262")
   end
-  course_offering.manage_and_init
-  @activity_offering = course_offering.get_ao_obj_by_code("A")
+  @activity_offering = @activity_offering = make ActivityOffering, :parent_offering => course_offering, :code => 'A'
 end
 
 Then /^there is a validation error on the EndTime field$/  do
@@ -193,15 +183,16 @@ Then /^there is a validation error on the EndTime field$/  do
 
     page.end_time_select_populate_list
     page.end_time_select.click
+    page.end_time_select.attribute_value('class').should match /error/
     page.end_time_error_msg.should match /Days and Start Time combo does not match an existing Standard Time Slot/
 
     page.cancel   # cleanup to prevent browser's "you have unsaved changes" modal-dialog (which causes any subsequent tests executing in the same thread to fail)
   end
 end
 
-And /^I attempt to add non-standard RSIs for an AO as a (DSC|CSC)$/ do |role|
-  @si_obj = make SchedulingInformation, :std_ts => false, :days => "TH", :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm",
-                  :facility => "PHYS", :facility_long_name => "PHYS", :room => "4102", :dsc => (role=="DSC")
+And /^I attempt to add non-standard RSIs for an AO$/ do
+  @si_obj = make SchedulingInformation, :use_std_ts => false, :days => "TH",
+                 :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
 end
 
 
