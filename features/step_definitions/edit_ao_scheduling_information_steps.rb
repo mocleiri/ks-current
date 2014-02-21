@@ -156,7 +156,7 @@ When /^I edit an Activity Offering with non-standard time slots (approved|not ap
   else
     course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :term => "201301", :course=>"ENGL262")
   end
-  @activity_offering = @activity_offering = make ActivityOffering, :parent_offering => course_offering, :code => 'A'
+  @activity_offering = make ActivityOffering, :parent_offering => course_offering, :code => 'A'
 end
 
 Then /^there is a validation error on the EndTime field$/  do
