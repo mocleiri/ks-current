@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
+import org.kuali.student.ap.academicplan.dto.PlaceholderInstanceInfo;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
 
 @Entity
@@ -40,82 +40,52 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
     }
 
     
-    public PlaceholderInstanceEntity(DegreeMapRequirementInfo dto) {
+    public PlaceholderInstanceEntity(PlaceholderInstanceInfo dto) {
         super();
- 
-        //TODO
-        // fix this
+
         this.setId(dto.getId());
-//       
-//        this.setCredit(dto.getCredit());
-//        this.setCritical(dto.isCritical());
-//        this.setDegreeMapEffectiveDate(dto.getDegreeMapEffectiveDate());
-//        this.setDegreeMapId(dto.getDegreeMapId());
-//        this.setDescr(dto.getDescr());
-//        this.setDisplayTermId(dto.getDisplayTermId());
-//        this.setItemSeq(dto.getItemSeq());
-//        this.setMilestone(dto.isMilestone());
-//        this.setMininumGrade(dto.getMinimumGrade());
-//        this.setNotes(dto.getNotes());
-//        this.setRefObjectTypeKey(dto.getRefObjectTypeKey());
-//        this.setRefObjectId(dto.getRefObjectId());
-//        this.setRequiredTermId(dto.getRequiredTermId());
-//        this.setSuggestedTermId(dto.getSuggestedTermId());
-//        this.setSeqKey(dto.getSeqKey());
-//        this.setSeqNo(dto.getSeqNo());      
+        this.setPlaceholderId(dto.getPlaceholderId());
+        this.setRefObjectId(dto.getRefObjectId());
+        this.setRefObjectTypeKey(dto.getRefObjectTypeKey());
+        this.setAdvisorId(dto.getAdvisorId());
+        this.setAdvisorOK(dto.isAdvisorOK());
+        this.setStudentOK(dto.isStudentOK());      
 
     }
     
     
-	public static PlaceholderInstanceEntity create(DegreeMapRequirementInfo dto) {
+	public static PlaceholderInstanceEntity create(PlaceholderInstanceInfo dto) {
 
 	    return new PlaceholderInstanceEntity(dto);
 
 	}
 
     
-    @Override
-    public String toString() {
-    	//TODO
-    	// FIX THIS
-    	
-    	return null;
-//        return String.format("Requirement id:  %s, degreeMapId: %s, degreeMapEffectiveDate %d, descr: %s. ", this.getId(), this.getDegreeMapId(), this.getDegreeMapId(), this.getDescr());
-    }
-
+	@Override
+	public String toString() {
+		return String
+				.format("PlaceholderInstance id:  %s, PlaceholderId: %s, RefObjectTypeKey %s, RefObjectId: %s. ",
+						this.getId(), this.getPlaceholderId(),
+						this.getRefObjectTypeKey(), this.getRefObjectId());
+	}
     
 	/**
-     * Provides and data transfer object representation of the Degree Map Requirement.
-     * @return DegreeMapRequirementInfo
+     * Provides and data transfer object representation of the Placeholder Instance.
+     * @return PlaceholderInstanceInfo
      */
-    public DegreeMapRequirementInfo toDto() {
-        DegreeMapRequirementInfo dto = new DegreeMapRequirementInfo();
-//TODO
- // FIX THIS
-        
-//        dto.setCredit(getCredit());
-//        dto.setCritical(isCritical());
-//        dto.setDegreeMapEffectiveDate(getDegreeMapEffectiveDate());
-//        dto.setDegreeMapId(getDegreeMapId());
-//        dto.setDescr(getDescr());
-//        dto.setDisplayTermId(getDisplayTermId());
-//        dto.setItemSeq(getItemSeq());
-//        dto.setMilestone(isMilestone());
-//        dto.setMinimumGrade(getMinimumGrade());
-//        dto.setNotes(getNotes());
-//        dto.setRefObjectTypeKey(getRefObjectTypeKey());
-//        dto.setRefObjectId(getRefObjectId());
-//        dto.setRequiredTermId(getRequiredTermId());
-//        dto.setSuggestedTermId(getSuggestedTermId());
-//        dto.setSeqKey(getSeqKey());
-//        dto.setSeqNo(getSeqNo());      
+    public PlaceholderInstanceInfo toDto() {
+    	PlaceholderInstanceInfo dto = new PlaceholderInstanceInfo();
+
+        dto.setId(getId());
+        dto.setPlaceholderId(getPlaceholderId());
+        dto.setRefObjectId(getRefObjectId());
+        dto.setRefObjectTypeKey(getRefObjectTypeKey());
+        dto.setAdvisorId(getAdvisorId());
+        dto.setAdvisorOK(isAdvisorOK());
+        dto.setStudentOK(isStudentOK());         
 
         return dto;
     }
-
-
-
-
 
 
 	public String getRefObjectTypeKey() {
@@ -168,8 +138,6 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
 	}
 
 
-
-
 	public boolean isStudentOK() {
 		return studentOK;
 	}
@@ -187,23 +155,9 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
             return -1;
         }
 
-        //  First check id.
         if (! other.getId().equals(this.getId())) {
             return this.getId().compareTo(other.getId());
         }
- //TODO
-  //FIX THIS
-//        // compare the degree map id
-//        if (!other.getDegreeMapId().equals(this.getDegreeMapId())){
-//        	return this.getDegreeMapId().compareTo(other.getDegreeMapId());
-//        }
-//        
-//        // compare the degree map effective date
-//        if (!other.getDegreeMapEffectiveDate().equals(this.getDegreeMapEffectiveDate())){
-//        	return this.getDegreeMapEffectiveDate().compareTo(other.getDegreeMapEffectiveDate());
-//        }
-        
-        // if they are all the same, it's the same requirement.
         return 0;
     }
 }

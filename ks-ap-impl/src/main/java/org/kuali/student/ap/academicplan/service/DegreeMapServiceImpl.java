@@ -8,11 +8,14 @@ import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.ap.academicplan.dao.DegreeMapDao;
 import org.kuali.student.ap.academicplan.dao.DegreeMapRequirementDao;
 import org.kuali.student.ap.academicplan.dao.PlaceholderDao;
+import org.kuali.student.ap.academicplan.dao.PlaceholderInstanceDao;
 import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
+import org.kuali.student.ap.academicplan.dto.PlaceholderInstanceInfo;
 import org.kuali.student.ap.academicplan.model.DegreeMapRequirementEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderEntity;
+import org.kuali.student.ap.academicplan.model.PlaceholderInstanceEntity;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -34,7 +37,7 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	private DegreeMapDao degreeMapDao; // OR MAYBE THIS ONE I DON'T HAVE IN HERE BECUASE WE'LL USE A LEARNING PLAN DAO????
 	private DegreeMapRequirementDao degreeMapRequirementDao;
 	private PlaceholderDao placeholderDao;
-
+	private PlaceholderInstanceDao placeholderInstanceDao;
 
 	public DegreeMapDao getDegreeMapDao() {
 		return degreeMapDao;
@@ -61,6 +64,16 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	public void setPlaceholderDao(PlaceholderDao placeholderDao) {
 		this.placeholderDao = placeholderDao;
 	}
+
+	public PlaceholderInstanceDao getPlaceholderInstanceDao() {
+		return placeholderInstanceDao;
+	}
+
+	public void setPlaceholderInstanceDao(
+			PlaceholderInstanceDao placeholderInstanceDao) {
+		this.placeholderInstanceDao = placeholderInstanceDao;
+	}
+	
 
 	@Override
 	public DegreeMapInfo getDegreeMap(String degreeMapId, Date effdt,
@@ -322,8 +335,7 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 		return placeholderDao.find(placeholderId).toDto();
 		
 	}
-	
-	
+		
 
 	@Override
 	public StatusInfo deletePlaceholder(String placeholderId,
@@ -344,5 +356,96 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	}
 
 
+	// PLACEHOLDER INSTANCE
+	
+	@Override
+	public PlaceholderInstanceInfo getPlaceholderInstance(String placeholderInstanceId,
+			ContextInfo context) throws DoesNotExistException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException {
+		
+		PlaceholderInstanceEntity placeholderInstance = placeholderInstanceDao.find(placeholderInstanceId);
+		if (null == placeholderInstance) {
+			throw new DoesNotExistException(String.format("PlaceholderInstance with id Id [%s] does not exist", placeholderInstanceId));
+		}
+		
+		return placeholderInstance.toDto();
+	}
+	
+
+	@Override
+	public PlaceholderInstanceInfo createPlaceholderInstance(
+			PlaceholderInstanceInfo placeholderInstance, ContextInfo context)
+			throws AlreadyExistsException, DataValidationErrorException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
+
+		PlaceholderInstanceEntity pie = new PlaceholderInstanceEntity();
+		String placeholderInstanceId = UUIDHelper.genStringUUID();
+
+		pie.setId(placeholderInstanceId);
+		pie.setPlaceholderId(placeholderInstance.getPlaceholderId());
+		pie.setRefObjectId(placeholderInstance.getRefObjectId());
+		pie.setRefObjectTypeKey(placeholderInstance.getRefObjectTypeKey());
+		pie.setAdvisorId(placeholderInstance.getAdvisorId());
+		pie.setAdvisorOK(placeholderInstance.isAdvisorOK());
+		pie.setStudentOK(placeholderInstance.isStudentOK());
+
+		placeholderInstanceDao.persist(pie);
+		return placeholderInstanceDao.find(placeholderInstanceId).toDto();
+
+	}	
+
+	
+	@Override
+	public PlaceholderInstanceInfo updatePlaceholderInstance(String placeholderInstanceId,
+			PlaceholderInstanceInfo placeholderInstance, ContextInfo context)
+			throws DataValidationErrorException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException, DoesNotExistException {
+
+		PlaceholderInstanceEntity placeholderInstanceEntity = placeholderInstanceDao.find(placeholderInstanceId);
+		if (placeholderInstanceEntity == null ){
+			throw new DoesNotExistException(placeholderInstanceId);
+		}
+		
+		if (placeholderInstance == null){
+			throw new MissingParameterException("placeholderInstance is null.");
+		}
+		
+		placeholderInstanceEntity.setId(placeholderInstanceId);
+		placeholderInstanceEntity.setPlaceholderId(placeholderInstance.getPlaceholderId());
+		placeholderInstanceEntity.setRefObjectId(placeholderInstance.getRefObjectId());
+		placeholderInstanceEntity.setRefObjectTypeKey(placeholderInstance.getRefObjectTypeKey());
+		placeholderInstanceEntity.setAdvisorId(placeholderInstance.getAdvisorId());
+		placeholderInstanceEntity.setAdvisorOK(placeholderInstance.isAdvisorOK());
+		placeholderInstanceEntity.setStudentOK(placeholderInstance.isStudentOK());			
+		
+		placeholderInstanceDao.update(placeholderInstanceEntity);
+		return placeholderInstanceDao.find(placeholderInstanceId).toDto();
+		
+	}
+		
+
+	@Override
+	public StatusInfo deletePlaceholderInstance(String placeholderInstanceId,
+			ContextInfo context) throws DoesNotExistException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
+		
+		StatusInfo status = new StatusInfo();
+		status.setSuccess(true);
+		
+		PlaceholderInstanceEntity pe = placeholderInstanceDao.find(placeholderInstanceId);
+		if (pe == null ) {
+			throw new DoesNotExistException(String.format("PlaceholderInstance with id Id [%s] does not exist", placeholderInstanceId));
+		}
+
+		placeholderInstanceDao.remove(pe);
+		return status;
+	}
+
+	
+	
 
 }
