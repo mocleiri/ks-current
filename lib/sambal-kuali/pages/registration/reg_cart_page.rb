@@ -16,12 +16,12 @@ class RegistrationCart < RegisterForCourseBase
 
   element(:credit_count_header) { |b| b.span(id: "credit_count_register_for_header") }
 
-  element(:remove_course_link) { |course_code,reg_group_code,b| b.link(id: "remove_#{course_code}_#{reg_group_code}") }
-  element(:course_code) { |course_code,reg_group_code,b| b.p(span: "course_code_#{course_code}_#{reg_group_code}").text }
+  element(:remove_course_button) { |course_code,reg_group_code,b| b.button(id: "remove_#{course_code}_#{reg_group_code}") }
+  element(:course_code) { |course_code,reg_group_code,b| b.span(id: "course_code_#{course_code}_#{reg_group_code}") }
   element(:course_title) { |course_code,reg_group_code,b| b.div(id: "title_#{course_code}_#{reg_group_code}").text }
   element(:course_info) { |course_code,reg_group_code,b| b.div(id: "course_info_#{course_code}_#{reg_group_code}").text }
-  element(:edit_course_options_link) { |course_code,reg_group_code,b| b.link(id: "edit_#{course_code}_#{reg_group_code}") }
-  action(:edit_course_options) { |course_code,reg_group_code,b| b.edit_course_options_link(course_code,reg_group_code).click }
+  element(:edit_course_options_button) { |course_code,reg_group_code,b| b.button(id: "edit_#{course_code}_#{reg_group_code}") }
+  action(:edit_course_options) { |course_code,reg_group_code,b| b.edit_course_options_button(course_code,reg_group_code).click }
   element(:course_schedule) { |course_code,reg_group_code,index,b| b.div(id: "schedule_#{course_code}_#{reg_group_code}_#{index}").text }
 
   # ADD NEW ITEM OPTIONS MODAL DIALOG
@@ -41,7 +41,11 @@ class RegistrationCart < RegisterForCourseBase
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
   def remove_course_from_cart(course_code, reg_group_code)
-    remove_course_link(course_code,reg_group_code).click
+    remove_course_button(course_code,reg_group_code).click
+  end
+
+  def toggle_course_details(course_code, reg_group_code)
+    course_code(course_code,reg_group_code).click
   end
 
   def select_credits_on_new_item(credits)

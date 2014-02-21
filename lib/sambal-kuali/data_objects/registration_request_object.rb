@@ -107,6 +107,7 @@ class RegistrationRequest
 
   def remove_from_cart
     on RegistrationCart do |page|
+      page.toggle_course_details @course_code,@reg_group_code
       page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
@@ -129,13 +130,14 @@ class RegistrationRequest
       return nil
     end
     on RegistrationCart do |page|
+      page.toggle_course_details @course_code,@reg_group_code
       page.edit_course_options @course_code,@reg_group_code
       page.select_credits_in_cart @course_code,@reg_group_code,@course_options.credit_option
       page.select_grading_in_cart @course_code,@reg_group_code,@course_options.grading_option
       page.save_edits @course_code,@reg_group_code
     end
   end
-  private :edit_course_options_in_cart
+  #private :edit_course_options_in_cart
 
 end
 
