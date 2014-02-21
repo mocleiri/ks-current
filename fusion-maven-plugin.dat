@@ -1,0 +1,8 @@
+# module = ks-api branch Path = enrollment/ks-api/branches/CM-KRAD revision = 58999
+ks-api::enrollment_ks-api_branches_CM-KRAD::UNKNOWN
+# module = ks-core branch Path = enrollment/ks-core/branches/CM-KRAD revision = 58999
+ks-core::enrollment_ks-core_branches_CM-KRAD::UNKNOWN
+# module = ks-lum branch Path = enrollment/ks-lum/branches/CM-KRAD revision = 58999
+ks-lum::enrollment_ks-lum_branches_CM-KRAD::UNKNOWN
+# module = ks-deployments branch Path = enrollment/ks-deployments/branches/CM-KRAD revision = 58999
+ks-deployments::enrollment_ks-deployments_branches_CM-KRAD::UNKNOWN
