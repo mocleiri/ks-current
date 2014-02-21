@@ -1,0 +1,4 @@
+TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
+"kuali.ap.type.note.term","Term Note","2013-12-06T17:28:55.415+0000","${mpx.null}","Term Note","E9252EBABFDE4CC9B0E52ABC46C216C2","0"
+"referenceType.clu","Clu reference type","2000-01-01T00:00:00.000+0000","${mpx.null}","Clu","27B3302EC30F43FB936FDA7313094869","0"
+"referenceType.clu.proposal","Clu reference type","2000-01-01T00:00:00.000+0000","${mpx.null}","Clu Proposal","7619651AED59491093D04AED1ECD9414","0"

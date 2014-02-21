@@ -1,0 +1,2 @@
+ID,OBJ_ID,VER_NBR,CREATEID,CREATETIME,UPDATEID,UPDATETIME,STUDENT_ID,RT_DESCR_ID,TYPE_ID,STATE,SHARED
+"testPlan1","obj-lp5","0","admin","2013-12-06T17:28:55.481+0000","${mpx.null}","${mpx.null}","admin","testPlan1Desc","kuali.academicplan.type.plan","${mpx.null}","1"

@@ -1,0 +1,3 @@
+ATTR_DEFN_ID,NM,NMSPC_CD,LBL,ACTV,CMPNT_NM,VER_NBR,DESC_TXT
+"KS-1000","number","KR-SAP","Travel Number","Y","edu.sampleu.travel.bo.TravelAccount","1","${mpx.null}"
+"KS-1001","id","KR-SAP","${mpx.null}","Y","edu.sampleu.travel.bo.FiscalOfficer","1","${mpx.null}"

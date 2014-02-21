@@ -1,0 +1,6 @@
+RULE_TMPL_ID,NM,RULE_TMPL_DESC,DLGN_RULE_TMPL_ID,VER_NBR,OBJ_ID
+"KS-1548","WorkflowDocumentDelegationTemplate","WorkflowDocumentDelegationTemplate","${mpx.null}","2","6166CBA1BA86644DE0404F8189D86C09"
+"KS-1549","WorkflowDocumentTemplate","Workflow Document Template","KS-1548","4","6166CBA1BA87644DE0404F8189D86C09"
+"KS-1550","ReviewersRouting","Routes to channel reviewers","${mpx.null}","2","6166CBA1BA8C644DE0404F8189D86C09"
+"KS-1551","NotificationRouting","The standard rule template for sending notification messages.","${mpx.null}","2","6166CBA1BA8D644DE0404F8189D86C09"
+"KS-1552","RuleRoutingTemplate","RuleRoutingTemplate","${mpx.null}","2","6166CBA1BA96644DE0404F8189D86C09"
