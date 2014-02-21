@@ -225,6 +225,11 @@ class ActivityOffering
     edit(init)
   end
 
+  def get_existing_info_from_page
+    ao_table_row = on(ManageCourseOfferings).target_row(@code)
+    init_existing(ao_table_row, @parent_course_offering, @aoc_private_name)
+  end
+
   def init_existing(ao_table_row, parent_co, cluster_name)
     @code =  ao_table_row.cells[ManageCourseOfferings::AO_CODE].text
     @status = ao_table_row.cells[ManageCourseOfferings::AO_STATUS].text
@@ -1101,11 +1106,15 @@ class SchedulingInformation
         if @end_time != nil then
           #approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.checked?
           if @use_std_ts
-            page.end_time_select_populate_list
-            page.add_end_time.set @end_time.to_s[0]
-            page.loading.wait_while_present
             formatted_end_time = DateTime.strptime("#{@end_time} #{@end_time_ampm}", '%I:%M %p').strftime( '%I:%M %p' )
-            page.select_end_time(formatted_end_time)
+            page.end_time_select_populate_list
+            if page.end_time_select.present?
+              page.end_time_select.select(formatted_end_time)
+            else
+              page.add_end_time.set @end_time.to_s[0]
+              page.loading.wait_while_present
+              page.select_end_time(formatted_end_time)
+            end
           else
             page.add_end_time.set @end_time + " " + @end_time_ampm
           end

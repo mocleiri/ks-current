@@ -197,7 +197,7 @@ Given /^I manage a given Course Offering$/ do
 end
 
 Given /^I edit an Activity Offering$/ do
-  @activity_offering = make ActivityOffering, :parent_offering => @course_offering, :code => 'B'
+  @activity_offering = make ActivityOffering, :parent_course_offering => @course_offering, :code => 'B'
 end
 
 Given /^I edit an Activity Offering that has available subterms$/ do
