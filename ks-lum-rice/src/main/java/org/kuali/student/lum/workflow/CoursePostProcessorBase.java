@@ -3,6 +3,7 @@
  */
 package org.kuali.student.lum.workflow;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,10 +16,12 @@ import org.kuali.rice.kew.api.action.ActionTaken;
 import org.kuali.rice.kew.framework.postprocessor.ActionTakenEvent;
 import org.kuali.rice.kew.framework.postprocessor.DocumentRouteStatusChange;
 import org.kuali.rice.kew.framework.postprocessor.IDocumentEvent;
+import org.kuali.rice.krad.util.ObjectUtils;
 import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
 import org.kuali.student.r1.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.r1.lum.course.service.CourseServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.CurrencyAmountInfo;
 import org.kuali.student.r2.common.dto.DtoConstants;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
@@ -27,8 +30,19 @@ import org.kuali.student.r2.common.util.ContextUtils;
 import org.kuali.student.r2.core.proposal.dto.ProposalInfo;
 import org.kuali.student.r2.core.versionmanagement.dto.VersionDisplayInfo;
 import org.kuali.student.r2.lum.clu.CLUConstants;
+import org.kuali.student.r2.lum.clu.dto.AffiliatedOrgInfo;
+import org.kuali.student.r2.lum.clu.dto.CluInstructorInfo;
+import org.kuali.student.r2.lum.course.dto.ActivityInfo;
+import org.kuali.student.r2.lum.course.dto.CourseCrossListingInfo;
+import org.kuali.student.r2.lum.course.dto.CourseFeeInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.dto.CourseJointInfo;
+import org.kuali.student.r2.lum.course.dto.CourseRevenueInfo;
+import org.kuali.student.r2.lum.course.dto.CourseVariationInfo;
+import org.kuali.student.r2.lum.course.dto.FormatInfo;
+import org.kuali.student.r2.lum.course.dto.LoDisplayInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
+import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -279,7 +293,8 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         	if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(proposalInfo.getType())){
         		VersionDisplayInfo currentCourse = courseService.getCurrentVersion(CourseServiceConstants.COURSE_NAMESPACE_URI, courseInfo.getVersion().getVersionIndId(), ContextUtils.getContextInfo());
         		CourseInfo currentCourseInfo = courseService.getCourse(currentCourse.getId(), ContextUtils.getContextInfo());        		
-        		currentCourseInfo.setDescr(courseInfo.getDescr());
+        		// Update current version fields with updated values
+        		copyToCurrentVersion(currentCourseInfo, courseInfo);
         		
         		getCourseService().updateCourse(currentCourse.getId(), currentCourseInfo, ContextUtils.getContextInfo());
             }        	
@@ -308,6 +323,218 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         
     }
 
+    // protected so we can test
+    protected void copyToCurrentVersion(CourseInfo currentCourseInfo, CourseInfo changedCourseInfo) {
+
+        LOG.info("Updating course version " + currentCourseInfo.getId()
+                + " with " + changedCourseInfo.getId() + "course version.");
+
+        currentCourseInfo.setName(changedCourseInfo.getName());
+        currentCourseInfo.setDescr(changedCourseInfo.getDescr());
+        currentCourseInfo.setCode(changedCourseInfo.getCode());
+        currentCourseInfo.setCourseNumberSuffix(changedCourseInfo.getCourseNumberSuffix());
+        currentCourseInfo.setLevel(changedCourseInfo.getLevel());
+        currentCourseInfo.setCourseTitle(changedCourseInfo.getCourseTitle());
+        currentCourseInfo.setTranscriptTitle(changedCourseInfo.getTranscriptTitle());
+        currentCourseInfo.getFormats().clear();
+        currentCourseInfo.getFormats().addAll(changedCourseInfo.getFormats());
+
+        for (FormatInfo changedFormat : currentCourseInfo.getFormats()) {
+            changedFormat.setId(null);
+            changedFormat.setMeta(null);
+            changedFormat.setStateKey(changedFormat.getStateKey());
+
+            for (AttributeInfo attribute : changedFormat.getAttributes()) {
+                attribute.setId(null);
+            }
+
+            for (ActivityInfo activity : changedFormat.getActivities()) {
+                activity.setId(null);
+
+                for (AttributeInfo attribute : activity.getAttributes()) {
+                    attribute.setId(null);
+                }
+            }
+        }
+
+        currentCourseInfo.getTermsOffered().clear();
+        currentCourseInfo.getTermsOffered().addAll(changedCourseInfo.getTermsOffered());
+
+        //duration
+        currentCourseInfo.setDuration(changedCourseInfo.getDuration());
+
+        //joints
+        currentCourseInfo.getJoints().clear();
+        currentCourseInfo.getJoints().addAll(changedCourseInfo.getJoints());
+        for (CourseJointInfo courseJoint : currentCourseInfo.getJoints()) {
+            courseJoint.setRelationId(null);
+            courseJoint.setMeta(null);
+
+            for (AttributeInfo attribute : courseJoint.getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+
+        // crosslistings
+        currentCourseInfo.getCrossListings().clear();
+        currentCourseInfo.getCrossListings().addAll(changedCourseInfo.getCrossListings());
+        for (CourseCrossListingInfo crossListing : currentCourseInfo.getCrossListings()) {
+            crossListing.setId(null);
+            crossListing.setMeta(null);
+            crossListing.setStateKey(currentCourseInfo.getStateKey());
+
+            for (AttributeInfo attribute : crossListing.getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+
+        //variations
+        currentCourseInfo.getVariations().clear();
+        currentCourseInfo.getVariations().addAll(changedCourseInfo.getVariations());
+        for (CourseVariationInfo variations : currentCourseInfo.getVariations()) {
+            variations.setId(null);
+            variations.setMeta(null);
+            variations.setStateKey(currentCourseInfo.getStateKey()); // Is this correct for overall course state?
+
+            for (AttributeInfo attribute : variations.getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+
+        //subjectArea
+        currentCourseInfo.setSubjectArea(changedCourseInfo.getSubjectArea());
+
+        //campusLocations
+        currentCourseInfo.getCampusLocations().clear();
+        currentCourseInfo.getCampusLocations().addAll(changedCourseInfo.getCampusLocations());
+
+        //outOfClassHours
+        currentCourseInfo.setOutOfClassHours(changedCourseInfo.getOutOfClassHours());
+
+        //primaryInstructor
+        currentCourseInfo.setPrimaryInstructor(changedCourseInfo.getPrimaryInstructor());
+        if (currentCourseInfo.getPrimaryInstructor() != null) {
+            currentCourseInfo.getPrimaryInstructor().setId(null);
+            for (AttributeInfo attribute : currentCourseInfo.getPrimaryInstructor().getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+
+        //Instructors
+        currentCourseInfo.getInstructors().clear();
+        currentCourseInfo.getInstructors().addAll(changedCourseInfo.getInstructors());
+        for (CluInstructorInfo instructor : currentCourseInfo.getInstructors()) {
+            instructor.setId(null);
+
+            for (AttributeInfo attribute : instructor.getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+
+        //unitsDeployment
+        currentCourseInfo.getUnitsDeployment().clear();
+        currentCourseInfo.getUnitsDeployment().addAll(changedCourseInfo.getUnitsDeployment());
+
+        //feeJustification
+        currentCourseInfo.setFeeJustification(changedCourseInfo.getFeeJustification());
+
+        //unitsContentOwner
+        currentCourseInfo.getUnitsContentOwner().clear();
+        currentCourseInfo.getUnitsContentOwner().addAll(changedCourseInfo.getUnitsContentOwner());
+
+        //fees
+        currentCourseInfo.getFees().clear();
+        currentCourseInfo.getFees().addAll(changedCourseInfo.getFees());
+        for (CourseFeeInfo courseFee : currentCourseInfo.getFees()) {
+            courseFee.setId(null);
+            courseFee.setMeta(null);
+            courseFee.setStateKey(changedCourseInfo.getStateKey());
+            for (CurrencyAmountInfo feeAmount : courseFee.getFeeAmounts()) {
+                feeAmount.setId(null);
+                feeAmount.setMeta(null);
+            }
+        }
+
+        //revenues
+        currentCourseInfo.getRevenues().clear();
+        currentCourseInfo.getRevenues().addAll(changedCourseInfo.getRevenues());
+        for (CourseRevenueInfo revenueInfo : currentCourseInfo.getRevenues()) {
+            revenueInfo.setId(null);
+            revenueInfo.setMeta(null);
+            revenueInfo.setStateKey(changedCourseInfo.getStateKey());
+
+            for (AffiliatedOrgInfo affiliatedOrg : revenueInfo.getAffiliatedOrgs()) {
+                affiliatedOrg.setId(null);
+                affiliatedOrg.setMeta(null);
+                affiliatedOrg.setStateKey(changedCourseInfo.getStateKey());
+                for (AttributeInfo attribute : affiliatedOrg.getAttributes()) {
+                    attribute.setId(null);
+                }
+            }
+
+            for (AttributeInfo attribute : revenueInfo.getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+
+        //expenditure
+        currentCourseInfo.setExpenditure(currentCourseInfo.getExpenditure());
+        if (ObjectUtils.isNotNull(currentCourseInfo.getExpenditure())) {
+            for (AffiliatedOrgInfo affiliatedOrg : currentCourseInfo.getExpenditure().getAffiliatedOrgs()) {
+                affiliatedOrg.setId(null);
+                affiliatedOrg.setMeta(null);
+                affiliatedOrg.setStateKey(changedCourseInfo.getStateKey());
+                for (AttributeInfo attribute : affiliatedOrg.getAttributes()) {
+                    attribute.setId(null);
+                }
+            }
+            for (AttributeInfo attribute : currentCourseInfo.getExpenditure().getAttributes()) {
+                attribute.setId(null);
+            }
+        }
+        //courseSpecificLOs
+        currentCourseInfo.getCourseSpecificLOs().clear();
+        currentCourseInfo.getCourseSpecificLOs().addAll(changedCourseInfo.getCourseSpecificLOs());
+        for (LoDisplayInfo lo : currentCourseInfo.getCourseSpecificLOs()) {
+            resetLoRecursively(lo, changedCourseInfo.getStateKey());
+        }
+
+        //gradingOptions
+        currentCourseInfo.getGradingOptions().clear();
+        currentCourseInfo.getGradingOptions().addAll(changedCourseInfo.getGradingOptions());
+
+        //creditOptions
+        currentCourseInfo.getCreditOptions().clear();
+        currentCourseInfo.getCreditOptions().addAll(changedCourseInfo.getCreditOptions());
+
+        //specialTopicsCourse
+        currentCourseInfo.setSpecialTopicsCourse(changedCourseInfo.isSpecialTopicsCourse());
+
+        //pilotCourse		
+        currentCourseInfo.setPilotCourse(changedCourseInfo.isPilotCourse());
+
+        //startTerm
+        currentCourseInfo.setStartTerm(changedCourseInfo.getStartTerm());
+
+        //endTerm
+        currentCourseInfo.setEndTerm(changedCourseInfo.getEndTerm());
+
+        //effectiveDate
+        currentCourseInfo.setEffectiveDate(changedCourseInfo.getEffectiveDate());
+
+        //expirationDate
+        currentCourseInfo.setExpirationDate(changedCourseInfo.getExpirationDate());
+
+	 //version (DO NOT COPY OVER)
+        //meta (DO NOT COPY OVER)
+        //attributes (again blow away and replace)
+        currentCourseInfo.getAttributes().clear();
+        currentCourseInfo.getAttributes().addAll(changedCourseInfo.getAttributes());
+        for (AttributeInfo attribute : currentCourseInfo.getAttributes()) {
+            attribute.setId(null);
+        }
+    }
+
     protected boolean preProcessCourseSave(IDocumentEvent iDocumentEvent, CourseInfo courseInfo) {
         return false;
     }
@@ -318,13 +545,26 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         }
         return this.courseService;
     }
+    
     protected CourseStateChangeServiceImpl getCourseStateChangeService() {
         if (this.courseStateChangeService == null) {
             this.courseStateChangeService = new CourseStateChangeServiceImpl();
             this.courseStateChangeService.setCourseService(getCourseService());
         }
         return this.courseStateChangeService;
-    }    
+    } 
+    
+    private void resetLoRecursively(LoDisplayInfo lo, String stateKey) {
+        //Clear out all the Lo ids recursively
+        lo.setId(null);
+        lo.setStateKey(stateKey);
+        lo.setParentLoRelationid(null);
+        lo.getLoInfo().setId(null);
+        for (LoDisplayInfo nestedLo : lo.getLoDisplayInfoList()) {
+            resetLoRecursively(nestedLo, stateKey);
+        }
+    }
+
     /*
      * Recursively set state for StatementTreeViewInfo
      * TODO: We are not able to reuse the code in CourseStateUtil for dependency reason.
