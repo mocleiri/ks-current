@@ -5,6 +5,7 @@ import com.sigmasys.kuali.ksa.krad.model.MemoModel;
 import com.sigmasys.kuali.ksa.krad.util.AccountUtils;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.model.fm.FeeManagementSession;
+import com.sigmasys.kuali.ksa.model.fm.FeeManagementSessionStatus;
 import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.InformationService;
 import com.sigmasys.kuali.ksa.service.PaymentService;
@@ -207,8 +208,11 @@ public class QuickViewController extends GenericSearchController {
         String accountId = form.getAccount().getId();
 
         if (StringUtils.isNotBlank(accountId)) {
+
             try {
-                FeeManagementSession fmSession = fmService.getOldestFeeManagementSession(accountId);
+
+                FeeManagementSession fmSession = fmService.getOldestFeeManagementSession(accountId, FeeManagementSessionStatus.CURRENT);
+
                 if (fmSession != null) {
                     fmService.processFeeManagementSession(fmSession.getId());
                     GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Fees have been successfully assessed");

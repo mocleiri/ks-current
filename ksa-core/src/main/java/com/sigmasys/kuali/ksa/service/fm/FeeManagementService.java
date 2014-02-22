@@ -173,4 +173,14 @@ public interface FeeManagementService {
      */
     FeeManagementSession getOldestFeeManagementSession(String accountId);
 
+    /**
+     * Returns the oldest FeeManagementSession instance for a given Account ID and session status.
+     *
+     * @param accountId Account ID
+     * @param status    FeeManagementSessionStatus
+     * @return FeeManagementSession instance
+     */
+    @WebMethod(exclude = true)
+    FeeManagementSession getOldestFeeManagementSession(String accountId, FeeManagementSessionStatus status);
+
 }

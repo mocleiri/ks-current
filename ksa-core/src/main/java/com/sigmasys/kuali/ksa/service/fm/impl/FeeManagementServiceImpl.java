@@ -562,10 +562,37 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      */
     @Override
     public FeeManagementSession getOldestFeeManagementSession(String accountId) {
+        return getOldestFeeManagementSession(accountId, null);
+    }
 
-        Query query = em.createQuery(GET_SESSIONS_SELECT + " where a.id = :accountId order by s.creationDate asc");
+    /**
+     * Returns the oldest FeeManagementSession instance for a given Account ID and session status.
+     *
+     * @param accountId Account ID
+     * @param status    FeeManagementSessionStatus
+     * @return FeeManagementSession instance
+     */
+    @Override
+    @WebMethod(exclude = true)
+    public FeeManagementSession getOldestFeeManagementSession(String accountId, FeeManagementSessionStatus status) {
+
+        StringBuilder queryBuilder = new StringBuilder(GET_SESSIONS_SELECT);
+
+        queryBuilder.append(" where a.id = :accountId ");
+
+        if (status != null) {
+            queryBuilder.append(" and s.statusCode = :status ");
+        }
+
+        queryBuilder.append(" order by s.creationDate asc");
+
+        Query query = em.createQuery(queryBuilder.toString());
 
         query.setParameter("accountId", accountId);
+
+        if (status != null) {
+            query.setParameter("status", status.getId());
+        }
 
         query.setMaxResults(1);
 
