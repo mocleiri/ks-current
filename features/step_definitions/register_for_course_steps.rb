@@ -33,7 +33,7 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
       begin
-        ! page.course_title(@reg_request.course_code, @reg_request.reg_group_code).present?
+        page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
       rescue Watir::Exception::UnknownObjectException
         # the course is not there: good
       end
