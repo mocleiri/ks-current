@@ -107,6 +107,7 @@ class RegistrationRequest
 
   def remove_from_cart
     on RegistrationCart do |page|
+      sleep 2
       page.toggle_course_details @course_code,@reg_group_code
       page.remove_course_from_cart @course_code,@reg_group_code
     end
