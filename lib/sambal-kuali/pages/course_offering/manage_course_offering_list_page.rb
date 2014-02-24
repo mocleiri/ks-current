@@ -83,7 +83,7 @@ class ManageCourseOfferingList < BasePage
   def crosslist_tooltip_text(co_code)
     retVal = ""
 
-    crosslist_tooltip_text = div(id: "view_co_#{co_code}").img.alt
+    crosslist_tooltip_text = div(id: "view_co_#{co_code}").parent.img.alt
     if crosslist_tooltip_text != nil
       retVal = crosslist_tooltip_text
     end
