@@ -50,7 +50,13 @@ class RegistrationRequest
 
   def create
     visit RegistrationCart do |page|
-      page.select_term @term_descr
+      begin
+        page.select_term @term_descr
+      rescue Watir::Exception::NoValueFoundException
+        # select list had not loaded yet - try again
+        sleep 2
+        page.select_term @term_descr
+      end
       page.course_code_input.set @course_code
       page.reg_group_code_input.set @reg_group_code
       page.add_to_cart
