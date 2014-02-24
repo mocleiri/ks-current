@@ -11,7 +11,7 @@ Feature: REG.Register for course
   #CR 1.1 (KSENROLL-11747)  CR 1.3 (KSENROLL-11812)
   @wip
   Scenario: I want to enter course information into my list of selections so that I can indicate what I want to register for.
-    When I add a course offering to my registration cart
+    When I add a CHEM course offering to my registration cart
     Then the course is present in my cart
     And I can view the details of my selection
 
@@ -22,7 +22,7 @@ Feature: REG.Register for course
 
   #CR 1.4 (KSENROLL-11809)
   Scenario: I want to remove a course from my selections because I dont want to register for it anymore
-    When I add a course offering to my registration cart
+    When I add an ENGL course offering to my registration cart
     And I drop the course from my registration cart
     Then the course is not present in my cart
 

@@ -60,10 +60,11 @@ class RegistrationRequest
       page.course_code_input.set @course_code
       page.reg_group_code_input.set @reg_group_code
       page.add_to_cart
-      #if @modify_course_options
+      page.new_item_cancel_button.wait_until_present
+      if @modify_course_options
         edit_course_options_on_new_item
-      #end
-      #return new RegistrationRequest
+      end
+      page.save_new_item
     end
   end
 
@@ -127,7 +128,6 @@ class RegistrationRequest
       sleep 2
       page.select_credits_on_new_item @course_options.credit_option
       page.select_grading_on_new_item @course_options.grading_option
-      page.save_new_item
     end
   end
   private :edit_course_options_on_new_item
@@ -141,8 +141,12 @@ class RegistrationRequest
       page.toggle_course_details @course_code,@reg_group_code
       page.edit_course_options @course_code,@reg_group_code
       page.select_credits_in_cart @course_code,@reg_group_code,@course_options.credit_option
-      page.select_grading_in_cart @course_code,@reg_group_code,@course_options.grading_option
+      #page.select_grading_in_cart @course_code,@reg_group_code,@course_options.grading_option
       page.save_edits @course_code,@reg_group_code
+      #page.edit_course_options 
+      page.select_credits_on_new_item @course_options.credit_option
+      page.select_grading_on_new_item @course_options.grading_option
+      page.save_new_item 
     end
   end
   #private :edit_course_options_in_cart
@@ -172,4 +176,3 @@ end
     end
 
   end
-
