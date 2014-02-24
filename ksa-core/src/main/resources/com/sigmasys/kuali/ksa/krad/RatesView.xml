@@ -72,8 +72,7 @@
 
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="rateCatalogCode"
-                      p:label="Rate Catalog Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                      p:maxLength="20">
+                      p:label="Rate Catalog Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP">
                     <!--<property name="suggest">
                         <bean parent="Uif-Suggest">
                             <property name="valuePropertyName" value="id.id"/>
@@ -94,8 +93,7 @@
                     -->
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="rateCode"
-                      p:label="Rate Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                      p:maxLength="20">
+                      p:label="Rate Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP">
                     <!--<property name="suggest">
                         <bean parent="Uif-Suggest">
                             <property name="valuePropertyName" value="id.id"/>
@@ -116,8 +114,7 @@
                     -->
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="rateSubcode"
-                      p:label="Rate Subcode" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                      p:maxLength="20">
+                      p:label="Rate Subcode" p:fieldLabel.renderColon="false" p:labelPlacement="TOP">
                     <!--<property name="suggest">
                         <bean parent="Uif-Suggest">
                             <property name="valuePropertyName" value="id.id"/>
