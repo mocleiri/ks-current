@@ -118,7 +118,7 @@ class RegistrationRequest
       return nil
     end
     on RegistrationCart do |page|
-      #page.edit_course_options @course_code,@reg_group_code
+      sleep 2
       page.select_credits_on_new_item @course_options.credit_option
       page.select_grading_on_new_item @course_options.grading_option
       page.save_new_item
@@ -131,6 +131,7 @@ class RegistrationRequest
       return nil
     end
     on RegistrationCart do |page|
+      sleep 2
       page.toggle_course_details @course_code,@reg_group_code
       page.edit_course_options @course_code,@reg_group_code
       page.select_credits_in_cart @course_code,@reg_group_code,@course_options.credit_option

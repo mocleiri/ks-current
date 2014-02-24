@@ -7,13 +7,22 @@ When /^I add a course offering to my registration cart$/ do
   @reg_request.create
 end
 
+When /^I add a course offering having multiple credit options to my registration cart$/ do
+  @reg_request = make RegistrationRequest, :student_id=>"student",
+                                           :term_code=>"201201",
+                                           :term_descr=>"Spring 2012",
+                                           :course_code=>"WMST498B",
+                                           :reg_group_code=>"1001"
+  @reg_request.create
+end
+
 When /^I add a course to my registration cart and specify course options$/ do
-  course_options = (make CourseOptions, :credit_option => "4.0", :grading_option => "Pass/Fail")
+  course_options = (make CourseOptions, :credit_option => "2.5", :grading_option => "Pass/Fail")
   @reg_request = create RegistrationRequest, :student_id => "student", :term_code => "201201",
                         :term_descr=>"Spring 2012",
-                        :course_code=>"CHEM237",
+                        :course_code=>"WMST298G",
                         :reg_group_code=>"1001", :course_options => course_options, :modify_course_options => true
-  # above will include entering course_code, reg_group_code (& term if nec), and clicking Add to Cart, then changing the 2 options, and clicking Add to Cart again
+  # above will include entering course_code, reg_group_code and clicking Add to Cart, then changing the 2 options, and clicking Save
 end
 
 When /^I drop the course from my registration cart$/ do
@@ -21,8 +30,7 @@ When /^I drop the course from my registration cart$/ do
 end
 
 And /^I edit the course in my registration cart$/ do
-  #@course_options = :credit_option => "4.0", :grading_option => "Pass/Fail"
-  @reg_request.course_options.credit_option = "4.0"
+  @reg_request.course_options.credit_option = "1.5"
   @reg_request.course_options.grading_option = "Pass/Fail"
   @reg_request.edit_course_options_in_cart
 end
@@ -43,7 +51,8 @@ end
 
 Then /^the course is present in my cart, with the correct options$/  do
   on RegistrationCart do |page|
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
+    sleep 2
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     #do we need to quit or remove course?
   end
