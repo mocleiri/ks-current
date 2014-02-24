@@ -98,7 +98,7 @@ class ManageCourseOfferingList < BasePage
   end
 
   def select_co_checkbox(co_code)
-    @browser.checkbox(id: "checkbx_co_#{co_code}")
+    @browser.checkbox(id: "checkbx_co_#{co_code}_control")
   end
 
   def copy(co_code)
