@@ -50,13 +50,9 @@ class RegistrationRequest
 
   def create
     visit RegistrationCart do |page|
-      begin
-        page.select_term @term_descr
-      rescue Watir::Exception::NoValueFoundException
-        # select list had not loaded yet - try again
-        sleep 2
-        page.select_term @term_descr
-      end
+      # wait in case list has not loaded yet
+      page.wait_until {page.term_select.include? @term_descr }
+      page.select_term @term_descr
       page.course_code_input.set @course_code
       page.reg_group_code_input.set @reg_group_code
       page.add_to_cart
@@ -114,7 +110,7 @@ class RegistrationRequest
 
   def remove_from_cart
     on RegistrationCart do |page|
-      sleep 2
+      page.course_code(@course_code,@reg_group_code).wait_until_present
       page.toggle_course_details @course_code,@reg_group_code
       page.remove_course_from_cart @course_code,@reg_group_code
     end
@@ -125,7 +121,7 @@ class RegistrationRequest
       return nil
     end
     on RegistrationCart do |page|
-      sleep 2
+      page.new_item_credits_selection.wait_until_present
       page.select_credits_on_new_item @course_options.credit_option
       page.select_grading_on_new_item @course_options.grading_option
     end
@@ -137,7 +133,7 @@ class RegistrationRequest
       return nil
     end
     on RegistrationCart do |page|
-      sleep 2
+      page.course_code(@course_code,@reg_group_code).wait_until_present
       page.toggle_course_details @course_code,@reg_group_code
       page.edit_course_options @course_code,@reg_group_code
       page.select_credits_in_cart @course_code,@reg_group_code,@course_options.credit_option

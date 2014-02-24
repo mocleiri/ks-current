@@ -58,7 +58,7 @@ end
 
 Then /^the course is present in my cart, with the correct options$/  do
   on RegistrationCart do |page|
-    sleep 2
+    page.course_code(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     #do we need to quit or remove course?
