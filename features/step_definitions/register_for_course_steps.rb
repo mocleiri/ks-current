@@ -78,6 +78,7 @@ end
 And /^I? ?can view the details of my selections?$/ do
   on RegistrationCart do |page|
     page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code)
+    page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
     page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry I"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
