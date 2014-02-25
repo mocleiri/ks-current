@@ -18,8 +18,8 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
 	  @Column(name="REQ_REF_OBJ_ID")
 	  private String refObjectId;
 	  
-	  @Column(name="REF_OBJ_TYPE_KEY")
-	  private String refObjectTypeKey;
+	  @Column(name="REF_OBJ_TYPE")
+	  private String refObjectType;
 	  
 	  @Column(name="PLACEHOLDER_ID")
 	  private String placeholderId;
@@ -46,7 +46,7 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
         this.setId(dto.getId());
         this.setPlaceholderId(dto.getPlaceholderId());
         this.setRefObjectId(dto.getRefObjectId());
-        this.setRefObjectTypeKey(dto.getRefObjectTypeKey());
+        this.setRefObjectType(dto.getRefObjectType());
         this.setAdvisorId(dto.getAdvisorId());
         this.setAdvisorOK(dto.isAdvisorOK());
         this.setStudentOK(dto.isStudentOK());      
@@ -64,9 +64,9 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
 	@Override
 	public String toString() {
 		return String
-				.format("PlaceholderInstance id:  %s, PlaceholderId: %s, RefObjectTypeKey %s, RefObjectId: %s. ",
+				.format("PlaceholderInstance id:  %s, PlaceholderId: %s, RefObjectType %s, RefObjectId: %s. ",
 						this.getId(), this.getPlaceholderId(),
-						this.getRefObjectTypeKey(), this.getRefObjectId());
+						this.getRefObjectType(), this.getRefObjectId());
 	}
     
 	/**
@@ -79,7 +79,7 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
         dto.setId(getId());
         dto.setPlaceholderId(getPlaceholderId());
         dto.setRefObjectId(getRefObjectId());
-        dto.setRefObjectTypeKey(getRefObjectTypeKey());
+        dto.setRefObjectType(getRefObjectType());
         dto.setAdvisorId(getAdvisorId());
         dto.setAdvisorOK(isAdvisorOK());
         dto.setStudentOK(isStudentOK());         
@@ -88,13 +88,15 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
     }
 
 
-	public String getRefObjectTypeKey() {
-		return refObjectTypeKey;
+
+
+	public String getRefObjectType() {
+		return refObjectType;
 	}
 
 
-	public void setRefObjectTypeKey(String refObjectTypeKey) {
-		this.refObjectTypeKey = refObjectTypeKey;
+	public void setRefObjectType(String refObjectType) {
+		this.refObjectType = refObjectType;
 	}
 
 
