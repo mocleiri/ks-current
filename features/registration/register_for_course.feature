@@ -31,6 +31,13 @@ Feature: REG.Register for course
     And I edit the course in my registration cart
     Then the course is present in my cart, with the correct options
 
+  #CR 1.6 (KSENROLL-11811)
+  Scenario: I want to submit my list of course selections so that I can register for them
+    When I add a HIST course offering to my registration cart
+    And I register for the course
+    Then there is a message indicating registration submittal
+    And the course is present in my schedule
+
   #CR 1.9 (KSENROLL-11922)
   Scenario: I want my course selections to persist so that I can return in another session and continue my registration process.
     When I add a PHYS course offering to my registration cart

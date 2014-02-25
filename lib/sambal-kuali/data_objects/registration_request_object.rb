@@ -148,6 +148,12 @@ class RegistrationRequest
       page.undo_remove
     end
   end
+
+  def register
+    on RegistrationCart do |page|
+      page.register
+    end
+  end
 end
 
   class CourseOptions

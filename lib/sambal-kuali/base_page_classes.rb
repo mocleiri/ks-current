@@ -275,6 +275,7 @@ class RegisterForCourseBase < BasePage
   element(:cr_header_div) { |b| b.div(class: "kscr-header-container ng-scope") }
   element(:term_select) { |b| b.select(id: "searchTerm") }
 
+  element(:search) { |b| b.cr_header_div.link(id: "goToSearch")}
   element(:cart_link) { |b| b.cr_header_div.link(id: "goToCart") }
   element(:schedule_link) { |b| b.cr_header_div.link(id: "goToSchedule") }
 

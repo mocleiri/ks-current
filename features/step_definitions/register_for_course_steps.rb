@@ -3,6 +3,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="BSCI" then "BSCI106"
                   when subj=="CHEM" then "CHEM231"
                   when subj=="ENGL" then "ENGL211"
+                  when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
                   else ""
                 end
@@ -65,6 +66,35 @@ Then /^the course is present in my cart, with the correct options$/  do
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     #do we need to quit or remove course?
+  end
+end
+
+And /^I register for the course$/ do
+  @reg_request.register
+end
+
+Then /^there is a message indicating registration submittal$/ do
+  on RegistrationCart do |page|
+    puts "User Message: #{page.user_message}"
+    page.user_message.should include "Cart was submitted"
+  end
+end
+
+And /^the course is (present|not present) in my schedule$/  do |presence|
+  on RegistrationCart do |page1|
+    page1.schedule_link.click
+  end
+  on StudentSchedule do |page2|
+    sleep 2
+    if presence == "present"
+      page2.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
+    else
+      begin
+        page2.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
+      rescue Watir::Exception::UnknownObjectException
+        # the course is not there: good
+      end
+    end
   end
 end
 
