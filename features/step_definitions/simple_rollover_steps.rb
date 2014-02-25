@@ -129,17 +129,19 @@ end
 
 And /^I setup a second target term with those subterms setup$/ do
   @calendar_target2 = create AcademicCalendar, :year => @calendar.year.to_i + 2 #, :name => "TWj64w1q3e"
-  @term_target2 = make AcademicTerm, :term_year => @calendar_target2.year
-  @calendar_target2.add_term(@term_target2)
+  @term_target2 = make AcademicTermObject, :parent_calendar => @calendar_target2
+  @calendar_target2.add_term @term_target2
 
   @subterm_list_target2 = Array.new(2)
-  @subterm_list_target2[0] = make AcademicTerm, :term_year => @calendar_target2.year, :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
-  @calendar_target2.add_term(@subterm_list_target2[0])
+  @subterm_list_target2[0] = make AcademicTermObject, :parent_calendar => @calendar_target2, :term_type=> "Half Fall 1",
+                                  :parent_term=> "Fall Term", :subterm => true
+  @calendar_target2.add_term @subterm_list_target2[0]
 
-  @subterm_list_target2[1] = make AcademicTerm, :term_year => @calendar_target2.year, :term_type=> "Half Fall 2", :parent_term=> "Fall Term", :subterm => true
-  @calendar_target2.add_term(@subterm_list_target2[1])
+  @subterm_list_target2[1] = make AcademicTermObject, :parent_calendar => @calendar_target2, :term_type=> "Half Fall 2",
+                                  :parent_term=> "Fall Term", :subterm => true
+  @calendar_target2.add_term @subterm_list_target2[1]
 
-  @subterm_list_target2.each do |subterm|
+  @calendar_target2.terms[1..2].each do |subterm|
     subterm.make_official
   end
 
@@ -149,17 +151,19 @@ end
 
 And /^I rollover the subterms' parent term to a target term with those subterms setup$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #,:name => "6aXt9C4nbM"
-  @term_target = make AcademicTerm, :term_year => @calendar_target.year
-  @calendar_target.add_term(@term_target)
+  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term @term_target
 
   @subterm_list_target = Array.new(2)
-  @subterm_list_target[0] = make AcademicTerm, :term_year => @calendar_target.year, :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
-  @calendar_target.add_term(@subterm_list_target[0])
+  @subterm_list_target[0] = make AcademicTermObject, :parent_calendar => @calendar_target, :term_type=> "Half Fall 1",
+                                 :parent_term=> "Fall Term", :subterm => true
+  @calendar_target.add_term @subterm_list_target[0]
 
-  @subterm_list_target[1] = make AcademicTerm, :term_year => @calendar_target.year, :term_type=> "Half Fall 2", :parent_term=> "Fall Term", :subterm => true
-  @calendar_target.add_term(@subterm_list_target[1])
+  @subterm_list_target[1] = make AcademicTermObject, :parent_calendar => @calendar_target, :term_type=> "Half Fall 2",
+                                 :parent_term=> "Fall Term", :subterm => true
+  @calendar_target.add_term @subterm_list_target[1]
 
-  @subterm_list_target.each do |subterm|
+  @calendar_target.terms[1..2].each do |subterm|
     subterm.make_official
   end
 
@@ -175,9 +179,9 @@ end
 
 And /^I rollover the subterms' parent term to a target term with those subterms are NOT setup$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #, :name => "TWj64w1q3e"
-  @term_target = make AcademicTerm, :term_year => @calendar_target.year
-  @calendar_target.add_term(@term_target)
-  @term_target.make_official
+  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term @term_target
+  @calendar_target.terms[0].make_official
 
   @manage_soc = make ManageSoc, :term_code => @term_target.term_code
   @manage_soc.set_up_soc
@@ -191,9 +195,9 @@ end
 
 And /^I rollover the term to a new academic term$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #, :name => "TWj64w1q3e"
-  @term_target = make AcademicTerm, :term_year => @calendar_target.year
-  @calendar_target.add_term(@term_target)
-  @term_target.make_official
+  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term @term_target
+  @calendar_target.terms[0].make_official
 
   @manage_soc = make ManageSoc, :term_code => @term_target.term_code
   @manage_soc.set_up_soc

@@ -206,11 +206,13 @@ Given /^I edit an Activity Offering that has available subterms$/ do
   @course_offering.manage
   @course_offering.edit_ao :ao_code=> @activity_offering.code
 
+  @calendar = make AcademicCalendar, :year => "2012"
+  @term = make AcademicTermObject, :parent_calendar => @calendar
   @subterm_list = Array.new(2)
-  @subterm_list[0] = make AcademicTerm, :term_year => "2012", :start_date => "08/29/2012", :end_date => "10/21/2012",
-                          :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
-  @subterm_list[1] = make AcademicTerm, :term_year => "2012", :start_date => "10/22/2012", :end_date => "12/11/2012",
-                          :term_type=> "Half Fall 2", :parent_term=> "Fall Term", :subterm => true
+  @subterm_list[0] = make AcademicTermObject, :parent_calendar => @calendar, :start_date => "08/29/2012",
+                          :end_date => "10/21/2012", :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
+  @subterm_list[1] = make AcademicTermObject, :parent_calendar => @calendar, :start_date => "10/22/2012",
+                          :end_date => "12/11/2012", :term_type=> "Half Fall 2", :parent_term=> "Fall Term", :subterm => true
 
 end
 

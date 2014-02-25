@@ -24,7 +24,7 @@ end
 #I create a course and activity offering with waitlists enabled
 #I manage an activity offering with waitlists enabled
 Given /^I (?:manage|create)(?: a course)? and? activity offering with waitlists enabled$/ do
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @course_offering = create CourseOffering, :term => @term.term_code, :course => "ENGL300", :waitlists => true
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
@@ -32,7 +32,7 @@ Given /^I (?:manage|create)(?: a course)? and? activity offering with waitlists 
 end
 
 Given /^I create a course and activity offering with waitlists disabled$/ do
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
   @course_offering_wl_disabled = create CourseOffering, :term => @term.term_code, :course => "ENGL300", :waitlist => false
   @activity_offering_wl_disabled = create ActivityOffering, :parent_course_offering => @course_offering_wl_disabled
   @activity_offering_wl_disabled.save
@@ -360,7 +360,7 @@ Then /^all three activity offerings have the same waitlist limit size$/ do
 end
 
 Given /^I create three course offerings with one activity offering in each with waitlists enabled$/ do
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @ao_list = []
 
@@ -521,7 +521,7 @@ end
 
 Given /^I create two colocated activity offerings \(shared enrolment\) with waitlists enabled$/ do
   #TODO: # of AOs can be parameterized
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @ao_list = []
 

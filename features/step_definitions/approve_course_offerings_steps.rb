@@ -160,8 +160,8 @@ end
 
 Given /^a new academic term has course and activity offerings in canceled and suspended status$/ do
   @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
-  @term = make AcademicTerm, :term_year => @calendar.year
-  @calendar.add_term(@term)
+  @term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term @term
 
   @manage_soc = make ManageSoc, :term_code => @term.term_code
   @manage_soc.set_up_soc
@@ -991,11 +991,11 @@ end
 
 Given /^a new academic term has an activity offering in approved status$/ do
     @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
-    @term = make AcademicTerm, :term_year => @calendar.year
-    exam_period = make ExamPeriod, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+    @term = make AcademicTermObject, :parent_calendar => @calendar
+    exam_period = make ExamPeriodObject, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
                        :end_date=>"12/20/#{@calendar.year}"
-    @term.exam_period = exam_period
-    @calendar.add_term(@term)
+    @term.exam_period << exam_period
+    @calendar.add_term @term
 
     @manage_soc = make ManageSoc, :term_code => @term.term_code
     @manage_soc.set_up_soc
