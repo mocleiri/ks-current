@@ -38,7 +38,6 @@
                         <list>
                             <ref bean="rateFilterSection"/>
                             <ref bean="rateTable"/>
-
                         </list>
                     </property>
                 </bean>
@@ -143,7 +142,8 @@
     <bean id="rateTable" parent="Uif-VerticalBoxSection">
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="Please select rate criteria." p:render="@{rates.size() == 0}"/>
+                <bean parent="Uif-Message" p:messageText="Please select rate criteria."
+                      p:render="@{rates.size() == 0}"/>
                 <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4" p:width="85%">
                     <property name="readOnly" value="false"/>
                     <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.krad.model.RateModel"/>
@@ -163,7 +163,8 @@
 
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:label="Code" p:propertyName="rate.code" p:readOnly="@{#line.rate.id != null}">
+                            <bean parent="Uif-InputField" p:label="Code" p:propertyName="rate.code"
+                                  p:readOnly="@{#line.rate.id != null}">
                                 <property name="control">
                                     <bean parent="Uif-TextControl"/>
                                 </property>
@@ -182,9 +183,11 @@
                                 <property name="items">
                                     <list>
                                         <!-- "Save" image action -->
-                                        <bean parent="Uif-ActionLink" p:methodToCall="saveRate" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');">
+                                        <bean parent="Uif-ActionLink" p:methodToCall="saveRate"
+                                              p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');">
                                             <property name="actionImage">
-                                                <bean parent="Uif-Image" p:source="../images/save.png" p:style="cursor:pointer;" p:altText="Save"/>
+                                                <bean parent="Uif-Image" p:source="../images/save.png"
+                                                      p:style="cursor:pointer;" p:altText="Save"/>
                                             </property>
                                         </bean>
 
@@ -198,13 +201,18 @@
                                             </property>
                                         </bean>
                                         -->
-                                        <bean parent="Uif-ImageField" p:source="../images/roll-over.png" p:style="cursor:pointer; float: right;" p:altText="" p:title="" p:render="@{#line.rate.id != null}"
+                                        <bean parent="Uif-ImageField" p:source="../images/roll-over.png"
+                                              p:style="cursor:pointer; float: right;" p:altText="" p:title=""
+                                              p:render="@{#line.rate.id != null}"
                                               p:onClickScript="showLightboxComponent('rolloverRateLightbox@{#lineSuffix}');writeHiddenToForm('rateId', '@{#line.rate.id}');">
                                         </bean>
                                         <ref bean="rolloverRateLightbox"/>
-                                        <bean parent="Uif-ActionLink" p:methodToCall="deleteRate" p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');" p:hidden="@{#line.rate.id == null}">
+                                        <bean parent="Uif-ActionLink" p:methodToCall="deleteRate"
+                                              p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');"
+                                              p:hidden="@{#line.rate.id == null}">
                                             <property name="actionImage">
-                                                <bean parent="Uif-Image" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Delete"/>
+                                                <bean parent="Uif-Image" p:source="../images/delete.png"
+                                                      p:style="cursor:pointer;" p:altText="Delete"/>
                                             </property>
                                         </bean>
                                     </list>
@@ -217,28 +225,16 @@
                         <bean parent="Uif-VerticalBoxGroup">
                             <property name="items">
                                 <list>
-                                    <bean parent="Uif-InputField" p:propertyName="atpDescription" p:labelPlacement="TOP" p:label="Academic Time Period" p:readOnly="true"/>
-                                    <bean parent="Uif-InputField" p:propertyName="defaultAmount" p:labelPlacement="TOP" p:label="Default Amount" p:readOnly="@{#line.getDefaultAmountReadOnly()}"/>
-                                    <bean parent="Uif-InputField" p:propertyName="transactionTypeId" p:labelPlacement="TOP" p:label="Transaction Type Code" p:readOnly="@{#line.getTransactionTypeIdReadOnly()}"/>
+                                    <bean parent="Uif-InputField" p:propertyName="atpDescription" p:labelPlacement="TOP"
+                                          p:label="Academic Time Period" p:readOnly="true"/>
+                                    <bean parent="Uif-InputField" p:propertyName="defaultAmount" p:labelPlacement="TOP"
+                                          p:label="Default Amount" p:readOnly="@{#line.getDefaultAmountReadOnly()}"/>
+                                    <bean parent="Uif-InputField" p:propertyName="transactionTypeId"
+                                          p:labelPlacement="TOP" p:label="Transaction Type Code"
+                                          p:readOnly="@{#line.getTransactionTypeIdReadOnly()}"/>
                                     <bean parent="Uif-HorizontalBoxSection">
                                         <property name="items">
                                             <list>
-                                                <!--
-                                                <bean parent="Uif-VerticalBoxSection" p:style="width: 48%">
-                                                    <property name="items">
-                                                        <list>
-                                                            <ref bean="flexibleRateAmounts"/>
-                                                        </list>
-                                                    </property>
-                                                </bean>
-                                                <bean parent="Uif-VerticalBoxSection" p:style="width: 48%">
-                                                    <property name="items">
-                                                        <list>
-                                                            <ref bean="effectiveDateParameters"/>
-                                                        </list>
-                                                    </property>
-                                                </bean>
-                                                -->
                                                 <ref bean="flexibleRateAmounts"/>
                                                 <ref bean="effectiveDateParameters"/>
                                                 <ref bean="rateLimitParameters"/>
@@ -255,26 +251,31 @@
         </property>
     </bean>
 
-    <bean id="rolloverRateLightbox" parent="Uif-VerticalBoxSection" p:readOnly="false" p:layoutManager.orientation="VERTICAL">
+    <bean id="rolloverRateLightbox" parent="Uif-VerticalBoxSection" p:readOnly="false"
+          p:layoutManager.orientation="VERTICAL">
         <property name="headerText" value="Rollover Rate"/>
         <!--<property name="retrieveViaAjax" value="true"/>-->
         <property name="hidden" value="true"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:label="New Academic Time Period" p:propertyName="rolloverAcademicPeriod"/>
-                <bean parent="Uif-InputField" p:label="Transaction Date Type" p:propertyName="rolloverTransactionDateType">
+                <bean parent="Uif-InputField" p:label="New Academic Time Period"
+                      p:propertyName="rolloverAcademicPeriod"/>
+                <bean parent="Uif-InputField" p:label="Transaction Date Type"
+                      p:propertyName="rolloverTransactionDateType">
                     <property name="control">
                         <bean parent="Uif-DropdownControl" p:width="100%"/>
                     </property>
                     <property name="optionsFinder" value="@{getTransactionDateTypeFinder()}"/>
                 </bean>
 
-                <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rolloverTransactionDate" p:constraintText="Format: mm/dd/yyyy">
+                <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rolloverTransactionDate"
+                      p:constraintText="Format: mm/dd/yyyy">
                     <property name="control">
                         <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:label="Recognition Date" p:propertyName="rolloverRecognitionDate" p:constraintText="Format: mm/dd/yyyy">
+                <bean parent="Uif-InputField" p:label="Recognition Date" p:propertyName="rolloverRecognitionDate"
+                      p:constraintText="Format: mm/dd/yyyy">
                     <property name="control">
                         <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
                     </property>
@@ -299,15 +300,15 @@
                     <property name="layoutManager.sequencePropertyName" value="id"/>
                     <property name="layoutManager.richTable.render" value="true"/>
                     <property name="layoutManager.renderSequenceField" value="false"/>
-                    <property name="renderAddBlankLineButton" value="false" />
-                    <property name="renderAddLine" value="false" />
+                    <property name="renderAddBlankLineButton" value="false"/>
+                    <property name="renderAddLine" value="false"/>
                     <property name="layoutManager.richTable.disableTableSort" value="false"/>
                     <property name="layoutManager.richTable.templateOptions">
                         <map merge="true">
                             <entry key="bPaginate" value="false"/>
                             <entry key="bInfo" value="false"/>
                             <entry key="bFilter" value="false"/>
-                            <entry key="bSort" value="false" />
+                            <entry key="bSort" value="false"/>
                         </map>
                     </property>
                     <property name="renderLineActions" value="false"/>
@@ -315,7 +316,8 @@
                         <list>
                             <bean parent="Uif-InputField" p:label="Units" p:propertyName="units"/>
                             <bean parent="Uif-InputField" p:label="Amount" p:propertyName="amount"/>
-                            <bean parent="Uif-InputField" p:label="Transaction Type Code" p:propertyName="transactionTypeId"/>
+                            <bean parent="Uif-InputField" p:label="Transaction Type Code"
+                                  p:propertyName="transactionTypeId"/>
                         </list>
                     </property>
 
@@ -325,7 +327,7 @@
         </property>
     </bean>
 
-    <bean id="effectiveDateParameters" parent="Uif-Disclosure-VerticalBoxSection" >
+    <bean id="effectiveDateParameters" parent="Uif-Disclosure-VerticalBoxSection">
         <property name="headerText" value="Effective Date Parameters"/>
         <property name="readOnly" value="false"/>
 
@@ -337,12 +339,14 @@
                     </property>
                     <property name="optionsFinder" value="@{getTransactionDateTypeFinder()}"/>
                 </bean>
-                <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rate.transactionDate" p:constraintText="Format: mm/dd/yyyy">
+                <bean parent="Uif-InputField" p:label="Transaction Date" p:propertyName="rate.transactionDate"
+                      p:constraintText="Format: mm/dd/yyyy">
                     <property name="control">
                         <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:label="Recognition Date" p:propertyName="rate.recognitionDate" p:constraintText="Format: mm/dd/yyyy">
+                <bean parent="Uif-InputField" p:label="Recognition Date" p:propertyName="rate.recognitionDate"
+                      p:constraintText="Format: mm/dd/yyyy">
                     <property name="control">
                         <bean parent="Uif-DateControl" p:size="11" p:maxLength="20"/>
                     </property>
@@ -352,7 +356,7 @@
         </property>
     </bean>
 
-    <bean id="rateLimitParameters" parent="Uif-Disclosure-VerticalBoxSection" >
+    <bean id="rateLimitParameters" parent="Uif-Disclosure-VerticalBoxSection">
         <property name="headerText" value="Rate Limit Parameters"/>
         <property name="readOnly" value="false"/>
 
@@ -367,19 +371,19 @@
                 <bean parent="Uif-HorizontalBoxSection">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="A limit of " />
+                            <bean parent="Uif-Message" p:messageText="A limit of "/>
                             <bean parent="Uif-InputField" p:propertyName="rate.limitAmountValue">
                                 <property name="control">
                                     <bean parent="Uif-TextControl" p:size="6"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="will apply between" />
+                            <bean parent="Uif-Message" p:messageText="will apply between"/>
                             <bean parent="Uif-InputField" p:propertyName="rate.minLimitUnits">
                                 <property name="control">
                                     <bean parent="Uif-TextControl" p:size="6"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="and" />
+                            <bean parent="Uif-Message" p:messageText="and"/>
                             <bean parent="Uif-InputField" p:propertyName="rate.maxLimitUnits">
                                 <property name="control">
                                     <bean parent="Uif-TextControl" p:size="6"/>

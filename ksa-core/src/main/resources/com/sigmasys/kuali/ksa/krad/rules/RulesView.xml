@@ -41,6 +41,10 @@
                               p:navigateToPageId="AddRulePage"
                               p:actionLabel="Add Rule"
                               p:onClickScript="writeHiddenToForm('ruleSetName', '@{ruleSetName}');"/>
+                        <bean parent="Uif-Link" p:linkText="Edit Rule Set"
+                              p:href="ruleSetsView?viewId=RuleSetsView&amp;methodToCall=edit&amp;ruleSetName=@{ruleSetName}"/>
+                        <bean parent="Uif-Link" p:linkText="Add Rule Set"
+                              p:href="ruleSetsView?viewId=RuleSetsView&amp;methodToCall=add&amp;pageId=AddRuleSetPage"/>
                     </list>
                 </property>
             </bean>

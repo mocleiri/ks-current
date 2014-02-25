@@ -150,6 +150,7 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
+
                 <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
                     <property name="items">
                         <list>
@@ -213,7 +214,7 @@
                 </bean>
 
                 <bean parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="5"
-                      p:displayCollectionSize="10">
+                      p:displayCollectionSize="20">
                     <property name="collectionObjectClass" value="com.sigmasys.kuali.ksa.model.rule.Rule"/>
                     <property name="propertyName" value="rules"/>
                     <property name="layoutManager.generateAutoSequence" value="false"/>
@@ -239,14 +240,33 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="update"
-                      p:actionLabel="Update">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>ksa-form-button</value>
+                <bean parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
+                    <property name="items">
+                        <list>
+
+                            <bean parent="Uif-PrimaryActionButton-Small"
+                                  p:actionLabel="Add Rule"
+                                  p:actionScript="window.location.href='rulesView?viewId=RulesView&amp;methodToCall=add&amp;ruleSetName=@{ruleSetName}'">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksa-form-button</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <bean parent="Uif-PrimaryActionButton-Small" p:methodToCall="update"
+                                  p:actionLabel="Update">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksa-form-button</value>
+                                    </list>
+                                </property>
+                            </bean>
+
                         </list>
                     </property>
                 </bean>
+
             </list>
         </property>
     </bean>
