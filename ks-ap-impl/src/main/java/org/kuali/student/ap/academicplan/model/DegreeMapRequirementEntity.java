@@ -41,18 +41,15 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  
 	  @Column(name="DM_EFFDT")
 	  private Date degreeMapEffectiveDate;
-	  	    
-	  @Column(name="DISPLAY_TERM_ID")
-	  private String displayTermId;
-	  
+	  	    	  
 	  @Column(name="ITEM_SEQ")
 	  private int itemSeq;
 	  	    
 	  @Column(name="REQ_REF_OBJ_ID")
 	  private String refObjectId;
 	  
-	  @Column(name="REF_OBJ_TYPE_KEY")
-	  private String refObjectTypeKey;
+	  @Column(name="REF_OBJ_TYPE")
+	  private String refObjectType;
 	  
 	  @Column(name="DESCR")
 	  private String descr;
@@ -104,12 +101,11 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         this.setDegreeMapEffectiveDate(dto.getDegreeMapEffectiveDate());
         this.setDegreeMapId(dto.getDegreeMapId());
         this.setDescr(dto.getDescr());
-        this.setDisplayTermId(dto.getDisplayTermId());
         this.setItemSeq(dto.getItemSeq());
         this.setMilestone(dto.isMilestone());
         this.setMininumGrade(dto.getMinimumGrade());
         this.setNotes(dto.getNotes());
-        this.setRefObjectTypeKey(dto.getRefObjectTypeKey());
+        this.setRefObjectType(dto.getRefObjectType());
         this.setRefObjectId(dto.getRefObjectId());
         this.setRequiredTermId(dto.getRequiredTermId());
         this.setSuggestedTermId(dto.getSuggestedTermId());
@@ -145,12 +141,11 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         dto.setDegreeMapEffectiveDate(getDegreeMapEffectiveDate());
         dto.setDegreeMapId(getDegreeMapId());
         dto.setDescr(getDescr());
-        dto.setDisplayTermId(getDisplayTermId());
         dto.setItemSeq(getItemSeq());
         dto.setMilestone(isMilestone());
         dto.setMinimumGrade(getMinimumGrade());
         dto.setNotes(getNotes());
-        dto.setRefObjectTypeKey(getRefObjectTypeKey());
+        dto.setRefObjectType(getRefObjectType());
         dto.setRefObjectId(getRefObjectId());
         dto.setRequiredTermId(getRequiredTermId());
         dto.setSuggestedTermId(getSuggestedTermId());
@@ -160,17 +155,6 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         return dto;
     }
 
-
-
-
-	public String getDisplayTermId() {
-		return displayTermId;
-	}
-
-
-	public void setDisplayTermId(String displayTermId) {
-		this.displayTermId = displayTermId;
-	}	
 
 	public String getDegreeMapId() {
 		return degreeMapId;
@@ -191,13 +175,14 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 		this.degreeMapEffectiveDate = degreeMapEffectiveDate;
 	}
 
-	public String getRefObjectTypeKey() {
-		return refObjectTypeKey;
+
+	public String getRefObjectType() {
+		return refObjectType;
 	}
 
 
-	public void setRefObjectTypeKey(String refObjectTypeKey) {
-		this.refObjectTypeKey = refObjectTypeKey;
+	public void setRefObjectType(String refObjectType) {
+		this.refObjectType = refObjectType;
 	}
 
 
