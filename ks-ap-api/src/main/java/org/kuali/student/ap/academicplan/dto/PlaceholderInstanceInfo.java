@@ -37,7 +37,7 @@ public class PlaceholderInstanceInfo implements PlaceholderInstance {
 	private String refObjectId;
 
 	@XmlElement
-	private String refObjectTypeKey;
+	private String refObjectType;
 
 	@XmlElement
 	private String advisorId;
@@ -75,12 +75,12 @@ public class PlaceholderInstanceInfo implements PlaceholderInstance {
 		this.refObjectId = refObjectId;
 	}
 
-	public String getRefObjectTypeKey() {
-		return refObjectTypeKey;
+	public String getRefObjectType() {
+		return refObjectType;
 	}
 
-	public void setRefObjectTypeKey(String refObjectTypeKey) {
-		this.refObjectTypeKey = refObjectTypeKey;
+	public void setRefObjectType(String refObjectType) {
+		this.refObjectType = refObjectType;
 	}
 
 	public String getAdvisorId() {

@@ -13,25 +13,13 @@ import org.kuali.student.r2.common.infc.TypeStateEntity;
  *
  * @Author Kamal
  */
-public interface PlanItem extends HasId, TypeStateEntity {
+public interface PlanItem extends HasId, TypeStateEntity, TypedObjectReference {
 
     /**
      * A description of the Learning Plan Item
      * @name Description
      */
     public RichText getDescr();
-
-    /**
-     * Id to the reference object e.g Course, Requirements etc
-     * @name Reference Object Id
-     */
-    public String getRefObjectId();
-
-    /**
-     * Type of the Reference Object
-     * @name Reference Object Type
-     */
-    public String getRefObjectType();
 
     /**
      * Time Periods for which the item is planned for

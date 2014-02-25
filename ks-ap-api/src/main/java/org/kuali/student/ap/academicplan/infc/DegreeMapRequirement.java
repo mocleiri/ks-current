@@ -27,20 +27,6 @@ public interface DegreeMapRequirement extends HasId, TypedObjectReference {
 	public Date getDegreeMapEffectiveDate();
 	
 	
-	/**
-	 * The degree map
-	 * @name the degree map
-	 */
-	
-	public DegreeMap getDegreeMap();
-    
-    /**
-     * The term (first year winter, second year spring, etc...)
-     * where this item will show up in the degree map
-     * @name the term this item will be displayed in the degree map
-     */
-    public String getDisplayTermId();
-	
     /**
      * Item number within a year/term. If multiple items have the same number,
      * they are part of the same requirement.
@@ -64,17 +50,6 @@ public interface DegreeMapRequirement extends HasId, TypedObjectReference {
     
     public int getSeqNo();
    
-//    /**
-//     * Id to the reference object e.g Course, Placeholder etc
-//     * @name Reference Object Id
-//     */
-//    public String getRefObjectId();
-//
-//    /**
-//     * Type of the Reference Object
-//     * @name Reference Object Type
-//     */
-//    public String getRefObjectTypeKey();
     
     /**
      * the requirement description

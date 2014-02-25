@@ -1,9 +1,5 @@
 package org.kuali.student.ap.academicplan.infc;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import org.kuali.student.r2.common.infc.HasId;
 
 /**
  * Student's Learning Plan that contains a list of plan items
@@ -22,7 +18,7 @@ public interface TypedObjectReference  {
      * Type of the Reference Object
      * @name Reference Object Type
      */
-    public String getRefObjectTypeKey();
+    public String getRefObjectType();
     
   
 }

@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.kuali.student.ap.academicplan.infc.DegreeMap;
 import org.kuali.student.ap.academicplan.infc.DegreeMapRequirement;
 import org.w3c.dom.Element;
 
@@ -25,7 +24,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId", "degreeMapEffectiveDate", "displayTermId", "itemSeq", "refObjectId", "refObjectType","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
+@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId", "degreeMapEffectiveDate", "itemSeq", "refObjectId", "refObjectType","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
 
 public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	
@@ -39,16 +38,10 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
     private String id;
     
     @XmlElement
-    private DegreeMap degreeMap;
-    
-    @XmlElement
     private String degreeMapId;
     
     @XmlElement
     private Date degreeMapEffectiveDate;
-    
-    @XmlAttribute
-    private String displayTermId;
     
     @XmlAttribute
     private int itemSeq;
@@ -57,7 +50,7 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
     private String refObjectId;
 
     @XmlElement
-    private String refObjectTypeKey;
+    private String refObjectType;
     
     @XmlAttribute
     private String descr; 
@@ -124,27 +117,6 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	public void setDegreeMapEffectiveDate(Date degreeMapEffectiveDate) {
 		this.degreeMapEffectiveDate = degreeMapEffectiveDate;
 	}
-
-
-	public DegreeMap getDegreeMap() {
-		return degreeMap;
-	}
-
-
-	public void setDegreeMap(DegreeMap degreeMap) {
-		this.degreeMap = degreeMap;
-	}
-	
-
-	public String getDisplayTermId() {
-		return displayTermId;
-	}
-
-
-	public void setDisplayTermId(String displayTermId) {
-		this.displayTermId = displayTermId;
-	}
-
 	
 	
 	public String getRefObjectId() {
@@ -157,13 +129,14 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	}
 
 
-	public String getRefObjectTypeKey() {
-		return refObjectTypeKey;
+
+	public String getRefObjectType() {
+		return refObjectType;
 	}
 
 
-	public void setRefObjectTypeKey(String refObjectTypeKey) {
-		this.refObjectTypeKey = refObjectTypeKey;
+	public void setRefObjectType(String refObjectType) {
+		this.refObjectType = refObjectType;
 	}
 
 
