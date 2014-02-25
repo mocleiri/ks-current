@@ -1,5 +1,5 @@
 @wip
-Feature: Create a Course Proposal as a Curriculum Specialist
+Feature: GT.Create a Course Proposal as a Curriculum Specialist
 
 Background:
 Given I am logged in as Curriculum Specialist
