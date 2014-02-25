@@ -10,7 +10,7 @@ Feature: GT.Create a Course Proposal as Faculty
 #    Then I should see data in the proposal title on course information
 #    And I should see data in the course title on course information
 
-  Scenario: CC3.1 Create a course proposal with only required fields
+  Scenario: CC2.1 Create a course proposal with only required fields
     When I complete the required fields for save on the course proposal
     Then I should see data in required fields for the course proposal
 
