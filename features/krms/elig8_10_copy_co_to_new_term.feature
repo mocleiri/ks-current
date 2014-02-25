@@ -2,7 +2,7 @@
 Feature: CO.ELIG8-10 Copy CO to new Term
 
   Background:
-    Given I am logged in as admin
+    Given I am logged in as a Schedule Coordinator
 
   #ELIG8.10.EB1 (KSENROLL-8917)
   Scenario: Test that changes made on the AO level is also copied with CO to the new term

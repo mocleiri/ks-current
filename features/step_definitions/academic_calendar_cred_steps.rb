@@ -646,7 +646,7 @@ end
 
 Given /^I make the subterms official$/ do
   @calendar.edit
-  @subterm_list.each do |subterm|
+  @calendar.terms[1..2].each do |subterm|
     subterm.make_official
   end
 end

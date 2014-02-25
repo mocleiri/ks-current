@@ -266,13 +266,16 @@ end
 
 ###General steps###
 Given /^I have made changes to multiple AO Requisites for the same course offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
+  @course_offering = create CourseOffering, :term => "201208", :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
+  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+
   @activityOR = make AORequisitesData
   @activityOR.make_changes_to_multiple_ao_reqs @course_offering.course
 end
 
 When /^I copy a course offering from an existing offering that had changes made to its activity offerings$/ do
-  @copyCO = create CourseOffering, :term => "201301", :course => "CHEM277", :create_from_existing => @course_offering
+  @copyCO = create CourseOffering, :term => "201301", :create_from_existing => @course_offering
 end
 
 Then /^the copied course offering should have the same AO Requisites as the original$/ do
