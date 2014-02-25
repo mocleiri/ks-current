@@ -9,6 +9,12 @@ module Workflows
     end
   end
 
+  def navigate_to_i18n_poc_home
+    on KSRicePortal do |page|
+      page.i18n_poc_home
+    end
+  end
+
   def navigate_to_course_planner_home
     on KSRicePortal do |page|
       page.course_planner_home

@@ -10,4 +10,7 @@ class KSRicePortal < BasePage
   element(:course_planner_link) { |b| b.link(text:"KSAP Planner") }
   action(:course_planner_home) { |b| b.course_planner_link.click }
 
+  element(:i18n_poc_link) { |b| b.link(text:"POC for Resource Bundles") }
+  action(:i18n_poc_home) { |b| b.i18n_poc_link.click }
+
 end
