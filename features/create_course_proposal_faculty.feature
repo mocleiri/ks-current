@@ -1,4 +1,4 @@
-
+@nightly
 Feature: Create a Course Proposal as Faculty
 
   Background:

@@ -1,4 +1,3 @@
-@nightly
 Feature: Create a Course Proposal
 
   Background:

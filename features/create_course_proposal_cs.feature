@@ -1,3 +1,4 @@
+@nightly
 Feature: Create a Course Proposal as a Curriculum Specialist
 
   Background:
