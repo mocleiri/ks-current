@@ -1116,6 +1116,7 @@ class SchedulingInformation
               page.select_end_time(formatted_end_time)
             end
           else
+            page.end_time_select_populate_list
             page.add_end_time.set @end_time + " " + @end_time_ampm
           end
         end

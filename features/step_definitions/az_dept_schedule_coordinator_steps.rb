@@ -644,7 +644,7 @@ Then /^I do not have access to select course offerings for approve, delete$/ do
     #page.create_course_offering_button.enabled?.should be_false
     #page.draft_activity_button.enabled?.should be_false
     page.co_list.each do |co_code|
-      page.target_row(co_code).checkbox.present?.should be_false
+      page.select_co_checkbox(co_code).present?.should be_false
     end
   end
 end
@@ -665,8 +665,8 @@ Then /^I do not have access to select course offerings for approve$/ do
   on ManageCourseOfferingList do |page|
     page.approve_course_offering_button.enabled?.should be_false
     page.co_list.each do |co_code|
-      checkbox = page.target_row(co_code).checkbox
-      if checkbox.present? then
+      checkbox = page.select_co_checkbox(co_code)
+      if checkbox.present?
         checkbox.set
         page.approve_course_offering_button.enabled?.should be_false
       end
