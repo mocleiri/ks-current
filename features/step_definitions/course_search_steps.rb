@@ -70,48 +70,6 @@ When /^I search for a course on the course search page with course title$/ do
 end
 
 
-Then /^the search result should match with the course title$/ do
-  on CourseSearch do |page|
-    #page.course_code_list.should include @course_offering.search_text
-=begin
-    page.course_name_list.each { |index| index.should include @course_offering.search_text   ||
-    begin
-    page.title_click
-    page.course_details.wait_until_present
-    puts page.course_description
-    page.course_description.should include @course_offering.search_text
-    back_to_previous
-    end
-=end
-   # }
-    page.get_links_on_page_with_index
-  end
-
-end
-
-
-
-When /^I search for a course and code separated by spaces$/ do
-  @course_offering = make CourseOffering, :search_text => "ENGL 799"
-  @course_offering.course_search_with_search_text
-end
-
-
-Then /^the results should return the specific course code\.$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
-And /^also return results for search by course and search by code$/ do
-  on CourseSearch do |page|
-    if page.multiple_page_check("ENGL").should be_true
-      else
-      page.multiple_page_check("799").should be_true
-      end
-    end
-end
-
-
-
 When /^I search for a course with one word"(.*?)" text option$/ do |text|
   @course_offering = make CourseOffering, :search_text => text
   @course_offering.course_search_with_search_text

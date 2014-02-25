@@ -37,12 +37,9 @@ Feature: BT.Course Search
           | text     | expected |
           | ENGL799  | ENGL799  |
           |"ENGL 799"| ENGL799  |
+          | ENGL 799 | ENGL799  |
 
-  @draft @wip
-  Scenario: CS 3.2 Verify search for course and code separated by spaces returns the correct results
-       When I search for a course and code separated by spaces
-       #Then the results should return the specific course code.
-       And also return results for search by course and search by code
+
 
 #*******************KSAP- 762, US KSAP- 615,616,617***********************************************************************
   @draft
@@ -61,7 +58,7 @@ Feature: BT.Course Search
         Examples:
             |multi_text   	              |
             # Single page search with 2 words
-            |Shakespeare beekeeping       |
+            |Shakespeare, beekeeping       |
             # Multi page search with 2 words
             |Organic marine               |
             # Multi page search with partial 2 words
