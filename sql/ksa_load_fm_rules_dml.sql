@@ -614,9 +614,12 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
  charge rates "mba.cohort..*", "" in amount of 80% with types "", catalogs "", signup operations "WITHDRAW"
 ')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('', 8007, 'FM Session 3_7', 3, 20, null,
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Charge and then discount the collaborative engineering courses', 8007, 'FM Session 3_7', 3, 20, null,
 '(signup has rates "colab.undergrad.resident.ft" and session key "major.code" is "0909f")',
-'charge rates of taken signups "colab.undergrad.resident.ft", "" with types "", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"')!
+'charge rates of taken signups "colab.undergrad.resident.ft", "" with types "", catalogs "", signup operations "ADD,ADD_WITHOUT_PENALTY,TRANSFER_IN"
+discount rate "colab.undergrad.resident.ft", "default" by 25% using "collaborative.engineering.resident.ft.frostburg.discount" , "default"
+
+')!
 
 
 -- FM Session 4 Java-based rule set --
