@@ -44,7 +44,7 @@ Feature: BT.Course Search
        #Then the results should return the specific course code.
        And also return results for search by course and search by code
 
-  #KSAP- 762, US KSAP- 615,616,617
+#*******************KSAP- 762, US KSAP- 615,616,617***********************************************************************
   @draft
   Scenario Outline: CS4.1.1 Successfully list any course title with one word search text options
        When I search for a course with one word"<text>" text option
@@ -54,7 +54,7 @@ Feature: BT.Course Search
            | Shakespeare    |
            | bio		    |
 
-
+  @draft
   Scenario Outline: CS4.1.2 Successfully list any course title with multi word search text options
         When I search for a course with multi word"<multi_text>" text option
         Then course code or course title or course description containing any word of "<multi_text>"text option should appear
@@ -65,12 +65,12 @@ Feature: BT.Course Search
             # Multi page search with 2 words
             |Organic marine               |
             # Multi page search with partial 2 words
-            |engl  lit                     |
+            |eng  lit                     |
             #Multi page search with 3 words
             |Inorganic ecology beekeeping |
 
-  # KSAP_ 819, US- 618
+#************************* KSAP_ 819, US- 618**********************************************************************************
   @draft
   Scenario:6.1- Successfully list any course with the search level
-        When I search for a course with "2xx" level option
-        Then courses containing "/2\d\d" level option appears
+        When I search for a course with "7xx" level option
+        Then only "700" level courses "should" be displayed

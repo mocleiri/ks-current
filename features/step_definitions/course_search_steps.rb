@@ -118,10 +118,10 @@ When /^I search for a course with one word"(.*?)" text option$/ do |text|
 end
 
 Then /^course title or course description containing "(.*?)"text option should appear$/ do |text|
-  on CourseSearch do |page|
-     page.check_all_results_data_for_text(text).should be_true
-     end
-end
+  @course_offering = make CourseOffering
+  @course_offering.check_all_results_data_for_text(text,nil).should be_true
+  puts "returns true"
+  end
 
 When /^I search for a course with multi word"(.*?)" text option$/ do |text|
   @course_offering = make CourseOffering, :search_text => text
@@ -130,10 +130,10 @@ When /^I search for a course with multi word"(.*?)" text option$/ do |text|
 end
 
 
-  Then(/^course code or course title or course description containing any word of "(.*?)"text option should appear$/) do |expected|
-    @course_offering = make CourseOffering
-    @course_offering.multi_text_search(expected).should be_true
-     puts "returns true"
+Then(/^course code or course title or course description containing any word of "(.*?)"text option should appear$/) do |expected|
+  @course_offering = make CourseOffering
+  @course_offering.multi_text_search(expected).should be_true
+  puts "returns true"
 end
 
 #------------------------------------------------------------------------------------------------------------------------------------
@@ -143,10 +143,17 @@ When /^I search for a course with "(.*?)" level option$/ do |level|
   @course_offering.course_search(level)
 end
 
-
-Then /^courses containing "(.*?)" level option appears$/ do |text|
-  on CourseSearch do |page|
-    page.check_all_results_data_for_text(text).should be_true
+Then /^only "(.*?)" level courses "(.*?)" be displayed$/ do |text, condition|
+  @course_offering = make CourseOffering
+    if condition == "should"
+      if @course_offering.check_all_results_data_for_level(text).should be_true
+      puts "Test is Passed True"
+      else
+        begin
+          rescue Watir::Exception::UnknownObjectException
+        end
+      end
+    end
   end
- end
+
 
