@@ -3,6 +3,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="BSCI" then "BSCI106"
                   when subj=="CHEM" then "CHEM231"
                   when subj=="ENGL" then "ENGL211"
+                  when subj=="PHYS" then "PHYS102"
                   else ""
                 end
   @reg_request = make RegistrationRequest, :student_id=>"student",
@@ -92,5 +93,14 @@ end
 Then /^I? ?undo the drop action$/ do
   on RegistrationCart do |page|
     @reg_request.undo_remove
+  end
+end
+
+And /^I? ?view my registration cart$/ do
+  visit RegistrationCart do |page|
+    term_descr = "Spring 2012"
+    # wait in case list has not loaded yet
+    page.wait_until {page.term_select.include? term_descr }
+    page.select_term term_descr
   end
 end
