@@ -48,6 +48,8 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
       begin
+        puts "User Message: #{page.user_message}"
+        page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
         page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
       rescue Watir::Exception::UnknownObjectException
         # the course is not there: good
@@ -83,5 +85,11 @@ And /^I? ?can view the details of my selections?$/ do
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "M 3:00 pm - 3:50 pm CHM"
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should include "TH 11:00 am - 12:15 pm EGR"
+  end
+end
+
+Then /^I? ?undo the drop action$/ do
+  on RegistrationCart do |page|
+    @reg_request.undo_remove
   end
 end

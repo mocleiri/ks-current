@@ -30,3 +30,12 @@ Feature: REG.Register for course
     When I add a course offering having multiple credit options to my registration cart
     And I edit the course in my registration cart
     Then the course is present in my cart, with the correct options
+
+  #CR 1.10 (KSENROLL-11923)
+  @wip
+  Scenario: I want to reverse my decision to remove a course from my selections so that I can continue my registration process.
+    When I add a BSCI course offering to my registration cart
+    And I drop the course from my registration cart
+    Then the course is not present in my cart
+    Then I undo the drop action
+    And the course is present in my cart

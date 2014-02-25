@@ -143,6 +143,11 @@ class RegistrationRequest
   end
   #private :edit_course_options_in_cart
 
+  def undo_remove
+    on RegistrationCart do |page|
+      page.undo_remove
+    end
+  end
 end
 
   class CourseOptions
