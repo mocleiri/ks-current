@@ -328,7 +328,7 @@ class CmCourseProposalObject < DataObject
 
 
   def create_proposal_req_fields
-    on CmCourseInfo do |page|
+    on CmCourseInformation do |page|
       fill_out page, :proposal_title, :course_title
       page.save_progress
     end

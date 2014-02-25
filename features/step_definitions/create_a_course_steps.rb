@@ -12,7 +12,7 @@ end
 
 Then /^I should see a blank course proposal$/ do
  # @course_proposal = create CmCourseProposalObject
-  on CmCourseInfo do |page|
+  on CmCourseInformation do |page|
     page.proposal_title.text.should == ""
     page.course_title.text.should == ""
 
@@ -109,7 +109,7 @@ Given /^I complete the required fields on the course proposal$/ do
 end
 
 Then /^I should see data in required fields for the course proposal$/ do
-  on CmCourseInfo do |page|
+  on CmCourseInformation do |page|
     page.course_information
     page.proposal_title.value.should == @course_proposal.proposal_title
     page.course_title.value.should == @course_proposal.course_title
