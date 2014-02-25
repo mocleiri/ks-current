@@ -74,7 +74,8 @@ class BasePage < PageFactory
       element(:cancel_link) { |b| b.a(id: "cancel") }
       action(:cancel_action) { |b| b.cancel_link.when_present.click }
 
-      action(:save_and_continue) { |b| b.button(id: 'usave').click; b.saving_wait }
+      element(:save_continue) { |b| b.button(id: 'usave') }
+      action(:save_and_continue) { |b| b.save_continue.click; b.saving_wait }
 
       # For Auto Lookup drop down that appears in KRAD
       action(:auto_lookup) { |lookup_results, b| b.link(text: lookup_results).when_present.click}

@@ -14,5 +14,5 @@ And I cancel create a course
 Then I should see CM Home
 
 Scenario: CC.3 Create a course proposal with only required fields
-When When I complete the required fields for save on the course proposal
+When I complete the required fields for save on the course proposal
 Then I should see data in required fields for the course proposal

@@ -52,7 +52,7 @@ And /^I should see data in the course title on course information$/ do
   end
 end
 
-When /^When I complete the required fields for save on the course proposal$/ do
+When /^I complete the required fields for save on the course proposal$/ do
   @course_proposal = create CmCourseProposalObject
   @course_proposal.create_proposal_with_review
   @course_proposal.create_proposal_req_fields
@@ -61,7 +61,7 @@ end
 #-----
 # S2
 #-----
-Given /^I complete the required fields on the course proposal$/ do
+When /^I complete the required fields on the course proposal$/ do
 
   # Change to 'I complete the fields required to submit the course proposal'
 

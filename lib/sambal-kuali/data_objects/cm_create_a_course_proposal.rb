@@ -321,16 +321,22 @@ class CmCourseProposalObject < DataObject
 
   def create_proposal_with_review
     on CmCreateCourseStart do |page|
-      page.curriculum_review_process.fit @curriculum_review_process
-      page.continue
-    end
+      if page.curriculum_review_process.exists?
+         page.curriculum_review_process.fit @curriculum_review_process
+      end
+         page.continue
+      end
   end
 
 
   def create_proposal_req_fields
     on CmCourseInformation do |page|
       fill_out page, :proposal_title, :course_title
-      page.save_progress
+      if page.save_continue.exists?
+         page.save_and_continue
+      else
+         page.save_progress
+      end
     end
   end
 
