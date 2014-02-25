@@ -135,6 +135,10 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException {
 		
+		if (requirementId == null ) {
+			throw new MissingParameterException("Requirement id is null.");
+		}
+
 		DegreeMapRequirementEntity requirement = degreeMapRequirementDao.find(requirementId);
 		if (null == requirement) {
 			throw new DoesNotExistException(String.format("Requirement with id Id [%s] does not exist", requirementId));
@@ -215,6 +219,10 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException {
 		
+		if (placeholderId == null ) {
+			throw new MissingParameterException("Placeholder id is null.");
+		}
+		
 		PlaceholderEntity placeholder = placeholderDao.find(placeholderId);
 		if (null == placeholder) {
 			throw new DoesNotExistException(String.format("Placeholder with id Id [%s] does not exist", placeholderId));
@@ -289,6 +297,10 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException {
 		
+		if (placeholderInstanceId == null ) {
+			throw new MissingParameterException("PlaceholderInstance id is null.");
+		}
+
 		PlaceholderInstanceEntity placeholderInstance = placeholderInstanceDao.find(placeholderInstanceId);
 		if (null == placeholderInstance) {
 			throw new DoesNotExistException(String.format("PlaceholderInstance with id Id [%s] does not exist", placeholderInstanceId));
