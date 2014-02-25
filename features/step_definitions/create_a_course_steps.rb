@@ -1,16 +1,22 @@
 #-----
 # S1
 #-----
-Given /^I create a course proposal$/ do
+When /^I create a course proposal$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
-Given /^I create a course proposal from blank$/ do
+When /^I create a course proposal from blank$/ do
   @course_proposal = create CmCourseProposalObject
+  @course_proposal.create_proposal_wo_review
 end
 
-Given /^I should see a blank course proposal$/ do
-  @course_proposal = create CmCourseProposalObject
+Then /^I should see a blank course proposal$/ do
+ # @course_proposal = create CmCourseProposalObject
+  on CmCourseInfo do |page|
+    page.proposal_title.text.should == ""
+    page.course_title.text.should == ""
+
+  end
   end
 
 Given /^I should see the Initial Page$/ do
@@ -20,15 +26,16 @@ Given /^I should see the Initial Page$/ do
   end
 end
 
-Given /^I cancel create a course$/ do
-  On CmCreateCourseStart do |page|
-    page.cancel.click
+And /^I cancel create a course$/ do
+  @course_proposal.cancel_create_proposal
+end
+
+Given /^I should see CM Home$/ do 
+  on CmCurriculum do |page|
+    page.cmcurriculum_header.exists?.should == true
   end
 end
 
-Given /^I should see CM Home$/ do
-  page.ksfunctionalhome
-end
 
 Then /^I should see data in the proposal title on course information$/ do
   on CmCourseInformation do |page|
@@ -43,6 +50,12 @@ And /^I should see data in the course title on course information$/ do
     page.course_information
     page.course_title.value.should == @course_proposal.course_title
   end
+end
+
+When /^When I complete the required fields for save on the course proposal$/ do
+  @course_proposal = create CmCourseProposalObject
+  @course_proposal.create_proposal_with_review
+  @course_proposal.create_proposal_req_fields
 end
 
 #-----
@@ -96,9 +109,20 @@ Given /^I complete the required fields on the course proposal$/ do
 end
 
 Then /^I should see data in required fields for the course proposal$/ do
-  on(Curriculum).courseinformation
+  on CmCourseInfo do |page|
+    page.course_information
+    page.proposal_title.value.should == @course_proposal.proposal_title
+    page.course_title.value.should == @course_proposal.course_title
+    page.page_validation_text.should == "Document was successfully saved."
+  end
+end
 
-  on CmCourseInformation do |page|
+
+=begin
+Then /^I should see data in required fields for the course proposal$/ do
+  on(CmCourseInfo).course_information
+
+  on CmCourseInfo do |page|
     page.subject_code.value.should == @course_proposal.subject_code
     page.course_number.value.should == @course_proposal.course_number
 
@@ -115,8 +139,8 @@ Then /^I should see data in required fields for the course proposal$/ do
     page.curriculum_oversight_when_added(@course_proposal.curriculum_oversight).should be_present
   end
 
-  on CmCourseLogistics do |page|
-    page.course_logistics
+  on CmLogistics do |page|
+    page.logistics
 
     page.exam_standard.should be_checked unless @course_proposal.exam_standard.nil?
     page.exam_alternate.should be_checked  unless @course_proposal.exam_alternate.nil?
@@ -149,6 +173,7 @@ Then /^I should see data in required fields for the course proposal$/ do
     page.end_term.selected?(@course_proposal.end_term).should == true unless @course_proposal.end_term.nil?
   end
 end
+=end
 
 #-----
 # S3

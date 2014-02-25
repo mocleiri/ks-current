@@ -23,6 +23,8 @@ class BasePage < PageFactory
       #element(:growl_div) { |b| b.frm.div(id: "jGrowl") }
       #element(:growl_message_div) { |b| b.growl_div.div(class: "jGrowl-message") }
       #value(:growl_text) { |b| b.growl_message_div.wait_until_present; b.growl_message_div.text }
+      value(:page_validation_text) { |b| b.ul(id: "pageValidationList").text }
+
 
     end
 
@@ -68,6 +70,9 @@ class BasePage < PageFactory
       action(:loading_wait) {|b| b.image(alt: "Loading...").wait_while_present }
       action(:adding_line_wait) {|b| b.adding_line.wait_while_present }
       action(:saving_wait) { |b| b.saving.wait_while_present }
+      action(:save_progress) { |b| b.button(text: "Save Progress").click }
+      element(:cancel_link) { |b| b.a(id: "cancel") }
+      action(:cancel_action) { |b| b.cancel_link.when_present.click }
 
       action(:save_and_continue) { |b| b.button(id: 'usave').click; b.saving_wait }
 

@@ -19,7 +19,7 @@ class CmCourseProposalObject < DataObject
         :adv_admin_org_name, :adv_admin_org_abbreviation, :adv_admin_org_name, :admin_org_adding_method,
         # Course Logistics
         :term_any, :term_fall, :term_spring, :term_summer,
-        :assessment_scale, :final_exam_rationale,
+        :assessment_scale,:final_exam_type, :final_exam_rationale,
         :exam_standard, :exam_alternate, :exam_none,
         :outcome_type, :outcome_value, :credit_value_max, :credit_value_min,
         :outcome_multiple, :outcome_multiple2, :outcome_credit_value, :outcome_credit_value_max,
@@ -84,9 +84,13 @@ class CmCourseProposalObject < DataObject
 
         # Active Dates
         :start_term, :pilot_course, :end_term,
+
+        # Financials
+        :course_fees,
+
         # Authors & Collaborators
         :author_name_search, :author_username_search, :author_permission, :action_request,
-        :author_notation, :author_name_method, :author_display_name
+        :author_notation, :author_name_method, :author_display_name, :curriculum_review_process
 
 
 
@@ -95,10 +99,21 @@ class CmCourseProposalObject < DataObject
     defaults = {
         #REQUIRED ON SAVE
         #COURSE INFORMATION
-        proposal_title:        random_alphanums(10,'test proposal title '),
-        course_title:          random_alphanums(10, 'test course title'),
+        proposal_title:           random_alphanums(10,'test proposal title '),
+        course_title:             random_alphanums(10, 'test course title '),
+        subject_code:             "MATH",
+        course_number:            "123",
+        description_rationale:    random_alphanums(20, 'test description rationale '),
+        proposal_rationale:       random_alphanums(20, 'test proposal rationale '),
+
+
         #COURSE LOGISTICS
-        assessment_scale:     [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
+        assessment_scale:         [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
+        final_exam_type:          [:exam_standard, :exam_alternate, :exam_none],
+        final_exam_rationale:     random_alphanums(10,'test final exam rationale '),
+        #FINANCIALS
+        course_fees:              random_alphanums(10, 'test course fees '),
+        curriculum_review_process:"set"
     }
     set_options(defaults.merge(opts))
 
@@ -109,6 +124,7 @@ class CmCourseProposalObject < DataObject
     random_radio(@final_exam_status)
     random_checkbox(@campus_location)
     random_checkbox(@assessment_scale)
+    random_radio(@final_exam_type)
   end
 
   def create
@@ -118,25 +134,32 @@ class CmCourseProposalObject < DataObject
     end
 
     on(CmCurriculum).create_a_course
-    on CmCourseInformation do |create|
-    on(CmCreateCourseStart).continue
-      create.course_information unless create.current_page('Course Information').exists?
+    #on CmCourseInformation do |create|
+    #on(CmCreateCourseStart).continue
+    #create.course_information unless create.current_page('Course Information').exists?
 
-      #BUG KSCM-1240
-      #create.expand_course_listing_section
-      #create.add_a_version_code unless @version_code_version_code.nil? and @version_code_title.nil?
 
-      create.subject_code.fit @subject_code
-      create.auto_lookup @subject_code unless @subject_code.nil?
-      fill_out create, :proposal_title, :course_title
+
+
+
+    #on CmCourseInformation do |create|
+    #  create.course unless create.current_page('Course').exists?
+    #
+    #  #BUG KSCM-1240
+    #  #create.expand_course_listing_section
+    #  #create.add_a_version_code unless @version_code_version_code.nil? and @version_code_title.nil?
+    #
+    #  create.subject_code.fit @subject_code
+    #  create.auto_lookup @subject_code unless @subject_code.nil?
+    #  fill_out create, :proposal_title, :course_title, :subject_code, :course_number
 
       #BUG KSCM-1240
       #fill_out create, :version_code_version_code, :version_code_title
-      create.save_and_continue
+      #create.save_and_continue
 
-      create_course_proposal_required
-      course_proposal_nonrequired
-    end
+      #create_course_proposal_required
+      #course_proposal_nonrequired
+    #end
   end  #create
 
   def create_course_proposal_required
@@ -289,6 +312,32 @@ class CmCourseProposalObject < DataObject
           break
         end
       end
+    end
+  end
+
+  def create_proposal_wo_review
+    on(CmCreateCourseStart).continue
+  end
+
+  def create_proposal_with_review
+    on CmCreateCourseStart do |page|
+      page.curriculum_review_process.fit @curriculum_review_process
+      page.continue
+    end
+  end
+
+
+  def create_proposal_req_fields
+    on CmCourseInfo do |page|
+      fill_out page, :proposal_title, :course_title
+      page.save_progress
+    end
+  end
+
+
+  def cancel_create_proposal
+    on CmCreateCourseStart do |page|
+      page.cancel
     end
   end
 
@@ -596,5 +645,47 @@ class CmCourseProposalObject < DataObject
         end
       end
     end
+  
+    def cs_course_proposal_required
+      on CmCourseInformation do |page|
+        page.course unless page.current_page('Course').exists?
 
-end #object class
+        page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
+
+        fill_out page, :description_rationale, :proposal_rationale
+        page.save_progress
+      end
+
+      on CmCourseLogistics do |page|
+        page.logistics unless page.current_page('Logistics').exists?
+
+        page.loading_wait
+
+        fill_out page,
+                 :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail,
+                 :assessment_percentage, :assessment_satisfactory
+
+        fill_out page, :exam_standard, :exam_alternate, :exam_none
+
+        #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
+        #if that radio is selected
+        page.final_exam_rationale.fit @final_exam_rationale unless page.exam_standard.set?
+        page.save_progress
+      end
+
+      on CmCourseFinancials do |page|
+        page.financials unless page.current_page('Financials').exists?
+        page.loading_wait
+        fill_out page, :course_fees
+
+        page.save_progress
+
+      end
+
+    end
+
+end
+
+
+
+
