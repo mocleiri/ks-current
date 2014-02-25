@@ -10,7 +10,13 @@ import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.PlanConstants;
 import org.kuali.student.ap.framework.context.PlanHelper;
 import org.kuali.student.ap.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.ap.academicplan.infc.DegreeMapRequirement;
+import org.kuali.student.ap.academicplan.infc.Placeholder;
+import org.kuali.student.ap.academicplan.infc.PlaceholderInstance;
+import org.kuali.student.ap.academicplan.infc.TypedObjectReference;
+import org.kuali.student.enrollment.courseoffering.infc.ActivityOffering;
 import org.kuali.student.r2.core.acal.infc.Term;
+import org.kuali.student.r2.lum.course.infc.Course;
 
 /**
  * Default implementation of the PlanHelper
@@ -109,4 +115,44 @@ public class DefaultPlanHelper implements PlanHelper {
         return calendarTerms;
     }
 
+	@Override
+	public Course getCourse(TypedObjectReference ref) {
+		if (ref.getRefObjectType().equals(PlanConstants.REF_TYPE_COURSE)){
+			// need to load a course with the course id
+			
+			return null;
+		}
+		return null;
+	}
+
+	@Override
+	public ActivityOffering getActivityOffering(TypedObjectReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Placeholder getPlaceHolder(TypedObjectReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	@Override
+	public PlaceholderInstance getPlaceHolderInstance(TypedObjectReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	@Override
+	public DegreeMapRequirement getRequirement(TypedObjectReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+    
+    
 }
