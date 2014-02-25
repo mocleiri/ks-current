@@ -6,6 +6,8 @@ import javax.persistence.Table;
 
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
 
 @Entity
 @Table(name = "KSPL_PLACEHOLDER")
@@ -38,14 +40,6 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 //	@OneToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "OBJ_ID")
 //	private DegreeMapRequirement degreeMapRequirement;
-    
-
-	//TODO
-	// why do I have this one?
- 
-    public PlaceholderEntity() {
-        super();
-    }
 
     
     @Override
@@ -68,6 +62,30 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
         return dto;
     }
 
+    
+    public void copyFromInfo(PlaceholderInfo dto) throws MissingParameterException, DataValidationErrorException{
+    	
+    	if (this.getId() == null) {
+    		throw new DataValidationErrorException("Null id in PlaceholderEntity. Id must be set by caller.");
+    	}
+
+    	
+    	if (dto == null){
+    		throw new MissingParameterException("Null placeholderInfo");
+    	}
+    	
+    	if (dto.getTypeKey() == null) {
+    		throw new DataValidationErrorException("Null typekey in dto");
+    	}
+		   	
+		setTypeKey(dto.getTypeKey());
+		
+		setParm1(dto.getParm1());
+		setParm2(dto.getParm2());
+		setParm3(dto.getParm3());
+    	
+    }
+    
 
 	public String getId() {
 		return id;
@@ -109,13 +127,6 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 		this.parm3 = parm3;
 	}
 
-//	public DegreeMapRequirement getDegreeMapRequirement() {
-//		return degreeMapRequirement;
-//	}
-//
-//	public void setDegreeMapRequirement(DegreeMapRequirement degreeMapRequirement) {
-//		this.degreeMapRequirement = degreeMapRequirement;
-//	}
 
 	@Override
     public int compareTo(PlaceholderEntity other) {
@@ -124,12 +135,10 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
             return -1;
         }
 
-        //  First check id.
+        //  check id.
         if (! other.getId().equals(this.getId())) {
             return this.getId().compareTo(other.getId());
         }
-
-        // do I need to check the programId? I'm thinking not.
 
         return 0;
     }

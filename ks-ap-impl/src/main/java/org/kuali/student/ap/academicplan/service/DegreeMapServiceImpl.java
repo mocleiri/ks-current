@@ -153,64 +153,17 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 
 		DegreeMapRequirementEntity dme = new DegreeMapRequirementEntity();
 		String requirementId = UUIDHelper.genStringUUID();	
-		
-		dme.setId(requirementId);
-
-		// required
-		
-		if (requirement.getDegreeMapId() == null ){		
-			throw new DataValidationErrorException("requirement degreeMapId  must not be null.");
-		}
-		dme.setDegreeMapId(requirement.getDegreeMapId());
-		
-		if (requirement.getDegreeMapEffectiveDate() == null  ){		
-			throw new DataValidationErrorException("requirement degreeMap effective date must not be null.");
-		}
-		dme.setDegreeMapEffectiveDate(requirement.getDegreeMapEffectiveDate());
-		
-		if (requirement.getRefObjectTypeKey() == null){		
-			throw new DataValidationErrorException("requirement refOjbectTypeKey must not be null.");
-		}
-		dme.setRefObjectTypeKey(requirement.getRefObjectTypeKey());
-		
-		if (requirement.getRefObjectId() == null  ) {		
-			throw new DataValidationErrorException("requirement refOjbectId must not be null.");
-		}
-		dme.setRefObjectId(requirement.getRefObjectId());
-		
-	    //required?
-		dme.setDisplayTermId(requirement.getDisplayTermId());
-		dme.setItemSeq(requirement.getItemSeq());
-
-		// not required
-		dme.setCredit(requirement.getCredit());
-		dme.setDescr(requirement.getDescr());
-		dme.setMininumGrade(requirement.getMinimumGrade());
-		dme.setNotes(requirement.getNotes());
-		dme.setRequiredTermId(requirement.getRequiredTermId());
-		dme.setSuggestedTermId(requirement.getSuggestedTermId());
-		dme.setSeqKey(requirement.getSeqKey());
-		dme.setSeqNo(requirement.getSeqNo());
-		
-		//TODO 
-		// what do we do about the flags? Do we set them to N when not Y?
-		dme.setMilestone(requirement.isMilestone());
-		dme.setCritical(requirement.isCritical());
-		
+		dme.setId(requirementId);		
+		dme.copyFromInfo(requirement);	
 		degreeMapRequirementDao.persist(dme);
-
-		return degreeMapRequirementDao.find(requirementId).toDto();
-	
+		return degreeMapRequirementDao.find(requirementId).toDto();	
+		
 	}
 
-
-	//TODO:
-	// This will do nothing to the degree map meta
-	// is that going to be OK?
 	
 	@Override
 	public DegreeMapRequirementInfo updateRequirement(String requirementId,
-			DegreeMapRequirementInfo requirement, ContextInfo context)
+			DegreeMapRequirementInfo dto, ContextInfo context)
 			throws DataValidationErrorException, InvalidParameterException,
 			MissingParameterException, OperationFailedException,
 			PermissionDeniedException, DoesNotExistException {
@@ -220,26 +173,11 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			throw new DoesNotExistException(requirementId);
 		}
 		
-		if (requirement == null){
+		if (dto == null){
 			throw new MissingParameterException("requirement is null.");
 		}
-				
-		requirementEntity.setCredit(requirement.getCredit());
-		requirementEntity.setCritical(requirement.isCritical());
-		requirementEntity.setDegreeMapEffectiveDate(requirement.getDegreeMapEffectiveDate());
-		requirementEntity.setDegreeMapId(requirement.getDegreeMapId());
-		requirementEntity.setDescr(requirement.getDescr());
-		requirementEntity.setDisplayTermId(requirement.getDisplayTermId());
-		requirementEntity.setItemSeq(requirement.getItemSeq());
-		requirementEntity.setMilestone(requirement.isMilestone());
-		requirementEntity.setMininumGrade(requirement.getMinimumGrade());
-		requirementEntity.setNotes(requirement.getNotes());
-		requirementEntity.setRefObjectTypeKey(requirement.getRefObjectTypeKey());
-		requirementEntity.setRefObjectId(requirement.getRefObjectId());
-		requirementEntity.setRequiredTermId(requirement.getRequiredTermId());
-		requirementEntity.setSuggestedTermId(requirement.getSuggestedTermId());
-		requirementEntity.setSeqKey(requirement.getSeqKey());
-		requirementEntity.setSeqNo(requirement.getSeqNo());
+		
+		requirementEntity.copyFromInfo(dto);
 		
 		degreeMapRequirementDao.update(requirementEntity);
 		return degreeMapRequirementDao.find(requirementId).toDto();
@@ -287,22 +225,16 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	
 
 	@Override
-	public PlaceholderInfo createPlaceholder(PlaceholderInfo placeholder,
+	public PlaceholderInfo createPlaceholder(PlaceholderInfo dto,
 			ContextInfo context) throws AlreadyExistsException,
 			DataValidationErrorException, InvalidParameterException,
 			MissingParameterException, OperationFailedException,
 			PermissionDeniedException {
 
 		PlaceholderEntity pe = new PlaceholderEntity();
-		String placeholderId = UUIDHelper.genStringUUID();	
-		
-		pe.setId(placeholderId);
-
-		pe.setTypeKey(placeholder.getTypeKey());
-		pe.setParm1(placeholder.getParm1());
-		pe.setParm2(placeholder.getParm2());
-		pe.setParm3(placeholder.getParm3());
-	
+		String placeholderId = UUIDHelper.genStringUUID();		
+		pe.setId(placeholderId);		
+		pe.copyFromInfo(dto);
 		placeholderDao.persist(pe);
 		return placeholderDao.find(placeholderId).toDto();
 		
@@ -318,19 +250,12 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			PermissionDeniedException, DoesNotExistException {
 
 		PlaceholderEntity placeholderEntity = placeholderDao.find(placeholderId);
-		if (placeholderEntity == null ){
-			throw new DoesNotExistException(placeholderId);
+		
+		if (null == placeholderEntity) {
+			throw new DoesNotExistException(String.format("Placeholder with id Id [%s] does not exist", placeholderId));
 		}
-		
-		if (placeholder == null){
-			throw new MissingParameterException("placeholder is null.");
-		}
-		
-		placeholderEntity.setTypeKey(placeholder.getTypeKey());
-		placeholderEntity.setParm1(placeholder.getParm1());
-		placeholderEntity.setParm2(placeholder.getParm2());
-		placeholderEntity.setParm3(placeholder.getParm3());				
-		
+
+		placeholderEntity.copyFromInfo(placeholder);
 		placeholderDao.update(placeholderEntity);
 		return placeholderDao.find(placeholderId).toDto();
 		
@@ -382,15 +307,8 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 
 		PlaceholderInstanceEntity pie = new PlaceholderInstanceEntity();
 		String placeholderInstanceId = UUIDHelper.genStringUUID();
-
-		pie.setId(placeholderInstanceId);
-		pie.setPlaceholderId(placeholderInstance.getPlaceholderId());
-		pie.setRefObjectId(placeholderInstance.getRefObjectId());
-		pie.setRefObjectTypeKey(placeholderInstance.getRefObjectTypeKey());
-		pie.setAdvisorId(placeholderInstance.getAdvisorId());
-		pie.setAdvisorOK(placeholderInstance.isAdvisorOK());
-		pie.setStudentOK(placeholderInstance.isStudentOK());
-
+		pie.setId(placeholderInstanceId);	
+		pie.copyFromDto(placeholderInstance);
 		placeholderInstanceDao.persist(pie);
 		return placeholderInstanceDao.find(placeholderInstanceId).toDto();
 
@@ -399,7 +317,7 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	
 	@Override
 	public PlaceholderInstanceInfo updatePlaceholderInstance(String placeholderInstanceId,
-			PlaceholderInstanceInfo placeholderInstance, ContextInfo context)
+			PlaceholderInstanceInfo dto, ContextInfo context)
 			throws DataValidationErrorException, InvalidParameterException,
 			MissingParameterException, OperationFailedException,
 			PermissionDeniedException, DoesNotExistException {
@@ -409,18 +327,11 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			throw new DoesNotExistException(placeholderInstanceId);
 		}
 		
-		if (placeholderInstance == null){
+		if (dto == null){
 			throw new MissingParameterException("placeholderInstance is null.");
 		}
 		
-		placeholderInstanceEntity.setId(placeholderInstanceId);
-		placeholderInstanceEntity.setPlaceholderId(placeholderInstance.getPlaceholderId());
-		placeholderInstanceEntity.setRefObjectId(placeholderInstance.getRefObjectId());
-		placeholderInstanceEntity.setRefObjectTypeKey(placeholderInstance.getRefObjectTypeKey());
-		placeholderInstanceEntity.setAdvisorId(placeholderInstance.getAdvisorId());
-		placeholderInstanceEntity.setAdvisorOK(placeholderInstance.isAdvisorOK());
-		placeholderInstanceEntity.setStudentOK(placeholderInstance.isStudentOK());			
-		
+		placeholderInstanceEntity.copyFromDto(dto);		
 		placeholderInstanceDao.update(placeholderInstanceEntity);
 		return placeholderInstanceDao.find(placeholderInstanceId).toDto();
 		

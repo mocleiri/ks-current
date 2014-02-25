@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
 
 @Entity
 @Table(name = "KSDM_REQUIREMENT")
@@ -81,43 +83,67 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  @Column(name="NOTES")
 	  private String notes;
 	  
-	  
-	  
-    public DegreeMapRequirementEntity() {
-        super();
-    }
 
-    
-    public DegreeMapRequirementEntity(DegreeMapRequirementInfo dto) {
-        super();
- 
-        //TODO
-        // would I want to set the id
-        // or would I want to create a new one?
-        this.setId(dto.getId());
-       
-        this.setCredit(dto.getCredit());
-        this.setCritical(dto.isCritical());
-        this.setDegreeMapEffectiveDate(dto.getDegreeMapEffectiveDate());
-        this.setDegreeMapId(dto.getDegreeMapId());
-        this.setDescr(dto.getDescr());
-        this.setItemSeq(dto.getItemSeq());
-        this.setMilestone(dto.isMilestone());
-        this.setMininumGrade(dto.getMinimumGrade());
-        this.setNotes(dto.getNotes());
-        this.setRefObjectType(dto.getRefObjectType());
-        this.setRefObjectId(dto.getRefObjectId());
-        this.setRequiredTermId(dto.getRequiredTermId());
-        this.setSuggestedTermId(dto.getSuggestedTermId());
-        this.setSeqKey(dto.getSeqKey());
-        this.setSeqNo(dto.getSeqNo());      
+	public void copyFromInfo(DegreeMapRequirementInfo dto)
+			throws DataValidationErrorException, MissingParameterException {
+		
+		
+    	if (this.getId() == null) {
+    		throw new DataValidationErrorException("Null id in DegreeMapRequirementEntity. Id must be set by caller.");
+    	}
 
-    }
-    
-    
-	public static DegreeMapRequirementEntity create(DegreeMapRequirementInfo dto) {
 
-	    return new DegreeMapRequirementEntity(dto);
+	   	if (dto == null){
+    		throw new MissingParameterException("null degreeMapRequirementInfo");
+    	}
+
+		//TODO
+		// Do these checks seem justified?
+	   	
+		if (dto.getDegreeMapId() == null) {
+			throw new DataValidationErrorException(
+					"requirement degreeMapId  must not be null.");
+		}
+
+		if (dto.getDegreeMapEffectiveDate() == null) {
+			throw new DataValidationErrorException(
+					"requirement degreeMap effective date must not be null.");
+		}
+
+		if (dto.getRefObjectType() == null) {
+			throw new DataValidationErrorException(
+					"requirement refOjbectType must not be null.");
+		}
+
+		if (dto.getRefObjectId() == null) {
+			throw new DataValidationErrorException(
+					"requirement refOjbectId must not be null.");
+		}
+
+		// in a "create" situation, the dm id and effdt will be copied
+		// in an "update" situation, they will not be.
+		
+		if (getDegreeMapId() == null) {
+			setDegreeMapId(dto.getDegreeMapId());
+		}
+
+		if (getDegreeMapEffectiveDate() == null) {
+			setDegreeMapEffectiveDate(dto.getDegreeMapEffectiveDate());
+		}
+
+		setCredit(dto.getCredit());
+		setCritical(dto.isCritical());
+		setDescr(dto.getDescr());
+		setItemSeq(dto.getItemSeq());
+		setMilestone(dto.isMilestone());
+		setMininumGrade(dto.getMinimumGrade());
+		setNotes(dto.getNotes());
+		setRefObjectType(dto.getRefObjectType());
+		setRefObjectId(dto.getRefObjectId());
+		setRequiredTermId(dto.getRequiredTermId());
+		setSuggestedTermId(dto.getSuggestedTermId());
+		setSeqKey(dto.getSeqKey());
+		setSeqNo(dto.getSeqNo());
 
 	}
 
@@ -336,4 +362,5 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         // if they are all the same, it's the same requirement.
         return 0;
     }
+
 }

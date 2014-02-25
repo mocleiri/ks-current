@@ -6,6 +6,8 @@ import javax.persistence.Table;
 
 import org.kuali.student.ap.academicplan.dto.PlaceholderInstanceInfo;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
 
 @Entity
 @Table(name = "KSPL_PLH_INSTANCE")
@@ -40,11 +42,19 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
     }
 
     
-    public PlaceholderInstanceEntity(PlaceholderInstanceInfo dto) {
-        super();
-
-        this.setId(dto.getId());
-        this.setPlaceholderId(dto.getPlaceholderId());
+    public void copyFromDto(PlaceholderInstanceInfo dto) throws MissingParameterException, DataValidationErrorException {
+    	
+    	if (this.getId() == null) {
+    		throw new DataValidationErrorException("Null id in PlaceholderInstanceEntity. Id must be set by caller.");
+    	}
+   	
+    	if (dto == null){
+    		throw new MissingParameterException("null placeholderInstanceInfo");
+    	}
+        
+        //TODO
+        //Do I need to do any data validation?
+        
         this.setRefObjectId(dto.getRefObjectId());
         this.setRefObjectType(dto.getRefObjectType());
         this.setAdvisorId(dto.getAdvisorId());
@@ -52,13 +62,6 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
         this.setStudentOK(dto.isStudentOK());      
 
     }
-    
-    
-	public static PlaceholderInstanceEntity create(PlaceholderInstanceInfo dto) {
-
-	    return new PlaceholderInstanceEntity(dto);
-
-	}
 
     
 	@Override
