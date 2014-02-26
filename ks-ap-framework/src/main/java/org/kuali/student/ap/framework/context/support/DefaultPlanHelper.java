@@ -131,8 +131,7 @@ public class DefaultPlanHelper implements PlanHelper {
 		if (ref.getRefObjectType().equals(PlanConstants.REF_TYPE_COURSE)){
 			// need to load a course with the course id
 			
-			CourseInfo course = KsapFrameworkServiceLocator.getCourseHelper().getCourseInfo(ref.getRefObjectId());
-			return course;
+			return KsapFrameworkServiceLocator.getCourseHelper().getCourseInfo(ref.getRefObjectId());
 		}
 		return null;
 	}
