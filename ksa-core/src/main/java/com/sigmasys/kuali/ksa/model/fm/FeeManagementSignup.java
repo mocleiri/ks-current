@@ -150,7 +150,6 @@ public class FeeManagementSignup implements Identifiable, KeyPairAware {
         this.creationDate = creationDate;
     }
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "EFFECTIVE_DATE")
     public Date getEffectiveDate() {
         return effectiveDate;

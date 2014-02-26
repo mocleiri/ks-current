@@ -13,7 +13,6 @@ import com.sigmasys.kuali.ksa.service.fm.FeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import com.sigmasys.kuali.ksa.service.hold.HoldService;
 import com.sigmasys.kuali.ksa.service.impl.GenericPersistenceService;
-import com.sigmasys.kuali.ksa.util.CalendarUtils;
 import com.sigmasys.kuali.ksa.util.CommonUtils;
 import com.sigmasys.kuali.ksa.util.EnumUtils;
 import org.aopalliance.aop.Advice;
@@ -929,7 +928,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
             try {
 
-                Date signupDate = CalendarUtils.removeTime(fmSignup.getEffectiveDate());
+                Date signupDate = fmSignup.getEffectiveDate();
 
                 List<MilestoneInfo> milestones = atpService.getMilestonesForAtp(atpId, atpService.getAtpContextInfo());
 
@@ -937,8 +936,8 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                     if (milestoneType.equals(milestone.getTypeKey())) {
 
-                        Date milestoneStartDate = CalendarUtils.removeTime(milestone.getStartDate());
-                        Date milestoneEndDate = CalendarUtils.removeTime(milestone.getEndDate());
+                        Date milestoneStartDate = milestone.getStartDate();
+                        Date milestoneEndDate = milestone.getEndDate();
 
                         if (milestoneStartDate != null && milestoneEndDate != null) {
 
@@ -964,12 +963,14 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                                     }
                                     break;
                                 case GREATER_EQUAL:
-                                    if (signupDate.compareTo(milestoneEndDate) >= 0) {
+                                    if ((signupDate.compareTo(milestoneStartDate) >= 0 && signupDate.compareTo(milestoneEndDate) <= 0) ||
+                                            signupDate.compareTo(milestoneEndDate) >= 0) {
                                         return true;
                                     }
                                     break;
                                 case LESS_EQUAL:
-                                    if (signupDate.compareTo(milestoneStartDate) <= 0) {
+                                    if ((signupDate.compareTo(milestoneStartDate) >= 0 && signupDate.compareTo(milestoneEndDate) <= 0) ||
+                                            signupDate.compareTo(milestoneStartDate) <= 0) {
                                         return true;
                                     }
                             }
@@ -988,7 +989,6 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
                         break;
                     }
                 }
-
 
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
