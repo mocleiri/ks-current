@@ -439,7 +439,7 @@ replace signup rates "cp.undergrad.nonresident.pt", "default" with "colab.underg
 ')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student already has mandatory fees so incurred tech fees removed', 7010, 'FM Signup 2_10', 3, 10, null,
-'(signup has rates "tech.fee.[..]" and signup has rates "cp.(resident|nonresident|graduate).[f|p]t")',
+'(signup has rates "tech.fee.[..]" and signup has rates "cp.[resident|nonresident|graduate].[f|p]t")',
 'remove signup rates "tech.fee.[f|p]t"')!
 
 
