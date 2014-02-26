@@ -28,7 +28,7 @@ When /^I search for holiday calendars$/ do
 end
 
 When /^I search for academic terms$/ do
-  @term = make AcademicTermObject, :term_name => "Term", :parent_calendar => @calendar
+  @term = make AcademicTermObject, :term_name => "Term", :parent_calendar => (make AcademicCalendar, :year => "")
   @term.search
 end
 
