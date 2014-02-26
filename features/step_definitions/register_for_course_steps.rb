@@ -79,7 +79,7 @@ Then /^there is a message indicating registration submittal$/ do
     begin
       page.wait_until { page.user_message.include? register_message_text }
     rescue
-      raise "#{register_message_text}  not in user message"
+      raise "\"#{register_message_text}\" not found in user message"
     end
     puts "User Message: #{page.user_message}"
     page.user_message.should include register_message_text
