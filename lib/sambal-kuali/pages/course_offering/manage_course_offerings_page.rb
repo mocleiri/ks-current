@@ -10,6 +10,7 @@ class ManageCourseOfferings < BasePage
 
   element(:previous_course_link){ |b| b.frm.link(id: "LoadPrev") }
   element(:list_all_course_link){ |b| b.frm.link(id: "ListAll") }
+  action(:list_all_courses){ |b| b.list_all_course_link.click; b.loading.wait_while_present(200) }
   element(:next_course_link){ |b| b.frm.link(id: "LoadNext") }
 
   element(:term) { |b| b.frm.text_field(name: "termCode") }

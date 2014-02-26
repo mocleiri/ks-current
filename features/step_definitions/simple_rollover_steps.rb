@@ -254,8 +254,7 @@ Then /^the Course Offering is in offered state$/ do
   @course_offering.manage
 
   on ManageCourseOfferings do |page|
-    page.list_all_course_link.click
-    page.loading.wait_while_present
+    page.list_all_courses
   end
 
   on ManageCourseOfferingList do |page|

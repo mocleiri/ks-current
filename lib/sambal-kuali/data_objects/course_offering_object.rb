@@ -524,8 +524,7 @@ class CourseOffering
       end_time = Time.new
       #in case there is only 1 course, want to show list
       if page.list_all_course_link.exists? then
-        page.list_all_course_link.click
-        page.loading.wait_while_present
+        page.list_all_courses
       end
       puts "#{@course[0,4]} subj code search time: #{end_time-st_time}"
     end
@@ -579,8 +578,7 @@ class CourseOffering
       @course = existing_co
     else
       @course = create_co_copy(@course, @term)
-      on(ManageCourseOfferings).list_all_course_link.click
-      on(ManageCourseOfferings).loading.wait_while_present
+      on(ManageCourseOfferings).list_all_courses
 
       if options[:co_status] == OFFERED_STATUS or options[:co_status] == PLANNED_STATUS
         approve_co

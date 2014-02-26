@@ -382,8 +382,7 @@ end
 
 And /^the Course Offering is shown as Canceled$/ do
   on ManageCourseOfferings do |page1|
-    page1.list_all_course_link.click
-    page1.loading.wait_while_present(200)
+    page1.list_all_courses
   end
     on ManageCourseOfferingList do |page2|
       page2.co_status(@course_offering.course).should == "Canceled"
@@ -392,7 +391,7 @@ end
 
 Then /^the Course Offering is shown as Draft$/ do
   on ManageCourseOfferings do |page1|
-    page1.list_all_course_link.click
+    page1.list_all_courses
     on ManageCourseOfferingList do |page2|
       page2.co_status(@course_offering.course).should == "Draft"
     end
@@ -401,7 +400,7 @@ end
 
 Then /^the Course Offering is shown as Offered$/ do
   on ManageCourseOfferings do |page1|
-    page1.list_all_course_link.click
+    page1.list_all_courses
     on ManageCourseOfferingList do |page2|
       page2.co_status(@course_offering.course).should == "Offered"
     end
@@ -410,7 +409,7 @@ end
 
 Then /^the Course Offering is shown as Planned$/ do
   on ManageCourseOfferings do |page1|
-    page1.list_all_course_link.click
+    page1.list_all_courses
     on ManageCourseOfferingList do |page2|
       page2.co_status(@course_offering.course).should == "Planned" #TODO: use the object here
     end
@@ -419,7 +418,7 @@ end
 
 Then /^the Course Offering is now shown as Planned$/ do
   on ManageCourseOfferings do |page1|
-    page1.list_all_course_link.click
+    page1.list_all_courses
     on ManageCourseOfferingList do |page2|
       page2.co_status(@course_offering.course).should == "Planned"
     end
