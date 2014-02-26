@@ -4,10 +4,10 @@ class CmCourseInformation < BasePage
   cm_elements
 
   element(:proposal_title) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.proposalInfo.name') }
-  element(:proposal_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.proposal.name', class: 'uif-textControl required error') }
+  element(:proposal_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.proposalInfo.name', class: 'uif-textControl required error') }
 
   element(:course_title) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.courseInfo.courseTitle') }
-  element(:course_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.course.courseTitle', class: 'uif-textControl required validChar-document.newMaintainableObject.course.courseTitle0 error' ) }
+  element(:course_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.courseInfo.courseTitle', class: 'uif-textControl required validChar-document.newMaintainableObject.dataObject.courseInfo.courseTitle0 error') }
 
   element(:transcript_course_title) {|b| b.text_field(name: /transcriptTitle$/) }
   element(:subject_code) { |b| b.text_field(name: /subjectArea$/) }

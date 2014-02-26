@@ -58,6 +58,42 @@ When /^I complete the required fields for save on the course proposal$/ do
   @course_proposal.create_proposal_req_fields
 end
 
+When /^I complete the required fields for save on the course admin proposal$/ do
+  @course_proposal = create CmCourseProposalObject
+  @course_proposal.create_proposal_wo_review
+  @course_proposal.create_proposal_req_fields
+end
+
+
+Then /^I should see data in required fields for the course admin proposal$/ do
+  on CmCourseInformation do |page|
+    page.course_information
+    page.proposal_title.value.should == @course_proposal.proposal_title
+    page.course_title.value.should == @course_proposal.course_title
+    page.page_validation_text.should == "Document was successfully saved."
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
+  end
+
+end
+
+When /^I am on the course information page of create a course$/ do
+  @course_proposal = create CmCourseProposalObject
+  @course_proposal.create_proposal_wo_review
+end
+
+And /^I click the save progress button$/ do
+  @course_proposal.save_proposal
+end
+
+Then /^I should receive an error message about the proposal title and course title being required for save\.$/ do
+ on CmCourseInformation do |page|
+   #page.course_information
+   page.proposal_title_error_state.exists?.should == true
+   page.course_title_error_state.exists?.should == true
+   page.growl_text.should include "The form contains errors. Please correct these errors and try again."
+   page.page_validation_header.should include "This page has 2 errors"
+ end
+end
 #-----
 # S2
 #-----

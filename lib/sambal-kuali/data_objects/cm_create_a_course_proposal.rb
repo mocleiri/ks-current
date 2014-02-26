@@ -346,6 +346,12 @@ class CmCourseProposalObject < DataObject
       page.cancel
     end
   end
+  
+  def save_proposal
+    on CmCreateCourseStart do |page|
+      page.save_progress
+    end
+  end
 
   #-----
   private
