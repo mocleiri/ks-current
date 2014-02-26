@@ -75,10 +75,17 @@ When /^I search for a course with one word"(.*?)" text option$/ do |text|
   @course_offering.course_search_with_search_text
 end
 
-Then /^course title or course description containing "(.*?)"text option should appear$/ do |text|
+Then /^course title or course description containing "(.*?)"text option "(.*?)" appear$/ do |text,condition|
   @course_offering = make CourseOffering
-  @course_offering.check_all_results_data_for_text(text,nil).should be_true
-  puts "returns true"
+  if condition == "should"
+    @course_offering.check_all_results_data_for_text(text,nil).should be_true
+  else
+    begin
+      @course_offering.check_all_results_data_for_text(text,nil).should_not be_true
+    rescue Watir::Exception::UnknownObjectException
+      # Implication here is that there were no search results at all.
+    end
+  end
   end
 
 When /^I search for a course with multi word"(.*?)" text option$/ do |text|
@@ -88,11 +95,18 @@ When /^I search for a course with multi word"(.*?)" text option$/ do |text|
 end
 
 
-Then(/^course code or course title or course description containing any word of "(.*?)"text option should appear$/) do |expected|
+Then(/^course code or course title or course description containing any word of "(.*?)"text option "(.*?)" appear$/) do |expected, condition|
   @course_offering = make CourseOffering
-  @course_offering.multi_text_search(expected).should be_true
-  puts "returns true"
-end
+  if condition == "should"
+    @course_offering.multi_text_search(expected).should be_true
+  else
+    begin
+      @course_offering.multi_text_search(expected).should_not be_true
+    rescue Watir::Exception::UnknownObjectException
+      # Implication here is that there were no search results at all.
+    end
+  end
+  end
 
 #------------------------------------------------------------------------------------------------------------------------------------
 
@@ -103,15 +117,17 @@ end
 
 Then /^only "(.*?)" level courses "(.*?)" be displayed$/ do |text, condition|
   @course_offering = make CourseOffering
-    if condition == "should"
-      if @course_offering.check_all_results_data_for_level(text).should be_true
-      puts "Test is Passed True"
-      else
-        begin
-          rescue Watir::Exception::UnknownObjectException
-        end
-      end
+  if condition == "should"
+    @course_offering.check_all_results_data_for_level(text).should be_true
+    puts "Test is Passed True"
+  else
+    begin
+      @course_offering.check_all_results_data_for_level(text).should_not be_true
+      rescue Watir::Exception::UnknownObjectException
     end
   end
+end
+
+
 
 

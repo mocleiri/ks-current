@@ -79,7 +79,7 @@ class CourseSearch < BasePage
 
 
   def results_list_validation(split_text,search_FullText)
-    sleep(1)
+    sleep(2)
     no_of_rows = results_table.rows.length-1
     #puts "No of Rows = #{no_of_rows}"
 
@@ -89,6 +89,7 @@ class CourseSearch < BasePage
         #puts "inside 20"
         sleep(2)
         course_code = results_table.rows[index].cells[COURSE_CODE].text
+        sleep(1)
         course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
 
         puts "Course name =  #{course_name}"
@@ -116,7 +117,7 @@ class CourseSearch < BasePage
             if ((course_code.downcase).include? (split_text).downcase) ||
                 ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
               puts "True---------After searching all Search Text"
-              return true
+
             else
               puts "#{course_code}"
               return false
@@ -130,35 +131,33 @@ class CourseSearch < BasePage
 
 #************************** Course Level Search--KSAP- 832  and US 618*********************  fair Draft
 
-def result_list_level(text)
-  sleep(1)
-  no_of_rows = results_table.rows.length-1
-  #puts "No of Rows = #{no_of_rows}"
+  def result_list_level(text)
+    sleep(1)
+    no_of_rows = results_table.rows.length-1
+    #puts "No of Rows = #{no_of_rows}"
 
-  for index in 1..no_of_rows do
 
-    if index == no_of_rows
-      sleep(2)
-      course_code = results_table.rows[index].cells[COURSE_CODE].text
-      puts  "courseCode1 #{course_code}"
-      puts level_digit = text.slice(0)
-      search_text = /(#{level_digit}\d\d)/
-      #search_text = /(3\d\d)/
-      sleep(2)
-      sliced_course_code = course_code[4..course_code.length]
-      if (search_text.match(sliced_course_code))
-        puts "Code match !!!! with that digit with Search text ############## #{sliced_course_code}"
-       return true
+    for index in 1..no_of_rows do
 
-      else
-        puts "inside false !!! #{course_code}"
-        return false
+      if index == no_of_rows
+        sleep(2)
+        course_code = results_table.rows[index].cells[COURSE_CODE].text
+        puts  "courseCode1 #{course_code}"
+        puts level_digit = text.slice(0)
+        search_text = /(#{level_digit}\d\d)/
+       #search_text = /(3\d\d)/
+        sleep(2)
+        sliced_course_code = course_code[4..course_code.length]
+        if (search_text.match(sliced_course_code))
+          puts "Code match !!!! with that digit with Search text ############## #{sliced_course_code}"
+
+        else
+          puts "inside false !!! #{course_code}"
+          return false
+          break
+        end
+
       end
-      sleep(2)
-
-
-
+    end
   end
-end
-end
 end

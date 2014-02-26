@@ -162,6 +162,16 @@ class CourseOffering
 
   def multi_text_search(expected)
     on CourseSearch do |page|
+
+
+      puts " Entering Multi Text Search expected = #{expected}"
+
+      if expected =~ Regexp.union("*",";",",","$","#")
+        puts "Search Text contain Special Character"
+        return false
+      end
+
+
       split_name = expected.split(' ')
       puts split_name.length
       # if page.result_pagination.exists?
@@ -181,7 +191,7 @@ class CourseOffering
           end
         end
       else
-        page.check_all_results_data_for_text(expected,expected)
+        page.check_all_results_data_for_text(expected,expected)       # when its Single Word
       end
     end
   end
@@ -190,40 +200,42 @@ class CourseOffering
 
   def check_all_results_data_for_text(split_text,search_FullText)
     on CourseSearch do |page|
-    puts "Search Text = #{split_text}"
-    pgno = 1
+      puts "Search Text = #{split_text}"
+      pgno = 1
 
-    until page.results_list_next_disabled.exists?
+      until page.results_list_next_disabled.exists?
 
+        puts "------ page no = #{pgno}"
+        page.results_list_validation(split_text,search_FullText)
+        page.results_list_next_enabled.wait_until_present
+        page.results_list_next_click
+        pgno = pgno+1
+        page.results_list_next_enabled.wait_until_present
+      end
       puts "------ page no = #{pgno}"
+      ### - The line executes when its Single Page and also Last page in Multi page
       page.results_list_validation(split_text,search_FullText)
-      page.results_list_next_enabled.wait_until_present
-      page.results_list_next_click
-      pgno = pgno+1
-      page.results_list_next_enabled.wait_until_present
-    end
-    puts "------ page no = #{pgno}"
-    page.results_list_validation(split_text,search_FullText)
-    end
-    end
+      end
+  end
 
 
 
-def check_all_results_data_for_level(text)
-  on CourseSearch do |page|
-    puts "Search Text = #{text}"
-    pgno = 1
-    puts level_digit = text.slice(0)
-    until page.results_list_next_disabled.exists?
+  def check_all_results_data_for_level(text)
+    on CourseSearch do |page|
+      puts "Search Text = #{text}"
+      pgno = 1
+      puts level_digit = text.slice(0)
+      until page.results_list_next_disabled.exists?
+        puts "------ page no = #{pgno}"
+        page.result_list_level(text)
+        page.results_list_next_enabled.wait_until_present
+        page.results_list_next_click
+        pgno = pgno+1
+        page.results_list_next_enabled.wait_until_present
+      end
       puts "------ page no = #{pgno}"
-       page.result_list_level(text)
-       page.results_list_next_enabled.wait_until_present
-       page.results_list_next_click
-       pgno = pgno+1
-       page.results_list_next_enabled.wait_until_present
+      page.result_list_level(text)
     end
-    puts "------ page no = #{pgno}"
-    page.result_list_level(text)
   end
-  end
+
 end
