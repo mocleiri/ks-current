@@ -134,7 +134,7 @@ class ManageCourseOfferingList < BasePage
 
   def co_list
     co_codes = []
-    course_offering_results_table.rows.each { |row| co_codes << row[CO_CODE_COLUMN].text }
+    course_offering_results_table.rows[1..-1].each { |row| co_codes << row[CO_CODE_COLUMN].text }
     co_codes.delete_if { |co_code| co_code.strip == "" }
     co_codes
   end
