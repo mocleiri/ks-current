@@ -383,6 +383,7 @@ end
 And /^the Course Offering is shown as Canceled$/ do
   on ManageCourseOfferings do |page1|
     page1.list_all_course_link.click
+    page1.loading.wait_while_present(200)
   end
     on ManageCourseOfferingList do |page2|
       page2.co_status(@course_offering.course).should == "Canceled"
