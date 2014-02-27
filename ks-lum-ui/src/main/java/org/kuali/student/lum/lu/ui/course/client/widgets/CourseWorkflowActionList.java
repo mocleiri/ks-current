@@ -253,75 +253,86 @@ public class CourseWorkflowActionList extends StylishDropDown {
         
         final KSRadioButton radioOptionModifyNoVersion = new KSRadioButton("modifyCreditCourseButtonGroup", getMessage("modifyCourseNoVersion"));
         final KSRadioButton radioOptionModifyWithVersion = new KSRadioButton("modifyCreditCourseButtonGroup", getMessage("modifyCourseWithVersion"));
-        final KSRadioButton radioOptionModifyWithCurrentVersion = new KSRadioButton("modifyCreditCourseButtonGroup", getMessage("modifyCourseCurrentVersion"));
         
         final KSCheckBox curriculumReviewOption = new KSCheckBox(getMessage("useCurriculumReview"));
         
-        radioOptionModifyNoVersion.addValueChangeHandler(new ValueChangeHandler<Boolean>(){
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-	            	curriculumReviewOption.setEnabled(false);
-	            	curriculumReviewOption.setValue(false);
-				}
-			}
-        });
-        radioOptionModifyNoVersion.setValue(true);
-        curriculumReviewOption.setEnabled(false);
-        
-        radioOptionModifyWithVersion.addValueChangeHandler(new ValueChangeHandler<Boolean>(){
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-	            	curriculumReviewOption.setEnabled(true);
-				}
-			}
-        });
-        
-        radioOptionModifyWithCurrentVersion.addValueChangeHandler(new ValueChangeHandler<Boolean>(){
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()){
-					curriculumReviewOption.setEnabled(true);
-	            	curriculumReviewOption.setValue(true);
-				}
-			}
-        });
+    	curriculumReviewOption.setEnabled(isAdmin);
+    	curriculumReviewOption.setValue(!isAdmin);
+    	
         
         continueButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
 				if (radioOptionModifyNoVersion.getValue()){
+                                    if (curriculumReviewOption.getValue()) {
+					checkLatestVersionForCurrent(viewContext, modifyPath, model, curriculumReviewOption.getValue());
+                                    } else {
 					viewContext.setId(courseId);
 					viewContext.setIdType(IdType.OBJECT_ID);
 					Application.navigate(AppLocations.Locations.COURSE_ADMIN_NO_VERSION.getLocation(), viewContext);
+                                    }
 				} else if (radioOptionModifyWithVersion.getValue()){
 				    checkLatestVersion(viewContext, modifyPath, model, curriculumReviewOption.getValue());			    
-				} else if(radioOptionModifyWithCurrentVersion.getValue()){ 
-					checkLatestVersionForCurrent(viewContext, modifyPath, model, curriculumReviewOption.getValue());
 				}
 		    	modifyDialog.hide();
 			}        	
         });
         
         //Check that this is the latest version with an async call and only show modify with version options if it is the latest
-        if(isAdmin){
-	        layout.add(radioOptionModifyNoVersion);
-	        
-        } else {
-        	// if("fred".equalsIgnoreCase("fred")){
-        		radioOptionModifyNoVersion.setValue(false);
-        		layout.add(radioOptionModifyWithVersion);
-	            layout.add(radioOptionModifyWithCurrentVersion);
-        	// } else {
-        		
-        	//}
+        layout.add(radioOptionModifyNoVersion);
+        layout.add(radioOptionModifyWithVersion);
+        layout.add(curriculumReviewOption);
+        if (!isCurrentVersion) {
+            KSLabel notCurrentVersionLabel = new KSLabel(getMessage("alreadyHaveAnActiveProposalForCourseMessage"));
+            notCurrentVersionLabel.addStyleName("bold");
+            layout.add(notCurrentVersionLabel);
         }
-        if(isCurrentVersion){
-        	layout.add(radioOptionModifyWithVersion);
-            layout.add(radioOptionModifyWithCurrentVersion);
-            layout.add(curriculumReviewOption);
-        }
+        setDefaultsAndEnabledOptions (radioOptionModifyNoVersion, 
+                radioOptionModifyWithVersion, 
+                curriculumReviewOption, 
+                continueButton,
+                isAdmin, 
+                this.isCurrentVersion);
+       
         modifyDialog.setWidget(layout);
         modifyDialog.show();
         
+    }
+    
+    // protected so can override by a class that inherits this
+    protected void setDefaultsAndEnabledOptions(KSRadioButton radioOptionModifyNoVersion,
+            KSRadioButton radioOptionModifyWithVersion,
+            KSCheckBox curriculumReviewOption,
+            KSButton continueButton,
+            boolean isAdmin,
+            boolean isCurrentVersion) {
+
+        if (isAdmin) {
+            // admins typically are correcting current verions so set that as the default
+            radioOptionModifyNoVersion.setValue(true);
+            if (!isCurrentVersion) {
+                // if there is adraft proposal already out there don't allow the admin to create a new proposal or version
+                // all they should be able to do is directly update the current version
+                radioOptionModifyWithVersion.setEnabled(false);
+                curriculumReviewOption.setValue(false);
+                curriculumReviewOption.setEnabled(false);
+            }
+            return;            
+        } 
+        // dept user has to use workflow
+        curriculumReviewOption.setValue(true);
+        curriculumReviewOption.setEnabled(false);
+        // normal situation is that they are going in to create a new version do default it that way
+        if (isCurrentVersion) {
+            radioOptionModifyWithVersion.setValue(true);
+        } else {
+            // but if there already is a proposal out there don't allow the dept to create a new one 
+            // of any kind 
+            radioOptionModifyNoVersion.setEnabled(false);
+            radioOptionModifyWithVersion.setEnabled(false);
+            continueButton.setEnabled(false);
+        }
+        return;
     }
     
     /**
@@ -628,7 +639,7 @@ public class CourseWorkflowActionList extends StylishDropDown {
         items.add(copyCourseActionItem);
 
         if (!isCurrentVersion) {
-            items.remove(modifyCourseActionItem);
+//            items.remove(modifyCourseActionItem);
             items.remove(retireCourseActionItem);
         }
 
