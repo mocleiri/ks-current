@@ -290,7 +290,7 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
 
         String userId = "user101";
 
-        FeeManagementSession session = fmService.getOldestFeeManagementSession(userId);
+        FeeManagementSession session = fmService.getOldestFeeManagementSession(userId, FeeManagementSessionStatus.CURRENT);
 
         Assert.notNull(session);
         Assert.notNull(session.getId());
@@ -306,6 +306,34 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
         Assert.isTrue(updatedSession.getAccount().getId().equals(userId));
 
         Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
+    public void assesFees134() throws Exception {
+
+        String userId = "user134";
+
+        // This user should have 2 FM sessions
+        for (int i = 0; i < 2; i++) {
+
+            FeeManagementSession session = fmService.getOldestFeeManagementSession(userId, FeeManagementSessionStatus.CURRENT);
+
+            Assert.notNull(session);
+            Assert.notNull(session.getId());
+            Assert.notNull(session.getSignups());
+            Assert.notEmpty(session.getSignups());
+
+            FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+            Assert.notNull(updatedSession);
+            Assert.notNull(updatedSession.getId());
+
+            Assert.notNull(updatedSession.getAccount());
+            Assert.isTrue(updatedSession.getAccount().getId().equals(userId));
+
+            Assert.isTrue(session == updatedSession);
+
+        }
     }
 
     @Test

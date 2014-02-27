@@ -12803,38 +12803,28 @@ INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK)
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (356, 'N', 1, 145);
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (357, 'N', 36, 145);
 
+------------------------------------------------------------------------------------------------------------------------
 
-REM Create the test session for test 34 - user134 Resident, GRAD, FT, stu taking MBAP and NO cohort, tuition to ignore residency distintion, DC Weekend
+-- Create the test session for test 34 - user134 Resident, GRAD, FT, stu taking MBAP and NO cohort, tuition to ignore residency distinction, DC Weekend
 
-REM Create the session insert. Note CURRENT is CU.
-Rem creating session 34
 INSERT INTO "KSSA_FM_SESSION" (ID, ATP_ID, CREATION_DATE, IS_QUEUED, IS_REVIEW_COMPLETE, IS_REVIEW_REQUIRED, STATUS, ACNT_ID_FK) VALUES (34, '20134', TO_TIMESTAMP('09-JAN-14 10.37.25.478000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), 'N', 'N', 'N', 'CU', 'user134');
 
-Rem Create the key-pair values. undergraduate, graduate, doctoral, cp, sg, in.state, out.of.state
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (124, 'study.level', 'graduate');
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (125, 'campus', 'cp');
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (126, 'residency', 'in.state');
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (127, 'major.code', 'mbap');
-
-Rem assign these key-pairs to the session. (assign key-pairs 124,125,126,127  to session 34)
 
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (34, 124);
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (34, 125);
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (34, 126);
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (34, 127);
 
-Rem Create the signups to associate with the session.
--- Units are stored to two decimal places.
-REM these fields change.                                                                                                                                                               *     *                                                                                                      *                          *          *     *       *   *    *
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (137, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA901', 'AO', 'A', 137, 'N', 3, 34);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (138, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA983', 'AO', 'A', 138, 'N', 3, 34);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (139, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA948', 'AO', 'A', 139, 'N', 3, 34);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (140, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA911', 'AO', 'A', 140, 'N', 3, 34);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (141, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA211', 'AO', 'A', 141, 'N', 3, 34);
 
-
-Rem each Signup now needs its rates attaching.
-Rem                                                                                      ID     RT  SGNUP
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (340, 'N', 27, 137);
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (341, 'N', 50, 137);
 
@@ -12850,29 +12840,24 @@ INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK)
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (348, 'N', 1, 141);
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (349, 'N', 36, 141);
 
-REM Create the test session for test 34a - user134 Resident, GRAD, FT, stu taking MBAP and NO cohort, tuition to ignore residency, DC Weekend
-REM Student drops MBA211 course prior to penalty 9/20/13 which negates the CP fee and brings back the Tech fees.
+------------------------------------------------------------------------------------------------------------------------
 
-REM Create the session insert. Note CURRENT is CU.
-Rem creating session 34a --> 534
-INSERT INTO "KSSA_FM_SESSION" (ID, ATP_ID, CREATION_DATE, IS_QUEUED, IS_REVIEW_COMPLETE, IS_REVIEW_REQUIRED, STATUS, ACNT_ID_FK) VALUES (534, '20134', TO_TIMESTAMP('10-JAN-14 10.37.25.478000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), 'N', 'N', 'N', 'CU', 'user134');
+-- Create the test session for test 34a - user134 Resident, GRAD, FT, stu taking MBAP and NO cohort, tuition to ignore residency, DC Weekend
 
-Rem Create the key-pair values. undergraduate, graduate, doctoral, cp, sg, in.state, out.of.state
+INSERT INTO "KSSA_FM_SESSION" (ID, PREV_SESSION_ID_FK, ATP_ID, CREATION_DATE, IS_QUEUED, IS_REVIEW_COMPLETE, IS_REVIEW_REQUIRED, STATUS, ACNT_ID_FK) VALUES (534, 34, '20134', TO_TIMESTAMP('10-JAN-14 10.37.25.478000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), 'N', 'N', 'N', 'CU', 'user134');
+
+UPDATE KSSA_FM_SESSION SET NEXT_SESSION_ID_FK = 534 WHERE ID = 34;
+
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (218, 'study.level', 'graduate');
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (219, 'campus', 'cp');
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (220, 'residency', 'in.state');
 INSERT INTO "KSSA_KEY_PAIR" (ID, KEY, VALUE) VALUES (221, 'major.code', 'MBAP');
-
-Rem assign these key-pairs to the session. (assign key-pairs 218,219,220,221  to session 534)
 
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (534, 218);
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (534, 219);
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (534, 220);
 INSERT INTO "KSSA_FM_SESSION_KEY_PAIR" (FM_SESSION_ID_FK, KEY_PAIR_ID_FK) VALUES (534, 221);
 
-Rem Create the signups to associate with the session.
--- Units are stored to two decimal places.
-REM these fields change.                                                                                                                                                               *     *                                                                                                      *                          *          *     *       *   *    *
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (598, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA901', 'AO', 'A', 137, 'N', 3, 534);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (599, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA983', 'AO', 'A', 138, 'N', 3, 534);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (600, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA948', 'AO', 'A', 139, 'N', 3, 534);
@@ -12880,9 +12865,6 @@ INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFF
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (602, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('01-SEP-13', 'DD-MON-RR'), 'MBA211', 'AO', 'A', 141, 'N', 3, 534);
 INSERT INTO "KSSA_FM_SIGNUP" (ID, ATP_ID, IS_REVIEW_COMPLETE, CREATION_DATE, EFFECTIVE_DATE, OFFERING_ID, OFFERING_TYPE, OPERATION, REG_ID, IS_TAKEN, UNITS, FM_SESSION_ID_FK) VALUES (603, '20134', 'N', TO_TIMESTAMP('09-JAN-14 11.07.48.108000000 AM', 'DD-MON-RR HH.MI.SS.FF AM'), TO_DATE('20-SEP-13', 'DD-MON-RR'), 'MBA211', 'AO', 'D', 603, 'N', 3, 534);
 
-
-Rem each Signup now needs its rates attaching.
-Rem                                                                                      ID     RT  SGNUP
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (636, 'N', 27, 598);
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (637, 'N', 50, 598);
 
@@ -12901,10 +12883,8 @@ INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK)
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (646, 'N', 1, 603);
 INSERT INTO "KSSA_FM_SIGNUP_RATE" (ID, IS_COMPLETE, RATE_ID_FK, FM_SIGNUP_ID_FK) VALUES (647, 'N', 36, 603);
 
--- Update the old session to point to this
-update KSSA_FM_SESSION set NEXT_SESSION_ID_FK = 534 where ID=34;
--- Update this session to point to the old
-update KSSA_FM_SESSION set PREV_SESSION_ID_FK = 34 where ID=534;
+
+
 
 
 

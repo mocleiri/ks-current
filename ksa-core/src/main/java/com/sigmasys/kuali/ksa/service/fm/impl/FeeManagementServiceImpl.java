@@ -335,6 +335,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // Update the entity:
         session.setChargeStatus(newFmStatus);
+
         persistEntity(session);
     }
 
@@ -1628,12 +1629,14 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param currentManifests A list of current FM session's manifests.
      */
     private void processPriorSessionAdjustment(FeeManagementSession currentFmSession, FeeManagementSession priorFmSession, List<FeeManagementManifest> currentManifests) {
+
         // Get the prior and current FM sessions' manifests:
         List<FeeManagementManifest> priorManifests = getManifests(priorFmSession.getId(),
                 FeeManagementManifestType.CHARGE, FeeManagementManifestType.CANCELLATION, FeeManagementManifestType.DISCOUNT);
 
         // Get pairs of matching FM manifests in the prior and the current FM sessions:
         List<FeeManagementManifest> unmatchedPriorManifests = new ArrayList<FeeManagementManifest>();
+
         List<Pair<FeeManagementManifest, FeeManagementManifest>> matchingManifests = getMatchingManifests(priorManifests, currentManifests, unmatchedPriorManifests);
 
         // Process matching manifest pairs:
@@ -1657,7 +1660,8 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @return A List of matching manifest pairs. The "a" property of the <code>Pair</code> is the prior manifest, and "b" is the current one.
      */
     private List<Pair<FeeManagementManifest, FeeManagementManifest>> getMatchingManifests(List<FeeManagementManifest> priorManifests,
-                                                                                          List<FeeManagementManifest> currentManifests, List<FeeManagementManifest> unmatchedPriorManifests) {
+                                                                                          List<FeeManagementManifest> currentManifests,
+                                                                                          List<FeeManagementManifest> unmatchedPriorManifests) {
         // Create the resulting list:
         List<Pair<FeeManagementManifest, FeeManagementManifest>> matchingManifests = new ArrayList<Pair<FeeManagementManifest, FeeManagementManifest>>();
 
@@ -1665,16 +1669,16 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         List<FeeManagementManifest> priorManifestsCopy = new ArrayList<FeeManagementManifest>(priorManifests);
 
         // Iterate through the prior manifests trying find a match in the current manifest list:
-        for (Iterator<FeeManagementManifest> itPrior = priorManifestsCopy.iterator(); itPrior.hasNext(); ) {
-            FeeManagementManifest priorManifest = itPrior.next();
+        for (Iterator<FeeManagementManifest> iterator = priorManifestsCopy.iterator(); iterator.hasNext(); ) {
+
+            FeeManagementManifest priorManifest = iterator.next();
 
             // Iterate through the list of current manifests trying to find a match:
             for (FeeManagementManifest currentManifest : currentManifests) {
                 if (manifestsMatch(priorManifest, currentManifest, false)) {
                     // Add a new matching pair, remove the matching prior manifest from the underlying list and break out of the loop:
                     matchingManifests.add(new Pair<FeeManagementManifest, FeeManagementManifest>(priorManifest, currentManifest));
-                    itPrior.remove();
-
+                    iterator.remove();
                     break;
                 }
             }
@@ -1697,9 +1701,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @return <code>true</code> if the manifests are a match, <code>false</code> otherwise.
      */
     private boolean manifestsMatch(FeeManagementManifest prior, FeeManagementManifest current, boolean matchByOfferingId) {
+
         if ((prior != null) && (current != null)) {
+
             // Check if rates match first:
-            boolean ratesMatch = (prior.getRate() != null) && (current.getRate() != null) && prior.getRate().equals(current.getRate());
+            boolean ratesMatch = (prior.getRate() != null) && (current.getRate() != null) &&
+                    prior.getRate().getId().equals(current.getRate().getId());
 
             // Check if Internal Charge IDs or Registration IDs match:
             return ratesMatch &&
@@ -1721,18 +1728,20 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param currentFmSession The current FM session. Used for non-charged matching manifests adjustment.
      */
     private void processMatchingManifests(Pair<FeeManagementManifest, FeeManagementManifest> manifests, FeeManagementSession currentFmSession) {
-        // First, check if the payment information on the prior and current manifests match, i.e. current has already been charged:
-        FeeManagementManifest prior = manifests.getA();
-        FeeManagementManifest current = manifests.getB();
-        boolean currentAlreadyCharged = manifestPaymentInformationMatch(prior, current);
 
-        if (currentAlreadyCharged) {
+        // First, check if the payment information on the prior and current manifests match, i.e. current has already been charged:
+        FeeManagementManifest priorManifest = manifests.getA();
+        FeeManagementManifest currentManifest = manifests.getB();
+
+        boolean currentManifestAlreadyCharged = manifestPaymentInformationMatch(priorManifest, currentManifest);
+
+        if (currentManifestAlreadyCharged) {
             // Copy the Transaction from the prior to the current:
-            current.setTransaction(prior.getTransaction());
-            persistEntity(current);
+            currentManifest.setTransaction(priorManifest.getTransaction());
+            persistEntity(currentManifest);
         } else {
             // Create a correction on the current session from the prior manifest:
-            createPriorManifestCorrection(prior, currentFmSession);
+            createPriorManifestCorrection(priorManifest, currentFmSession);
         }
     }
 
@@ -1748,10 +1757,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @return <code>true</code> if the payment information on both manifests matches.
      */
     private boolean manifestPaymentInformationMatch(FeeManagementManifest prior, FeeManagementManifest current) {
-        return (prior.getEffectiveDate() != null) && (current.getEffectiveDate() != null) && prior.getEffectiveDate().equals(current.getEffectiveDate())
-                && (prior.getRecognitionDate() != null) && (current.getRecognitionDate() != null) && prior.getRecognitionDate().equals(current.getRecognitionDate())
-                && StringUtils.equals(prior.getTransactionTypeId(), current.getTransactionTypeId())
-                && safeAmountsEqual(prior, current);
+        return (prior.getEffectiveDate() != null) && (current.getEffectiveDate() != null) &&
+                prior.getEffectiveDate().equals(current.getEffectiveDate()) &&
+                (prior.getRecognitionDate() != null) && (current.getRecognitionDate() != null) &&
+                prior.getRecognitionDate().equals(current.getRecognitionDate()) &&
+                StringUtils.equals(prior.getTransactionTypeId(), current.getTransactionTypeId()) &&
+                safeAmountsEqual(prior, current);
     }
 
     /**
@@ -1872,6 +1883,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         priorCopy.setSession(currentFmSession);
         priorCopy.setType(FeeManagementManifestType.ORIGINAL);
+
         persistEntity(priorCopy);
 
         // Also, create a Correction Manifest:
@@ -1881,10 +1893,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         correctionManifest.setType(FeeManagementManifestType.CORRECTION);
         correctionManifest.setTransaction(null);
         correctionManifest.setLinkedManifest(priorCopy);
+
         persistEntity(correctionManifest);
 
         // Link the Prior Manifest with the Correction Manifest and persist:
         priorCopy.setLinkedManifest(correctionManifest);
+
         persistEntity(priorCopy);
     }
 
