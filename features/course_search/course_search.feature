@@ -29,7 +29,7 @@ Feature: BT.Course Search
           |  unscheduled | BSCI103 |Scheduled terms | should not     |
 
     #KSAP-692
-  @draft
+
   Scenario Outline: CS3.1 Verify searches for specific course codes returns the correct results.
       When I search for a course with "<text>" text option
       Then courses containing  "<expected>" text option appears
@@ -42,7 +42,7 @@ Feature: BT.Course Search
 
 
 #*******************KSAP- 762, US KSAP- 615,616,617***********************************************************************
-  @draft
+
   Scenario Outline: CS4.1.1 Successfully list any course title with one word search text options
        When I search for a course with one word"<text>" text option
        Then course title or course description containing "<text>"text option "should" appear
@@ -51,7 +51,7 @@ Feature: BT.Course Search
            | Shakespeare    |
            | bio		    |
 
-  @draft
+
   Scenario Outline: CS4.1.2 Successfully list any course title with multi word search text options
         When I search for a course with multi word"<multi_text>" text option
         Then course code or course title or course description containing any word of "<multi_text>"text option "should" appear
@@ -67,7 +67,7 @@ Feature: BT.Course Search
             |Inorganic ecology beekeeping |
 
 #************************* KSAP_ 819, US- 618**********************************************************************************
-  @draft
+
   Scenario:6.1- Successfully list any course with the search level
         When I search for a course with "2xx" level option
         Then only "200" level courses "should" be displayed
