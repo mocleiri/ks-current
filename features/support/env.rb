@@ -18,6 +18,11 @@ client = Selenium::WebDriver::Remote::Http::Default.new
 browser = nil
 headless = nil
 
+#Profile Proxy Configuration
+#profile = Selenium::WebDriver::Firefox::Profile.new
+#profile.proxy = Selenium::WebDriver::Proxy.new :http => 'localhost:8001'
+#, :profile => profile
+
 if ENV['HEADLESS']
   require 'headless'
   headless = Headless.new :destroy_at_exit => false
