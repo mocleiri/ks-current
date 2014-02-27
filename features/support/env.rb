@@ -16,6 +16,8 @@ client = Selenium::WebDriver::Remote::Http::Default.new
 
 browser = nil
 headless = nil
+$browserPath = nil # Use default browser install
+#$browserPath = '/path/to/alternate/firefox' # use a specific install of the browser
 
 if ENV['HEADLESS']
   require 'headless'
@@ -48,6 +50,10 @@ end
 Before do
   if browser == nil
     puts "debug  env.rb - creating new browser"
+    if $browserPath != nil
+      puts 'Trying to open custom browser path'
+      Selenium::WebDriver::Firefox.path = $browserPath
+    end
     browser = Watir::Browser.new :firefox, :http_client => client
     puts "debug  env.rb - browser.nil? #{browser.nil?}"
   end
