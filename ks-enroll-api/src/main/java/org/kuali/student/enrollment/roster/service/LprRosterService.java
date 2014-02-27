@@ -23,13 +23,17 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+
 import org.kuali.student.enrollment.roster.dto.LprRosterEntryInfo;
 import org.kuali.student.enrollment.roster.dto.LprRosterInfo;
+
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 
+import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.DisabledIdentifierException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
@@ -68,10 +72,10 @@ public interface LprRosterService {
      */
     public LprRosterInfo getLprRoster(@WebParam(name = "lprRosterId") String lprRosterId,
                                       @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -93,10 +97,10 @@ public interface LprRosterService {
      */
     public List<LprRosterInfo> getLprRostersByIds(@WebParam(name = "lprRosterIds") List<String> lprRosterIds,
                                                   @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -117,8 +121,8 @@ public interface LprRosterService {
     public List<String> getLprRosterIdsByType(@WebParam(name = "lprRosterTypeKey") String lprRosterTypeKey,
                                               @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -139,8 +143,8 @@ public interface LprRosterService {
     public List<LprRosterInfo> getLprRostersByLui(@WebParam(name = "luiId") String luiId,
                                                   @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -165,8 +169,8 @@ public interface LprRosterService {
                                                          @WebParam(name = "luiId") String luiId,
                                                          @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -187,8 +191,8 @@ public interface LprRosterService {
     public List<String> searchForLprRosterIds(@WebParam(name = "criteria") QueryByCriteria criteria,
                                               @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -209,8 +213,8 @@ public interface LprRosterService {
     public List<LprRosterInfo> searchForLprRosters(@WebParam(name = "criteria") QueryByCriteria criteria,
                                                    @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -250,8 +254,8 @@ public interface LprRosterService {
                                                         @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws DoesNotExistException,
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -284,8 +288,8 @@ public interface LprRosterService {
         throws DataValidationErrorException,
                DoesNotExistException,
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException,
                ReadOnlyException;
 
@@ -319,11 +323,11 @@ public interface LprRosterService {
         throws DataValidationErrorException,
                DoesNotExistException,
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException,
                ReadOnlyException,
-               VersionMismatchException;
+               VersionMismatchException;                          
 
     /**
      * Deletes an existing LprRoster.
@@ -342,11 +346,11 @@ public interface LprRosterService {
      * @throws PermissionDeniedException authorization failure
      */
     public StatusInfo deleteLprRoster(@WebParam(name = "lprRosterId") String lprRosterId,
-                                      @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+                                      @WebParam(name = "contextInfo") ContextInfo contextInfo) 
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -366,10 +370,10 @@ public interface LprRosterService {
      */
     public LprRosterEntryInfo getLprRosterEntry(@WebParam(name = "lprRosterEntryId") String lprRosterEntryId,
                                                 @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -393,10 +397,10 @@ public interface LprRosterService {
      */
     public List<LprRosterEntryInfo> getLprRosterEntriesByIds(@WebParam(name = "lprRosterEntryIds") List<String> lprRosterEntryIds,
                                                              @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -418,13 +422,12 @@ public interface LprRosterService {
     public List<String> getLprRosterEntryIdsByType(@WebParam(name = "lprRosterEntryTypeKey") String lprRosterEntryTypeKey,
                                                    @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
      * This method returns all the LprRosterEntries for an LprRoster.
-     * The returned list will be ordered by LprRosterEntryInfo.position starting with position 1.
      *
      * @param lprRosterId an identifier for an LprRoster
      * @param contextInfo information containing the principalId and
@@ -440,8 +443,8 @@ public interface LprRosterService {
      */
     public List<LprRosterEntryInfo> getLprRosterEntriesByLprRoster(@WebParam(name = "lprRosterId") String lprRosterId,
                                                                    @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws InvalidParameterException,
-               MissingParameterException,
+        throws InvalidParameterException, 
+               MissingParameterException, 
                OperationFailedException,
                PermissionDeniedException;
 
@@ -462,8 +465,8 @@ public interface LprRosterService {
      */
     public List<LprRosterEntryInfo> getLprRosterEntriesByLpr(@WebParam(name = "lprId") String lprId,
                                                              @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws InvalidParameterException,
-               MissingParameterException,
+        throws InvalidParameterException, 
+               MissingParameterException, 
                OperationFailedException,
                PermissionDeniedException;
 
@@ -487,8 +490,8 @@ public interface LprRosterService {
     public List<LprRosterEntryInfo> getLprRosterEntriesByLprRosterAndLpr(@WebParam(name = "lprRosterId") String lprRosterId,
                                                                           @WebParam(name = "lprId") String lprId,
                                                                           @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws InvalidParameterException,
-               MissingParameterException,
+        throws InvalidParameterException, 
+               MissingParameterException, 
                OperationFailedException,
                PermissionDeniedException;
 
@@ -512,8 +515,8 @@ public interface LprRosterService {
     public List<String> searchForLprRosterEntryIds(@WebParam(name = "criteria") QueryByCriteria criteria,
                                                    @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -535,8 +538,8 @@ public interface LprRosterService {
     public List<LprRosterEntryInfo> searchForLprRosterEntries(@WebParam(name = "criteria") QueryByCriteria criteria,
                                                               @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -569,20 +572,20 @@ public interface LprRosterService {
      *         is not valid
      * @throws MissingParameterException validationTypeKey,
      *         lprRosterId, lprId, lprRosterTypeKey, lprRosterInfo, or
-     *         lprRosterEntryInfo, or contextInfo is missing or null
+     *         contextInfo is missing or null
      * @throws OperationFailedException unable to complete request
      * @throws PermissionDeniedException an authorization failure occurred
      */
     public List<ValidationResultInfo> validateLprRosterEntry(@WebParam(name = "validationTypeKey") String validationTypeKey,
-                                                             @WebParam(name = "lprRosterId") String lprRosterId,
-                                                             @WebParam(name = "lprId") String lprId,
-                                                             @WebParam(name = "lprRosterEntryTypeKey") String lprRosterEntryTypeKey,
-                                                             @WebParam(name = "lprRosterEntryInfo") LprRosterEntryInfo lprRosterEntryInfo,
-                                                             @WebParam(name = "contextInfo") ContextInfo contextInfo)
+                                                        @WebParam(name = "lprRosterId") String lprRosterId,
+                                                        @WebParam(name = "lprId") String lprId,
+                                                        @WebParam(name = "lprRosterTypeKey") String lprRosterTypeKey,
+                                                        @WebParam(name = "lprRosterInfo") LprRosterInfo lprRosterInfo,
+                                                        @WebParam(name = "contextInfo") ContextInfo contextInfo)
         throws DoesNotExistException,
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
@@ -594,7 +597,7 @@ public interface LprRosterService {
      * @param lprId the Lpr of the LprRosterEntry
      * @param lprRosterEntryTypeKey the identifier for the Type of
      *        LprRosterEntry to be created
-     * @param lprRosterEntryInfo the data with which to create the
+     * @param lprRosterInfo the data with which to create the
      *        LprRoster
      * @param contextInfo information containing the principalId and
      *        locale information about the caller of the service
@@ -622,11 +625,11 @@ public interface LprRosterService {
         throws DataValidationErrorException,
                DoesNotExistException,
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException,
                ReadOnlyException;
-
+ 
     /**
      * Updates an existing LprRosterEntry. The LprRosterEntry Id,
      * Type, and Meta information may not be changed.
@@ -657,11 +660,11 @@ public interface LprRosterService {
         throws DataValidationErrorException,
                DoesNotExistException,
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException,
                ReadOnlyException,
-               VersionMismatchException;
+               VersionMismatchException;                          
 
     /**
      * Deletes an existing LprRosterEntry.
@@ -681,22 +684,22 @@ public interface LprRosterService {
      * @throws PermissionDeniedException authorization failure
      */
     public StatusInfo deleteLprRosterEntry(@WebParam(name = "lprRosterEntryId") String lprRosterEntryId,
-                                           @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+                                           @WebParam(name = "contextInfo") ContextInfo contextInfo) 
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
      * Inserts an existing roster entry at a particular position on
      * the roster.
-     *
+     * 
      * If another roster entry already exists at that particular
      * position within the roster then this method "bumps down" the
      * rest of the roster entries until there is an open position.
-     *
-     * @param lprRosterEntryId the id for the lpr roster entry to be moved.
+     * 
+     * @param lprRosterEntryId
      * @param position the absolute position in the LprRoster
      * @param contextInfo information containing the principalId and
      *        locale information about the caller of the service
@@ -711,25 +714,25 @@ public interface LprRosterService {
     public StatusInfo moveLprRosterEntryToPosition(@WebParam(name = "lprRosterEntryId") String lprRosterEntryId,
                                                    @WebParam(name = "position") Integer position,
                                                    @WebParam(name = "contextInfo") ContextInfo contextInfo)
-        throws DoesNotExistException,
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 
     /**
      * Reorders all the LprRosterEntries setting their position to
      * match the order within the specified list of LprRosterEntry
      * Ids.
-     *
+     * 
      * This is a bulk method to reset the positions all of the entries
      * in the LprRoster.
-     *
-     * Any entries in the LprRoster that are not specified in the
+     * 
+     * Any entries in the LprRoster that arenot specified in the
      * supplied list are ordered by their existing position and placed
      * at the end of the LprRosterEntries in the specified list.
      *
-     * @param lprRosterId the LprRoster to reorder.  All supplied
+     * @param lprRosterIds the LprRoster to reorder.  All supplied
      *        LprRosterEntryIds must belong to the given LprRoster.
      * @param lprRosterEntryIds an ordered list of LprRosterEntries
      * @param contextInfo information containing the principalId and
@@ -743,12 +746,12 @@ public interface LprRosterService {
      * @throws OperationFailedException unable to complete request
      * @throws PermissionDeniedException an authorization failure occurred
      */
-    public StatusInfo reorderLprRosterEntries(@WebParam(name = "lprRosterId") String lprRosterId,
+    public StatusInfo reorderLprRosterEntries(@WebParam(name = "lprRosterIds") String lprRosterId,
                                               @WebParam(name = "lprRosterEntryIds") List<String> lprRosterEntryIds,
-                                              @WebParam(name = "context") ContextInfo contextInfo)
-        throws DoesNotExistException,
+                                              @WebParam(name = "context") ContextInfo contextInfo) 
+        throws DoesNotExistException, 
                InvalidParameterException,
-               MissingParameterException,
-               OperationFailedException,
+               MissingParameterException, 
+               OperationFailedException, 
                PermissionDeniedException;
 }

@@ -539,28 +539,6 @@ public interface LprService {
             OperationFailedException, PermissionDeniedException, ReadOnlyException, VersionMismatchException;
 
     /**
-     * Updates the state of an existing Lpr to another state
-     * provided that it is valid to do so.
-     *
-     * @param lprId              identifier of the Lpr to be
-     *                           updated
-     * @param nextStateKey       The State Key into which the identified
-     *                           Lpr will be placed if the
-     *                           operation succeeds.
-     * @param contextInfo        Context information containing the principalId
-     *                           and locale information about the caller of
-     *                           service operation
-     * @return status of the operation (success, failed)
-     * @throws DoesNotExistException     the identified Lpr does
-     *                                   not exist
-     * @throws InvalidParameterException the contextInfo object is invalid
-     * @throws MissingParameterException One or more parameters missing
-     * @throws OperationFailedException  unable to complete request
-     * @throws PermissionDeniedException authorization failure
-     */
-    public StatusInfo changeLprState(@WebParam(name = "lprId") String lprId, @WebParam(name = "nextStateKey") String nextStateKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
-
-    /**
      * Deletes relation between the specified Person and LUI
      *
      * @param lprId Identifier for the LUI Person Relation
@@ -648,28 +626,6 @@ public interface LprService {
             @WebParam(name = "contextInfo") ContextInfo contextInfo)
             throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException, VersionMismatchException;
-
-    /**
-     * Updates the state of an existing LprTransaction to another state
-     * provided that it is valid to do so.
-     *
-     * @param lprTransactionId   identifier of the LprTransaction to be
-     *                           updated
-     * @param nextStateKey       The State Key into which the identified
-     *                           LprTransaction will be placed if the
-     *                           operation succeeds.
-     * @param contextInfo        Context information containing the principalId
-     *                           and locale information about the caller of
-     *                           service operation
-     * @return status of the operation (success, failed)
-     * @throws DoesNotExistException     the identified LprTransaction does
-     *                                   not exist
-     * @throws InvalidParameterException the contextInfo object is invalid
-     * @throws MissingParameterException One or more parameters missing
-     * @throws OperationFailedException  unable to complete request
-     * @throws PermissionDeniedException authorization failure
-     */
-    public StatusInfo changeLprTransactionState(@WebParam(name = "lprTransactionId") String lprTransactionId, @WebParam(name = "nextStateKey") String nextStateKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     /**
      * Retrieves the LPR Transactions based on it's identifier.
@@ -814,31 +770,6 @@ public interface LprService {
             @WebParam(name = "contextInfo") ContextInfo contextInfo) throws AlreadyExistsException,
             DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
-    
-    /**
-     * Validates the specific Lpr provided.
-     *
-     * @param validationType        Identifier of the extent of validation
-     * @param lprTransactionType    The type of the LprTransaction.
-     * @param lprTransactionInfo   The lprTransaction to be validated
-     * @param contextInfo               Context information containing the principalId and locale
-     *                              information about the caller of service operation
-     * @return list of validation results, list should be be zero length if no
-     *         validation results are generated
-     * @throws DoesNotExistException     lprInfo not found
-     * @throws InvalidParameterException invalid lprInfo
-     *                                   relationState
-     * @throws MissingParameterException missing lprInfo
-     * @throws OperationFailedException  unable to complete request
-     * @throws PermissionDeniedException authorization failure
-     */
-    public List<ValidationResultInfo> validateLprTransaction(@WebParam(name = "validationType") String validationType,
-            @WebParam(name = "lprTransactionType") String lprTransactionType,
-            @WebParam(name = "lprTransactionInfo") LprTransactionInfo lprTransactionInfo,
-            @WebParam(name = "contextInfo") ContextInfo contextInfo)
-            throws DoesNotExistException, InvalidParameterException,
-            MissingParameterException, OperationFailedException, PermissionDeniedException;
-    
     /**
      * Validate the LPR Transaction
      *

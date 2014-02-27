@@ -113,4 +113,5 @@ public class OfferingInstructorInfo
     public String getPersonName() {
         return personName;
     }
+
 }

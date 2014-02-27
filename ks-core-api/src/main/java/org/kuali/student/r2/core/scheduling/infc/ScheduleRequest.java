@@ -30,18 +30,23 @@ import java.util.List;
 public interface ScheduleRequest extends IdEntity {
 
     /**
-     *  Id of the associated ScheduleRequestSet
-     *  @name Schedule Request Set Id
-     *  @required
-     *  @readOnly
+     *  Reference object identifier
+     *
+     * @name Ref Object Id
+     * @required
+     * @readonly
      */
-    public String getScheduleRequestSetId();
+    public String getRefObjectId();
 
     /**
-     * Id of the latest Schedule Id, if available
-     * @name Schedule Id
+     * Referenced object type key
+     *
+     * @name Ref Object Type Key
+     * @required
+     * @readonly
      */
-    public String getScheduleId();
+    public String getRefObjectTypeKey();
+
 
     /**
      * The Schedule Request Component Ids. These provide a list of preferences.

@@ -16,7 +16,6 @@
 package org.kuali.student.common.spring;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,21 +55,4 @@ public final class AnnotationUtils {
 		return matchingInterfaces;
 	}
 	
-	
-	 /**
-	  * Test if the given annotation exists on any implementation of the method.  This can be useful to find annotations on the DTO interface when looking at the DTO object.
-	  *  
-	  * @param readMethod the method to evaluate
-	  * @param annotation the annotation to look for
-	  * @return true if the annotation is present on the method or any of its ancestor implementations back to the parent class/interface.
-	  */
-	 public static boolean doesMethodHierarchyContainAnnotation(Method readMethod, Class<? extends Annotation> annotation) {
-	      
-	      if (org.springframework.core.annotation.AnnotationUtils.findAnnotation(readMethod, annotation) == null)
-	          return false;
-	      else
-	          return true;
-	        
-	  }
-
 }

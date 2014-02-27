@@ -16,15 +16,16 @@
 
 package org.kuali.student.r2.common.dto;
 
-import org.kuali.student.r2.common.infc.Status;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
-import java.util.List;
+
+import org.kuali.student.r2.common.infc.Status;
 //import org.w3c.dom.Element;
 
 /**
@@ -85,13 +86,5 @@ public class StatusInfo
     
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "StatusInfo{" +
-                "isSuccess=" + isSuccess +
-                ", message='" + message + '\'' +
-                '}';
     }
 }

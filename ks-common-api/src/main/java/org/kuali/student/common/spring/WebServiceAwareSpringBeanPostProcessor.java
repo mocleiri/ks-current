@@ -19,7 +19,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -31,14 +30,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
-import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
@@ -68,11 +65,6 @@ public class WebServiceAwareSpringBeanPostProcessor extends AutowiredAnnotationB
 	
 	private BeanFactory beanFactory;
 
-	/*
-	 * The names of beans that should be wrapped in a serializable proxy even if they are resolved locally.
-	 */
-	private Set<String>localBeanNamesToProxy = new HashSet<String>();
-	
 	/**
 	 * 
 	 */
@@ -112,6 +104,7 @@ public class WebServiceAwareSpringBeanPostProcessor extends AutowiredAnnotationB
 		
 		try {
 			super.processInjection(bean);
+			
 		} catch (BeansException e2) {
 			// any resolved beans from the local applicationContext will have been injected into the bean by now
 			// so fall through.
@@ -183,36 +176,7 @@ public class WebServiceAwareSpringBeanPostProcessor extends AutowiredAnnotationB
                         }
 					
 						if (service != null) {
-						    
-                            // found a local service reference
-
-                            if (this.localBeanNamesToProxy
-                                    .contains(serviceName)) {
-                                
-                                // wrap this bean in a serializable proxy
-
-                                SerializableSpringBeanProxyInvocationHandler invocationHandler = new SerializableSpringBeanProxyInvocationHandler();
-
-                                invocationHandler.setBeanName(serviceName);
-
-                                service = Proxy.newProxyInstance(getClass()
-                                        .getClassLoader(),
-                                        new Class[] { fieldType },
-                                        invocationHandler);
-
-                                // now we have the service, try to inject it.
-                                injectServiceReference(bean, beanName, field,
-                                        service,
-                                        "Proxyied from ApplicationContext using BeanName: "
-                                                + serviceName);
-                            }
-                            else {
-                                // inject directly
-                                injectServiceReference(bean, beanName, field,
-                                        service,
-                                        "Direct from ApplicationContext using BeanName: "
-                                                + serviceName);
-                            }
+							injectServiceReference(bean, beanName, field, service, " from ApplicationContext using BeanName: " + serviceName);
 							continue; // skip to the next field
 						}
 						// else service == null
@@ -235,7 +199,7 @@ public class WebServiceAwareSpringBeanPostProcessor extends AutowiredAnnotationB
 												invocationHandler);
 
 								// now we have the service, try to inject it.
-								injectServiceReference(bean, beanName, field, service, "Proxied from KSB using QName: " + name);
+								injectServiceReference(bean, beanName, field, service, " from KSB using QName: " + name);
 								
 						} catch (NullPointerException e1) {
 							log.warn("RiceResourceLoader is not configured/initialized properly.", e1);
@@ -263,7 +227,13 @@ public class WebServiceAwareSpringBeanPostProcessor extends AutowiredAnnotationB
 		return false;
 	}
 
-    /*
+	
+
+	
+
+
+
+	/*
 	 * Inject the service reference into the bean.
 	 * 
 	 * Logic has been split out to let the proxy service be used
@@ -324,9 +294,6 @@ public class WebServiceAwareSpringBeanPostProcessor extends AutowiredAnnotationB
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 	    this.beanFactory = beanFactory;
 		super.setBeanFactory(beanFactory);
-		
-		// setup the application context to use when deserializing spring beans.
-		SerializableSpringBeanProxyInvocationHandler.setApplicationContext(beanFactory);
     }
 
 

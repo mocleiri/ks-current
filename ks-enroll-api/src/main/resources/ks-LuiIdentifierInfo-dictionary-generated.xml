@@ -31,6 +31,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		because the generator is not perfect) please update the corresponding 
 		ks-XXXX-dictionary.xml instead of this one.
 	************************************************************* -->
+	<!-- ********************************************************************************************************** -->
+	<!-- The following file is required for this file to load:
+ ks-base-dictionary.xml
+plus any of its dependencies -->
+	<!-- ********************************************************************************************************** -->
+	<import resource="classpath:ks-base-dictionary.xml"/>
+
 	<!-- LuiIdentifierInfo-->
 	<bean id="LuiIdentifierInfo-generated" abstract="true" parent="DataObjectEntry">
 		<property name="name" value="luiIdentifierInfo"/>
@@ -56,11 +63,9 @@ Detailed information about a LUI Identifier.
 				<ref bean="LuiIdentifierInfo.code"/>
 				<ref bean="LuiIdentifierInfo.shortName"/>
 				<ref bean="LuiIdentifierInfo.longName"/>
-				<ref bean="LuiIdentifierInfo.level"/>
 				<ref bean="LuiIdentifierInfo.division"/>
-				<ref bean="LuiIdentifierInfo.variation"/>
 				<ref bean="LuiIdentifierInfo.suffixCode"/>
-				<ref bean="LuiIdentifierInfo.orgId"/>
+				<ref bean="LuiIdentifierInfo.variation"/>
 			</list>
 		</property>
 
@@ -144,23 +149,6 @@ The Long Name of the LUI.
 		<property name="required" value="false"/>
 	</bean>
 
-	<bean id="LuiIdentifierInfo.level-generated" abstract="true" parent="BaseKuali.string">
-		<property name="name" value="level"/>
-		<property name="shortLabel" value="Level"/>
-		<property name="summary">
-			<value>
-A code that indicates whether this is introductory, advanced, etc.
-			</value>
-		</property>
-		<property name="label" value="Level"/>
-		<property name="description">
-			<value>
-A code that indicates whether this is introductory, advanced, etc.
-			</value>
-		</property>
-		<property name="required" value="false"/>
-	</bean>
-
 	<bean id="LuiIdentifierInfo.division-generated" abstract="true" parent="BaseKuali.string">
 		<property name="name" value="division"/>
 		<property name="shortLabel" value="Division"/>
@@ -175,27 +163,6 @@ area, etc.
 			<value>
 A code that indicates what school, program, major, subject
 area, etc. Examples: &quot;Chem&quot;, &quot;18&quot;.
-			</value>
-		</property>
-		<property name="required" value="false"/>
-	</bean>
-
-	<bean id="LuiIdentifierInfo.variation-generated" abstract="true" parent="BaseKuali.string">
-		<property name="name" value="variation"/>
-		<property name="shortLabel" value="Variation"/>
-		<property name="summary">
-			<value>
-A number that indicates the sequence or order of versions in
-cases where several different Clus have the same offical
-Identifier.
-			</value>
-		</property>
-		<property name="label" value="Variation"/>
-		<property name="description">
-			<value>
-A number that indicates the sequence or order of versions in
-cases where several different Clus have the same offical
-Identifier.
 			</value>
 		</property>
 		<property name="required" value="false"/>
@@ -218,18 +185,22 @@ Identifier.
 		<property name="required" value="false"/>
 	</bean>
 
-	<bean id="LuiIdentifierInfo.orgId-generated" abstract="true" parent="BaseKuali.orgId">
-		<property name="name" value="orgId"/>
-		<property name="shortLabel" value="Org Id"/>
+	<bean id="LuiIdentifierInfo.variation-generated" abstract="true" parent="BaseKuali.string">
+		<property name="name" value="variation"/>
+		<property name="shortLabel" value="Variation"/>
 		<property name="summary">
 			<value>
-???
+A number that indicates the sequence or order of versions in
+cases where several different Clus have the same offical
+Identifier.
 			</value>
 		</property>
-		<property name="label" value="Org Id"/>
+		<property name="label" value="Variation"/>
 		<property name="description">
 			<value>
-???
+A number that indicates the sequence or order of versions in
+cases where several different Clus have the same offical
+Identifier.
 			</value>
 		</property>
 		<property name="required" value="false"/>

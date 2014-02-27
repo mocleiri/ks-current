@@ -31,6 +31,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		because the generator is not perfect) please update the corresponding 
 		ks-XXXX-dictionary.xml instead of this one.
 	************************************************************* -->
+	<!-- ********************************************************************************************************** -->
+	<!-- The following file is required for this file to load:
+ ks-base-dictionary.xml
+plus any of its dependencies -->
+	<!-- ********************************************************************************************************** -->
+	<import resource="classpath:ks-base-dictionary.xml"/>
+
 	<!-- CourseOfferingCrossListingInfo-->
 	<bean id="CourseOfferingCrossListingInfo-generated" abstract="true" parent="DataObjectEntry">
 		<property name="name" value="courseOfferingCrossListingInfo"/>
@@ -55,7 +62,7 @@ null
 				<ref bean="CourseOfferingCrossListingInfo.stateKey"/>
 				<ref bean="CourseOfferingCrossListingInfo.code"/>
 				<ref bean="CourseOfferingCrossListingInfo.subjectArea"/>
-				<ref bean="CourseOfferingCrossListingInfo.subjectOrgId"/>
+				<ref bean="CourseOfferingCrossListingInfo.departmentOrgId"/>
 				<ref bean="CourseOfferingCrossListingInfo.courseNumberSuffix"/>
 			</list>
 		</property>
@@ -89,15 +96,13 @@ null
 		<property name="shortLabel" value="Code"/>
 		<property name="summary">
 			<value>
-The course code for this cross listing.
-
+The code for this cross listing.
 			</value>
 		</property>
 		<property name="label" value="Code"/>
 		<property name="description">
 			<value>
-The course code for this cross listing.
-Example: In ENGL101A, the course code is ENGL101
+The code for this cross listing.
 			</value>
 		</property>
 		<property name="required" value="false"/>
@@ -108,42 +113,30 @@ Example: In ENGL101A, the course code is ENGL101
 		<property name="shortLabel" value="Subject Area"/>
 		<property name="summary">
 			<value>
-The subject area/code for this cross listing.
-
+The subject area for this cross listing.
 			</value>
 		</property>
 		<property name="label" value="Subject Area"/>
 		<property name="description">
 			<value>
-The subject area/code for this cross listing.
-Example: In ENGL101A, the subject area/code is ENGL
+The subject area for this cross listing.
 			</value>
 		</property>
 		<property name="required" value="false"/>
 	</bean>
 
-	<bean id="CourseOfferingCrossListingInfo.subjectOrgId-generated" abstract="true" parent="BaseKuali.orgId">
-		<property name="name" value="subjectOrgId"/>
-		<property name="shortLabel" value="Subject Org Id"/>
+	<bean id="CourseOfferingCrossListingInfo.departmentOrgId-generated" abstract="true" parent="BaseKuali.orgId">
+		<property name="name" value="departmentOrgId"/>
+		<property name="shortLabel" value="Department Org Id"/>
 		<property name="summary">
 			<value>
-This is the ID for that subject code as an org within the Org Service.
-
+The department for this cross listing.
 			</value>
 		</property>
-		<property name="label" value="Subject Org Id"/>
+		<property name="label" value="Department Org Id"/>
 		<property name="description">
 			<value>
-This is the ID for that subject code as an org within the Org Service.
-Subject codes are stored in the Org table as an organization.
-Note: subject org id and subject area/code should be kept aligned (in case
-the subject code changes, but its ID stays the same).  There was
-some talk about making subjectOrgId the primary value and looking up the
-subject code via the Org service (it is the short name of the subject org).
-
-Reference implementation has the ID as ORGID-[subject code]
-For example, ORGID-ENGL
-This is not a requirement, but makes it easier to create the Org Id
+The department for this cross listing.
 			</value>
 		</property>
 		<property name="required" value="false"/>
@@ -156,7 +149,6 @@ This is not a requirement, but makes it easier to create the Org Id
 			<value>
 The &quot;extra&quot; portion of the code, which usually corresponds with
 the most detailed part of the number.
-
 			</value>
 		</property>
 		<property name="label" value="Course Number Suffix"/>
@@ -164,8 +156,6 @@ the most detailed part of the number.
 			<value>
 The &quot;extra&quot; portion of the code, which usually corresponds with
 the most detailed part of the number.
-Example: In ENGL101A, it's A
-For ENGL101, this would be null since there is no suffix.
 			</value>
 		</property>
 		<property name="required" value="false"/>

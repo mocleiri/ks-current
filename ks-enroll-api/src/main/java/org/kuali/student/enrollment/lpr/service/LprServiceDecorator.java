@@ -233,44 +233,4 @@ public class LprServiceDecorator implements LprService {
     public LprInfo createLpr(String personId, String luiId, String lprTypeKey, LprInfo lprInfo, ContextInfo contextInfo) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, ReadOnlyException {
         return getNextDecorator().createLpr(personId, luiId, lprTypeKey, lprInfo, contextInfo);
     }
-
-    /* (non-Javadoc)
-     * @see org.kuali.student.enrollment.lpr.service.LprService#validateLprTransaction(java.lang.String, java.lang.String, org.kuali.student.enrollment.lpr.dto.LprTransactionInfo, org.kuali.student.r2.common.dto.ContextInfo)
-     */
-    @Override
-    public List<ValidationResultInfo> validateLprTransaction(
-           String validationType,
-           String lprTransactionType,
-           LprTransactionInfo lprTransactionInfo,
-           ContextInfo contextInfo)
-            throws DoesNotExistException, InvalidParameterException,
-            MissingParameterException, OperationFailedException,
-            PermissionDeniedException {
-        return getNextDecorator().validateLprTransaction(validationType, lprTransactionType, lprTransactionInfo, contextInfo);
-    }
-
-	@Override
-	public StatusInfo changeLprState(String lprId,
-			String nextStateKey,
-			ContextInfo contextInfo)
-			throws DoesNotExistException, InvalidParameterException,
-			MissingParameterException, OperationFailedException,
-			PermissionDeniedException {
-		return getNextDecorator().changeLprState(lprId, nextStateKey, contextInfo);
-	}
-
-	@Override
-	public StatusInfo changeLprTransactionState(
-			String lprTransactionId,
-			String nextStateKey,
-			ContextInfo contextInfo)
-			throws DoesNotExistException, InvalidParameterException,
-			MissingParameterException, OperationFailedException,
-			PermissionDeniedException {
-		return getNextDecorator().changeLprTransactionState(lprTransactionId, nextStateKey, contextInfo);
-	}
-
-   
-    
-    
 }

@@ -280,8 +280,6 @@ public class LuiServiceConstants {
     public static final String LUI_LUI_RELATION_DELIVERED_VIA_FO_TO_AO_TYPE_KEY = "kuali.lui.lui.relation.type.deliveredvia.fo2ao";
     public static final String LUI_LUI_RELATION_DELIVERED_VIA_FO_TO_RG_TYPE_KEY = "kuali.lui.lui.relation.type.deliveredvia.fo2rg";
     public static final String LUI_LUI_RELATION_REGISTERED_FOR_VIA_RG_TO_AO_TYPE_KEY = "kuali.lui.lui.relation.type.registeredforvia.rg2ao";
-    public static final String LUI_LUI_RELATION_DELIVERED_VIA_FO_TO_EO_TYPE_KEY = "kuali.lui.lui.relation.type.deliveredvia.fo2eo";
-    public static final String LUI_LUI_RELATION_REGISTERED_FOR_VIA_FO_TO_EO_TYPE_KEY = "kuali.lui.lui.relation.type.registeredforvia.fo2eo";
     // This is a grouping type
     public static final String LUI_LUI_RELATION_REGISTEREDFORVIA_TYPE_KEY = "kuali.lui.lui.relation.type.registeredforvia";
     // This is a grouping type
@@ -325,19 +323,6 @@ public class LuiServiceConstants {
     public static final String[] LUI_IDENTIFIER_LIFECYCLE_KEYS = {LUI_IDENTIFIER_ACTIVE_STATE_KEY,
         LUI_IDENTIFIER_INACTIVE_STATE_KEY
     };
-
-    /**
-     * LUI Set types
-     */
-    public static final String LUI_SET_COLOCATED_OFFERING_TYPE_KEY = "kuali.luiset.type.colocated.offering.set";
-
-    /**
-     * LUI Set states
-     */
-    public static final String LUI_SET_LIFECYCLE_KEY = "kuali.luiset.lifecycle";
-    public static final String LUI_SET_ACTIVE_STATE_KEY = "kuali.luiset.state.active";
-    public static final String LUI_SET_INACTIVE_STATE_KEY = "kuali.luiset.state.inactive";
-    public static final String[] LUI_SET_LIFECYCLE_KEYS = { LUI_SET_ACTIVE_STATE_KEY, LUI_SET_INACTIVE_STATE_KEY };
     
     /**
      *  Waitlist types?
@@ -345,9 +330,9 @@ public class LuiServiceConstants {
      *  defined in CourseOfferingServiceConstants
      */
     public static final String AUTOMATIC_WAITLIST_TYPE_KEY = "kuali.waitlist.type.automatic";
-    public static final String CONFIRMATION_WAITLIST_TYPE_KEY = "kuali.waitlist.type.Confirmation";
+    public static final String SEMIAUTOMATIC_WAITLIST_TYPE_KEY = "kuali.waitlist.type.semiautomatic";  
     public static final String MANUAL_WAITLIST_TYPE_KEY = "kuali.waitlist.type.manual";
-    public static final String[] ALL_WAITLIST_TYPES = { AUTOMATIC_WAITLIST_TYPE_KEY, CONFIRMATION_WAITLIST_TYPE_KEY,
+    public static final String[] ALL_WAITLIST_TYPES = { AUTOMATIC_WAITLIST_TYPE_KEY, SEMIAUTOMATIC_WAITLIST_TYPE_KEY,
         MANUAL_WAITLIST_TYPE_KEY
     };
     /**
@@ -381,11 +366,5 @@ public class LuiServiceConstants {
      * known lu codes
      */
     public static final String HONORS_LU_CODE = "kuali.lu.code.honorsOffering";
-
-    /**
-     * exam offering types
-     */
-    public static final String EXAM_OFFERING_TYPE_KEY = "kuali.lui.type.exam.offering";
-    public static final String FINAL_EXAM_OFFERING_TYPE_KEY = "kuali.lui.type.exam.offering.final";
 
 }

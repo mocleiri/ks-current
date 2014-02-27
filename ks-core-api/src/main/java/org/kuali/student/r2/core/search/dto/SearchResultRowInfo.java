@@ -67,10 +67,8 @@ public class SearchResultRowInfo
         }
     }
     
-    public SearchResultCellInfo addCell(String key, String value) {
-        SearchResultCellInfo cellInfo = new SearchResultCellInfo(key, value);
-        getCells().add(cellInfo);
-        return cellInfo;
+    public void addCell(String key, String value) {
+        getCells().add(new SearchResultCellInfo(key, value));
     }
     
     @Override

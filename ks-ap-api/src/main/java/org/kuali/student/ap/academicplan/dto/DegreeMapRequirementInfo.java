@@ -1,5 +1,6 @@
 package org.kuali.student.ap.academicplan.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -14,8 +15,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.kuali.student.ap.academicplan.infc.DegreeMapRequirement;
 import org.w3c.dom.Element;
 
-
-
 /**
  * Degree Map Requirement message structure
  *
@@ -24,14 +23,12 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId", "degreeMapEffectiveDate", "itemSeq", "refObjectId", "refObjectType","seqKey","seqNo", "credit", "critical", "milestone", "minimumGrade", "suggestedTermId", "requiredTermId",   "_futureElements"})
-
-public class DegreeMapRequirementInfo implements DegreeMapRequirement {
+@XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId",
+		"degreeMapEffectiveDate", "itemSeq", "refObjectId", "refObjectType",
+		"seqKey", "seqNo", "credit", "critical", "milestone", "minimumGrade",
+		"suggestedTermId", "requiredTermId", "_futureElements" })
+public class DegreeMapRequirementInfo implements DegreeMapRequirement, Serializable {
 	
-	/// NOT SURE WHAT TO DO ABOUT THE REF_OBJ_ID and REF_OBJ_TYPE_KEY 
-	/// should I just have them as data?
-
-	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 6019908398241577527L;
 
 	@XmlAttribute
@@ -87,6 +84,58 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
     @XmlAnyElement
     private List<Element> _futureElements;
 
+    public DegreeMapRequirementInfo() {
+    }
+    
+    public DegreeMapRequirementInfo(DegreeMapRequirement copy) {
+    	id = copy.getId();
+    	// TODO: continue...
+//        @XmlElement
+//        private String degreeMapId;
+//        
+//        @XmlElement
+//        private Date degreeMapEffectiveDate;
+//        
+//        @XmlAttribute
+//        private int itemSeq;
+//        
+//        @XmlElement
+//        private String refObjectId;
+//
+//        @XmlElement
+//        private String refObjectType;
+//        
+//        @XmlAttribute
+//        private String descr; 
+//
+//        @XmlAttribute
+//        private BigDecimal credit;
+//        
+//        @XmlAttribute
+//        private boolean critical;
+//        
+//        @XmlAttribute
+//        private boolean milestone;
+//        
+//        @XmlAttribute
+//        private String minimumGrade;
+//
+//        @XmlAttribute
+//        private String seqKey;
+//
+//        @XmlAttribute
+//        private int seqNo;
+//
+//        @XmlAttribute
+//        private String suggestedTermId;
+//
+//        @XmlAttribute
+//        private String requiredTermId;
+//
+//        
+//        @XmlAttribute
+//        private String notes;
+    }
 
 	public String getId() {
 		return id;
@@ -249,18 +298,5 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-
-
-	public List<Element> get_futureElements() {
-		return _futureElements;
-	}
-
-
-	public void set_futureElements(List<Element> _futureElements) {
-		this._futureElements = _futureElements;
-	}
-
-
-
    
 }

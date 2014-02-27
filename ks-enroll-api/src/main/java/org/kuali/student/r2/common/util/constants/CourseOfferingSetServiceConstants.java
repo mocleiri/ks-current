@@ -73,8 +73,8 @@ public class CourseOfferingSetServiceConstants {
     };
 
     // rollover  types
-    public static final String ROLLOVER_RESULT_TYPE_KEY = "kuali.soc.rollover.results.type.rollover";
-    public static final String REVERSE_ROLLOVER_RESULT_TYPE_KEY = "kuali.soc.rollover.results.type.reverse";
+    public static final String ROLLOVER_RESULT_TYPE_KEY = "kuali.soc.rollover.result.rollover";
+    public static final String REVERSE_ROLLOVER_RESULT_TYPE_KEY = "kuali.soc.rollover.result.reverse";
 
     // states for rollover
     public static final String SUBMITTED_RESULT_STATE_KEY = "kuali.soc.rollover.state.submitted";
@@ -83,8 +83,8 @@ public class CourseOfferingSetServiceConstants {
     public static final String ABORTED_RESULT_STATE_KEY = "kuali.soc.rollover.state.aborted";
 
     // item types
-    public static final String CREATE_RESULT_ITEM_TYPE_KEY = "kuali.soc.rollover.result.item.type.create";
-    public static final String DELETE_RESULT_ITEM_TYPE_KEY = "kuali.soc.rollover.result.item.type.delete";
+    public static final String CREATE_RESULT_ITEM_TYPE_KEY = "kuali.soc.rollover.result.item.create";
+    public static final String DELETE_RESULT_ITEM_TYPE_KEY = "kuali.soc.rollover.result.item.delete";
 
     // item  states
     public static final String CREATED_RESULT_ITEM_STATE_KEY = "kuali.soc.rollover.result.item.state.processed.created";
@@ -126,21 +126,9 @@ public class CourseOfferingSetServiceConstants {
     public static final String LOG_FREQUENCY_OPTION_KEY_PREFIX = "kuali.rollover.processing.log.frequency.";
     public static final String HALT_ERRORS_MAX_OPTION_KEY_PREFIX = "kuali.rollover.processing.halt.error.max.";
     public static final String RUN_SYNCHRONOUSLY_OPTION_KEY = "kuali.rollover.processing.run.synchronously";
-    public static final String BYPASS_BUSINESS_LOGIC_ON_SOC_STATE_CHANGE_FOR_AFT_TESTING = "kuali.aft-decorator.bypass.business.logic";
-
+    
     // scheduling
     public static final String RUN_SCHEDULING_SYNCHRONOUSLY_OPTION_KEY = "kuali.scheduling.processing.run.synchronously";
-
-    // Whether to check target term/subterm for official states at the rolloverCourseOffering level
-    // Or at the rolloverSoc level.  If this option key exists, then no need for rolloverCourseOffering
-    // to make this check.
-    public static final String TARGET_TERM_VALIDATED_OPTION_KEY = "kuali.rollover.option.targetterm.validated";
-
-    // KSENROLL-8062 Dynamic attributes for rolling over individual CO information that has access to "global settings"
-    public static final String ROLLOVER_ASSIST_ID_DYNATTR_KEY = "kuali.rollover.context.att.rollover.assist.id";
-
-    // KSENROLL-9460 Option key to continue without generating examofferings
-    public static final String CONTINUE_WITHOUT_EXAM_OFFERINGS_OPTION_KEY = "kuali.rollover.option.contunue.without.exam.offerings";
 
     // dynamic attributes for rollover info
     public static final String CO_CREATED_RESULT_DYNATTR_KEY = "kuali.soc.rollover.result.dynattr.course.offerings.created";
@@ -171,13 +159,4 @@ public class CourseOfferingSetServiceConstants {
     public static final String NOT_GRADING_CREDIT_OPTION_KEY = "kuali.canonical.course.to.course.offering.not.grading.credit.options";
     
     public static final String ACTIVITY_OFFERINGS_CREATED_SOC_ITEM_DYNAMIC_ATTRIBUTE = "activityOfferingsCreated";
-
-    public static final String NO_EXAM_PERIOD_WARNING_DIALOG = "warningMessageNoExamPeriod";
-
-    /**
-     * Parameters for performing criteria searches for SOCs.
-     */
-    public static final class SearchParameters {
-        public static final String SOC_STATE = "socState";
-    }
 }

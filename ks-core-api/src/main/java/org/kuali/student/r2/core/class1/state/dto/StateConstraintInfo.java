@@ -56,7 +56,7 @@ public class StateConstraintInfo extends IdNamelessEntityInfo implements StateCo
     @Override
     public List<String> getRelatedObjectStateKeys() {
         if (this.relatedObjectStateKeys == null) {
-            relatedObjectStateKeys = new ArrayList<String>();
+            return new ArrayList<String>();
         }
         return this.relatedObjectStateKeys;
     }

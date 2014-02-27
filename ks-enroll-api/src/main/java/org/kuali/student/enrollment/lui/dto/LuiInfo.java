@@ -30,15 +30,22 @@ import javax.xml.bind.annotation.XmlType;
 import org.kuali.student.enrollment.lui.infc.Lui;
 import org.kuali.student.enrollment.lui.infc.LuiIdentifier;
 import org.kuali.student.r2.common.dto.IdEntityInfo;
+import org.kuali.student.r2.common.dto.MeetingScheduleInfo;
+import org.kuali.student.r2.common.infc.MeetingSchedule;
+import org.kuali.student.r2.lum.clu.dto.ExpenditureInfo;
+import org.kuali.student.r2.lum.clu.dto.FeeInfo;
 import org.kuali.student.r2.lum.clu.dto.LuCodeInfo;
+import org.kuali.student.r2.lum.clu.dto.RevenueInfo;
+import org.kuali.student.r2.lum.clu.infc.Fee;
 import org.kuali.student.r2.lum.clu.infc.LuCode;
+import org.kuali.student.r2.lum.clu.infc.Revenue;
 import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LuiInfo", propOrder = {"id", "typeKey", "stateKey", "name",
     "descr", "effectiveDate", "expirationDate",
     "officialIdentifier", "alternateIdentifiers", "cluId",
-    "cluCluRelationIds", "atpId", "campusLocations", "scheduleIds", "luiCodes",
+    "cluCluRelationIds", "atpId", "campusLocations", "scheduleId", "luiCodes", 
     "maximumEnrollment", "minimumEnrollment", "referenceURL",
     "unitsContentOwner", "unitsDeployment", "resultValuesGroupKeys",
     "relatedLuiTypes",
@@ -75,7 +82,7 @@ public class LuiInfo
     private List<String> campusLocations;
 
     @XmlElement
-    private List<String> scheduleIds;
+    private String scheduleId;
 
     @XmlElement
     private List<LuCodeInfo> luiCodes;
@@ -146,9 +153,7 @@ public class LuiInfo
             this.campusLocations = new ArrayList(lui.getCampusLocations());
         }
 
-        if (lui.getScheduleIds() != null) {
-            this.scheduleIds = new ArrayList<String> (lui.getScheduleIds());
-        }
+        this.scheduleId = lui.getScheduleId();
         this.luiCodes = new ArrayList<LuCodeInfo>();
         if (lui.getLuiCodes() != null) {
             for (LuCode code : lui.getLuiCodes()) {
@@ -251,15 +256,12 @@ public class LuiInfo
     }
 
     @Override
-    public List<String> getScheduleIds() {
-        if (this.scheduleIds == null) {
-            this.scheduleIds = new ArrayList<String>();
-        }
-        return this.scheduleIds;
+    public String getScheduleId() {
+        return scheduleId;
     }
 
-    public void setScheduleIds(List<String> scheduleIds) {
-        this.scheduleIds = scheduleIds;
+    public void setScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
     @Override

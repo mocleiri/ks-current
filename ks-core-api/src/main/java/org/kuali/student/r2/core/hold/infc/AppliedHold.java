@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Kuali Foundation 
- *
+ * 
  * Licensed under the Educational Community License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -18,8 +18,7 @@ package org.kuali.student.r2.core.hold.infc;
 
 import java.util.Date;
 
-import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.r2.common.infc.Relationship;
+import org.kuali.student.r2.common.infc.IdEntity;
 
 
 /**
@@ -27,10 +26,10 @@ import org.kuali.student.r2.common.infc.Relationship;
  *
  * @author tom
  * @since Sun May 1 14:22:34 EDT 2011
- */
+ */ 
 
-public interface AppliedHold
-    extends Relationship {
+public interface AppliedHold 
+    extends IdEntity {
 
     /**
      * The Hold Issue Id.
@@ -39,7 +38,7 @@ public interface AppliedHold
      * @readOnly
      */
     public String getHoldIssueId();
-
+   
 
     /**
      * The Id of the Person.
@@ -48,36 +47,17 @@ public interface AppliedHold
      * @readOnly
      */
     public String getPersonId();
-
-
+      
+    /**
+     * The date this hold becomes effective.
+     * @name Effective Date
+     * @required
+     */
+    public Date getEffectiveDate();
+   
     /**
      * The date this hold was released, of null if not yet released.
      * @name Released Date
-     * @deprecated Please use getExpirationDate() instead
      */
-    @Deprecated
     public Date getReleasedDate();
-
-    /**
-     * A display name for this entity.
-     *
-     * @name Name
-     */
-    public String getName();
-
-    /**
-     * A description of the entity.
-     *
-     * @name Description
-     */
-    public RichTextInfo getDescr();
-
-    /**
-     * The date this hold is released.
-     * Must be greater than or equal to the effectiveDate specified.
-     *
-     * @name Expiration Date
-     */
-    @Override
-    public Date getExpirationDate();
 }

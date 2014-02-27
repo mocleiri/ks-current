@@ -18,8 +18,17 @@ package org.kuali.student.common.spring;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
+
 import org.kuali.student.r1.common.dictionary.dto.ObjectStructureDefinition;
+import org.kuali.student.r1.common.dictionary.old.dto.ObjectStructure;
 import org.kuali.student.r1.common.dictionary.service.DictionaryService;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 
 
 /**
@@ -32,13 +41,19 @@ public class FakeDictionaryServiceDecoratorImpl extends AbstractFakeService impl
 	
 
 	@Override
+    @WebMethod
+    @RequestWrapper(className = "org.kuali.student.r1.common.dictionary.service.jaxws.GetObjectTypes", targetNamespace = "http://student.kuali.org/wsdl/dictionary")
+    @ResponseWrapper(className = "org.kuali.student.r1.common.dictionary.service.jaxws.GetObjectTypesResponse", targetNamespace = "http://student.kuali.org/wsdl/dictionary")
     public List<String> getObjectTypes() {
 	    // TODO Auto-generated method stub
 	    return null;
     }
 
 	@Override
-    public ObjectStructureDefinition getObjectStructure(String objectTypeKey) {
+    @WebMethod
+    @RequestWrapper(className = "org.kuali.student.r1.common.dictionary.service.jaxws.GetObjectStructure", targetNamespace = "http://student.kuali.org/wsdl/dictionary")
+    @ResponseWrapper(className = "org.kuali.student.r1.common.dictionary.service.jaxws.GetObjectStructureResponse", targetNamespace = "http://student.kuali.org/wsdl/dictionary")
+    public ObjectStructureDefinition getObjectStructure(@WebParam(name = "objectTypeKey") String objectTypeKey) {
 	    // TODO Auto-generated method stub
 	    return null;
     }

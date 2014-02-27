@@ -28,7 +28,7 @@ import org.kuali.student.r2.lum.course.infc.CourseCrossListing;
  * @author Kuali Student Team 
  */
 
-@XmlType(name = "CourseCrossListingInfo", propOrder = {"id", "typeKey", "stateKey", "code", "subjectArea", "subjectOrgId", "courseNumberSuffix", "meta", "attributes" , "_futureElements" })
+@XmlType(name = "CourseCrossListingInfo", propOrder = {"id", "typeKey", "stateKey", "code", "subjectArea", "department", "courseNumberSuffix", "meta", "attributes" , "_futureElements" }) 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CourseCrossListingInfo extends IdNamelessEntityInfo implements CourseCrossListing, Serializable {
 
@@ -41,7 +41,7 @@ public class CourseCrossListingInfo extends IdNamelessEntityInfo implements Cour
     private String subjectArea;
 
     @XmlElement
-    private String subjectOrgId;
+    private String department;
 
     @XmlElement
     private String courseNumberSuffix;
@@ -58,7 +58,7 @@ public class CourseCrossListingInfo extends IdNamelessEntityInfo implements Cour
         if (courseCrossListing != null) {
             this.code = courseCrossListing.getCode();
             this.subjectArea = courseCrossListing.getSubjectArea();
-            this.subjectOrgId = courseCrossListing.getSubjectOrgId();
+            this.department = courseCrossListing.getDepartment();
             this.courseNumberSuffix = courseCrossListing.getCourseNumberSuffix();
         }
     }
@@ -83,31 +83,11 @@ public class CourseCrossListingInfo extends IdNamelessEntityInfo implements Cour
 
     @Override
     public String getDepartment() {
-        return getSubjectOrgId();
+        return department;
     }
 
-    /**
-     * Use setSubjectOrgId instead.
-     * @param subjectOrgId
-     */
-    @Deprecated
-    public void setDepartment(String subjectOrgId) {
-        setSubjectOrgId(subjectOrgId);
-    }
-
-    @Override
-    public String getSubjectOrgId() {
-        return subjectOrgId;
-    }
-
-    /**
-     * Set the subject org ID.  This is how the subject code appears
-     * as an ID in the org table.
-     * @impl Current reference data uses ORGID-<subject code>
-     * @param subjectOrgId the ID of the subject code in the Org tables
-     */
-    public void setSubjectOrgId(String subjectOrgId) {
-        this.subjectOrgId = subjectOrgId;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     @Override

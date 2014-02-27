@@ -17,6 +17,7 @@
 package org.kuali.student.enrollment.courseoffering.dto;
 
 import org.kuali.student.r2.common.dto.IdNamelessEntityInfo;
+import org.kuali.student.r2.common.infc.HasId;
 import org.kuali.student.enrollment.courseoffering.infc.CourseOfferingCrossListing;
 
 import org.w3c.dom.Element;
@@ -34,8 +35,8 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CourseOfferingCrossListingInfo", propOrder = {
-                "id", "typeKey", "stateKey", "code", "subjectArea",
-                "subjectOrgId", "courseNumberSuffix",
+                "id", "typeKey", "stateKey", "code", "subjectArea", 
+                "departmentOrgId", "courseNumberSuffix", 
                 "meta", "attributes", "_futureElements"
 })
 
@@ -52,7 +53,7 @@ public class CourseOfferingCrossListingInfo
     private String subjectArea;
 
     @XmlElement
-    private String subjectOrgId;
+    private String departmentOrgId;
 
     @XmlElement
     private String courseNumberSuffix;
@@ -81,7 +82,7 @@ public class CourseOfferingCrossListingInfo
         if (crossListing != null) {
             this.code = crossListing.getCode();
             this.subjectArea = crossListing.getSubjectArea();
-            this.subjectOrgId = crossListing.getSubjectOrgId();
+            this.departmentOrgId = crossListing.getDepartmentOrgId();
             this.courseNumberSuffix = crossListing.getCourseNumberSuffix();
         }
     }
@@ -106,25 +107,11 @@ public class CourseOfferingCrossListingInfo
 
     @Override
     public String getDepartmentOrgId() {
-        return getSubjectOrgId();
+        return departmentOrgId;
     }
 
-    /**
-     * Replaced by setSubjectOrgId (no longer refers to the admin org).
-     * @param subjectOrgId
-     */
-    @Deprecated
-    public void setDepartmentOrgId(String subjectOrgId) {
-        setSubjectOrgId(subjectOrgId);
-    }
-
-    @Override
-    public String getSubjectOrgId() {
-        return subjectOrgId;
-    }
-
-    public void setSubjectOrgId(String subjectOrgId) {
-        this.subjectOrgId = subjectOrgId;
+    public void setDepartmentOrgId(String departmentOrgId) {
+        this.departmentOrgId = departmentOrgId;
     }
 
     @Override

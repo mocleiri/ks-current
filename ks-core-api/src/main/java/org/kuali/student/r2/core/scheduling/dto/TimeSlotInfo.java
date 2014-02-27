@@ -99,8 +99,6 @@ public class TimeSlotInfo extends IdEntityInfo implements TimeSlot, Serializable
      */
     public boolean equals (Object obj) {
         TimeSlotInfo ts = (TimeSlotInfo) obj; // will throw a ClassCastException
-        //  To avoid IndexOutOfBoundsExceptions see if the weekdays collections have the same element count before trying to compare the elements.
-        if (this.getWeekdays().size() != ts.getWeekdays().size()) { return false; }
         for (int i=0; i<this.weekdays.size(); i++)  {
             if (!this.weekdays.get(i).equals(ts.weekdays.get(i))) { return false; }
         }
@@ -119,7 +117,11 @@ public class TimeSlotInfo extends IdEntityInfo implements TimeSlot, Serializable
 
     @Override
     public String toString() {
-        return String.format("TimeSlotInfo{type=%s,weekdays=%s,startTime=%s,endTime=%s}",
-                getTypeKey(), weekdays, getId(), startTime, endTime);
+        return "TimeSlotInfo{" +
+                "weekdays=" + weekdays +
+                ", id=" + getId() +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
     }
 }

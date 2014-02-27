@@ -85,14 +85,7 @@ public class TimeOfDayInfo implements TimeOfDay, Serializable {
      */
     public boolean equals (Object obj) {
         TimeOfDay timeOfDay = (TimeOfDay) obj;
-        if (this.milliSeconds == null) {
-            if (timeOfDay == null) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return this.milliSeconds.equals(timeOfDay.getMilliSeconds());
+        return this.milliSeconds==timeOfDay.getMilliSeconds();
     }
 
     @Override

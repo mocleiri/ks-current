@@ -66,7 +66,6 @@ public class SeatPoolDefinitionInfo
      * Constructs a new SeatPoolDefinition.
      */
     public SeatPoolDefinitionInfo() {
-        isPercentage = false; // by default, with the M4 implementation of seatpools, isPercentage is always false.
     }
 
     /**

@@ -15,7 +15,6 @@
  */
 package org.kuali.student.r2.common.util.constants;
 
-import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingClusterInfo;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.RegistrationGroupInfo;
@@ -38,7 +37,6 @@ public class CourseOfferingServiceConstants {
     public static final String REF_OBJECT_URI_ACTIVITY_OFFERING = NAMESPACE + "/" + ActivityOfferingInfo.class.getSimpleName();
     public static final String REF_OBJECT_URI_REGISTRATION_GROUP = NAMESPACE + "/" + RegistrationGroupInfo.class.getSimpleName();
     public static final String REF_OBJECT_URI_SEAT_POOL_DEFINITION = NAMESPACE + "/" + SeatPoolDefinitionInfo.class.getSimpleName();
-    public static final String REF_OBJECT_URI_AO_CLUSTER_DEFINITION = NAMESPACE + "/" + ActivityOfferingClusterInfo.class.getSimpleName();
 
 
     //dynamic attribute keys
@@ -47,8 +45,6 @@ public class CourseOfferingServiceConstants {
     public static final String GRADE_ROSTER_LEVEL_TYPE_KEY_ATTR = "kuali.attribute.grade.roster.level.type.key";
     public static final String FINAL_EXAM_LEVEL_TYPE_KEY_ATTR = "kuali.attribute.final.exam.level.type";
     public static final String COURSE_EVALUATION_INDICATOR_ATTR = "kuali.attribute.course.evaluation.indicator";
-    public static final String FINAL_EXAM_DRIVER_ATTR = "kuali.attribute.final.exam.driver";
-    public static final String FINAL_EXAM_USE_MATRIX = "kuali.attribute.final.exam.use.matrix";
     public static final String FINAL_EXAM_INDICATOR_ATTR = "kuali.attribute.final.exam.indicator";
     public static final String FUNDING_SOURCE_ATTR = "kuali.attribute.funding.source";
     public static final String FEES_ATTACHED_FLAG_ATTR = "kuali.attribute.where.fees.attached.flag";
@@ -59,10 +55,6 @@ public class CourseOfferingServiceConstants {
     public static final String COURSE_NUMBER_IN_SUFX_ATTR = "kuali.attribute.course.number.internal.suffix";
     public static final String IS_REGISTRATION_GROUP_GENERATED_INDICATOR_ATTR = "kuali.attribute.registration.group.is.generated";
     public static final String AOCLUSTER_ID_ATTR = "kuali.attribute.registration.group.aocluster.id";
-    public static final String COLOCATED_SET_MAXIMUM_ENROLLMENT_ATTR = "kuali.attribute.colocatedset.max.enrollment";
-    public static final String IS_MAX_ENROLLMENT_SHARED_ATTR = "kuali.attribute.colocatedset.is.max.enrollment.shared";
-    public static final String IS_AO_APPROVED_FOR_NON_STANDARD_TIME_SLOTS = "kuali.attribute.nonstd.ts.indicator";
-
     // The type/states are defined in LuiServiceConstants.java
 
     //The list of all Student registration-specific grading options
@@ -102,21 +94,4 @@ public class CourseOfferingServiceConstants {
 
     // Activity Offering Cluster Types - note: not a LUI type
     public static final String AOC_ROOT_TYPE_KEY = "kuali.activity.offering.cluster.type.activity.offering.cluster";
-    
-    // Search Types
-    public static final String AUTOGEN_COUNTS_BY_CO = "kuali.search.type.course.offering.autogen.counts.by.course.offering";
-    public static final String AUTOGEN_COUNTS_BY_FO = "kuali.search.type.course.offering.autogen.counts.by.format.offering";
-    public static final String AUTOGEN_COUNTS_BY_AOC = "kuali.search.type.course.offering.autogen.counts.by.activity.offering.cluster";
-    
-    // Search Request Parameter Keys
-    public static final String AUTOGEN_COUNTS_BY_CO_ID_PARAM = "kuali.search.type.course.offering.autogen.counts.by.course.offering.param.id";
-    public static final String AUTOGEN_COUNTS_BY_FO_ID_PARAM = "kuali.search.type.course.offering.autogen.counts.by.format.offering.param.id";
-    public static final String AUTOGEN_COUNTS_BY_AOC_ID_PARAM = "kuali.search.type.course.offering.autogen.counts.by.activity.offering.cluster.param.id";
-    
-    
-    // Search Result Cell Keys (the kind of data that comes out of the Auto Gen Count Searches)
-    public static final String AUTOGEN_COUNTS_TOTAL_AOS = "kuali.search.type.course.offering.autogen.counts.total.aos";
-    public static final String AUTOGEN_COUNTS_TOTAL_AOCS = "kuali.search.type.course.offering.autogen.counts.total.aocs";
-    public static final String AUTOGEN_COUNTS_TOTAL_RGS = "kuali.search.type.course.offering.autogen.counts.total.rgs";
-    public static final String AUTOGEN_COUNTS_TOTAL_INVALID_RGS = "kuali.search.type.course.offering.autogen.counts.total.invalid.rgs";
 }

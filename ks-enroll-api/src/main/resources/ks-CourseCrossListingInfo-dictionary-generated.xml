@@ -31,6 +31,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		because the generator is not perfect) please update the corresponding 
 		ks-XXXX-dictionary.xml instead of this one.
 	************************************************************* -->
+	<!-- ********************************************************************************************************** -->
+	<!-- The following file is required for this file to load:
+ ks-base-dictionary.xml
+plus any of its dependencies -->
+	<!-- ********************************************************************************************************** -->
+	<import resource="classpath:ks-base-dictionary.xml"/>
+
 	<!-- CourseCrossListingInfo-->
 	<bean id="CourseCrossListingInfo-generated" abstract="true" parent="DataObjectEntry">
 		<property name="name" value="courseCrossListingInfo"/>
@@ -38,7 +45,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		<property name="objectLabel" value="Course Cross Listing"/>
 		<property name="objectDescription">
 			<value>
-Implementation of {@link CourseCrossListing}.
+This is a description of what this class does - sambit don't forget to fill
+this in.
 			</value>
 		</property>
 		<property name="titleAttribute" value="id"/>
@@ -55,7 +63,7 @@ Implementation of {@link CourseCrossListing}.
 				<ref bean="CourseCrossListingInfo.stateKey"/>
 				<ref bean="CourseCrossListingInfo.code"/>
 				<ref bean="CourseCrossListingInfo.subjectArea"/>
-				<ref bean="CourseCrossListingInfo.subjectOrgId"/>
+				<ref bean="CourseCrossListingInfo.department"/>
 				<ref bean="CourseCrossListingInfo.courseNumberSuffix"/>
 			</list>
 		</property>
@@ -89,13 +97,13 @@ Implementation of {@link CourseCrossListing}.
 		<property name="shortLabel" value="Code"/>
 		<property name="summary">
 			<value>
-This is the course code, e.g. from ENGL101A it's ENGL101
+This method ...
 			</value>
 		</property>
 		<property name="label" value="Code"/>
 		<property name="description">
 			<value>
-This is the course code, e.g. from ENGL101A it's ENGL101
+This method ...
 			</value>
 		</property>
 		<property name="required" value="false"/>
@@ -106,33 +114,30 @@ This is the course code, e.g. from ENGL101A it's ENGL101
 		<property name="shortLabel" value="Subject Area"/>
 		<property name="summary">
 			<value>
-This is the subject area also known as the subject code.
-
+This method ...
 			</value>
 		</property>
 		<property name="label" value="Subject Area"/>
 		<property name="description">
 			<value>
-This is the subject area also known as the subject code.
-E.g., from ENGL101A, it's ENGL.
+This method ...
 			</value>
 		</property>
 		<property name="required" value="false"/>
 	</bean>
 
-	<bean id="CourseCrossListingInfo.subjectOrgId-generated" abstract="true" parent="BaseKuali.orgId">
-		<property name="name" value="subjectOrgId"/>
-		<property name="shortLabel" value="Subject Org Id"/>
+	<bean id="CourseCrossListingInfo.department-generated" abstract="true" parent="BaseKuali.string">
+		<property name="name" value="department"/>
+		<property name="shortLabel" value="Department"/>
 		<property name="summary">
 			<value>
-Identical to setSubjectOrgId.  
+This method ...
 			</value>
 		</property>
-		<property name="label" value="Subject Org Id"/>
+		<property name="label" value="Department"/>
 		<property name="description">
 			<value>
-Identical to setSubjectOrgId.  Left here for backwards compatibility, but
-it's been redefined.
+This method ...
 			</value>
 		</property>
 		<property name="required" value="false"/>
@@ -145,7 +150,6 @@ it's been redefined.
 			<value>
 The &quot;extra&quot; portion of the code, which usually corresponds with the most
 detailed part of the number.
-
 			</value>
 		</property>
 		<property name="label" value="Course Number Suffix"/>
@@ -153,8 +157,6 @@ detailed part of the number.
 			<value>
 The &quot;extra&quot; portion of the code, which usually corresponds with the most
 detailed part of the number.
-E.g., from ENGL101A, it's A.
-If there is no suffix, it's null.
 			</value>
 		</property>
 		<property name="required" value="false"/>

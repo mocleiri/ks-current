@@ -68,7 +68,7 @@ public class StateChangeInfo extends RelationshipInfo implements StateChange {
     @Override
     public List<String> getStateConstraintIds() {
         if(this.stateConstraintIds == null) {
-            stateConstraintIds = new ArrayList<String>();
+            return new ArrayList<String>();
         }
         return  this.stateConstraintIds;
     }
@@ -80,7 +80,7 @@ public class StateChangeInfo extends RelationshipInfo implements StateChange {
     @Override
     public List<String> getStatePropagationIds() {
         if (this.statePropagationIds == null) {
-            statePropagationIds = new ArrayList<String>();
+            return new ArrayList<String>();
         }
         return this.statePropagationIds;
     }

@@ -31,9 +31,6 @@ public class TestBean {
 	@Autowired
 	private MessageService messageService;
 	
-	@Autowired
-	private NotAService notAService;
-	
 	/**
 	 * 
 	 */
@@ -67,20 +64,6 @@ public class TestBean {
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
 	}
-
-
-
-
-    public NotAService getNotAService() {
-        return notAService;
-    }
-
-
-
-
-    public void setNotAService(NotAService notAService) {
-        this.notAService = notAService;
-    }
 
 	
 	

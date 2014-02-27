@@ -71,7 +71,6 @@ public class LprRosterInfo
      *  @param lprRoster the LprRoster to copy
      */    
     public LprRosterInfo(LprRoster lprRoster) {
-        super(lprRoster);
         if (lprRoster != null) {
             this.associatedLuiIds = new ArrayList<String>(lprRoster.getAssociatedLuiIds());
             this.maximumCapacity = lprRoster.getMaximumCapacity();

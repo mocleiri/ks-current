@@ -61,7 +61,7 @@ public class KSDateTimeFormatter  {
     }
 
     /**
-     * Helper method that allows a straight java.util.Date to String conversion
+     * Helper method that allows a stright  java.util.Date to String converstion
      * @param javaDate
      * @return
      * @throws IllegalArgumentException if the javaDate is invalid
@@ -71,16 +71,7 @@ public class KSDateTimeFormatter  {
     }
 
     /**
-     * Formats a Joda DateTime as a String.
-     * @param dateTime
-     * @return
-     */
-    public String format(DateTime dateTime) {
-       return this.formatter.print(dateTime);
-    }
-
-    /**
-     * Helper method that allows a straight  java.util.Date to String conversion
+     * Helper method that allows a stright  java.util.Date to String converstion
      * @param strDate
      * @return
      * @throws IllegalArgumentException if the javaDate is invalid

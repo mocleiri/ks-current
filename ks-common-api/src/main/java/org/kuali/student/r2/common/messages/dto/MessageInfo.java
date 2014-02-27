@@ -16,6 +16,7 @@
 package org.kuali.student.r2.common.messages.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -39,8 +40,7 @@ import org.kuali.student.r2.common.messages.infc.Message;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MessageInfo", propOrder = { 
-                "messageKey", "locale", "groupName", "value", "_futureElements" })
-
+                "messageKey", "locale", "groupName", "value" , "_futureElements" }) 
 public class MessageInfo 
     implements Message, Serializable {
 

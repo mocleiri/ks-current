@@ -1,19 +1,17 @@
 package org.kuali.student.ap.academicplan.dto;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.kuali.student.ap.academicplan.infc.DegreeMap;
 import org.kuali.student.ap.academicplan.infc.DegreeMapRequirement;
-import org.kuali.student.r2.common.dto.MetaInfo;
-import org.w3c.dom.Element;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 
 /**
  * Degree Map message structure
@@ -23,99 +21,35 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DegreeMapInfo", propOrder = { "id", "credentialProgramId", "effectiveDate", "expirationDate", "meta", "requirements", "_futureElements"})
-public class DegreeMapInfo implements DegreeMap {
+@XmlType(name = "DegreeMapInfo", propOrder = {"requirements"})
+public class DegreeMapInfo extends LearningPlanInfo implements DegreeMap {
 
-    @XmlAttribute
-    private String id;
-    
-    @XmlAttribute
-    private String credentialProgramId;
-    
-    @XmlAttribute
-    private Date effectiveDate;
-    
-    @XmlAttribute
-    private Date expirationDate;
-    
-	@XmlElement
-    private MetaInfo meta;
-
-	@XmlElement
-	private List<DegreeMapRequirement> requirements;
-
-    @XmlAnyElement
-    private List<Element> _futureElements;
-
-
-	public String getId() {
-		return id;
-	}
-
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-
-	public String getCredentialProgramId() {
-		return credentialProgramId;
-	}
-
-
-	public void setCredentialProgramId(String credentialProgramId) {
-		this.credentialProgramId = credentialProgramId;
-	}
-
-
-	public MetaInfo getMeta() {
-		return meta;
-	}
-
-
-	public Date getEffectiveDate() {
-		return effectiveDate;
-	}
-
-
-	public void setEffectiveDate(Date effectiveDate) {
-		this.effectiveDate = effectiveDate;
-	}
-
-
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-
-	public void setMeta(MetaInfo meta) {
-		this.meta = meta;
-	}
-
+	private static final long serialVersionUID = 8024618591278071960L;
 	
-	public List<Element> get_futureElements() {
-		return _futureElements;
-	}
-
-
-	public void set_futureElements(List<Element> _futureElements) {
-		this._futureElements = _futureElements;
-	}
-
+	@XmlElement
+	private List<DegreeMapRequirementInfo> requirements;
 
 	public List<DegreeMapRequirement> getRequirements() {
-		return requirements;
+		if (requirements == null) {
+			return Collections.emptyList();
+		} else {
+			return Collections.<DegreeMapRequirement> unmodifiableList(requirements);
+		}
 	}
-
 
 	public void setRequirements(List<DegreeMapRequirement> requirements) {
-		this.requirements = requirements;
+		if (requirements != null) {
+			List<DegreeMapRequirementInfo> requirementInfos = new ArrayList<DegreeMapRequirementInfo>(
+					requirements.size());
+			for (DegreeMapRequirement requirement : requirements) {
+				DegreeMapRequirementInfo requirementInfo = new DegreeMapRequirementInfo(
+						requirement);
+				requirementInfos.add(requirementInfo);
+			}
+			this.requirements = requirementInfos;
+		} else {
+			this.requirements = null;
+		}
 	}
 
-   
 }

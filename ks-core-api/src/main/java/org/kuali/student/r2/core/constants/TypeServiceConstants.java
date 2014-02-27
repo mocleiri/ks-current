@@ -41,7 +41,6 @@ public class TypeServiceConstants {
      * Type type relationship types
      */
     public static final String TYPE_TYPE_RELATION_ALLOWED_TYPE_KEY = "kuali.type.type.relation.type.allowed";
-    public static final String TYPE_TYPE_RELATION_ATP2TIMESLOT_TYPE_KEY = "kuali.type.type.relation.type.allowed.atp2timeslot";
     public static final String TYPE_TYPE_RELATION_CONTAINS_TYPE_KEY = "kuali.type.type.relation.type.contains";
     public static final String TYPE_TYPE_RELATION_GROUP_TYPE_KEY = "kuali.type.type.relation.type.group";
     /**
@@ -49,14 +48,4 @@ public class TypeServiceConstants {
      */
     public static final String TYPE_TYPE_RELATION_ACTIVE_STATE_KEY = "kuali.type.type.relation.state.active";
     public static final String TYPE_TYPE_RELATION_INACTIVE_STATE_KEY = "kuali.type.type.relation.state.inactive";
-
-    /**
-     * Attributes
-     */
-    public static final String PRIORITY_ATTR = "kuali.attribute.type.priority";
-    public static final String LUI_ACTIVITY_DISPLAY_PRIORITY_ATTR  = "kuali.attribute.type.lui.activity.display.priority";
-    public static final String ACTIVITY_SELECTION_PRIORITY_ATTR  = "kuali.attribute.type.activity.selection.priority";
-    public static final String ATP_TERM_INSTRUCTIONAL_DAYS_ATTR  = "kuali.attribute.type.atp.term.instructional.days";
-    public static final String ATP_TERM_TYPE_CODE_ATTR  = "kuali.attribute.type.atp.term.type.code";
 }
-

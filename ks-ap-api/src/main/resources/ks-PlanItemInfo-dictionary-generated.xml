@@ -39,7 +39,7 @@
 	<!-- PlanItemInfo-->
 	<bean id="PlanItemInfo-generated" abstract="true" parent="DataObjectEntry">
 		<property name="name" value="planItemInfo"/>
-		<property name="dataObjectClass" value="org.kuali.student.ap.academicplan.dto.PlanItemInfo"/>
+		<property name="dataObjectClass" value="org.kuali.student.myplan.academicplan.dto.PlanItemInfo"/>
 		<property name="objectLabel" value="Plan Item"/>
 		<property name="objectDescription">
 			<value>
@@ -59,7 +59,6 @@ PlanItem message structure
 				<ref bean="PlanItemInfo.learningPlanId"/>
 				<ref bean="PlanItemInfo.id"/>
                 <ref bean="PlanItemInfo.credit"/>
-                <ref bean="PlanItemInfo.category"/>
 				<ref bean="PlanItemInfo.typeKey"/>
 				<ref bean="PlanItemInfo.stateKey"/>
 			</list>
@@ -169,10 +168,6 @@ Academic Time Period keys for which the item is planned.
 	<bean id="PlanItemInfo.id-generated" abstract="true" parent="BaseKuali.id">
 		<property name="name" value="id"/>
 	</bean>
-
-    <bean id="PlanItemInfo.category-generated" abstract="true" parent="BaseKuali.string">
-        <property name="name" value="category"/>
-    </bean>
 
 	<bean id="PlanItemInfo.typeKey-generated" abstract="true" parent="BaseKuali.typeKey">
 		<property name="name" value="typeKey"/>

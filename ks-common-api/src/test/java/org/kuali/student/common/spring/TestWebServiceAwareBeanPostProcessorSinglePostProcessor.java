@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -40,7 +39,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class TestWebServiceAwareBeanPostProcessorSinglePostProcessor  {
 
 	private static final Logger log = LoggerFactory.getLogger(TestWebServiceAwareBeanPostProcessorSinglePostProcessor.class);
-	private ConfigurableApplicationContext context;
+	private ClassPathXmlApplicationContext context;
 	
 	/**
 	 * 
@@ -61,8 +60,6 @@ public class TestWebServiceAwareBeanPostProcessorSinglePostProcessor  {
 		
 	}
 
-	
-	
 
 	@Test
 	public void testDirectDictionaryServiceWithMessageServiceProxy() {
@@ -74,7 +71,7 @@ public class TestWebServiceAwareBeanPostProcessorSinglePostProcessor  {
 		
 		String messageServiceClassName = bean.getMessageService().getClass().getName();
 		
-		Assert.assertTrue("class name must contain $Proxy", messageServiceClassName.contains("$Proxy"));
+		Assert.assertTrue(messageServiceClassName.startsWith("$Proxy"));
 		
 	}
 }
