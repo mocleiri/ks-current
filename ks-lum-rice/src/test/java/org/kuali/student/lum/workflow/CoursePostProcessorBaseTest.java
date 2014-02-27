@@ -21,7 +21,9 @@ import org.kuali.student.r2.common.dto.TimeAmountInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.util.RichTextHelper;
+import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.dto.FormatInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValueRangeInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
@@ -100,32 +102,94 @@ public class CoursePostProcessorBaseTest {
             original.setDescr(new RichTextHelper().fromPlain("this is my description"));
             original.setStartTerm("20144");
             original.setTermsOffered(Arrays.asList("kuali.season.Fall"));
+            
+            FormatInfo format = new FormatInfo ();
+            format.setTypeKey(CluServiceConstants.COURSE_FORMAT_TYPE_KEY);
+            format.setStateKey("Active");
+            format.setDuration(new TimeAmountInfo ());
+            format.getDuration().setAtpDurationTypeKey("kuali.atp.duration.Week");
+            format.getDuration().setTimeQuantity(2);
+            original.getFormats().add(format);
+            ActivityInfo activity = new ActivityInfo ();
+            activity.setTypeKey(CluServiceConstants.COURSE_ACTIVITY_LECTURE_TYPE_KEY);
+            activity.setStateKey("Active");
+            format.getActivities().add(activity);
+            
 
             CourseInfo created = courseService.createCourse(original, contextInfo);
-            assertEquals("Test Course", created.getCourseTitle());
+            assertEquals("Test Course", created.getCourseTitle());          
+            assertEquals (1, created.getFormats().size());
+            
+            
             CourseInfo gotten = courseService.getCourse(created.getId(), contextInfo);
-            assertEquals("Test Course", gotten.getCourseTitle());
+            assertEquals("Test Course", gotten.getCourseTitle());         
+            assertEquals (1, gotten.getFormats().size());
+            assertEquals ("kuali.atp.duration.Week", gotten.getFormats().get(0).getDuration().getAtpDurationTypeKey());
+            assertEquals (new Integer (2), gotten.getFormats().get(0).getDuration().getTimeQuantity());        
+            assertEquals (1, gotten.getFormats().get(0).getActivities().size());
+            assertEquals (CluServiceConstants.COURSE_ACTIVITY_LECTURE_TYPE_KEY,
+                    gotten.getFormats().get(0).getActivities().get(0).getTypeKey());       
 
-            CourseInfo modified = courseService.createNewCourseVersion(gotten.getVersion().getVersionIndId(), "test copying",
+            CourseInfo newVersion = courseService.createNewCourseVersion(gotten.getVersion().getVersionIndId(), "test copying",
                     contextInfo);
             // reset the start and end terms just like we had to do in the data service because the stupid createNewCourseVersion 
             // blanks them out!!!!!
-            modified.setStartTerm(gotten.getStartTerm());
-            modified.setEndTerm(gotten.getEndTerm());
-            modified = courseService.updateCourse(modified.getId(), modified, contextInfo);
-            assertEquals("Test Course", modified.getCourseTitle());
+            newVersion.setStartTerm(gotten.getStartTerm());
+            newVersion.setEndTerm(gotten.getEndTerm());
+            newVersion = courseService.updateCourse(newVersion.getId(), newVersion, contextInfo);
+            assertEquals("Test Course", newVersion.getCourseTitle());         
+            assertEquals (1, newVersion.getFormats().size());
+            assertEquals ("kuali.atp.duration.Week", newVersion.getFormats().get(0).getDuration().getAtpDurationTypeKey());
+            assertEquals (new Integer (2), newVersion.getFormats().get(0).getDuration().getTimeQuantity());     
+            assertEquals (1, newVersion.getFormats().get(0).getActivities().size());
+            assertEquals (CluServiceConstants.COURSE_ACTIVITY_LECTURE_TYPE_KEY,
+                    newVersion.getFormats().get(0).getActivities().get(0).getTypeKey());       
             
-            modified.setCourseTitle(original.getCourseTitle()+ " X");
-            assertEquals("Test Course X", modified.getCourseTitle());
+            newVersion.setCourseTitle(original.getCourseTitle()+ " X");
+            newVersion.getFormats().get(0).getDuration().setAtpDurationTypeKey("kuali.atp.duration.Month");
+            newVersion.getFormats().get(0).getDuration().setTimeQuantity(3);            
+            newVersion.getFormats().get(0).getActivities().clear();
+            activity = new ActivityInfo ();
+            activity.setTypeKey(CluServiceConstants.COURSE_ACTIVITY_LAB_TYPE_KEY);
+            activity.setStateKey("Active");
+            newVersion.getFormats().get(0).getActivities().add(activity);
+            
+            assertEquals("Test Course X", newVersion.getCourseTitle());         
+            assertEquals (1, newVersion.getFormats().size());
+            assertEquals ("kuali.atp.duration.Month", newVersion.getFormats().get(0).getDuration().getAtpDurationTypeKey());
+            assertEquals (new Integer (3), newVersion.getFormats().get(0).getDuration().getTimeQuantity());       
+            assertEquals (1, newVersion.getFormats().get(0).getActivities().size());
+            assertEquals (CluServiceConstants.COURSE_ACTIVITY_LAB_TYPE_KEY,
+                    newVersion.getFormats().get(0).getActivities().get(0).getTypeKey());       
 
-            CourseInfo updated = courseService.updateCourse(modified.getId(), modified, contextInfo);
-            assertEquals("Test Course X", updated.getCourseTitle());
 
-            new CoursePostProcessorBase().copyToCurrentVersion(created, updated);
-            assertEquals("Test Course X", created.getCourseTitle());
+            CourseInfo updatedNewVersion = courseService.updateCourse(newVersion.getId(), newVersion, contextInfo);
+            assertEquals("Test Course X", updatedNewVersion.getCourseTitle());         
+            assertEquals (1, updatedNewVersion.getFormats().size());
+            assertEquals ("kuali.atp.duration.Month", updatedNewVersion.getFormats().get(0).getDuration().getAtpDurationTypeKey());
+            assertEquals (new Integer (3), updatedNewVersion.getFormats().get(0).getDuration().getTimeQuantity());     
+            assertEquals (1, updatedNewVersion.getFormats().get(0).getActivities().size());
+            assertEquals (CluServiceConstants.COURSE_ACTIVITY_LAB_TYPE_KEY,
+                    updatedNewVersion.getFormats().get(0).getActivities().get(0).getTypeKey());         
 
-            CourseInfo originalUpdated = courseService.updateCourse(created.getId(), created, contextInfo);
-            assertEquals("Test Course X", originalUpdated.getCourseTitle());
+            new CoursePostProcessorBase().copyToCurrentVersion(gotten, updatedNewVersion);
+            assertEquals("Test Course X", gotten.getCourseTitle());         
+            assertEquals (1, gotten.getFormats().size());
+            assertEquals ("kuali.atp.duration.Month", gotten.getFormats().get(0).getDuration().getAtpDurationTypeKey());
+            assertEquals (new Integer (3), gotten.getFormats().get(0).getDuration().getTimeQuantity());     
+            assertEquals (1, gotten.getFormats().get(0).getActivities().size());
+            assertEquals (CluServiceConstants.COURSE_ACTIVITY_LAB_TYPE_KEY,
+                    gotten.getFormats().get(0).getActivities().get(0).getTypeKey());         
+
+            CourseInfo originalUpdated = courseService.updateCourse(gotten.getId(), gotten, contextInfo);
+            assertEquals("Test Course X", originalUpdated.getCourseTitle());            
+            assertEquals (1, originalUpdated.getFormats().size());
+            assertEquals ("kuali.atp.duration.Month", originalUpdated.getFormats().get(0).getDuration().getAtpDurationTypeKey());
+            assertEquals (new Integer (3), originalUpdated.getFormats().get(0).getDuration().getTimeQuantity());   
+            assertEquals (1, originalUpdated.getFormats().get(0).getActivities().size());
+            assertEquals (CluServiceConstants.COURSE_ACTIVITY_LAB_TYPE_KEY,
+                    originalUpdated.getFormats().get(0).getActivities().get(0).getTypeKey());         
+            
         } catch (DataValidationErrorException ex) {
             StringBuilder sb = new StringBuilder();
             String comma = "";
