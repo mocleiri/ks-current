@@ -1,7 +1,6 @@
 @nightly
 Feature: BT.i18n
 
-    @draft @wip
   Scenario Outline: View page in appropriate locale
     Given I am logged in as admin with locale: <locale>
     When I view the POC page with "<locale>" locale
