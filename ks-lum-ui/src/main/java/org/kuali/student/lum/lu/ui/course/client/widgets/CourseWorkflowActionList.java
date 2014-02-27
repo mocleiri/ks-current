@@ -224,7 +224,7 @@ public class CourseWorkflowActionList extends StylishDropDown {
 	    activateDialog.setWidget(panel);
     }
     
-    private void buildModifyDialog(final ViewContext viewContext, final String modifyPath, final DataModel model){
+    private void buildModifyDialog(final ViewContext viewContext, final String modifyPath, final DataModel model, final boolean isAdmin){
     	final KSLightBox modifyDialog = new KSLightBox();
     	
     	//Create a dialog for course selection
@@ -253,7 +253,6 @@ public class CourseWorkflowActionList extends StylishDropDown {
         
         final KSRadioButton radioOptionModifyNoVersion = new KSRadioButton("modifyCreditCourseButtonGroup", getMessage("modifyCourseNoVersion"));
         final KSRadioButton radioOptionModifyWithVersion = new KSRadioButton("modifyCreditCourseButtonGroup", getMessage("modifyCourseWithVersion"));
-        // TODO ajani
         final KSRadioButton radioOptionModifyWithCurrentVersion = new KSRadioButton("modifyCreditCourseButtonGroup", getMessage("modifyCourseCurrentVersion"));
         
         final KSCheckBox curriculumReviewOption = new KSCheckBox(getMessage("useCurriculumReview"));
@@ -267,7 +266,7 @@ public class CourseWorkflowActionList extends StylishDropDown {
 			}
         });
         radioOptionModifyNoVersion.setValue(true);
-    	curriculumReviewOption.setEnabled(false);
+        curriculumReviewOption.setEnabled(false);
         
         radioOptionModifyWithVersion.addValueChangeHandler(new ValueChangeHandler<Boolean>(){
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -277,11 +276,10 @@ public class CourseWorkflowActionList extends StylishDropDown {
 			}
         });
         
-        // TODO ajani
         radioOptionModifyWithCurrentVersion.addValueChangeHandler(new ValueChangeHandler<Boolean>(){
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if(event.getValue()){
-					curriculumReviewOption.setEnabled(false);
+					curriculumReviewOption.setEnabled(true);
 	            	curriculumReviewOption.setValue(true);
 				}
 			}
@@ -296,10 +294,7 @@ public class CourseWorkflowActionList extends StylishDropDown {
 					Application.navigate(AppLocations.Locations.COURSE_ADMIN_NO_VERSION.getLocation(), viewContext);
 				} else if (radioOptionModifyWithVersion.getValue()){
 				    checkLatestVersion(viewContext, modifyPath, model, curriculumReviewOption.getValue());			    
-				    
-				}
-				// TODO ajani
-				else if(radioOptionModifyWithCurrentVersion.getValue()){ 
+				} else if(radioOptionModifyWithCurrentVersion.getValue()){ 
 					checkLatestVersionForCurrent(viewContext, modifyPath, model, curriculumReviewOption.getValue());
 				}
 		    	modifyDialog.hide();
@@ -307,16 +302,26 @@ public class CourseWorkflowActionList extends StylishDropDown {
         });
         
         //Check that this is the latest version with an async call and only show modify with version options if it is the latest
-       
-        layout.add(radioOptionModifyNoVersion);
+        if(isAdmin){
+	        layout.add(radioOptionModifyNoVersion);
+	        
+        } else {
+        	// if("fred".equalsIgnoreCase("fred")){
+        		radioOptionModifyNoVersion.setValue(false);
+        		layout.add(radioOptionModifyWithVersion);
+	            layout.add(radioOptionModifyWithCurrentVersion);
+        	// } else {
+        		
+        	//}
+        }
         if(isCurrentVersion){
         	layout.add(radioOptionModifyWithVersion);
-        	// TODO ajani
             layout.add(radioOptionModifyWithCurrentVersion);
             layout.add(curriculumReviewOption);
         }
         modifyDialog.setWidget(layout);
         modifyDialog.show();
+        
     }
     
     /**
@@ -713,18 +718,7 @@ public class CourseWorkflowActionList extends StylishDropDown {
 					@Override
 					public void exec(Boolean result) {
 						hasAdminAccess = result;
-   	            	    if (hasAdminAccess){
-					    	//Admin users have the option to make modifications to the course administratively or via the
-			            	//curriculum review process. Clicking on the "Modify Course" item will present the user with
-			            	//a modify dialog to allow them to choose the method of modification.
-					    	buildModifyDialog(viewContext, modifyPath, model);
-			            } else {
-			            	//Non-admin users are only allowed to make modifications via proposal curriculum review process.
-			            	//Clicking the "Modify Course" item will simply navigate user directly to modify course proposal screen.
-			                checkLatestVersion(viewContext, modifyPath, model, true);
-			            }
-
-
+						buildModifyDialog(viewContext, modifyPath, model, hasAdminAccess);
 					}
 				});
 	}
