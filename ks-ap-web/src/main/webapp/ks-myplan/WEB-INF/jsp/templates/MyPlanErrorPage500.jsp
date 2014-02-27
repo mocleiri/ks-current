@@ -4,8 +4,12 @@
 <head>
     <title>Error 500 - Internal Server Error</title>
     <link href="/student/krad/css/global/fss-reset.css" rel="stylesheet" type="text/css">
-    <link href="/student/ks-ap/css/error.css" rel="stylesheet" type="text/css">
+    <link href="/student/ks-myplan/css/error.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="https://use.typekit.net/jpx3dug.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     <script type="text/javascript" src="/student/krad/plugins/jquery/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="/student/ks-myplan/scripts/myplan.google.js"></script>
+    <script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script>
 </head>
 <body>
 <div id="container">

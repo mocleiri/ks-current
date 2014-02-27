@@ -13,7 +13,7 @@
 		and limitations under the License. -->
 
 	<bean id="ShoppingCart-FormView" parent="ShoppingCart-FormView-parent" />
-	<bean abstract="true" id="ShoppingCart-FormView-parent" parent="KSAPBaseFormView">
+	<bean abstract="true" id="ShoppingCart-FormView-parent" parent="MyPlanBaseFormView">
 		<property name="id" value="ShoppingCart-FormView" />
 		<property name="entryPageId" value="sb_cart_add_page" />
 		<property name="items">
@@ -47,12 +47,12 @@
 
 	<bean abstract="true" id="sb_cart_radio" parent="Uif-ContentElementBase" scope="prototype"
 			p:template="/WEB-INF/ftl/sb/sb_cart_radio.ftl" p:templateName="sb_cart_radio"
-			class="org.kuali.rice.krad.uif.element.extension.ShoppingCartRadioComponent" />
+			class="org.kuali.student.ap.sb.ui.ShoppingCartRadioComponent" />
 
 	<bean id="sb_cart_course_options" parent="Uif-StackedCollectionGroup" p:id="sb_cart_course_options"
 			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false">
 		<property name="propertyName" value="courseOptions" />
-		<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.CourseOption" />
+		<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.CourseOption" />
     	<property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
@@ -133,7 +133,7 @@
  			p:id="sb_cart_activity_classtimes_@{#line.uniqueId}" p:renderAddLine="false"
 			p:renderSaveLineActions="false" p:renderLineActions="false">
 		<property name="propertyName" value="classMeetingTimes" />
-		<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.ClassMeetingTime" />
+		<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.ClassMeetingTime" />
 		<property name="cssClasses">
 			<list merge="true">
 				<value>ksap-sb-cart-classtimes-group</value>
@@ -165,7 +165,7 @@
 	<bean id="sb_cart_activity_options" parent="Uif-StackedCollectionGroup" p:id="sb_cart_activity_options"
 			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" abstract="true">
 		<property name="propertyName" value="activityOptions" />
-		<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.ActivityOption" />
+		<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.ActivityOption" />
     <property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
@@ -184,7 +184,7 @@
 	<bean id="sb_cart_secondary_options" parent="Uif-StackedCollectionGroup" p:id="sb_cart_secondary_options"
 			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false">
 		<property name="propertyName" value="secondaryOptions" />
-		<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.SecondaryActivityOptions" />
+		<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.SecondaryActivityOptions" />
     <property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
@@ -280,7 +280,7 @@
 										</property>
 									</bean>
 									<bean parent="Uif-HorizontalBoxGroup"
-										p:hidden="true" p:additionalCssClasses="ksap-feedback,error,ks-Popover-error" />
+										p:hidden="true" p:additionalCssClasses="myplan-feedback,error,ks-Popover-error" />
 								</list>
 							</property>
 						</bean>
@@ -323,7 +323,7 @@
 				<bean parent="Uif-StackedCollectionGroup" p:id="sb_activity_classtimes_@{#line.uniqueId}"
 						p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}">
 					<property name="propertyName" value="classMeetingTimes" />
-					<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.ClassMeetingTime" />
+					<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.ClassMeetingTime" />
 					<property name="layoutManager">
 						<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 							<property name="lineGroupPrototype">
@@ -350,7 +350,7 @@
 
 	<bean abstract="true" id="sb_cart_activities" parent="Uif-Disclosure-StackedCollectionSection"
 			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:includeLineSelectionField="false">
-		<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.ActivityOption" />
+		<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.ActivityOption" />
     <property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
@@ -367,7 +367,7 @@
 
 	<bean abstract="true" id="sb_cart_courses" parent="Uif-StackedCollectionSection" p:additionalCssClasses="ksap-sb-cart-courses"
 			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:includeLineSelectionField="false">
-		<property name="collectionObjectClass" value="org.kuali.student.ap.schedulebuilder.infc.CourseOption" />
+		<property name="collectionObjectClass" value="org.kuali.student.ap.sb.infc.CourseOption" />
     <property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
@@ -392,10 +392,13 @@
 	<bean abstract="true" id="sb_cart_add_from_sb_page-parent" parent="sb_cart_add_page-parent" p:innerViewWrapperId="sb_cart_add_from_sb_inner">
 		<property name="items">
 			<list>
-				<bean parent="sb_cart_courses" p:headerText="Classes to remove from cart" p:id="sb_remove_from_cart" p:propertyName="removeFromCart" />
-				<bean parent="sb_cart_courses" p:headerText="Classes to add to cart" p:id="sb_add_to_cart" p:propertyName="addToCart" />
-				<bean parent="sb_cart_courses" p:headerText="Already registered or keep in cart" p:id="sb_keep_in_cart" p:propertyName="keepInCart">
-					<property name="items[0].items[0].disclosure.defaultOpen" value="false" />
+				<bean parent="sb_cart_courses" p:render="@{!removeFromCart.empty}" 
+					p:headerText="Classes to remove from cart" p:id="sb_remove_from_cart" p:propertyName="removeFromCart" />
+				<bean parent="sb_cart_courses" p:render="@{!addToCart.empty}" 
+					p:headerText="Classes to add to cart" p:id="sb_add_to_cart" p:propertyName="addToCart" />
+				<bean parent="sb_cart_courses" p:render="@{!keepInCart.empty}" 
+					p:headerText="Already registered or keep in cart" p:id="sb_keep_in_cart" p:propertyName="keepInCart">
+					<property name="items[0].items[0].disclosure.defaultOpen" value="true" />
 				</bean>
 			</list>
 		</property>
@@ -420,7 +423,7 @@
 										</property>
 									</bean>
 									<bean parent="Uif-HorizontalBoxGroup"
-										p:hidden="true" p:additionalCssClasses="ksap-feedback,error,ks-Popover-error" />
+										p:hidden="true" p:additionalCssClasses="myplan-feedback,error,ks-Popover-error" />
 								</list>
 							</property>
 						</bean>
@@ -458,7 +461,7 @@
 								</property>
 							</bean>
 							<bean parent="Uif-HorizontalBoxGroup"
-								p:hidden="true" p:additionalCssClasses="ksap-feedback,error,ks-Popover-error" />
+								p:hidden="true" p:additionalCssClasses="myplan-feedback,error,ks-Popover-error" />
 						</list>
 					</property>
 				</bean>

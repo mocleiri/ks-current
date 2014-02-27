@@ -1,5 +1,9 @@
 package org.kuali.student.ap.framework.course;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -12,10 +16,6 @@ import org.kuali.student.r2.lum.lrc.dto.ResultValueInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValueRangeInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.kuali.student.r2.lum.lrc.service.LRCService;
-
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Turns credits info into Strings.
@@ -176,19 +176,17 @@ public class CreditsFormatter {
 
 	public static String formatCredits(Range range) {
 		StringBuilder sb = new StringBuilder();
-		if (range != null) {
-            if (range.multiple != null) {
-                for (BigDecimal rv : range.multiple) {
-                    if (sb.length() > 0)
-                        sb.append(", ");
-                    sb.append(trimCredits(rv.toString()));
-                }
-            } else {
-                sb.append(trimCredits(range.min.toString()));
-                if (range.min.compareTo(range.max) < 0)
-                    sb.append(" - ").append(trimCredits(range.max.toString()));
-            }
-        }
+		if (range.multiple != null) {
+			for (BigDecimal rv : range.multiple) {
+				if (sb.length() > 0)
+					sb.append(", ");
+				sb.append(trimCredits(rv.toString()));
+			}
+		} else {
+			sb.append(trimCredits(range.min.toString()));
+			if (range.min.compareTo(range.max) < 0)
+				sb.append(" - ").append(trimCredits(range.max.toString()));
+		}
 		return sb.toString();
 	}
 

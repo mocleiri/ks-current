@@ -1,8 +1,9 @@
 package org.kuali.rice.krad.uif.layout.extension;
 
 import org.apache.commons.lang.StringUtils;
+import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
 import org.kuali.rice.krad.uif.container.Group;
-import org.kuali.rice.krad.uif.layout.StackedLayoutManagerBase;
+import org.kuali.rice.krad.uif.layout.StackedLayoutManager;
 import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
 import org.kuali.rice.krad.uif.view.View;
 
@@ -11,7 +12,7 @@ import org.kuali.rice.krad.uif.view.View;
  * 
  * @Author kmuthu Date: 2/14/13
  */
-public class TabbedLayoutManager extends StackedLayoutManagerBase {
+public class TabbedLayoutManager extends StackedLayoutManager {
 
 	/*
 	 * Builds the header text for the collection line
@@ -35,7 +36,7 @@ public class TabbedLayoutManager extends StackedLayoutManagerBase {
 	 * @return String header text for line
 	 */
 	@Override
-	protected String buildLineHeaderText(Object line, Group lineGroup) {
+	protected String buildLineHeaderText(View view, Object line, Group lineGroup) {
 		// check for expression on summary title
 		// TODO: KSAP-34 Rice 2.3 no longer includes expressionEvaluatorService
 		// if
@@ -71,5 +72,4 @@ public class TabbedLayoutManager extends StackedLayoutManagerBase {
 
 		return headerText;
 	}
-	
 }

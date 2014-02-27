@@ -283,7 +283,7 @@
             	if (c < 0) {
             		l += c;
             		c = 0;
-            }
+            	}
                 return li.slice(c).slice(0, l);
                 // END KSAP MOD
             }
@@ -312,13 +312,13 @@
                             // If "scroll" > 1, then the "to" might not be equal to the condition; it can be greater depending on the number of elements.
                             curr = to == itemLength - v + 1 ? v + 1 : v + o.scroll;
                         } else curr = to;
-                    } else {                    // If non-circular and to points to first or last, we just return.
-
+                    } else { // If non-circular and to points to first or last, we just return.
+                    	
                     	// KSAP MOD: allow scrolling to partial pages
                         // Original = if (to < 0 || to >= itemLength) return;
-                        if (to < -v || to >= itemLength || (to<0 && curr<=0)) return;
+                        if (to < -v || to >= itemLength) return;
                         // END KSAP MOD
-
+                        
                         else curr = to;
                     }                           // If neither overrides it, the curr will still be "to" and we can proceed.
 

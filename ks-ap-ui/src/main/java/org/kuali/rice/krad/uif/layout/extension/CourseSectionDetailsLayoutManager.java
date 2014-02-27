@@ -3,19 +3,19 @@ package org.kuali.rice.krad.uif.layout.extension;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.kuali.rice.krad.uif.component.Component;
 import org.kuali.rice.krad.uif.container.CollectionGroup;
+import org.kuali.rice.krad.uif.element.Action;
 import org.kuali.rice.krad.uif.field.Field;
 import org.kuali.rice.krad.uif.field.FieldGroup;
-import org.kuali.rice.krad.uif.layout.TableLayoutManagerBase;
+import org.kuali.rice.krad.uif.layout.TableLayoutManager;
 import org.kuali.rice.krad.uif.view.View;
-import org.kuali.student.ap.coursesearch.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 
 /**
  * Layout manager for controlling and optimizing section details presentation.
  */
-public class CourseSectionDetailsLayoutManager extends TableLayoutManagerBase {
+public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
 
 	private static final long serialVersionUID = 3056313875988089648L;
 
@@ -23,12 +23,12 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManagerBase {
 			.getLogger(CourseSectionDetailsLayoutManager.class);
 
 	@Override
-	public void buildLine(Object model,
+	public void buildLine(View view, Object model,
 			CollectionGroup collectionGroup, List<Field> lineFields,
 			List<FieldGroup> subCollectionFields, String bindingPath,
-			List<? extends Component> actions, String idSuffix, Object currentLine,
+			List<Action> actions, String idSuffix, Object currentLine,
 			int lineIndex) {
-		super.buildLine(model, collectionGroup, lineFields,
+		super.buildLine(view, model, collectionGroup, lineFields,
 				subCollectionFields, bindingPath, actions, idSuffix,
 				currentLine, lineIndex);
 
@@ -45,15 +45,17 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManagerBase {
 			r1css.append(aoi.isPrimary() ? " primary" : " secondary");
 			boolean offered = LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
 					.equals(aoi.getStateKey());
+			if (!offered)
+				r1css.append(" fl-text-lightgray");
 			StringBuilder r2css = offered ? new StringBuilder() : null;
 			if (offered && !aoi.isPrimary())
 				r2css.append("collapsible");
 			if (aoi.getPlanItemId() != null) {
 				r1css.append(r1css.length() == 0 ? " " : "").append(
-						"ksap-section-planned");
+						"myplan-section-planned");
 				if (offered)
 					r2css.append(r2css.length() == 0 ? " " : "").append(
-							"ksap-section-planned");
+							"myplan-section-planned");
 			}
 			rowCss.add(r1css.toString());
 			if (offered) {

@@ -19,18 +19,18 @@
      limitations under the License.
     -->
     <bean id="Conversation-list-FormView" parent="Conversation-list-FormView-parent" />
-	<bean abstract="true" id="Conversation-list-FormView-parent" parent="KSAPFormView">
+	<bean abstract="true" id="Conversation-list-FormView-parent" parent="MyPlanFormView">
 		<property name="id" value="Conversation-list-FormView" />
 		<property name="entryPageId" value="conversation_main" />
 		<property name="cssClasses">
 			<list merge="true">
-				<value>ksap-view</value>
+				<value>myplan-view</value>
 			</list>
 		</property>
 		<property name="additionalScriptFiles">
             <list>
                 <value>arm-ks/scripts/arm-review-ks.js</value>
-                <value>ks-ap/scripts/dotdotdot/jquery.dotdotdot.min.js</value>
+                <value>arm-ks/scripts/review/dotdotdot/jquery.dotdotdot.min.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -103,7 +103,7 @@
 	<bean id="conversation_year_list" parent="conversation_year_list-parent"/>
 	<bean id="conversation_year_list-parent" abstract="true" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.plannerreview.dto.ConversationYearInfo"/>
+                  value="org.kuali.student.ap.plan.review.dto.ConversationYearInfo"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
@@ -132,7 +132,7 @@
  	<bean id="conversation_list" parent="conversation_list-parent"/>
 	<bean id="conversation_list-parent" abstract="true" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.plannerreview.dto.ConversationInfo"/>
+                  value="org.kuali.student.ap.plan.review.dto.ConversationInfo"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="propertyName" value="conversations"/>

@@ -31,16 +31,9 @@
 			value="{http://student.kuali.org/wsdl/courseOffering}CourseOfferingService" />
 	</bean>
 
-	<bean id="ksEnrollCourseOfferingSetService" class="org.kuali.rice.ksb.messaging.KSBClientProxyFactoryBean">
-		<property name="serviceEndpointInterface"
-			value="org.kuali.student.enrollment.courseofferingset.service.CourseOfferingSetService" />
-		<property name="serviceQName"
-			value="{http://student.kuali.org/wsdl/courseOfferingSet}CourseOfferingSetService" />
-	</bean>
-
 	<bean id="ksEnrollAcalService" class="org.kuali.rice.ksb.messaging.KSBClientProxyFactoryBean">
 		<property name="serviceEndpointInterface"
-			value="org.kuali.student.r2.core.acal.service.AcademicCalendarService" />
+			value="org.kuali.student.enrollment.acal.service.AcademicCalendarService" />
 		<property name="serviceQName"
 			value="{http://student.kuali.org/wsdl/acal}AcademicCalendarService" />
 	</bean>

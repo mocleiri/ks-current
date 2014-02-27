@@ -1,11 +1,11 @@
 package org.kuali.rice.krad.uif.container.extension;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.util.type.TypeUtils;
 import org.kuali.rice.krad.uif.UifConstants;
-import org.kuali.rice.krad.uif.field.DataFieldBase;
+import org.kuali.rice.krad.uif.field.DataField;
+
+import java.util.List;
 
 /**
  * Addresses three issues
@@ -14,10 +14,10 @@ import org.kuali.rice.krad.uif.field.DataFieldBase;
  * 2. Applies the styleClasses on the filed to the list container and provides a property to allow the list item value to be applied as a style also
  * 3. Uses StringBuffer instead of String concatinations to improve memory usage
  *
- * @Author KSAP Team
+ * @Author MyPlan Team
  * Date: 3/22/13
  */
-public class ListDataField extends DataFieldBase {
+public class ListDataField extends DataField {
 
 
     // TODO: This needs to be added to the enum UifConstants.ReadOnlyListTypes

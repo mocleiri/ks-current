@@ -19,7 +19,7 @@
      limitations under the License.
     -->
     <bean id="Conversation-create-FormView" parent="Conversation-create-FormView-parent" />
-    <bean abstract="true" id="Conversation-create-FormView-parent" parent="KSAPBaseFormView">
+    <bean abstract="true" id="Conversation-create-FormView-parent" parent="MyPlanBaseFormView">
 		<property name="id" value="Conversation-create-FormView" />
 		<property name="entryPageId" value="create_conversation" />
 		<property name="items">
@@ -82,7 +82,7 @@
 						<bean parent="Uif-VerticalRadioControl" />
 					</property>
 					<property name="optionsFinder">
-						<bean class="org.kuali.student.ap.plannerreview.util.AvailableAdvisorBuilder" p:addBlankOption="false"/>
+						<bean class="org.kuali.student.ap.plan.review.util.AvailableAdvisorBuilder" p:addBlankOption="false"/>
 					</property>
 				</bean>
 			</list>
@@ -160,7 +160,7 @@
 			<list>
 				<bean id="dynamic_acadYear_list" parent="Uif-ListCollectionSection">
 			        <property name="collectionObjectClass"
-			                  value="org.kuali.student.ap.plannerreview.dto.AcademicYearInfo"/>
+			                  value="org.kuali.student.ap.plan.review.dto.AcademicYearInfo"/>
 			        <property name="propertyName" value="availableAcademicYears"/>
 			        <property name="renderAddLine" value="false"/>
 			        <property name="renderLineActions" value="false"/>
@@ -174,7 +174,7 @@
 			            <list>
 			            	<bean id="dynamic_term_list" parent="Uif-ListCollectionSection">
 						        <property name="collectionObjectClass"
-						                  value="org.kuali.student.ap.plannerreview.dto.PlanTermInfo"/>
+						                  value="org.kuali.student.ap.plan.review.dto.PlanTermInfo"/>
 						        <property name="propertyName" value="terms"/>
 						        <property name="renderAddLine" value="false"/>
 						        <property name="renderLineActions" value="false"/>
@@ -219,7 +219,7 @@
 			<list>
 				<bean id="dynamic_acadYearTermCourse_list" parent="Uif-ListCollectionSection">
 			        <property name="collectionObjectClass"
-			                  value="org.kuali.student.ap.plannerreview.dto.AcademicYearInfo"/>
+			                  value="org.kuali.student.ap.plan.review.dto.AcademicYearInfo"/>
 			        <property name="propertyName" value="availableAcademicYears"/>
 			        <property name="renderAddLine" value="false"/>
 			        <property name="renderLineActions" value="false"/>
@@ -233,7 +233,7 @@
 			            <list>
 			            	<bean id="dynamic_termcourse_list" parent="Uif-ListCollectionSection">
 						        <property name="collectionObjectClass"
-						                  value="org.kuali.student.ap.plannerreview.dto.PlanTermInfo"/>
+						                  value="org.kuali.student.ap.plan.review.dto.PlanTermInfo"/>
 						        <property name="propertyName" value="terms"/>
 						        <property name="renderAddLine" value="false"/>
 						        <property name="renderLineActions" value="false"/>
@@ -256,11 +256,10 @@
 			</list>
 		</property>
 	</bean>
-
-    <bean id="dynamic_course_type_list" parent="dynamic_course_type_list-parent"/>
-	<bean abstract="true" id="dynamic_course_type_list-parent" parent="Uif-ListCollectionSection">
+	
+	<bean id="dynamic_course_type_list" parent="Uif-ListCollectionSection">
 		<property name="collectionObjectClass"
-                  value="org.kuali.student.ap.plannerreview.dto.CourseTypeInfo"/>
+                  value="org.kuali.student.ap.plan.review.dto.CourseTypeInfo"/>
         <property name="propertyName" value="courseTypes"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
@@ -285,11 +284,10 @@
           	</list>
       	</property>
 	</bean>
-
-    <bean id="dynamic_course_list" abstract="false" parent="dynamic_course_list-parent"/>
-	<bean id="dynamic_course_list-parent" abstract="false" parent="Uif-ListCollectionSection">
+	
+	<bean id="dynamic_course_list" abstract="false" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.plannerreview.dto.CourseInfo"/>
+                  value="org.kuali.student.ap.plan.review.dto.CourseInfo"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
@@ -341,7 +339,7 @@
 						<bean parent="Uif-HorizontalCheckboxesControl"/>
 					</property>
 					<property name="optionsFinder">
-						<bean class="org.kuali.student.ap.plannerreview.util.BookmarkedCoursesBuilder" p:addBlankOption="false"
+						<bean class="org.kuali.student.ap.plan.review.util.BookmarkedCoursesBuilder" p:addBlankOption="false" 
 								p:useSpanInsteadOfTooltip="false"/>
 					</property>
 					<property name="cssClasses">
@@ -355,9 +353,8 @@
 			</list>
 		</property>
 	</bean>
-
-    <bean id="course_checkbox_tooltip" parent="course_checkbox_tooltip-parent"/>
-	<bean abstract="true" id="course_checkbox_tooltip-parent" parent="Uif-MessageField" p:messageText="Message Field Text">
+	
+	<bean id="course_checkbox_tooltip" parent="Uif-MessageField" p:messageText="Message Field Text">
 		<property name="toolTip">
 			<bean parent="Uif-Tooltip" p:tooltipContent=""/>
 		</property>

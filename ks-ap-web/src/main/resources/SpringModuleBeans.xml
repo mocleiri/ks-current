@@ -32,15 +32,15 @@
         </property>
         <property name="packagePrefixes">
             <list>
-                <value>org.kuali.student.ap.coursesearch</value>
-                <value>org.kuali.student.ap.audit</value>
+                <value>org.kuali.student.myplan.course</value>
+                <value>org.kuali.student.myplan.audit</value>
             </list>
         </property>
     </bean>
 
-    <context:component-scan base-package="org.kuali.student.ap.coursesearch.controller" />
-    <context:component-scan base-package="org.kuali.student.ap.audit.controller" />
-    <context:component-scan base-package="org.kuali.student.ap.adviser.controller" />
+    <context:component-scan base-package="org.kuali.student.myplan.course.controller" />
+    <context:component-scan base-package="org.kuali.student.myplan.audit.controller" />
+    <context:component-scan base-package="org.kuali.student.myplan.adviser.controller" />
 
 </beans>
 

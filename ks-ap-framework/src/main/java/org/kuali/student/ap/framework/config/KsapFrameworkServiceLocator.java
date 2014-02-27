@@ -2,8 +2,6 @@ package org.kuali.student.ap.framework.config;
 
 import javax.ejb.EJB;
 
-import org.kuali.rice.core.framework.util.spring.OptionalResource;
-import org.kuali.student.ap.academicplan.service.AcademicPlanService;
 import org.kuali.student.ap.academicplan.service.DegreeMapService;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.ap.framework.context.EnrollmentStatusHelper;
@@ -16,15 +14,14 @@ import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.ap.framework.context.TextHelper;
 import org.kuali.student.ap.framework.context.UserSessionHelper;
 import org.kuali.student.ap.framework.course.CourseSearchStrategy;
-import org.kuali.student.ap.plannerreview.LearningPlanReviewStrategy;
-import org.kuali.student.ap.schedulebuilder.ScheduleBuildStrategy;
-import org.kuali.student.ap.schedulebuilder.ShoppingCartStrategy;
+import org.kuali.student.ap.sb.ScheduleBuildStrategy;
+import org.kuali.student.ap.sb.ShoppingCartStrategy;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.enrollment.courseofferingset.service.CourseOfferingSetService;
 import org.kuali.student.enrollment.lui.service.LuiService;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.r2.common.messages.service.MessageService;
-import org.kuali.student.r2.core.acal.service.AcademicCalendarService;
 import org.kuali.student.r2.core.atp.service.AtpService;
 import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.core.comment.service.CommentService;
@@ -34,7 +31,6 @@ import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.lrc.service.LRCService;
 import org.kuali.student.r2.lum.program.service.ProgramService;
-
 
 /**
  * Convenience factory for acquiring KSAP provided service.
@@ -119,7 +115,7 @@ public final class KsapFrameworkServiceLocator {
 
 	/**
 	 * Get the ks-core remote comment service.
-	 *
+	 * 
 	 * @return The ks-core remote comment service.
 	 */
 	public static CommentService getCommentService() {
@@ -143,15 +139,6 @@ public final class KsapFrameworkServiceLocator {
 	public static CourseOfferingService getCourseOfferingService() {
 		return getInstance().ksEnrollCourseOfferingService;
 	}
-    
-	/**
-	 * Get the ks-enroll remote course offering set service.
-	 * 
-	 * @return The ks-enroll remote course offering set service.
-	 */
-    public static CourseOfferingSetService getCourseOfferingSetService() {
-        return getInstance().ksEnrollCourseOfferingSetService;
-    }
 
 	/**
 	 * Get the ks-enroll remote academic calendar service.
@@ -207,8 +194,7 @@ public final class KsapFrameworkServiceLocator {
 		return getInstance().ksLumLrcService;
 	}
 	
-	
-	public static DegreeMapService getDegreeMapService(){
+	public static DegreeMapService getDegreeMapService() {
 		return getInstance().degreeMapService;
 	}
 
@@ -311,162 +297,32 @@ public final class KsapFrameworkServiceLocator {
 		return getInstance().ksapTextHelper;
 	}
 
-    /**
-     * Get the plan helper implementation.
-     *
-     * @return The plan helper.
-     */
-    public static PlanHelper getPlanHelper() {
-        return getInstance().planHelper;
-    }
+	/**
+	 * Get the plan helper implementation.
+	 * 
+	 * @return The plan helper.
+	 */
+	public static PlanHelper getPlanHelper() {
+		return getInstance().planHelper;
+	}
 
 	/**
 	 * Get the schedule build strategy.
-	 *
+	 * 
 	 * @return The schedule build strategy.
 	 */
-    public static ScheduleBuildStrategy getScheduleBuildStrategy() {
-        return getInstance().scheduleBuildStrategy;
-    }
+	public static ScheduleBuildStrategy getScheduleBuildStrategy() {
+		return getInstance().scheduleBuildStrategy;
+	}
 
-    /**
-     * Get the shopping cart strategy.
-     *
-     * @return The shopping cart strategy.
-     */
-    public static ShoppingCartStrategy getShoppingCartStrategy() {
-        return getInstance().shoppingCartStrategy;
-    }
-
-    public static LearningPlanReviewStrategy getLearningPlanReviewStrategy() {
-        return getInstance().learningPlanReviewStrategy;
-    }
-
-    public void setKsCoreAtpService(AtpService ksCoreAtpService) {
-        getInstance().ksCoreAtpService = ksCoreAtpService;
-    }
-
-    public void setKsCoreTypeService(TypeService ksCoreTypeService) {
-        getInstance().ksCoreTypeService = ksCoreTypeService;
-    }
-
-    public void setKsCoreMessageService(MessageService ksCoreMessageService) {
-        getInstance().ksCoreMessageService = ksCoreMessageService;
-    }
-
-    public void setKsCoreOrganizationService(OrganizationService ksCoreOrganizationService) {
-        getInstance().ksCoreOrganizationService = ksCoreOrganizationService;
-    }
-
-    public void setKsCoreEnumerationManagementService(EnumerationManagementService ksCoreEnumerationManagementService) {
-        getInstance().ksCoreEnumerationManagementService = ksCoreEnumerationManagementService;
-    }
-
-    public void setKsCoreCommentService(CommentService ksCoreCommentService) {
-        getInstance().ksCoreCommentService = ksCoreCommentService;
-    }
-
-    public void setKsEnrollLuiService(LuiService ksEnrollLuiService) {
-        getInstance().ksEnrollLuiService = ksEnrollLuiService;
-    }
-
-    public void setKsEnrollCourseOfferingService(CourseOfferingService ksEnrollCourseOfferingService) {
-        getInstance().ksEnrollCourseOfferingService = ksEnrollCourseOfferingService;
-    }
-
-    public void setKsEnrollCourseOfferingSetService(CourseOfferingSetService ksEnrollCourseOfferingSetService) {
-        getInstance().ksEnrollCourseOfferingSetService = ksEnrollCourseOfferingSetService;
-    }
-
-    public void setKsEnrollAcalService(AcademicCalendarService ksEnrollAcalService) {
-        getInstance().ksEnrollAcalService = ksEnrollAcalService;
-    }
-
-    public void setKsEnrollAcademicRecordService(AcademicRecordService ksEnrollAcademicRecordService) {
-        getInstance().ksEnrollAcademicRecordService = ksEnrollAcademicRecordService;
-    }
-
-    public void setKsLumCourseService(CourseService ksLumCourseService) {
-        getInstance().ksLumCourseService = ksLumCourseService;
-    }
-
-    public void setKsLumProgramService(ProgramService ksLumProgramService) {
-        getInstance().ksLumProgramService = ksLumProgramService;
-    }
-
-    public void setKsLumCluService(CluService ksLumCluService) {
-        getInstance().ksLumCluService = ksLumCluService;
-    }
-
-    public void setKsLumLrcService(LRCService ksLumLrcService) {
-        getInstance().ksLumLrcService = ksLumLrcService;
-    }
-    
-    public void setDegreeMapService(DegreeMapService degreeMapService) {
-        getInstance().degreeMapService = degreeMapService;
-    }
-
-    
-    
-    public void setKsapContext(KsapContext ksapContext) {
-        getInstance().ksapContext = ksapContext;
-    }
-
-    public void setKsapUserSessionHelper(UserSessionHelper ksapUserSessionHelper) {
-        getInstance().ksapUserSessionHelper = ksapUserSessionHelper;
-    }
-
-    public void setKsapTermHelper(TermHelper ksapTermHelper) {
-        getInstance().ksapTermHelper = ksapTermHelper;
-    }
-
-    public void setKsapEnumerationHelper(EnumerationHelper ksapEnumerationHelper) {
-        getInstance().ksapEnumerationHelper = ksapEnumerationHelper;
-    }
-
-    public void setKsapOrgHelper(OrgHelper ksapOrgHelper) {
-        getInstance().ksapOrgHelper = ksapOrgHelper;
-    }
-
-    public void setKsapCourseHelper(CourseHelper ksapCourseHelper) {
-        getInstance().ksapCourseHelper = ksapCourseHelper;
-    }
-
-    public void setKsapTextHelper(TextHelper ksapTextHelper) {
-        getInstance().ksapTextHelper = ksapTextHelper;
-    }
-
-    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
-        getInstance().academicPlanService = academicPlanService;
-    }
-
-    public void setEnrollmentStatusHelper(EnrollmentStatusHelper enrollmentStatusHelper) {
-        getInstance().enrollmentStatusHelper = enrollmentStatusHelper;
-    }
-
-    public void setShoppingCartHelper(ShoppingCartHelper shoppingCartHelper) {
-        getInstance().shoppingCartHelper = shoppingCartHelper;
-    }
-
-    public void setPlanHelper(PlanHelper planHelper) {
-        getInstance().planHelper = planHelper;
-    }
-
-    public void setCourseSearchStrategy(CourseSearchStrategy courseSearchStrategy) {
-        getInstance().courseSearchStrategy = courseSearchStrategy;
-    }
-
-    public void setLearningPlanReviewStrategy(LearningPlanReviewStrategy learningPlanReviewStrategy) {
-        getInstance().learningPlanReviewStrategy = learningPlanReviewStrategy;
-    }
-
-    public void setShoppingCartStrategy(ShoppingCartStrategy shoppingCartStrategy) {
-        getInstance().shoppingCartStrategy = shoppingCartStrategy;
-    }
-
-    public void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
-        getInstance().scheduleBuildStrategy = scheduleBuildStrategy;
-    }    
+	/**
+	 * Get the shopping cart strategy.
+	 * 
+	 * @return The shopping cart strategy.
+	 */
+	public static ShoppingCartStrategy getShoppingCartStrategy() {
+		return getInstance().shoppingCartStrategy;
+	}
 
 	@EJB
 	private transient AtpService ksCoreAtpService;
@@ -483,9 +339,7 @@ public final class KsapFrameworkServiceLocator {
 	@EJB
 	private transient LuiService ksEnrollLuiService;
 	@EJB
-    private transient CourseOfferingService ksEnrollCourseOfferingService;
-    @EJB
-    private transient CourseOfferingSetService ksEnrollCourseOfferingSetService;
+	private transient CourseOfferingService ksEnrollCourseOfferingService;
 	@EJB
 	private transient AcademicCalendarService ksEnrollAcalService;
 	@EJB
@@ -518,27 +372,21 @@ public final class KsapFrameworkServiceLocator {
 	private transient EnrollmentStatusHelper enrollmentStatusHelper;
 	@EJB
 	private transient ShoppingCartHelper shoppingCartHelper;
-    @EJB
-    private transient PlanHelper planHelper;
+	@EJB
+	private transient PlanHelper planHelper;
 	@EJB
 	private transient DegreeMapService degreeMapService; 
 
 	// provided by ks-ap-ui or institution override
-    @OptionalResource
 	@EJB
-    private transient CourseSearchStrategy courseSearchStrategy;
-
-    @OptionalResource
-    @EJB
-    private transient LearningPlanReviewStrategy learningPlanReviewStrategy;
-    
-    @OptionalResource
-    @EJB
-    private transient ScheduleBuildStrategy scheduleBuildStrategy;
-
-    @OptionalResource
-    @EJB
-    private transient ShoppingCartStrategy shoppingCartStrategy;
+	@OptionalResource
+	private transient CourseSearchStrategy courseSearchStrategy;
+	@OptionalResource
+	@EJB
+	private transient ScheduleBuildStrategy scheduleBuildStrategy;
+	@OptionalResource
+	@EJB
+	private transient ShoppingCartStrategy shoppingCartStrategy;
 
 	private KsapFrameworkServiceLocator() {
 	}

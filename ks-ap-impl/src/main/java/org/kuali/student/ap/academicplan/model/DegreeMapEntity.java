@@ -24,7 +24,7 @@ public class DegreeMapEntity extends MetaEntity implements Comparable<DegreeMapE
 	// QUESTION: why is the id set specifically in the toDto? Wouldn't the Meta take care of it? 
 	
     @Column(name = "PROGRAM_ID")
-    private String credentialProgramId;
+    private String programId;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="EFF_DT")
@@ -82,18 +82,18 @@ public class DegreeMapEntity extends MetaEntity implements Comparable<DegreeMapE
 
     @Override
     public String toString() {
-        return String.format("DegreeMap id: %s , Effective Date: %d , credentialProgramId: %s", this.getId(),  this.getEffectiveDate(), this.getCredentialProgramId());
+        return String.format("DegreeMap id: %s , Effective Date: %d , programId: %s", this.getId(),  this.getEffectiveDate(), this.getProgramId());
     }
     
     
 
-    public String getCredentialProgramId() {
-		return credentialProgramId;
+    public String getProgramId() {
+		return programId;
 	}
 
 
-	public void setCredentialProgramId(String credentialProgramId) {
-		this.credentialProgramId = credentialProgramId;
+	public void setProgramId(String programId) {
+		this.programId = programId;
 	}
 
 	
@@ -141,7 +141,7 @@ public class DegreeMapEntity extends MetaEntity implements Comparable<DegreeMapE
         // why am I dealing with this? I thought the meta had the id?
         dto.setId(getId());
         dto.setMeta(super.toDTO());
-        dto.setCredentialProgramId(getCredentialProgramId());
+        dto.setProgramId(getProgramId());
         dto.setEffectiveDate(this.getEffectiveDate());
         dto.setExpirationDate(this.getExpirationDate());
         dto.setRequirements(this.getRequirements());

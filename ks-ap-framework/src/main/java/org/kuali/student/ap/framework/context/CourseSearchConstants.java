@@ -37,7 +37,7 @@ public class CourseSearchConstants {
 
     public static final String IS_ACADEMIC_RECORD_SERVICE_UP = "isAcademicRecordServiceRunning";
 
-    public static final String COURSE_SEARCH_FOR_COURSE_ID = "ksap.course.getcluid";
+    public static final String COURSE_SEARCH_FOR_COURSE_ID = "myplan.course.getcluid";
 
     public static final String SEARCH_REQUEST_SUBJECT_PARAM = "subject";
 
@@ -58,7 +58,7 @@ public class CourseSearchConstants {
 
     //Unused
 
-    public static final String LINK = "<a href=\"%s/ap/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s#%s_tab-%s\">%s</a>";
+    public static final String LINK = "<a href=\"%s/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s#%s_tab-%s\">%s</a>";
 
     public static final String APP_URL = "appserver.url";
 

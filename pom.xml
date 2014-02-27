@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2009 The Kuali Foundation Licensed under the Educational Community 
+	License, Version 2.0 (the "License"); you may not use this file except in 
+	compliance with the License. You may obtain a copy of the License at http://www.osedu.org/licenses/ECL-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -7,12 +14,12 @@
 	<parent>
 		<groupId>org.kuali.student</groupId>
 		<artifactId>student</artifactId>
-		<version>2.0.0-ap-0.8-iu-m3</version>
+		<version>2.0.0-iu-m20</version>
 	</parent>
 
 	<groupId>org.kuali.student.ap</groupId>
 	<artifactId>ks-ap</artifactId>
-	<version>0.8.0-iu-m3</version>
+	<version>0.7.7-iu-m20</version>
 	<packaging>pom</packaging>
 	<name>KSAP</name>
 	<description>Kuali Student Academic Planning Module</description>
@@ -25,8 +32,18 @@
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>7.0</version>
+			<version>6.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.1.9.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.1.9.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -34,19 +51,18 @@
 			<version>4.3.1.Final</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.2</version>
-            <scope>runtime</scope>
-        </dependency>
+		<dependency>
+			<groupId>javax.json</groupId>
+			<artifactId>javax.json-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.glassfish</groupId>
+		    <artifactId>javax.json</artifactId>
+		    <version>1.0.2</version>
+		    <scope>runtime</scope>
+		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>
@@ -67,20 +83,13 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-		                <module>ks-ap-sql</module>
+				<module>ks-ap-deployments</module>
 				<module>ks-ap-framework</module>
 				<module>ks-ap-impl</module>
 				<module>ks-ap-ui</module>
 				<module>ks-ap-web</module>
-				<module>ks-ap-deployment-resources</module>
 			</modules>
 		</profile>
-        <profile>
-            <id>sql-only</id>
-            <modules>
-                <module>ks-ap-sql</module>
-            </modules>
-        </profile>
 		<profile>
 			<id>skip-deployment-wars</id>
 			<modules>
@@ -88,7 +97,6 @@
 				<module>ks-ap-framework</module>
 				<module>ks-ap-ui</module>
 				<module>ks-ap-web</module>
-				<module>ks-ap-deployment-resources</module>
 			</modules>
 		</profile>
 		<profile>
@@ -97,7 +105,6 @@
 				<module>ks-ap-impl</module>
 				<module>ks-ap-framework</module>
 				<module>ks-ap-ui</module>
-				<module>ks-ap-deployment-resources</module>
 			</modules>
 		</profile>
 	</profiles>

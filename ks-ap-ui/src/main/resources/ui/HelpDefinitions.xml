@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!--
+     Copyright 2007-2009 The Kuali Foundation
+
+     Licensed under the Educational Community License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.opensource.org/licenses/ecl2.php
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+    -->
+
+    <bean id="quarter_facet_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip-Left" p:tooltipContent="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMS_TOOLTIP_TEXT')}"/>
+        </property>
+    </bean>
+
+
+    <bean id="bookmarks_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it."/>
+        </property>
+    </bean>
+
+
+    <bean id="recent_audits_help_icon" parent="MyPlanHelpImage">
+         <property name="toolTip">
+          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter."/>
+        </property>
+    </bean>
+
+
+    <bean id="completed_help_icon" parent="MyPlanHelpImage"
+          p:render="@{#parentLine.completedTerm and #parentLine.displayCompletedHelp ? true : false}">
+        <property name="onDocumentReadyScript" value="
+            myplanCreateTooltip('completed_help_icon_line@{#index}', '&lt;div class=&#34;ks-Tooltip&#34;&gt;Courses that you registered for in a quarter that is now complete.&lt;/div&gt;',{
+                position: 'top',
+                align: 'left',
+                alwaysVisible: false,
+                tail: {
+                    align: 'left',
+                    hidden: false
+                },
+                themeMargins: {total:'22px', difference:'10px'},
+                themeName: 'black',
+                selectable: true,
+                width: '250px',
+                closingDelay: 500
+            }, true, false);
+        "/>
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip" p:tooltipContent="A completed quarter you registered for."/>
+        </property>
+    </bean>
+
+    <bean id="registered_help_icon" parent="MyPlanHelpImage"
+          p:render="@{!#parentLine.completedTerm and (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning) and #parentLine.displayRegisteredHelp ? true : false}">
+        <property name="onDocumentReadyScript" value="
+            myplanCreateTooltip('registered_help_icon_line@{#index}', '&lt;div class=&#34;ks-Tooltip&#34;&gt;Courses you are enrolled in for the current or a future academic quarter.&lt;/div&gt;',{
+                position: 'top',
+                align: 'left',
+                alwaysVisible: false,
+                tail: {
+                    align: 'left',
+                    hidden: false
+                },
+                themeMargins: {total:'22px', difference:'10px'},
+                themeName: 'black',
+                selectable: true,
+                width: '250px',
+                closingDelay: 500
+            }, true, false);
+        "/>
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you have enrolled in for current or future academic quarter(s)."/>
+        </property>
+    </bean>
+
+    <bean id="cart_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCartHelp ? true : false}">
+        <property name="onDocumentReadyScript" value="
+            myplanCreateTooltip('cart_help_icon_line@{#index}', '&lt;div class=&#34;ks-Tooltip&#34;&gt;Items in the cart are those you have selected to register for but have not been submitted for registration yet.&lt;/div&gt;',{
+                position: 'top',
+                align: 'left',
+                alwaysVisible: false,
+                tail: {
+                    align: 'left',
+                    hidden: false
+                },
+                themeMargins: {total:'22px', difference:'10px'},
+                themeName: 'black',
+                selectable: true,
+                width: '250px',
+                closingDelay: 500
+            }, true, false);
+        "/>
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip" p:tooltipContent="Items in the cart are those you have selected to register for but have not been submitted for registration yet."/>
+        </property>
+    </bean>
+
+    <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
+        <property name="onDocumentReadyScript" value="
+            myplanCreateTooltip('planned_help_icon_line@{#index}', '&lt;div class=&#34;ks-Tooltip&#34;&gt;MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered.&lt;/div&gt;',{
+                position: 'top',
+                align: 'left',
+                alwaysVisible: false,
+                tail: {
+                    align: 'left',
+                    hidden: false
+                },
+                themeMargins: {total:'22px', difference:'10px'},
+                themeName: 'black',
+                selectable: true,
+                width: '250px',
+                closingDelay: 500
+            }, true, false);
+        "/>
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
+        </property>
+    </bean>
+
+    <bean id="backup_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
+        <property name="onDocumentReadyScript" value="
+            myplanCreateTooltip('backup_help_icon_line@{#index}', '&lt;div class=&#34;ks-Tooltip&#34;&gt;Courses you are considering in case a planned course is full or unavailable.&lt;/div&gt;',{
+                position: 'top',
+                align: 'left',
+                alwaysVisible: false,
+                tail: {
+                    align: 'left',
+                    hidden: false
+                },
+                themeMargins: {total:'22px', difference:'10px'},
+                themeName: 'black',
+                selectable: true,
+                width: '250px',
+                closingDelay: 500
+            }, true, false);
+        "/>
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you&#39;re considering in case a planned course is not available or is full."/>
+        </property>
+    </bean>
+
+    <bean id="total_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}" p:cssClasses="ks-plan-Bucket-creditHelpIcon">
+        <property name="dataAttributes">
+            <map>
+                <entry key="help"
+                       value="&lt;div class=&#34;ks-Tooltip&#34;&gt;@{!#line.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}&lt;/div&gt;"/>
+            </map>
+        </property>
+        <property name="onDocumentReadyScript" value="
+                myplanCreateTooltip('total_credits_help_icon_line@{#index}', '',{
+                    position: 'top',
+                    align: 'left',
+                    alwaysVisible: false,
+                    tail: {
+                        align: 'left',
+                        hidden: false
+                    },
+                    themeMargins: {total:'22px', difference:'10px'},
+                    themeName: 'black',
+                    selectable: true,
+                    width: '250px',
+                    closingDelay: 500
+                }, true, false);
+            "/>
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
+          </bean>
+        </property>
+    </bean>
+
+    <bean id="cart_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}" p:cssClasses="ks-plan-Bucket-creditHelpIcon">
+        <property name="dataAttributes">
+            <map>
+                <entry key="help"
+                       value="&lt;div class=&#34;ks-Tooltip&#34;&gt;The total number of credits for all course currently in the shopping cart&lt;/div&gt;"/>
+            </map>
+        </property>
+        <property name="onDocumentReadyScript" value="
+                myplanCreateTooltip('cart_credits_help_icon_line@{#index}', '',{
+                    position: 'top',
+                    align: 'left',
+                    alwaysVisible: false,
+                    tail: {
+                        align: 'left',
+                        hidden: false
+                    },
+                    themeMargins: {total:'22px', difference:'10px'},
+                    themeName: 'black',
+                    selectable: true,
+                    width: '250px',
+                    closingDelay: 500
+                }, true, false);
+            "/>
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip" p:tooltipContent="&lt;div class=\ks-Tooltip\&gt;The total number of credits for all course currently in the shopping cart.&lt;/div&gt;">
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="course_requisite_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="&lt;div class=\ks-Tooltip\&gt;#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_REQUISITE_TOOLTOP_COREQ_TEXT')}
+                                    #{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_REQUISITE_TOOLTOP_PREREQ_TEXT')}&lt;/div&gt;"/>
+        </property>
+    </bean>
+
+    <bean id="course_quarter_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="&lt;div class=\ks-Tooltip\&gt;#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMS_TOOLTIP_TEXT')}&lt;/div&gt;"/>
+        </property>
+    </bean>
+
+    <bean id="course_credits_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="&lt;strong&gt;Variable Credits&lt;/strong&gt; &lt;/br&gt;
+                                                                 &lt;strong&gt;(1-5)-&lt;/strong&gt; You can enroll for any number of credits in the range that's given. These are typically independent study courses that you and the professor decide on the number of credits.&lt;/br&gt;&lt;/br&gt;
+                                                                 &lt;strong&gt;(3/5) -&lt;/strong&gt; A course you can enroll in for either 3 or 5 credits."/>
+        </property>
+    </bean>
+
+    <bean id="course_gened_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="&lt;div class=\ks-Tooltip\&gt;#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_GENED_TOOLTIP_TEXT')}&lt;/div&gt;"/>
+        </property>
+    </bean>
+
+    <bean id="course_sections_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Right"
+                  p:tooltipContent="&lt;div class=\ks-Tooltip\&gt;&lt;strong&gt;ENRL/LIMIT&lt;/strong&gt; = section enrollment and overall enrollment limit&lt;/br&gt;
+                  &lt;strong&gt;ENRL. RESTR.&lt;/strong&gt; = applicable enrollment restrictions for each section&lt;/br&gt;
+                  &lt;strong&gt;OTHER&lt;/strong&gt; = additional information for each section&lt;/br&gt;
+                  &lt;strong&gt;PCE&lt;/strong&gt; = Professional &amp; Continuing Education&lt;/br&gt;&lt;/div&gt;
+                  "/>
+        </property>
+    </bean>
+
+</beans>

@@ -116,9 +116,9 @@
 
 #sb_cart_add_from_sb_page .uif-message.ksap-sb-cart-result-warn {
 	margin : 0.4em;
-	border : 1px solid #cc6;
-	background-color: #ffc;
-	color: #660
+	border : 1px solid #dc6;
+	background-color: #fdc;
+	color: #600
 }
 
 #sb_cart_add_from_sb_page .uif-message.ksap-sb-cart-result-error {

@@ -19,18 +19,18 @@
      limitations under the License.
     -->
     <bean id="Conversation-FormView" parent="Conversation-FormView-parent" />
-	<bean abstract="true" id="Conversation-FormView-parent" parent="KSAPFormView">
+	<bean abstract="true" id="Conversation-FormView-parent" parent="MyPlanFormView">
 		<property name="id" value="Conversation-FormView" />
 		<property name="entryPageId" value="conversation_view" />
 		<property name="cssClasses">
 			<list merge="true">
-				<value>ksap-view</value>
+				<value>myplan-view</value>
 			</list>
 		</property>
 		<property name="additionalScriptFiles">
             <list>
                 <value>arm-ks/scripts/arm-review-ks.js</value>
-                <value>ks-ap/scripts/dotdotdot/jquery.dotdotdot.min.js</value>
+                <value>arm-ks/scripts/review/dotdotdot/jquery.dotdotdot.min.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -108,7 +108,7 @@
 	<bean id="conversation_comments" parent="conversation_comments-parent"/>
 	<bean id="conversation_comments-parent" abstract="true" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.plannerreview.dto.ConversationDateCommentInfo"/>
+                  value="org.kuali.student.ap.plan.review.dto.ConversationDateCommentInfo"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
@@ -130,7 +130,7 @@
     <bean id="conversation_comment" parent="conversation_comment-parent"/>
     <bean id="conversation_comment-parent" abstract="true" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.plannerreview.dto.ConversationCommentInfo"/>
+                  value="org.kuali.student.ap.plan.review.dto.ConversationCommentInfo"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>

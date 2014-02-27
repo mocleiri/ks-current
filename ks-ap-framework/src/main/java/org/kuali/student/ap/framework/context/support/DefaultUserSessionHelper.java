@@ -10,6 +10,7 @@ import org.kuali.rice.kim.api.identity.type.EntityTypeContactInfo;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.PlanConstants;
 import org.kuali.student.ap.framework.context.UserSessionHelper;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -18,8 +19,6 @@ public class DefaultUserSessionHelper implements UserSessionHelper {
 
 	private static final Logger logger = Logger
 			.getLogger(UserSessionHelper.class);
-
-    private static final String STUDENT_KEY = "STDNT";
 
 	@Override
 	public boolean isAdviser() {
@@ -58,24 +57,15 @@ public class DefaultUserSessionHelper implements UserSessionHelper {
 
 	@Override
 	public String getStudentName() {
-		UserSession session = GlobalVariables.getUserSession();
-
-		return session.getPerson().getFirstName().substring(0, 1).toUpperCase()
-				+ session
-						.getPerson()
-						.getFirstName()
-						.substring(1,
-								session.getPerson().getFirstName().length())
-				+ " "
-				+ session.getPerson().getLastName().substring(0, 1)
-						.toUpperCase();
+		UserSessionHelper instance = KsapFrameworkServiceLocator.getUserSessionHelper();
+		return instance.getName(instance.getStudentId());
 	}
 
 	@Override
-	public synchronized String getName(String principleId) {
+	public String getName(String principalId) {
 		Person person = null;
 		try {
-			person = KimApiServiceLocator.getPersonService().getPerson(principleId);
+			person = KimApiServiceLocator.getPersonService().getPerson(principalId);
 		} catch (Exception e) {
 			logger.error("Could not load the Person Information", e);
 		}
@@ -183,9 +173,11 @@ public class DefaultUserSessionHelper implements UserSessionHelper {
 			logger.error("Could not load the Person Information", e);
 		}
 		if (person != null) {
-		    isStudent=person.hasAffiliationOfType(STUDENT_KEY);
+			if (person.getExternalIdentifiers().containsKey("systemKey")) {
+				isStudent = true;
 			}
-        return isStudent;
+		}
+		return isStudent;
 	}
 
 }

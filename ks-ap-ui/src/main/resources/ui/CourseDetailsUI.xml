@@ -23,18 +23,18 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
      limitations under the License.
     -->
     <bean id="CourseDetails-InquiryView" parent="CourseDetails-InquiryView-parent" />
-    <bean id="CourseDetails-InquiryView-parent" abstract="true" parent="KSAPInquiryView">
+    <bean id="CourseDetails-InquiryView-parent" abstract="true" parent="MyPlanInquiryView">
         <property name="headerText" value="Course Details"/>
-        <property name="dataObjectClassName" value="org.kuali.student.ap.coursesearch.dataobject.CourseDetails"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClass"
-                  value="org.kuali.student.ap.coursesearch.service.impl.CourseDetailsInquiryHelperImpl"/>
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="true"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-view</value>
+                <value>myplan-view</value>
             </list>
         </property>
         <property name="header">
@@ -46,7 +46,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
 	<bean id="course_details_page" parent="course_details_page-parent" />
-	<bean id="course_details_page-parent" abstract="true" parent="Uif-Page" p:id="course_details_page"
+	<bean id="course_details_page-parent" parent="Uif-Page" p:id="course_details_page"
 		p:headerText="@{dataObject.courseSummaryDetails.code} @{dataObject.courseSummaryDetails.courseTitle} (@{dataObject.courseSummaryDetails.credit})">
 		<property name="layoutManager">
 			<bean parent="Uif-HorizontalBoxLayout" />
@@ -54,14 +54,12 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<property name="items">
 			<list>
 				<ref bean="course_details_section" />
-				<ref bean="ksap_section" />
+				<ref bean="myplan_section" />
 			</list>
 		</property>
-        <property name="stickyFooter" value="false"/>
 	</bean>
 
-    <bean id="course_details_back_link" parent="course_details_back_link-parent"/>
-    <bean id="course_details_back_link-parent" parent="Uif-ViewHeader">
+    <bean id="course_details_back_link" parent="Uif-ViewHeader">
         <property name="upperGroup">
             <bean parent="Uif-VerticalBoxSubSection">
                 <property name="items">
@@ -74,14 +72,14 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
 	<bean id="course_details_page_messaging" parent="course_details_page_messaging-parent" />
-	<bean id="course_details_page_messaging-parent" abstract="true" parent="Uif-VerticalBoxGroup"
+	<bean id="course_details_page_messaging-parent" parent="Uif-VerticalBoxGroup"
 		p:render="@{dataObject.plannedCourseSummary.planned}">
 		<property name="validationMessages">
 			<null />
 		</property>
 		<property name="cssClasses">
 			<list merge="true">
-				<value>ksap-status</value>
+				<value>myplan-status</value>
 				<value>info</value>
 			</list>
 		</property>
@@ -94,15 +92,18 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 					</property>
 					<property name="items">
 						<list>
-							<bean parent="KSAPMessagingIcon" />
-                            <bean parent="Uif-MessageField" p:messageText="@{dataObject.detailsFormatted}" >
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-data-list</value>
-                                        <value>message</value>
-                                    </list>
-                                </property>
-                            </bean>
+							<bean parent="MyPlanMessagingIcon" />
+							<bean parent="Uif-DataField" p:propertyName="details"
+								p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+								<property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal" />
+								<property name="propertyEditor" ref="crud_message_matrix_formatter" />
+								<property name="cssClasses">
+									<list merge="true">
+										<value>myplan-data-list</value>
+										<value>message</value>
+									</list>
+								</property>
+							</bean>
 						</list>
 					</property>
 				</bean>
@@ -111,7 +112,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 	</bean>
 
     <bean id="course_details_section" parent="course_details_section-parent" />
-    <bean id="course_details_section-parent" abstract="true" parent="Uif-VerticalBoxSubSection">
+    <bean id="course_details_section-parent" parent="Uif-VerticalBoxSubSection">
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">
@@ -133,12 +134,12 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
 	<bean id="ksapAddPlannedCourse" parent="ksapAddPlannedCourse-parent" />
-	<bean id="ksapAddPlannedCourse-parent" abstract="true" parent="Uif-PrimaryActionButton"
+	<bean id="ksapAddPlannedCourse-parent" parent="Uif-PrimaryActionButton"
 		p:actionLabel="Add to Plan" p:actionImagePlacement="RIGHT"
 		p:render="@{!dataObject.plannedCourseSummary.planned}">
 		<property name="actionImage">
 			<bean parent="Uif-Image"
-				p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif">
+				p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
 				<property name="cssClasses">
 					<list merge="true">
 						<value>rightArrowLarge</value>
@@ -146,45 +147,38 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 				</property>
 			</bean>
 		</property>
-		<property name="actionScript" value="
-                        var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddDialog', courseId:'@{dataObject.courseSummaryDetails.courseId}',pageId:'add_dialog_page'};
-                        var popupStyle = {width:'300px', height:'16px'};
-                        var popupOptions = {tail:{hidden:true}, align:'top', close:true};
-                        var pageId = 'add_dialog_page.@{dataObject.courseSummaryDetails.courseIdXmlSafe}';
-                        openPopup(pageId, retrieveData, 'plan', popupStyle, popupOptions, e);
-                    "/>
-    </bean>
+		<property name="actionScript"
+			value="openPlanItemPopUp('@{dataObject.courseSummaryDetails.courseIdXmlSafe}','add_dialog_page',{courseId:'@{dataObject.courseSummaryDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});" />
+	</bean>
 
 	<bean id="ksapAddSavedCourse" parent="ksapAddSavedCourse-parent" />
-	<bean id="ksapAddSavedCourse-parent" abstract="true" parent="Uif-SecondaryActionButton"
+	<bean id="ksapAddSavedCourse-parent" parent="Uif-SecondaryActionButton"
 		p:actionLabel="Bookmark Course" p:render="@{!dataObject.plannedCourseSummary.bookmarked}">
 		<property name="onDocumentReadyScript"
 			value="
                 jQuery('#@{dataObject.courseSummaryDetails.courseIdXmlSafe}_addSavedCourse')
-                    .on('PLAN_ITEM_ADDED', function(event, data){
+                    .subscribe('PLAN_ITEM_ADDED', function(data){
                         if (data.planItemType === 'wishlist') {
                             fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
                         }
                     })
-                    .on('PLAN_ITEM_DELETED', function(event, data){
+                    .subscribe('PLAN_ITEM_DELETED', function(data){
                         if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
                             fnRestoreDetailsAddButton(data.courseDetails.courseId);
                         }
                     });" />
-        <property name="actionScript" value="
-                        var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}'};
-                        submitHiddenForm('plan', additionalFormData, e);
-                    "/>
+		<property name="actionScript"
+			value="myPlanAjaxPlanItemMove('@{dataObject.courseSummaryDetails.courseId}', '@{dataObject.courseSummaryDetails.courseIdXmlSafe}', 'courseId', 'addSavedCourse', e);" />
 	</bean>
 
 	<bean id="ksapBookmarked" parent="ksapBookmarked-parent" />
-	<bean id="ksapBookmarked-parent" abstract="true" parent="Uif-LinkGroup"
+	<bean id="ksapBookmarked-parent" parent="Uif-LinkGroup"
 		p:id="@{dataObject.courseSummaryDetails.courseIdXmlSafe}_bookmarked"
 		p:render="@{dataObject.plannedCourseSummary.bookmarked}"
 		p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
 		<property name="cssClasses">
 			<list merge="true">
-				<value>ksap-status</value>
+				<value>myplan-status</value>
 				<value>info</value>
 			</list>
 		</property>
@@ -201,19 +195,19 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 	</bean>
 
     <bean id="course_details_actions" parent="course_details_actions-parent" />
-    <bean id="course_details_actions-parent" abstract="true" parent="Uif-HorizontalBoxGroup">
+    <bean id="course_details_actions-parent" parent="Uif-HorizontalBoxGroup">
         <property name="validationMessages">
             <null/>
         </property>
         <property name="onDocumentReadyScript"
                   value="
                       jQuery('#course_details_actions')
-                          .on('PLAN_ITEM_ADDED', function(event, data){
+                          .subscribe('PLAN_ITEM_ADDED', function(data){
                               if (data.planItemType === 'wishlist') {
                                   fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseIdXmlSafe+'_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
                               }
                           })
-                          .on('PLAN_ITEM_DELETED', function(event, data){
+                          .subscribe('PLAN_ITEM_DELETED', function(data){
                               if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseIdXmlSafe === '@{dataObject.courseSummaryDetails.courseId}') {
                                   fnRestoreDetailsAddButton(data.courseDetails.courseId);
                               }
@@ -242,13 +236,12 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="course_details_overview" parent="course_details_overview-parent"/>
-    <bean id="course_details_overview-parent" abstract="true" parent="Uif-GridGroup" p:headerText="Course Overview">
+    <bean id="course_details_overview" parent="Uif-GridGroup" p:headerText="Course Overview">
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
                     <list merge="true">
-                        <value>ksap-underline-header</value>
+                        <value>myplan-underline-header</value>
                     </list>
                 </property>
             </bean>
@@ -260,15 +253,23 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                 </property>
                 <property name="items">
                     <list>
-                        <bean parent="Uif-MessageField" p:messageText="
-                            @{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0
-                                ? dataObject.courseSummaryDetails.abbrGenEdRequirements
-                                : ''}">
+                        <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.abbrGenEdRequirements"
+                              p:escapeHtmlInPropertyValue="false"
+                              p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0}">
+                            <property name="fieldLabel.render" value="false"/>
                             <property name="cssClasses">
                                 <list merge="true">
-                                    <value>ksap-data-list</value>
-                                    <value>ksap-text-normal</value>
+                                    <value>myplan-data-list</value>
+                                    <value>fl-text-gray</value>
+                                    <value>myplan-text-normal</value>
                                 </list>
+                            </property>
+                        </bean>
+                        <bean parent="Uif-MessageField"
+                              p:fieldLabel.render="false"
+                              p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() eq 0}">
+                            <property name="message">
+                                <bean parent="Uif-Message" p:messageText=""/>
                             </property>
                         </bean>
                     </list>
@@ -279,7 +280,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                   value="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0 ? true : false}"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-course-details</value>
+                <value>myplan-course-details</value>
             </list>
         </property>
         <property name="layoutManager.numberOfColumns" value="2"/>
@@ -292,7 +293,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                     </property>
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>ksap-course-details</value>
+                            <value>myplan-course-details</value>
                         </list>
                     </property>
                     <property name="items">
@@ -311,7 +312,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>myplan-course-detail-label</value>
                                                 </list>
                                             </property>
                                             <property name="items">
@@ -327,16 +328,23 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-field</value>
+                                                    <value>myplan-course-detail-field</value>
                                                 </list>
                                             </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-MessageField" p:messageText=
-                                                            "@{dataObject.courseSummaryDetails.courseDescription ne null
-                                                               and dataObject.courseSummaryDetails.courseDescription.length() gt 0
-                                                                    ? dataObject.courseSummaryDetails.courseDescription
-                                                                    : 'This course has no description.'}" >
+                                                    <bean parent="Uif-DataField"
+                                                          p:propertyName="courseSummaryDetails.courseDescription"
+                                                          p:escapeHtmlInPropertyValue="false">
+                                                        <property name="fieldLabel.render" value="false"/>
+                                                        <property name="render"
+                                                                  value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? true : false}"/>
+                                                    </bean>
+                                                    <!-- If Course Description is empty-->
+                                                    <bean parent="Uif-Message"
+                                                          p:messageText="This course has no description.">
+                                                        <property name="render"
+                                                                  value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? false : true}"/>
                                                     </bean>
                                                 </list>
                                             </property>
@@ -360,7 +368,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>myplan-course-detail-label</value>
                                                 </list>
                                             </property>
                                             <property name="items">
@@ -377,22 +385,38 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-field</value>
+                                                    <value>myplan-course-detail-field</value>
                                                 </list>
                                             </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-MessageField" p:messageText=
-                                                            "@{dataObject.courseSummaryDetails.requisites.size() gt 0
-                                                                ? dataObject.courseSummaryDetails.requisites
-                                                                : 'None'}" >
+                                                    <bean parent="Uif-DataField"
+                                                          p:propertyName="courseSummaryDetails.requisites"
+                                                          p:escapeHtmlInPropertyValue="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.requisites.size() gt 0}">
+                                                        <property name="fieldLabel.render" value="false"/>
                                                         <property name="cssClasses">
                                                             <list merge="true">
-                                                                <value>ksap-data-list</value>
+                                                                <value>myplan-data-list</value>
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-Message" p:messageText="(Source: #{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_REQUISITE_SOURCE_NAME')})"/>
+                                                    <bean parent="Uif-MessageField"
+                                                          p:fieldLabel.render="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.requisites.size() eq 0}">
+                                                        <property name="message">
+                                                            <bean parent="Uif-Message" p:messageText="None"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-Message" p:messageText="(Source: #{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_REQUISITE_SOURCE_NAME')})"
+                                                          >
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>fl-font-size-80</value>
+                                                                <value>fl-text-gray</value>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
                                                 </list>
                                             </property>
                                         </bean>
@@ -413,7 +437,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>myplan-course-detail-label</value>
                                                 </list>
                                             </property>
                                             <property name="items">
@@ -430,7 +454,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-field</value>
+                                                    <value>myplan-course-detail-field</value>
                                                 </list>
                                             </property>
                                             <property name="items">
@@ -441,21 +465,32 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                                         </property>
                                                         <property name="items">
                                                             <list>
-                                                                <bean parent="Uif-Label" p:labelText="Scheduled For"  p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}">
-                                                                    <property name="cssClasses" value="fl-text-gray ksap-text-normal"/>
-                                                                </bean>
-                                                                    <bean parent="Uif-MessageField" p:messageText="
-                                                                    @{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0
-                                                                        ? dataObject.courseSummaryDetailsEdited
-                                                                        : 'Not Currently Scheduled'}" >
+                                                                <bean parent="Uif-DataField" p:label="Scheduled For"
+                                                                      p:propertyName="courseSummaryDetails"
+                                                                      p:escapeHtmlInPropertyValue="false"
+                                                                      p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}">
+                                                                    <property name="fieldLabel.cssClasses"
+                                                                              value="fl-text-gray myplan-text-normal"/>
+                                                                    <property name="propertyEditor"
+                                                                              ref="scheduled_terms_list_formatter"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
-                                                                            <value>ksap-data-list</value>
+                                                                            <value>myplan-data-list</value>
                                                                         </list>
                                                                     </property>
                                                                 </bean>
-                                                                <bean parent="Uif-Message"
+                                                                <bean parent="Uif-Message" 
+                                                                      p:messageText="Not Currently Scheduled"
+                                                                      p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() eq 0}">
+                                                                </bean>
+                                                                <bean parent="Uif-Message" 
                                                                       p:messageText="(Source: #{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMS_SCHEDULED_SOURCE_NAME')})">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>fl-font-size-80</value>
+                                                                            <value>fl-text-gray</value>
+                                                                        </list>
+                                                                    </property>
                                                                 </bean>
                                                             </list>
                                                         </property>
@@ -472,7 +507,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                                                       p:label="Last Offered"
                                                                       p:render="@{dataObject.courseSummaryDetails.lastOffered ne null ? true : false}">
                                                                     <property name="fieldLabel.cssClasses"
-                                                                              value="ksap-text-normal"/>
+                                                                              value="fl-text-gray myplan-text-normal"/>
                                                                 </bean>
                                                             </list>
                                                         </property>
@@ -483,21 +518,38 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                                         </property>
                                                         <property name="items">
                                                             <list>
-                                                                <bean parent="Uif-Label"
-                                                                      p:labelText="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMSOFFERED_LABEL')}"
-                                                                      p:cssClasses="fl-text-gray ksap-text-normal"/>
-                                                                <bean parent="Uif-MessageField" p:messageText="
-                                                                        @{dataObject.courseSummaryDetails.termsOffered.size() gt 0
-                                                                            ? dataObject.courseSummaryDetails.termsOffered
-                                                                            : 'Check with the department or your adviser for more information about this course.'}" >
+                                                                <bean parent="Uif-DataField"
+                                                                      p:label="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMSOFFERED_LABEL')}"
+                                                                      p:propertyName="courseSummaryDetails.termsOffered"
+                                                                      p:escapeHtmlInPropertyValue="false"
+                                                                      p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0}">
+                                                                    <property name="fieldLabel.cssClasses"
+                                                                              value="fl-text-gray myplan-text-normal"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
-                                                                            <value>ksap-data-list</value>
+                                                                            <value>myplan-data-list</value>
                                                                         </list>
                                                                     </property>
                                                                 </bean>
+                                                                <bean parent="Uif-MessageField"
+                                                                      p:label="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMSOFFERED_LABEL')}"
+                                                                      p:render="@{dataObject.courseSummaryDetails.termsOffered.size() eq 0}">
+                                                                    <property name="fieldLabel.cssClasses"
+                                                                              value="fl-text-gray myplan-text-normal"/>
+                                                                    <property name="message">
+                                                                        <bean parent="Uif-Message"
+                                                                              p:messageText="Check with the department or your adviser for more information about this course."/>
+                                                                    </property>
+                                                                </bean>
                                                                 <bean parent="Uif-Message"
-                                                                      p:messageText="(Source: #{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMS_TYPICALLYOFFERED_SOURCE_NAME')})"/>
+                                                                      p:messageText="(Source: #{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_TERMS_TYPICALLYOFFERED_SOURCE_NAME')})">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>fl-font-size-80</value>
+                                                                            <value>fl-text-gray</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
                                                             </list>
                                                         </property>
                                                     </bean>
@@ -522,7 +574,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>myplan-course-detail-label</value>
                                                 </list>
                                             </property>
                                             <property name="items">
@@ -539,20 +591,27 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                                             </property>
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-field</value>
+                                                    <value>myplan-course-detail-field</value>
                                                 </list>
                                             </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-MessageField"
-                                                          p:messageText="
-                                                              @{dataObject.courseSummaryDetails.genEdRequirements.size() gt 0
-                                                                    ? dataObject.courseSummaryDetails.genEdRequirements
-                                                                    : 'None'}" >
+                                                    <bean parent="Uif-DataField"
+                                                          p:propertyName="courseSummaryDetails.genEdRequirements"
+                                                          p:escapeHtmlInPropertyValue="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() gt 0}">
+                                                        <property name="fieldLabel.renderColon" value="false"/>
                                                         <property name="cssClasses">
                                                             <list merge="true">
-                                                                <value>ksap-data-list</value>
+                                                                <value>myplan-data-list</value>
                                                             </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-MessageField"
+                                                          p:fieldLabel.render="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() eq 0}">
+                                                        <property name="message">
+                                                            <bean parent="Uif-Message" p:messageText="None"/>
                                                         </property>
                                                     </bean>
                                                 </list>
@@ -576,7 +635,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 						                    </property>
 						                    <property name="cssClasses">
 						                        <list merge="true">
-						                            <value>ksap-course-detail-label</value>
+						                            <value>myplan-course-detail-label</value>
 						                        </list>
 						                    </property>
 						                    <property name="items">
@@ -598,13 +657,13 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
     <bean id="ksapCurriculumSection" parent="ksapCurriculumSection-parent" />
-    <bean id="ksapCurriculumSection-parent" abstract="true" parent="Uif-HorizontalBoxGroup">
+    <bean id="ksapCurriculumSection-parent" parent="Uif-HorizontalBoxGroup">
         <property name="validationMessages">
             <null/>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-course-detail-field</value>
+                <value>myplan-course-detail-field</value>
             </list>
         </property>
         <property name="items">
@@ -614,28 +673,37 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                     <property name="fieldLabel.renderColon" value="false"/>
                     <property name="fieldLabel.render" value="false"/>
                 </bean>
-
-
-                <bean parent="Uif-Message" p:messageText="
-                    @{dataObject.courseSummaryDetails.campusLocations.size() gt 0
-                        ? ', '+dataObject.courseSummaryDetails.campusLocations+' Campus'
-                        : 'None'}">
+                <bean parent="Uif-Message" p:messageText=", "
+                      p:render="@{dataObject.courseSummaryDetails.campusLocations.size() gt 0 ? true : false}"/>
+                <bean parent="Uif-DataField" 
+                      p:propertyName="courseSummaryDetails.campusLocations"
+                      p:escapeHtmlInPropertyValue="false"
+                      p:render="@{dataObject.courseSummaryDetails.campusLocations.size() gt 0 ? true : false}">
+                    <property name="fieldLabel.renderColon" value="false"/>
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>ksap-data-list</value>
+                            <value>myplan-data-list</value>
                         </list>
                     </property>
                 </bean>
+                <bean parent="Uif-MessageField"
+                      p:fieldLabel.render="false"
+                      p:render="@{dataObject.courseSummaryDetails.campusLocations.size() eq 0}">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="None"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-Message" p:messageText="Campus"
+                      p:render="@{dataObject.courseSummaryDetails.campusLocations.size() gt 0 ? true : false}"/>
             </list>
         </property>
     </bean>
 
     <bean id="meeting_building_link_formatter"
-          class="org.kuali.student.ap.coursesearch.util.MeetingDetailsPropertyEditor">
+          class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
     </bean>
 
-    <bean id="course_details_sections" parent="course_details_sections-parent"/>
-    <bean id="course_details_sections-parent" abstract="true" parent="Uif-VerticalBoxGroup">
+    <bean id="course_details_sections" parent="Uif-VerticalBoxGroup">
         <property name="validationMessages">
             <null/>
         </property>
@@ -644,14 +712,14 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
             <bean parent="Uif-HeaderThree" >
                 <property name="cssClasses">
                     <list merge="true">
-                        <value>ksap-underline-header</value>
+                        <value>myplan-underline-header</value>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-course-details-sections</value>
+                <value>myplan-course-details-sections</value>
             </list>
         </property>
         <property name="headerText" value="@{dataObject.courseSummaryDetails.code} Course Sections"/>
@@ -662,29 +730,27 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="course_details_sections_list_container" parent="course_details_sections_list_container-parent"/>
-	<bean id="course_details_sections_list_container-parent" abstract="true" parent="Uif-VerticalBoxGroup">
+	<bean id="course_details_sections_list_container" parent="Uif-VerticalBoxGroup">
 		<property name="validationMessages">
 			<null />
 		</property>
 		<property name="onDocumentReadyScript"
 			value="
-                   ksapRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}', loadActivityOffering:'true'}, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-ap/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+                   myplanRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}', loadActivityOffering:'true'}, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
                " />
 	</bean>
 
-    <bean id="course_details_institution_data_single" parent="course_details_institution_data_single-parent"/>
-    <bean id="course_details_institution_data_single-parent" abstract="true" parent="KSAP-StackedCollectionGroup">
+    <bean id="course_details_institution_data_single" parent="KSAP-StackedCollectionGroup">
         <property name="validationMessages">
             <null/>
         </property>
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.coursesearch.dataobject.CourseOfferingInstitution"/>
+                  value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
         <property name="propertyName" value="courseOfferingInstitutionList"/>
         <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() eq 1}"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-course-detail</value>
+                <value>myplan-course-detail</value>
             </list>
         </property>
         <property name="layoutManager">
@@ -726,13 +792,12 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="course_details_institution_data_multi" parent="course_details_institution_data_multi-parent"/>
-    <bean id="course_details_institution_data_multi-parent" abstract="true" parent="Uif-TabbedCollectionGroup">
+    <bean id="course_details_institution_data_multi" parent="Uif-TabbedCollectionGroup">
         <property name="validationMessages">
             <null/>
         </property>
         <property name="collectionObjectClass"
-                  value="org.kuali.student.ap.coursesearch.dataobject.CourseOfferingInstitution"/>
+                  value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
         <property name="propertyName" value="courseOfferingInstitutionList"/>
         <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 1}"/>
         <property name="layoutManager.summaryFields" value="name"/>
@@ -744,7 +809,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-course-detail</value>
+                <value>myplan-course-detail</value>
             </list>
         </property>
         <property name="header">
@@ -765,16 +830,15 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="course_details_term_data" parent="course_details_term_data-parent"/>
-    <bean id="course_details_term_data-parent" abstract="true" parent="KSAP-StackedCollectionGroup">
+    <bean id="course_details_term_data" parent="KSAP-StackedCollectionGroup">
         <property name="validationMessages">
             <null/>
         </property>
-        <property name="collectionObjectClass" value="org.kuali.student.ap.coursesearch.dataobject.CourseOfferingTerm"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
         <property name="propertyName" value="courseOfferingTermList"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-course-sections</value>
+                <value>myplan-course-sections</value>
             </list>
         </property>
         <property name="layoutManager">
@@ -809,11 +873,11 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
     <bean id="course_details_activity_data" parent="course_details_activity_data-parent" />
-    <bean id="course_details_activity_data-parent" abstract="true" parent="Uif-TableCollectionSection" >
+    <bean id="course_details_activity_data-parent" parent="Uif-TableCollectionSection" >
         <property name="validationMessages">
             <null/>
         </property>
-        <property name="collectionObjectClass" value="org.kuali.student.ap.coursesearch.dataobject.ActivityOfferingItem"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="activityOfferingItemList"/>
         <property name="headerText" value="@{#line.term}"/>
         <property name="onDocumentReadyScript" value="
@@ -980,7 +1044,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
     <bean id="activityActionGroup" parent="activityActionGroup-parent" />
-    <bean id="activityActionGroup-parent" abstract="true" parent="Uif-VerticalFieldGroup" p:valign="TOP"
+    <bean id="activityActionGroup-parent" parent="Uif-VerticalFieldGroup" p:valign="TOP"
           p:render="@{#line.primary AND #line.stateKey EQ 'kuali.lui.activity.offering.state.offered'}" p:rowSpan="3" p:colSpan="1">
         <property name="label" value="Add"/>
         <property name="group.validationMessages">
@@ -1001,15 +1065,30 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityCode" parent="activityCode-parent"/>
-    <bean id="activityCode-parent" abstract="true" parent="Uif-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
+    <bean id="activityCode" parent="Uif-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="group.validationMessages">
             <null/>
         </property>
         <property name="label" value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_SECTION_NUMBER_HEADING')}"/>
+        <!-- 
+        <property name="onDocumentReadyScript" value="
+            var row = jQuery('#@{#line.luiIdXmlSafe}').parents('tr');
+            row.addClass('row');
+            if (@{#line.primary}) {
+                row.addClass('primary');
+            } else {
+                row.addClass('secondary');
+                if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');
+            }
+            if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+            if (@{#line.stateKey NE 'kuali.lui.activity.offering.state.offered'}) row.addClass('fl-text-lightgray');
+        "/>
+         -->
         <property name="cssClasses">
             <list merge="true">
                 <value>activityCode</value>
+                <value>fl-text-align-center</value>
+                <value>@{#line.stateKey EQ 'kuali.lui.activity.offering.state.offered'?'':'fl-text-gray'}</value>
             </list>
         </property>
         <property name="items">
@@ -1018,7 +1097,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                       parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>@{!#line.primary ? 'ksap-associated-section' : 'ksap-primary-section'}</value>
+                            <value>@{!#line.primary ? 'myplan-associated-section' : 'myplan-primary-section'}</value>
                         </list>
                     </property>
                 </bean>
@@ -1031,13 +1110,17 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                     </property>
                     <property name="actionScript"
                               value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-font-size-80</value>
+                        </list>
+                    </property>
                 </bean>
             </list>
         </property>
     </bean>
 
-    <bean id="activityType" parent="activityType-parent"/>
-    <bean id="activityType-parent" abstract="true" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityType" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="group.validationMessages">
             <null/>
         </property>
@@ -1058,9 +1141,11 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-
-    <bean id="activityMeetingData" parent="activityMeetingData-parent"/>
-    <bean id="activityMeetingData-parent" abstract="true" parent="Uif-MessageField" p:messageText="@{#line.activityItemEdited}">
+    <bean id="activityMeetingData" parent="Uif-DataField" p:rowSpan="1" p:colSpan="1">
+        <property name="label" value="Meeting Time &amp; Location"/>
+        <property name="propertyName" value="activityItem"/>
+        <property name="escapeHtmlInPropertyValue" value="false"/>
+        <property name="propertyEditor" ref="meeting_building_link_formatter"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityMeetingData</value>
@@ -1068,8 +1153,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityRegCode" parent="activityRegCode-parent"/>
-    <bean id="activityRegCode-parent" abstract="true" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityRegCode" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="group.validationMessages">
             <null/>
         </property>
@@ -1090,8 +1174,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityEnrlRestr" parent="activityEnrlRestr-parent"/>
-    <bean id="activityEnrlRestr-parent" abstract="true" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityEnrlRestr" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="group.validationMessages">
             <null/>
         </property>
@@ -1118,8 +1201,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityEnrlStatus" parent="activityEnrlStatus-parent"/>
-    <bean id="activityEnrlStatus-parent" abstract="true" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="1"
+    <bean id="activityEnrlStatus" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="1"
           p:id="enrl_@{#line.luiIdXmlSafe}"
           p:title="Section @{#line.code} is @{#line.stateKey}">
         <property name="group.validationMessages">
@@ -1129,13 +1211,15 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="cssClasses">
             <list merge="true">
                 <value>activityEnrlStatus</value>
+                <value>fl-text-bold</value>
+                <value>fl-text-align-center</value>
             </list>
         </property>
         <property name="style" value="text-transform:capitalize;"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ImageField"
-                      p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif"
+                <bean parent="Uif-ImageField" 
+                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:altText="Section @{#line.code} is @{#line.stateKey}"
                       p:render="@{#line.stateKey NE 'kuali.lui.activity.offering.state.offered'}">
                     <property name="cssClasses">
@@ -1150,8 +1234,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityEnrlData" parent="activityEnrlData-parent"/>
-    <bean id="activityEnrlData-parent" abstract="true" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
+    <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
           p:id="enrl_@{#line.luiIdXmlSafe}">
         <property name="group.validationMessages">
             <null/>
@@ -1165,11 +1248,11 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="items">
             <list>
                 <bean parent="Uif-Image"
-                      p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif"
+                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       >
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>ksap-enrl-data</value>
+                            <value>myplan-enrl-data</value>
                         </list>
                     </property>
                 </bean>
@@ -1177,8 +1260,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityInstructor" parent="activityInstructor-parent"/>
-    <bean id="activityInstructor-parent" abstract="true" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
+    <bean id="activityInstructor" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
         <property name="id" value="instructor_@{#line.luiIdXmlSafe}"/>
         <property name="group.validationMessages">
             <null/>
@@ -1191,7 +1273,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                 </bean>
             </list>
         </property>
-        <!--
+        <!-- 
         <property name="onDocumentReadyScript" value="
             var collapsibleRow = jQuery('#instructor_@{#line.luiIdXmlSafe}').parents('tr');
             var secondary = @{!#line.primary};
@@ -1199,18 +1281,16 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                 collapsibleRow.addClass('collapsible').hide();
                 collapsibleRow.find('.activityOther').parents('td').attr('colspan', '3');
             }
-            if (@{#line.planItemId NE null}) collapsibleRow.addClass('ksap-section-planned');
+            if (@{#line.planItemId NE null}) collapsibleRow.addClass('myplan-section-planned');
         "/>
          -->
     </bean>
 
-    <bean id="ksapOtherInformation" parent="ksapOtherInformation-parent"/>
-	<bean id="ksapOtherInformation-parent" abstract="true" parent="KSAP-NoSpanMessage"
+	<bean id="ksapOtherInformation" parent="KSAP-NoSpanMessage"
 	      p:messageText="@{#line.otherInformation}"
 	      p:render="@{#line.otherInformation ne null}" />
 
-    <bean id="activityOther" parent="activityOther-parent"/>
-    <bean id="activityOther-parent" abstract="true" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="3">
+    <bean id="activityOther" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="3">
         <property name="group.validationMessages">
             <null/>
         </property>
@@ -1266,8 +1346,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityAdditionalDetails" parent="activityAdditionalDetails-parent"/>
-    <bean id="activityAdditionalDetails-parent" abstract="true" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
+    <bean id="activityAdditionalDetails" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
         <property name="id" value="details_@{#line.luiIdXmlSafe}"/>
         <property name="group.validationMessages">
             <null/>
@@ -1280,7 +1359,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                 collapsibleRow.addClass('collapsible').hide();
                 collapsibleRow.find('.activityAdditionalDetails').parents('td').attr('colspan', '5');
             }
-            if (@{#line.planItemId NE null}) collapsibleRow.addClass('ksap-section-planned');
+            if (@{#line.planItemId NE null}) collapsibleRow.addClass('myplan-section-planned');
         "/>
          -->
         <property name="cssClasses">
@@ -1296,8 +1375,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="additionalDetailsMessageGroup" parent="additionalDetailsMessageGroup-parent"/>
-    <bean id="additionalDetailsMessageGroup-parent" abstract="true" parent="Uif-HorizontalFieldGroup" >
+    <bean id="additionalDetailsMessageGroup" parent="Uif-HorizontalFieldGroup" >
         <property name="group.validationMessages">
             <null/>
         </property>
@@ -1316,12 +1394,12 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="activityActionLink" parent="activityActionLink-parent"/>
-    <bean id="activityActionLink-parent" abstract="true" parent="Uif-LinkField">
+    <bean id="activityActionLink" parent="Uif-LinkField">
         <property name="fieldLabel.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
+                <value>fl-text-align-center</value>
             </list>
         </property>
         <property name="style" value="line-height:32px;"/>
@@ -1332,39 +1410,33 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
                           value="@{#line.code} is added. To delete or move, go to @{#line.longTermName} Plan."/>
                 <property name="href"
                           value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.atpId}"/>
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>fl-font-size-80</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>
 
-    <bean id="activityActionButton" parent="activityActionButton-parent"/>
-    <bean id="activityActionButton-parent" abstract="true" parent="section_button">
+    <bean id="activityActionButton" parent="section_button">
         <property name="fieldLabel.render" value="false"/>
         <property name="altText" value="Add"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
-                <value>ksap-add</value>
+                <value>myplan-add</value>
+                <value>fl-text-align-center</value>
             </list>
         </property>
         <property name="style" value="margin:8px 0 0 0;"/>
-        <property name="onClickScript" value="
-            var additionalFormData = {
-                viewId: 'PlannedCourse-FormView',
-                methodToCall: 'addUpdatePlanItem',
-                courseId: '@{dataObject.courseSummaryDetails.courseId}',
-                sectionCode: '@{#line.code}',
-                atpId: '@{#line.atpId}',
-                instituteCode: '@{#line.instituteCode}',
-                registrationCode: '@{#line.registrationCode}'
-            };
-            submitHiddenForm('plan', additionalFormData, e);
-        "/>
+        <property name="onClickScript"
+                  value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView'}, e);"/>
     </bean>
 
-    <bean id="section_button" abstract="true" parent="section_button-parent"/>
-    <bean id="section_button-parent" abstract="true" parent="Uif-ImageField">
+    <bean id="section_button" parent="Uif-ImageField">
         <property name="id" value="button_@{#line.atpIdXmlSafe}_@{#line.registrationCode}"/>
-        <property name="source" value="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif"/>
+        <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
         <property name="onMouseOverScript" value="buildHoverText(jQuery(this));"/>
         <property name="label" value=""/>
         <property name="dataAttributes">
@@ -1378,10 +1450,9 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
     </bean>
 
-    <bean id="current_section_status" abstract="true" parent="current_section_status-parent"/>
-    <bean id="current_section_status-parent" abstract="true" parent="Uif-ActionLink" >
+    <bean id="current_section_status" parent="Uif-ActionLink" >
         <property name="actionScript"
-                  value="showLightboxUrl('www.google.com');"/>
+                  value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 
     <bean id="emptyField" parent="KSAP-MessageField" p:messageText="--"/>
@@ -1390,22 +1461,22 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
+                <value>fl-text-align-center</value>
             </list>
         </property>
     </bean>
 
-    <bean id="CourseDetailsSections-InquiryView" parent="CourseDetailsSections-InquiryView-parent"/>
-    <bean id="CourseDetailsSections-InquiryView-parent" abstract="true" parent="KSAPBaseInquiryView">
-        <property name="dataObjectClassName" value="org.kuali.student.ap.coursesearch.dataobject.CourseDetails"/>
+    <bean id="CourseDetailsSections-InquiryView" parent="MyPlanBaseInquiryView">
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClass"
-                  value="org.kuali.student.ap.coursesearch.service.impl.CourseDetailsInquiryHelperImpl"/>
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
         <property name="viewName" value="CourseDetailsSections-InquiryView"/>
         <property name="theme">
-            <bean parent="KSAPRetrievedTheme"/>
+            <bean parent="MyPlanRetrievedTheme"/>
         </property>
         <property name="onLoadScript" value=""/>
         <property name="page">
@@ -1418,23 +1489,24 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 						<bean id="course_details_sections_list" parent="Uif-VerticalBoxGroup">
 							<property name="onDocumentReadyScript"
 								value="
-		                                              jQuery('body').on('SECTION_ITEM_ADDED', function(event, data){
+		                                              jQuery('body')
+		                                                  .subscribe('SECTION_ITEM_ADDED', function(data){
 		                                                      var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
 		                                                     jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-		                                                      fnDisplayMessage(link, '', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
+		                                                      fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
 		                                                      var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
-		                                                      row.addClass('ksap-section-planned');
+		                                                      row.addClass('myplan-section-planned');
 		                                                      if (data.ItemsToUpdate != null) {
 		                                                          var items = data.ItemsToUpdate.split(',');
 		                                                          jQuery.each(items, function (index, value) {
 		                                                              jQuery('#button_' + data.atpId + '_' + items[index]).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-		                                                              fnDisplayMessage(link, '', 'button_' + data.atpId + '_' + items[index], false);
+		                                                              fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + items[index], false);
 		                                                              var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
-		                                                              row.addClass('ksap-section-planned');
+		                                                              row.addClass('myplan-section-planned');
 		                                                          });
 		                                                      }
 		                                                  });
-		                                              ksapGetSectionEnrollment('course/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
+		                                              myplanGetSectionEnrollment('course/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
 		                                          " />
 							<property name="validationMessages">
 								<null />

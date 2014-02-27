@@ -14,7 +14,7 @@
          and limitations under the License. -->
 
     <!-- Not used to view audit reports. -->
-    <bean id="DegreeAudit-FormView" parent="KSAPFormView">
+    <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="headerText" value="Audit Degree"/>
 
         <!-- To Support progressive disclosure of campus select -->
@@ -24,7 +24,7 @@
         <property name="entryPageId" value="degree_audit"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-view</value>
+                <value>myplan-view</value>
             </list>
         </property>
         <property name="header">
@@ -33,7 +33,7 @@
 
         <property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/scripts/ksap.audit.js</value>
+                <value>ks-myplan/scripts/myplan.audit.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -55,12 +55,7 @@
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    if (jQuery.cookie('ksap_audit_running')) {
-                                        if (readUrlParam('degreeAudit.auditId') == false) {
-                                            var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('ksap_audit_running')));
-                                            blockPendingAudit(data);
-                                        }
-                                    }
+                                    blockPendingAudit('audit_section');
                                 "/>
                                 <property name="items">
                                     <list>
@@ -88,7 +83,7 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="ksap_section">
+                                        <bean parent="myplan_section">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>no-primary</value>
@@ -135,7 +130,6 @@
                             </bean>
                         </list>
                     </property>
-                    <property name="stickyFooter" value="false"/>
                 </bean>
 
                 <bean parent="Uif-Page" p:id="degree_audit_non_student_page">
@@ -173,7 +167,7 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="ksap_section">
+                                        <bean parent="myplan_section">
                                             <property name="items">
                                                 <list>
 
@@ -196,19 +190,18 @@
                             </bean>
                         </list>
                     </property>
-                    <property name="stickyFooter" value="false"/>
                 </bean>
 
             </list>
         </property>
         <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.ap.audit.form.DegreeAuditForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
 
     <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-audit-report</value>
+                <value>myplan-audit-report</value>
             </list>
         </property>
         <property name="items">
@@ -240,7 +233,7 @@
     <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup">
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-run-audit-panel</value>
+                <value>myplan-run-audit-panel</value>
             </list>
         </property>
         <property name="header">
@@ -259,7 +252,7 @@
     </bean>
 
     <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;"
-          p:render="@{getAuditHtml() eq null ? true : false}" p:headerText="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_HOW_TO')}">
+          p:render="@{getAuditHtml() eq null ? true : false}" p:headerText="@{(howToUseDegreeAudit)}">
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
         </property>
@@ -286,15 +279,17 @@
           p:style="padding: 10px;  border-color: #DAEAFF; ">
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-audit-info-panel</value>
-                <value>ksap-audit-message-info</value>
+                <value>fl-container-600</value>
+                <value>myplan-audit-info-panel</value>
+                <value>myplan-audit-message-info</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean id="audit_inf_text_1" parent="Uif-Message" p:style="padding: 5px;">
+                <bean id="audit_inf_text_1" parent="Uif-Message" p:style="padding: 5px;"
+                      p:cssClasses="fl-font-size-100 ">
                     <property name="messageText"
-                              value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_FEATURE_DISABLED')}"/>
+                              value="@{(theAuditFeatureDisabled)}"/>
                 </bean>
             </list>
         </property>
@@ -304,22 +299,25 @@
     <bean id="degree_audit_info_1" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-audit-info-panel</value>
+                <value>fl-container-300</value>
+                <value>myplan-audit-info-panel</value>
             </list>
         </property>
         <property name="items">
             <list>
                 <bean id="audit_info_header_1" parent="Uif-Message" p:style="padding: 5px;"
-                      p:cssClasses="ksap-carousel-list">
-                    <property name="messageText" value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_TRACK_PROGRESS')}"/>
+                      p:cssClasses="fl-font-size-130 fl-text-gray fl-text-bold myplan-carousel-list">
+                    <property name="messageText" value="@{(trackYourProgress)}"/>
                 </bean>
-                <bean id="audit_info_text_1" parent="Uif-Message" p:style="padding: 5px;">
+                <bean id="audit_info_text_1" parent="Uif-Message" p:style="padding: 5px;"
+                      p:cssClasses="fl-font-size-100 ">
                     <property name="messageText"
-                              value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_YOUR_REQUIREMENTS')}"/>
+                              value="@{(stayOnTopOfUrRequired)}"/>
                 </bean>
-                <bean id="audit_info_footer_1" parent="Uif-Message" p:style="padding: 5px;">
+                <bean id="audit_info_footer_1" parent="Uif-Message" p:style="padding: 5px;"
+                      p:cssClasses="fl-font-size-100 ">
                     <property name="messageText"
-                              value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_SELECT_PROGRAM')}"/>
+                              value="@{(selectYourProgram)}"/>
                 </bean>
             </list>
         </property>
@@ -328,31 +326,35 @@
     <bean id="degree_audit_info_2" parent="Uif-VerticalFieldGroup" p:style="padding: 10px; height: 185px;">
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-audit-info-panel</value>
-                <value>ksap-carousel-list</value>
+                <value>fl-container-300</value>
+                <value>myplan-audit-info-panel</value>
+                <value>myplan-carousel-list</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean id="audit_info_header_2" parent="Uif-Message" p:style="padding: 5px;">
-                    <property name="messageText" value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_PROGRAMS_MINORS')}"/>
+                <bean id="audit_info_header_2" parent="Uif-Message" p:style="padding: 5px;"
+                      p:cssClasses="fl-font-size-130 fl-text-gray fl-text-bold ">
+                    <property name="messageText" value="@{(exploreProgramsAndMinors)}"/>
                 </bean>
-                <bean id="audit_info_text_2" parent="Uif-Message" p:style="padding: 5px;">
+                <bean id="audit_info_text_2" parent="Uif-Message" p:style="padding: 5px;"
+                      p:cssClasses="fl-font-size-100 ">
                     <property name="messageText"
-                              value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_STILL_DECIDING')}"/>
+                              value="@{(stillDeciding)}"/>
                 </bean>
-                <bean id="audit_info_footer_2" parent="Uif-Message" p:style="padding: 5px;">
+                <bean id="audit_info_footer_2" parent="Uif-Message" p:style="padding: 5px;"
+                      p:cssClasses="fl-font-size-100 ">
                     <property name="messageText"
-                              value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_SELECT_FROM')}"/>
+                              value="@{(selectAProgramFrom)}"/>
                 </bean>
             </list>
         </property>
     </bean>
 
 
-    <bean id="select_instruction" parent="Uif-Message" p:cssClasses="ksap-text-normal">
+    <bean id="select_instruction" parent="Uif-Message" p:cssClasses="myplan-text-normal">
         <property name="messageText"
-                  value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_SELECT_CAMPUS')}"/>
+                  value="@{(selectYourCampus)}"/>
     </bean>
 
     <bean id="campus_params" parent="Uif-HorizontalFieldGroup">
@@ -367,7 +369,7 @@
                         <bean parent="Uif-VerticalRadioControl"/>
                     </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.ap.coursesearch.util.AuditRunCampusParam"/>
+                        <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
                     </property>
                 </bean>
             </list>
@@ -394,7 +396,7 @@
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
-                                    <bean class="org.kuali.student.ap.audit.util.DegreeAuditRunProgramParam"/>
+                                    <bean class="org.kuali.student.myplan.audit.util.DegreeAuditRunProgramParam"/>
                                 </property>
                             </bean>
                         </list>
@@ -409,14 +411,14 @@
     <bean id="degree_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runAudit" p:disabled="false"
           p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
-        <property name="onClickScript" value="setPendingAudit(jQuery(this),2); setUrlHash('modified','yes'); changeLoadingMessage('.ksap-audit-report');"/>
+        <property name="onClickScript" value="setPendingAudit(2); setUrlHash('modified','yes'); changeLoadingMessage('.myplan-audit-report');"/>
         <property name="onDocumentReadyScript" value="
-            if (jQuery.cookie('ksap_audit_running')) {
+            if (jQuery.cookie('myplan_audit_running')) {
                 jQuery('button#degree_audit_run').attr('disabled', true);
             } else {
                 jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
             }
-            jQuery('button#degree_audit_run').on('AUDIT_COMPLETE', function () {
+            jQuery('button#degree_audit_run').subscribe('AUDIT_COMPLETE', function () {
                 jQuery(this).attr('disabled', degreeAuditButton());
             });
         "/>
@@ -425,8 +427,8 @@
     <bean id="audit_instruction" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
         <property name="items">
             <list>
-                <bean parent="Uif-Message">
-                    <property name="messageText" value="#{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DEGREE_AUDIT_PROGRAMS_NOT_INCLUDED')}"/>
+                <bean parent="Uif-Message" p:cssClasses="fl-text-gray fl-font-size-90">
+                    <property name="messageText" value="@{(someProgramsNotIncluded)}"/>
                 </bean>
             </list>
         </property>
