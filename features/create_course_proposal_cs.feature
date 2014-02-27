@@ -14,7 +14,7 @@ And I cancel create a course
 Then I should see CM Home
 
 Scenario: CC.3.1 Create a course proposal with only required fields
-When I complete the required fields for save on the course proposal
+When I complete the required fields on the course proposal and save
 Then I should see data in required fields for the course proposal
 
 
@@ -24,7 +24,6 @@ Then I should see data in required fields for the course admin proposal
 
 
 Scenario: CC4.2 Create course without required for save fields
-When I am on the course information page of create a course
-And I click the save progress button
-Then I should receive an error message about the proposal title and course title being required for save.
+When I am on the course information page and I click save progress without entering any values
+Then I should receive an error message about the proposal title and course title being required for save
 

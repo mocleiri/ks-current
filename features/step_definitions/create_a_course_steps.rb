@@ -2,35 +2,25 @@
 # S1
 #-----
 When /^I create a course proposal$/ do
-  @course_proposal = create CmCourseProposalObject
+  @course_proposal = create CmCourseProposalObject, :create_new_proposal => false
 end
 
 When /^I create a course proposal from blank$/ do
-  @course_proposal = create CmCourseProposalObject
-  @course_proposal.create_proposal_wo_review
+  @course_proposal = create CmCourseProposalObject, :save_proposal => false, :proposal_title => nil, :course_title =>nil
 end
 
 Then /^I should see a blank course proposal$/ do
- # @course_proposal = create CmCourseProposalObject
   on CmCourseInformation do |page|
     page.proposal_title.text.should == ""
     page.course_title.text.should == ""
-
   end
   end
-
-Given /^I should see the Initial Page$/ do
-  on CmCreateCourseStart do |page|
-    page.blank_proposal
-    page.curriculum_review_process.checkbox.click
-  end
-end
 
 And /^I cancel create a course$/ do
-  @course_proposal.cancel_create_proposal
+  @course_proposal.cancel_create_course
 end
 
-Given /^I should see CM Home$/ do 
+Then /^I should see CM Home$/ do
   on CmCurriculum do |page|
     page.cmcurriculum_header.exists?.should == true
   end
@@ -54,14 +44,15 @@ end
 
 When /^I complete the required fields for save on the course proposal$/ do
   @course_proposal = create CmCourseProposalObject
-  @course_proposal.create_proposal_with_review
-  @course_proposal.create_proposal_req_fields
 end
+
+When /^I complete the required fields on the course proposal and save$/ do
+  @course_proposal = create CmCourseProposalObject, :curriculum_review_process => "Yes"
+end
+
 
 When /^I complete the required fields for save on the course admin proposal$/ do
   @course_proposal = create CmCourseProposalObject
-  @course_proposal.create_proposal_wo_review
-  @course_proposal.create_proposal_req_fields
 end
 
 
@@ -76,16 +67,15 @@ Then /^I should see data in required fields for the course admin proposal$/ do
 
 end
 
-When /^I am on the course information page of create a course$/ do
-  @course_proposal = create CmCourseProposalObject
-  @course_proposal.create_proposal_wo_review
+When /^I am on the course information page and I click save progress without entering any values$/ do
+  @course_proposal = create CmCourseProposalObject, :proposal_title => nil, :course_title => nil
 end
 
 And /^I click the save progress button$/ do
-  @course_proposal.save_proposal
+
 end
 
-Then /^I should receive an error message about the proposal title and course title being required for save\.$/ do
+Then /^I should receive an error message about the proposal title and course title being required for save$/ do
  on CmCourseInformation do |page|
    #page.course_information
    page.proposal_title_error_state.exists?.should == true
@@ -93,6 +83,22 @@ Then /^I should receive an error message about the proposal title and course tit
    page.growl_text.should include "The form contains errors. Please correct these errors and try again."
    page.page_validation_header.should include "This page has 2 errors"
  end
+end
+
+
+When /^I create a course proposal for testing$/ do
+  @course_proposal = create CmCourseProposalObject
+end
+
+
+
+Then /^I should see a course proposal being created$/ do
+  on CmCourseInformation do |page|
+    page.course_information
+    page.proposal_title.value.should == @course_proposal.proposal_title
+    page.course_title.value.should == @course_proposal.course_title
+    page.page_validation_text.should == "Document was successfully saved."
+  end
 end
 #-----
 # S2

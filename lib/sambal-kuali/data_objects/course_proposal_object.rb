@@ -90,7 +90,11 @@ class CmCourseProposalObject < DataObject
 
         # Authors & Collaborators
         :author_name_search, :author_username_search, :author_permission, :action_request,
-        :author_notation, :author_name_method, :author_display_name, :curriculum_review_process
+        :author_notation, :author_name_method, :author_display_name, :curriculum_review_process,
+
+        #Save
+        :create_new_proposal,
+        :save_proposal
 
 
 
@@ -99,21 +103,23 @@ class CmCourseProposalObject < DataObject
     defaults = {
         #REQUIRED ON SAVE
         #COURSE INFORMATION
-        proposal_title:           random_alphanums(10,'test proposal title '),
-        course_title:             random_alphanums(10, 'test course title '),
-        subject_code:             "MATH",
-        course_number:            "123",
-        description_rationale:    random_alphanums(20, 'test description rationale '),
-        proposal_rationale:       random_alphanums(20, 'test proposal rationale '),
+        proposal_title:             random_alphanums(10,'test proposal title '),
+        course_title:               random_alphanums(10, 'test course title '),
+        subject_code:               "MATH",
+        course_number:              "123",
+        description_rationale:      random_alphanums(20, 'test description rationale '),
+        proposal_rationale:         random_alphanums(20, 'test proposal rationale '),
 
 
         #COURSE LOGISTICS
-        assessment_scale:         [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
-        final_exam_type:          [:exam_standard, :exam_alternate, :exam_none],
-        final_exam_rationale:     random_alphanums(10,'test final exam rationale '),
+        assessment_scale:           [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
+        final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
+        final_exam_rationale:       random_alphanums(10,'test final exam rationale '),
         #FINANCIALS
-        course_fees:              random_alphanums(10, 'test course fees '),
-        curriculum_review_process:"set"
+        course_fees:                random_alphanums(10, 'test course fees '),
+        curriculum_review_process:  nil,
+        create_new_proposal:        true,
+        save_proposal:              true
     }
     set_options(defaults.merge(opts))
 
@@ -127,6 +133,7 @@ class CmCourseProposalObject < DataObject
     random_radio(@final_exam_type)
   end
 
+=begin
   def create
     on CmRice do |create|
       puts @assessment_a_f.inspect
@@ -161,6 +168,19 @@ class CmCourseProposalObject < DataObject
       #course_proposal_nonrequired
     #end
   end  #create
+=end
+
+  def create
+    navigate_to_curriculum_management
+    navigate_to_create_course_proposal
+    set_curriculum_review
+
+    if @create_new_proposal
+      create_course_continue
+      create_course_proposal_required_fields unless @proposal_title.nil?
+      determine_save_action
+    end
+  end
 
   def create_course_proposal_required
     on CmCourseInformation do |page|
@@ -315,47 +335,70 @@ class CmCourseProposalObject < DataObject
     end
   end
 
-  def create_proposal_wo_review
-    on(CmCreateCourseStart).continue
-  end
-
-  def create_proposal_with_review
-    on CmCreateCourseStart do |page|
-      if page.curriculum_review_process.exists?
-         page.curriculum_review_process.fit @curriculum_review_process
-      end
-         page.continue
-      end
-  end
-
-
-  def create_proposal_req_fields
-    on CmCourseInformation do |page|
-      fill_out page, :proposal_title, :course_title
-      if page.save_continue.exists?
-         page.save_and_continue
-      else
-         page.save_progress
-      end
-    end
-  end
-
-
-  def cancel_create_proposal
+  def cancel_create_course
     on CmCreateCourseStart do |page|
       page.cancel
     end
   end
   
-  def save_proposal
-    on CmCreateCourseStart do |page|
-      page.save_progress
+
+  def navigate_to_curriculum_management
+  on CmRice do |create|
+    #puts @assessment_a_f.inspect
+    create.curriculum_management
+  end
+  end
+
+  def navigate_to_create_course_proposal
+  on(CmCurriculum).create_a_course
+  end
+
+  def set_curriculum_review
+  on CmCreateCourseStart do |create|
+    create.curriculum_review_process.fit checkbox_trans[@curriculum_review_process] unless @curriculum_review_process.nil?
+  end
+  end
+
+  def create_course_continue
+    on CmCreateCourseStart do |create|
+      create.continue
     end
   end
+
+  def create_course_proposal_required_fields
+  on CmCourseInformation do |create|
+    fill_out create, :proposal_title, :course_title
+  end
+  end
+
+  def determine_save_action
+  on CmCourseInformation do |create|
+    unless !@save_proposal
+      if create.logged_in_user == "Alice"
+        create.save_progress
+      elsif create.logged_in_user == "Fred"
+        create.save_and_continue
+      end
+    end
+
+
+  end
+
+  end
+
+
+
+
+
 
   #-----
   private
   #-----
+
+  def checkbox_trans
+     { "Yes" => :set, "No" => :clear }
+   end
+
 
   #Used to fill out the outcome type by setting the @outcome_type adding multiple outcomes will require to pass in the outcome level for multiple fields
   def set_outcome_type(outcome_level='0')
