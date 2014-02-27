@@ -91,14 +91,14 @@
         DESCR_PLAIN="General lifecycle used to manage organizational hierarchies"
         ID="kuali.org.hierarchy.lifecycle"
         NAME="General Org-Hierarchy Lifeccycle"
-        OBJ_ID="F1ACFBB52BFC630FE040440A9B9A2DBC"
+        OBJ_ID="F36941AFB786114DE040440A9B9A68E9"
         REF_OBJECT_URI="http://student.kuali.org/wsdl/organization/OrgHierarchyInfo" VER_NBR="0"/>
     <KSEN_STATE_LIFECYCLE CREATEID="SYSTEMLOADER"
         CREATETIME="20120101000000"
         DESCR_FORMATTED="General lifecycle used to manage the creation of organizations"
         DESCR_PLAIN="General lifecycle used to manage the creation of organizations"
         ID="kuali.org.lifecycle" NAME="General Organization Lifecycle"
-        OBJ_ID="F1ACFBB52BF9630FE040440A9B9A2DBC"
+        OBJ_ID="F36941AFB783114DE040440A9B9A68E9"
         REF_OBJECT_URI="http://student.kuali.org/wsdl/organization/OrgInfo" VER_NBR="0"/>
     <KSEN_STATE_LIFECYCLE CREATEID="SYSTEMLOADER"
         CREATETIME="20120101000000"
@@ -106,7 +106,7 @@
         DESCR_PLAIN="General lifecycle used to manage relationships between organizations"
         ID="kuali.org.org.relation.lifecycle"
         NAME="General Org-Org Relation Lifeccycle"
-        OBJ_ID="F1ACFBB52BFA630FE040440A9B9A2DBC"
+        OBJ_ID="F36941AFB784114DE040440A9B9A68E9"
         REF_OBJECT_URI="http://student.kuali.org/wsdl/organization/OrgOrgRelationInfo" VER_NBR="0"/>
     <KSEN_STATE_LIFECYCLE CREATEID="SYSTEMLOADER"
         CREATETIME="20120101000000"
@@ -114,7 +114,7 @@
         DESCR_PLAIN="General lifecycle used to manage the attachment of people to organizations"
         ID="kuali.org.person.relation.lifecycle"
         NAME="General Org-Person Relation Lifeccycle"
-        OBJ_ID="F1ACFBB52BFB630FE040440A9B9A2DBC"
+        OBJ_ID="F36941AFB785114DE040440A9B9A68E9"
         REF_OBJECT_URI="http://student.kuali.org/wsdl/organization/OrgOrgRelationInfo" VER_NBR="0"/>
     <KSEN_STATE_LIFECYCLE CREATEID="SYSTEMLOADER"
         CREATETIME="20120716000000"
@@ -152,7 +152,7 @@
         DESCR_PLAIN="General lifecycle used to manage proposals"
         ID="kuali.proposal.lifecycle"
         NAME="General Lifecycle of a Proposal"
-        OBJ_ID="F1ACFBB52C09630FE040440A9B9A2DBC"
+        OBJ_ID="F36941AFB793114DE040440A9B9A68E9"
         REF_OBJECT_URI="http://student.kuali.org/wsdl/proposal/ProposalInfo" VER_NBR="0"/>
     <KSEN_STATE_LIFECYCLE CREATEID="SYSTEMLOADER"
         CREATETIME="20120813000000"
