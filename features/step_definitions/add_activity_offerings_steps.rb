@@ -1,7 +1,7 @@
 When /^I add an Activity Offering to an existing Course Offering$/ do
   course_offering = make CourseOffering, :course=>"CHEM276"
   #course_offering.manage_and_init
-  @new_ao = course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture/Discussion")
+  @new_ao = course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion")
 end
 
 
@@ -17,7 +17,7 @@ When /^I copy an AO with Actual Scheduling Information$/ do
   course_offering.manage_and_init
 
   @ao_source = course_offering.get_ao_obj_by_code("A")
-  @ao_copy = create ActivityOffering, :create_by_copy => true,
+  @ao_copy = create ActivityOfferingObject, :create_by_copy => true,
                     :code => @ao_source.code,
                     :parent_course_offering => course_offering
 end
@@ -31,7 +31,7 @@ When /^I copy an AO with Requested Scheduling Information$/ do
   # use the AO we copied in the previous step as the source for a new copy
   # this AO should have RSIs but no ASIs
   @ao_source = @ao_copy
-  @ao_copy = create ActivityOffering, :create_by_copy => true,
+  @ao_copy = create ActivityOfferingObject, :create_by_copy => true,
                     :code => @ao_source.code,
                     :parent_course_offering => course_offering
 end

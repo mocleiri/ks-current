@@ -1,8 +1,3 @@
-#TODO: check this jira - still relevant?
-# additional notes about future-refactoring were left in this jira: https://jira.kuali.org/browse/KSENROLL-5895
-
-
-
 # stores test data for creating/editing and validating course offerings and provides convenience methods for navigation and data entry
 #
 # CourseOffering objects contain ActivityOfferings, ActivityOfferingClusters, DeliveryFormats....
@@ -57,35 +52,6 @@ class CourseOffering
   PLANNED_STATUS = "Planned"
   OFFERED_STATUS = "Offered"
 
-  # provides default data:
-  #  defaults = {
-  #    :term=>Rollover::MAIN_TEST_TERM_SOURCE,
-  #    :course=>"ENGL211",
-  #    :suffix=>"",
-  #    :activity_offering_cluster_list=>[],
-  #    :final_exam_type => "NONE",
-  #    :wait_list => "Active",
-  #    :wait_list_level => "Course Offering",
-  #    :wait_list_type => "Automatic",
-  #    :grade_format => "",
-  #    :delivery_format_list => [],
-  #    :final_exam_activity => "",
-  #    :honors_flag => "NO",
-  #    :affiliated_person_list => {},
-  #    :affiliated_org_list => {},
-  #    :grade_options => "Letter",
-  #    :reg_options => "None available",
-  #    :pass_fail_flag => true,
-  #    :audit_flag => false,
-  #    :search_by_subj => false,
-  #    :credit_type => "",
-  #    :fixed_credit_count => "",
-  #    :multiple_credit_list => {},
-  #    :create_by_copy => nil,
-  #    :cross_listed => false,  (applies only to create from catalog)
-  #    :joint_co_to_create
-  #  }
-  # initialize is generally called using TestFactory Foundry .make or .create methods
   def initialize(browser, opts={})
     @browser = browser
 
@@ -93,7 +59,7 @@ class CourseOffering
         :term=>Rollover::MAIN_TEST_TERM_TARGET,
         :course=>"ENGL211",
         :suffix=>"",
-        :activity_offering_cluster_list=> [ (make ActivityOfferingCluster, :private_name=> :default_cluster ) ],
+        :activity_offering_cluster_list=> collection('ActivityOfferingCluster'),
         :final_exam_type => "STANDARD",
         :waitlist => nil,
         :grade_format => "",
@@ -487,7 +453,7 @@ class CourseOffering
     else
       @activity_offering_cluster_list = []
       cluster_divs.each do |cluster_div|
-        temp_aoc = make ActivityOfferingCluster
+        temp_aoc = make ActivityOfferingClusterObject
         temp_aoc.init_existing(cluster_div, self)
 
         @activity_offering_cluster_list.push(temp_aoc)
@@ -609,7 +575,7 @@ class CourseOffering
     options = defaults.merge(opts)
 
     manage_and_init
-    ao_obj = make ActivityOffering, :parent_course_offering => self
+    ao_obj = make ActivityOfferingObject, :parent_course_offering => self
     on ManageCourseOfferings do |page|
       ao_obj.code = page.select_ao_by_status(options[:ao_status])
       if ao_obj.code.nil?
@@ -983,7 +949,7 @@ class CourseOffering
         :cluster_private_name => :default_cluster
     }
     options = defaults.merge(opts)
-    new_activity_offering = make ActivityOffering, :code => options[:ao_code], :aoc_private_name => options[:cluster_private_name], :create_by_copy => true, :parent_course_offering => self
+    new_activity_offering = make ActivityOfferingObject, :code => options[:ao_code], :aoc_private_name => options[:cluster_private_name], :create_by_copy => true, :parent_course_offering => self
 
     new_activity_offering.create
     get_cluster_obj_by_private_name(options[:cluster_private_name]).ao_list << new_activity_offering
@@ -1052,7 +1018,7 @@ class CourseOffering
   #  @course_offering.add_ao_cluster(ao_cluster_object)
   #
   #
-  # @param ao_cluster [ActivityOfferingCluster]
+  # @param ao_cluster [ActivityOfferingClusterObject]
   def add_ao_cluster(ao_cluster)
     ao_cluster.create
     @activity_offering_cluster_list << ao_cluster
@@ -1063,7 +1029,7 @@ class CourseOffering
   #  @course_offering.delete_ao_cluster(ao_cluster_object)
   #
   #
-  # @param ao_cluster [ActivityOfferingCluster]
+  # @param ao_cluster [ActivityOfferingClusterObject]
   def delete_ao_cluster(ao_cluster)
     ao_cluster.delete
     @activity_offering_cluster_list.delete(get_cluster_obj_by_private_name(ao_cluster.private_name))
@@ -1075,7 +1041,7 @@ class CourseOffering
   #
   #
   # @param cluster_private_name [String]
-  # @returns  ActivityOfferingCluster object
+  # @returns  ActivityOfferingClusterObject
   def get_cluster_obj_by_private_name(cluster_private_name)
     return @activity_offering_cluster_list[0] unless cluster_private_name != :default_cluster
     @activity_offering_cluster_list.select{|cluster| cluster.private_name == cluster_private_name}[0]

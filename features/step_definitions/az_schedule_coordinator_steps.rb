@@ -53,7 +53,7 @@ When /^I manage a course offering$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
   @course_offering = make CourseOffering, :course=>"CHEM611", :term=>@term_for_test
   @course_offering.manage
-  @activity_offering = make ActivityOffering, :code=>"A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code=>"A", :parent_course_offering => @course_offering
 end
 
 Then /^I have access to delete an activity offering in a "([^"]*)" state$/ do |aostate|

@@ -1,18 +1,18 @@
 # stores test data for creating/editing and validating activity offering clusters and provides convenience methods for navigation and data entry
 #
-# ActivityOfferingCluster objects are always children of a CourseOffering
+# ActivityOfferingClusterObject objects are always children of a CourseOffering
 #
-# ActivityOfferingCluster objects are parents of 0 to many RegistrationGroups objects
+# ActivityOfferingClusterObject objects are parents of 0 to many RegistrationGroups objects
 #
 # class attributes are initialized with default data unless values are explicitly provided
 #
 # Typical usage: (with optional setting of explicit data value in [] )
-#  @cluster = make ActivityOfferingCluster, [:is_constrained=>true,:private_name=>"test1_pri",:published_name=>"test1_pub"...]
+#  @cluster = make ActivityOfferingClusterObject, [:is_constrained=>true,:private_name=>"test1_pri",:published_name=>"test1_pub"...]
 #  @cluster.create
 # OR alternatively 2 steps together as
-#  @cluster = create ActivityOfferingCluster, [:is_constrained=>true,:private_name=>"test1_pri",:published_name=>"test1_pub"...]
+#  @cluster = create ActivityOfferingClusterObject, [:is_constrained=>true,:private_name=>"test1_pri",:published_name=>"test1_pub"...]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class ActivityOfferingCluster
+class ActivityOfferingClusterObject
 
   include Foundry
   include DataFactory
@@ -51,7 +51,7 @@ class ActivityOfferingCluster
         :published_name=>"#{random_alphanums(5).strip}_pub",
         :is_valid=>true,
         :expected_msg=>"",
-        :ao_list =>[],
+        :ao_list => collection('ActivityOffering'),
         :parent_course_offering => nil
     }
     options = defaults.merge(opts)
@@ -83,7 +83,7 @@ class ActivityOfferingCluster
       ao_rows = page.get_cluster_div_ao_rows(cluster_div)
 
       ao_rows.each do |ao_row|
-        ao_obj_temp = make ActivityOffering
+        ao_obj_temp = make ActivityOfferingObject
         ao_obj_temp.init_existing(ao_row, @parent_course_offering, @private_name)
         @ao_list.push(ao_obj_temp)
       end
@@ -110,7 +110,7 @@ class ActivityOfferingCluster
   # moves activity offering from cluster to target cluster
   #
   # @param ao_code [String] activity offering code
-  # @param target cluster [ActivityOfferingCluster] target cluster object
+  # @param target cluster [ActivityOfferingClusterObject] target cluster object
   def move_ao_to_another_cluster(ao_code, target_cluster)
     on ManageCourseOfferings do |page|
       row = page.get_cluster_ao_row(@private_name,ao_code)
@@ -127,7 +127,7 @@ class ActivityOfferingCluster
   # moves activity offering from cluster to target cluster
   #
   # @param ao_code [String] activity offering code
-  # @param target cluster [ActivityOfferingCluster] target cluster object
+  # @param target cluster [ActivityOfferingClusterObject] target cluster object
   def move_all_aos_to_another_cluster(target_cluster)
     on ManageCourseOfferings do |page|
       if page.cluster_select_all_aos(@private_name) then
@@ -182,4 +182,14 @@ class ActivityOfferingCluster
      end
   end
 
+end
+
+class ActivityOfferingClusterCollection < CollectionsFactory
+  include Foundry
+
+  contains ActivityOfferingClusterObject
+
+  def initialize browser
+    self << (make ActivityOfferingClusterObject, :private_name=> :default_cluster)
+  end
 end

@@ -106,7 +106,7 @@ end
 When /^I create a Course Offering from an existing Course Offering with a standard final exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
 
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 
   @course_offering_copy = create CourseOffering, :term=> @course_offering.term , :create_from_existing => @course_offering
@@ -201,7 +201,7 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
 
   @co_list << course_offering
 
-  @co_list[0].create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
+  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
   course_offering = create CourseOffering, :term => @calendar.terms[0].term_code,
                            :course => "ENGL301",
@@ -214,7 +214,7 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS272",
                       :delivery_format_list => delivery_format_list,
                       :final_exam_driver => "Final Exam Per Activity Offering")
-  @co_list[2].create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
+  @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM611",
                       :final_exam_driver => "Final Exam Per Course Offering")
@@ -263,7 +263,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
   @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
@@ -273,13 +273,13 @@ end
 
 Given /^there is an exsiting CO with a Standard Final Exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 end
 
 Given /^that Activity Offerings exist for the selected Course Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 end
 
@@ -338,7 +338,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
                                  :final_exam_driver => "Final Exam Per Activity Offering",
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
@@ -365,7 +365,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with multi
                                  :final_exam_driver => "Final Exam Per Activity Offering",
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
@@ -395,13 +395,13 @@ Given /^that the CO has two existing AOs and a standard final exam driven by Act
                                  :final_exam_driver => "Final Exam Per Activity Offering",
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 end
 
 When /^I add two new AOs to the CO and then create a copy of the CO$/ do
-  @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
-  @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
+  @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
@@ -417,11 +417,11 @@ When /^I view the Exam Offerings for a CO with two new AOs and a standard final 
                                  :final_exam_driver => "Final Exam Per Activity Offering",
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 
-  @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
-  @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
+  @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
@@ -437,11 +437,11 @@ When /^I create a CO with two new AOs and then view the Exam Offerings where the
                                  :final_exam_driver => "Final Exam Per Activity Offering",
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true, :defer_save => false
 
-  @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
-  @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only"), :navigate_to_page => false
+  @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only"), :navigate_to_page => false
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
@@ -662,7 +662,7 @@ When /^I cancel an Activity Offering for a CO with a standard final exam driven 
   @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -676,7 +676,7 @@ When /^I cancel an Activity Offering for a CO with a standard final exam driven 
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
 
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -692,7 +692,7 @@ Given /^that the Lecture AO that drives the exam is not in a cancelled state$/ d
 end
 
 When /^I cancel a Discussion Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
-  @activity_offering = make ActivityOffering, :code => "C", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "C", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -703,7 +703,7 @@ When /^I cancel all Activity Offerings for a CO with a standard final exam drive
   @course_offering.save
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
-      ao_cancel = make ActivityOffering, :code => code, :parent_course_offering => @course_offering
+      ao_cancel = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
       ao_cancel.cancel :navigate_to_page => false
     end
   end
@@ -729,7 +729,7 @@ When /^I cancel all Activity Offerings for a CO with a standard final exam drive
 
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
-      ao_cancel = make ActivityOffering, :code => code, :parent_course_offering => @course_offering
+      ao_cancel = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
       ao_cancel.cancel :navigate_to_page => false
     end
   end

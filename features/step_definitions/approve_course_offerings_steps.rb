@@ -102,10 +102,10 @@ Given /^I suspend two activity offerings in offered status for a course offering
   @course_offering.manage_and_init
 
   @draft_ao = @course_offering.get_ao_obj_by_code("A")
-  @suspended_ao = create ActivityOffering, :create_by_copy => true,
+  @suspended_ao = create ActivityOfferingObject, :create_by_copy => true,
                     :code => @draft_ao.code,
                     :parent_course_offering => @course_offering
-  @suspended_ao2 = create ActivityOffering, :create_by_copy => true,
+  @suspended_ao2 = create ActivityOfferingObject, :create_by_copy => true,
                          :code => @draft_ao.code,
                          :parent_course_offering => @course_offering
   @suspended_ao.approve :send_to_scheduler => true
@@ -125,10 +125,10 @@ Given /^I suspend two draft activity offerings for a course offering in a publis
   @course_offering.manage_and_init
 
   @draft_ao = @course_offering.get_ao_obj_by_code("A")
-  @suspended_ao = create ActivityOffering, :create_by_copy => true,
+  @suspended_ao = create ActivityOfferingObject, :create_by_copy => true,
                          :code => @draft_ao.code,
                          :parent_course_offering => @course_offering
-  @suspended_ao2 = create ActivityOffering, :create_by_copy => true,
+  @suspended_ao2 = create ActivityOfferingObject, :create_by_copy => true,
                           :code => @draft_ao.code,
                           :parent_course_offering => @course_offering
 
@@ -174,7 +174,7 @@ Given /^a new academic term has course and activity offerings in canceled and su
                                      :course => "ENGL211",
                                      :delivery_format_list => [delivery_format]
 
-  @activity_offering_canceled = create ActivityOffering, :parent_course_offering => @course_offering_canceled,
+  @activity_offering_canceled = create ActivityOfferingObject, :parent_course_offering => @course_offering_canceled,
                                        :activity_type => "Lecture"
   @activity_offering_canceled.save
   @activity_offering_canceled.cancel
@@ -185,7 +185,7 @@ Given /^a new academic term has course and activity offerings in canceled and su
                                       :course => "ENGL211",
                                       :delivery_format_list => [delivery_format]
 
-  @activity_offering_suspended = create ActivityOffering, :parent_course_offering => @course_offering_suspended,
+  @activity_offering_suspended = create ActivityOfferingObject, :parent_course_offering => @course_offering_suspended,
                                         :activity_type => "Lecture"
 
   @activity_offering_suspended.save
@@ -538,7 +538,7 @@ end
 Given /^I copy a course offering in canceled status$/ do
   source_co = create CourseOffering, :create_by_copy => (make CourseOffering, :term=> "201208", :course => "BSCI181")
 
-  source_ao = make ActivityOffering, :code => 'A', :parent_course_offering => source_co
+  source_ao = make ActivityOfferingObject, :code => 'A', :parent_course_offering => source_co
   source_ao.cancel
 
   source_co.search_by_subjectcode
@@ -578,7 +578,7 @@ Given /^I create a course offering from catalog with a suspended activity offeri
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => {}
   @activity_offering.save
   @activity_offering.suspend :navigate_to_page => false
@@ -871,7 +871,7 @@ Then /^the Activity Offerings of these two COs should be in Approved state$/ do
   #ao_list = new_cluster_list[0].ao_list
   ao_list.each do |ao|
     on ManageCourseOfferings do |page|
-      page.ao_status(ao.code).should == ActivityOffering::APPROVED_STATUS
+      page.ao_status(ao.code).should == ActivityOfferingObject::APPROVED_STATUS
     end
   end
   @course_offering_ENGL202.manage_and_init
@@ -879,7 +879,7 @@ Then /^the Activity Offerings of these two COs should be in Approved state$/ do
   ao_list = @course_offering_ENGL202.get_ao_list
   ao_list.each do |ao|
     on ManageCourseOfferings do |page|
-      page.ao_status(ao.code).should == ActivityOffering::APPROVED_STATUS
+      page.ao_status(ao.code).should == ActivityOfferingObject::APPROVED_STATUS
     end
   end
 end
@@ -888,7 +888,7 @@ Then /^the Activity Offerings should be in Approved state$/ do
   @course_offering.manage_and_init
   @course_offering.get_ao_list.each do |ao|
     on ManageCourseOfferings do |page|
-      page.ao_status(ao.code).should == ActivityOffering::APPROVED_STATUS
+      page.ao_status(ao.code).should == ActivityOfferingObject::APPROVED_STATUS
     end
   end
 end
@@ -897,7 +897,7 @@ Then /^the selected Activity Offerings should be in Approved state$/ do
   @course_offering.manage
   @selected_ao_list.each do |ao|
     on ManageCourseOfferings do |page|
-      page.ao_status(ao.code).should == ActivityOffering::APPROVED_STATUS
+      page.ao_status(ao.code).should == ActivityOfferingObject::APPROVED_STATUS
     end
   end
 end
@@ -949,7 +949,7 @@ end
 #                            :course => "ENGL211",
 #                            :delivery_format_list => delivery_format_list
 #
-#  @activity_offering_canceled = create ActivityOffering, :parent_course_offering => @course_offering_canceled,
+#  @activity_offering_canceled = create ActivityOfferingObject, :parent_course_offering => @course_offering_canceled,
 #                              :format => "Lecture Only", :activity_type => "Lecture"
 #  @activity_offering_canceled.save
 #  @activity_offering_canceled.cancel
@@ -958,7 +958,7 @@ end
 #                             :course => "ENGL211",
 #                             :delivery_format_list => delivery_format_list
 #
-#  @activity_offering_suspended = create ActivityOffering, :parent_course_offering => @course_offering_suspended,
+#  @activity_offering_suspended = create ActivityOfferingObject, :parent_course_offering => @course_offering_suspended,
 #                                        :format => "Lecture Only", :activity_type => "Lecture"
 #
 #  @activity_offering_suspended.save
@@ -1009,7 +1009,7 @@ Given /^a new academic term has an activity offering in approved status$/ do
                                 :course => "ENGL462",
                                 :delivery_format_list => delivery_format_list
 
-    @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering,
+    @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                                          :format => "Lecture Only", :activity_type => "Lecture"
     @activity_offering.save
     @activity_offering.approve

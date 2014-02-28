@@ -21,14 +21,9 @@ When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
   course_offering = make CourseOffering
   course_offering.manage
 
-  @activity_offering = create ActivityOffering, :seat_pool_list => temp_list
+  @activity_offering = create ActivityOfferingObject, :seat_pool_list => temp_list
   @activity_offering.save
 
-  #TODO - uncomment this code when KSENROLL-5974 is fixed
-  #on ActivityOfferingMaintenanceView do |page|
-  #  page.home
-  #end
-  #now reopen course offering for ao edit
   @activity_offering.parent_course_offering.manage
 
   on ManageCourseOfferings do |page|

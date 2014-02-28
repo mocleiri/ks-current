@@ -5,17 +5,17 @@ end
 Given /^I have created an additional activity offering cluster for a catalog course offering$/ do
   @course_offering = make CourseOffering, :term=>Rollover::MAIN_TEST_TERM_TARGET, :course=>"CHEM277"
   @course_offering.manage_and_init
-  ao_cluster = make ActivityOfferingCluster
+  ao_cluster = make ActivityOfferingClusterObject
   @course_offering.add_ao_cluster(ao_cluster)
 end
 
 When /^I create a(?:n| new) activity offering cluster$/ do
-  @ao_cluster = make ActivityOfferingCluster
+  @ao_cluster = make ActivityOfferingClusterObject
   @course_offering.add_ao_cluster(@ao_cluster)
 end
 
 When /^I create a Discussion Lecture activity offering cluster$/ do
-  @ao_cluster = make ActivityOfferingCluster, :format => "Discussion/Lecture"
+  @ao_cluster = make ActivityOfferingClusterObject, :format => "Discussion/Lecture"
   @course_offering.add_ao_cluster(@ao_cluster)
 end
 
@@ -40,7 +40,7 @@ Given /^I have created an additional activity offering cluster for a course offe
   @course_offering.manage_and_init
   existing_cluster = @course_offering.activity_offering_cluster_list[0]
   new_ao = @course_offering.copy_ao :ao_code =>  existing_cluster.ao_list[0].code
-  new_cluster = make ActivityOfferingCluster
+  new_cluster = make ActivityOfferingClusterObject
   @course_offering.add_ao_cluster(new_cluster)
   existing_cluster.move_ao_to_another_cluster(new_ao.code, new_cluster)
 
@@ -53,11 +53,11 @@ end
 
 
 When /^I try to create a second activity offering cluster with the same private name$/ do
-  @ao_cluster2 = create ActivityOfferingCluster, :private_name=>@ao_cluster.private_name
+  @ao_cluster2 = create ActivityOfferingClusterObject, :private_name=>@ao_cluster.private_name
 end
 
 When /^I try to create a second activity offering cluster with a different private name$/ do
-  @ao_cluster2 = create ActivityOfferingCluster
+  @ao_cluster2 = create ActivityOfferingClusterObject
 end
 
 Then /^a cluster error message appears stating "(.*?)"$/ do |expected_errMsg|
@@ -149,7 +149,7 @@ When /^I copy an Activity Offering$/ do
 end
 
 When /^I add an Activity Offering$/ do
-  @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture/Discussion")
+  @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion")
 end
 
 When /^I update an Activity Offering to have less seats$/ do

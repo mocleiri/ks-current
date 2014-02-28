@@ -2,7 +2,7 @@ When /^I create a Course Offering and add (\d+) Activity Offerings$/ do |number_
   @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :course=>"CHEM401")
   @course_offering.manage_and_init
   @orig_number_aos = @course_offering.get_ao_list.count
-  @activity_offering = make ActivityOffering, :format => "Lecture Only"
+  @activity_offering = make ActivityOfferingObject, :format => "Lecture Only"
   @course_offering.create_list_aos :ao_object => @activity_offering, :number_aos_to_create=>number_of_aos_to_create
   @course_offering.manage_and_init
   @total_number =  @course_offering.get_ao_list.count
@@ -43,7 +43,7 @@ end
 And /^I? ?add an Activity Offering to the cross-listed CO$/ do
   @course_offering.manage_and_init
   @orig_total = @course_offering.get_ao_list.count
-  @course_offering.create_ao  :ao_obj => (make ActivityOffering, :format => "Lecture Only"), :navigate_to_page => false
+  @course_offering.create_ao  :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only"), :navigate_to_page => false
 end
 
 Then /^the AO count reflects the added AO$/ do

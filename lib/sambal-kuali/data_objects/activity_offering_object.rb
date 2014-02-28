@@ -7,12 +7,12 @@
 # class attributes are initialized with default data unless values are explicitly provided
 #
 # Typical usage: (with optional setting of explicit data value in [] )
-#  @activity_offering = make ActivityOffering, [:seat_pool_list => {},...]
+#  @activity_offering = make ActivityOfferingObject, [:seat_pool_list => {},...]
 #  @activity_offering.create
 # OR alternatively 2 steps together as
-#  @activity_offering = create ActivityOffering, [:seat_pool_list => {},...]
+#  @activity_offering = create ActivityOfferingObject, [:seat_pool_list => {},...]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class ActivityOffering
+class ActivityOfferingObject
   include Foundry
   include DataFactory
   include DateFactory
@@ -54,34 +54,6 @@ class ActivityOffering
   DRAFT_STATUS = "Draft"
   # [String]
   APPROVED_STATUS = "Approved"
-
-
-  # provides default data:
-  #
-  #  defaults = {
-  #    :parent_course_offering => ""
-  #    :status => "Draft",
-  #    :format => "Lecture Only",
-  #    :activity_type => "Lecture",
-  #    :max_enrollment => 100,
-  #    :actual_scheduling_information_list => {},
-  #    :requested_scheduling_information_list => {} ,
-  #    :personnel_list => [],
-  #    :seat_pool_list => {} ,
-  #    :course_url => "www.test_course.com",
-  #    :evaluation => true,
-  #    :honors_course => true,
-  #    :colocated => false,
-  #    :colocate_ao_list => [],
-  #    :colocate_shared_enrollment => false,
-  #    :subterm => "None"
-  #    :waitlist_config => (make Waitlist)
-  #  }
-  # some basic e.g. list/hash values:
-  # :seat_pool_list =>  {"random"=> (make SeatPool)}
-  # :requested_scheduling_information_list => {"default"=> (make SchedulingInformation)}
-  # :personnel_list => Array.new(1){make Personnel}
-  # :colocate_ao_list => Array.new(1){make ActivityOffering}
 
   # initialize is generally called using TestFactory Foundry .make or .create methods
   def initialize(browser, opts={})
@@ -770,6 +742,12 @@ class ActivityOffering
 
 end
 
+class ActivityOfferingCollection < CollectionsFactory
+
+  contains ActivityOfferingObject
+
+end
+
 # stores test data for creating/editing and validating seatpool and provides convenience methods for navigation and data entry
 #
 # SeatPool is a child of a ActivityOffering
@@ -779,7 +757,7 @@ end
 # Typical usage: (with optional setting of explicit data value in [] )
 # seatpool_hash[1] = make SeatPool, :population_name => "Core", :seats => 10, :priority => 2, :priority_after_reseq => 2
 #
-# @activity_offering = create ActivityOffering, :seat_pool_list => seatpool_hash
+# @activity_offering = create ActivityOfferingObject, :seat_pool_list => seatpool_hash
 #
 #create generally called from ActivityOffering class
 # Note the use of the ruby options hash pattern re: setting attribute values

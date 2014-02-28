@@ -1,7 +1,7 @@
 When /^I create a seat pool for an activity offering by completing all fields$/ do
   course_offering = make CourseOffering
   course_offering.manage
-  @activity_offering = create ActivityOffering, :seat_pool_list =>  {"random"=> (make SeatPool)}
+  @activity_offering = create ActivityOfferingObject, :seat_pool_list =>  {"random"=> (make SeatPool)}
 end
 
 Then /^the percent allocated for each row is updated$/ do
@@ -33,7 +33,7 @@ When /^I create seat pools for an activity offering and priorities are duplicate
   seatpool_hash[2] = make SeatPool, :population_name => "DSS", :seats => 11, :priority => 2, :priority_after_reseq => 2
   seatpool_hash[3] = make SeatPool, :population_name => "Fraternity/Sorority", :seats => 12, :priority => 4, :priority_after_reseq => 3
 
-  @activity_offering = create ActivityOffering, :seat_pool_list => seatpool_hash
+  @activity_offering = create ActivityOfferingObject, :seat_pool_list => seatpool_hash
 
 end
 
@@ -52,7 +52,7 @@ When /^I add a seat pool using a population that is already used for that activi
   seatpool_hash["Core"] = make SeatPool, :population_name => "Core", :seats => 10, :priority => 1
   seatpool_hash["dup"] = make SeatPool, :population_name => "Core", :seats => 11, :priority => 2, :exp_add_succeed => false
 
-  @activity_offering = create ActivityOffering,  :seat_pool_list => seatpool_hash
+  @activity_offering = create ActivityOfferingObject,  :seat_pool_list => seatpool_hash
   @activity_offering.save
 end
 
@@ -74,7 +74,7 @@ When /^I add a seat pool without specifying a population$/ do
   course_offering.manage
 
   seatpool1 = make SeatPool, :population_name => "", :seats => 10, :priority => 2, :exp_add_succeed => false
-  @activity_offering = create ActivityOffering, :seat_pool_list => {"blank" => seatpool1}
+  @activity_offering = create ActivityOfferingObject, :seat_pool_list => {"blank" => seatpool1}
   @activity_offering.save
 end
 

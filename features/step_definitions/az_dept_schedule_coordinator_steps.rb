@@ -67,7 +67,7 @@ When /^I manage a course offering for a subject code not in my admin org$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
   @course_offering = make CourseOffering, :course=>"CHEM611", :term=>@term_for_test
   @course_offering.manage
-  @activity_offering = make ActivityOffering, :code=>"A"
+  @activity_offering = make ActivityOfferingObject, :code=>"A"
 end
 
 When /^I manage the course offering$/ do
@@ -94,7 +94,7 @@ When /^I manage a course offering in my admin org$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
   @course_offering = make CourseOffering, :course=>"ENGL245", :term=>@term_for_test
   @course_offering.manage
-  @activity_offering = make ActivityOffering, :code=>"A"
+  @activity_offering = make ActivityOfferingObject, :code=>"A"
 end
 
 Then /^I have access to view course offering details$/ do
@@ -701,7 +701,7 @@ When /^there is a course with a co-located SI in my admin org/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"ENGL462", :term=>@term_for_test)
   @course_offering.manage_and_init
   @course_offering.activity_offering_cluster_list[0].ao_list[0].edit :colocated => true,
-                                                                    :colocate_ao_list => Array.new(1){make ActivityOffering, :code=> "A",
+                                                                    :colocate_ao_list => Array.new(1){make ActivityOfferingObject, :code=> "A",
                                                                     :parent_course_offering => (make CourseOffering, :course => "ENGL295", :term => @term_for_test)},
                                                                     :max_enrollment=>25,
                                                                     :colocate_shared_enrollment=> true

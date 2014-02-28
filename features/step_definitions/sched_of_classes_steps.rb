@@ -98,7 +98,7 @@ end
 When /^I add an Activity Offering in draft status to an existing Course Offering$/ do
   @course_offering = make CourseOffering, :term => "201208", :course=>"ENGL222"
   @course_offering.manage_and_init
-  @new_ao = @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only"), :navigate_to_page => false
+  @new_ao = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only"), :navigate_to_page => false
 end
 
 And /^I search for the Course Offering in the schedule of classes$/ do

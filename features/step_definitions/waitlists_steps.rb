@@ -14,7 +14,7 @@ end
 
 Given /^there is an existing course offering with activity offerings that have waitlists enabled$/ do
   @course_offering = make CourseOffering, :course => "ENGL293"
-  @activity_offering = make ActivityOffering, :parent_course_offering => @course_offering, :code => "A"
+  @activity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => "A"
 end
 
 #Given /^I create a course and activity offering with waitlists enabled$/ do
@@ -30,7 +30,7 @@ Given /^I (?:manage|create)(?: a course)? and? activity offering with waitlists 
     @calendar.terms << term
   end
   @course_offering = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL300", :waitlists => true
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
   @activity_offering.save
 end
 
@@ -41,14 +41,14 @@ Given /^I create a course and activity offering with waitlists disabled$/ do
     @calendar.terms << term
   end
   @course_offering_wl_disabled = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL300", :waitlist => false
-  @activity_offering_wl_disabled = create ActivityOffering, :parent_course_offering => @course_offering_wl_disabled
+  @activity_offering_wl_disabled = create ActivityOfferingObject, :parent_course_offering => @course_offering_wl_disabled
   @activity_offering_wl_disabled.save
 end
 
 Given /^I (?:manage|create) an activity offering with the limit waitlist size set$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
   waitlist_config = make Waitlist, :enabled => true, :limit_size => 30
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
   @activity_offering.save
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
@@ -62,7 +62,7 @@ end
 Given /^I manage an activity offering with waitlists processing type set to (.*)$/ do |processing_type|
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
   waitlist_config = make Waitlist, :enabled => true, :type => processing_type
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
   @activity_offering.save
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
@@ -148,14 +148,14 @@ end
 
 Given /^I add two activity offerings$/ do
   @course_offering.manage
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
   @activity_offering.save
-  @activity_offering2 = create ActivityOffering, :parent_course_offering => @course_offering
+  @activity_offering2 = create ActivityOfferingObject, :parent_course_offering => @course_offering
   @activity_offering2.save
 end
 
 Given /^I add an activity offering$/ do
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
   @activity_offering.save
 end
 
@@ -274,7 +274,7 @@ end
 Given /^I manage an activity offering with the waitlist allow hold list option enabled$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
   waitlist_config = make Waitlist, :enabled => true, :allow_hold_list => true
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
   @activity_offering.save
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
@@ -336,7 +336,7 @@ Given /^there are two other activity offering with waitlists enabled and no wait
   @ao_list = []
   ["ENGL416","ENGL420"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     activity_offering.save
     @ao_list << activity_offering
   end
@@ -373,7 +373,7 @@ Given /^I create three course offerings with one activity offering in each with 
 
   ["ENGL300","WMST300","WMST400"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true, :term => @term.term_code
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     activity_offering.save
     @ao_list << activity_offering
   end
@@ -406,7 +406,7 @@ end
 Then /^the waitlist configuration is copied to the(?: new)? colocated activity offering/ do
   course_offering_target = make CourseOffering, :course => @ao_list[0].parent_course_offering.course,
                                 :term => @term.term_code
-  @activity_offering_copy = make ActivityOffering, :code => @ao_list[0].code, :parent_course_offering => course_offering_target
+  @activity_offering_copy = make ActivityOfferingObject, :code => @ao_list[0].code, :parent_course_offering => course_offering_target
 
   @activity_offering_copy.parent_course_offering.manage
   on(ManageCourseOfferings).view_activity_offering(@activity_offering_copy.code)
@@ -426,9 +426,9 @@ Given /^there is an existing course offering with a colocated activity offering 
   @course_offering.manage
 
   @ao_list = []
-  @ao_list << (make ActivityOffering, :code => "A", :parent_course_offering => @course_offering)
+  @ao_list << (make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering)
   colocated_ao_parent = make CourseOffering, :course => "HIST310", :term => "201208"
-  @ao_list << (make ActivityOffering, :code => "A", :parent_course_offering => colocated_ao_parent, :colocated => true)
+  @ao_list << (make ActivityOfferingObject, :code => "A", :parent_course_offering => colocated_ao_parent, :colocated => true)
   @ao_list[0].colocate_ao_list << @ao_list[1]
   on(ManageCourseOfferings).has_colo_icon(@ao_list[0].code).should be_true
 end
@@ -534,7 +534,7 @@ Given /^I create two colocated activity offerings \(shared enrolment\) with wait
 
   ["ENGL300","WMST300"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true, :term => @term.term_code
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     activity_offering.save
     @ao_list << activity_offering
   end
@@ -569,7 +569,7 @@ end
 
 When /^I add another activity offering to the colocated set$/ do
     course_offering = create CourseOffering, :course => "WMST400", :waitlists => true, :term => @term.term_code
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     activity_offering.save
     @ao_list << activity_offering
 

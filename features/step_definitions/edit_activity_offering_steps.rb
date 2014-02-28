@@ -197,12 +197,12 @@ Given /^I manage a given Course Offering$/ do
 end
 
 Given /^I edit an Activity Offering$/ do
-  @activity_offering = make ActivityOffering, :parent_course_offering => @course_offering, :code => 'B'
+  @activity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => 'B'
 end
 
 Given /^I edit an Activity Offering that has available subterms$/ do
   @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :course=>"ENGL222", :term=>"201208")
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @course_offering.manage
   @course_offering.edit_ao :ao_code=> @activity_offering.code
 
@@ -270,7 +270,7 @@ Then /^the AO subterm is successfully removed$/ do
 end
 
 Then /^I copy the activity offering$/ do
-  @activity_offering_copy = create ActivityOffering, :create_by_copy => true,
+  @activity_offering_copy = create ActivityOfferingObject, :create_by_copy => true,
                                                 :code => @activity_offering.code,
                                                 :parent_course_offering => @activity_offering.parent_course_offering
 end

@@ -3,9 +3,9 @@ When /^there is a course offering with a colocated activity offering$/ do
   @course_offering.manage
 
   @ao_list = []
-  @ao_list << (make ActivityOffering, :code => "A", :parent_course_offering => @course_offering)
+  @ao_list << (make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering)
   colocated_ao_parent = make CourseOffering, :course => "CHEM641", :term => "201208"
-  @ao_list << (make ActivityOffering, :code => "A", :parent_course_offering => colocated_ao_parent)
+  @ao_list << (make ActivityOfferingObject, :code => "A", :parent_course_offering => colocated_ao_parent)
   @ao_list[0].colocate_ao_list << @ao_list[1]
   on(ManageCourseOfferings).has_colo_icon(@ao_list[0].code).should be_true
 end
@@ -15,7 +15,7 @@ When /^I create "([2-9])" COs with an AO in each$/ do |number_of_cos_to_create|
 
   for i in 1..number_of_cos_to_create.to_i
     co = create CourseOffering, :create_by_copy => (make CourseOffering, :course => "ENGL255", :term => Rollover::MAIN_TEST_TERM_TARGET)
-    ao = make ActivityOffering, :code => "A", :parent_course_offering => co
+    ao = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
     @ao_list << ao
   end
 end
@@ -28,7 +28,7 @@ When /^I create three Course Offerings with colocated AOs in the new term$/ do
     delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_driver => "Lecture", :final_exam_activity => "Lecture")
     co = create CourseOffering, :course => "ENGL211", :term => @term.term_code, :delivery_format_list => delivery_format_list
 
-    ao = create ActivityOffering, :parent_course_offering => co, :format => "Lecture Only", :activity_type => "Lecture"
+    ao = create ActivityOfferingObject, :parent_course_offering => co, :format => "Lecture Only", :activity_type => "Lecture"
     ao.save
     @ao_list << ao
   end
@@ -106,7 +106,7 @@ end
 
 When /^I designate a valid term and Course Offering Code with a fully colocated AO$/ do
   co = create CourseOffering, :create_by_copy => (make CourseOffering, :course => "CHEM441", :term => "201208")
-  @activity_offering = make ActivityOffering, :code => "A", :parent_course_offering => co
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
 end
 
 And /^I delete the fully colocated AO$/ do
@@ -145,7 +145,7 @@ Then /^the activity offering in the course offering copy is not colocated$/ do
 end
 
 When /^I copy one of the colocated activity offerings$/ do
-  @activity_offering_copy = create ActivityOffering, :create_by_copy => true,
+  @activity_offering_copy = create ActivityOfferingObject, :create_by_copy => true,
                                    :code => @ao_list[0].code,
                                    :parent_course_offering => @ao_list[0].parent_course_offering
 end
@@ -177,17 +177,17 @@ When /^I create some dummy test data to speed up AFT development$/ do
 
   # 201301 ENGL211G AO:A
   co = make CourseOffering, :term => '201301', :course => 'ENGL211Q'
-  ao = make ActivityOffering, :code => "A", :parent_course_offering => co
+  ao = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
   @ao_list << ao
 
   # 201301 ENGL211H AO:A
   co = make CourseOffering, :term => '201301', :course => 'ENGL211R'
-  ao = make ActivityOffering, :code => "A", :parent_course_offering => co
+  ao = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
   @ao_list << ao
 
   # 201301 ENGL211I AO:A
   co = make CourseOffering, :term => '201301', :course => 'ENGL211S'
-  ao = make ActivityOffering, :code => "A", :parent_course_offering => co
+  ao = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
   @ao_list << ao
 
 end
@@ -198,7 +198,7 @@ Then /^the Activity Offerings are colocated in the rollover target$/ do
   for i in 0..2
     co = make CourseOffering, :course =>  @ao_list[i].parent_course_offering.course,
               :term => @term_target.term_code
-    ao = make ActivityOffering, :code => "A", :parent_course_offering => co
+    ao = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
     @ao_list_rollover << ao
   end
 
