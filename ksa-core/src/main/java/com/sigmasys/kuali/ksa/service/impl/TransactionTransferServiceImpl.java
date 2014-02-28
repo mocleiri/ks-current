@@ -5,6 +5,7 @@ import com.sigmasys.kuali.ksa.exception.*;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.model.security.Permission;
 import com.sigmasys.kuali.ksa.service.*;
+import com.sigmasys.kuali.ksa.util.TransactionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -486,7 +487,13 @@ public class TransactionTransferServiceImpl extends GenericPersistenceService im
             destTransaction = transactionService.getTransaction(destTransaction.getId());
 
             // Checking the unallocated amount again
-            if (reversalAmount.compareTo(destTransaction.getUnallocatedAmount()) > 0) {
+            BigDecimal unallocatedAmount = destTransaction.getUnallocatedAmount();
+
+            if (reversalAmount.compareTo(unallocatedAmount) > 0) {
+                logger.info("Transaction ID = " + destTransaction.getId() + ", reversal amount = " +
+                        TransactionUtils.formatAmount(reversalAmount));
+                logger.info("Transaction ID = " + destTransaction.getId() + ", unallocated amount = " +
+                        TransactionUtils.formatAmount(unallocatedAmount));
                 String errMsg = "Reversal amount cannot be greater than transaction unallocated amount";
                 logger.error(errMsg);
                 throw new IllegalStateException(errMsg);

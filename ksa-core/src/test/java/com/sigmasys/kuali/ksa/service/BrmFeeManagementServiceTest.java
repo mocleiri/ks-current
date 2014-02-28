@@ -306,6 +306,29 @@ public class BrmFeeManagementServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    public void assesFees100() throws Exception {
+
+        String userId = "user100";
+
+        FeeManagementSession session = fmService.getOldestFeeManagementSession(userId, FeeManagementSessionStatus.CURRENT);
+
+        Assert.notNull(session);
+        Assert.notNull(session.getId());
+        Assert.notNull(session.getSignups());
+        Assert.notEmpty(session.getSignups());
+
+        FeeManagementSession updatedSession = fmService.processFeeManagementSession(session.getId());
+
+        Assert.notNull(updatedSession);
+        Assert.notNull(updatedSession.getId());
+
+        Assert.notNull(updatedSession.getAccount());
+        Assert.isTrue(updatedSession.getAccount().getId().equals(userId));
+
+        Assert.isTrue(session == updatedSession);
+    }
+
+    @Test
     public void assesFees101() throws Exception {
 
         String userId = "user101";

@@ -2284,7 +2284,13 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
             transaction = getTransaction(transaction.getId());
 
             // Checking the unallocated amount again
-            if (absoluteReversalAmount.compareTo(transaction.getUnallocatedAmount()) > 0) {
+            BigDecimal unallocatedAmount = transaction.getUnallocatedAmount();
+
+            if (absoluteReversalAmount.compareTo(unallocatedAmount) > 0) {
+                logger.info("Transaction ID = " + transaction.getId() + ", reversal amount = " +
+                        TransactionUtils.formatAmount(absoluteReversalAmount));
+                logger.info("Transaction ID = " + transaction.getId() + ", unallocated amount = " +
+                        TransactionUtils.formatAmount(unallocatedAmount));
                 String errMsg = "Reversal amount cannot be greater than transaction unallocated amount";
                 logger.error(errMsg);
                 throw new IllegalStateException(errMsg);
