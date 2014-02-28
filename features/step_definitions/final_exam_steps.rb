@@ -1,11 +1,11 @@
 When /^I change the final exam period start date to be before the term start date and save$/ do
   @calendar = make AcademicCalendar, :year => "2012"
 
-  @term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
-  @calendar.terms << @term
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
+  @calendar.terms << term
 
-  @exam_period = make ExamPeriodObject, :parent_term => @term
-  @calendar.terms[0].exam_period = @exam_period
+  exam_period = make ExamPeriodObject, :parent_term => term
+  @calendar.terms[0].exam_period = exam_period
 
   @calendar.terms[0].exam_period.edit :start_date => "08/15/2012"
 end
@@ -13,11 +13,11 @@ end
 When /^I change the final exam period end date to be after the term end date and save$/ do
   @calendar = make AcademicCalendar, :year => "2012"
 
-  @term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
-  @calendar.terms << @term
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
+  @calendar.terms << term
 
-  @exam_period = make ExamPeriodObject, :parent_term => @term
-  @calendar.terms[0].exam_period = @exam_period
+  exam_period = make ExamPeriodObject, :parent_term => term
+  @calendar.terms[0].exam_period = exam_period
 
   @calendar.terms[0].exam_period.edit :start_date => "08/15/2012"
 end
@@ -25,26 +25,27 @@ end
 When /^I add a final exam period to the new academic calender and save$/ do
   @calendar = create AcademicCalendar
 
-  @term = make AcademicTermObject, :parent_calendar => @calendar, :start_date=>"08/20/#{@calendar.year}",
+  term = make AcademicTermObject, :parent_calendar => @calendar, :start_date=>"08/20/#{@calendar.year}",
                :end_date=>"12/10/#{@calendar.year}", :term => "Fall"
+  @calendar.add_term term
 
-  @exam_period = make ExamPeriodObject, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+  exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"12/11/#{@calendar.year}",
                      :end_date=>"12/20/#{@calendar.year}"
-  @term.exam_period << @exam_period
-
-  @calendar.add_term @term
+  @calendar.terms[0].add_exam_period exam_period
+  @calendar.terms[0].save
 end
 
 When /^I copy a newly created academic calendar that has a defined final exam period$/ do
   @source_calendar = create AcademicCalendar
 
-  @term = make AcademicTermObject, :parent_calendar => @source_calendar, :start_date=>"09/20/#{@source_calendar.year}",
+  term = make AcademicTermObject, :parent_calendar => @source_calendar, :start_date=>"09/20/#{@source_calendar.year}",
                :end_date=>"12/10/#{@source_calendar.year}"
-  @exam_period = make ExamPeriodObject, :parent_term => @term, :start_date=>"12/11/#{@source_calendar.year}",
-                     :end_date=>"12/20/#{@source_calendar.year}"
-  @term.exam_period << @exam_period
+  @source_calendar.add_term term
 
-  @source_calendar.add_term @term
+  exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"12/11/#{@source_calendar.year}",
+                     :end_date=>"12/20/#{@source_calendar.year}"
+  @source_calendar.terms[0].add_exam_period exam_period
+  @source_calendar.terms[0].save
 
   @calendar = make AcademicCalendar, :year => "#{@source_calendar.year.to_i + 1}"
   @calendar.copy_from @source_calendar.name
@@ -53,8 +54,8 @@ end
 When /^I copy an existing academic calendar that has a defined final exam period$/ do
   @source_calendar = make AcademicCalendar, :name => "2012-2013 Academic Calendar"
 
-  @term = make AcademicTermObject, :parent_calendar => @source_calendar
-  @source_calendar.terms << @term
+  term = make AcademicTermObject, :parent_calendar => @source_calendar
+  @source_calendar.terms << term
 
   @calendar = make AcademicCalendar
 
@@ -126,27 +127,26 @@ end
 When /^I create an Academic Calendar and add an official term$/ do
   @calendar = create AcademicCalendar
 
-  @term = make AcademicTermObject, :parent_calendar => @calendar
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
 
-  @exam_period = make ExamPeriodObject, :parent_term => @term
-  @term.exam_period << @exam_period
-
-  @calendar.add_term @term
+  exam_period = make ExamPeriodObject, :parent_term => term
+  @calendar.terms[0].add_exam_period exam_period
 
   @calendar.terms[0].make_official
-  @manage_soc = make ManageSoc, :term_code => @term.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
 end
 
 When /^I create an Academic Calendar and add an official term with no exam period$/ do
   @calendar = create AcademicCalendar
 
-  @term = make AcademicTermObject, :parent_calendar => @calendar
+  term = make AcademicTermObject, :parent_calendar => @calendar
 
-  @calendar.add_term @term
+  @calendar.add_term term
 
   @calendar.terms[0].make_official
-  @manage_soc = make ManageSoc, :term_code => @term.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
 end
 
@@ -157,33 +157,33 @@ end
 
 When /^I have multiple Course Offerings each with a different Exam Offering in the source term$/ do
   @co_list = []
-  @co_list << (create CourseOffering, :term => @term.term_code, :course => "PHYS603",
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603",
                       :final_exam_type => "NONE")
-  @co_list << (create CourseOffering, :term => @term.term_code, :course => "PHYS603",
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603",
                       :final_exam_type => "ALTERNATE")
-  @co_list << (create CourseOffering, :term => @term.term_code, :course => "PHYS603",
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603",
                       :final_exam_driver => "Final Exam Per Activity Offering")
 
   delivery_format_list = []
   delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering",
                                 :final_exam_driver => "Course Offering")
-  @co_list << (create CourseOffering, :term => @term.term_code, :course => "PHYS603", @use_final_exam_matrix => false,
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603", @use_final_exam_matrix => false,
                       :delivery_format_list => delivery_format_list)
 end
 
 And /^I rollover the source term to a new academic term$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1
 
-  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
-  @calendar_target.add_term @term_target
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term term_target
 
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @term_target.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :target_term => @term_target.term_code ,
-                   :source_term => @term.term_code,
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
+                   :source_term => @calendar.terms[0].term_code,
                    :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
@@ -194,7 +194,7 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
   delivery_format_list = []
   delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering",
                                 :final_exam_driver => "Course Offering")
-  course_offering = create CourseOffering, :term => @term.term_code,
+  course_offering = create CourseOffering, :term => @calendar.terms[0].term_code,
                            :course => "BSCI215",
                            :delivery_format_list => delivery_format_list,
                            :final_exam_driver => "Final Exam Per Course Offering"
@@ -203,7 +203,7 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
 
   @co_list[0].create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
 
-  course_offering = create CourseOffering, :term => @term.term_code,
+  course_offering = create CourseOffering, :term => @calendar.terms[0].term_code,
                            :course => "ENGL301",
                            :final_exam_driver => "Final Exam Per Activity Offering"
   @co_list << course_offering
@@ -211,28 +211,28 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
   delivery_format_list[0] = (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering",
                                   :final_exam_driver => "Lecture")
 
-  @co_list << (create CourseOffering, :term => @term.term_code, :course => "PHYS272",
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS272",
                       :delivery_format_list => delivery_format_list,
                       :final_exam_driver => "Final Exam Per Activity Offering")
   @co_list[2].create_ao :ao_obj => (make ActivityOffering, :format => "Lecture Only")
 
-  @co_list << (create CourseOffering, :term => @term.term_code, :course => "CHEM611",
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM611",
                       :final_exam_driver => "Final Exam Per Course Offering")
 end
 
 When /^I rollover the term to a new academic term that has no exam period$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1
 
-  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
-  @calendar_target.add_term @term_target
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term term_target
 
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @term_target.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :target_term => @term_target.term_code ,
-                   :source_term => @term.term_code,
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code,
+                   :source_term => @calendar.terms[0].term_code,
                    :exp_success => false, :defer_continue_wo_exams => true
   @rollover.perform_rollover
 end
@@ -240,19 +240,19 @@ end
 When /^I rollover the term to a new academic term that has an exam period$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1
 
-  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term term_target
 
-  @exam_period = make ExamPeriodObject, :parent_term => @term_target
-  @term_target.exam_period << @exam_period
+  exam_period = make ExamPeriodObject, :parent_term => term_target
+  @calendar_target.terms[0].add_exam_period exam_period
 
-  @calendar_target.add_term @term_target
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @term_target.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :target_term => @term_target.term_code ,
-                   :source_term => @term.term_code,
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
+                   :source_term => @calendar.terms[0].term_code,
                    :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
@@ -453,7 +453,7 @@ Given /^that the SOC state is prior to Published$/ do
 end
 
 When /^I view the Exam Offerings for a CO with a standard final exam driven by Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @calendar.terms[0], :course => "ENGL304")
   @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
@@ -631,10 +631,10 @@ When /^I view the Exam Offerings for a CO created from catalog with a standard f
 end
 
 When /^I add an Exam Period to the term$/ do
-  @exam_period = make ExamPeriodObject, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+  exam_period = make ExamPeriodObject, :parent_term => @calendar.terms[0], :start_date=>"12/11/#{@calendar.year}",
                       :end_date=>"12/20/#{@calendar.year}"
 
-  @calendar.terms[0].add_exam_period @exam_period
+  @calendar.terms[0].add_exam_period exam_period
   @calendar.terms[0].save
 end
 
@@ -644,12 +644,12 @@ When /^I deselect Exclude Saturday and Exclude Sunday for the Exam Period$/ do
 end
 
 When /^I create a Fall Term Exam Period with 2 fewer days than the number of Final Exam Matrix days$/ do
-  @term = create AcademicTermObject, :parent_calendar => @calendar, :start_date => "09/01/#{@calendar.year}",
+  term = create AcademicTermObject, :parent_calendar => @calendar, :start_date => "09/01/#{@calendar.year}",
                  :end_date=>"12/20/#{@calendar.year}"
-  @calendar.terms << @term
+  @calendar.add_term term
 
-  @exam_period = make ExamPeriodObject, :parent_term => @term, :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
-  @calendar.terms[0].add_exam_period @exam_period
+  exam_period = make ExamPeriodObject, :parent_term => @calendar.terms[0], :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
+  @calendar.terms[0].add_exam_period exam_period
 
   @calendar.terms[0].save :exp_success => false
 end
@@ -789,18 +789,18 @@ When /^I suspend an Activity Offering for a CO with a standard final exam driven
 end
 
 Then /^a warning in the Final Exam Period section is displayed stating "([^"]*)"$/ do |exp_msg|
-  on(EditAcademicTerms).get_exam_warning_message( @term.term_type).should match /#{exp_msg}/
+  on(EditAcademicTerms).get_exam_warning_message( @calendar.terms[0].term_type).should match /#{exp_msg}/
 end
 
 Then /^an error in the Final Exam section is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.get_exam_error_message( @term.term_type).should match /#{exp_msg}/
+    page.get_exam_error_message( @calendar.terms[0].term_type).should match /#{exp_msg}/
   end
 end
 
 Then /^no error in the Final Exam section is displayed when I save the data$/ do
   on EditAcademicTerms do |page|
-    page.exam_error_message( @term.term_type).present?.should be_false
+    page.exam_error_message( @calendar.terms[0].term_type).present?.should be_false
     page.cancel
   end
 end
@@ -812,9 +812,9 @@ Then /^the final exam period for the Fall Term is listed when I view the Academi
 
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.get_exam_start_date( @term.term_type).should match /12\/11\/#{@calendar.year}/
-    page.get_exam_end_date( @term.term_type).should match /12\/20\/#{@calendar.year}/
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.get_exam_start_date( @calendar.terms[0].term_type).should match /12\/11\/#{@calendar.year}/
+    page.get_exam_end_date( @calendar.terms[0].term_type).should match /12\/20\/#{@calendar.year}/
   end
 end
 
@@ -972,7 +972,7 @@ end
 
 Then /^all the exam settings and messages are retained after the rollover is completed for the courses that were rolled over$/ do
   @test_co_list = []
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[0].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[0].course)
   @test_co_list[0].manage
   on(ManageCourseOfferings).edit_course_offering
   on CourseOfferingCreateEdit do |page|
@@ -980,7 +980,7 @@ Then /^all the exam settings and messages are retained after the rollover is com
     page.new_final_exam_driver_value.should == "No final exam for this offering"
   end
 
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[1].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[1].course)
   @test_co_list[1].manage
   on(ManageCourseOfferings).edit_course_offering
   on CourseOfferingCreateEdit do |page|
@@ -989,12 +989,12 @@ Then /^all the exam settings and messages are retained after the rollover is com
   end
 
 
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[2].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[2].course)
   @test_co_list[2].manage
   on(ManageCourseOfferings).edit_course_offering
   on(CourseOfferingCreateEdit).new_final_exam_driver_value.should == "Activity Offering"
 
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[3].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[3].course)
   @test_co_list[3].manage
   on(ManageCourseOfferings).edit_course_offering
   on(CourseOfferingCreateEdit).new_final_exam_driver_value.should == "Course Offering"
@@ -1003,7 +1003,7 @@ end
 
 Then /^all the Final Exam and Exam Driver data for the COs should be retained after the rollover is completed and Exam Offerings should be created in a state of Draft$/ do
   @test_co_list = []
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[0].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[0].course)
   @test_co_list[0].manage
   on(ManageCourseOfferings).view_exam_offerings
   on ViewExamOfferings do |page|
@@ -1011,18 +1011,18 @@ Then /^all the Final Exam and Exam Driver data for the COs should be retained af
     page.eo_by_co_status.should match /Draft/
   end
 
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[1].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[1].course)
   @test_co_list[1].manage
   on ManageCourseOfferings do |page|
     page.view_exam_offerings_link.present?.should == false
   end
 
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[2].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[2].course)
   @test_co_list[2].manage
   on(ManageCourseOfferings).view_exam_offerings
   on(ViewExamOfferings).eo_by_ao_status("A").should match /Draft/
 
-  @test_co_list << (make CourseOffering, :term => @term_target.term_code, :course => @co_list[3].course)
+  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[3].course)
   @test_co_list[3].manage
   on(ManageCourseOfferings).view_exam_offerings
   on ViewExamOfferings do |page|
@@ -1219,19 +1219,19 @@ end
 
 Then /^the Exclude Saturday and Exclude Sunday toggles should be selected by default$/ do
   on EditAcademicTerms do |page|
-    page.exclude_saturday_toggle( @term.term_type).attribute_value('checked').should == "true"
-    page.exclude_sunday_toggle( @term.term_type).attribute_value('checked').should == "true"
+    page.exclude_saturday_toggle( @calendar.terms[0].term_type).attribute_value('checked').should == "true"
+    page.exclude_sunday_toggle( @calendar.terms[0].term_type).attribute_value('checked').should == "true"
   end
 end
 
 Then /^the Exclude Saturday or Exclude Sunday fields should be deselected when view the term$/ do
   @calendar.terms[0].search
-  on(CalendarSearch).view @term.term_name
+  on(CalendarSearch).view @calendar.terms[0].term_name
   on ViewAcademicTerms do |page|
-    page.open_term_section(@term.term_type)
+    page.open_term_section(@calendar.terms[0].term_type)
     sleep 30
-    page.get_exclude_saturday_value(@term.term_type).should == "false"
-    page.get_exclude_sunday_value(@term.term_type).should == "false"
+    page.get_exclude_saturday_value(@calendar.terms[0].term_type).should == "false"
+    page.get_exclude_sunday_value(@calendar.terms[0].term_type).should == "false"
   end
 end
 
@@ -1279,5 +1279,13 @@ When /^I edit the CO to add a second Format Offering$/ do
   on(ManageCourseOfferings).edit_course_offering
   delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
   @course_offering.add_delivery_format delivery_format
+  @course_offering.save
+end
+
+Given /^there is a Course Offering created from catalog with a standard final exam driven by Course Offering$/ do
+  @course_offering.create    # CourseOffering, :term => "201208", :course => "HIST111"
+
+  @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
+                                 :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
 end

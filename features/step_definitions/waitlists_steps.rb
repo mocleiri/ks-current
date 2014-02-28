@@ -24,16 +24,23 @@ end
 #I create a course and activity offering with waitlists enabled
 #I manage an activity offering with waitlists enabled
 Given /^I (?:manage|create)(?: a course)? and? activity offering with waitlists enabled$/ do
-  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
-
-  @course_offering = create CourseOffering, :term => @term.term_code, :course => "ENGL300", :waitlists => true
+  if @calendar.nil?
+    @calendar = make AcademicCalendar, :year => "2013"
+    term = make AcademicTermObject, :parent_calendar => @calendar, :term_code => Rollover::MAIN_TEST_TERM_TARGET
+    @calendar.terms << term
+  end
+  @course_offering = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL300", :waitlists => true
   @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
   @activity_offering.save
 end
 
 Given /^I create a course and activity offering with waitlists disabled$/ do
-  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
-  @course_offering_wl_disabled = create CourseOffering, :term => @term.term_code, :course => "ENGL300", :waitlist => false
+  if @calendar.nil?
+    @calendar = make AcademicCalendar, :year => "2013"
+    term = make AcademicTermObject, :parent_calendar => @calendar, :term_code => Rollover::MAIN_TEST_TERM_TARGET
+    @calendar.terms << term
+  end
+  @course_offering_wl_disabled = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL300", :waitlist => false
   @activity_offering_wl_disabled = create ActivityOffering, :parent_course_offering => @course_offering_wl_disabled
   @activity_offering_wl_disabled.save
 end

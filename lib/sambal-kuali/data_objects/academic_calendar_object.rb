@@ -214,22 +214,6 @@ class AcademicCalendar < DataObject
     on(EditAcademicTerms).save
   end
 
-  def delete_term term_object
-    edit
-
-    on EditAcademicTerms do |page|
-      page.go_to_terms_tab
-      page.delete_term term_object.term_type
-      page.save
-    end
-
-    @terms.delete term_object
-  end
-
-  def edit_keydate( key_date_obj, opts)
-    edit
-  end
-
   #holiday_calendar is created separately
   def add_holiday_calendar hcal_object
     edit
@@ -300,7 +284,7 @@ class AcademicTermObject
       :parent_term=> nil,
       :subterm=> false,
       :key_date_groups => collection('KeyDateGroup'),
-      :exam_period => collection('ExamPeriod')
+      :exam_period => nil
     }
 
     #A subterm can't use the same Key date Group as its parent, because when
@@ -365,9 +349,9 @@ class AcademicTermObject
         date_group.create
       end
 
-      @exam_period.each do |exam_period|
-        exam_period.parent_term = self
-        exam_period.create :navigate_to_page => false
+      if @exam_period != nil
+        @exam_period.parent_term = self
+        @exam_period.create :navigate_to_page => false
       end
     end
 
@@ -458,9 +442,11 @@ class AcademicTermObject
   end
 
   def delete
+    edit
     on EditAcademicTerms do |page|
       page.go_to_terms_tab
       page.delete_term @term_type
+      @parent_calendar.terms.delete self
       page.save
     end
   end
@@ -486,7 +472,7 @@ class AcademicTermObject
 
   #Added a def due to some steps that create a term with no exam period first and then later needs to add the exam
   #   period without having to run @term.create again
-  def add_exam_period  exam_period_object
+  def add_exam_period exam_period_object
     exam_period_object.parent_term = self
     exam_period_object.create
     @exam_period = exam_period_object
@@ -556,6 +542,7 @@ class KeyDateGroupObject
   def delete
     on EditAcademicTerms  do |page|
       page.delete_key_date_group @parent_term.term_type, @key_date_group_type
+      @parent_term.key_date_groups.delete self
       page.save
     end
   end
@@ -565,7 +552,7 @@ class KeyDateGroupObject
   end
 
   def add_key_date key_date_object
-    key_date_object.paren_term = @parent_term
+    key_date_object.parent_term = @parent_term
     key_date_object.parent_key_date_group = self
     key_date_object.create
     @key_dates << key_date_object
@@ -681,6 +668,7 @@ class KeyDateObject
 
       page.delete_key_date delete_row
       page.loading.wait_while_present
+      @parent_key_date_group.key_dates.delete self
       page.save
     end
   end
@@ -802,9 +790,9 @@ class CalendarEventObject
   def delete
     on EditAcademicCalendar  do |page|
       delete_row = page.target_event_row_in_edit @event_type
-
       page.delete delete_row
       page.loading.wait_while_present
+      @parent_calendar.events.delete self
       page.save
     end
   end
@@ -928,7 +916,7 @@ class ExamPeriodObject
       page.loading.wait_while_present
 
       page.exam_delete @parent_term.term_type
-
+      @parent_term.exam_period self
       page.save
     end
   end

@@ -402,3 +402,22 @@ Then /^I should have a choice of terms from which to associate the Final Exam Ma
     page.term_type_select.option(value: "kuali.atp.type.Spring").text.should == "Spring Term"
   end
 end
+
+Given /^that the Course Offering exists on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL304"
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :courses => @course_offering.course)
+  @rule = make ExamMatrixRuleObject, :exam_type => 'Common', :days => "TH", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => @rule
+end
+
+Then /^the Schedule Information for the Exam Offering should be populated$/ do
+  on ViewExamOfferings do |page|
+    page.eo_by_co_st_time.should match /#{Regexp.escape(@matrix.rules[0].start_time @matrix.rules[0].st_time_ampm)}/i
+    page.eo_by_co_end_time.should match /#{Regexp.escape(@matrix.rules[0].end_time @matrix.rules[0].end_time_ampm)}/i
+  end
+end
