@@ -156,7 +156,9 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
         Operator operatorValue = EnumUtils.findById(Operator.class, operator);
 
-        if (CollectionUtils.isNotEmpty(keyPairs)) {
+        boolean keyPairsExist = CollectionUtils.isNotEmpty(keyPairs);
+
+        if (keyPairsExist) {
 
             for (KeyPair keyPair : keyPairs) {
 
@@ -173,7 +175,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
 
                 if (object1 instanceof String) {
                     boolean stringsMatch = matchesPatterns((String) object1, Arrays.asList((String) object2));
-                    if ((stringsMatch && operatorValue == Operator.EQUAL) || (!stringsMatch && operatorValue != Operator.EQUAL)) {
+                    if ((stringsMatch && operatorValue == Operator.EQUAL) || (!stringsMatch && operatorValue == Operator.UNEQUAL)) {
                         return true;
                     }
                 } else if (compareObjects(object1, object2, operator)) {
@@ -182,7 +184,7 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
             }
         }
 
-        return operatorValue == Operator.UNEQUAL;
+        return operatorValue == Operator.UNEQUAL && !keyPairsExist;
     }
 
     private <T extends KeyPairAware> void setKeyPair(T entity, String key, String value) {
