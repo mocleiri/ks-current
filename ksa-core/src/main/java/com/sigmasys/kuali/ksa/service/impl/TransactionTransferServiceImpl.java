@@ -18,6 +18,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 
@@ -478,7 +479,9 @@ public class TransactionTransferServiceImpl extends GenericPersistenceService im
 
         Transaction destTransaction = transactionTransfer.getDestTransaction();
 
-        if (reversalAmount.compareTo(destTransaction.getUnallocatedAmount()) > 0) {
+        BigDecimal unallocatedAmount = destTransaction.getUnallocatedAmount().setScale(2, RoundingMode.HALF_DOWN);
+
+        if (reversalAmount.setScale(2, RoundingMode.HALF_DOWN).compareTo(unallocatedAmount) > 0) {
 
             // Removing all regular allocations which the transaction is involved in
             transactionService.removeAllAllocations(destTransaction.getId());
@@ -487,9 +490,9 @@ public class TransactionTransferServiceImpl extends GenericPersistenceService im
             destTransaction = transactionService.getTransaction(destTransaction.getId());
 
             // Checking the unallocated amount again
-            BigDecimal unallocatedAmount = destTransaction.getUnallocatedAmount();
+            unallocatedAmount = destTransaction.getUnallocatedAmount().setScale(2, RoundingMode.HALF_DOWN);
 
-            if (reversalAmount.compareTo(unallocatedAmount) > 0) {
+            if (reversalAmount.setScale(2, RoundingMode.HALF_DOWN).compareTo(unallocatedAmount) > 0) {
                 logger.info("Transaction ID = " + destTransaction.getId() + ", reversal amount = " +
                         TransactionUtils.formatAmount(reversalAmount));
                 logger.info("Transaction ID = " + destTransaction.getId() + ", unallocated amount = " +

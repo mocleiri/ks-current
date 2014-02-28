@@ -1177,6 +1177,8 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
             throw new IllegalArgumentException(errMsg);
         }
 
+        newAmount = newAmount.setScale(2, RoundingMode.HALF_DOWN);
+
         if (transaction1.getAccount() == null || transaction2.getAccount() == null) {
             String errMsg = "Transaction must be associated with Account";
             logger.error(errMsg);
@@ -1254,10 +1256,12 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
             deleteEntity(allocation.getId(), Allocation.class);
         }
 
-        BigDecimal unallocatedAmount1 = transaction1.getUnallocatedAmount();
-        BigDecimal unallocatedAmount2 = transaction2.getUnallocatedAmount();
+        BigDecimal unallocatedAmount1 = transaction1.getUnallocatedAmount().setScale(2, RoundingMode.HALF_DOWN);
+        BigDecimal unallocatedAmount2 = transaction2.getUnallocatedAmount().setScale(2, RoundingMode.HALF_DOWN);
 
         if (unallocatedAmount1.compareTo(newAmount) < 0 || unallocatedAmount2.compareTo(newAmount) < 0) {
+            logger.info("Transaction 1 unallocated amount = " + unallocatedAmount1);
+            logger.info("Transaction 2 unallocated amount = " + unallocatedAmount2);
             String errMsg = "Not enough balance to cover the allocation amount " + newAmount;
             logger.error(errMsg);
             throw new IllegalStateException(errMsg);
@@ -1836,14 +1840,17 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
                 }
 
                 if (result) {
+
                     if (++transactionCommitCount > transactionBatchSize) {
                         commit(userTransaction);
                         userTransaction = getTransaction(transactionDefinition);
                         transactionCommitCount = 0;
                     }
-                    if (!isEffective && result) {
+
+                    if (!isEffective) {
                         isEffective = true;
                     }
+
                     effectiveTransactionIds.add(transactionId);
                 }
 
@@ -2275,7 +2282,9 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
             }
         }
 
-        if (absoluteReversalAmount.compareTo(transaction.getUnallocatedAmount()) > 0) {
+        BigDecimal unallocatedAmount = transaction.getUnallocatedAmount().setScale(2, RoundingMode.HALF_DOWN);
+
+        if (absoluteReversalAmount.setScale(2, RoundingMode.HALF_DOWN).compareTo(unallocatedAmount) > 0) {
 
             // Removing all regular allocations which the transaction is involved in
             removeAllAllocations(transaction.getId());
@@ -2284,9 +2293,9 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
             transaction = getTransaction(transaction.getId());
 
             // Checking the unallocated amount again
-            BigDecimal unallocatedAmount = transaction.getUnallocatedAmount();
+            unallocatedAmount = transaction.getUnallocatedAmount().setScale(2, RoundingMode.HALF_DOWN);
 
-            if (absoluteReversalAmount.compareTo(unallocatedAmount) > 0) {
+            if (absoluteReversalAmount.setScale(2, RoundingMode.HALF_DOWN).compareTo(unallocatedAmount) > 0) {
                 logger.info("Transaction ID = " + transaction.getId() + ", reversal amount = " +
                         TransactionUtils.formatAmount(absoluteReversalAmount));
                 logger.info("Transaction ID = " + transaction.getId() + ", unallocated amount = " +
@@ -3159,7 +3168,7 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
             }
         }
 
-        return null;
+        return unallocatedAmount;
     }
 
     /**

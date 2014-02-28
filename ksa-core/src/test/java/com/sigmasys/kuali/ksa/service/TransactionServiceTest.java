@@ -2,6 +2,7 @@ package com.sigmasys.kuali.ksa.service;
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -123,7 +124,9 @@ public class TransactionServiceTest extends AbstractServiceTest {
         notNull(transaction1.getId());
         notNull(transaction2.getId());
 
-        isTrue(new BigDecimal(90).equals(allocation.getAmount()));
+        final BigDecimal NINETY = new BigDecimal(90).setScale(2, RoundingMode.HALF_DOWN);
+
+        isTrue(NINETY.equals(allocation.getAmount()));
 
         BigDecimal allocatedAmount1 = locked ?
                 transaction1.getLockedAllocatedAmount() :
@@ -136,8 +139,8 @@ public class TransactionServiceTest extends AbstractServiceTest {
         logger.info("allocatedAmount1 = " + allocatedAmount1);
         logger.info("allocatedAmount2 = " + allocatedAmount2);
 
-        isTrue(new BigDecimal(90).equals(allocatedAmount1));
-        isTrue(new BigDecimal(90).equals(allocatedAmount2));
+        isTrue(NINETY.equals(allocatedAmount1));
+        isTrue(NINETY.equals(allocatedAmount2));
 
         return allocation;
     }

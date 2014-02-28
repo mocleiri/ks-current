@@ -16,6 +16,7 @@ import com.sigmasys.kuali.ksa.service.AccountBlockingService;
 import com.sigmasys.kuali.ksa.service.AccountService;
 import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
+import com.sigmasys.kuali.ksa.util.TransactionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -1441,11 +1442,13 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         Transaction reversalTransaction = reverseTransaction(linkedTransaction, originalManifest.getAmount(), originalManifest.getSession());
 
         if (reversalTransaction != null) {
+
             originalManifest.setTransaction(reversalTransaction);
             originalManifest.setSessionCurrent(true);
 
             // Persist the original manifest:
             persistEntity(originalManifest);
+
         } else {
             logger.error(String.format("Cannot perform reversal on Transaction with ID %d under FM session ID %d.",
                     linkedTransaction.getId(), originalManifest.getSession().getId()));
@@ -1470,8 +1473,8 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                 ((reversalAmount != null) && (transaction.getAmount() != null) && (reversalAmount.compareTo(transaction.getAmount()) == 0))) {
 
             String statementPrefix = ""; // According to Paul there are no statement prefix
-            String memoText = String.format("Transaction %d was reversed in the amount of %f by fee management under session %d",
-                    transaction.getId(), reversalAmount, session.getId());
+            String memoText = String.format("Transaction (ID = %d) was reversed in the amount of %s by fee management under session %d",
+                    transaction.getId(), TransactionUtils.formatAmount(reversalAmount), session.getId());
 
             reversalTransaction = transactionService.reverseTransaction(transaction.getId(), memoText, reversalAmount, statementPrefix);
         }
@@ -2075,6 +2078,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // Create copies of KeyPairs:
         if (origManifest.getKeyPairs() != null) {
+
             // Create a new Set of KeyPairs if one is not set yet:
             if (copyManifest.getKeyPairs() == null) {
                 copyManifest.setKeyPairs(new HashSet<KeyPair>());
@@ -2100,9 +2104,11 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
             // Create a new Tag shallow copy:
             for (Tag tag : origManifest.getTags()) {
+
                 Tag copyTag = BeanUtils.getShallowCopy(tag);
 
                 copyTag.setId(null);
+
                 copyManifest.getTags().add(copyTag);
             }
         }
