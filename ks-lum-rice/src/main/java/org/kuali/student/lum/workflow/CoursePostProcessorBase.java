@@ -289,17 +289,18 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
 
         if (requiresSave) {
         	
+        	getCourseService().updateCourse(courseInfo.getId(), courseInfo, ContextUtils.getContextInfo());
+        	
         	// If modify to current version, get current course and modify with updated course
-        	if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(proposalInfo.getType())){
+        	if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(proposalInfo.getTypeKey()) && 
+        			DtoConstants.STATE_PROCESSED.equals(courseState)){
         		VersionDisplayInfo currentCourse = courseService.getCurrentVersion(CourseServiceConstants.COURSE_NAMESPACE_URI, courseInfo.getVersion().getVersionIndId(), ContextUtils.getContextInfo());
         		CourseInfo currentCourseInfo = courseService.getCourse(currentCourse.getId(), ContextUtils.getContextInfo());        		
         		// Update current version fields with updated values
         		copyToCurrentVersion(currentCourseInfo, courseInfo);
         		
         		getCourseService().updateCourse(currentCourse.getId(), currentCourseInfo, ContextUtils.getContextInfo());
-            }        	
-
-            getCourseService().updateCourse(courseInfo.getId(), courseInfo, ContextUtils.getContextInfo());
+            } 
             
             //For a newly approved course (w/no prior active versions), make the new course the current version.
             if (DtoConstants.STATE_ACTIVE.equals(courseState) && courseInfo.getVersion().getCurrentVersionStart() == null){
