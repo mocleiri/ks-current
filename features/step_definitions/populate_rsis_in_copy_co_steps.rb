@@ -6,7 +6,7 @@ end
 Then /^The new CO and AOs are Successfully created$/ do
   @course_offering.manage_and_init
   tgt_activity_offering = @course_offering.get_ao_obj_by_code("A")
-  tgt_activity_offering.status.should == ActivityOffering::DRAFT_STATUS
+  tgt_activity_offering.status.should == ActivityOfferingObject::DRAFT_STATUS
   tgt_activity_offering.requested_scheduling_information_list.size.should_not == 0
 end
 

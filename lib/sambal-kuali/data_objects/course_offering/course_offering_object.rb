@@ -581,7 +581,7 @@ class CourseOffering
       if ao_obj.code.nil?
         ao_code = ao_obj.create_simple
         ao_obj.code = ao_code[0]
-        if options[:ao_status] == ActivityOffering::OFFERED_STATUS
+        if options[:ao_status] == ActivityOfferingObject::OFFERED_STATUS
           approve_ao :ao_obj => ao_obj
         end
       end
@@ -749,7 +749,7 @@ class CourseOffering
 
   # checks to see if AOs of a specific status can be deleted (for Authorization testing)
   # @example
-  #  @course_offering.attempt_ao_delete_by_status(ActivityOffering::OFFERED_STATUS)
+  #  @course_offering.attempt_ao_delete_by_status(ActivityOfferingObject::OFFERED_STATUS)
   #    :cluster_private_name default value is first cluster
   #
   # @param opts [Hash] :co_obj_list => [co_obj1, co_obj2, ...]
@@ -773,7 +773,7 @@ class CourseOffering
       else
         new_ao = copy_ao :ao_code => "A"
         page.select_ao(new_ao.code)
-        if ao_state == ActivityOffering::APPROVED_STATUS
+        if ao_state == ActivityOfferingObject::APPROVED_STATUS
           page.approve_activity
           new_ao = page.select_ao_by_status(ao_state)
         end
@@ -817,7 +817,7 @@ class CourseOffering
 
   # checks to see if AOs of a specific status can be selected (for Authorization testing)
   # @example
-  #  @course_offering.attempt_ao_select_by_status(ActivityOffering::OFFERED_STATUS)
+  #  @course_offering.attempt_ao_select_by_status(ActivityOfferingObject::OFFERED_STATUS)
   #    :cluster_private_name default value is first cluster
   #
   # @param opts [Hash] :co_obj_list => [co_obj1, co_obj2, ...]
@@ -997,7 +997,7 @@ class CourseOffering
     defaults = {
         :cluster_private_name => :default_cluster,
         :aos => [],
-        :ao_status => ActivityOffering::DRAFT_STATUS
+        :ao_status => ActivityOfferingObject::DRAFT_STATUS
     }
     options = defaults.merge(opts)
 
