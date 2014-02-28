@@ -1,4 +1,4 @@
-@wip
+@nightly
 Feature: GT.Create a Course Proposal as a Curriculum Specialist
 
 Background:
