@@ -15,7 +15,7 @@ When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
   #create required number of seatpools
   while ctr < number.to_i do
     ctr = ctr + 1
-    seatpool = make SeatPool, :priority => (ctr)
+    seatpool = make SeatPoolObject, :priority => (ctr)
     temp_list[ctr] = seatpool
   end
   course_offering = make CourseOffering

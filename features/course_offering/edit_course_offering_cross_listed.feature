@@ -38,12 +38,7 @@ Feature: CO.Create and remove cross-listings
 
   #   3) Set cross-listing, check that alias CO shows as cross-listed with owner
   #   --------------------------------------------------------------------------
-  Scenario: Create cross-listing confirm alias
-      STEPS TO MANUALLY REPRODUCE:
-          1) Create a cross-listed CO and set the cross-listed checkbox.
-          2) Manage and edit the alias course offering
-          3) The alias should state that it is cross-listed with the owner.
-
+  Scenario: CL1.1 Create cross-listing confirm alias
     When I create a cross-listed Course Offering
     And I manage the alias Course Offering
     Then the alias is indicated as cross-listed with the owner CO

@@ -43,7 +43,7 @@ When /^I add RSIs for an AO specifying (times|times and facility|times and room)
 
   # add new RSI row
   @activity_offering.edit
-  si_obj = create SchedulingInformation, :days => "TH",
+  si_obj = create SchedulingInformationObject, :days => "TH",
                   :facility => optional_field_facility,
                   :facility_long_name => optional_field_facility, :room => optional_field_room
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
@@ -101,7 +101,7 @@ end
 When /^I add RSIs for an AO$/ do
   # add new RSI row
   @activity_offering.edit
-  si_obj = create SchedulingInformation, :days => "TH"
+  si_obj = create SchedulingInformationObject, :days => "TH"
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   @activity_offering.save
 end
@@ -109,7 +109,7 @@ end
 When /^I add RSIs for an AO checking the TBA flag$/ do
   # add new TBA RSI row
   @activity_offering.edit
-  si_obj = create SchedulingInformation,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
+  si_obj = create SchedulingInformationObject,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   @activity_offering.save
 end
@@ -127,11 +127,11 @@ When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
   # add new RSI row
   @activity_offering.edit
   if tsType=="standard"
-    si_obj = create SchedulingInformation, :use_std_ts => true,
+    si_obj = create SchedulingInformationObject, :use_std_ts => true,
                     :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
     @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   elsif tsType=="non-standard"
-    si_obj = create SchedulingInformation, :use_std_ts => false, :days => "TH",
+    si_obj = create SchedulingInformationObject, :use_std_ts => false, :days => "TH",
                     :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
     @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   end
@@ -192,7 +192,7 @@ Then /^there is a validation error on the EndTime field$/  do
 end
 
 And /^I attempt to add non-standard RSIs for an AO$/ do
-  @si_obj = make SchedulingInformation, :use_std_ts => false, :days => "TH",
+  @si_obj = make SchedulingInformationObject, :use_std_ts => false, :days => "TH",
                  :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
 end
 

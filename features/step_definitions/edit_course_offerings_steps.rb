@@ -251,7 +251,7 @@ end
 
 When /^I add an affiliated person$/ do
   personnel_list = {}
-  personnel_list[0] = make Personnel, :id=> "admin", :affiliation =>"Instructor"
+  personnel_list[0] = make PersonnelObject, :id=> "admin", :affiliation =>"Instructor"
 
   @course_offering.edit_offering :affiliated_person_list => personnel_list, :edit_in_progress => true
 end

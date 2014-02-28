@@ -130,7 +130,7 @@ When /^I jump to an arbitrary AO but cancel the change$/ do
 
 end
 When /^I change Personnel attributes$/ do
-  person = make Personnel, :id => "admin", :name => "admin, admin", :affiliation => "Instructor", :inst_effort => 30
+  person = make PersonnelObject, :id => "admin", :name => "admin, admin", :affiliation => "Instructor", :inst_effort => 30
   @activity_offering.edit :personnel_list => [person]
 end
 
@@ -156,13 +156,13 @@ end
 
 When /^I add Personnel attributes$/ do
   @activity_offering.edit
-  person = make Personnel, :id => "S.DAVIDB", :name => "SMITH, DAVID", :affiliation => "Instructor", :inst_effort => 30
+  person = make PersonnelObject, :id => "S.DAVIDB", :name => "SMITH, DAVID", :affiliation => "Instructor", :inst_effort => 30
   @activity_offering.add_personnel person
 end
 
 When(/^I delete Personnel attributes$/) do
   @activity_offering.edit
-  @person = make Personnel, :id => "O.JEFFREYF" #in reference data
+  @person = make PersonnelObject, :id => "O.JEFFREYF" #in reference data
   @activity_offering.delete_personnel @person
 end
 
