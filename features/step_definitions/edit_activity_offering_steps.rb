@@ -131,7 +131,7 @@ When /^I jump to an arbitrary AO but cancel the change$/ do
 end
 When /^I change Personnel attributes$/ do
   person = make PersonnelObject, :id => "admin", :name => "admin, admin", :affiliation => "Instructor", :inst_effort => 30
-  @activity_offering.edit :personnel_list => [person]
+  @activity_offering.add_personnel person
 end
 
 Then /^the changes of the Personnel attributes are persisted$/ do

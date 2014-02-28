@@ -24,7 +24,8 @@ class PersonnelObject
   attr_accessor :id,
                 :name,
                 :affiliation,
-                :inst_effort
+                :inst_effort,
+                :parent_ao
 
   # provides default data:
   # defaults = {

@@ -71,7 +71,7 @@ class ActivityOfferingObject
         :max_enrollment => 100,
         :actual_scheduling_information_list => {},
         :requested_scheduling_information_list => {},
-        :personnel_list => [] ,
+        :personnel_list => collection('Personnel'),
         :seat_pool_list => {},
         :course_url => "www.test_course.com",
         :requires_evaluation => true,
@@ -270,7 +270,7 @@ class ActivityOfferingObject
   # NB: 'save' is a separate step from edit as it allows validation steps to occur during the edit process
   #
   # @param opts [Hash] key => value for attribute to be updated -
-  #   additional opts :edit_already_started (bool), :send_to_scheduler (bool) :TODO :defer_save
+  #   additional opts :edit_already_started (bool), :send_to_scheduler (bool), :defer_save (bool)
   def edit opts={}
 
     defaults = {
@@ -291,7 +291,6 @@ class ActivityOfferingObject
     edit_course_url options
     edit_evaluation options
     edit_honors_course options
-    edit_personnel_list options
     edit_seat_pool_list options
     edit_waitlist_config options
 
@@ -478,21 +477,6 @@ class ActivityOfferingObject
   end #END: edit_honors_course
   private :edit_honors_course
 
-  def edit_personnel_list opts={}
-
-    if opts[:personnel_list].nil?
-      return nil
-    end
-
-    opts[:personnel_list].each do |person|
-      person.create
-    end
-
-    @personnel_list = opts[:personnel_list]
-
-  end #END: edit_personnel_list
-  private :edit_personnel_list
-
   def edit_seat_pool_list opts={}
 
     if opts[:seat_pool_list].nil?
@@ -518,6 +502,8 @@ class ActivityOfferingObject
   private :edit_waitlist_config
 
   def add_personnel person
+    edit
+    person.parent_ao = self
     person.create
     @personnel_list << person
   end
