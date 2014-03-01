@@ -922,7 +922,7 @@ class CourseOffering
 
     defaults = {
         :navigate_to_page => true,
-        :ao_obj => (make ActivityOffering)
+        :ao_obj => (make ActivityOfferingObject)
     }
     options = defaults.merge(opts)
 
