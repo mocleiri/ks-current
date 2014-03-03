@@ -61,6 +61,7 @@ Then /^the AO's scheduling information shows the new schedule$/ do
 
   on ActivityOfferingMaintenance do |page|
     page.view_requested_scheduling_information
+    page.requested_sched_info_table.wait_until_present
     page.requested_sched_info_table.rows.size.should be > 2 #should be more than header/footer rows
     page.requested_sched_info_table.rows[1..-2].each do |row|
       days = page.get_requested_sched_info_days(row).delete(' ')

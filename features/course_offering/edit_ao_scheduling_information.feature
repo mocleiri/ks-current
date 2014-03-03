@@ -37,7 +37,6 @@ Feature: CO.Edit AO scheduling information as CSC
     When I add RSIs for an AO checking the TBA flag
     Then the AO's scheduling information shows the new schedule as TBA
 
-  @bug @KSENROLL-11707
   Scenario: Delete RSIs for an AO
     When I add RSIs for an AO
     And I delete the original RSIs
