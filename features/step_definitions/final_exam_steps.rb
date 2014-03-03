@@ -132,6 +132,7 @@ When /^I create an Academic Calendar and add an official term$/ do
 
   exam_period = make ExamPeriodObject, :parent_term => term
   @calendar.terms[0].add_exam_period exam_period
+  @calendar.terms[0].save
 
   @calendar.terms[0].make_official
   @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
@@ -151,7 +152,7 @@ When /^I create an Academic Calendar and add an official term with no exam perio
 end
 
 When /^I have created a Final Exam Period for the term in the newly created Academic Calendar$/ do
-  @calendar.terms[0].exam_period[0].edit :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
+  @calendar.terms[0].exam_period.edit :start_date=>"12/11/#{@calendar.year}", :end_date=>"12/20/#{@calendar.year}"
   @calendar.terms[0].save
 end
 
@@ -245,6 +246,7 @@ When /^I rollover the term to a new academic term that has an exam period$/ do
 
   exam_period = make ExamPeriodObject, :parent_term => term_target
   @calendar_target.terms[0].add_exam_period exam_period
+  @calendar.terms[0].save
 
   @calendar_target.terms[0].make_official
 
@@ -650,6 +652,7 @@ When /^I create a Fall Term Exam Period with 2 fewer days than the number of Fin
 
   exam_period = make ExamPeriodObject, :parent_term => @calendar.terms[0], :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
   @calendar.terms[0].add_exam_period exam_period
+  @calendar.terms[0].save
 
   @calendar.terms[0].save :exp_success => false
 end
@@ -1279,5 +1282,13 @@ When /^I edit the CO to add a second Format Offering$/ do
   on(ManageCourseOfferings).edit_course_offering
   delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
   @course_offering.add_delivery_format delivery_format
+  @course_offering.save
+end
+
+When /^I create a Course Offering from copy in a term with a final exam period$/ do
+  @copy_co = create CourseOffering, :create_by_copy => @course_offering
+
+  @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
+                                 :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
 end
