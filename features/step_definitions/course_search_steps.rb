@@ -26,13 +26,13 @@ end
 
 Then /^courses containing  "(.*?)" text option appears$/ do |expected|
   on CourseSearch do |page|
-  page.results_list_courses(expected).each { |e| e.should include (expected) }
+    page.results_list_courses(expected).each { |e| e.should include (expected) }
   end
-  end
+end
 
 When /^I search for a "(.*?)" "(.*?)" by "(.*?)"$/ do |course_status,course, term_selection|
-    @course_offering = make CourseOffering, :course_code => course, :term_select => term_selection
-    @course_offering.course_search
+  @course_offering = make CourseOffering, :course_code => course, :term_select => term_selection
+  @course_offering.course_search
 end
 
 
@@ -46,9 +46,9 @@ end
 
 
 Then /^I should check and display results across multiple pages\.$/ do
- on CourseSearch do |page|
-   puts page.course_code_list
- end
+  on CourseSearch do |page|
+    puts page.course_code_list
+  end
 end
 
 And /^the search result should match with the course description$/ do
@@ -78,15 +78,15 @@ end
 Then /^course title or course description containing "(.*?)"text option "(.*?)" appear$/ do |text,condition|
   @course_offering = make CourseOffering
   if condition == "should"
-    @course_offering.check_all_results_data_for_text(text,nil).should be_true
+    @course_offering.multi_text_search(text).should be_true
   else
     begin
-      @course_offering.check_all_results_data_for_text(text,nil).should_not be_true
+      @course_offering.multi_text_search(text).should_not be_true
     rescue Watir::Exception::UnknownObjectException
       # Implication here is that there were no search results at all.
     end
   end
-  end
+end
 
 When /^I search for a course with multi word"(.*?)" text option$/ do |text|
   @course_offering = make CourseOffering, :search_text => text
@@ -106,7 +106,7 @@ Then(/^course code or course title or course description containing any word of 
       # Implication here is that there were no search results at all.
     end
   end
-  end
+end
 
 #------------------------------------------------------------------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ Then /^only "(.*?)" level courses "(.*?)" be displayed$/ do |text, condition|
   else
     begin
       @course_offering.check_all_results_data_for_level(text).should_not be_true
-      rescue Watir::Exception::UnknownObjectException
+    rescue Watir::Exception::UnknownObjectException
     end
   end
 end

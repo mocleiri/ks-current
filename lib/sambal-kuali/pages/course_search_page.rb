@@ -86,47 +86,54 @@ class CourseSearch < BasePage
     for index in 1..no_of_rows do
 
       if index == no_of_rows
-        #puts "inside 20"
-        sleep(2)
-        course_code = results_table.rows[index].cells[COURSE_CODE].text
-        sleep(1)
-        course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
+      sleep(2)
+      course_code = results_table.rows[index].cells[COURSE_CODE].text
+      sleep(1)
+      course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
 
-        puts "Course name =  #{course_name}"
-        course_code_result_link(course_code).click
-        back_to_search_results.wait_until_present
-        course_description_text = course_description(course_code).downcase
-        back_to_search_results.click
-        sleep(2)
+      puts "Course name =  #{course_name}"
+      course_code_result_link(course_code).click
+      back_to_search_results.wait_until_present
+      course_description_text = course_description(course_code).downcase
+      back_to_search_results.click
+      sleep(2)
 
-        if ((course_code.downcase).include? (split_text).downcase) ||  ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
-          puts "True--------When searching with split text"
-        else
-          puts "=============================================================================="
-          puts "False.......... on individual text search ,so checking the other splitted text"
-          puts  search_FullText
-          split_name = search_FullText.split(' ')
-
-          for index in 0 ... split_name.size
-
-            puts  "split name inside search page split_name[#{index}] = #{split_name[index].inspect}"
-
-            split_text = "#{split_name[index]}"
-
-            puts    split_text
-            if ((course_code.downcase).include? (split_text).downcase) ||
-                ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
-              puts "True---------After searching all Search Text"
-
-            else
-              puts "#{course_code}"
-              return false
-              #rescue Watir::Exception::UnknownObjectException
-            end
+      if ((course_code.downcase).include? (split_text).downcase) ||  ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
+      else
+        split_name = search_FullText.split(' ')
+        for index in 0 ... split_name.size
+          split_text = "#{split_name[index]}"
+          if ((course_code.downcase).include? (split_text).downcase) ||
+              ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
+          else
+            puts "#{course_code}"
+            return false
           end
+            end
         end
       end
     end
+  end
+
+  def single_text_search_results_validation(single_text)
+    sleep(2)
+    no_of_rows = results_table.rows.length-1
+    for index in 1..no_of_rows do
+      sleep(2)
+      course_code = results_table.rows[index].cells[COURSE_CODE].text
+      sleep(1)
+      course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
+      course_code_result_link(course_code).click
+      back_to_search_results.wait_until_present
+      course_description_text = course_description(course_code).downcase
+      back_to_search_results.click
+      sleep(2)
+      if ((course_code.downcase).include? (single_text).downcase) ||  ((course_name.include? (single_text).downcase )||(course_description_text.include? (single_text).downcase))
+      else
+        return false
+      end
+    end
+
   end
 
 #************************** Course Level Search--KSAP- 832  and US 618*********************  fair Draft
@@ -134,30 +141,23 @@ class CourseSearch < BasePage
   def result_list_level(text)
     sleep(1)
     no_of_rows = results_table.rows.length-1
-    #puts "No of Rows = #{no_of_rows}"
-
-
     for index in 1..no_of_rows do
-
       if index == no_of_rows
         sleep(2)
         course_code = results_table.rows[index].cells[COURSE_CODE].text
         puts  "courseCode1 #{course_code}"
         puts level_digit = text.slice(0)
         search_text = /(#{level_digit}\d\d)/
-       #search_text = /(3\d\d)/
+
         sleep(2)
         sliced_course_code = course_code[4..course_code.length]
         if (search_text.match(sliced_course_code))
-          puts "Code match !!!! with that digit with Search text ############## #{sliced_course_code}"
-
         else
-          puts "inside false !!! #{course_code}"
           return false
           break
         end
-
       end
     end
   end
 end
+#-----------------------------------------------------------------------------------------------------------------------------

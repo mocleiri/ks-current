@@ -162,36 +162,50 @@ class CourseOffering
 
   def multi_text_search(expected)
     on CourseSearch do |page|
-
-
+      # Checking for regular expression which needs to be considered as  white space
       puts " Entering Multi Text Search expected = #{expected}"
-
       if expected =~ Regexp.union("*",";",",","$","#")
         puts "Search Text contain Special Character"
         return false
       end
-
-
       split_name = expected.split(' ')
       puts split_name.length
       # if page.result_pagination.exists?
       if  split_name.length > 1
         for index in 0 ... split_name.size
           puts  "split_name[#{index}] = #{split_name[index].inspect}"
-
           check_all_results_data_for_text("#{split_name[index]}",expected)
-
-          puts " ** - --- after Search text ----"
-
           until page.results_list_previous_disabled.exists? do
             sleep(2)
-            puts "clicking previous page  #################################"
             page.results_list_previous_enabled.wait_until_present
             page.results_list_previous_enabled.click
           end
         end
       else
-        page.check_all_results_data_for_text(expected,expected)       # when its Single Word
+        check_all_page_data_for_singletext(expected)      # when its Single Word
+      end
+    end
+  end
+
+  def check_all_page_data_for_singletext(single_text)
+    on CourseSearch do |page|
+      puts "Search Text = #{single_text}"
+      pgno = 1
+      if page.results_list_next_enabled.exists?
+
+        until page.results_list_next_disabled.exists?
+
+          puts "------ page no = #{pgno}"
+          page.single_text_search_results_validation(single_text)
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        puts "------ page no = #{pgno}"
+        ### - The line executes when its Single Page and also Last page in Multi page
+        page.single_text_search_results_validation(single_text)
       end
     end
   end
@@ -202,21 +216,23 @@ class CourseOffering
     on CourseSearch do |page|
       puts "Search Text = #{split_text}"
       pgno = 1
-
-      until page.results_list_next_disabled.exists?
-
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          page.results_list_validation(split_text,search_FullText)
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
         puts "------ page no = #{pgno}"
+        ### - The line executes when its Single Page and also Last page in Multi page
         page.results_list_validation(split_text,search_FullText)
-        page.results_list_next_enabled.wait_until_present
-        page.results_list_next_click
-        pgno = pgno+1
-        page.results_list_next_enabled.wait_until_present
       end
-      puts "------ page no = #{pgno}"
-      ### - The line executes when its Single Page and also Last page in Multi page
-      page.results_list_validation(split_text,search_FullText)
-      end
+    end
   end
+
 
 
 
@@ -225,17 +241,19 @@ class CourseOffering
       puts "Search Text = #{text}"
       pgno = 1
       puts level_digit = text.slice(0)
-      until page.results_list_next_disabled.exists?
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          page.result_list_level(text)
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
         puts "------ page no = #{pgno}"
         page.result_list_level(text)
-        page.results_list_next_enabled.wait_until_present
-        page.results_list_next_click
-        pgno = pgno+1
-        page.results_list_next_enabled.wait_until_present
       end
-      puts "------ page no = #{pgno}"
-      page.result_list_level(text)
     end
   end
-
 end
