@@ -73,3 +73,18 @@ Feature: BT.Course Search
   Scenario:6.1- Successfully list any course with the search level
     When I search for a course with "2xx" level option
     Then only "200" level courses "should" be displayed
+
+#************************* KSAP-821, US- KSAP-622**********************************************************************************
+  @draft
+  Scenario Outline: CS10 Successfully search for a course and change the pagination options
+    When I search for a course with multi word"<multi_text>" text option
+    And I choose to see "<per_page>" records per page
+    Then The table header text will be "<header_text>"
+    And There will be <pages> pages of results with <total_per_page> records per page
+    And Pagination controls will not be visible if there is only 1 page
+  Examples:
+    | multi_text       | per_page  | header_text                                      | pages | total_per_page |
+    | english history  |  20       | Showing 1-20 of 141 results for english history  | 5     |  20            |
+    | english history  |  50       | Showing 1-50 of 141 results for english history  | 3     |  50            |
+    | english history  | 100       | Showing 1-100 of 141 results for english history | 2     | 100            |
+    | greek mythology  |  20       | Showing 1-7 of 7 results for greek mythology     | 1     |   7            |

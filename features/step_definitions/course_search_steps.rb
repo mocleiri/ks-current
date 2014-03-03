@@ -128,6 +128,39 @@ Then /^only "(.*?)" level courses "(.*?)" be displayed$/ do |text, condition|
   end
 end
 
+When /^I choose to see "(.*?)" records per page$/ do |per_page|
+  on CourseSearch do |page|
+    page.course_search_results_select.select per_page
+    #Sleep for X seconds to wait for the js to process the change
+    sleep(2)
+    page.course_search_results_select.value.should == per_page
+  end
+end
 
+Then /^The table header text will be "(.*?)"$/ do |header_text|
+  on CourseSearch do |page|
+    page.course_search_results_info.text.should == header_text
+  end
+end
 
+Then /^There will be (.*?) pages of results with (.*?) records per page$/ do |pages, total_per_page|
+  on CourseSearch do |page|
+    page.result_pagination.span.links.size.to_s.should == pages
 
+    #Doing size-1 here since results_table.rows.size includes the header row
+    (page.results_table.rows.size-1).to_s.should == total_per_page
+  end
+end
+
+Then /^Pagination controls will not be visible if there is only 1 page$/ do
+  on CourseSearch do |page|
+    #If there's only one page, no pagination controls or record# selection
+    elementsPresent = true
+    if "1" == page.result_pagination.span.links.size.to_s
+      elementsPresent = false
+    end
+
+    page.result_pagination.visible?.should == elementsPresent
+    page.course_search_results_select.visible?.should == elementsPresent
+  end
+end
