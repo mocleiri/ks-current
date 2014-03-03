@@ -605,9 +605,10 @@ class KeyDateObject
         @term_index = page.term_index_by_term_type @parent_term.term_type
         key_date_group_index = page.key_date_group_index @parent_term.term_type, @parent_key_date_group.key_date_group_type
 
-        if !page.key_date_dropdown_addline( @term_index, key_date_group_index).exists?
+        if !page.key_date_dropdown_addline(@term_index, key_date_group_index).exists?
           page.key_date_button( @term_index, key_date_group_index).click
-          sleep 1 #wait til new row
+          #sleep 1 #wait til new row
+          page.key_date_dropdown_addline(@term_index, key_date_group_index).wait_until_present
         end
 
         page.key_date_dropdown_addline( @term_index, key_date_group_index).select @key_date_type
