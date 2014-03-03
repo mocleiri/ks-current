@@ -646,13 +646,12 @@ When /^I deselect Exclude Saturday and Exclude Sunday for the Exam Period$/ do
 end
 
 When /^I create a Fall Term Exam Period with 2 fewer days than the number of Final Exam Matrix days$/ do
-  term = create AcademicTermObject, :parent_calendar => @calendar, :start_date => "09/01/#{@calendar.year}",
+  term = make AcademicTermObject, :parent_calendar => @calendar, :start_date => "09/01/#{@calendar.year}",
                  :end_date=>"12/20/#{@calendar.year}"
   @calendar.add_term term
 
   exam_period = make ExamPeriodObject, :parent_term => @calendar.terms[0], :start_date => "12/01/#{@calendar.year}", :length_ex_weekend => 4
   @calendar.terms[0].add_exam_period exam_period
-  @calendar.terms[0].save
 
   @calendar.terms[0].save :exp_success => false
 end
