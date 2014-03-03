@@ -88,3 +88,32 @@ Feature: BT.Course Search
     | english history  |  50       | Showing 1-50 of 141 results for english history  | 3     |  50            |
     | english history  | 100       | Showing 1-100 of 141 results for english history | 2     | 100            |
     | greek mythology  |  20       | Showing 1-7 of 7 results for greek mythology     | 1     |   7            |
+
+#************************* KSAP-818, US- 620**********************************************************************************
+  @draft
+  Scenario: 8.1.1 - Successfully search for multiple divisions
+    When I search for "Engl Hist"
+    Then only courses of divisions "Engl,Hist" are returned
+
+  @draft
+  Scenario Outline: 8.1.2,3,4,7 Verify searches for multiple course codes returns the correct results.
+    When I search for "<text>"
+    Then only the courses "<expected>" are returned
+  Examples:
+    | text                  | expected                         |
+    | Engl201 Hist360       | Engl201,Hist360                  |
+    | Engl 201 Hist 360     | Engl201,Engl360,Hist201,Hist360  |
+    | "Engl 201" "Hist 360" | Engl201,Hist360                  |
+    | Engl Hist 201         | Engl201,Hist201                  |
+
+  @draft
+  Scenario Outline: 8.1.5,6,8,9,10 Verify searches for multiple course codes returns the correct results.
+    When I search for "<text>"
+    Then only "<expected>" level courses are returned
+  Examples:
+    | text                  | expected                         |
+    | Engl2XX Hist3XX       | Engl200,Hist300                  |
+    | Engl Hist 2XX         | Engl200,Hist200                  |
+    | Engl 2XX Hist 2XX     | Engl200,Hist200                  |
+    | "Engl 2XX" "Hist3XX"  | Engl200,Hist300                  |
+    | Engl 2XX Hist 3XX     | Engl200,Engl300,Hist200,Hist300  |

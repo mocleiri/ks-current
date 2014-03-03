@@ -27,6 +27,10 @@ class CourseSearch < BasePage
   element(:back_to_search_results) { |b| b.link(text: "Back to Previous Page") }
   element(:course_search_results_info) { |b| b.div(id: "course_search_results_info") }
   element(:course_search_results_select) { |b| b.frm.select(name: "course_search_results_length") }
+  element(:course_search_facet_divisions) { |b| b.div(id: "facet_curriculum_disclosureContent").div(class: "facets").ul.lis}
+  element(:course_search_facet_level) { |b| b.div(id: "facet_level_disclosureContent").div(class: "facets").ul.lis}
+
+
 
 
   ################
@@ -160,5 +164,78 @@ class CourseSearch < BasePage
       end
     end
   end
+
+  def division_facet_validation(text)
+    sleep(1)
+    expectedDivisions = text.split(",",-1)
+    no_of_rows = course_search_facet_divisions.length - 1
+    no_of_divisions = expectedDivisions.length - 1
+    if no_of_divisions == no_of_rows
+      for index in 0..no_of_rows do
+        facet_text = course_search_facet_divisions[index].a.text.downcase
+        found = false
+        for index2 in 0..no_of_divisions do
+          division_text = expectedDivisions[index2].downcase
+          if division_text == facet_text
+            found = true
+          end
+        end
+        if found != true
+          return false
+        end
+      end
+    else
+      return false
+    end
+    return true
+  end
+
+  def result_list_multi_code(text)
+    sleep(1)
+    expectedCourses = text.split(",",-1)
+    no_of_courses = expectedCourses.length - 1
+    resultList = results_list()
+    no_of_results = resultList.length - 1
+    if no_of_courses == no_of_results
+      for index in 0..no_of_courses
+        course = expectedCourses[index].downcase
+        found = false
+        for index2 in 0..no_of_results
+          result = resultList[index2].downcase
+          if course == result
+            found = true
+          end
+        end
+        if found !=true
+          return false
+        end
+      end
+    else
+      return false
+    end
+    return true
+  end
+
+  def result_list_multi_level(text)
+    sleep(1)
+    expectedCourses = text.gsub("00","").split(",",-1)
+    no_of_courses = expectedCourses.length - 1
+    resultList = results_list()
+    no_of_results = resultList.length - 1
+    for index in 0..no_of_results
+      sleep(1)
+      result = resultList[index].downcase.slice(0,5)
+      found = false
+      for index2 in 0..no_of_courses
+        course = expectedCourses[index2].downcase
+        if course == result
+          found = true
+        end
+      end
+      if found !=true
+        return false
+      end
+    end
+    return true
+  end
 end
-#-----------------------------------------------------------------------------------------------------------------------------

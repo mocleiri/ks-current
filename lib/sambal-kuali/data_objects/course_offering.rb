@@ -233,9 +233,6 @@ class CourseOffering
     end
   end
 
-
-
-
   def check_all_results_data_for_level(text)
     on CourseSearch do |page|
       puts "Search Text = #{text}"
@@ -254,6 +251,46 @@ class CourseOffering
         puts "------ page no = #{pgno}"
         page.result_list_level(text)
       end
+    end
+  end
+
+  def check_division_facet(text)
+    on CourseSearch do |page|
+      return page.division_facet_validation(text)
+    end
+  end
+
+  def check_multi_results(text)
+    on CourseSearch do |page|
+      return page.result_list_multi_code(text)
+    end
+  end
+
+  def check_all_results_data_for_multi_level(text)
+    on CourseSearch do |page|
+      puts "Search Text = #{text}"
+      pgno = 1
+      puts level_digit = text.slice(0)
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          pass = page.result_list_multi_level(text)
+          if pass!= true
+            return false
+          end
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        puts "------ page no = #{pgno}"
+        pass = page.result_list_multi_level(text)
+        if pass!= true
+          return false
+        end
+      end
+      return true
     end
   end
 end
