@@ -455,7 +455,7 @@ Given /^that the SOC state is prior to Published$/ do
 end
 
 When /^I view the Exam Offerings for a CO with a standard final exam driven by Course Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @calendar.terms[0], :course => "ENGL304")
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => "ENGL304")
   @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
