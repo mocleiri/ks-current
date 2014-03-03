@@ -22,7 +22,7 @@ Feature: REG.Register for course
   #KSENROLL-11809
   Scenario: CR 1.4 I want to remove a course from my selections because I dont want to register for it anymore
     When I add an ENGL course offering to my registration cart
-    And I drop the course from my registration cart
+    And I remove the course from my registration cart
     Then the course is not present in my cart
 
   #KSENROLL-11810
@@ -36,7 +36,8 @@ Feature: REG.Register for course
     When I add a HIST course offering to my registration cart
     And I register for the course
     Then there is a message indicating registration submittal
-    And the course is present in my schedule
+    When I view my schedule
+    Then the course is present in my schedule
 
   #KSENROLL-11922
   Scenario: CR 1.9 I want my course selections to persist so that I can return in another session and continue my registration process.
@@ -50,7 +51,17 @@ Feature: REG.Register for course
   #KSENROLL-11923
   Scenario: CR 1.10 I want to reverse my decision to remove a course from my selections so that I can continue my registration process.
     When I add a BSCI course offering to my registration cart
-    And I drop the course from my registration cart
+    And I remove the course from my registration cart
     Then the course is not present in my cart
     Then I undo the drop action
     And the course is present in my cart
+
+  #KSENROLL-12065
+  @wip
+  Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.
+    When I add an ENGL course offering to my registration cart
+    And I register for the course
+    And I view my schedule
+    Then the course is present in my schedule
+    When I remove the course from my schedule
+    Then the course is not present in my schedule

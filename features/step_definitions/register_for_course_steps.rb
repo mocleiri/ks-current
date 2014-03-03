@@ -33,7 +33,7 @@ When /^I add a course to my registration cart and specify course options$/ do
   # above will include entering course_code, reg_group_code and clicking Add to Cart, then changing the 2 options, and clicking Save
 end
 
-When /^I drop the course from my registration cart$/ do
+When /^I remove the course from my registration cart$/ do
   @reg_request.remove_from_cart
 end
 
@@ -81,15 +81,22 @@ Then /^there is a message indicating registration submittal$/ do
     rescue
       raise "\"#{register_message_text}\" not found in user message"
     end
-    puts "User Message: #{page.user_message}"
+    puts "User Message: |#{page.user_message}|"
     page.user_message.should include register_message_text
   end
 end
 
-And /^the course is (present|not present) in my schedule$/  do |presence|
+When /^I remove the course from my schedule$/ do
+  @reg_request.remove_from_schedule
+end
+
+When /^I view my schedule$/ do
   on RegistrationCart do |page1|
     page1.schedule_link.click
   end
+end
+
+And /^the course is (present|not present) in my schedule$/  do |presence|
   on StudentSchedule do |page2|
     sleep 2
     if presence == "present"
@@ -128,7 +135,7 @@ end
 
 Then /^I? ?undo the drop action$/ do
   on RegistrationCart do |page|
-    @reg_request.undo_remove
+    @reg_request.undo_remove_from_cart
   end
 end
 

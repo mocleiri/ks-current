@@ -143,7 +143,7 @@ class RegistrationRequest
   end
   #private :edit_course_options_in_cart
 
-  def undo_remove
+  def undo_remove_from_cart
     on RegistrationCart do |page|
       page.undo_remove
     end
@@ -154,9 +154,17 @@ class RegistrationRequest
       page.register
     end
   end
+
+  def remove_from_schedule
+    on StudentSchedule do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.remove_course_from_schedule @course_code,@reg_group_code
+    end
+  end
 end
 
-  class CourseOptions
+class CourseOptions
 
     include Foundry
     include DataFactory
