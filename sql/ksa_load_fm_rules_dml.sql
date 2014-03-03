@@ -171,6 +171,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
  mark signup as taken
 ')!
 
+-- Formerly Session 1_8
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Cybersecurity rate applied', 5020, 'FM Signup 1_20', 3, 10, null,
+'(session key "major.code" is "z077" and signup has rates "cybersecurity.leadership")',
+'remove signup rates "regular"')!
+
 
 --Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('', 9099, 'FM Rule TEST', 3, 8, null,
 --'(Context is initialized)',
@@ -247,13 +252,42 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 '(number of taken units lt 9 with rates "", types "", signup operations "" and session key "study.level" is "doctoral")',
 'set session key "study.load" to "pt"')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Cybersecurity rate applied', 6008, 'FM Session 1_8', 3, 10, null,
-'(session key "major.code" is "z077" and signup has rates "cybersecurity.leadership")',
-'remove signup rates "regular"')!
+-- Removed rule session 1_8 - became signup 1_20
+
+-- Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Cybersecurity rate applied', 6008, 'FM Session 1_8', 3, 10, null,
+--'(session key "major.code" is "z077" and signup has rates "cybersecurity.leadership")',
+--'remove signup rates "regular"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Remove mandatory fees for all Collaborative Engineering Student', 6009, 'FM Session 1_9', 3, 10, null,
 '(session key "major.code" is "(0909f|0910f|0909u|0909s)")',
 'remove signup rates "cp.mandatory.fee.flag"')!
+
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('UG student has more than 12 units so is full time', 6010, 'FM Session 1_10', 3, 10, null,
+'(number of taken units gte 12 with rates "regular", types "", signup operations "" and student is undergraduate)',
+'set session key "study.load.regular" to "ft"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Grad student has over 9 units so is full time', 6011, 'FM Session 1_11', 3, 10, null,
+'(number of taken units gte 9 with rates "regular", types "", signup operations "" and student is graduate)',
+'set session key "study.load.regular" to "ft"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Doctoral student has over 9 units so is full time', 6012, 'FM Session 1_12', 3, 10, null,
+'(number of taken units gte 9 with rates "regular", types "", signup operations "" and session key "study.level" is "doctoral")',
+'set session key "study.load.regular" to "ft"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('UG student is under 12 units so is part time', 6013, 'FM Session 1_13', 3, 10, null,
+'(number of taken units lt 12 with rates "regular", types "", signup operations "" and student is undergraduate)',
+'set session key "study.load.regular" to "pt"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Grad student is under 9 unis so is part time', 6014, 'FM Session 1_14', 3, 10, null,
+'(number of taken units lt 9 with rates "regular", types "", signup operations "" and student is graduate)',
+'set session key "study.load.regular" to "pt"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Doctoral student is under 9 units so is part time', 6015, 'FM Session 1_15', 3, 10, null,
+'(number of taken units lt 9 with rates "regular", types "", signup operations "" and session key "study.level" is "doctoral")',
+'set session key "study.load.regular" to "pt"')!
+
+
 
 
 -- FM Session 2 rule set --
@@ -280,35 +314,35 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 'replace signup rates "regular", "" with "enpm", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is undergrad full time resident so is charged those tuition rates - CP.', 6051, 'FM Session 2_2', 3, 8, null,
-'(student is full-time and student is resident and student is undergraduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "ft" and student is resident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergrad.resident.ft", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is grad full time resident so is charged those tuition rates - CP.', 6052, 'FM Session 2_3', 3, 8, null,
-'(student is full-time and student is resident and student is graduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "ft" and student is resident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.resident.ft", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is undergrad full time nonresident so is charged those tuition rates - CP.', 6053, 'FM Session 2_4', 3, 8, null,
-'(student is full-time and student is nonresident and student is undergraduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "ft" and student is nonresident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergrad.nonresident.ft", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is grad full time nonresident so is charged those tuition rates - CP.', 6054, 'FM Session 2_5', 3, 8, null,
-'(student is full-time and student is nonresident and student is graduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "ft" and student is nonresident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.nonresident.ft", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is undergrad part-time resident so is charged those tuition rates - CP.', 6055, 'FM Session 2_6', 3, 8, null,
-'(student is part-time and student is resident and student is undergraduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "pt" and student is resident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergrad.resident.pt", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is grad part-time resident so is charged those tuition rates - CP.', 6056, 'FM Session 2_7', 3, 8, null,
-'(student is part-time and student is resident and student is graduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "pt" and student is resident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.resident.pt", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is undergrad part-time nonresident so is charged those tuition rates - CP.', 6057, 'FM Session 2_8', 3, 8, null,
-'(student is part-time and student is nonresident and student is undergraduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "pt" and student is nonresident and student is undergraduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.undergrad.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is grad part-time nonresident so is charged those tuition rates - CP.', 6058, 'FM Session 2_9', 3, 8, null,
-'(student is part-time and student is nonresident and student is graduate and session key "campus" is "cp")',
+'(session key "study.load.regular" is "pt" and student is nonresident and student is graduate and session key "campus" is "cp")',
 'replace signup rates "regular", "" with "cp.graduate.nonresident.pt", "default"')!
 
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student is shady grove ug resident so charge that rate', 6059, 'FM Session 2_10', 3, 8, null,
@@ -710,8 +744,14 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6004)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6005)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6006)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6007)!
-Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6008)!
+-- Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6008)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6009)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6010)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6011)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6012)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6013)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6014)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (102, 6015)!
 
 -- FM Session 2 rule set --
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (103, 6050)!
