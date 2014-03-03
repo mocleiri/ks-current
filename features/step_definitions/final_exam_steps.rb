@@ -1281,11 +1281,3 @@ When /^I edit the CO to add a second Format Offering$/ do
   @course_offering.add_delivery_format delivery_format
   @course_offering.save
 end
-
-Given /^there is a Course Offering created from catalog with a standard final exam driven by Course Offering$/ do
-  @course_offering.create    # CourseOffering, :term => "201208", :course => "HIST111"
-
-  @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Course Offering"
-  @course_offering.save
-end
