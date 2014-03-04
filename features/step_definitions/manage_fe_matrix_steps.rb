@@ -411,7 +411,7 @@ Given /^that the Course Offering exists on the Final Exam Matrix$/ do
   statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
                      :courses => @course_offering.course)
   @rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
-              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => @rule
 end
 
@@ -432,5 +432,47 @@ Then /^the Schedule Information for the Exam Offering should not be populated$/ 
     page.eo_by_co_days.should == ""
     page.eo_by_co_st_time.should == ""
     page.eo_by_co_end_time.should == ""
+  end
+end
+
+Given /^I ensure that the Course Offering exists on the Final Exam Matrix$/ do
+  @matrix = make FinalExamMatrix, :term_type => @calendar.terms[0].term_type
+  statement = []
+  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :courses => @course_offering.course)
+  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^I encure that the AO's Requested Scheduling Information exists on the Final Exam Matrix$/ do
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => @activity_offering.days, :start_time => @activity_offering.start_time,
+                     :st_time_ampm => @activity_offering.start_time_ampm, :end_time => @activity_offering.end_time,
+                     :end_time_ampm => @activity_offering.end_time_ampm)
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^that the Requested Scheduling Information exists on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+  @activity_offering =  make ActivityOfferingObject, :code => "F", :parent_course_offering => @course_offering
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => @activity_offering.days, :start_time => @activity_offering.start_time,
+                     :st_time_ampm => @activity_offering.start_time_ampm, :end_time => @activity_offering.end_time,
+                     :end_time_ampm => @activity_offering.end_time_ampm)
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Then /^the Requested Scheduling Information for the Exam Offering of the AO should be populated$/ do
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_days(@activity_offering.code).should == "TH"
+    page.eo_by_ao_st_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
+    page.eo_by_ao_end_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
   end
 end

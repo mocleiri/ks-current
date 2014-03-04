@@ -1299,3 +1299,24 @@ end
 When /^I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined$/ do
   @course_offering.create
 end
+
+And /^I have created a Course Offering from catalog in the source term that uses the matrix and has a final exam period defined$/ do
+  @course_offering = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "HIST110"
+end
+
+And /^I have created an Activity Offering that only has Requested Scheduling Information$/ do
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
+  @activity_offering.edit
+  si_obj = create SchedulingInformationObject, :use_std_ts => true,
+                    :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
+  @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
+  @activity_offering.save
+end
+
+When /^I create a Course Offering from copy in a term that uses the matrix and has an AO Driven final exam period defined$/ do
+  @copy_co = create CourseOffering, :create_by_copy => @course_offering
+
+  @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
+                         :final_exam_driver => "Final Exam Per Activity Offering"
+  @copy_co.save
+end

@@ -4,6 +4,9 @@ Feature: CO.Exam Offering Schedule Information
   when they are created by dynamic processes so that exam offering scheduling requests are consistent with the
   established exam matrix
 
+  FE4.x As a Central Admin I want to schedule AO driven exams during create from copy as part of the dynamic process
+  so that exam offering scheduling requests are consistent with the established exam matrix
+
   Background:
     Given I am logged in as admin
 
@@ -31,3 +34,24 @@ Feature: CO.Exam Offering Schedule Information
     And I create a Course Offering from copy in a term that uses the matrix and has a final exam period defined
     When I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering should be populated
+
+  #KSENROLL-12087
+  @wip @llf
+  Scenario: FE4.x.1 Test that when CO created from copy with exam period that is AO Driven then the schedule info is populated
+    Given that the Requested Scheduling Information exists on the Final Exam Matrix
+    And I create a Course Offering from copy in a term that uses the matrix and has an AO Driven final exam period defined
+    When I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
+
+
+
+
+
+
+#    Given I create an Academic Calendar and add an official term
+#    And I have created a Final Exam Period for the term in the newly created Academic Calendar
+#    And I have created a Course Offering from catalog in the source term that uses the matrix and has a final exam period defined
+#    And I have created an Activity Offering that only has Requested Scheduling Information
+#    And I ensure that the Course Offering exists on the Final Exam Matrix
+#    And I encure that the AO's Requested Scheduling Information exists on the Final Exam Matrix
+
