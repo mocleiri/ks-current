@@ -162,6 +162,14 @@ class RegistrationRequest
       page.remove_course_from_schedule @course_code,@reg_group_code
     end
   end
+
+  def remove_from_schedule_and_cancel
+    on StudentSchedule do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.cancel_drop_course @course_code,@reg_group_code
+    end
+  end
 end
 
 class CourseOptions

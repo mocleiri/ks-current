@@ -62,3 +62,10 @@ Feature: REG.Register for course
     Given I have registered for an ENGL course
     When I remove the course from my schedule
     Then the course is not present in my schedule
+
+  #KSENROLL-12065
+  @wip
+  Scenario: CR 6.1 I want to drop a registered course and cancel the drop so that I am still registered for it.
+    Given I have registered for an ENGL course
+    When I remove the course from my schedule and cancel the drop
+    Then the course is present in my schedule

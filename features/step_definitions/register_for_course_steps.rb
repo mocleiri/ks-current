@@ -92,6 +92,10 @@ When /^I remove the course from my schedule$/ do
   @reg_request.remove_from_schedule
 end
 
+When /^I? ?remove the course from my schedule and cancel the drop$/ do
+  @reg_request.remove_from_schedule_and_cancel
+end
+
 When /^I view my schedule$/ do
   on RegistrationCart do |page1|
     page1.schedule_link.click
