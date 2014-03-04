@@ -415,7 +415,7 @@ Given /^that the Course Offering exists on the Final Exam Matrix$/ do
   @matrix.add_rule :rule_obj => @rule
 end
 
-Then /^the Schedule Information for the Exam Offering should be populated$/ do
+Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
   on ViewExamOfferings do |page|
     page.eo_by_co_days.should == "05/13/2013"
     page.eo_by_co_st_time.should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i

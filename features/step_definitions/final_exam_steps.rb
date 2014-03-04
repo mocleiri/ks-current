@@ -1284,7 +1284,7 @@ When /^I edit the CO to add a second Format Offering$/ do
   @course_offering.save
 end
 
-When /^I create a Course Offering from copy in a term with a final exam period$/ do
+When /^I create a Course Offering from copy in a term that uses the matrix and has a final exam period defined$/ do
   @copy_co = create CourseOffering, :create_by_copy => @course_offering
 
   @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
@@ -1294,4 +1294,8 @@ end
 
 Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
   on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
+end
+
+When /^I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined$/ do
+  @course_offering.create
 end
