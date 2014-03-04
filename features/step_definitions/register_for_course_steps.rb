@@ -77,8 +77,10 @@ Then /^there is a message indicating registration submittal$/ do
   on RegistrationCart do |page|
     register_message_text = "Cart was submitted"
     begin
+      page.wait_until { page.user_message_div.exists? }
       page.wait_until { page.user_message.include? register_message_text }
     rescue
+      puts "Current exception: #{$!} "
       raise "\"#{register_message_text}\" not found in user message"
     end
     puts "User Message: |#{page.user_message}|"

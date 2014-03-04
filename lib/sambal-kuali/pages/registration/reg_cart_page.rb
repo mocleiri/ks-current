@@ -26,6 +26,7 @@ class RegistrationCart < RegisterForCourseBase
   element(:ao_type) { |course_code,reg_group_code,index,b| b.div(id: "ao_type_#{course_code}_#{reg_group_code}_#{index}").text }
   element(:course_schedule) { |course_code,reg_group_code,ao_index,index,b| b.div(id: "schedule_#{course_code}_#{reg_group_code}_#{ao_index}_#{index}").text }
 
+  element(:user_message_div) { |b| b.div(id: "user_message") }
   element(:user_message) { |b| b.div(id: "user_message").text }
   element(:undo_remove_link) { |b| b.link(id: "userMessageInvoke") }
   action(:undo_remove) { |b| b.undo_remove_link.click }
