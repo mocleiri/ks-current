@@ -81,7 +81,7 @@ Feature: BT.Course Search
     And I choose to see "<per_page>" records per page
     Then The table header text will be "<header_text>"
     And There will be <pages> pages of results with <total_per_page> records per page
-    And Pagination controls will not be visible if there is only 1 page
+    But Pagination controls will not be visible if there is only 1 page
   Examples:
     | multi_text       | per_page  | header_text                                      | pages | total_per_page |
     | english history  |  20       | Showing 1-20 of 141 results for english history  | 5     |  20            |
