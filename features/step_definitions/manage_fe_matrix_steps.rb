@@ -422,3 +422,15 @@ Then /^the Schedule Information for the Exam Offering should be populated$/ do
     page.eo_by_co_end_time.should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
   end
 end
+
+Given /^that the Course Offering does not exist on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
+end
+
+Then /^the Schedule Information for the Exam Offering should not be populated$/ do
+  on ViewExamOfferings do |page|
+    page.eo_by_co_days.should == ""
+    page.eo_by_co_st_time.should == ""
+    page.eo_by_co_end_time.should == ""
+  end
+end

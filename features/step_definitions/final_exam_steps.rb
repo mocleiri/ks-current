@@ -1287,7 +1287,11 @@ end
 When /^I create a Course Offering from copy in a term with a final exam period$/ do
   @copy_co = create CourseOffering, :create_by_copy => @course_offering
 
-  @course_offering.edit_offering :final_exam_type => "Standard Final Exam",
+  @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
-  @course_offering.save
+  @copy_co.save
+end
+
+Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
+  on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
 end
