@@ -9,4 +9,4 @@ ks-enroll::enrollment_ks-enroll_branches_KSAP::UNKNOWN
 # module = ks-deployments branch Path = enrollment/ks-deployments/branches/KSAP revision = 41973
 ks-deployments::enrollment_ks-deployments_branches_KSAP::UNKNOWN
 # module = ks-ap branch Path = enrollment/ks-ap/trunk revision = 41973
-ks-ap::enrollment_ks-ap_trunk::23b2058740e08a12e8c05a70308794a5197c1c08
+ks-ap::enrollment_ks-ap_trunk::a7864f9a54254348e87c9ccd1c4a081d97160c3e

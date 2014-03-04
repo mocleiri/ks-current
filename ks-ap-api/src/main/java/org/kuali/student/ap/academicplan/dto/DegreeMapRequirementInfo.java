@@ -89,52 +89,22 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement, Serializa
     
     public DegreeMapRequirementInfo(DegreeMapRequirement copy) {
     	id = copy.getId();
-    	// TODO: continue...
-//        @XmlElement
-//        private String degreeMapId;
-//        
-//        @XmlElement
-//        private Date degreeMapEffectiveDate;
-//        
-//        @XmlAttribute
-//        private int itemSeq;
-//        
-//        @XmlElement
-//        private String refObjectId;
-//
-//        @XmlElement
-//        private String refObjectType;
-//        
-//        @XmlAttribute
-//        private String descr; 
-//
-//        @XmlAttribute
-//        private BigDecimal credit;
-//        
-//        @XmlAttribute
-//        private boolean critical;
-//        
-//        @XmlAttribute
-//        private boolean milestone;
-//        
-//        @XmlAttribute
-//        private String minimumGrade;
-//
-//        @XmlAttribute
-//        private String seqKey;
-//
-//        @XmlAttribute
-//        private int seqNo;
-//
-//        @XmlAttribute
-//        private String suggestedTermId;
-//
-//        @XmlAttribute
-//        private String requiredTermId;
-//
-//        
-//        @XmlAttribute
-//        private String notes;
+    	degreeMapId = copy.getDegreeMapId();
+    	degreeMapEffectiveDate = copy.getDegreeMapEffectiveDate();
+    	itemSeq = copy.getItemSeq();
+    	refObjectId = copy.getRefObjectId();
+    	refObjectType = copy.getRefObjectType();
+    	descr = copy.getDescr();
+    	credit = copy.getCredit();
+    	critical = copy.isCritical();
+    	milestone = copy.isMilestone();
+    	minimumGrade = copy.getMinimumGrade();
+    	seqKey = copy.getSeqKey();
+    	seqNo = copy.getSeqNo();
+    	suggestedTermId = copy.getSuggestedTermId();
+    	requiredTermId = copy.getRequiredTermId();
+    	notes = copy.getNotes();
+
     }
 
 	public String getId() {
