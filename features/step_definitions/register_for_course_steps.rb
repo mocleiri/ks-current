@@ -149,3 +149,13 @@ And /^I? ?view my registration cart$/ do
     page.select_term term_descr
   end
 end
+
+
+Given /^I have registered for an? (\w+) course$/ do |subj|
+  steps %{
+    When I add an #{subj} course offering to my registration cart
+    And I register for the course
+    And I view my schedule
+    Then the course is present in my schedule
+  }
+end

@@ -59,9 +59,6 @@ Feature: REG.Register for course
   #KSENROLL-12065
   @wip
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.
-    When I add an ENGL course offering to my registration cart
-    And I register for the course
-    And I view my schedule
-    Then the course is present in my schedule
+    Given I have registered for an ENGL course
     When I remove the course from my schedule
     Then the course is not present in my schedule
