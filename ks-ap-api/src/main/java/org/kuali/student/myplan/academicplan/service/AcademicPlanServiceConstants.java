@@ -25,5 +25,12 @@ public class AcademicPlanServiceConstants {
     public static final String LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY = "kuali.academicplan.planitem.state.active";
     public static final String LEARNING_PLAN_ITEM_SHARED_TRUE_KEY = "true";
     public static final String LEARNING_PLAN_ITEM_SHARED_FALSE_KEY = "false";
+    
+    public static final String PLACEHOLDER_TYPE_COURSE = "org.kuali.student.ap.placeholder.course";
+    public static final String PLACEHOLDER_TYPE_SEARCH = "org.kuali.student.ap.placeholder.search";
+    public static final String PLACEHOLDER_TYPE_AND = "org.kuali.student.ap.placeholder.and";
+    public static final String PLACEHOLDER_TYPE_OR = "org.kuali.student.ap.placeholder.or";
+    public static final String PLACEHOLDER_TYPE_MILESTONE = "org.kuali.student.ap.placeholder.milestone";
+    
 
 }
