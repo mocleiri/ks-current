@@ -22,11 +22,15 @@
 -- FROM user_sequences
 -- where sequence_name = 'KREW_RTE_NODE_S'
 
-
-SELECT  KREW_RTE_NODE_S.nextval
-from KREW_RTE_NODE_T
-where rownum < (3009 + 3 - 2971)
+drop sequence KREW_RTE_NODE_S
 /
+create sequence KREW_RTE_NODE_S start with 13009
+/
+
+-- SELECT  KREW_RTE_NODE_S.nextval
+-- from KREW_RTE_NODE_T
+-- where rownum < (3009 + 3 - 2971)
+-- /
 
 -- select * 
 -- from KREW_RTE_NODE_CFG_PARM_T
@@ -36,10 +40,15 @@ where rownum < (3009 + 3 - 2971)
 -- FROM user_sequences
 -- where sequence_name = 'KREW_RTE_NODE_CFG_PARM_S'
 
-SELECT  KREW_RTE_NODE_CFG_PARM_S.nextval
-from KREW_RTE_NODE_CFG_PARM_T
-where rownum < (2833 + 3 - 2656)
+drop sequence KREW_RTE_NODE_CFG_PARM_S
 /
+create sequence KREW_RTE_NODE_CFG_PARM_S start with 12833
+/
+
+-- SELECT  KREW_RTE_NODE_CFG_PARM_S.nextval
+-- from KREW_RTE_NODE_CFG_PARM_T
+-- where rownum < (2833 + 3 - 2656)
+-- /
 
 -- select * from 
 -- KREW_DOC_TYP_ATTR_T
