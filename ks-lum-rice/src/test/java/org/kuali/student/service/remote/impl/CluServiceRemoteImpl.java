@@ -19,10 +19,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
-import org.kuali.student.r1.core.statement.service.StatementService;
-import org.kuali.student.r2.core.constants.StatementServiceConstants;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 
-public class StatementServiceRemoteImpl extends StatementServiceDecorator {
+public class CluServiceRemoteImpl extends CluServiceDecorator {
 
     private String hostUrl;
 
@@ -38,14 +38,14 @@ public class StatementServiceRemoteImpl extends StatementServiceDecorator {
         }
         URL wsdlURL;
         try {
-            String urlStr = hostUrl + "/services/" + "StatementService" + "?wsdl";
+            String urlStr = hostUrl + "/services/" + "CluService" + "?wsdl";
             wsdlURL = new URL(urlStr);
         } catch (MalformedURLException ex) {
             throw new IllegalArgumentException(ex);
         }
-        QName qname = new QName(StatementServiceConstants.NAMESPACE, "StatementService");
+        QName qname = new QName(CluServiceConstants.NAMESPACE, CluServiceConstants.SERVICE_NAME_LOCAL_PART);
         Service factory = Service.create(wsdlURL, qname);
-        StatementService port = factory.getPort(StatementService.class);
+        CluService port = factory.getPort(CluService.class);
         this.setNextDecorator(port);
     }
 }

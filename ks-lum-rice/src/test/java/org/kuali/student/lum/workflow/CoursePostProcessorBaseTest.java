@@ -19,13 +19,13 @@ import org.kuali.student.r1.core.statement.dto.ReqCompFieldInfo;
 import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
 import org.kuali.student.r1.core.statement.dto.StatementOperatorTypeKey;
 import org.kuali.student.r1.core.statement.dto.StatementTreeViewInfo;
-import org.kuali.student.r1.core.statement.service.StatementService;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.TimeAmountInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.util.RichTextHelper;
+import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.dto.FormatInfo;
@@ -33,6 +33,7 @@ import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.lrc.dto.ResultValueRangeInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import org.kuali.student.service.remote.impl.CluServiceRemoteImpl;
 import org.kuali.student.service.remote.impl.CourseServiceRemoteImpl;
 
 /**
@@ -47,7 +48,7 @@ public class CoursePostProcessorBaseTest {
 
     private CoursePostProcessorBase coursePostProcessorBase;
     private CourseService courseService;
-    private StatementService statementService;
+    private CluService cluService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -64,8 +65,13 @@ public class CoursePostProcessorBaseTest {
         courseServiceRemote.setHostUrl(LOCAL_HOST_URL);
         courseService = courseServiceRemote;
 
+        CluServiceRemoteImpl cluServiceRemote = new CluServiceRemoteImpl();
+        cluServiceRemote.setHostUrl(LOCAL_HOST_URL);
+        cluService = cluServiceRemote;
+
         this.coursePostProcessorBase = new CoursePostProcessorBase();
         coursePostProcessorBase.setCourseService(courseService);
+        coursePostProcessorBase.setCluService(cluService);
     }
 
     @After
