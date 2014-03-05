@@ -410,9 +410,9 @@ Given /^that the Course Offering exists on the Final Exam Matrix$/ do
   statement = []
   statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
                      :courses => @course_offering.course)
-  @rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
                :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
-  @matrix.add_rule :rule_obj => @rule
+  @matrix.add_rule :rule_obj => rule
 end
 
 Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
