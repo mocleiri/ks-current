@@ -34,12 +34,12 @@
         TYPE_KEY="kuali.proposal.type.course.retire" VER_NBR="0"/>
     <KSPR_PROPOSAL_TYPE EFF_DT="20120301000000"
         NAME="Add New Curriculum Management User"
-        OBJ_ID="F36941AFB791114DE040440A9B9A68E9"
+        OBJ_ID="F3DB5E4B6F09FD93E040440A9B9A7012"
         TYPE_DESC="A proposal of this type records the information needed to add a new departmental user and set them up both in the org-person relation service and in the required KIM Roles table."
         TYPE_KEY="kuali.proposal.type.curriculum.management.user.authorization.add.request" VER_NBR="0"/>
     <KSPR_PROPOSAL_TYPE EFF_DT="20120301000000"
         NAME="Terminate Curriculum Management User"
-        OBJ_ID="F36941AFB792114DE040440A9B9A68E9"
+        OBJ_ID="F3DB5E4B6F0AFD93E040440A9B9A7012"
         TYPE_DESC="A proposal of this type records the information needed to terminate a departmental user and remove their rights as of a specified date in both the org-person relation service and in the required KIM Roles table."
         TYPE_KEY="kuali.proposal.type.curriculum.management.user.authorization.terminate.request" VER_NBR="0"/>
     <KSPR_PROPOSAL_TYPE EFF_DT="20000101000000"
