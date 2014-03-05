@@ -56,6 +56,13 @@ Feature: REG.Register for course
     Then I undo the drop action
     And the course is present in my cart
 
+  #KSENROLL-12064
+  @wip
+  Scenario: CR 5.1 I want to change the parameters for my registered courses so that I take the course with my preferred options.
+    Given I have registered for a course having multiple credit options
+    When I edit the course in my schedule
+    Then the course is present in my schedule, with the correct options
+
   #KSENROLL-12065
   @wip
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.

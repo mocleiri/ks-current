@@ -151,6 +151,28 @@ class RegistrationRequest
   end
   #private :edit_course_options_in_cart
 
+  def edit_course_options_in_schedule opts = {}
+    if @course_options.nil?
+      return nil
+    end
+
+    defaults = {
+    }
+    options = defaults.merge(opts)
+
+    on StudentSchedule do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.edit_course_options @course_code,@reg_group_code
+
+      page.select_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
+      page.select_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
+      page.save_edits @course_code,@reg_group_code
+    end
+
+    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
+  end
+
   def undo_remove_from_cart
     on RegistrationCart do |page|
       page.undo_remove

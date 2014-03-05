@@ -44,6 +44,13 @@ And /^I edit the course in my registration cart$/ do
                                            :grading_option => @reg_request.course_options.grading_option
 end
 
+When /^I edit the course in my schedule$/ do
+  @reg_request.course_options.credit_option = "2.5"
+  @reg_request.course_options.grading_option = "Audit"
+  @reg_request.edit_course_options_in_schedule :credit_option => @reg_request.course_options.credit_option,
+                                               :grading_option => @reg_request.course_options.grading_option
+end
+
 Then /^the course is (present|not present) in my cart$/  do |presence|
   on RegistrationCart do |page|
     if presence == "present"
@@ -163,4 +170,27 @@ Given /^I have registered for an? (\w+) course$/ do |subj|
     And I view my schedule
     Then the course is present in my schedule
   }
+end
+
+Given /^I have registered for a course having multiple credit options$/ do
+  @reg_request = make RegistrationRequest, :student_id=>"student",
+                      :term_code=>"201201",
+                      :term_descr=>"Spring 2012",
+                      :course_code=>"CHEM399B",
+                      :reg_group_code=>"1001"
+  @reg_request.create
+
+  steps %{
+    And I register for the course
+    And I view my schedule
+    Then the course is present in my schedule
+  }
+end
+
+Then /^the course is present in my schedule, with the correct options$/ do
+  on StudentSchedule do |page|
+    page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+  end
 end
