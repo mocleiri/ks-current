@@ -179,12 +179,17 @@
                                     <bean parent="Uif-TextControl" p:textExpand="true"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions" p:readOnly="true">
+                            <bean parent="Uif-HorizontalFieldGroup" p:label="Actions" p:readOnly="true" p:style="white-space: nowrap;">
                                 <property name="items">
                                     <list>
                                         <!-- "Save" image action -->
                                         <bean parent="Uif-ActionLink" p:methodToCall="saveRate"
                                               p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip">
+                                                    <property name="tooltipContent" value="Save Rate"/>
+                                                </bean>
+                                            </property>
                                             <property name="actionImage">
                                                 <bean parent="Uif-Image" p:source="../images/save.png"
                                                       p:style="cursor:pointer;" p:altText="Save"/>
@@ -205,11 +210,21 @@
                                               p:style="cursor:pointer; float: right;" p:altText="" p:title=""
                                               p:render="@{#line.rate.id != null}"
                                               p:onClickScript="showLightboxComponent('rolloverRateLightbox@{#lineSuffix}');writeHiddenToForm('rateId', '@{#line.rate.id}');">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip">
+                                                    <property name="tooltipContent" value="Rollover Rate"/>
+                                                </bean>
+                                            </property>
                                         </bean>
                                         <ref bean="rolloverRateLightbox"/>
                                         <bean parent="Uif-ActionLink" p:methodToCall="deleteRate"
                                               p:onClickScript="writeHiddenToForm('rateId', '@{#line.rate.id}');"
                                               p:hidden="@{#line.rate.id == null}">
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip">
+                                                    <property name="tooltipContent" value="Delete Rate"/>
+                                                </bean>
+                                            </property>
                                             <property name="actionImage">
                                                 <bean parent="Uif-Image" p:source="../images/delete.png"
                                                       p:style="cursor:pointer;" p:altText="Delete"/>
