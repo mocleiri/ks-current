@@ -1087,18 +1087,24 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      */
     private void processChargeTypeManifest(FeeManagementManifest manifest, FeeManagementSession session, boolean isReversal,
                                            List<PaymentBillingTransferDetail> pbtDetails, List<ThirdPartyTransferDetail> tptDetails) {
+
         // Create a charge on the Account associated with the FM session:
         String transactionTypeId = manifest.getTransactionTypeId();
 
         if (StringUtils.isNotEmpty(transactionTypeId) && (session.getAccount() != null) && (manifest.getAmount() != null)) {
+
             // Create a new charge on the Account:
             String accountId = session.getAccount().getId();
+
             BigDecimal amount = isReversal ? manifest.getAmount().negate() : manifest.getAmount();
-            Transaction newCharge = transactionService.createTransaction(transactionTypeId, accountId, new Date(), amount);
+
+            Charge newCharge = transactionService.createCharge(transactionTypeId, accountId, new Date(), amount);
 
             // Update the manifest and session:
             manifest.setTransaction(newCharge);
             manifest.setSessionCurrent(true);
+            manifest.setStatus(FeeManagementManifestStatus.CHARGED);
+
             persistEntity(manifest);
 
             // If there is a linked manifest, process it:
@@ -1117,13 +1123,17 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param pbtDetails       A list of Payment billing transfer details. An OUT parameter.
      * @param tptDetails       A list of Third-party transfer details. An OUT Parameter.
      */
+    @SuppressWarnings("all")
     private void processNonChargeTypeManifest(FeeManagementManifest manifest, boolean isLinkedManifest, FeeManagementSession session,
                                               List<PaymentBillingTransferDetail> pbtDetails, List<ThirdPartyTransferDetail> tptDetails) {
+
         // Check if the linked manifest is complete, then process manifest charge, otherwise, move to the next manifest:
         FeeManagementManifest linkedManifest = isLinkedManifest ? manifest : manifest.getLinkedManifest();
 
         if (linkedManifest != null) {
+
             if (linkedManifest.getTransaction() != null) {
+
                 // Clear all unlockedAllocations against the transaction in the linked manifest (Linked Transaction):
                 Transaction linkedTransaction = linkedManifest.getTransaction();
 
@@ -1135,10 +1145,14 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                 // Process the Implicated Transaction:
                 processImplicatedTransaction(manifest, linkedManifest, implicatedTransaction, session, pbtDetails, tptDetails);
             }
+
         } else {
+
             // If there is no linked manifest, mark the session for manual review:
             logger.warn(String.format("Processing reversal charge for FM Session %d. Manifest with ID %d does not have a linked manifest.", session.getId(), manifest.getId()));
+
             session.setReviewRequired(true);
+
             persistEntity(session);
 
             // Process the reversal as negated charge:
@@ -1389,13 +1403,18 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param session               FM Session.
      */
     private void validateUnallocatedBalance(FeeManagementManifest originalManifest, FeeManagementManifest linkedManifest, Transaction implicatedTransaction, FeeManagementSession session) {
+
         // Is there enough unallocated balance of the transaction to perform correction/cancel/discount:
         if (hasUnallocatedBalanceForCorrection(implicatedTransaction)) {
+
             // Write a warning, mark the session for manual review and reverse the transaction:
             logger.warn("Performing transaction reversal. FM session manual review required.");
+
             performTransactionReversal(originalManifest, linkedManifest);
+
         } else {
-            // Reverse all allocations on the Implicated Transaction in the amount of the original manifest's amount:
+
+            // Reverse all allocations on the Implicated Transaction in the amount of the original manifest amount:
             BigDecimal reversalAmount = originalManifest.getAmount();
 
             transactionService.reverseAllocations(implicatedTransaction.getId(), reversalAmount);
@@ -1410,6 +1429,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             } else {
                 // Write a severe warning, mark the session for manual review:
                 logger.warn("SEVERE: Not enough unallocated balance to perform correction/cancel/discount after clearing manual allocation. FM session manual review required.");
+                originalManifest.setStatus(FeeManagementManifestStatus.SKIPPED);
             }
         }
 
@@ -1445,6 +1465,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
             originalManifest.setTransaction(reversalTransaction);
             originalManifest.setSessionCurrent(true);
+            originalManifest.setStatus(FeeManagementManifestStatus.CHARGED);
 
             // Persist the original manifest:
             persistEntity(originalManifest);

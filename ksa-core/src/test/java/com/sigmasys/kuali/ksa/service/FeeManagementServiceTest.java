@@ -3,9 +3,6 @@ package com.sigmasys.kuali.ksa.service;
 import com.sigmasys.kuali.ksa.config.ConfigService;
 import com.sigmasys.kuali.ksa.model.*;
 import com.sigmasys.kuali.ksa.model.fm.*;
-import com.sigmasys.kuali.ksa.model.pb.*;
-import com.sigmasys.kuali.ksa.model.tp.ThirdPartyPlan;
-import com.sigmasys.kuali.ksa.model.tp.ThirdPartyPlanMember;
 import com.sigmasys.kuali.ksa.service.fm.FeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import com.sigmasys.kuali.ksa.service.fm.impl.FeeManagementServiceImpl;
@@ -39,7 +36,7 @@ import static junit.framework.Assert.assertEquals;
 public class FeeManagementServiceTest extends AbstractServiceTest {
 
     private static final String ACCOUNT_ID = "admin";
-    private static final String TRANSACTION_TYPE_ID = "cash";
+    private static final String CHARGE_TYPE_ID = "1020";
     private static final BigDecimal MANIFEST_AMOUNT = new BigDecimal(10);
     private static final BigDecimal IMPLICATED_TRANSACTION_AMOUNT = new BigDecimal(12);
     private static final String OFFERING_ID = "offeringId";
@@ -612,8 +609,10 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
     @Test
     public void testChargeSessionChargeManifestNoLinkedManifest() throws Exception {
+
         // Create an FM Session:
         FmSession fmSession = createFmSession(1, false, false, false, false, FeeManagementManifestType.CHARGE);
+
         FeeManagementManifest manifest = fmSession.getManifests().get(0);
         Transaction primaryTransaction = manifest.getTransaction();
 
@@ -933,8 +932,8 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         // Offering ID + Rate:
         FeeManagementManifest chargeManifest = new FeeManagementManifest();
         FeeManagementManifest cancellationManifest = new FeeManagementManifest();
-        Transaction chargeTransaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
-        Transaction cancellationTransaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction chargeTransaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction cancellationTransaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
         Rate rate = _createRate();
 
         chargeManifest.setSession(result.getSession());
@@ -943,8 +942,8 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         cancellationManifest.setType(FeeManagementManifestType.CANCELLATION);
         chargeManifest.setAmount(MANIFEST_AMOUNT);
         cancellationManifest.setAmount(MANIFEST_AMOUNT);
-        chargeManifest.setTransactionTypeId(TRANSACTION_TYPE_ID);
-        cancellationManifest.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        chargeManifest.setTransactionTypeId(CHARGE_TYPE_ID);
+        cancellationManifest.setTransactionTypeId(CHARGE_TYPE_ID);
         chargeManifest.setOfferingId(OFFERING_ID);
         cancellationManifest.setOfferingId(OFFERING_ID);
         chargeManifest.setRate(rate);
@@ -961,8 +960,8 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         // Internal ID + Rate:
         chargeManifest = new FeeManagementManifest();
         cancellationManifest = new FeeManagementManifest();
-        chargeTransaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
-        cancellationTransaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        chargeTransaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        cancellationTransaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
 
         chargeManifest.setSession(result.getSession());
         cancellationManifest.setSession(result.getSession());
@@ -970,8 +969,8 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         cancellationManifest.setType(FeeManagementManifestType.CANCELLATION);
         chargeManifest.setAmount(MANIFEST_AMOUNT);
         cancellationManifest.setAmount(MANIFEST_AMOUNT);
-        chargeManifest.setTransactionTypeId(TRANSACTION_TYPE_ID);
-        cancellationManifest.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        chargeManifest.setTransactionTypeId(CHARGE_TYPE_ID);
+        cancellationManifest.setTransactionTypeId(CHARGE_TYPE_ID);
         chargeManifest.setInternalChargeId(INTERNAL_CHARGE_ID);
         cancellationManifest.setInternalChargeId(INTERNAL_CHARGE_ID);
         chargeManifest.setRate(rate);
@@ -991,13 +990,13 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
     private void createManifestsForPriorSessionAdjustment(FmSession fmSession) throws Exception {
         // Create an Already Charged manifest:
         FeeManagementManifest alreadyCharged = new FeeManagementManifest();
-        Transaction transaction1 = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction transaction1 = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
         Rate rate = _createRate();
 
         alreadyCharged.setSession(fmSession.getSession());
         alreadyCharged.setType(FeeManagementManifestType.CHARGE);
         alreadyCharged.setAmount(MANIFEST_AMOUNT);
-        alreadyCharged.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        alreadyCharged.setTransactionTypeId(CHARGE_TYPE_ID);
         alreadyCharged.setRegistrationId(REGISTRATION_ID);
         alreadyCharged.setRate(rate);
         alreadyCharged.setTransaction(transaction1);
@@ -1009,12 +1008,12 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         // Create a Not Yet Charged manifest:
         FeeManagementManifest notYetCharged = new FeeManagementManifest();
-        Transaction transaction2 = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction transaction2 = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
 
         notYetCharged.setSession(fmSession.getSession());
         notYetCharged.setType(FeeManagementManifestType.CHARGE);
         notYetCharged.setAmount(MANIFEST_AMOUNT);
-        notYetCharged.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        notYetCharged.setTransactionTypeId(CHARGE_TYPE_ID);
         notYetCharged.setInternalChargeId(INTERNAL_CHARGE_ID);
         notYetCharged.setRate(rate);
         notYetCharged.setTransaction(transaction2);
@@ -1043,13 +1042,13 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         // Create ALREADY CHARGED Prior Manifests matching Current ones by (Registration or Internal Charge) + Rate
         /* CHARGE matching by RegistrationId + Rate */
         FeeManagementManifest alreadyCharged = new FeeManagementManifest();
-        Transaction transaction1 = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction transaction1 = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
         Rate rate = currentSession.getManifests().get(0).getRate();
 
         alreadyCharged.setSession(priorSession.getSession());
         alreadyCharged.setType(FeeManagementManifestType.CHARGE);
         alreadyCharged.setAmount(MANIFEST_AMOUNT);
-        alreadyCharged.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        alreadyCharged.setTransactionTypeId(CHARGE_TYPE_ID);
         alreadyCharged.setRegistrationId(REGISTRATION_ID);
         alreadyCharged.setRate(rate);
         alreadyCharged.setTransaction(transaction1);
@@ -1061,12 +1060,12 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         // Create NOT YET CHARGED Prior Manifests matching Current ones by (Registration or Internal Charge) + Rate:
         /* CANCELLATION matching by InternalChargeId + Rate */
         FeeManagementManifest notYetCharged = new FeeManagementManifest();
-        Transaction transaction2 = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction transaction2 = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
 
         notYetCharged.setSession(priorSession.getSession());
         notYetCharged.setType(FeeManagementManifestType.CANCELLATION);
         notYetCharged.setAmount(MANIFEST_AMOUNT);
-        notYetCharged.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        notYetCharged.setTransactionTypeId(CHARGE_TYPE_ID);
         notYetCharged.setInternalChargeId(INTERNAL_CHARGE_ID);
         notYetCharged.setRate(rate);
         notYetCharged.setTransaction(transaction2);
@@ -1078,12 +1077,12 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         // Create UNMATCHED Prior Manifests not matched to Current ones by (Registration or Internal Charge) + Rate:
         /* DISCOUNT not matching by either (RegistrationID or InternalChargeID) and Rate */
         FeeManagementManifest unmatched = new FeeManagementManifest();
-        Transaction transaction3 = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+        Transaction transaction3 = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
 
         unmatched.setSession(priorSession.getSession());
         unmatched.setType(FeeManagementManifestType.DISCOUNT);
         unmatched.setAmount(MANIFEST_AMOUNT);
-        unmatched.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        unmatched.setTransactionTypeId(CHARGE_TYPE_ID);
         unmatched.setInternalChargeId("duh");
         unmatched.setRate(rate);
         unmatched.setTransaction(transaction3);
@@ -1099,7 +1098,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         fullReversal1.setSession(priorSession.getSession());
         fullReversal1.setType(FeeManagementManifestType.CHARGE);
-        fullReversal1.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        fullReversal1.setTransactionTypeId(CHARGE_TYPE_ID);
         fullReversal1.setAmount(fullReversalAmount);
         fullReversal1.setOfferingId(fullReversalOfferingId);
         fullReversal1.setRate(rate);
@@ -1107,7 +1106,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         fullReversal2.setSession(priorSession.getSession());
         fullReversal2.setType(FeeManagementManifestType.CANCELLATION);
-        fullReversal2.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        fullReversal2.setTransactionTypeId(CHARGE_TYPE_ID);
         fullReversal2.setAmount(fullReversalAmount);
         fullReversal2.setOfferingId(fullReversalOfferingId);
         fullReversal2.setRate(rate);
@@ -1125,7 +1124,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         fullReversal1.setSession(priorSession.getSession());
         fullReversal1.setType(FeeManagementManifestType.CHARGE);
-        fullReversal1.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        fullReversal1.setTransactionTypeId(CHARGE_TYPE_ID);
         fullReversal1.setAmount(fullReversalAmount);
         fullReversal1.setInternalChargeId(fullReversalInternalChargeId);
         fullReversal1.setRate(rate);
@@ -1133,7 +1132,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         fullReversal2.setSession(priorSession.getSession());
         fullReversal2.setType(FeeManagementManifestType.CANCELLATION);
-        fullReversal2.setTransactionTypeId(TRANSACTION_TYPE_ID);
+        fullReversal2.setTransactionTypeId(CHARGE_TYPE_ID);
         fullReversal2.setAmount(fullReversalAmount);
         fullReversal2.setInternalChargeId(fullReversalInternalChargeId);
         fullReversal2.setRate(rate);
@@ -1349,16 +1348,17 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         // Create manifests:
         for (int i = 0; i < numManifests; i++) {
+
             FeeManagementManifest manifest = new FeeManagementManifest();
 
             manifest.setSession(fmSession);
             manifest.setType(manifestTypes[i]);
             manifest.setAmount(MANIFEST_AMOUNT);
-            manifest.setTransactionTypeId(TRANSACTION_TYPE_ID);
+            manifest.setTransactionTypeId(CHARGE_TYPE_ID);
 
             // Add Transaction:
             if (addPrimaryTransactions) {
-                Transaction transaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
+                Transaction transaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), MANIFEST_AMOUNT);
 
                 manifest.setTransaction(transaction);
             }
@@ -1369,8 +1369,9 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
             // Add linked manifest, linked and implicated transactions:
             if (addLinkedManifests) {
+
                 FeeManagementManifest linkedManifest = new FeeManagementManifest();
-                Transaction linkedTransaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), IMPLICATED_TRANSACTION_AMOUNT);
+                Transaction linkedTransaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), IMPLICATED_TRANSACTION_AMOUNT);
 
                 linkedManifest.setSession(fmSession);
                 linkedManifest.setTransaction(linkedTransaction);
@@ -1400,7 +1401,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         // Create an unlocked allocation:
         BigDecimal allocationAmount = transaction.getAmount().divide(new BigDecimal(2));
-        Transaction implicatedTransaction = transactionService.createTransaction(TRANSACTION_TYPE_ID, ACCOUNT_ID, new Date(), transaction.getAmount().negate());
+        Transaction implicatedTransaction = transactionService.createTransaction(CHARGE_TYPE_ID, ACCOUNT_ID, new Date(), transaction.getAmount().negate());
 
         transactionService.createAllocation(transaction.getId(), implicatedTransaction.getId(), allocationAmount);
 
@@ -1440,126 +1441,6 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         }
 
         return null;
-    }
-
-    /**
-     * Creates a PaymentBillingPlan
-     */
-    protected PaymentBillingPlan createPaymentBillingPlan() throws Exception {
-
-        transactionService.createTransaction("1020", TEST_USER_ID, new Date(), IMPLICATED_TRANSACTION_AMOUNT);
-        transactionService.createTransaction("1001", TEST_USER_ID, new Date(), IMPLICATED_TRANSACTION_AMOUNT);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_US);
-
-        Date openPeriodStartDate = dateFormat.parse("01/01/2011");
-        Date openPeriodEndDate = dateFormat.parse("01/01/2020");
-
-        Date chargePeriodStartDate = dateFormat.parse("01/01/2011");
-        Date chargePeriodEndDate = dateFormat.parse("01/01/2020");
-
-        String GL_ACCOUNT_ID = "01-0-131120 1326";
-
-        GeneralLedgerType glType = generalLedgerService.createGeneralLedgerType("GL_TYPE1", "Test GL type1",
-                "Test GL Description 1", GL_ACCOUNT_ID, GlOperationType.CREDIT);
-
-        TransferType transferType = transactionTransferService.createTransferType(glType.getId(), "_TT_1", "TT 1", "Transfer Type 1");
-
-        PaymentBillingPlan plan = paymentBillingService.createPaymentBillingPlan(
-                "PB code1",
-                "PB name 1",
-                "PB description 1",
-                transferType.getId(),
-                "1001",
-                "1020",
-                openPeriodStartDate,
-                openPeriodEndDate,
-                chargePeriodStartDate,
-                chargePeriodEndDate,
-                new BigDecimal(10e7),
-                new BigDecimal(3570.99),
-                new BigDecimal(400.00),
-                new BigDecimal(1),
-                new BigDecimal(3700.99),
-                1,
-                true,
-                "PB plan prefix",
-                PaymentRoundingType.FIRST,
-                ScheduleType.SKIP_EARLIER);
-
-        paymentBillingService.createPaymentBillingAllowableCharge(
-                plan.getId(),
-                ".*",
-                new BigDecimal(1450),
-                Constants.BIG_DECIMAL_HUNDRED,
-                1);
-
-        return plan;
-    }
-
-    protected ThirdPartyPlan _createThirdPartyPlan(String planCode) throws Exception {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_US);
-
-        Date openPeriodStartDate = dateFormat.parse("01/01/2011");
-        Date openPeriodEndDate = dateFormat.parse("01/01/2020");
-
-        Date chargePeriodStartDate = dateFormat.parse("01/01/2011");
-        Date chargePeriodEndDate = dateFormat.parse("01/01/2020");
-
-
-        String GL_ACCOUNT_ID = "01-0-131120 1326";
-
-        GeneralLedgerType glType = generalLedgerService.createGeneralLedgerType("GL_TYPE1", "Test GL type1",
-                "Test GL Description 1", GL_ACCOUNT_ID, GlOperationType.CREDIT);
-
-        TransferType transferType = transactionTransferService.createTransferType(glType.getId(), planCode + "_TT_1", "TT 1", "Transfer Type 1");
-        ThirdPartyAccount thirdPartyAccount = createThirdPartyAccount();
-
-        ThirdPartyPlan plan = thirdPartyTransferService.createThirdPartyPlan(
-                planCode,
-                "TPP name 1",
-                "TPP description 1",
-                transferType.getId(),
-                thirdPartyAccount.getId(),
-                new BigDecimal(10e4),
-                new Date(),
-                null,
-                openPeriodStartDate,
-                openPeriodEndDate,
-                chargePeriodStartDate,
-                chargePeriodEndDate);
-
-
-        ThirdPartyPlanMember planMember =
-                thirdPartyTransferService.createThirdPartyPlanMember(TEST_USER_ID, plan.getId(), 99);
-
-
-        return plan;
-    }
-
-    protected ThirdPartyAccount createThirdPartyAccount() {
-
-        OrgName orgName = new OrgName();
-        Account adminAccount = accountService.getOrCreateAccount(ACCOUNT_ID);
-        orgName.setName("Org 1");
-        orgName.setCreatorId(ACCOUNT_ID);
-        orgName.setLastUpdate(new Date());
-        orgName.setContact(adminAccount.getDefaultPersonName());
-
-        persistenceService.persistEntity(orgName);
-
-        ThirdPartyAccount account = new ThirdPartyAccount();
-        account.setId("third_party_account");
-        account.setAbleToAuthenticate(true);
-        account.setCreationDate(new Date());
-        account.setCreatorId(ACCOUNT_ID);
-        account.setOrgName(orgName);
-        account.setCreditLimit(new BigDecimal(10e6));
-
-        persistenceService.persistEntity(account);
-
-        return account;
     }
 
     /**
