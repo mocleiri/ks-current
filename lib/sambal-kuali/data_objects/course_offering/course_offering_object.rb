@@ -229,6 +229,20 @@ class CourseOffering
       end
     end
 
+    if options[:final_exam_driver] != nil
+      on CourseOfferingCreateEdit do |page|
+        page.final_exam_driver_select(options[:final_exam_driver])
+      end
+      @final_exam_driver = options[:final_exam_driver]
+    end
+
+    if options[:final_exam_activity] != nil
+      on CourseOfferingCreateEdit do |page|
+        page.final_exam_activity_select(options[:final_exam_activity])
+      end
+      @final_exam_activity = options[:final_exam_activity]
+    end
+
     if options[:delivery_format_list] != nil
       options[:delivery_format_list].each do |delivery_obj|
         @delivery_format_list.each do |existing_si|
@@ -297,13 +311,6 @@ class CourseOffering
           end
         end
       end
-    end
-
-    if options[:final_exam_driver] != nil
-      on CourseOfferingCreateEdit do |page|
-        page.final_exam_driver_select(options[:final_exam_driver])
-      end
-      @final_exam_driver = options[:final_exam_driver]
     end
 
     if options[:affiliated_person_list] != nil

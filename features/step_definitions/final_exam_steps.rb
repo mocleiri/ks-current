@@ -1315,8 +1315,29 @@ end
 
 When /^I create a Course Offering from copy in a term that uses the matrix and has an AO Driven final exam period defined$/ do
   @copy_co = create CourseOffering, :create_by_copy => @course_offering
+end
 
+When /^I edit the Exam Period of the CO to be AO Driven and to have Discussion set as exam activity$/ do
   @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
-                         :final_exam_driver => "Final Exam Per Activity Offering"
+                         :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Discussion"
+
   @copy_co.save
+end
+
+When /^I edit the Exam Period of the CO to be AO Driven and to have Lecture set as exam activity$/ do
+  @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
+                         :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
+
+  @copy_co.save
+end
+
+Given /^I create a Course Offering from catalog in a term that has a final exam period defined$/ do
+  @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
+                            :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
+  puts @course_offering.course
+end
+
+Given /^I create an Activity Offering that has no ASIs or RSIs$/ do
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :activity_type => "Lecture")
+  @activity_offering.approve :navigate_to_page => false, :send_to_scheduler => true
 end

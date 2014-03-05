@@ -461,18 +461,33 @@ Given /^that the Requested Scheduling Information exists on the Final Exam Matri
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
-  statement << (make ExamMatrixStatementObject, :days => @activity_offering.days, :start_time => @activity_offering.start_time,
-                     :st_time_ampm => @activity_offering.start_time_ampm, :end_time => @activity_offering.end_time,
-                     :end_time_ampm => @activity_offering.end_time_ampm)
+  statement << (make ExamMatrixStatementObject, :days => "M", :start_time => "12:00", :st_time_ampm => "pm",
+                     :end_time => "12:50", :end_time_ampm => "pm")
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
 end
 
+Given /^that the Requested Scheduling Information does not exist on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+  @activity_offering =  make ActivityOfferingObject, :code => "L", :parent_course_offering => @course_offering
+end
+
 Then /^the Requested Scheduling Information for the Exam Offering of the AO should be populated$/ do
   on ViewExamOfferings do |page|
+    puts page.eo_by_ao_days(@activity_offering.code)
+    puts page.eo_by_ao_st_time(@activity_offering.code)
+    puts page.eo_by_ao_end_time(@activity_offering.code)
     page.eo_by_ao_days(@activity_offering.code).should == "TH"
     page.eo_by_ao_st_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
     page.eo_by_ao_end_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
+  end
+end
+
+Then /^the Requested Scheduling Information for the Exam Offering of the AO should not be populated$/ do
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_days(@activity_offering.code).should == ""
+    page.eo_by_ao_st_time(@activity_offering.code).should == ""
+    page.eo_by_ao_end_time(@activity_offering.code).should == ""
   end
 end

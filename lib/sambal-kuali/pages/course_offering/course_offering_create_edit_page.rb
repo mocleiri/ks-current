@@ -82,6 +82,9 @@ class CourseOfferingCreateEdit < BasePage
   element(:final_exam_driver_element) { |b| b.frm.select(id: "KS-CourseOfferingEdit-FinalExamDriver_control") }
   action(:final_exam_driver_select) { |driver,b| b.final_exam_driver_element.select driver; b.loading.wait_while_present }
 
+  element(:final_exam_activity_element) { |b| b.frm.select(id: "edit_co_final_exam_type_line0_control")}
+  action(:final_exam_activity_select) { |activity,b| b.final_exam_activity_element.select activity; b.loading.wait_while_present }
+
   element(:use_exam_matrix_div) { |b| b.frm.div(id: "finalExamMatrix")}
   element(:use_exam_matrix_checkbox) { |b| b.use_exam_matrix_div.checkbox}
 
