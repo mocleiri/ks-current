@@ -51,6 +51,12 @@ class CmCourseInformation < BasePage
   element(:error_popup) { |b| b.div(text: 'The form contains errors. Please correct these errors and try again.') }
   action(:error_message) { |error_number='2', b| b.h3(text: "This page has #{error_number} errors") }
 
+# REVIEW PROPOSAL
+  action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
+  value(:proposal_title_review) { |b| b.div(id: 'KS-CourseView-CourseInfo-ReviewWidgets_disclosureContent').div(data_label: 'Proposal Title').span(class: "uif-readOnlyContent").text }
+  value(:course_title_review) { |b| b.div(id: 'KS-CourseView-CourseInfo-ReviewWidgets_disclosureContent').div(data_label: 'Course Title').span(class: "uif-readOnlyContent").text }
+
+
   # table results
   # b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table.row.cells[1].text
 

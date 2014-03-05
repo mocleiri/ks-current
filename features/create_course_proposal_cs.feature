@@ -13,9 +13,13 @@ When I create a course proposal
 And I cancel create a course
 Then I should see CM Home
 
+@pending
 Scenario: CC.3.1 Create a course proposal with only required fields
-When I complete the required fields on the course proposal and save
-Then I should see data in required fields for the course proposal
+When I complete the required for save fields on the course proposal and save
+Then I should see data in required for save fields for the course proposal
+And I should see data in required for save fields on the Review Proposal page
+And I edit the required for save fields and save
+Then I should see the updated data on the Review proposal page
 
 
 Scenario: CC4.1 Create an admin course proposal with only required for save fields

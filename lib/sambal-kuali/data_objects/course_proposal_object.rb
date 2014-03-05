@@ -182,6 +182,23 @@ class CmCourseProposalObject < DataObject
     end
   end
 
+
+  def edit (opts={})
+
+    on CmCourseInformation do |page|
+      page.edit_course_information
+
+      page.proposal_title.fit opts[:proposal_title]
+      page.course_title.fit opts[:course_title]
+
+      page.save_progress
+    end
+
+    set_options(opts)
+
+  end
+
+
   def create_course_proposal_required
     on CmCourseInformation do |page|
       page.course_information unless page.current_page('Course Information').exists?

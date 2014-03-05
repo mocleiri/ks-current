@@ -46,7 +46,7 @@ When /^I complete the required fields for save on the course proposal$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
-When /^I complete the required fields on the course proposal and save$/ do
+When /^I complete the required for save fields on the course proposal and save$/ do
   @course_proposal = create CmCourseProposalObject, :curriculum_review_process => "Yes"
 end
 
@@ -91,7 +91,6 @@ When /^I create a course proposal for testing$/ do
 end
 
 
-
 Then /^I should see a course proposal being created$/ do
   on CmCourseInformation do |page|
     page.course_information
@@ -100,6 +99,47 @@ Then /^I should see a course proposal being created$/ do
     page.page_validation_text.should == "Document was successfully saved."
   end
 end
+
+
+
+Then /^I should see data in required for save fields for the course proposal$/ do
+  on CmCourseInformation do |page|
+    page.course_information
+    page.proposal_title.value.should == @course_proposal.proposal_title
+    page.course_title.value.should == @course_proposal.course_title
+    page.page_validation_text.should == "Document was successfully saved."
+  end
+end
+
+
+And /^I should see data in required for save fields on the Review Proposal page$/ do
+  on CmCourseInformation do |page|
+    page.review_proposal
+    page.loading_wait
+    #puts "Original Proposal Title is #{page.proposal_title_review}"
+    #puts "Original Course Title is #{page.course_title_review}"
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+
+  end
+end
+
+And /^I edit the required for save fields and save$/ do
+   @course_proposal.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+end
+
+And /^I should see the updated data on the Review proposal page$/ do
+  on CmCourseInformation do |page|
+    page.review_proposal
+    page.loading_wait
+    #puts "Updated Proposal Title is #{page.proposal_title_review}"
+    #puts "Updated Course Title is #{page.course_title_review}"
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+
+  end
+end
+
 #-----
 # S2
 #-----
@@ -150,14 +190,6 @@ When /^I complete the required fields on the course proposal$/ do
                            end_term: 'Fall 1980'
 end
 
-Then /^I should see data in required fields for the course proposal$/ do
-  on CmCourseInformation do |page|
-    page.course_information
-    page.proposal_title.value.should == @course_proposal.proposal_title
-    page.course_title.value.should == @course_proposal.course_title
-    page.page_validation_text.should == "Document was successfully saved."
-  end
-end
 
 
 =begin
