@@ -37,9 +37,7 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
     }
 
     public UnitNumber(BigDecimal unitNumber) {
-        if (unitNumber != null) {
-            this.unitNumber = unitNumber.setScale(2, RoundingMode.HALF_DOWN);
-        }
+        setValue(unitNumber);
     }
 
     public BigDecimal getValue() {
@@ -47,7 +45,9 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
     }
 
     public void setValue(BigDecimal unitNumber) {
-        this.unitNumber = unitNumber;
+        if (unitNumber != null) {
+            this.unitNumber = unitNumber.setScale(2, RoundingMode.HALF_DOWN);
+        }
     }
 
     public UnitNumber add(UnitNumber unitNumber) {
