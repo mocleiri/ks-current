@@ -13,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kuali.student.r1.core.statement.dto.ReqCompFieldInfo;
 import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
@@ -33,13 +34,12 @@ import org.kuali.student.r2.lum.lrc.dto.ResultValueRangeInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.kuali.student.service.remote.impl.CourseServiceRemoteImpl;
-import org.kuali.student.service.remote.impl.StatementServiceRemoteImpl;
 
 /**
  *
  * @author nwright
  */
-//@Ignore
+@Ignore
 public class CoursePostProcessorBaseTest {
 
     public CoursePostProcessorBaseTest() {
