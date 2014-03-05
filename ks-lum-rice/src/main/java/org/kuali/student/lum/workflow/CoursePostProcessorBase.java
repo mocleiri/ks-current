@@ -3,7 +3,6 @@
  */
 package org.kuali.student.lum.workflow;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,14 +16,21 @@ import org.kuali.rice.kew.framework.postprocessor.ActionTakenEvent;
 import org.kuali.rice.kew.framework.postprocessor.DocumentRouteStatusChange;
 import org.kuali.rice.kew.framework.postprocessor.IDocumentEvent;
 import org.kuali.rice.krad.util.ObjectUtils;
+import org.kuali.student.r1.core.statement.dto.ReqCompFieldInfo;
 import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
 import org.kuali.student.r1.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.r1.lum.course.service.CourseServiceConstants;
+import org.kuali.student.r1.lum.statement.typekey.ReqComponentFieldTypes;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.CurrencyAmountInfo;
 import org.kuali.student.r2.common.dto.DtoConstants;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.AttributeHelper;
 import org.kuali.student.r2.common.util.ContextUtils;
 import org.kuali.student.r2.core.proposal.dto.ProposalInfo;
@@ -32,6 +38,8 @@ import org.kuali.student.r2.core.versionmanagement.dto.VersionDisplayInfo;
 import org.kuali.student.r2.lum.clu.CLUConstants;
 import org.kuali.student.r2.lum.clu.dto.AffiliatedOrgInfo;
 import org.kuali.student.r2.lum.clu.dto.CluInstructorInfo;
+import org.kuali.student.r2.lum.clu.dto.CluSetInfo;
+import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 import org.kuali.student.r2.lum.course.dto.CourseCrossListingInfo;
 import org.kuali.student.r2.lum.course.dto.CourseFeeInfo;
@@ -42,7 +50,7 @@ import org.kuali.student.r2.lum.course.dto.CourseVariationInfo;
 import org.kuali.student.r2.lum.course.dto.FormatInfo;
 import org.kuali.student.r2.lum.course.dto.LoDisplayInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
-import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -54,6 +62,7 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
     private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(CoursePostProcessorBase.class);
 
     private CourseService courseService;
+    private CluService cluService;
     private CourseStateChangeServiceImpl courseStateChangeService;
 
     /**
@@ -294,8 +303,8 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         	// If modify to current version, get current course and modify with updated course
         	if (CLUConstants.PROPOSAL_TYPE_COURSE_MODIFY_CURRENT_VERSION.equals(proposalInfo.getTypeKey()) && 
         			DtoConstants.STATE_PROCESSED.equals(courseState)){
-        		VersionDisplayInfo currentCourse = courseService.getCurrentVersion(CourseServiceConstants.COURSE_NAMESPACE_URI, courseInfo.getVersion().getVersionIndId(), ContextUtils.getContextInfo());
-        		CourseInfo currentCourseInfo = courseService.getCourse(currentCourse.getId(), ContextUtils.getContextInfo());        		
+        		VersionDisplayInfo currentCourse = getCourseService().getCurrentVersion(CourseServiceConstants.COURSE_NAMESPACE_URI, courseInfo.getVersion().getVersionIndId(), ContextUtils.getContextInfo());
+        		CourseInfo currentCourseInfo = getCourseService().getCourse(currentCourse.getId(), ContextUtils.getContextInfo());        		
         		// Update current version fields with updated values
         		copyToCurrentVersion(currentCourseInfo, courseInfo);
         		
@@ -312,20 +321,20 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
             	//}
             }
             
-            List<StatementTreeViewInfo> statementTreeViewInfos = courseService.getCourseStatements(courseInfo.getId(), null, null, ContextUtils.getContextInfo());
+            List<StatementTreeViewInfo> statementTreeViewInfos = getCourseService().getCourseStatements(courseInfo.getId(), null, null, ContextUtils.getContextInfo());
             if(statementTreeViewInfos!=null){
 	            statementTreeViewInfoStateSetter(courseInfo.getStateKey(), statementTreeViewInfos.iterator());
 	            
 	            for(Iterator<StatementTreeViewInfo> it = statementTreeViewInfos.iterator(); it.hasNext();)
 
-	        		courseService.updateCourseStatement(courseInfo.getId(), courseState, it.next(), ContextUtils.getContextInfo());
+	        		getCourseService().updateCourseStatement(courseInfo.getId(), courseState, it.next(), ContextUtils.getContextInfo());
             }
         }
         
     }
 
     // protected so we can test
-    protected void copyToCurrentVersion(CourseInfo currentCourseInfo, CourseInfo changedCourseInfo) {
+    protected void copyToCurrentVersion(CourseInfo currentCourseInfo, CourseInfo changedCourseInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
 
         LOG.info("Updating course version " + currentCourseInfo.getId()
                 + " with " + changedCourseInfo.getId() + "course version.");
@@ -526,7 +535,7 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         //expirationDate
         currentCourseInfo.setExpirationDate(changedCourseInfo.getExpirationDate());
 
-	 //version (DO NOT COPY OVER)
+        //version (DO NOT COPY OVER)
         //meta (DO NOT COPY OVER)
         //attributes (again blow away and replace)
         currentCourseInfo.getAttributes().clear();
@@ -534,17 +543,48 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         for (AttributeInfo attribute : currentCourseInfo.getAttributes()) {
             attribute.setId(null);
         }
+
+        List<StatementTreeViewInfo> currentStatementTreeViewInfos = getCourseService().getCourseStatements(currentCourseInfo.getId(), null, null, ContextUtils.getContextInfo());
+        
+        for(StatementTreeViewInfo statementTreeViewInfo : currentStatementTreeViewInfos){
+        	getCourseService().deleteCourseStatement(currentCourseInfo.getId(), statementTreeViewInfo, ContextUtils.getContextInfo());
+        }
+        
+        this.copyStatements(changedCourseInfo.getId(), 
+                currentCourseInfo.getId(), 
+                currentCourseInfo.getStateKey(),
+                ContextUtils.getContextInfo());
     }
 
     protected boolean preProcessCourseSave(IDocumentEvent iDocumentEvent, CourseInfo courseInfo) {
         return false;
     }
 
-    protected CourseService getCourseService() {
+    public void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
+
+    public void setCourseStateChangeService(CourseStateChangeServiceImpl courseStateChangeService) {
+        this.courseStateChangeService = courseStateChangeService;
+    }
+
+    
+    public CourseService getCourseService() {
         if (this.courseService == null) {
             this.courseService = (CourseService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/course","CourseService")); 
         }
         return this.courseService;
+    }
+
+    public CluService getCluService() {
+        if (this.cluService == null) {
+            this.cluService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, CluServiceConstants.SERVICE_NAME_LOCAL_PART)); 
+        }
+        return cluService;
+    }
+
+    public void setCluService(CluService cluService) {
+        this.cluService = cluService;
     }
     
     protected CourseStateChangeServiceImpl getCourseStateChangeService() {
@@ -555,6 +595,15 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         return this.courseStateChangeService;
     } 
     
+    private void resetCourseStatementRecursively(StatementTreeViewInfo statementTreeViewInfo){
+    	
+        statementTreeViewInfo.setId(null);
+    	for(StatementTreeViewInfo nestedInfo : statementTreeViewInfo.getStatements()){
+    		resetCourseStatementRecursively(nestedInfo);
+    	}    	
+    }
+    
+
     private void resetLoRecursively(LoDisplayInfo lo, String stateKey) {
         //Clear out all the Lo ids recursively
         lo.setId(null);
@@ -581,4 +630,81 @@ public class CoursePostProcessorBase extends KualiStudentPostProcessorBase {
         	statementTreeViewInfoStateSetter(courseState, statementTreeViewInfo.getStatements().iterator());
         }
     }
+    
+    
+        ////
+        //// this was copied over from CourseServiceUtils because this rice package cannot depend on lum-impl
+        ////
+    /**
+     * Clears out ids recursively and also copies adhock clusets
+     *
+     * @param statementTreeView
+     * @throws OperationFailedException
+     */
+    private  void clearStatementTreeViewIdsRecursively(StatementTreeViewInfo statementTreeView, String newState,
+             ContextInfo contextInfo) throws OperationFailedException {
+        statementTreeView.setId(null);
+        statementTreeView.setState(newState);
+
+        //clear out all the nested requirement components
+        for (ReqComponentInfo reqComp : statementTreeView.getReqComponents()) {
+            reqComp.setId(null);
+            reqComp.setState(newState);
+            for (ReqCompFieldInfo field : reqComp.getReqCompFields()) {
+                field.setId(null);
+                //copy any clusets that are adhoc'd and set the field value to the new cluset
+                if (ReqComponentFieldTypes.COURSE_CLUSET_KEY.getId().equals(field.getType())
+                        || ReqComponentFieldTypes.PROGRAM_CLUSET_KEY.getId().equals(field.getType())
+                        || ReqComponentFieldTypes.CLUSET_KEY.getId().equals(field.getType())) {
+                    try {
+                        CluSetInfo cluSet = getCluService().getCluSet(field.getValue(), contextInfo);
+                        cluSet.setId(null);
+                        cluSet.setStateKey(newState);
+                        //Clear clu ids if membership info exists, they will be re-added based on membership info
+                        if (cluSet.getMembershipQuery() != null) {
+                            cluSet.getCluIds().clear();
+                            cluSet.getCluSetIds().clear();
+                        }
+                        cluSet = getCluService().createCluSet(cluSet.getTypeKey(), cluSet, contextInfo);
+                        field.setValue(cluSet.getId());
+                    } catch (Exception e) {
+                        throw new OperationFailedException("Error copying clusets.", e);
+                    }
+                }
+
+            }
+        }
+        //recurse through nested statements
+        for (StatementTreeViewInfo child : statementTreeView.getStatements()) {
+            clearStatementTreeViewIdsRecursively(child, newState, contextInfo);
+        }
+    }
+
+    public void copyStatements(String originalCluId, String newCluId, String newState, ContextInfo contextInfo) throws
+            OperationFailedException,
+            DoesNotExistException,
+            InvalidParameterException,
+            MissingParameterException,
+            PermissionDeniedException,
+            DataValidationErrorException {
+        List<StatementTreeViewInfo> statementTreeViews = getCourseService().getCourseStatements(originalCluId, null, null, contextInfo);
+
+        clearStatementTreeViewIds(statementTreeViews, newState,  contextInfo);
+
+        for (StatementTreeViewInfo statementTreeView : statementTreeViews) {
+            StatementTreeViewInfo created = getCourseService().createCourseStatement(newCluId, statementTreeView, contextInfo);
+//            System.out.println ("State=" + created.getState());
+        }
+    }
+    
+    private void clearStatementTreeViewIds(
+            List<StatementTreeViewInfo> statementTreeViews, String newState,ContextInfo contextInfo)
+            throws OperationFailedException {
+        //Clear out all statement ids recursively
+        for (StatementTreeViewInfo statementTreeView : statementTreeViews) {
+            clearStatementTreeViewIdsRecursively(statementTreeView, newState, contextInfo);
+        }
+    }
+
+
 }
