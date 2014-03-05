@@ -38,7 +38,6 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering should be populated
 
   #KSENROLL-12090
-  @pending
   Scenario: FE4.x(1).1 Test that when CO created from catalog while not present on the FE Matrix that the schedule info is not populated
     Given that the Course Offering does not exist on the Final Exam Matrix
     And I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined
@@ -47,7 +46,6 @@ Feature: CO.Exam Offering Schedule Information
     And the Schedule Information for the Exam Offering should not be populated
 
   #KSENROLL-12090
-  @pending
   Scenario: FE4.x(1).2 Test that when CO created from catalog while present on the FE Matrix that the schedule info is populated
     Given that the Course Offering exists on the Final Exam Matrix
     And I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined
