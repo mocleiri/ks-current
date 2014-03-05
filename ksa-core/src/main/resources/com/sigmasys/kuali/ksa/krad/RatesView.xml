@@ -48,6 +48,7 @@
     <bean id="rateFilterSection" parent="Uif-VerticalBoxSection">
         <property name="items">
             <list>
+                <bean parent="Uif-HeaderThree" p:headerText="Enter the Time Period"/>
                 <bean parent="Uif-InputField" p:propertyName="academicTimePeriod"
                       p:label="Academic Time Period" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
                       p:maxLength="20" p:required="true">
@@ -70,6 +71,8 @@
                     </property>
 
                 </bean>
+
+                <bean parent="Uif-HeaderThree" p:headerText="Optional Filters"/>
                 <bean parent="Uif-InputField" p:propertyName="rateCatalogCode"
                       p:label="Rate Catalog Code" p:fieldLabel.renderColon="false" p:labelPlacement="TOP">
                     <!--<property name="suggest">
