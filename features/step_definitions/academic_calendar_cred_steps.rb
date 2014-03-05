@@ -28,10 +28,8 @@ When /^I search for holiday calendars$/ do
 end
 
 When /^I search for academic terms$/ do
-  @calendar = make AcademicCalendar
-  term = make AcademicTermObject, :term_name => "Term", :parent_calendar => @calendar
-  @calendar.terms << term
-  @calendar.terms[0].search
+  @term = make AcademicTermObject, :term_name => "Term", :parent_calendar => (make AcademicCalendar, :year => "")
+  @term.search
 end
 
 When /^I search for the Academic Calendar using (.*)$/ do |arg|
