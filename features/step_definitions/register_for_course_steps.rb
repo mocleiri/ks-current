@@ -40,7 +40,8 @@ end
 And /^I edit the course in my registration cart$/ do
   @reg_request.course_options.credit_option = "1.5"
   @reg_request.course_options.grading_option = "Pass/Fail"
-  @reg_request.edit_course_options_in_cart
+  @reg_request.edit_course_options_in_cart :credit_option => @reg_request.course_options.credit_option,
+                                           :grading_option => @reg_request.course_options.grading_option
 end
 
 Then /^the course is (present|not present) in my cart$/  do |presence|

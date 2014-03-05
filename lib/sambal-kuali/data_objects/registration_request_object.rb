@@ -128,18 +128,26 @@ class RegistrationRequest
   end
   private :edit_course_options_on_new_item
 
-  def edit_course_options_in_cart
+  def edit_course_options_in_cart opts = {}
     if @course_options.nil?
       return nil
     end
+
+    defaults = {
+    }
+    options = defaults.merge(opts)
+
     on RegistrationCart do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
       page.toggle_course_details @course_code,@reg_group_code
       page.edit_course_options @course_code,@reg_group_code
-      page.select_credits_in_cart @course_code,@reg_group_code,@course_options.credit_option
-      page.select_grading_in_cart @course_code,@reg_group_code,@course_options.grading_option
+
+      page.select_credits_in_cart @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
+      page.select_grading_in_cart @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
       page.save_edits @course_code,@reg_group_code
     end
+
+    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
   end
   #private :edit_course_options_in_cart
 
