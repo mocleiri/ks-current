@@ -314,7 +314,7 @@
                     <property name="renderLineActions" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:label="Units" p:propertyName="units"/>
+                            <bean parent="Uif-InputField" p:label="Units" p:propertyName="units.value"/>
                             <bean parent="Uif-InputField" p:label="Amount" p:propertyName="amount"/>
                             <bean parent="Uif-InputField" p:label="Transaction Type Code"
                                   p:propertyName="transactionTypeId"/>

@@ -46,6 +46,10 @@ public class UnitNumber extends Number implements UserType, Comparable<UnitNumbe
         return unitNumber;
     }
 
+    public void setValue(BigDecimal unitNumber) {
+        this.unitNumber = unitNumber;
+    }
+
     public UnitNumber add(UnitNumber unitNumber) {
         return new UnitNumber(getValue().add(unitNumber.getValue()));
     }
