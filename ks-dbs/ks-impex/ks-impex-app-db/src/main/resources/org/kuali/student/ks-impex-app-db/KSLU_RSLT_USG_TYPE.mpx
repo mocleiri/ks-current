@@ -1,3 +1,0 @@
-TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
-"lrType.finalGrade","Final learning result for an LU. A stereotypical usage is the final grade in a course.","2000-01-01T00:00:00.000+0000","${mpx.null}","Final Grade","66CF4F9EA32B45959A91C3AEA33D0215","0"
-"lrType.midtermGrade","Midterm learning result for an LU. A stereotypical usage is the midterm grade in a course.","2000-01-01T00:00:00.000+0000","${mpx.null}","Midterm Grade","1811D2788C914B1088FDCD845D56B75E","0"

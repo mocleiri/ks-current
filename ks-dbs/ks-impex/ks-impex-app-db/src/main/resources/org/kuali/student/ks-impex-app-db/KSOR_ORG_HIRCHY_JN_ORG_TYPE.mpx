@@ -1,7 +1,0 @@
-ORG_HIRCHY_ID,ORG_TYPE_ID
-"kuali.org.hierarchy.Curriculum","kuali.org.COC"
-"kuali.org.hierarchy.Curriculum","kuali.org.College"
-"kuali.org.hierarchy.Curriculum","kuali.org.Department"
-"kuali.org.hierarchy.Curriculum","kuali.org.Division"
-"kuali.org.hierarchy.Curriculum","kuali.org.Program"
-"kuali.org.hierarchy.Curriculum","kuali.org.Senate"

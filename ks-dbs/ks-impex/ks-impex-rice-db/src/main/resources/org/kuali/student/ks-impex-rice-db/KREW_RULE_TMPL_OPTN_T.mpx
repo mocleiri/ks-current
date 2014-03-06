@@ -1,7 +1,0 @@
-RULE_TMPL_OPTN_ID,RULE_TMPL_ID,KEY_CD,VAL,VER_NBR
-"2000","1016","D","K","1"
-"2001","1016","A","true","1"
-"2002","1016","K","true","1"
-"2003","1016","F","true","1"
-"2004","1016","C","true","1"
-"2005","1016","I","some instructions","1"

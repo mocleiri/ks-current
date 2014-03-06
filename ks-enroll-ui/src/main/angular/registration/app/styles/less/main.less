@@ -1,0 +1,136 @@
+
+@import 'variables.less';
+@import 'ksboot/buttons.less';
+@import 'ksboot/colors.less';
+//@import 'ksboot/fontello.less';
+@import 'ksboot/halflings.less';
+@import 'ksboot/ks-fonts.less';
+@import 'ksboot/mixins.less';
+
+@import 'global_styles/base.less';
+
+/** kscr folder section **/
+@import 'kscr/additionalOptions.less';
+@import 'kscr/button.less';
+@import 'kscr/card.less';
+@import 'kscr/cart.less';
+@import 'kscr/edit.less';
+@import 'kscr/header.less';
+@import 'kscr/MainHeading.less';
+@import 'kscr/navigation.less';
+@import 'kscr/RegInput.less';
+@import 'kscr/register.less';
+@import 'kscr/registered.less';
+@import 'kscr/headings.less';
+
+/** util folder section **/
+@import 'util/alert.less';
+@import 'util/grid.less';
+@import 'util/text.less';
+@import 'util/visibility.less';
+
+
+/* Space out content a bit */
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  //padding-left: 15px;
+  //padding-right: 15px;
+}
+
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+/******* Mobile header  *********/
+
+/* Make the masthead heading the same height as the navigation */
+//.header h3 {
+//  margin-top: 0;
+//  margin-bottom: 0;
+//  line-height: 40px;
+//  padding-bottom: 19px;
+//}
+
+.kscr-searchTerm{
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+/******* End header *********/
+
+
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+ .container {
+   padding-left: 0px;
+   padding-right: 0px;
+ }
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 40px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+
+/******* Course Section  *********/
+//.kscr-course-header {
+  //  background-color: @whiteBackground;
+//    margin: -28px 0 5px 25px;
+//    padding-left: 0.5em;
+//    border-bottom: @dottedLineBorder;
+//    white-space:nowrap;
+//}
+
+//.kscr-course-info {
+//    border-bottom: @dottedLineBorder;
+//    padding: 5px;
+//}
+
+/******* End Course Section  *********/
+
+
+

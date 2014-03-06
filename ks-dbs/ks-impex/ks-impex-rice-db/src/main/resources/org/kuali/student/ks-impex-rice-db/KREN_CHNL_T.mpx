@@ -1,2 +1,0 @@
-CHNL_ID,NM,DESC_TXT,SUBSCRB_IND,VER_NBR,OBJ_ID
-"500","KEW","Builtin channel for KEW","N","1","${mpx.null}"

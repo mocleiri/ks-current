@@ -1,4 +1,0 @@
-TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
-"clu","Kuali CLU","2000-01-01T00:00:00.000+0000","${mpx.null}","Kuali CLU","${mpx.null}","0"
-"kuali.lu.type.CreditCourse","An course offered for academic credit","2000-01-01T00:00:00.000+0000","${mpx.null}","Kuali CLU","${mpx.null}","0"
-"kuali.lu.type.Requirement","Program requirements","2000-01-01T00:00:00.000+0000","${mpx.null}","Kuali CLU","${mpx.null}","0"

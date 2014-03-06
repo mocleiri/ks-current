@@ -1,2 +1,0 @@
-TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
-"kuali.org.DocRelation.allObjectTypes","Relation for all known sub object types","${mpx.null}","${mpx.null}","All Relations","93D03807FC87493285690C148759085A","0"

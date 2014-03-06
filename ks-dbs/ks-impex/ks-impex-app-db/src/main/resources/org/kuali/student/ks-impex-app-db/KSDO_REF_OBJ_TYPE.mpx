@@ -1,3 +1,0 @@
-TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
-"kuali.org.RefObjectType.CluInfo","Clu Object Type","${mpx.null}","${mpx.null}","CluInfo","37BBBB615EA940CCBB56B7D9710882B0","0"
-"kuali.org.RefObjectType.ProposalInfo","Proposal Object Type","${mpx.null}","${mpx.null}","ProposalInfo","93F0679C7D5C4730B59A0177F0CE1BB0","0"
