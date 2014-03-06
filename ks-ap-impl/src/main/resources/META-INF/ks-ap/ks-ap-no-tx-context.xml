@@ -51,6 +51,27 @@
 		</property>
 	</bean>
 
+    <bean id="degreeMapService" class="org.kuali.student.ap.academicplan.service.DegreeMapServiceImpl">
+    	<property name="degreeMapDao" ref="degreeMapDao" />
+    	<property name="degreeMapRequirementDao" ref="degreeMapRequirementDao" />
+    	<property name="placeholderDao" ref="placeholderDao" />
+    	<property name="placeholderInstanceDao" ref="placeholderInstanceDao" />
+    </bean>
+
+	<bean id="ks.exp.degreeMapService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
+		<property name="serviceDefinition">
+			<bean class="org.kuali.rice.ksb.api.bus.support.SoapServiceDefinition">
+				<property name="jaxWsService" value="true" />
+				<property name="service" ref="degreeMapService" />
+				<property name="serviceInterface"
+					value="org.kuali.student.ap.academicplan.service.DegreeMapService" />
+				<property name="localServiceName" value="DegreeMapService" />
+				<property name="serviceNameSpaceURI" value="http://student.kuali.org/wsdl/degreemap" />
+				<property name="busSecurity" value="${ks.ap.bus.security}" />
+			</bean>
+		</property>
+	</bean>
+
     <!-- Default JPA EntityManagerFactory -->
     <bean id="apDefaultEntityManagerFactory" abstract="true"
     		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -103,6 +124,22 @@
     </bean>
 
     <bean id="planItemRichTextDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemRichTextDao">
+        <property name="em" ref="lpEntityManager"/>
+    </bean>
+
+    <bean id="degreeMapDao" class="org.kuali.student.ap.academicplan.dao.DegreeMapDao">
+        <property name="em" ref="lpEntityManager"/>
+    </bean>
+
+    <bean id="degreeMapRequirementDao" class="org.kuali.student.ap.academicplan.dao.DegreeMapRequirementDao">
+        <property name="em" ref="lpEntityManager"/>
+    </bean>
+
+    <bean id="placeholderDao" class="org.kuali.student.ap.academicplan.dao.PlaceholderDao">
+        <property name="em" ref="lpEntityManager"/>
+    </bean>
+
+    <bean id="placeholderInstanceDao" class="org.kuali.student.ap.academicplan.dao.PlaceholderInstanceDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
