@@ -110,7 +110,7 @@ When /^I view my schedule$/ do
   end
 end
 
-And /^the course is (present|not present) in my schedule$/  do |presence|
+And /^the course is (present|not present) in my schedule$/ do |presence|
   on StudentSchedule do |page2|
     sleep 2
     if presence == "present"
@@ -133,7 +133,7 @@ And /^A successfully removed message appears$/ do
   #pending ?? for CR 1.4
 end
 
-And /^I? ?can view the details of my selections?$/ do
+And /^I? ?can view the details of my selection in the registration cart$/ do
   on RegistrationCart do |page|
     page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code)
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
@@ -144,6 +144,20 @@ And /^I? ?can view the details of my selections?$/ do
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "M 3:00 pm - 3:50 pm CHM"
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should include "TH 11:00 am - 12:15 pm EGR"
+  end
+end
+
+And /^I? ?can view the details of my selection in my schedule$/ do
+  on StudentSchedule do |page|
+    page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code)
+    page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
+    page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "The Medieval World"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "LEC"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "TH 14:00 - 14:50 KEY 0106"
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "DIS"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should include "H 11:00 - 11:50 LEF 1222"
   end
 end
 
