@@ -58,6 +58,7 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
       begin
+        sleep 1
         puts "User Message: #{page.user_message}"
         page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
         page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
@@ -114,6 +115,7 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
   on StudentSchedule do |page2|
     sleep 2
     if presence == "present"
+      page2.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page2.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
       begin
