@@ -403,18 +403,6 @@ Then /^I should have a choice of terms from which to associate the Final Exam Ma
   end
 end
 
-Given /^that the Course Offering exists on the Final Exam Matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
-
-  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  statement = []
-  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
-                     :courses => @course_offering.course)
-  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
-               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
-  @matrix.add_rule :rule_obj => rule
-end
-
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
 
@@ -433,10 +421,6 @@ Then /^the Requested Scheduling Information for the Exam Offering should be popu
     page.eo_by_co_st_time.should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
     page.eo_by_co_end_time.should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
   end
-end
-
-Given /^that the Course Offering does not exist on the Final Exam Matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
 end
 
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term$/ do

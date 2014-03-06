@@ -1305,7 +1305,7 @@ Then /^there should be a warning message stating that "(.*?)" when the system at
   #on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
 end
 
-When /^I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined$/ do
+When /^I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix$/ do
   @course_offering.create
 end
 

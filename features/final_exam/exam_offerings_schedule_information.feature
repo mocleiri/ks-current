@@ -18,8 +18,8 @@ Feature: CO.Exam Offering Schedule Information
 
   #KSENROLL-12013
   Scenario: FE4.2.1 Test that when an on-matrix CO is created from catalog that the requested scheduling info is correctly populated on the EO
-    Given that the Course Offering exists on the Final Exam Matrix
-    And I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
+    And I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
     When I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering should be populated
 
@@ -39,17 +39,17 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering should be populated
 
   #KSENROLL-12090
-  Scenario: FE4.x(1).1 Test that when CO created from catalog while not present on the FE Matrix that the schedule info is not populated
-    Given that the Course Offering does not exist on the Final Exam Matrix
-    When I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined
-    Then there should be a warning message stating that "No match found on the Matrix." when the system attempts to assign RSI data to the newly created exam offering
+  Scenario: FE4.x(1).1 Test that when Course offering with CO-driven exam is created from catalog and is not present on the FE Matrix that the schedule info is not populated
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term
+    When I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
+    Then there should be a warning message stating that "EO RSI data not populated, no valid entry found on the Matrix." when the system attempts to assign RSI data to the newly created exam offering
     And I view the Exam Offerings for the Course Offering
     And the Schedule Information for the Exam Offering should be blank
 
   #KSENROLL-12090
-  Scenario: FE4.x(1).2 Test that when CO created from catalog while present on the FE Matrix that the schedule info is populated
-    Given that the Course Offering exists on the Final Exam Matrix
-    And I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined
+  Scenario: FE4.x(1).2 Test that when Course Offering with CO-driven exam is created from catalog and is present on the FE Matrix that the schedule info is populated
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
+    And I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
     When I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering should be populated
 
