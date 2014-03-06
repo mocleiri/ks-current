@@ -1292,8 +1292,17 @@ When /^I create a Course Offering from copy in a term that uses the matrix and h
   @copy_co.save
 end
 
-Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
-  on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
+When /^I create a Course Offering from copy in a term with a defined final exam period that uses the FE matrix$/ do
+  @copy_co = create CourseOffering, :create_by_copy => @course_offering
+
+  @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
+                         :final_exam_driver => "Final Exam Per Course Offering"
+  @copy_co.save
+end
+
+Then /^there should be a warning message stating that "(.*?)" when the system attempts to assign RSI data to the newly created exam offering$/ do |exp_msg|
+  #TODO Validation message not implemented yet
+  #on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
 end
 
 When /^I create a Course Offering from catalog in a term that uses the matrix and has a final exam period defined$/ do

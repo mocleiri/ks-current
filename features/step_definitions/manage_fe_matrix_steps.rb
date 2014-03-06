@@ -415,9 +415,21 @@ Given /^that the Course Offering exists on the Final Exam Matrix$/ do
   @matrix.add_rule :rule_obj => rule
 end
 
+Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :courses => @course_offering.course)
+  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
 Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
   on ViewExamOfferings do |page|
-    page.eo_by_co_days.should == "05/13/2013"
+    page.eo_by_co_days.should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/
     page.eo_by_co_st_time.should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
     page.eo_by_co_end_time.should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
   end
@@ -427,7 +439,11 @@ Given /^that the Course Offering does not exist on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
 end
 
-Then /^the Schedule Information for the Exam Offering should not be populated$/ do
+Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
+end
+
+Then /^the Schedule Information for the Exam Offering should be blank$/ do
   on ViewExamOfferings do |page|
     page.eo_by_co_days.should == ""
     page.eo_by_co_st_time.should == ""
@@ -490,4 +506,22 @@ Then /^the Requested Scheduling Information for the Exam Offering of the AO shou
     page.eo_by_ao_st_time(@activity_offering.code).should == ""
     page.eo_by_ao_end_time(@activity_offering.code).should == ""
   end
+end
+
+Given /^that the Requested Scheduling Information for the CO with one Activity Offering exists on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL313"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "03:30", :st_time_ampm => "pm",
+                     :end_time => "04:45", :end_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^that the Requested Scheduling Information for the CO with one Activity Offering does not exist on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL611"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
