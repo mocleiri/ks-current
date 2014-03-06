@@ -32,8 +32,6 @@ class FEMatrixEdit < BasePage
   element(:rule_days) { |b| b.proposition_section.text_field( name: /editTree.*proposition\.weekdays/)}
   element(:rule_starttime) { |b| b.proposition_section.text_field( name: /editTree.*proposition\.startTime/)}
   element(:rule_starttime_ampm) { |b| b.proposition_section.select( name: /editTree.*proposition\.startTimeAMPM/)}
-  element(:rule_endtime) { |b| b.proposition_section.text_field( name: /editTree.*proposition\.endTime/)}
-  element(:rule_endtime_ampm) { |b| b.proposition_section.select( name: /editTree.*proposition\.endTimeAMPM/)}
   element(:rule_freeformtext) { |b| b.frm.text_field( name: /editTree.*proposition\.termParameter/)}
   #element(:courses_type_dropdown) { |b| b.proposition_section.select( name: /editTree.*proposition\.multipleCourseType/)}
 

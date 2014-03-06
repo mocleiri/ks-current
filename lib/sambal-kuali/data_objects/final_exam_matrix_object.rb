@@ -257,7 +257,7 @@ class ExamMatrixStatementObject
   include Workflows
 
   attr_accessor :parent_rule, :courses, :days, :start_time, :st_time_ampm,
-                :end_time, :end_time_ampm, :free_text, :courses, :courses_type,
+                :free_text, :courses, :courses_type,
                 :statement_operator, :statement_option, :rsi_days
 
   TIME_SLOT_OPTION = 'If Course meets on <timeslot>'
@@ -276,8 +276,6 @@ class ExamMatrixStatementObject
         :days => "MWF",
         :start_time => "01:00",
         :st_time_ampm => "pm",
-        :end_time => "03:00",
-        :end_time_ampm => "pm",
         :free_text => "Free Form Text",
         :courses => "ENGL101",
         :rsi_days => "Day 1",
@@ -452,8 +450,6 @@ class ExamMatrixStatementObject
       page.rule_days.set @days
       page.rule_starttime.set @start_time
       page.rule_starttime_ampm.select @st_time_ampm
-      page.rule_endtime.set @end_time
-      page.rule_endtime_ampm.select @end_time_ampm
     end
   end
 

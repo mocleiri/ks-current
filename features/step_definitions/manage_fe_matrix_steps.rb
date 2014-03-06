@@ -448,8 +448,7 @@ end
 Given /^I encure that the AO's Requested Scheduling Information exists on the Final Exam Matrix$/ do
   statement = []
   statement << (make ExamMatrixStatementObject, :days => @activity_offering.days, :start_time => @activity_offering.start_time,
-                     :st_time_ampm => @activity_offering.start_time_ampm, :end_time => @activity_offering.end_time,
-                     :end_time_ampm => @activity_offering.end_time_ampm)
+                     :st_time_ampm => @activity_offering.start_time_ampm)
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
                :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
@@ -461,8 +460,7 @@ Given /^that the Requested Scheduling Information exists on the Final Exam Matri
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
-  statement << (make ExamMatrixStatementObject, :days => "M", :start_time => "12:00", :st_time_ampm => "pm",
-                     :end_time => "12:50", :end_time_ampm => "pm")
+  statement << (make ExamMatrixStatementObject, :days => "M", :start_time => "12:00", :st_time_ampm => "pm")
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
@@ -498,8 +496,7 @@ Given /^that the Requested Scheduling Information for the CO with one Activity O
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
-  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "03:30", :st_time_ampm => "pm",
-                     :end_time => "04:45", :end_time_ampm => "pm")
+  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "03:30", :st_time_ampm => "pm")
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
