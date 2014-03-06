@@ -51,7 +51,6 @@ Feature: BT.Course Search
     | Shakespeare   |
     | bio		    |
     | ENGL2         |
-    | ENGL23        |
 
 
   Scenario Outline: CS4.1.2 Successfully list any course title with multi word search text options

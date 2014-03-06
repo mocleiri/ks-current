@@ -13,14 +13,17 @@ class CourseSearch < BasePage
   #element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
   element(:results_table) { |b| b.table(id: "course_search_results") }
   ################
+  action(:code_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(class:"ksap-text-nowrap sortable ui-state-default").div(text:"Code").click}
+  action(:title_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(class:"sortable details_link ui-state-default").div(text:"Title").click}
   element(:result_pagination) {|b| b.div(id:"course_search_results_paginate")}
   element(:results_list_previous_enabled) { |b| b.a(id: "course_search_results_previous")}
   element(:results_list_previous_click) { |b| b.results_list_previous_enabled.click }
-  element(:results_list_previous_disabled) { |b| b.a(class:"previous fg-button ui-button ui-state-default ui-state-disabled")}
+  element(:results_list_previous_disabled) { |b| b.a(class:"previous paginate_button paginate_button_disabled",id:"course_search_results_previous")}
+  #previous paginate_button paginate_button_disabled
 
   element(:results_list_next_enabled) { |b| b.a(id: "course_search_results_next") }
   element(:results_list_next_click) { |b| b.results_list_next_enabled.click }
-  element(:results_list_next_disabled) { |b| b.a(class: "next fg-button ui-button ui-state-default ui-state-disabled") }
+  element(:results_list_next_disabled) { |b| b.a(class: "next paginate_button paginate_button_disabled",id:"course_search_results_next") }
   action(:course_code_result_link) { |ccode,b| b.tr(id: "#{ccode}").a(class: "ksap-text-ellipsis") }
   action (:course_code_result_link_click) {|b| b.course_code_result_link.click }
   action(:course_description) { |co_code,b| b.div(id: "#{co_code}_description").span(class: "uif-message").text }
@@ -91,30 +94,30 @@ class CourseSearch < BasePage
     for index in 1..no_of_rows do
 
       if index == no_of_rows
-      sleep(2)
-      course_code = results_table.rows[index].cells[COURSE_CODE].text
-      sleep(1)
-      course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
+        sleep(2)
+        course_code = results_table.rows[index].cells[COURSE_CODE].text
+        sleep(1)
+        course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
 
-      puts "Course name =  #{course_name}"
-      course_code_result_link(course_code).click
-      back_to_search_results.wait_until_present
-      course_description_text = course_description(course_code).downcase
-      back_to_search_results.click
-      sleep(2)
+        puts "Course name =  #{course_name}"
+        course_code_result_link(course_code).click
+        back_to_search_results.wait_until_present
+        course_description_text = course_description(course_code).downcase
+        back_to_search_results.click
+        sleep(2)
 
-      if ((course_code.downcase).include? (split_text).downcase) ||  ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
-      else
-        split_name = search_FullText.split(' ')
-        for index in 0 ... split_name.size
-          split_text = "#{split_name[index]}"
-          if ((course_code.downcase).include? (split_text).downcase) ||
-              ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
-          else
-            puts "#{course_code}"
-            return false
-          end
+        if ((course_code.downcase).include? (split_text).downcase) ||  ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
+        else
+          split_name = search_FullText.split(' ')
+          for index in 0 ... split_name.size
+            split_text = "#{split_name[index]}"
+            if ((course_code.downcase).include? (split_text).downcase) ||
+                ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
+            else
+              puts "#{course_code}"
+              return false
             end
+          end
         end
       end
     end
@@ -124,6 +127,7 @@ class CourseSearch < BasePage
     sleep(2)
     no_of_rows = results_table.rows.length-1
     for index in 1..no_of_rows do
+      if index == no_of_rows
       sleep(2)
       course_code = results_table.rows[index].cells[COURSE_CODE].text
       sleep(1)
@@ -138,7 +142,7 @@ class CourseSearch < BasePage
         return false
       end
     end
-
+   end
   end
 
 #************************** Course Level Search--KSAP- 832  and US 618*********************  fair Draft
@@ -239,3 +243,5 @@ class CourseSearch < BasePage
     return true
   end
 end
+
+
