@@ -337,8 +337,6 @@ class ExamMatrixStatementObject
           page.rule_days.set options[:days] unless options[:days].nil?
           page.rule_starttime.set options[:start_time] unless options[:start_time].nil?
           page.rule_starttime_ampm.select options[:st_time_ampm] unless options[:st_time_ampm].nil?
-          page.rule_endtime.set options[:end_time] unless options[:end_time].nil?
-          page.rule_endtime_ampm.select options[:end_time_ampm] unless options[:end_time_ampm].nil?
         when COURSE_OPTION
           page.proposition_section.a( text: /Advanced Search/).click
           page.lookup_course_code.when_present.set options[:courses]
@@ -385,7 +383,7 @@ class ExamMatrixStatementObject
   def stmt_str
     case @statement_option
       when TIME_SLOT_OPTION
-        return "#{@days} at #{@start_time} #{@st_time_ampm.upcase} - #{@end_time} #{@end_time_ampm.upcase}"
+        return "#{@days} at #{@start_time} #{@st_time_ampm.upcase}"
       when COURSE_OPTION
         return "#{@courses}"
       when COURSE_PART_OF_OPTION
