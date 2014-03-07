@@ -72,9 +72,10 @@ end
 Then /^the course is present in my cart, with the correct options$/  do
   on RegistrationCart do |page|
     page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
-    #do we need to quit or remove course?
+    unless @reg_request.course_options.grading_option == "Letter"
+      page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    end
   end
 end
 
@@ -141,7 +142,10 @@ And /^I? ?can view the details of my selection in the registration cart$/ do
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
     page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry I"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    unless @reg_request.course_options.grading_option == "Letter"
+      page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    end
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "DIS"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "M 3:00 pm - 3:50 pm CHM"
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"
@@ -155,7 +159,10 @@ And /^I? ?can view the details of my selection in my schedule$/ do
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
     page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "The Medieval World"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    unless @reg_request.course_options.grading_option == "Letter"
+      page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    end
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "LEC"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "TH 14:00 - 14:50 KEY 0106"
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "DIS"
@@ -209,6 +216,9 @@ Then /^the course is present in my schedule, with the correct options$/ do
     page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     sleep 1
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    unless @reg_request.course_options.grading_option == "Letter"
+      page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    end
   end
 end
