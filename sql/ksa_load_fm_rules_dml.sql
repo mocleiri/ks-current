@@ -472,9 +472,9 @@ replace signup rates "cp.undergrad.nonresident.pt", "default" with "colab.underg
 
 ')!
 
-Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student already has mandatory fees so incurred tech fees removed', 7010, 'FM Signup 2_10', 3, 10, null,
-'(signup has rates "tech.fee.[..]" and signup has rates "cp.[resident|nonresident|graduate].[f|p]t")',
-'remove signup rates "tech.fee.[f|p]t"')!
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Student already has mandatory fees so set a flag to remove tech fees.', 7010, 'FM Signup 2_10', 3, 10, null,
+'(signup is taken and signup has rates "cp.resident.ft, cp.nonresident.ft, cp.graduate.ft, cp.resident.pt, cp.nonresident.pt, cp.graduate.pt")',
+'set session key "mandatory.fee" to "yes"')!
 
 
 -- FM Signup 3 rule set --
@@ -518,6 +518,11 @@ Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER,
 Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('All academic service fees are removed due to more than ESL classes being taken', 7045, 'FM Signup 3_06', 3, 9, null,
 '(session key "academic.service.remove" is "y" and signup has rates "academic.service.fee")',
 'remove signup rates "academic.service.fee"')!
+
+Insert into KSSA_RULE (DESCRIPTION, ID, NAME, RULE_TYPE_ID_FK, PRIORITY, HEADER, LHS, RHS) values ('Remove the tech fee as mandatory fees charged.', 7046, 'FM Signup 3_07', 3, 9, null,
+'(session key "mandatory.fee" is "yes")',
+'remove signup rates "tech.fee.[f|p]t"')!
+
 
 -- FM Signup 4 rule set --
 
@@ -797,6 +802,7 @@ Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (170, 7042)
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (170, 7043)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (170, 7044)!
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (170, 7045)!
+Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (170, 7046)!
 
 -- FM Signup 4 rule set --
 Insert into KSSA_RULE_SET_RULE ( RULE_SET_ID_FK, RULE_ID_FK ) values (180, 7070)!
