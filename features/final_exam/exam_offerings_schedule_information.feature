@@ -81,7 +81,7 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12105
-  @draft
+  @pending
   Scenario: FE4.x(2).4 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that exists on the FE matrix is copied that the EO RSI is populated
     Given that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix
     And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
@@ -89,7 +89,7 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
 
   #KSENROLL-12105
-  @draft
+  @pending
   Scenario: FE4.x(2).5 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that does not exist on the FE matrix is copied that the EO RSI is not populated
     Given that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix
     And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
