@@ -116,7 +116,7 @@ class BasePage < PageFactory
       action(:adv_x) { |b| b.div(class: 'fancybox-item fancybox-close').click }
 
       value(:page_validation_text) { |b| b.ul(id: "pageValidationList").text }
-      value(:page_header_text) { |b| b.div(id: "KS-CourseView-CoursePage").span(class: "uif-headerText-span").text }
+      value(:page_header_text) { |b| b.div(id: "KS-CourseView").div(class:"ks-unified-header").span(class: "uif-headerText-span").text }
 
       #element(:search_results_table) {|b| b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table }
       value(:page_validation_header) { |b| b.div(id: "KS-CourseView-CoursePage").h3(id: "pageValidationHeader").text }
