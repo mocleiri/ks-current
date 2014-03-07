@@ -1300,7 +1300,7 @@ When /^I create a Course Offering from copy in a term with a defined final exam 
   @copy_co.save
 end
 
-Then /^there should be a warning message stating that "(.*?)" when the system attempts to assign RSI data to the newly created exam offering$/ do |exp_msg|
+Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
   #TODO Validation message not implemented yet
   #on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
 end
@@ -1322,7 +1322,7 @@ And /^I have created an Activity Offering that only has Requested Scheduling Inf
   @activity_offering.save
 end
 
-When /^I create a Course Offering from copy in a term that uses the matrix and has an AO Driven final exam period defined$/ do
+When /^I create a Course Offering from copy in a term with a defined final exam period that uses the matrix$/ do
   @copy_co = create CourseOffering, :create_by_copy => @course_offering
 end
 

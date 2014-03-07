@@ -454,29 +454,26 @@ Given /^I encure that the AO's Requested Scheduling Information exists on the Fi
   @matrix.add_rule :rule_obj => rule
 end
 
-Given /^that the Requested Scheduling Information exists on the Final Exam Matrix$/ do
+Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
-  @activity_offering =  make ActivityOfferingObject, :code => "F", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
-  statement << (make ExamMatrixStatementObject, :days => "M", :start_time => "12:00", :st_time_ampm => "pm")
+  statement << (make ExamMatrixStatementObject, :days => "MW", :start_time => "01:00", :st_time_ampm => "pm")
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
 end
 
-Given /^that the Requested Scheduling Information does not exist on the Final Exam Matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
-  @activity_offering =  make ActivityOfferingObject, :code => "L", :parent_course_offering => @course_offering
+Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201208", :course => "HIST120"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
 Then /^the Requested Scheduling Information for the Exam Offering of the AO should be populated$/ do
   on ViewExamOfferings do |page|
-    puts page.eo_by_ao_days(@activity_offering.code)
-    puts page.eo_by_ao_st_time(@activity_offering.code)
-    puts page.eo_by_ao_end_time(@activity_offering.code)
-    page.eo_by_ao_days(@activity_offering.code).should == "TH"
+    page.eo_by_ao_days(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/i
     page.eo_by_ao_st_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
     page.eo_by_ao_end_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
   end
