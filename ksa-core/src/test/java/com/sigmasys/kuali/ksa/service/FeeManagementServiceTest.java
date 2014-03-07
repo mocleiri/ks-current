@@ -806,6 +806,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
     @Test
     public void testChargeSessionLinkedManifestHasReversalStatusTransactionAllocationsRemainEnoughBalanceForReversal() throws Exception {
+
         // Create an FM session with linked manifests and simulate allocation remain:
         FmSession fmSession = createFmSession(1, false, true, true, true, FeeManagementManifestType.DISCOUNT);
         FeeManagementManifest manifest = fmSession.getManifests().get(0);
@@ -857,6 +858,7 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
     @Test
     public void testChargeSessionTransferNoTransactionTransfer() throws Exception {
+
         // Create an FM session with linked manifests and simulate allocation remain:
         FmSession fmSession = createFmSession(1, false, true, true, true, FeeManagementManifestType.DISCOUNT);
         FeeManagementManifest manifest = fmSession.getManifests().get(0);
@@ -1019,7 +1021,9 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         notYetCharged.setTransaction(transaction2);
         notYetCharged.setRecognitionDate(RECOGNITION_DATE);
         notYetCharged.setEffectiveDate(EFFECTIVE_DATE);
+
         persistenceService.persistEntity(notYetCharged);
+
         fmSession.getManifests().add(notYetCharged);
     }
 

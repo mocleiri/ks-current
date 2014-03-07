@@ -12,8 +12,7 @@ import com.sigmasys.kuali.ksa.exception.AccountBlockedException;
 import com.sigmasys.kuali.ksa.model.pb.PaymentBillingChargeStatus;
 import com.sigmasys.kuali.ksa.model.pb.PaymentBillingPlan;
 import com.sigmasys.kuali.ksa.model.tp.ThirdPartyPlan;
-import com.sigmasys.kuali.ksa.service.AccountBlockingService;
-import com.sigmasys.kuali.ksa.service.AccountService;
+import com.sigmasys.kuali.ksa.service.*;
 import com.sigmasys.kuali.ksa.service.fm.BrmFeeManagementService;
 import com.sigmasys.kuali.ksa.service.fm.RateService;
 import com.sigmasys.kuali.ksa.util.TransactionUtils;
@@ -31,8 +30,6 @@ import com.sigmasys.kuali.ksa.model.fm.*;
 import com.sigmasys.kuali.ksa.model.pb.PaymentBillingTransferDetail;
 import com.sigmasys.kuali.ksa.model.security.Permission;
 import com.sigmasys.kuali.ksa.model.tp.ThirdPartyTransferDetail;
-import com.sigmasys.kuali.ksa.service.TransactionService;
-import com.sigmasys.kuali.ksa.service.TransactionTransferService;
 import com.sigmasys.kuali.ksa.service.fm.FeeManagementService;
 import com.sigmasys.kuali.ksa.service.impl.GenericPersistenceService;
 import com.sigmasys.kuali.ksa.service.pb.PaymentBillingService;
@@ -93,6 +90,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
     @Autowired
     private TransactionTransferService transactionTransferService;
+
+    @Autowired
+    private GeneralLedgerService glService;
 
     @Autowired
     private RateService rateService;
@@ -377,7 +377,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             // Otherwise, continue to the new manifest.
             // Inherently, all ORIGINAL manifests will have a Transaction.
             if (manifest.getTransaction() == null) {
-                processManifestCharge(manifest, false, session, pbtDetails, tptDetails);
+                processManifestType(manifest, false, session, pbtDetails, tptDetails);
             }
         }
 
@@ -1048,7 +1048,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     }
 
     /**
-     * The main method for manifest charge processing.
+     * The main method for manifest processing.
      *
      * @param manifest         An FM manifest.
      * @param isLinkedManifest Is "manifest" an already linked manifest of the main manifest being processed?
@@ -1056,11 +1056,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param pbtDetails       A list of Payment billing transfer details. An OUT parameter.
      * @param tptDetails       A list of Third-party transfer details. An OUT Parameter.
      */
-    private void processManifestCharge(FeeManagementManifest manifest, boolean isLinkedManifest, FeeManagementSession session,
-                                       List<PaymentBillingTransferDetail> pbtDetails, List<ThirdPartyTransferDetail> tptDetails) {
+    private void processManifestType(FeeManagementManifest manifest, boolean isLinkedManifest, FeeManagementSession session,
+                                     List<PaymentBillingTransferDetail> pbtDetails, List<ThirdPartyTransferDetail> tptDetails) {
 
         // Check the manifest type:
         switch (manifest.getType()) {
+
             case CHARGE:
                 processChargeTypeManifest(manifest, session, false, pbtDetails, tptDetails);
                 break;
@@ -1091,14 +1092,33 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         // Create a charge on the Account associated with the FM session:
         String transactionTypeId = manifest.getTransactionTypeId();
 
-        if (StringUtils.isNotEmpty(transactionTypeId) && (session.getAccount() != null) && (manifest.getAmount() != null)) {
+        if (StringUtils.isNotEmpty(transactionTypeId) && session.getAccount() != null && manifest.getAmount() != null) {
 
             // Create a new charge on the Account:
             String accountId = session.getAccount().getId();
 
             BigDecimal amount = isReversal ? manifest.getAmount().negate() : manifest.getAmount();
 
-            Charge newCharge = transactionService.createCharge(transactionTypeId, accountId, new Date(), amount);
+            Date effectiveDate = manifest.getEffectiveDate() != null ? manifest.getEffectiveDate() : new Date();
+
+            Charge newCharge = transactionService.createCharge(transactionTypeId, accountId, effectiveDate, amount);
+
+            newCharge.setExternalId("KSA-FM" + manifest.getId());
+            newCharge.setRecognitionDate(manifest.getRecognitionDate());
+            newCharge.setRollup(manifest.getRollup());
+
+            if (CollectionUtils.isNotEmpty(manifest.getTags())) {
+                transactionService.addTagsToTransaction(newCharge.getId(), new ArrayList<Tag>(manifest.getTags()));
+            }
+
+            Set<ManifestGlBreakdownOverride> glBreakdownOverrides = manifest.getGlBreakdownOverrides();
+
+            if (CollectionUtils.isNotEmpty(glBreakdownOverrides)) {
+                // TODO: Create GL Breakdown Overrides on the Charge??
+                if (!glService.isGlBreakdownValid(new ArrayList<AbstractGlBreakdown>(glBreakdownOverrides))) {
+                    logger.error("Manifest GL Breakdown Overrides are invalid: " + glBreakdownOverrides);
+                }
+            }
 
             // Update the manifest and session:
             manifest.setTransaction(newCharge);
@@ -1109,7 +1129,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
             // If there is a linked manifest, process it:
             if (manifest.getLinkedManifest() != null) {
-                processManifestCharge(manifest.getLinkedManifest(), true, session, pbtDetails, tptDetails);
+                processManifestType(manifest.getLinkedManifest(), true, session, pbtDetails, tptDetails);
             }
         }
     }
@@ -1175,11 +1195,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // If there are allocations, grab the first one and get the Implicated Transaction out of it:
         if (CollectionUtils.isNotEmpty(allocations)) {
+
             Allocation allocation = allocations.get(0);
 
-            if ((allocation.getFirstTransaction() != null) && (allocation.getFirstTransaction().getId().compareTo(linkedTransactionId) != 0)) {
+            if (allocation.getFirstTransaction() != null && !allocation.getFirstTransaction().getId().equals(linkedTransactionId)) {
                 return allocation.getFirstTransaction();
-            } else if ((allocation.getSecondTransaction() != null) && (allocation.getSecondTransaction().getId().compareTo(linkedTransactionId) != 0)) {
+            } else if (allocation.getSecondTransaction() != null && !allocation.getSecondTransaction().getId().equals(linkedTransactionId)) {
                 return allocation.getSecondTransaction();
             }
         }
@@ -1199,6 +1220,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      */
     private void processImplicatedTransaction(FeeManagementManifest manifest, FeeManagementManifest linkedManifest, Transaction implicatedTransaction,
                                               FeeManagementSession session, List<PaymentBillingTransferDetail> pbtDetails, List<ThirdPartyTransferDetail> tptDetails) {
+
         // Check if allocations remain. If yes, process the Implicated Transaction based on its type:
         boolean allocationsRemain = (implicatedTransaction != null) &&
                 (implicatedTransaction.getAllocatedAmount() != null) && (implicatedTransaction.getLockedAllocatedAmount() != null)
@@ -1257,6 +1279,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         String memoText;
 
         if (transactionTransfer != null) {
+
             // Check the TransactionTransfer Group ID:
             String transactionTransferGroupId = transactionTransfer.getGroupId();
 
@@ -1525,7 +1548,6 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // For each Third-Party plan that was removed, generate third-party billing transfer for the Account associated with the FM session:
         if (account != null) {
-            String accountId = account.getId();
 
             for (ThirdPartyTransferDetail tptDetail : tptDetails) {
 
@@ -1533,7 +1555,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                 ThirdPartyPlan plan = getEntity(tptDetail.getPlan().getId(), ThirdPartyPlan.class);
 
                 if (plan != null) {
-                    thirdPartyService.generateThirdPartyTransfer(plan.getId(), accountId, tptDetail.getInitiationDate());
+                    thirdPartyService.generateThirdPartyTransfer(plan.getId(), account.getId(), tptDetail.getInitiationDate());
                 }
             }
         }
