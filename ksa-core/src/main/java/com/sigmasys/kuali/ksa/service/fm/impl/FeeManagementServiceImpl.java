@@ -63,9 +63,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private static final String GET_MANIFESTS_SELECT = "select m from FeeManagementManifest m " +
             " left outer join fetch m.keyPairs kp " +
             " left outer join fetch m.tags t " +
+            " left outer join fetch m.transaction tr " +
             " left outer join fetch m.rate r " +
             " left outer join fetch m.rollup ru " +
-            " left outer join fetch m.linkedManifest lm ";
+            " left outer join fetch m.glBreakdownOverrides ov " +
+            " left outer join fetch m.linkedManifest lm " +
+            " left outer join fetch lm.transaction lmtr ";
 
     // A query to get FM Sessions:
     private static final String GET_SESSIONS_SELECT = "select s from FeeManagementSession s " +
@@ -1513,8 +1516,8 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         Transaction reversalTransaction = null;
 
         // Check if the Transaction status allows for reversal:
-        if ((status == TransactionStatus.ACTIVE) ||
-                ((reversalAmount != null) && (transaction.getAmount() != null) && (reversalAmount.compareTo(transaction.getAmount()) == 0))) {
+        if (status == TransactionStatus.ACTIVE ||
+                (reversalAmount != null && transaction.getAmount() != null && reversalAmount.compareTo(transaction.getAmount()) == 0)) {
 
             String statementPrefix = ""; // According to Paul there are no statement prefix
             String memoText = String.format("Transaction (ID = %d) was reversed in the amount of %s by fee management under session %d",
