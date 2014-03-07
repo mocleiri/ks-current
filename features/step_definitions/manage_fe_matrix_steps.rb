@@ -487,19 +487,19 @@ Then /^the Requested Scheduling Information for the Exam Offering of the AO shou
   end
 end
 
-Given /^that the Requested Scheduling Information for the CO with one Activity Offering exists on the Final Exam Matrix$/ do
+Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "ENGL313"
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
   statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "03:30", :st_time_ampm => "pm")
-  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
-              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "10:30", :st_time_ampm => "am",
+              :end_time => "12:30", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
 end
 
-Given /^that the Requested Scheduling Information for the CO with one Activity Offering does not exist on the Final Exam Matrix$/ do
+Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "ENGL611"
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end

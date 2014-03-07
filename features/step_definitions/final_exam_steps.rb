@@ -1330,20 +1330,6 @@ When /^I create a copy of the initial course offering in a term that uses the FE
   @copy_co = create CourseOffering, :create_by_copy => @course_offering
 end
 
-When /^I edit the Exam Period of the CO to be AO Driven and to have Discussion set as exam activity$/ do
-  @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
-                         :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Discussion"
-
-  @copy_co.save
-end
-
-When /^I edit the Exam Period of the CO to be AO Driven and to have Lecture set as exam activity$/ do
-  @copy_co.edit_offering :final_exam_type => "Standard Final Exam",
-                         :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
-
-  @copy_co.save
-end
-
 Given /^I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period$/ do
   @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
                             :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"

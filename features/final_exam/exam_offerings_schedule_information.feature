@@ -82,19 +82,17 @@ Feature: CO.Exam Offering Schedule Information
 
   #KSENROLL-12105
   @draft
-  Scenario: FE4.x(2).4 Test that when copied CO has one AO and the RSI exists on the matrix that the EO info is populated
-    Given that the Requested Scheduling Information for the CO with one Activity Offering exists on the Final Exam Matrix
-    And I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
-    And I edit the Exam Period of the CO to be AO Driven and to have Lecture set as exam activity
+  Scenario: FE4.x(2).4 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that exists on the FE matrix is copied that the EO RSI is populated
+    Given that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix
+    And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
     When I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
 
   #KSENROLL-12105
   @draft
-  Scenario: FE4.x(2).5 Test that when copied CO has one AO and the RSI does not exist on the matrix that the EO info is not populated
-    Given that the Requested Scheduling Information for the CO with one Activity Offering does not exist on the Final Exam Matrix
-    And I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
-    And I edit the Exam Period of the CO to be AO Driven and to have Lecture set as exam activity
+  Scenario: FE4.x(2).5 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that does not exist on the FE matrix is copied that the EO RSI is not populated
+    Given that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix
+    And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
     When I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
