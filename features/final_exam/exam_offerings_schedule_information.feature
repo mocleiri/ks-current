@@ -71,14 +71,14 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12104
-  @draft
-  Scenario: FE4.x(2).3 Test that when CO created from copy with exam period that is AO Driven and that AO has no scheduling info
-    Given I create a Course Offering from catalog in a term that has a final exam period defined
+  @pending
+  Scenario: FE4.x(2).3 Test that when Course Offering with AO-driven exam is created from copy that the schedule info is not populated
+    Given I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period
     And I create an Activity Offering that has no ASIs or RSIs
-    When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
-    Then there should be a warning message stating that "No match found on the Matrix."
+    When I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
+    Then there should be a warning message stating that "EO RSI data not populated, no valid entry found on the Matrix."
     And I view the Exam Offerings for the Course Offering
-    And the Requested Scheduling Information for the Exam Offering of the AO should not be populated
+    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12105
   @draft
