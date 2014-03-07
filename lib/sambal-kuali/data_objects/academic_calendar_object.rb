@@ -257,7 +257,7 @@ class AcademicTermObject
   include Workflows
 
   attr_accessor :term, :term_type, :term_name, :start_date, :end_date, :expected_instructional_days,
-                :key_date_groups, :parent_calendar, :parent_term, :subterm, :subterm_type, :term_code, :exam_period
+                :key_date_groups, :parent_calendar, :parent_term, :subterm, :subterm_type, :subterms, :term_code, :exam_period
 
   WINTER_TERM_TYPE = "Winter Term"
   FALL_TERM_TYPE = "Fall Term"
@@ -265,12 +265,7 @@ class AcademicTermObject
   def initialize(browser,opts = {})
     @browser = browser
 
-    #establish the year in order to make default start/end dates
-    #if opts[:term_year] == "random" then
-    #  calendar_year = AcademicCalendar.get_random_calendar_year
-    #else
     calendar_year = opts[:parent_calendar].year
-    #end
 
     defaults = {
       :parent_calendar => nil,
@@ -283,6 +278,7 @@ class AcademicTermObject
       #:term_year=> calendar_year,
       :parent_term=> nil,
       :subterm=> false,
+      :subterms => collection('AcademicTerm'),
       :key_date_groups => collection('KeyDateGroup'),
       :exam_period => nil
     }
@@ -451,6 +447,14 @@ class AcademicTermObject
     end
   end
 
+  def add_subterm term_obj
+    term_obj.parent_term = self
+    term_obj.parent_calendar = self.parent_calendar
+    term_obj.subterm = true
+    term_obj.create
+    @subterms << term_obj
+  end
+
   def weekdays_in_term
     date1 = Date.strptime( @start_date , '%m/%d/%Y')
     date2 = Date.strptime( @end_date , '%m/%d/%Y')
@@ -481,6 +485,10 @@ end
 
 class AcademicTermCollection < CollectionsFactory
   contains AcademicTermObject
+
+  def term_by_type(term_type)
+    self.find {|term| term.term_type == term_type }
+  end
 end
 
 class KeyDateGroupObject

@@ -618,16 +618,19 @@ Given /^I create an Academic Calendar with subterms$/ do
   term = make AcademicTermObject, :parent_calendar => @calendar
   @calendar.add_term term
 
-  terms = []
-  terms << (make AcademicTermObject, :parent_calendar => @calendar, :term_type=> "Half Fall 1", :parent_term=> "Fall Term",
-                          :subterm => true, :start_date => "09/02/#{@calendar.year}", :end_date => "09/11/#{@calendar.year}")
+  @calendar.terms[0].add_subterm (make AcademicTermObject,
+                                       :parent_calendar => @calendar,
+                                       :subterm => true,
+                                       :term_type=> "Half Fall 1",
+                                       :start_date => "09/02/#{@calendar.year}",
+                                       :end_date => "09/11/#{@calendar.year}")
 
-  terms << (make AcademicTermObject, :parent_calendar => @calendar, :term_type=> "Half Fall 2", :parent_term=> "Fall Term",
-                          :subterm => true, :start_date => "09/12/#{@calendar.year}", :end_date => "09/24/#{@calendar.year}")
-
-  terms.each do |term|
-    @calendar.add_term term
-  end
+  @calendar.terms[0].add_subterm (make AcademicTermObject,
+                                       :parent_calendar => @calendar,
+                                       :subterm => true,
+                                       :term_type=> "Half Fall 2",
+                                       :start_date => "09/12/#{@calendar.year}",
+                                       :end_date => "09/24/#{@calendar.year}")
 
   @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
@@ -636,7 +639,7 @@ end
 
 Given /^I make the subterms official$/ do
   @calendar.edit
-  @calendar.terms[1..2].each do |subterm|
+  @calendar.terms[0].subterms.each do |subterm|
     subterm.make_official
   end
 end

@@ -217,12 +217,12 @@ Given /^I edit an Activity Offering that has available subterms$/ do
 end
 
 Then /^I set a subterm for the activity offering$/ do
-  @activity_offering.edit :edit_already_started => true, :subterm => @subterm_list[0].subterm_type
+  @activity_offering.edit :edit_already_started => true, :subterm => @calendar.terms[0].subterms[0].subterm_type
   @activity_offering.save
 end
 
 Then /^I update the subterm for the activity offering$/ do
-  @activity_offering.edit :subterm => @subterm_list[1].subterm_type
+  @activity_offering.edit :subterm => @calendar.terms[0].subterms[1].subterm_type
   @activity_offering.save
 end
 

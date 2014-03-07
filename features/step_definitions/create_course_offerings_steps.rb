@@ -108,19 +108,19 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
   delivery_format_list = []
   delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture")
 
-  @course_offering = create CourseOffering, :term=> @term.term_code,
+  @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
                             :course => "ENGL211",
                             :delivery_format_list => delivery_format_list
 
   @rsi_list = {}
   @rsi_list["MT"] = make SchedulingInformationObject, :days => "MT"
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,  :subterm => @subterm_list[0].subterm_type,
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,  :subterm => @calendar.terms[0].subterms[0].subterm_type,
                               :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rsi_list
   @activity_offering.save
 
   @rsi_list2 = {}
   @rsi_list2["WF"] = make SchedulingInformationObject, :days => "WF"
-  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering, :subterm => @subterm_list[1].subterm_type,
+  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering, :subterm => @calendar.terms[0].subterms[1].subterm_type,
                                :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rsi_list2
 
   @activity_offering2.save
