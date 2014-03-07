@@ -55,6 +55,7 @@ class RegistrationRequest
       page.select_term @term_descr
       page.course_code_input.set @course_code
       page.reg_group_code_input.set @reg_group_code
+      page.submit_button.wait_until_present
       page.add_to_cart
       page.new_item_cancel_button.wait_until_present
       if @modify_course_options

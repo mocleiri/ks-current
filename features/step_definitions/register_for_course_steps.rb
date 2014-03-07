@@ -197,6 +197,7 @@ Given /^I have registered for a course having multiple credit options$/ do
   @reg_request.create
 
   steps %{
+    Then the course is present in my cart
     And I register for the course
     And I view my schedule
     Then the course is present in my schedule
@@ -206,6 +207,7 @@ end
 Then /^the course is present in my schedule, with the correct options$/ do
   on StudentSchedule do |page|
     page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+    sleep 1
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
   end

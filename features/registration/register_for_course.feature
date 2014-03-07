@@ -35,6 +35,7 @@ Feature: REG.Register for course
   Scenario: CR 1.6 I want to submit my list of course selections so that I can register for them
             CR 4.1: I want to view the courses for which I am registered for a given term so that I am aware of my schedule.
     When I add a HIST course offering to my registration cart
+    Then the course is present in my cart
     And I register for the course
     Then there is a message indicating registration submittal
     When I view my schedule
