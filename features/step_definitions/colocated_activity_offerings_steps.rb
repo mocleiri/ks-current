@@ -26,7 +26,7 @@ When /^I create three Course Offerings with colocated AOs in the new term$/ do
   for i in 1..3
     delivery_format_list = []
     delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_driver => "Lecture", :final_exam_activity => "Lecture")
-    co = create CourseOffering, :course => "ENGL211", :term => @term.term_code, :delivery_format_list => delivery_format_list
+    co = create CourseOffering, :course => "ENGL211", :term => @calendar.terms[0].term_code, :delivery_format_list => delivery_format_list
 
     ao = create ActivityOfferingObject, :parent_course_offering => co, :format => "Lecture Only", :activity_type => "Lecture"
     ao.save
@@ -197,7 +197,7 @@ Then /^the Activity Offerings are colocated in the rollover target$/ do
 
   for i in 0..2
     co = make CourseOffering, :course =>  @ao_list[i].parent_course_offering.course,
-              :term => @term_target.term_code
+              :term => @calendar_target.terms[0].term_code
     ao = make ActivityOfferingObject, :code => "A", :parent_course_offering => co
     @ao_list_rollover << ao
   end

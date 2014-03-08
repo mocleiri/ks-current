@@ -160,17 +160,17 @@ end
 
 Given /^a new academic term has course and activity offerings in canceled and suspended status$/ do
   @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
-  @term = make AcademicTermObject, :parent_calendar => @calendar
-  @calendar.add_term @term
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
 
-  @manage_soc = make ManageSoc, :term_code => @term.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
   @manage_soc.perform_manual_soc_state_change
 
 
   delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture"
 
-  @course_offering_canceled = create CourseOffering, :term=> @term.term_code,
+  @course_offering_canceled = create CourseOffering, :term=> @calendar.terms[0].term_code,
                                      :course => "ENGL211",
                                      :delivery_format_list => [delivery_format]
 
@@ -181,7 +181,7 @@ Given /^a new academic term has course and activity offerings in canceled and su
 
   delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture"
 
-  @course_offering_suspended = create CourseOffering, :term=> @term.term_code,
+  @course_offering_suspended = create CourseOffering, :term=> @calendar.terms[0].term_code,
                                       :course => "ENGL211",
                                       :delivery_format_list => [delivery_format]
 
@@ -968,14 +968,14 @@ end
 #end
 
 Then /^the course and activity offerings in the rollover target term are in draft status$/ do
-  @course_offering_suspended_target = make CourseOffering, :term=> @term_target.term_code,
+  @course_offering_suspended_target = make CourseOffering, :term=> @calendar_target.terms[0].term_code,
                                  :course => @course_offering_suspended.course
   @course_offering_suspended_target.manage
   on ManageCourseOfferings do |page|
     page.ao_status(@activity_offering_suspended.code).should == "Draft"
   end
 
-  @course_offering_canceled_target = make CourseOffering, :term=> @term_target.term_code,
+  @course_offering_canceled_target = make CourseOffering, :term=> @calendar_target.terms[0].term_code,
                                            :course => @course_offering_canceled.course
   @course_offering_canceled_target.manage
   on ManageCourseOfferings do |page|
@@ -991,22 +991,22 @@ end
 
 Given /^a new academic term has an activity offering in approved status$/ do
     @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
-    @term = make AcademicTermObject, :parent_calendar => @calendar
-    @calendar.add_term @term
+    term = make AcademicTermObject, :parent_calendar => @calendar
+    @calendar.add_term term
 
     exam_period = make ExamPeriodObject, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
                        :end_date=>"12/20/#{@calendar.year}"
     @calendar.terms[0].add_exam_period exam_period
     @calendar.terms[0].save
 
-    @manage_soc = make ManageSoc, :term_code => @term.term_code
+    @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
     @manage_soc.set_up_soc
     @manage_soc.perform_manual_soc_state_change
 
     delivery_format_list = []
     delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture")
 
-    @course_offering = create CourseOffering, :term=> @term.term_code,
+    @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
                                 :course => "ENGL462",
                                 :delivery_format_list => delivery_format_list
 

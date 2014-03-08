@@ -132,20 +132,21 @@ And /^I setup a second target term with those subterms setup$/ do
   @term_target2 = make AcademicTermObject, :parent_calendar => @calendar_target2
   @calendar_target2.add_term @term_target2
 
-  @subterm_list_target2 = Array.new(2)
-  @subterm_list_target2[0] = make AcademicTermObject, :parent_calendar => @calendar_target2, :term_type=> "Half Fall 1",
-                                  :parent_term=> "Fall Term", :subterm => true
-  @calendar_target2.add_term @subterm_list_target2[0]
+  @calendar_target2.terms[0].add_subterm (make AcademicTermObject,
+                                      :parent_calendar => @calendar_target2,
+                                      :term_type=> "Half Fall 1",
+                                      :subterm => true)
 
-  @subterm_list_target2[1] = make AcademicTermObject, :parent_calendar => @calendar_target2, :term_type=> "Half Fall 2",
-                                  :parent_term=> "Fall Term", :subterm => true
-  @calendar_target2.add_term @subterm_list_target2[1]
+  @calendar_target2.terms[0].add_subterm (make AcademicTermObject,
+                                               :parent_calendar => @calendar_target2,
+                                               :term_type=> "Half Fall 2",
+                                               :subterm => true)
 
-  @calendar_target2.terms[1..2].each do |subterm|
+    @calendar_target2.terms[0].subterms.each do |subterm|
     subterm.make_official
   end
 
-  @manage_soc = make ManageSoc, :term_code => @term_target2.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar_target2.terms[0].term_code
   @manage_soc.set_up_soc
 end
 
@@ -195,15 +196,15 @@ end
 
 And /^I rollover the term to a new academic term$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #, :name => "TWj64w1q3e"
-  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
-  @calendar_target.add_term @term_target
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term term_target
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @term_target.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :target_term => @term_target.term_code ,
-                   :source_term => @term.term_code,
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
+                   :source_term => @calendar.terms[0].term_code,
                    :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
@@ -221,17 +222,6 @@ Then /^I approve the Course Offering for scheduling in the target term$/ do
                                  :course => @course_offering.course
   @course_offering_target.search_by_subjectcode
   @course_offering_target.approve_co
-end
-
-Then /^I manage the Course Offering in the term$/ do
-  #NB - redefining course/activity_offering here for subsequent steps
-  @course_offering = make CourseOffering, :term=> @term.term_code,
-                                 :course => @course_offering.course
-  #@course_offering = make CourseOffering, :term=> "234008",
-  #                               :course =>"ENGL211CDRQV"
-
-  @course_offering.manage
-  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
 Then /^I advance the SOC state from open to published state$/ do
@@ -304,7 +294,7 @@ Then /^the Activity Offerings are assigned to the target subterms$/ do
 end
 
 Then /^I can create a Course Offering in the second term from the existing CO in the first term$/ do
-  @course_offering_copy = create CourseOffering, :term=>  @term_target2.term_code, :create_from_existing=>@course_offering
+  @course_offering_copy = create CourseOffering, :term=>  @calendar_target2.terms[0].term_code, :create_from_existing=>@course_offering
 end
 
 Then /^the Activity Offerings for the copied CO are assigned to the target subterms$/ do
@@ -317,13 +307,13 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
   end
 
   on ActivityOfferingInquiry do |page|
-    page.subterm.should == @subterm_list_target2[0].subterm_type
+    page.subterm.should == @calendar_target2.terms[0].subterms[0].subterm_type
     page.close
   end
 
   @activity_offering_copy.edit
   on ActivityOfferingMaintenance do |page|
-    page.subterm.should == @subterm_list_target2[0].subterm_type
+    page.subterm.should == @calendar_target2.terms[0].subterms[0].subterm_type
     page.cancel
   end
 
@@ -334,13 +324,13 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
   end
 
   on ActivityOfferingInquiry do |page|
-    page.subterm.should == @subterm_list_target2[1].subterm_type
+    page.subterm.should == @calendar_target2.terms[0].subterms[1].subterm_type
     page.close
   end
 
   @activity_offering_target2.edit
   on ActivityOfferingMaintenance do |page|
-    page.subterm.should == @subterm_list_target2[1].subterm_type
+    page.subterm.should == @calendar_target2.terms[0].subterms[1].subterm_type
     page.cancel
   end
 

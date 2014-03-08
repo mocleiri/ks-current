@@ -81,14 +81,14 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
   delivery_format_list = []
   delivery_format_list << (make DeliveryFormat, :format => "Lab", :grade_format => "Lab", :final_exam_activity => "Lab")
 
-  @course_offering = create CourseOffering, :term=> @term.term_code,
+  @course_offering = create CourseOffering, :term=> @calendar_target2.terms[0].term_code,
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 
   @rsi_list = {}
   @rsi_list["MT"] = make SchedulingInformationObject, :days => "MT"
 
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,  :subterm => @subterm_list[0].subterm_type,
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,  :subterm => @calendar.terms[0].subterms[0].subterm_type,
                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list
   @activity_offering.save
 
@@ -130,7 +130,7 @@ And /^I create a Course Offering from catalog with Activity Offerings$/ do
   delivery_format_list = []
   delivery_format_list << (make DeliveryFormat, :format => "Lab", :grade_format => "Lab", :final_exam_activity => "Lab")
 
-  @course_offering = create CourseOffering, :term=> @term.term_code,
+  @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 

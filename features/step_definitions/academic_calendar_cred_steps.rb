@@ -97,10 +97,12 @@ When /^I edit the term and make it official$/ do
 end
 
 When /^I delete the Academic Calendar draft$/ do
+  @deleted_subterm = @calendar.terms[0].subterms[0]
   @calendar.delete_draft
 end
 
 When /^I delete the parent term of a subterm$/ do
+  @deleted_subterm = @calendar.terms[0].subterms[0]
   @calendar.terms[0].delete
 end
 
@@ -400,7 +402,7 @@ Then /^the subterm is listed in official status when I view the Academic Calenda
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.term_status(@calendar.terms[1].term_type).should == "OFFICIAL"
+    page.term_status(@calendar.terms[0].subterms[0].term_type).should == "OFFICIAL"
   end
 end
 
@@ -423,13 +425,13 @@ Then /^I add an instructional Key Date$/ do
 end
 
 Then /^I add an instructional Key Date to a subterm$/ do
-  @calendar.terms[1].edit
+  @calendar.terms[0].subterms[0].edit
 
-  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[1], :key_date_group_type=> "Instructional"
-  keydate = make KeyDateObject, :parent_term => @calendar.terms[1], :parent_key_date_group => keydategroup,
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0].subterms[0], :key_date_group_type=> "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0].subterms[0], :parent_key_date_group => keydategroup,
                   :key_date_type => "First Day of Classes", :start_date => "09/12/#{@calendar.year}", :end_date => ""
   keydategroup.key_dates << keydate
-  @calendar.terms[1].add_key_date_group keydategroup
+  @calendar.terms[0].subterms[0].add_key_date_group keydategroup
 end
 
 Then /^I edit an instructional Key Date$/ do
@@ -666,28 +668,27 @@ Then /^the subterms are successfully copied$/ do
 end
 
 Then /^I can search and view the subterm in read only mode$/ do
-  @calendar.terms[1].search
+  @calendar.terms[0].subterms[0].search
 
   on CalendarSearch do |page|
-    page.view @calendar.terms[1].term_name
+    page.view @calendar.terms[0].subterms[0].term_name
   end
 
+  term_type = @calendar.terms[0].subterms[0].term_type
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@calendar.terms[1].term_type)
-    page.term_name(@calendar.terms[1].term_type).should == @calendar.terms[1].term_name
-    #page.term_code(@term.term_type)
-    page.term_start_date(@calendar.terms[1].term_type).should == @calendar.terms[1].start_date
-    page.term_end_date(@calendar.terms[1].term_type).should == @calendar.terms[1].end_date
-    page.term_status(@calendar.terms[1].term_type).should == "DRAFT"
-
+    page.open_term_section(term_type)
+    page.term_name(term_type).should == @calendar.terms[0].subterms[0].term_name
+    page.term_start_date(term_type).should == @calendar.terms[0].subterms[0].start_date
+    page.term_end_date(term_type).should == @calendar.terms[0].subterms[0].end_date
+    page.term_status(term_type).should == "DRAFT"
   end
 end
 
 When /^I edit the subterm information$/ do
-  @calendar.terms[1].edit :term_name => random_alphanums ,
-                        :start_date => (Date.strptime( @calendar.terms[1].start_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), #add 2 days
-                        :end_date => (Date.strptime( @calendar.terms[1].end_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y")  #less 2 days
+  @calendar.terms[0].subterms[0].edit :term_name => random_alphanums ,
+                        :start_date => (Date.strptime( @calendar.terms[0].subterms[0].start_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), #add 2 days
+                        :end_date => (Date.strptime( @calendar.terms[0].subterms[0].end_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y")  #less 2 days
 end
 
 When /^I edit the calendar$/ do
@@ -695,25 +696,24 @@ When /^I edit the calendar$/ do
 end
 
 When /^I delete a subterm$/ do
-  @term_to_delete = @calendar.terms[1]
-  @calendar.terms[1].delete
+  @deleted_subterm = @calendar.terms[0].subterms[0]
+  @deleted_subterm.delete
 end
 
 Then /^the subterm in updated successfully$/ do
-  @calendar.terms[1].search
+  @calendar.terms[0].subterms[0].search
 
   on CalendarSearch do |page|
-    page.view @calendar.terms[1].term_name
+    page.view @calendar.terms[0].subterms[0].term_name
   end
-
+  term_type = @calendar.terms[0].subterms[0].term_type
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@calendar.terms[1].term_type)
-    page.term_name(@calendar.terms[1].term_type).should == @calendar.terms[1].term_name
-    #page.term_code(@term.term_type)
-    page.term_start_date(@calendar.terms[1].term_type).should == @calendar.terms[1].start_date
-    page.term_end_date(@calendar.terms[1].term_type).should == @calendar.terms[1].end_date
-    page.term_status(@calendar.terms[1].term_type).should == "DRAFT"
+    page.open_term_section(term_type)
+    page.term_name(term_type).should == @calendar.terms[0].subterms[0].term_name
+    page.term_start_date(term_type).should == @calendar.terms[0].subterms[0].start_date
+    page.term_end_date(term_type).should == @calendar.terms[0].subterms[0].end_date
+    page.term_status(term_type).should == "DRAFT"
   end
 
 end
@@ -727,7 +727,7 @@ Then /^the subterm is no longer listed on the calendar$/ do
 
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.term_index_by_term_type(@term_to_delete.term_type).should == -1 #ie not found
+    page.term_index_by_term_type(@deleted_subterm.term_type).should == -1 #ie not found
   end
 
 end
@@ -755,8 +755,8 @@ end
 
 Then /^a subterm warning message is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.open_term_section @calendar.terms[1].term_type
-    page.term_validation_messages(@calendar.terms[1].term_type)[0].text.should match /#{exp_msg}/
+    page.open_term_section @calendar.terms[0].subterms[0].term_type
+    page.term_validation_messages(@calendar.terms[0].subterms[0].term_type)[0].text.should match /#{exp_msg}/
   end
 end
 
@@ -771,7 +771,7 @@ When /^I edit the term so that the start date is earlier than the Academic Calen
 end
 
 When /^I edit the subterm so that the start date is earlier than the Academic Calendar start date$/ do
-  @calendar.terms[1].edit :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
+  @calendar.terms[0].subterms[0].edit :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
 end
 
 When /^I add a new key date with a date later than the Academic Term end date$/ do
@@ -787,14 +787,14 @@ When /^I add a new key date with a date later than the Academic Term end date$/ 
 end
 
 When /^I add a new key date with a date later than the Academic Subterm end date$/ do
-  @calendar.terms[1].edit
+  @calendar.terms[0].subterms[0].edit
 
   keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type=> "Instructional"
   keydate = make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
                   :key_date_type => "First Day of Classes",
                   :start_date => (Date.strptime( @calendar.terms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), :end_date => ""
   keydategroup.key_dates << keydate
-  @calendar.terms[1].add_key_date_group keydategroup
+  @calendar.terms[0].subterms[0].add_key_date_group keydategroup
 end
 
 
@@ -804,9 +804,9 @@ When /^I edit the key date so that the start date is later than the Academic Ter
 end
 
 When /^I edit the key date so that the start date is later than the Academic Subterm end date$/ do
-  @calendar.terms[1].edit
-  @calendar.terms[1].key_date_groups[0].key_dates[0].edit :exp_success => false,
-                    :start_date => (Date.strptime( @calendar.terms[1].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
+  @calendar.terms[0].subterms[0].edit
+  @calendar.terms[0].subterms[0].key_date_groups[0].key_dates[0].edit :exp_success => false,
+                    :start_date => (Date.strptime( @calendar.terms[0].subterms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
 end
 
 When /^I make the key date blank$/ do
@@ -815,8 +815,8 @@ When /^I make the key date blank$/ do
 end
 
 When /^I make the subterm key date blank$/ do
-  @calendar.terms[1].edit
-  @calendar.terms[1].key_date_groups[0].key_dates[0].edit :start_date => "", :exp_success => false
+  @calendar.terms[0].subterms[0].edit
+  @calendar.terms[0].subterms[0].key_date_groups[0].key_dates[0].edit :start_date => "", :exp_success => false
 end
 
 Then /^a Key Dates warning message is displayed stating "([^"]*)"$/ do |exp_msg|
@@ -827,16 +827,16 @@ end
 
 Then /^a subterm Key Dates warning message is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.key_date_validation_messages(@calendar.terms[1].term_type)[0].text.should match /#{exp_msg}/
+    page.key_date_validation_messages(@calendar.terms[0].subterms[0].term_type)[0].text.should match /#{exp_msg}/
   end
 end
 
 Then /^the subterm is also deleted$/ do
-  @calendar.terms[1].search
+  @deleted_subterm.search
 
   on CalendarSearch do |page|
     begin
-      page.results_list.should_not include @calendar.terms[1].term_name
+      page.results_list.should_not include @deleted_subterm.term_name
     rescue Watir::Exception::UnknownObjectException
       # Implication here is that there were no search results at all.
     end
