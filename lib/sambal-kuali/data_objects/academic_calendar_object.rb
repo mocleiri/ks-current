@@ -615,7 +615,7 @@ class KeyDateObject
 
         if !page.key_date_dropdown_addline(@term_index, key_date_group_index).exists?
           page.key_date_button( @term_index, key_date_group_index).click
-          #sleep 1 #wait til new row
+          sleep 1 #wait til new row
           page.key_date_dropdown_addline(@term_index, key_date_group_index).wait_until_present
         end
 
