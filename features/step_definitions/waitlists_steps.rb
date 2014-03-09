@@ -25,7 +25,7 @@ end
 #I manage an activity offering with waitlists enabled
 Given /^I (?:manage|create)(?: a course)? and? activity offering with waitlists enabled$/ do
   if @calendar.nil?
-    @calendar = make AcademicCalendar, :year => "2013"
+    @calendar = make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]
     term = make AcademicTermObject, :parent_calendar => @calendar, :term_code => Rollover::MAIN_TEST_TERM_TARGET
     @calendar.terms << term
   end
@@ -36,7 +36,7 @@ end
 
 Given /^I create a course and activity offering with waitlists disabled$/ do
   if @calendar.nil?
-    @calendar = make AcademicCalendar, :year => "2013"
+    @calendar = make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]
     term = make AcademicTermObject, :parent_calendar => @calendar, :term_code => Rollover::MAIN_TEST_TERM_TARGET
     @calendar.terms << term
   end
@@ -287,7 +287,7 @@ end
 
 
 Given /^the waitlist enabled configuration is copied to the new course and activity offering in the target term$/ do
-  @course_offering_copy = make CourseOffering, :course => @course_offering.course, :term => @term_target.term_code
+  @course_offering_copy = make CourseOffering, :course => @course_offering.course, :term => @calendar_target.terms[0].term_code
   step "the waitlist configuration is copied to the new course and activity offering"
 end
 
@@ -311,8 +311,8 @@ Given /^the waitlist configuration is copied to the new course and activity offe
 end
 
 Given /^the waitlist disabled configuration is copied to the course and activity offering in the target term$/ do
-  @course_offering_copy = make CourseOffering, :course => @course_offering_wl_disabled.course, :term => @term_target.term_code
-
+  @course_offering_copy = make CourseOffering, :course => @course_offering_wl_disabled.course, :term => @calendar_target.terms[0].term_code
+  @course_offering_copy.manage
  step "the waitlists are disabled for the new course and activity offering"
 end
 
