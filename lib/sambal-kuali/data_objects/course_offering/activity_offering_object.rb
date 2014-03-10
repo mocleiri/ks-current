@@ -502,7 +502,7 @@ class ActivityOfferingObject
   private :edit_waitlist_config
 
   def add_personnel person
-    edit
+    #edit
     person.parent_ao = self
     person.create
     @personnel_list << person
