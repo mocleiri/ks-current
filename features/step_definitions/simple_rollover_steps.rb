@@ -152,26 +152,23 @@ end
 
 And /^I rollover the subterms' parent term to a target term with those subterms setup$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #,:name => "6aXt9C4nbM"
-  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
-  @calendar_target.add_term @term_target
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term term_target
 
-  @subterm_list_target = Array.new(2)
-  @subterm_list_target[0] = make AcademicTermObject, :parent_calendar => @calendar_target, :term_type=> "Half Fall 1",
-                                 :parent_term=> "Fall Term", :subterm => true
-  @calendar_target.add_term @subterm_list_target[0]
+  @calendar_target.terms[0].add_subterm  (make AcademicTermObject, :parent_calendar => @calendar_target, :term_type=> "Half Fall 1",
+                                 :parent_term=> "Fall Term", :subterm => true)
 
-  @subterm_list_target[1] = make AcademicTermObject, :parent_calendar => @calendar_target, :term_type=> "Half Fall 2",
-                                 :parent_term=> "Fall Term", :subterm => true
-  @calendar_target.add_term @subterm_list_target[1]
+  @calendar_target.terms[0].add_subterm (make AcademicTermObject, :parent_calendar => @calendar_target, :term_type=> "Half Fall 2",
+                                 :parent_term=> "Fall Term", :subterm => true)
 
-  @calendar_target.terms[1..2].each do |subterm|
+  @calendar_target.terms[0].subterms.each do |subterm|
     subterm.make_official
   end
 
-  @manage_soc = make ManageSoc, :term_code => @term_target.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :target_term => @term_target.term_code , :source_term => @term.term_code
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code , :source_term => @calendar.terms[0].term_code
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
   @rollover.release_to_depts
@@ -254,7 +251,7 @@ Then /^the Course Offering is in offered state$/ do
 end
 
 Then /^the Activity Offerings are assigned to the target subterms$/ do
-  @course_offering_target = make CourseOffering, :course => @course_offering.course, :term => @term_target.term_code
+  @course_offering_target = make CourseOffering, :course => @course_offering.course, :term => @calendar_target.terms[0].term_code
   @course_offering_target.manage
 
   @activity_offering_target = make ActivityOfferingObject, :code => @activity_offering.code, :parent_course_offering => @course_offering_target
