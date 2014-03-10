@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kuali.student.ap</groupId>
         <artifactId>ks-ap</artifactId>
-        <version>0.8.0-rice24upgrade-SNAPSHOT</version>
+        <version>0.8.0-rice24upgrade-build-16</version>
     </parent>
     <groupId>org.kuali.student.ap</groupId>
     <artifactId>ks-ap-deployment-resources</artifactId>
