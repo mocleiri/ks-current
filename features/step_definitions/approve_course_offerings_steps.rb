@@ -994,7 +994,7 @@ Given /^a new academic term has an activity offering in approved status$/ do
     term = make AcademicTermObject, :parent_calendar => @calendar
     @calendar.add_term term
 
-    exam_period = make ExamPeriodObject, :parent_term => @term, :start_date=>"12/11/#{@calendar.year}",
+    exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"12/11/#{@calendar.year}",
                        :end_date=>"12/20/#{@calendar.year}"
     @calendar.terms[0].add_exam_period exam_period
     @calendar.terms[0].save
