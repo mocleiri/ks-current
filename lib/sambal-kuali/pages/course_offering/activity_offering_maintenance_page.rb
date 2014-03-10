@@ -177,12 +177,12 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   def edit_rsi_row(row)
-    row.cells[ACTIONS].link(id: /edit_schedule_request_action_link/).click
+    row.link(id: /edit_schedule_request_action_link/).click
     loading.wait_while_present(120)
   end
 
   def delete_rsi_row(row)
-    row.cells[SCHED_INFO_ACTION_COLUMN].link(id: /delete_schedule_request/).click
+    row.link(id: /delete_schedule_request/).click
   end
   #END Scheduling Info section
 
