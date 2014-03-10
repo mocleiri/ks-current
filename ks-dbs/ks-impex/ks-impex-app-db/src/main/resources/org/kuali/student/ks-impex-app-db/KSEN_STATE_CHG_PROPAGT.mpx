@@ -116,4 +116,3 @@ STATE_CHG_ID,STATE_PROPAGT_ID
 "kuali.statechange.formatoffering.suspended.offered","kuali.statepropagation.fo2co.suspended.offered.2.suspended.offered"
 "kuali.statechange.formatoffering.suspended.planned","kuali.statepropagation.fo2co.suspended.planned.2.draft.planned"
 "kuali.statechange.formatoffering.suspended.planned","kuali.statepropagation.fo2co.suspended.planned.2.suspended.planned"
-"kuali.statechange.soc.publishing.published","kuali.statepropagation.soctoao.published.offered"
