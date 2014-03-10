@@ -163,6 +163,7 @@ end
 
 Then /^there is a validation error on the EndTime field$/  do
   @activity_offering.edit
+  #TODO: this code is duplicated from the ScheduledInfo object edit method
   @si_obj.end_time_ampm.upcase! unless @si_obj.end_time_ampm.nil?
   @si_obj.start_time_ampm.upcase! unless @si_obj.start_time_ampm.nil?
   on ActivityOfferingMaintenance do |page|
@@ -186,7 +187,7 @@ Then /^there is a validation error on the EndTime field$/  do
     page.end_time_select_populate_list
     page.end_time_select.click
     page.end_time_select.attribute_value('class').should match /error/
-    page.end_time_error_msg.should match /Days and Start Time combo does not match an existing Standard Time Slot/
+    page.end_time_error_msg.should match /Required/
 
     page.cancel   # cleanup to prevent browser's "you have unsaved changes" modal-dialog (which causes any subsequent tests executing in the same thread to fail)
   end
