@@ -177,15 +177,15 @@ end
 
 And /^I rollover the subterms' parent term to a target term with those subterms are NOT setup$/ do
   @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1 #, :name => "TWj64w1q3e"
-  @term_target = make AcademicTermObject, :parent_calendar => @calendar_target
-  @calendar_target.add_term @term_target
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
+  @calendar_target.add_term term_target
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @term_target.term_code
+  @manage_soc = make ManageSoc, :term_code =>  @calendar_target.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :target_term => @term_target.term_code ,
-                   :source_term => @term.term_code,
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
+                   :source_term => @calendar.terms[0].term_code,
                    :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
