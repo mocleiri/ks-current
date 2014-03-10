@@ -272,7 +272,7 @@ class RegisterForCourseBase < BasePage
 
   expected_element :cr_header_div
 
-  element(:cr_header_div) { |b| b.div(class: "kscr-Header ng-scope") }
+  element(:cr_header_div) { |b| b.div(class: "kscr-Header") }
   element(:term_select) { |b| b.select(id: "searchTerm") }
 
   element(:search) { |b| b.cr_header_div.link(id: "goToSearch")}
