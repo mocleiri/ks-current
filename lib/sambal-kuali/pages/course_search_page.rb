@@ -13,8 +13,8 @@ class CourseSearch < BasePage
   #element(:results_table){ |b| b.frm.div(id: /course_search_results/).table }
   element(:results_table) { |b| b.table(id: "course_search_results") }
   ################
-  action(:code_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(class:"ksap-text-nowrap sortable ui-state-default").div(text:"Code").click}
-  action(:title_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(class:"sortable details_link ui-state-default").div(text:"Title").click}
+  action(:code_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(text:"Code").click}
+  action(:title_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(text:"Title").click}
   element(:result_pagination) {|b| b.div(id:"course_search_results_paginate")}
   element(:results_list_previous_enabled) { |b| b.a(id: "course_search_results_previous")}
   element(:results_list_previous_click) { |b| b.results_list_previous_enabled.click }
@@ -71,6 +71,20 @@ class CourseSearch < BasePage
     list
   end
 
+  def results_list_title
+    title_list = []
+    results_table.rows.each do |row|
+      sleep(1)
+      title_list << row[COURSE_NAME].text
+    end
+    title_list.delete_if { |item| item == "Code" }
+    title_list.delete_if {|item| item == "" }
+
+    puts "#{title_list}"
+    sleep(2)
+    title_list.sort!
+    puts "#{title_list}"
+  end
 
   def results_list_courses (expected)
     trimmed_array_list= Array.new
@@ -123,29 +137,32 @@ class CourseSearch < BasePage
     end
   end
 
+
+
+
   def single_text_search_results_validation(single_text)
     sleep(2)
     no_of_rows = results_table.rows.length-1
     for index in 1..no_of_rows do
       if index == no_of_rows
-      sleep(2)
-      course_code = results_table.rows[index].cells[COURSE_CODE].text
-      sleep(1)
-      course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
-      course_code_result_link(course_code).click
-      back_to_search_results.wait_until_present
-      course_description_text = course_description(course_code).downcase
-      back_to_search_results.click
-      sleep(2)
-      if ((course_code.downcase).include? (single_text).downcase) ||  ((course_name.include? (single_text).downcase )||(course_description_text.include? (single_text).downcase))
-      else
-        return false
+        sleep(2)
+        course_code = results_table.rows[index].cells[COURSE_CODE].text
+        sleep(1)
+        course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
+        course_code_result_link(course_code).click
+        back_to_search_results.wait_until_present
+        course_description_text = course_description(course_code).downcase
+        back_to_search_results.click
+        sleep(2)
+        if ((course_code.downcase).include? (single_text).downcase) ||  ((course_name.include? (single_text).downcase )||(course_description_text.include? (single_text).downcase))
+        else
+          return false
+        end
       end
     end
-   end
   end
 
-#************************** Course Level Search--KSAP- 832  and US 618*********************  fair Draft
+#************************** Course Level Search--KSAP- 832  and US 618*********************
 
   def result_list_level(text)
     sleep(1)
@@ -241,6 +258,106 @@ class CourseSearch < BasePage
       end
     end
     return true
+  end
+
+
+
+
+  def check_ascending_order_code()
+
+    puts "test for checking ascending order"
+    sleep(1)
+    no_of_rows = results_table.rows.length-1
+    puts no_of_rows
+    current_code = nil
+    previous_Code = nil
+    for index in 1..no_of_rows do
+      sleep(1)
+      puts  "previous_Code =  #{previous_Code}"
+      current_code = results_table.rows[index].cells[COURSE_CODE].text
+      puts  "current_code =  #{current_code}"
+      if index > 1
+        if (previous_Code <=> current_code) > 0
+          return false
+        end
+      end
+      previous_Code = current_code
+    end
+  end
+
+
+  def check_descending_order_code()
+
+    puts "test for checking descending order"
+    sleep(1)
+    no_of_rows = results_table.rows.length-1
+    puts no_of_rows
+    current_code = nil
+    previous_Code = nil
+    for index in 1..no_of_rows do
+      sleep(1)
+      puts  "previous_Code =  #{previous_Code}"
+      current_code = results_table.rows[index].cells[COURSE_CODE].text
+      puts  "current_code =  #{current_code}"
+      if index > 1
+        if (previous_Code <=> current_code) < 0
+          return false
+        end
+      end
+
+      previous_Code = current_code
+
+    end
+  end
+
+  def check_ascending_order_title()
+
+    puts " ======= test for checking ascending order for title ======= "
+    sleep(2)
+    no_of_rows = results_table.rows.length-1
+    puts "no_of_rows = #{no_of_rows} "
+    current_title = nil
+    previous_title = nil
+    for index in 1..no_of_rows do
+      puts "index = #{index}"
+      puts  "previous_Title =  #{previous_title}"
+      sleep(2)
+      current_title = results_table.rows[index].cells[COURSE_NAME].text
+      puts "current tile = #{current_title}"
+      if index > 1
+        puts "index > 0 "
+        if (previous_title <=> current_title) > 0
+          puts " coming inside the loop !!!!!!!!!!!!!!!!"
+          return false
+        end
+      end
+      previous_title = current_title
+    end
+  end
+
+
+
+
+  def check_descending_order_title()
+
+    puts " ======== descending order for title ======= "
+    sleep(1)
+    no_of_rows = results_table.rows.length-1
+    puts no_of_rows
+    current_title = nil
+    previous_title = nil
+    for index in 1..no_of_rows do
+      puts  "previous_Title =  #{previous_title}"
+      sleep(1)
+      current_title = results_table.rows[index].cells[COURSE_NAME].text
+      puts  "current_Title =  #{current_title}"
+      if index > 1
+           if (previous_title <=> current_title) < 0
+           return false
+        end
+      end
+      previous_title = current_title
+    end
   end
 end
 

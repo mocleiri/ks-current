@@ -293,4 +293,84 @@ class CourseOffering
       return true
     end
   end
+
+#------------------------- KSAP- 885 ,KSAP- 771 and  US KSAP- 626-----------------------------------------------------------,
+
+  def check_code_ascending_order_in_all_pages
+    on CourseSearch do |page|
+      pgno = 1
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          page.check_ascending_order_code()
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        puts "------ page no = #{pgno}"
+        page.check_ascending_order_code()
+      end
+    end
+  end
+
+  def check_code_descending_order_in_all_pages
+    on CourseSearch do |page|
+      pgno = 1
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          page.check_descending_order_code()
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        puts "------ page no = #{pgno}"
+        page.check_descending_order_code()
+      end
+    end
+  end
+
+  def check_title_ascending_order_in_all_pages
+    on CourseSearch do |page|
+      pgno = 1
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          page.check_ascending_order_title()
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        puts "------ page no = #{pgno}"
+        page.check_ascending_order_title()
+      end
+    end
+  end
+
+  def check_title_descending_order_in_all_pages
+    on CourseSearch do |page|
+      pgno = 1
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          page.check_descending_order_title()
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        puts "------ page no = #{pgno}"
+        page.check_descending_order_title()
+      end
+    end
+  end
 end
+
+

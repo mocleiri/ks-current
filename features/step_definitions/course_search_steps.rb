@@ -185,3 +185,59 @@ Then /^only "(.*?)" level courses are returned$/ do |text|
   @course_offering = make CourseOffering
   @course_offering.check_all_results_data_for_multi_level(text).should be_true
 end
+
+
+# KSAP-773------------------------------------------------------------------------------------------------------------------------------------
+
+
+And /^I search for a course on course search$/ do
+  @course_offering = make CourseOffering, :course_code => "General"
+  @course_offering.course_search
+end
+
+
+When /^I click the sort icon near Code column header in the table$/ do
+  on CourseSearch do |page|
+    page.code_sort_icon
+  end
+end
+
+
+Then /^the  course code listed should be sorted in descending order$/ do
+    @course_offering.check_code_descending_order_in_all_pages.should be_true
+end
+
+When /^I again click on the sort icon near Code column header in the table$/ do
+  on CourseSearch do |page|
+    page.code_sort_icon
+  end
+end
+
+Then /^the  course code listed should be sorted in ascending order$/ do
+    @course_offering.check_code_ascending_order_in_all_pages.should be_true
+end
+
+When /^I click the sort icon near Title column header in the table$/ do
+  on CourseSearch do |page|
+    puts " on click of sort icon in title 1"
+    page.title_sort_icon
+  end
+end
+
+
+Then /^the  course Title listed should be sorted in ascending order$/ do
+     @course_offering.check_title_ascending_order_in_all_pages.should be_true()
+    puts " - call ascending order "
+      end
+
+When /^I again click on the sort icon near Title column header in the table$/ do
+  on CourseSearch do |page|
+    puts " on click of sort icon in title  2"
+    page.title_sort_icon
+  end
+end
+
+Then /^the  course Title listed should be sorted in descending order$/ do
+    @course_offering.check_title_descending_order_in_all_pages.should be_true
+    puts "Test is Passed True"
+end
