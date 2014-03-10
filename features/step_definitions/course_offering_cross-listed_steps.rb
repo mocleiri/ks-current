@@ -22,7 +22,7 @@ And /^the cross-listing is indicated for the alias Course Offering$/ do
 
   #  Validate the crosslisting messaging is present.
   on ManageCourseOfferings do |page|
-    page.cross_listed_message_div.wait_until_present
+    page.cross_listed_message_span.wait_until_present
     page.cross_listed_message.include? "crosslisted alias for: " << cross_listed_infoText_targetValue
   end
 end
