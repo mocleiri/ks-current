@@ -743,11 +743,12 @@ When /^I add a new term with start date earlier than the Academic Calendar start
 end
 
 When /^I add a new subterm with start date earlier than the Academic Calendar start date$/ do
-  terms = []
-  terms << (make AcademicTermObject, :parent_calendar => @calendar,
-                          :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y"), #minus 2 days
-                          :subterm => true, :term_type=> "Half Fall 1", :parent_term=> "Fall Term" )
-  @calendar.add_term terms[0]
+  @calendar.terms[0].add_subterm (make AcademicTermObject,
+                                       :parent_calendar => @calendar,
+                                       :subterm => true,
+                                       :term_type=> "Half Fall 1",
+                                       :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y")) #minus 2 days
+                                       #:end_date => "09/11/#{@calendar.year}")
 end
 
 Then /^a term warning message is displayed stating "([^"]*)"$/ do |exp_msg|
