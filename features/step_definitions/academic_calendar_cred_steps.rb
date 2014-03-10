@@ -97,6 +97,10 @@ When /^I edit the term and make it official$/ do
 end
 
 When /^I delete the Academic Calendar draft$/ do
+  @calendar.delete_draft
+end
+
+When /^I delete the parent Academic Calendar draft$/ do
   @deleted_subterm = @calendar.terms[0].subterms[0]
   @calendar.delete_draft
 end

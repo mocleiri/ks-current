@@ -81,7 +81,7 @@ Feature: CO.Subterms CRED
 
   Scenario: CAL 4.10A Delete draft academic calendar and ensure draft subterm is also deleted.
      Given I create an Academic Calendar with subterms
-     When I delete the Academic Calendar draft
+     When I delete the parent Academic Calendar draft
      Then the subterm is also deleted
 
     Scenario: CAL 4.10B Delete draft parent term and ensure that draft subterm is also deleted
