@@ -87,15 +87,18 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	public void copyFromInfo(DegreeMapRequirementInfo dto)
 			throws DataValidationErrorException, MissingParameterException {
 		
-		
-    	if (this.getId() == null) {
-    		throw new DataValidationErrorException("Null id in DegreeMapRequirementEntity. Id must be set by caller.");
-    	}
-
-
 	   	if (dto == null){
     		throw new MissingParameterException("null degreeMapRequirementInfo");
     	}
+
+	   	//TODO
+	   	// I had to remove this and set the id because otherwise in DegreeMapServiceImpl.getRequirements I would get requirements
+	   	// that had an id of null
+		if (this.getId() == null) {
+			this.setId(dto.getId());
+			// throw new
+			// DataValidationErrorException("Null id in DegreeMapRequirementEntity. Id must be set by caller.");
+		}
 
 		//TODO
 		// Do these checks seem justified?
