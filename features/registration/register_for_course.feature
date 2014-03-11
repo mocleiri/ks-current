@@ -17,7 +17,7 @@ Feature: REG.Register for course
   #KSENROLL-11748
   Scenario: CR 1.2 I want to indicate course parameters at the time I enter course information so I can register with my preferred options
     When I add a course to my registration cart and specify course options
-    Then the course is present in my cart, with the correct options
+    Then the course is present in my cart, with the updated options
 
   #KSENROLL-11809
   Scenario: CR 1.4 I want to remove a course from my selections because I dont want to register for it anymore
@@ -29,9 +29,7 @@ Feature: REG.Register for course
   Scenario: CR 1.5 I want to change the course parameters for my selections so I can register with preferred options
     When I add a course offering having multiple credit options to my registration cart
     And I edit the course in my registration cart
-    # Temporary workaround, until grading option badge refresh issue is solved
-    Then the course is present in my cart
-#    Then the course is present in my cart, with the correct options
+    Then the course is present in my cart, with the updated options
 
   #KSENROLL-11811 KSENROLL-12072
   Scenario: CR 1.6 I want to submit my list of course selections so that I can register for them
@@ -65,9 +63,7 @@ Feature: REG.Register for course
   Scenario: CR 5.1 I want to change the parameters for my registered courses so that I take the course with my preferred options.
     Given I have registered for a course having multiple credit options
     When I edit the course in my schedule
-    # Temporary workaround, until grading option badge refresh issue is solved
-    Then the course is present in my schedule
-#    Then the course is present in my schedule, with the correct options
+    Then the course is present in my schedule, with the updated options
 
   #KSENROLL-12065
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.

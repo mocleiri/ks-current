@@ -69,7 +69,7 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
   end
 end
 
-Then /^the course is present in my cart, with the correct options$/  do
+Then /^the course is present in my cart, with the updated options$/  do
   on RegistrationCart do |page|
     page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     unless @reg_request.course_options.grading_option == "Letter"
@@ -211,7 +211,7 @@ Given /^I have registered for a course having multiple credit options$/ do
   }
 end
 
-Then /^the course is present in my schedule, with the correct options$/ do
+Then /^the course is present in my schedule, with the updated options$/ do
   on StudentSchedule do |page|
     page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     sleep 1
