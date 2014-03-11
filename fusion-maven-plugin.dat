@@ -1,0 +1,8 @@
+# module = ks-api branch Path = contrib/CM/ks-api/branches/org-service revision = 60190
+ks-api::contrib_CM_ks-api_branches_org-service::5e0128de8a1bdc3704e1b7338e3f12ee2909263a
+# module = ks-core branch Path = contrib/CM/ks-core/branches/org-service revision = 60190
+ks-core::contrib_CM_ks-core_branches_org-service::331c3d5ceb522cf3a78062b14d779f1a87a02060
+# module = ks-lum branch Path = contrib/CM/ks-lum/branches/org-service revision = 60190
+ks-lum::contrib_CM_ks-lum_branches_org-service::1d1a50c6db56211f682a29b819b5c0ae54a00d20
+# module = ks-deployments branch Path = contrib/CM/ks-deployments/branches/org-service revision = 60190
+ks-deployments::contrib_CM_ks-deployments_branches_org-service::4e2b81ffb38deb262e6478e3c9b79199357749af
