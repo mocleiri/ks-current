@@ -1,21 +1,4 @@
-#
-# The svn.externals file controls what local directories appear in the
-# checkout, and what actual location inside Subversion they represent.
-# 
-# This enables development streams to be independently managed and released 
-# while also providing a single spot to perform an aggregated Kuali Student checkout
-# and build
-#
-# The SVN command for using this file to create SVN external definitions is
-# 
-# svn propset svn:externals -F svn.externals .
-#
-# *** IMPORTANT ***
-# you must rerun the svn propset command and commit after editing any of
-# the external paths
-#
-
-ks-api https://svn.kuali.org/repos/student/contrib/CM/ks-api/branches/org-service
-ks-core https://svn.kuali.org/repos/student/contrib/CM/ks-core/branches/org-service
-ks-lum https://svn.kuali.org/repos/student/contrib/CM/ks-lum/branches/org-service
-ks-deployments https://svn.kuali.org/repos/student/contrib/CM/ks-deployments/branches/org-service
+ks-api https://svn.kuali.org/repos/student/contrib/CM/ks-api/tags/builds/ks-api-2.0/2.0.2-cm-contrib-org/build-43
+ks-core https://svn.kuali.org/repos/student/contrib/CM/ks-core/tags/builds/ks-core-2.0/2.0.2-cm-contrib-org/build-43
+ks-deployments https://svn.kuali.org/repos/student/contrib/CM/ks-deployments/tags/builds/ks-deployments-2.0/2.0.2-cm-contrib-org/build-43
+ks-lum https://svn.kuali.org/repos/student/contrib/CM/ks-lum/tags/builds/ks-lum-2.0/2.0.2-cm-contrib-org/build-43
