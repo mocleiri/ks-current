@@ -94,7 +94,7 @@ class CourseSearch < BasePage
     elsif expected.length == 5
       trimmed_array_list<<results_list.map! {|x| x.slice(0,5) }
     else
-      trimmed_array_list
+      trimmed_array_list<<results_list.map! {|x| x }
     end
     trimmed_array_list
   end
