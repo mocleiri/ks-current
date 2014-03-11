@@ -254,43 +254,34 @@ class CourseOffering
     end
   end
 
-  def check_division_facet(text)
+  # Check that returned results meet search criteria and required courses are
+  def check_all_results_data(expected_courses, expected_text)
     on CourseSearch do |page|
-      return page.division_facet_validation(text)
-    end
-  end
-
-  def check_multi_results(text)
-    on CourseSearch do |page|
-      return page.result_list_multi_code(text)
-    end
-  end
-
-  def check_all_results_data_for_multi_level(text)
-    on CourseSearch do |page|
-      puts "Search Text = #{text}"
+      puts "Search Text = #{expected_text}"
       pgno = 1
-      puts level_digit = text.slice(0)
-      if page.results_list_next_enabled.exists?
-        until page.results_list_next_disabled.exists?
-          puts "------ page no = #{pgno}"
-          pass = page.result_list_multi_level(text)
-          if pass!= true
-            return false
-          end
-          page.results_list_next_enabled.wait_until_present
-          page.results_list_next_click
-          pgno = pgno+1
-          page.results_list_next_enabled.wait_until_present
-        end
-      else
+      puts level_digit = expected_text.slice(0)
+      until page.results_list_next_disabled.exists?
         puts "------ page no = #{pgno}"
-        pass = page.result_list_multi_level(text)
+        pass = page.validate_result_list(expected_courses,expected_text)
         if pass!= true
           return false
         end
+        page.results_list_next_enabled.wait_until_present
+        page.results_list_next_click
+        pgno = pgno+1
+        page.results_list_next_enabled.wait_until_present
       end
-      return true
+      puts "------ page no = #{pgno}"
+      pass = page.validate_result_list(expected_courses,expected_text)
+      if pass!= true
+        return false
+      end
+      if expected_courses == ""
+        # only when all expected courses are found does the test pass
+        return true
+      end
+      puts "Not all expected codes found, missing: #{expected_courses}"
+      return false
     end
   end
 

@@ -62,13 +62,52 @@ class CourseSearch < BasePage
   def results_list
 
     list = []
-    results_table.rows.each do |row|
-      sleep(1)
-      list << row[COURSE_CODE].text
+    no_of_rows = get_results_table_rows_no(0) - 1
+    for index in 0..no_of_rows do
+      list << get_table_row_code(index,0)
     end
     list.delete_if { |item| item == "Code" }
     list.delete_if {|item| item == "" }
     list
+  end
+
+  # Get code from data table row safely
+  def get_table_row_code(index,rescues)
+    begin
+      return results_table.rows[index].cells[COURSE_CODE].text
+    rescue
+      rescues = rescues+1
+      puts "rescue from Selenium::WebDriver::Error::StaleElementReferenceError: #{rescues}"
+      if rescues<5
+        get_table_row_code(index,rescues)
+      end
+    end
+  end
+
+  # Get title from data table row safely
+  def get_table_row_title(index,rescues)
+    begin
+      return results_table.rows[index].cells[COURSE_NAME].text
+    rescue
+      rescues = rescues+1
+      puts "rescue from Selenium::WebDriver::Error::StaleElementReferenceError: #{rescues}"
+      if rescues<5
+        get_table_row_title(index,rescues)
+      end
+    end
+  end
+
+  # Get number of data table rows safely
+  def get_results_table_rows_no(rescues)
+    begin
+      return results_table.rows.length
+    rescue
+      rescues = rescues+1
+      puts "rescue from Selenium::WebDriver::Error::StaleElementReferenceError: #{rescues}"
+      if rescues<5
+        return get_results_table_rows_no(rescues)
+      end
+    end
   end
 
   def results_list_title
@@ -164,104 +203,107 @@ class CourseSearch < BasePage
 
 #************************** Course Level Search--KSAP- 832  and US 618*********************
 
-  def result_list_level(text)
-    sleep(1)
-    no_of_rows = results_table.rows.length-1
-    for index in 1..no_of_rows do
-      if index == no_of_rows
-        sleep(2)
-        course_code = results_table.rows[index].cells[COURSE_CODE].text
-        puts  "courseCode1 #{course_code}"
-        puts level_digit = text.slice(0)
-        search_text = /(#{level_digit}\d\d)/
-
-        sleep(2)
-        sliced_course_code = course_code[4..course_code.length]
-        if (search_text.match(sliced_course_code))
-        else
-          return false
-          break
-        end
-      end
-    end
-  end
-
-  def division_facet_validation(text)
-    sleep(1)
-    expectedDivisions = text.split(",",-1)
-    no_of_rows = course_search_facet_divisions.length - 1
-    no_of_divisions = expectedDivisions.length - 1
-    if no_of_divisions == no_of_rows
-      for index in 0..no_of_rows do
-        facet_text = course_search_facet_divisions[index].a.text.downcase
-        found = false
-        for index2 in 0..no_of_divisions do
-          division_text = expectedDivisions[index2].downcase
-          if division_text == facet_text
-            found = true
-          end
-        end
-        if found != true
-          return false
-        end
-      end
-    else
-      return false
-    end
-    return true
-  end
-
-  def result_list_multi_code(text)
-    sleep(1)
-    expectedCourses = text.split(",",-1)
-    no_of_courses = expectedCourses.length - 1
-    resultList = results_list()
-    no_of_results = resultList.length - 1
-    if no_of_courses == no_of_results
-      for index in 0..no_of_courses
-        course = expectedCourses[index].downcase
-        found = false
-        for index2 in 0..no_of_results
-          result = resultList[index2].downcase
-          if course == result
-            found = true
-          end
-        end
-        if found !=true
-          return false
-        end
-      end
-    else
-      return false
-    end
-    return true
-  end
-
-  def result_list_multi_level(text)
-    sleep(1)
-    expectedCourses = text.gsub("00","").split(",",-1)
-    no_of_courses = expectedCourses.length - 1
+  # Validate that all returned results on current page meet search criteria
+  def validate_result_list(expected_code, expected_text)
     resultList = results_list()
     no_of_results = resultList.length - 1
     for index in 0..no_of_results
-      sleep(1)
-      result = resultList[index].downcase.slice(0,5)
-      found = false
-      for index2 in 0..no_of_courses
-        course = expectedCourses[index2].downcase
-        if course == result
-          found = true
+      result_code = resultList[index]
+      requiredFound = result_list_required_code_match(result_code,expected_code)
+      if requiredFound == false
+        # check for components in the course code
+        found = result_list_code_match(result_code, expected_text)
+        if found == false
+          # if not found check against the course details full text
+           found = course_details_text_match(index+1,result_code, expected_text)
+        end
+        if found == false
+          # if not found fail
+          puts "Failed on #{result_code}"
+          return false
         end
       end
-      if found !=true
-        return false
-      end
     end
+
     return true
   end
 
+  # Determine if a specific required course was returned
+  def result_list_required_code_match(result_code, expected_code)
+    expectedCode = expected_code.split(",",-1)
+    no_of_code = expectedCode.length
+    for index in 0...no_of_code do
+      code = expectedCode[index]
+      formatted_code = code.downcase
+      formatted_result = result_code.downcase
 
+      if formatted_code == formatted_result
+        # remove found code from expected codes
+        expected_code.gsub!(code," ")
+        expected_code.gsub!(" ,","")
+        expected_code.gsub!(", ","")
+        expected_code.gsub!(" ","")
+        return true
+      end
+    end
+    # if none are found return nil
+    return false
+  end
 
+  # Determine if a search result was from a course code base search
+  def result_list_code_match(result_code, expected_text)
+    expectedText = expected_text.gsub("00","").gsub("xx","").gsub("XX","").split(",",-1)
+    no_of_text = expectedText.length
+    for index in 0...no_of_text do
+      text = expectedText[index]
+      size = text.length
+
+      # Size 1 indicates an exact level so only check against the codes first digit
+      if size == 1
+        formatted_text = text.slice(0,size).downcase
+        formatted_result = result_code.slice(4,size).downcase
+      else
+        # Size 3 indicates an exact code so only check against the last 3 digits
+        if size == 3
+          formatted_text = text.slice(0,size).downcase
+          formatted_result = result_code.slice(4,size).downcase
+        else
+          formatted_text = text.slice(0,size).downcase
+          formatted_result = result_code.slice(0,size).downcase
+        end
+      end
+
+      if formatted_text == formatted_result
+        return true
+      end
+    end
+    puts "No code match on #{result_code}"
+    return false
+  end
+
+  # Determine if a search result from a full text search
+  def course_details_text_match (row_number, result_code, expected_text)
+    expectedText = expected_text.split(",",-1)
+    no_of_text = expectedText.length
+
+    course_code = get_table_row_code(row_number,0)
+    course_name = get_table_row_title(row_number,0).downcase
+
+    course_code_result_link(course_code).click
+    back_to_search_results.wait_until_present
+    course_description_text = course_description(course_code).downcase
+    back_to_search_results.click
+    sleep(2)
+
+    for index in 0...no_of_text do
+      text = expectedText[index]
+      if (((course_code.downcase).include? (text).downcase) ||  (course_name.include? (text).downcase )||(course_description_text.include? (text).downcase))
+        return true
+      end
+    end
+    puts "No text match on #{result_code}"
+    return false
+  end
 
   def check_ascending_order_code()
 

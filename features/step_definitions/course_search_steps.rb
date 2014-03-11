@@ -171,19 +171,9 @@ When /^I search for "(.*?)"$/ do |text|
   @course_offering.course_search_with_search_text
 end
 
-Then /^only courses of divisions "(.*?)" are returned$/ do |text|
-  @course_offering = make CourseOffering
-  @course_offering.check_division_facet(text).should be_true
-end
 
-Then /^only the courses "(.*?)" are returned$/ do |text|
-  @course_offering = make CourseOffering
-  @course_offering.check_multi_results(text).should be_true
-end
-
-Then /^only "(.*?)" level courses are returned$/ do |text|
-  @course_offering = make CourseOffering
-  @course_offering.check_all_results_data_for_multi_level(text).should be_true
+Then /^"(.*?)" and courses matching at least one "(.*?)" are returned$/ do |expected_courses, expected_component|
+  @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
 end
 
 
