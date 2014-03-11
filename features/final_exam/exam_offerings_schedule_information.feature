@@ -69,7 +69,6 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12104
-  @pending
   Scenario: FE4.x(2).3 Test that when Course Offering with AO-driven exam is created from copy that the schedule info is not populated
     Given I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period
     And I create an Activity Offering that has no ASIs or RSIs
