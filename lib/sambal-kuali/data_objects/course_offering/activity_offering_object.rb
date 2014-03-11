@@ -705,10 +705,11 @@ class ActivityOfferingObject
       page.select_ao(self.code)
       if page.approve_activity_button.enabled?
         page.approve_activity
-      elsif options[:send_to_scheduler]
-        page.deselect_ao(self.code)
-        edit :send_to_scheduler => true
-        save
+        if options[:send_to_scheduler]
+          page.deselect_ao(self.code)
+          edit :send_to_scheduler => true
+          save
+        end
       else
         raise "error: approve_activity_button is disabled"
       end

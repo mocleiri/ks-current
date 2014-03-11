@@ -500,7 +500,7 @@ Given /^I manage a course offering with an approved activity offering$/ do
   @activity_offering = @course_offering.get_ao_obj_by_code("A")
   @activity_offering.approve :navigate_to_page => false, :send_to_scheduler => true
 
-  on(ManageCourseOfferings).ao_status(@activity_offering.code).should == "Approved"
+  on(ManageCourseOfferings).ao_status(@activity_offering.code).should == "Offered"
 end
 
 Then /^the activity offering copy is in draft status$/ do
