@@ -54,7 +54,6 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering should be populated
 
   #KSENROLL-12087
-  @pending
   Scenario: FE4.x(2).1 Test that when Course Offering with an AO-driven exam is created from copy where AO has RSI then the Exam RSI data is populated
     Given that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data
     When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
@@ -62,7 +61,6 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
 
   #KSENROLL-12087
-  @pending
   Scenario: FE4.x(2).2 Test that when Course Offering witn an AO-driven exam is created from copy where AO has no RSI then the schedule info is not populated
     Given that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix
     When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
