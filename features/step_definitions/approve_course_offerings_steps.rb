@@ -444,7 +444,7 @@ Given /^I manage a course offering with an approved activity offering present$/ 
   @activity_offering.save
 
   on ManageCourseOfferings do |page|
-    page.ao_status(@activity_offering.code).should == "Approved"
+    page.ao_status(@activity_offering.code).should == "Offered"
   end
 end
 
