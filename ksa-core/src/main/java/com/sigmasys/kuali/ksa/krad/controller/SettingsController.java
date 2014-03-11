@@ -12,8 +12,6 @@ import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import com.sigmasys.kuali.ksa.service.CashLimitService;
 import com.sigmasys.kuali.ksa.service.InformationService;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +35,6 @@ import java.util.*;
 @RequestMapping(value = "/settingsView")
 public class SettingsController extends GenericSearchController {
 
-    private static final Log logger = LogFactory.getLog(SettingsController.class);
-
     @Autowired
     private AuditableEntityService auditableEntityService;
 
@@ -57,8 +53,7 @@ public class SettingsController extends GenericSearchController {
      */
     @Override
     protected SettingsForm createInitialForm(HttpServletRequest request) {
-        SettingsForm form = new SettingsForm();
-        return form;
+        return new SettingsForm();
     }
 
     /**
@@ -69,7 +64,6 @@ public class SettingsController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=get")
     public ModelAndView get(@ModelAttribute("KualiForm") SettingsForm form, HttpServletRequest request) {
 
-        // do get stuff...
         String viewId = request.getParameter("viewId");
         String pageId = request.getParameter("pageId");
 
@@ -77,11 +71,9 @@ public class SettingsController extends GenericSearchController {
 
         logger.info("View: " + viewId + " Page: " + pageId + " Entity ID: " + entityId);
 
-        // Currency type
         if ("CurrencyPage".equals(pageId)) {
-            Currency c = new Currency();
-            form.setAuditableEntity(c);
-
+            Currency currency = new Currency();
+            form.setAuditableEntity(currency);
             form.setAuditableEntities(auditableEntityService.getAuditableEntities(Currency.class));
         } else if ("CurrencyDetailsPage".equals(pageId)) {
             if (entityId == null || entityId.trim().isEmpty()) {
@@ -223,7 +215,7 @@ public class SettingsController extends GenericSearchController {
                 String name = parentEntity.getName();
                 String description = parentEntity.getDescription();
 
-                if(parentEntity instanceof GeneralLedgerType) {
+                if (parentEntity instanceof GeneralLedgerType) {
                     auditableEntityService.persistAuditableEntity(parentEntity);
                 } else {
 
@@ -298,10 +290,7 @@ public class SettingsController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=updateAuditableEntity")
     public ModelAndView updateAuditableEntity(@ModelAttribute("KualiForm") SettingsForm form) {
 
-        AuditableEntity entity = form.getAuditableEntity();
-        if (entity instanceof AuditableEntityModel) {
-            entity = ((AuditableEntityModel) entity).getParentEntity();
-        }
+        AuditableEntity entity = form.getAuditableEntity().getParentEntity();
 
         try {
             // occurs in the detail page.
@@ -355,10 +344,13 @@ public class SettingsController extends GenericSearchController {
             logger.info(statusMsg);
 
         } catch (Exception e) {
+
             String statusMsg = "System Parameters did not update. ";
+
             if (e instanceof DuplicateKeyException) {
                 statusMsg += "Duplicate Names not allowed.";
             }
+
             GlobalVariables.getMessageMap().putError("SettingsView", RiceKeyConstants.ERROR_CUSTOM, statusMsg);
             logger.error(statusMsg + " " + e.getMessage());
         }
@@ -368,27 +360,31 @@ public class SettingsController extends GenericSearchController {
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=saveCashLimitParameters")
     public ModelAndView saveCashLimitParameters(@ModelAttribute("KualiForm") SettingsForm form) {
-        List<CashLimitParameterModel> parameters = form.getCashLimitParameters();
 
+        List<CashLimitParameterModel> parameters = form.getCashLimitParameters();
 
         boolean errors = false;
         boolean success = false;
 
         try {
             for (CashLimitParameterModel p : parameters) {
+
                 CashLimitParameter parent = (CashLimitParameter) p.getParentEntity();
+
                 if (parent.getTag() == null) {
+
                     Tag tag = auditableEntityService.getAuditableEntity(p.getTagString(), Tag.class);
-                    if(tag == null) {
+
+                    if (tag == null) {
                         String statusMsg = p.getTagString() + " is not a valid tag. Row not saved.";
                         GlobalVariables.getMessageMap().putError("SettingsView", RiceKeyConstants.ERROR_CUSTOM, statusMsg);
-
                         errors = true;
                         continue;
                     }
 
                     parent.setTag(tag);
                 }
+
                 cashLimitService.persistCashLimitParameter(parent);
                 success = true;
             }
@@ -400,41 +396,36 @@ public class SettingsController extends GenericSearchController {
             errors = true;
         }
 
-        if(success && errors) {
+        if (success && errors) {
             String statusMsg = "Some Cash Limit Parameters saved, but others contained errors.";
             GlobalVariables.getMessageMap().putWarning("SettingsView", RiceKeyConstants.ERROR_CUSTOM, statusMsg);
             logger.info(statusMsg);
-
-        } else if(success) {
-            if(success) {
-                String statusMsg = "Cash Limit Parameters saved";
-                GlobalVariables.getMessageMap().putInfo("SettingsView", RiceKeyConstants.ERROR_CUSTOM, statusMsg);
-                logger.info(statusMsg);
-            }
-
+        } else if (success) {
+            String statusMsg = "Cash Limit Parameters saved";
+            GlobalVariables.getMessageMap().putInfo("SettingsView", RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.info(statusMsg);
         }
 
-
         return getUIFModelAndView(form);
-
     }
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=saveRefundType")
     public ModelAndView saveRefundType(@ModelAttribute("KualiForm") SettingsForm form) {
-        List<RefundTypeModel> parameters = form.getRefundTypes();
 
+        List<RefundTypeModel> parameters = form.getRefundTypes();
 
         boolean errors = false;
         boolean success = false;
 
         try {
             for (RefundTypeModel p : parameters) {
+
                 RefundType parent = (RefundType) p.getParentEntity();
 
                 auditableEntityService.persistAuditableEntity(parent);
+
                 success = true;
             }
-
         } catch (Throwable t) {
             String statusMsg = "Refund Types did not update: " + t.getLocalizedMessage();
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
@@ -442,41 +433,36 @@ public class SettingsController extends GenericSearchController {
             errors = true;
         }
 
-        if(success && errors) {
+        if (success && errors) {
             String statusMsg = "Some Refund Types saved, but others contained errors.";
             GlobalVariables.getMessageMap().putWarning(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
             logger.info(statusMsg);
-
-        } else if(success) {
-            if(success) {
-                String statusMsg = "Refund Types saved";
-                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
-                logger.info(statusMsg);
-            }
-
+        } else if (success) {
+            String statusMsg = "Refund Types saved";
+            GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.info(statusMsg);
         }
 
-
         return getUIFModelAndView(form);
-
     }
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=saveGlRecognitionPeriod")
     public ModelAndView saveGlRecognitionPeriod(@ModelAttribute("KualiForm") SettingsForm form) {
-        List<GlRecognitionPeriodModel> parameters = form.getGlRecognitionPeriodModels();
 
+        List<GlRecognitionPeriodModel> parameters = form.getGlRecognitionPeriodModels();
 
         boolean errors = false;
         boolean success = false;
 
         try {
             for (GlRecognitionPeriodModel p : parameters) {
+
                 GlRecognitionPeriod parent = (GlRecognitionPeriod) p.getParentEntity();
 
                 auditableEntityService.persistAuditableEntity(parent);
+
                 success = true;
             }
-
         } catch (Throwable t) {
             String statusMsg = "GL Recognition Periods did not update: " + t.getLocalizedMessage();
             GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
@@ -484,23 +470,17 @@ public class SettingsController extends GenericSearchController {
             errors = true;
         }
 
-        if(success && errors) {
+        if (success && errors) {
             String statusMsg = "Some GL Recognition Periods saved, but others contained errors.";
             GlobalVariables.getMessageMap().putWarning(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
             logger.info(statusMsg);
-
-        } else if(success) {
-            if(success) {
-                String statusMsg = "GL Recognition Periods saved";
-                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
-                logger.info(statusMsg);
-            }
-
+        } else if (success) {
+            String statusMsg = "GL Recognition Periods saved";
+            GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, statusMsg);
+            logger.info(statusMsg);
         }
 
-
         return getUIFModelAndView(form);
-
     }
 
 }

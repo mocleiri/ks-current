@@ -72,7 +72,6 @@ public class TemplateControllerTest extends AbstractServiceTest {
         Assert.isTrue(templateForm.getPageId().equals(TemplateController.FIRST_PAGE_ID));
 
         // TODO: add more assertions
-
     }
 
     @Test
@@ -94,7 +93,6 @@ public class TemplateControllerTest extends AbstractServiceTest {
         Assert.isTrue(templateForm.getPageId().equals(TemplateController.SECOND_PAGE_ID));
 
         // TODO: add more assertions
-
     }
 
 

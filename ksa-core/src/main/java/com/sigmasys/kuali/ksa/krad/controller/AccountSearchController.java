@@ -16,7 +16,7 @@ import com.sigmasys.kuali.ksa.model.*;
 /**
  * This class handles searches for a personal or organizational Accounts.
  *
- * @author Sergey
+ * @author Sergey Godunov
  */
 @Controller
 @RequestMapping(value = "/accountSearch")
@@ -27,7 +27,7 @@ public class AccountSearchController extends AccountManagementController {
      * Handles display of the Search Person Account page.
      *
      * @param form AdminForm
-     * @return
+     * @return ModelAndView
      */
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=searchPersonAccount")
     public ModelAndView searchPersonAccount(@ModelAttribute("KualiForm") AdminForm form) {
@@ -100,19 +100,19 @@ public class AccountSearchController extends AccountManagementController {
     private List<AccountSearchResultModel> prepareDisplayLines(List<Account> accounts) {
 
         // Create the result collection:
-        List<AccountSearchResultModel> lines = new ArrayList<AccountSearchResultModel>();
+        List<AccountSearchResultModel> lines = new ArrayList<AccountSearchResultModel>(accounts.size());
 
         // Add elements to the resultant collection:
         for (Account account : accounts) {
 
             // Create a new line item:
-            AccountSearchResultModel line = new AccountSearchResultModel();
-            AccountProtectedInfo accountProtectedInfo = accountService.getAccountProtectedInfo(account.getId());
+            AccountSearchResultModel model = new AccountSearchResultModel();
 
-            line.setAccount(account);
-            line.setAccountProtectedInfo(accountProtectedInfo);
-            line.setDateOfBirth(getAccountDateOfBirth(account));
-            lines.add(line);
+            model.setAccount(account);
+            model.setAccountProtectedInfo(accountService.getAccountProtectedInfo(account.getId()));
+            model.setDateOfBirth(getAccountDateOfBirth(account));
+
+            lines.add(model);
         }
 
         return lines;

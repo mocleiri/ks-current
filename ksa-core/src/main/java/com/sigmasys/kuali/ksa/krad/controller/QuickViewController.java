@@ -11,8 +11,6 @@ import com.sigmasys.kuali.ksa.service.InformationService;
 import com.sigmasys.kuali.ksa.service.PaymentService;
 import com.sigmasys.kuali.ksa.service.fm.FeeManagementService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +34,6 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/quickView")
 public class QuickViewController extends GenericSearchController {
-
-    private static final Log logger = LogFactory.getLog(QuickViewController.class);
 
     @Autowired
     private AuditableEntityService auditableEntityService;
@@ -288,9 +284,6 @@ public class QuickViewController extends GenericSearchController {
      */
     private void populateForm(String userId, QuickViewForm form) {
 
-        // store the selected account ID
-        //form.setSelectedId(id);
-
         boolean ignoreDeferment = Boolean.parseBoolean(form.getIgnoreDeferment());
 
         Account accountById = accountService.getFullAccount(userId);
@@ -304,10 +297,6 @@ public class QuickViewController extends GenericSearchController {
 
         ChargeableAccount chargeableAccount = (ChargeableAccount) accountById;
 
-        // no session scope
-        //form.setStudentLookupByName(accountById.getDefaultPersonName().getLastName());
-        // a list of one
-        //form.setAccountBrowseList(accountList);
         form.setCompositeDefaultPersonName(accountById.getCompositeDefaultPersonName());
         form.setCompositeDefaultPostalAddress(accountById.getCompositeDefaultPostalAddress());
 
@@ -340,9 +329,8 @@ public class QuickViewController extends GenericSearchController {
         form.setDaysLate2(latePeriod.getDaysLate2() != null ? latePeriod.getDaysLate2().toString() : "60");
         form.setDaysLate3(latePeriod.getDaysLate3() != null ? latePeriod.getDaysLate3().toString() : "90");
 
-        // getOutstandingBalance above always ignores deferment per Paul setting the pastDue to the ageTotal
-
         BigDecimal pastDue = BigDecimal.ZERO;
+
         if (chargeableAccount.getAmountLate1() != null) {
             form.setAged30(chargeableAccount.getAmountLate1());
             pastDue = pastDue.add(chargeableAccount.getAmountLate1());

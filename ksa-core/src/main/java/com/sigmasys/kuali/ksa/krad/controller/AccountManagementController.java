@@ -26,8 +26,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 
-// TODO - Implement a correct logic for new account creation
-
 @Controller
 @RequestMapping(value = "/accountManagement")
 public class AccountManagementController extends GenericSearchController {
@@ -110,6 +108,7 @@ public class AccountManagementController extends GenericSearchController {
                 Long statusTypeId = Long.valueOf(statusTypeIdString);
                 statusType = auditableEntityService.getAuditableEntity(statusTypeId, AccountStatusType.class);
             } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
             }
         }
@@ -131,6 +130,7 @@ public class AccountManagementController extends GenericSearchController {
                 Long bankTypeId = Long.valueOf(bankTypeIdString);
                 bankType = auditableEntityService.getAuditableEntity(bankTypeId, BankType.class);
             } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
             }
         }
@@ -143,6 +143,7 @@ public class AccountManagementController extends GenericSearchController {
                 Long taxTypeId = Long.valueOf(taxTypeIdString);
                 taxType = auditableEntityService.getAuditableEntity(taxTypeId, TaxType.class);
             } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
             }
         }
@@ -155,6 +156,7 @@ public class AccountManagementController extends GenericSearchController {
                 Long identityTypeId = Long.valueOf(identityTypeString);
                 identityType = auditableEntityService.getAuditableEntity(identityTypeId, IdentityType.class);
             } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
                 GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, e.getMessage());
             }
         }
@@ -225,17 +227,21 @@ public class AccountManagementController extends GenericSearchController {
         accountProtectedInfo.setBankType(new BankType());
         accountProtectedInfo.setIdentityType(new IdentityType());
         accountProtectedInfo.setTaxType(new TaxType());
+
         personName.setDefault(true);
+
         postalAddress.setDefault(true);
+
         electronicContact.setDefault(true);
+
         account.setPersonNames(new HashSet<PersonName>(Arrays.asList(personName)));
         account.setPostalAddresses(new HashSet<PostalAddress>(Arrays.asList(postalAddress)));
         account.setElectronicContacts(new HashSet<ElectronicContact>(Arrays.asList(electronicContact)));
-        account.setCreditLimit(new BigDecimal(0));
+        account.setCreditLimit(BigDecimal.ZERO);
         account.setStatusType(new AccountStatusType());
         account.setLatePeriod(new LatePeriod());
 
-        account.setAbleToAuthenticate(Boolean.TRUE);
+        account.setAbleToAuthenticate(true);
         accountInfo.setAccountProtectedInfo(accountProtectedInfo);
         accountInfo.setDateOfBirth(new Date());
         accountInfo.setUserPreferences(new ArrayList<UserPreference>());

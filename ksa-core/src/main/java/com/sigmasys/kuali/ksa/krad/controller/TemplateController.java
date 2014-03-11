@@ -22,7 +22,6 @@ public class TemplateController extends GenericSearchController {
     public static final String SECOND_PAGE_ID = "Page2";
     public static final String DEFAULT_PAGE_ID = FIRST_PAGE_ID;
 
-
     /**
      * @see org.kuali.rice.krad.web.controller.UifControllerBase#createInitialForm(javax.servlet.http.HttpServletRequest)
      */
@@ -34,14 +33,15 @@ public class TemplateController extends GenericSearchController {
     }
 
     /**
-     * @param form
-     * @param request
-     * @return
+     * @param form    TemplateForm
+     * @param request HttpServletRequest
+     * @return ModelAndView
      */
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=get")
     public ModelAndView get(@ModelAttribute("KualiForm") TemplateForm form, HttpServletRequest request) {
 
         String pageId = request.getParameter("pageId");
+
         if (pageId != null) {
             form.setPageId(pageId);
         }
@@ -49,13 +49,12 @@ public class TemplateController extends GenericSearchController {
         // TODO: provide business logic that may depend on 'pageId" request parameter
 
         return getUIFModelAndView(form);
-
     }
 
 
     /**
-     * @param form
-     * @return
+     * @param form TemplateForm
+     * @return ModelAndView
      */
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=submit")
     public ModelAndView submit(@ModelAttribute("KualiForm") TemplateForm form) {
@@ -65,6 +64,5 @@ public class TemplateController extends GenericSearchController {
         form.setPageId(SECOND_PAGE_ID);
 
         return getUIFModelAndView(form);
-
     }
 }
