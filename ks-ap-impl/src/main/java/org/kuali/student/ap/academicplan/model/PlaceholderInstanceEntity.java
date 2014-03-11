@@ -17,7 +17,7 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
 	// by MetaEntity and it's superclass(ses).
 
 	  	    
-	  @Column(name="REQ_REF_OBJ_ID")
+	  @Column(name="REF_OBJ_ID")
 	  private String refObjectId;
 	  
 	  @Column(name="REF_OBJ_TYPE")
@@ -30,10 +30,10 @@ public class PlaceholderInstanceEntity extends BaseVersionEntity implements Comp
 	  private String advisorId;
 	  
 	  @Column(name="ADVISOR_ACCEPT")
-	  private boolean advisorOK;
+	  private Boolean advisorOK;
 	  
 	  @Column(name="STUDENT_ACCEPT")
-	  private boolean studentOK;
+	  private Boolean studentOK;
 	  
 	  
 	  

@@ -35,6 +35,9 @@
 	<param name="ks.ap.datasource.driver.name">${ks.ap.datasource.driver.name.${db.vendor}}</param>
 
 	<param name="ks.ap.datasource.url.oracle">jdbc:oracle:thin:@esdbd93.uits.iupui.edu:1521:KS1UNT</param>
+-->
+	<param name="ks.ap.datasource.url.oracle">jdbc:oracle:thin:@esdbd93.uits.iupui.edu:1521:KS1UNT</param>
+	
 	<param name="ks.ap.datasource.url.derby">jdbc:derby://localhost:1527/derby/enroll;create=true</param>
 	<param name="ks.ap.datasource.url.mysql">jdbc:mysql://localhost/KSEMBEDDED</param>
     <param name="ks.ap.datasource.url">${ks.ap.datasource.url.${db.vendor}}</param>
@@ -51,6 +54,10 @@
 
 	<param name="ks.ap.datasource.username">ks_proxy</param>
 	<param name="ks.ap.datasource.password">n6vcfdw</param>
+-->
+	<param name="ks.ap.datasource.username">ks_proxy</param>
+	<param name="ks.ap.datasource.password">n6vcfdw</param>
+	
 
     <param name="ks.ap.datasource.maxSize" override="false">10</param>
     <param name="ks.ap.datasource.minSize" override="false">2</param>

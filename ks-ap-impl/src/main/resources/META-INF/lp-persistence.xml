@@ -48,6 +48,12 @@
 
         <class>org.kuali.student.myplan.academicplan.model.PlanItemRichTextEntity</class>
         
+   <!--       <class>org.kuali.student.ap.academicplan.model.DegreeMapEntity</class> -->
+   		 <class>org.kuali.student.ap.academicplan.model.DegreeMapRequirementEntity</class>
+         <class>org.kuali.student.ap.academicplan.model.PlaceholderEntity</class>
+         <class>org.kuali.student.ap.academicplan.model.PlaceholderInstanceEntity</class>
+        
+        
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     </persistence-unit>

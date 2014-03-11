@@ -34,7 +34,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 //	  private DegreeMap degreeMap;
 //	
 //	  @OneToOne(fetch = FetchType.LAZY)
-//	  @JoinColumn(name = "REQ_REF_OBJ_ID")
+//	  @JoinColumn(name = "REF_OBJ_ID")
 //	  private Placeholder placeholder;
 	
 	
@@ -47,7 +47,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  @Column(name="ITEM_SEQ")
 	  private int itemSeq;
 	  	    
-	  @Column(name="REQ_REF_OBJ_ID")
+	  @Column(name="REF_OBJ_ID")
 	  private String refObjectId;
 	  
 	  @Column(name="REF_OBJ_TYPE")
@@ -60,10 +60,10 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  private BigDecimal credit;
 	  
 	  @Column(name="CRITICAL")
-	  private boolean critical;
+	  private Boolean critical;
 	  
 	  @Column(name="MILESTONE")
-	  private boolean milestone;
+	  private Boolean milestone;
 	  
 	  @Column(name="MIN_GRADE")
 	  private String mininumGrade;

@@ -81,6 +81,7 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException {
 		// TODO Auto-generated method stub
+		//IuDegreeMapService.getDegreeMap();
 		return null;
 	}
 

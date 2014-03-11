@@ -21,9 +21,9 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
     // attribute to define the mapping. 
     // so here we are using the degreeMap property.
 	
-
-	@Column(name = "ID")
-	private String id;
+// got rid of this because it's covered by BaseEntity
+//	@Column(name = "ID")
+//	private String id;
 
 	@Column(name = "TYPE_KEY")
 	private String typeKey;
@@ -36,6 +36,9 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 
 	@Column(name = "PARM3")
 	private String parm3;
+	
+	@Column(name = "PARM4")
+	private String parm4;
 
 //	@OneToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "OBJ_ID")
@@ -59,6 +62,7 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
     	dto.setParm1(this.getParm1());
     	dto.setParm2(this.getParm2());
     	dto.setParm3(this.getParm3());
+    	dto.setParm4(this.getParm4());
         return dto;
     }
 
@@ -83,17 +87,18 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 		setParm1(dto.getParm1());
 		setParm2(dto.getParm2());
 		setParm3(dto.getParm3());
+		setParm4(dto.getParm4());
     	
     }
     
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
+//	public String getId() {
+//		return id;
+//	}
+//
+//	public void setId(String id) {
+//		this.id = id;
+//	}
 
 	public String getTypeKey() {
 		return typeKey;
@@ -125,6 +130,15 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 
 	public void setParm3(String parm3) {
 		this.parm3 = parm3;
+	}
+
+	public String getParm4() {
+		return parm4;
+	}
+
+
+	public void setParm4(String parm4) {
+		this.parm4 = parm4;
 	}
 
 

@@ -40,7 +40,8 @@ public class DegreeMapEntity extends MetaEntity implements Comparable<DegreeMapE
     // attribute to define the mapping. 
     // so here we are using the degreeMap property, which will be mapped do the DM_REF_OBJ_ID column in KSDM_REQUIREMENT
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "degreeMap", orphanRemoval = true)
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "degreeMap", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true)
     private  List<DegreeMapRequirement> requirements;
     
     
