@@ -16,7 +16,7 @@
                     <bean parent="Uif-Tooltip" p:tooltipContent="@{alertTooltip}"/>
                 </property>
             </bean>
-            <bean id="alertLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+            <bean p:id="alertLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                 <property name="hidden" value="true"/>
                 <property name="items">
                     <list>
@@ -85,7 +85,7 @@
                     <bean parent="Uif-Tooltip" p:tooltipContent="@{flagTooltip}"/>
                 </property>
             </bean>
-            <bean id="flagLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+            <bean p:id="flagLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                 <property name="hidden" value="true"/>
                 <property name="items">
                     <list>
@@ -153,7 +153,7 @@
                         <bean parent="Uif-Tooltip" p:tooltipContent="@{memoTooltip}"/>
                     </property>
                 </bean>
-                <bean id="memoLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                <bean p:id="memoLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                     <property name="hidden" value="true"/>
                     <property name="items">
                         <list>
@@ -181,7 +181,7 @@
                         <bean parent="Uif-Tooltip" p:tooltipContent="@{holdTooltip}"/>
                     </property>
                 </bean>
-                <bean id="holdLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                <bean p:id="holdLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                     <property name="hidden" value="true"/>
                     <property name="items">
                         <list>

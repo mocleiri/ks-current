@@ -800,7 +800,7 @@
                                                 <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Members"/>
                                             </property>
                                         </bean>
-                                        <bean id="planMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="planMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Third Party Payment Plan Members"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
@@ -820,7 +820,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Queue"/>
                                         </property>
                                         </bean>
-                                        <bean id="planQueueLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="planQueueLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Third Party Payment Plan - Queued Members"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
@@ -840,7 +840,7 @@
                                                 <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Settings"/>
                                             </property>
                                         </bean>
-                                        <bean id="planSettingsLightbox" parent="Uif-VerticalBoxSection">
+                                        <bean p:id="planSettingsLightbox" parent="Uif-VerticalBoxSection">
                                             <property name="headerText" value="Third Party Payment Plan Settings"/>
                                             <property name="hidden" value="true"/>
                                             <property name="readOnly" value="false"/>
