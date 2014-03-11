@@ -791,7 +791,10 @@ When /^I suspend an Activity Offering for a CO with a standard final exam driven
 end
 
 Then /^a warning in the Final Exam Period section is displayed stating "([^"]*)"$/ do |exp_msg|
-  on(EditAcademicTerms).get_exam_warning_message( @calendar.terms[0].term_type).should match /#{exp_msg}/
+  on EditAcademicTerms do |page|
+    page.get_exam_warning_message( @calendar.terms[0].term_type).should match /#{exp_msg}/
+    page.cancel
+  end
 end
 
 Then /^an error in the Final Exam section is displayed stating "([^"]*)"$/ do |exp_msg|
