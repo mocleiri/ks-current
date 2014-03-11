@@ -13,4 +13,5 @@ public interface Placeholder extends HasId, HasType {
 	String getParm1();
 	String getParm2();
 	String getParm3();
+	String getParm4();
 }

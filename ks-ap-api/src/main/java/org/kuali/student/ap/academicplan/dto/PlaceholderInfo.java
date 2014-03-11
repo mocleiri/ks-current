@@ -39,6 +39,9 @@ public class PlaceholderInfo implements Placeholder {
 	@XmlAttribute
     private String parm3;
 	
+	@XmlAttribute
+    private String parm4;
+	
     @XmlAnyElement
     private List<Element> _futureElements;
 
@@ -90,6 +93,14 @@ public class PlaceholderInfo implements Placeholder {
 
 	public void setParm3(String parm3) {
 		this.parm3 = parm3;
+	}
+
+	public String getParm4() {
+		return parm4;
+	}
+
+	public void setParm4(String parm4) {
+		this.parm4 = parm4;
 	}
 
 	public List<Element> get_futureElements() {
