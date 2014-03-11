@@ -366,6 +366,16 @@
                             <bean parent="Uif-InputField" p:label="Percentage Allowed" p:propertyName="maxPercentageString"/>
                             <bean parent="Uif-InputField" p:label="Maximum Amount" p:propertyName="maxAmount"/>
                             <bean parent="Uif-InputField" p:label="Charge Distribution Plan" p:propertyName="distributionPlanCode">
+                                <property name="help">
+                                    <bean parent="Uif-Help"/>
+                                </property>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label">
+                                        <property name="toolTip">
+                                            <bean parent="Uif-Tooltip" p:tooltipContent="First - Pay oldest Charges First. Divided - Pay maximum amount spread over all charges."/>
+                                        </property>
+                                    </bean>
+                                </property>
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl" p:width="100%"/>
                                 </property>
@@ -896,7 +906,7 @@
                                                 <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Members"/>
                                             </property>
                                         </bean>
-                                        <bean id="paymentBillingMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="paymentBillingMemberLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Payment Billing Plan Members"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
@@ -914,7 +924,7 @@
                                                 <bean parent="Uif-Tooltip" p:tooltipContent="View Plan Queue"/>
                                             </property>
                                         </bean>
-                                        <bean id="paymentBillingQueueLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="paymentBillingQueueLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Payment Billing Plan Queued Members"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
@@ -932,7 +942,7 @@
                                                 <bean parent="Uif-Tooltip" p:tooltipContent="View Reversed Plan Members"/>
                                             </property>
                                         </bean>
-                                        <bean id="paymentBillingReversedLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="paymentBillingReversedLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Payment Billing Plan Reversed Members"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
