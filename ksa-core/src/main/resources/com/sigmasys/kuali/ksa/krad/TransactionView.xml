@@ -421,7 +421,7 @@
                                                         <bean parent="Uif-Tooltip" p:tooltipContent="Memo: (@{#line.memos.size()}) Click icon to view"/>
                                                     </property>
                                                 </bean>
-                                                <bean id="memoLightboxRunningTotal" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.memos.size() > 0}">
+                                                <bean p:id="memoLightboxRunningTotal" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.memos.size() > 0}">
                                                     <property name="hidden" value="true"/>
                                                     <property name="items">
                                                         <list>
@@ -438,7 +438,7 @@
                                                         <bean parent="Uif-Tooltip" p:tooltipContent="Document: Click icon to view"/>
                                                     </property>
                                                 </bean>
-                                                <bean id="documentLightboxRunningTotal" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                                <bean p:id="documentLightboxRunningTotal" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                                     <property name="hidden" value="true"/>
                                                     <property name="items">
                                                         <list>
@@ -454,7 +454,7 @@
                                                         <bean parent="Uif-Tooltip" p:tooltipContent="Tags: @{#line.tagList}"/>
                                                     </property>
                                                 </bean>
-                                                <bean id="tagLightboxRunningTotal" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.tagModels.size() > 0}">
+                                                <bean p:id="tagLightboxRunningTotal" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.tagModels.size() > 0}">
                                                     <property name="hidden" value="true"/>
                                                     <property name="items">
                                                         <list>
@@ -537,7 +537,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="Memo: (@{#line.memos.size()}) Click icon to view"/>
                                         </property>
                                     </bean>
-                                    <bean id="memoLightboxRunningTotalDeferment" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.memos.size() > 0}">
+                                    <bean p:id="memoLightboxRunningTotalDeferment" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.memos.size() > 0}">
                                         <property name="hidden" value="true"/>
                                         <property name="items">
                                             <list>
@@ -554,7 +554,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="Document: Click icon to view"/>
                                         </property>
                                     </bean>
-                                    <bean id="documentLightboxRunningTotalDeferment" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                    <bean p:id="documentLightboxRunningTotalDeferment" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                         <property name="hidden" value="true"/>
                                         <property name="items">
                                             <list>
@@ -570,7 +570,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="Tags: @{#line.tagList}"/>
                                         </property>
                                     </bean>
-                                    <bean id="tagLightboxRunningTotalDeferment" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.tagModels.size() > 0}">
+                                    <bean p:id="tagLightboxRunningTotalDeferment" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.tagModels.size() > 0}">
                                         <property name="hidden" value="true"/>
                                         <property name="items">
                                             <list>
@@ -691,7 +691,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="Memo: (@{#line.memos.size()}) Click icon to view"/>
                                         </property>
                                     </bean>
-                                    <bean id="memoLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                    <bean p:id="memoLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                         <property name="hidden" value="true"/>
                                         <property name="items">
                                             <list>
@@ -708,7 +708,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="Document: Click icon to view"/>
                                         </property>
                                     </bean>
-                                    <bean id="documentLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                    <bean p:id="documentLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                         <property name="hidden" value="true"/>
                                         <property name="items">
                                             <list>
@@ -724,7 +724,7 @@
                                             <bean parent="Uif-Tooltip" p:tooltipContent="Tags: @{#line.tagList}"/>
                                         </property>
                                     </bean>
-                                    <bean id="tagLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                    <bean p:id="tagLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                         <property name="hidden" value="true"/>
                                         <property name="items">
                                             <list>
