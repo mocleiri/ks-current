@@ -350,7 +350,7 @@ public class PersonAuthorizationController extends UifControllerBase {
         		proposalInfo.setRationale(rationale);
         	}
         	
-        	if(!StringUtils.isBlank(proposalInfo.getDescr().getPlain())){
+        	if(proposalInfo.getDescr() != null && !StringUtils.isBlank(proposalInfo.getDescr().getPlain())){
         		RichTextInfo description = proposalInfo.getDescr();
         		if(description == null){
         			description = new RichTextInfo();
