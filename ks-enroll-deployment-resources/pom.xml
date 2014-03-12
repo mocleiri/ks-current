@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kuali.student.enroll</groupId>
         <artifactId>ks-enroll</artifactId>
-        <version>1.0.0-rice24upgrade-SNAPSHOT</version>
+        <version>1.0.0-rice24upgrade-build-17</version>
     </parent>
     <groupId>org.kuali.student.enroll</groupId>
     <artifactId>ks-enroll-deployment-resources</artifactId>
