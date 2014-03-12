@@ -24,6 +24,9 @@ class BasePage < PageFactory
       element(:growl_message_div) { |b| b.growl_div.div(class: "jGrowl-message") }
       value(:growl_text) { |b| b.growl_message_div.wait_until_present; b.growl_message_div.text }
 
+      action(:cm_home_via_breadcrumb) { |b| b.a(id: "KS-HomewardPathBreadcrumbs-CurriculumManagement").click }
+      action(:functional_home_via_breadcrumb) { |b| b.a(id: "KS-HomewardPathBreadcrumbs-Home").click }
+
     end
 
     #def frame_element

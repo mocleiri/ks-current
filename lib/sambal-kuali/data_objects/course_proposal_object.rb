@@ -171,7 +171,7 @@ class CmCourseProposalObject < DataObject
 =end
 
   def create
-    navigate_to_curriculum_management
+    navigate_rice_to_cm_home
     navigate_to_create_course_proposal
     set_curriculum_review
 
@@ -359,16 +359,9 @@ class CmCourseProposalObject < DataObject
   end
   
 
-  def navigate_to_curriculum_management
-  on CmRice do |create|
-    #puts @assessment_a_f.inspect
-    create.curriculum_management
-  end
-  end
 
-  def navigate_to_create_course_proposal
-  on(CmCurriculum).create_a_course
-  end
+
+
 
   def set_curriculum_review
   on CmCreateCourseStart do |create|
@@ -403,9 +396,22 @@ class CmCourseProposalObject < DataObject
 
   end
 
+  def search(search_text)
+    navigate_rice_to_cm_home
+    navigate_to_find_course_proposal
+       on FindProposalPage do |page|
+          page.name.set search_text
+          page.find_a_proposal
+       end
+
+  end
 
 
-
+  def review_proposal_action
+    on FindProposalPage do |page|
+      page.review_proposal_action_link(@proposal_title)
+    end
+  end
 
 
   #-----
@@ -755,8 +761,10 @@ class CmCourseProposalObject < DataObject
       end
 
     end
+  
+  
 
-end
+end #class
 
 
 
