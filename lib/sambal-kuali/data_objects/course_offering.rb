@@ -181,9 +181,10 @@ class CourseOffering
             page.results_list_previous_enabled.click
           end
         end
-      else
+        end
+
         check_all_page_data_for_singletext(expected)      # when its Single Word
-      end
+
     end
   end
 
@@ -194,7 +195,7 @@ class CourseOffering
       if page.results_list_next_enabled.exists?
 
         until page.results_list_next_disabled.exists?
-
+          puts" into the loop1"
           puts "------ page no = #{pgno}"
           page.single_text_search_results_validation(single_text)
           page.results_list_next_enabled.wait_until_present
@@ -202,11 +203,10 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
-        puts "------ page no = #{pgno}"
-        ### - The line executes when its Single Page and also Last page in Multi page
-        page.single_text_search_results_validation(single_text)
       end
+      puts "------ page no = #{pgno}"
+      ### - The line executes when its Single Page and also Last page in Multi page
+      page.single_text_search_results_validation(single_text)
     end
   end
 
@@ -225,11 +225,12 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
+        end
+
         puts "------ page no = #{pgno}"
         ### - The line executes when its Single Page and also Last page in Multi page
         page.results_list_validation(split_text,search_FullText)
-      end
+
     end
   end
 
@@ -247,10 +248,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
+        end
+
         puts "------ page no = #{pgno}"
         page.result_list_level(text)
-      end
+
     end
   end
 
