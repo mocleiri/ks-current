@@ -13,7 +13,7 @@ Feature: CO.Toolbar state
     When I select a course offering in "Offered" status
     Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
     When I select a course offering in "Draft" status
-    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
+    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "enabled"; Delete: "enabled"
 
   Scenario: TB_FinalEdits.1 Validate CO toolbar button state for final edits SOC
     Given I am working on a term in "Final Edits" SOC state
