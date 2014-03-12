@@ -202,6 +202,27 @@ class CourseSearch < BasePage
   end
 
 #************************** Course Level Search--KSAP- 832  and US 618*********************
+  def result_list_level(text)
+    sleep(1)
+    no_of_rows = results_table.rows.length-1
+    for index in 1..no_of_rows do
+      if index == no_of_rows
+        sleep(2)
+        course_code = results_table.rows[index].cells[COURSE_CODE].text
+        puts  "courseCode1 #{course_code}"
+        puts level_digit = text.slice(0)
+        search_text = /(#{level_digit}\d\d)/
+
+        sleep(2)
+        sliced_course_code = course_code[4..course_code.length]
+        if (search_text.match(sliced_course_code))
+        else
+          return false
+          break
+        end
+      end
+    end
+  end
 
   # Validate that all returned results on current page meet search criteria
   def validate_result_list(expected_code, expected_text)
