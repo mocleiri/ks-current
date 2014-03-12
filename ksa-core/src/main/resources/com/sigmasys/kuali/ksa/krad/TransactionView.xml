@@ -383,7 +383,7 @@
                                                     </property>
                                                 </bean>
                                                 <!--  p:render="@{#line.isPaymentRefundable()}" -->
-                                                <bean id="refundLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.isPaymentRefundable()}">
+                                                <bean p:id="refundLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL" p:render="@{#line.isPaymentRefundable()}">
                                                     <property name="hidden" value="true"/>
                                                     <property name="items">
                                                         <list>
