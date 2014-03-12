@@ -24,7 +24,7 @@ And /^I submit the AO changes$/ do
 
   #validate the success-growl is being shown
   on ManageCourseOfferings do |page|
-#    page.growl_text.should == "Activity Offering modified."  #TODO: uncomment when KSENROLL-11964 is fixed
+    page.growl_text.should == "Activity Offering modified."
     page.growl_div.div(class: "jGrowl-close").click
   end
 end
