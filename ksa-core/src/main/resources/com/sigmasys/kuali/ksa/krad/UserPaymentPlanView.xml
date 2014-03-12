@@ -125,7 +125,7 @@
                                     <list>
                                         <bean parent="Uif-ImageField" p:source="../images/re_execute.png" p:style="cursor:pointer;" p:altText="Re-execute the Third Party Payment Plan" p:title=""
                                               p:onClickScript="showLightboxComponent('reExecuteLightbox@{#lineSuffix}');"/>
-                                        <bean id="reExecuteLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="reExecuteLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Re-execute the Third Party Payment Plan"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
@@ -146,7 +146,7 @@
                                         <ref bean="transactionTransferLightbox"/>
                                         <bean parent="Uif-ImageField" p:source="../images/delete.png" p:style="cursor:pointer;" p:altText="Reverse the Third Party Payment Plan" p:title=""
                                               p:onClickScript="showLightboxComponent('reverseLightbox@{#lineSuffix}');" p:render="@{#line.transferDetailId > 0}"/>
-                                        <bean id="reverseLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
+                                        <bean p:id="reverseLightbox" parent="Uif-VerticalBoxSection" p:layoutManager.orientation="VERTICAL">
                                             <property name="headerText" value="Reverse the Third Party Payment Plan"/>
                                             <property name="hidden" value="true"/>
                                             <property name="items">
