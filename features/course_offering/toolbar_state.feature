@@ -103,7 +103,7 @@ Feature: CO.Toolbar state
     Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "disabled"; AddCluster: "enabled"; Move: "disabled"
     Given there is an activity in "Draft" status
     When I select an activity offering in "Draft" status
-    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
+    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "enabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
 
   Scenario: TB_Locked.2A Validate AO toolbar buttons for a CO in Planned status and SOC state Locked
     Given I am working on a term in "Locked" SOC state
