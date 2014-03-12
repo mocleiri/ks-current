@@ -84,7 +84,7 @@ Feature: CO.Toolbar state
     Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "disabled"; AddCluster: "enabled"; Move: "disabled"
     Given there is an activity in "Draft" status
     When I select an activity offering in "Draft" status
-    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
+    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "enabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
 
   Scenario: TB_FinalEdits.2A Validate AO toolbar buttons for a CO in Offered status and SOC state Final Edits
     Given I am working on a term in "Final Edits" SOC state
