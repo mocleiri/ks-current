@@ -126,7 +126,7 @@ class ActivityOfferingMaintenance < BasePage
   action(:select_end_time) { |time, b| b.link(text: /#{time}/).wait_until_present;b.link(text: /#{time}/).click }
 
   #element(:end_time_error_msg) { |b| b.div(id: 'rdl_endtime_errors').ul.li(class: "uif-errorMessageItem-field").text}
-  element(:end_time_error_msg) { |b| b.div(id: /jquerybubblepopup/, class: /jquerybubblepopup-kr-error-cs/).table.text}
+  element(:end_time_error_msg) { |b| b.div(id: /jquerybubblepopup/, data_for: 'rdl_endtime_control').table.text}
 
   element(:add_facility) { |b| b.add_sched_info_div.text_field(id: 'rdl_bldg_control') }
   action(:lookup_facility) { |b| b.add_sched_info_div.div(id: 'rdl_bldg').button().click; b.loading.wait_while_present }
