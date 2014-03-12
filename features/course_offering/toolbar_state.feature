@@ -22,9 +22,9 @@ Feature: CO.Toolbar state
     When I manage course offerings for the specified subject code
     Then the expected initial state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "disabled"
     When I select a course offering in "Planned" status
-    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
+    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "enabled"; Delete: "enabled"
     When I select a course offering in "Draft" status
-    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
+    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "enabled"; Delete: "enabled"
 
   Scenario: TB_Locked.1 Validate CO toolbar button state for locked SOC
     Given I am working on a term in "Locked" SOC state
