@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.apache.log4j.Logger;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
@@ -19,7 +20,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	// id, obj_id, ver_nbr "covered" by BaseVersionEntity
 	// by MetaEntity and it's superclass(ses).
 
-	
+	private final static Logger LOG = Logger.getLogger(DegreeMapRequirementEntity.class);
 	
 // If the OneToMany uses a foreign key in the target object's table JPA requires that the relationship be bi-directional 
 // (inverse ManyToOne relationship must be defined in the target object), and the source object must use the mappedBy 
@@ -80,13 +81,14 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  @Column(name="REQUIRED_TERM_ID")
 	  private String requiredTermId;
 	  
-	  @Column(name="NOTES")
+	  @Column(name="NOTES", columnDefinition="CLOB")
 	  private String notes;
 	  
 
 	public void copyFromInfo(DegreeMapRequirementInfo dto)
 			throws DataValidationErrorException, MissingParameterException {
 		
+		LOG.debug("MONTSE: Using the version of copyFromInfo where the id is copied");
 	   	if (dto == null){
     		throw new MissingParameterException("null degreeMapRequirementInfo");
     	}
