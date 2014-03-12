@@ -3037,31 +3037,19 @@ public class BrmFeeManagementServiceImpl extends GenericPersistenceService imple
      * Writes the given message with the specified log level to the database by creating a
      * FeeManagementSessionLog persistent instance.
      *
-     * @param level   FeeManagementSessionLogLevel value
-     * @param message A log entry text
-     * @param context BRM context
+     * @param logLevel FeeManagementSessionLogLevel value
+     * @param message  A log entry text
+     * @param context  BRM context
      */
     @Override
-    public void writeSessionLog(String level, String message, BrmContext context) {
+    public void writeSessionLog(String logLevel, String message, BrmContext context) {
 
         FeeManagementSession session = getRequiredAttribute(context, FM_SESSION_VAR_NAME);
 
-        FeeManagementSessionLogLevel logLevel = StringUtils.isNotBlank(level) ?
-                EnumUtils.findById(FeeManagementSessionLogLevel.class, level) : FeeManagementSessionLogLevel.INFO;
+        FeeManagementSessionLogLevel logLevelValue = StringUtils.isNotBlank(logLevel) ?
+                EnumUtils.findById(FeeManagementSessionLogLevel.class, logLevel) : FeeManagementSessionLogLevel.INFO;
 
-        FeeManagementSessionLog sessionLog = new FeeManagementSessionLog();
-        sessionLog.setLogLevel(logLevel);
-
-        StringBuilder messageBuilder = new StringBuilder("FM Session (");
-        messageBuilder.append(session.getId());
-        messageBuilder.append(") log: ");
-        messageBuilder.append(message);
-
-        sessionLog.setText(messageBuilder.toString());
-        sessionLog.setSession(session);
-        sessionLog.setCreationDate(new Date());
-
-        persistEntity(sessionLog);
+        fmService.writeSessionLog(session.getId(), logLevelValue, message);
     }
 
 

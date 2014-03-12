@@ -183,4 +183,14 @@ public interface FeeManagementService {
     @WebMethod(exclude = true)
     FeeManagementSession getOldestFeeManagementSession(String accountId, FeeManagementSessionStatus status);
 
+    /**
+     * Writes the given message with the specified log level to the database by creating a
+     * FeeManagementSessionLog persistent instance.
+     *
+     * @param sessionId FeeManagementSession ID.
+     * @param logLevel  FeeManagementSessionLogLevel value
+     * @param message   A log entry text
+     */
+    void writeSessionLog(Long sessionId, FeeManagementSessionLogLevel logLevel, String message);
+
 }

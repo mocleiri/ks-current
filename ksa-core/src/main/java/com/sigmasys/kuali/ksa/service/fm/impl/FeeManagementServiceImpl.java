@@ -229,9 +229,13 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     @Override
     @Transactional(readOnly = false)
     public FeeManagementSession processFeeManagementSession(Long feeManagementSessionId) {
+
         FeeManagementSession session = brmFeeManagementService.assessFees(feeManagementSessionId);
+
         reconcileSession(session);
+
         chargeSession(session);
+
         return session;
     }
 
@@ -606,6 +610,45 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         return CollectionUtils.isNotEmpty(sessions) ? sessions.get(0) : null;
     }
 
+    /**
+     * Writes the given message with the specified log level to the database by creating a
+     * FeeManagementSessionLog persistent instance.
+     *
+     * @param sessionId FeeManagementSession ID.
+     * @param logLevel  FeeManagementSessionLogLevel value
+     * @param message   A log entry text
+     */
+    @Override
+    public void writeSessionLog(Long sessionId, FeeManagementSessionLogLevel logLevel, String message) {
+
+        FeeManagementSession session = getFeeManagementSession(sessionId);
+
+        if (session == null) {
+            String errMsg = "FeeManagementSession with ID = " + sessionId + " does not exist";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
+
+        if (logLevel == null) {
+            logLevel = FeeManagementSessionLogLevel.INFO;
+        }
+
+        StringBuilder messageBuilder = new StringBuilder("FM Session (");
+
+        messageBuilder.append(sessionId);
+        messageBuilder.append(") log: ");
+        messageBuilder.append(message);
+
+        FeeManagementSessionLog sessionLog = new FeeManagementSessionLog();
+
+        sessionLog.setLogLevel(logLevel);
+        sessionLog.setText(messageBuilder.toString());
+        sessionLog.setSession(session);
+        sessionLog.setCreationDate(new Date());
+
+        persistEntity(sessionLog);
+    }
+
 
     /***************************************************************************
      *
@@ -926,7 +969,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // If the FM TermRecord has IncomingSignup, create Signup for the given FM Session:
         if (CollectionUtils.isNotEmpty(feeManagementTermRecord.getIncomingSignups())) {
+
             for (FeeManagementIncomingSignup incomingSignup : feeManagementTermRecord.getIncomingSignups()) {
+
                 // Create new Signup for the FM Session:
                 FeeManagementSignup newSignup = new FeeManagementSignup();
 
@@ -955,16 +1000,18 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // Go through the list of IncomingRateInfo objects:
         if (CollectionUtils.isNotEmpty(incomingSignup.getRates())) {
+
             for (FeeManagementIncomingRateInfo incomingRateInfo : incomingSignup.getRates()) {
 
                 // Get the Rate:
-                Rate rate = findSignupRate(incomingSignup, incomingRateInfo, feeManagementTermRecord);
+                Rate rate = findSignupRate(incomingSignup, incomingRateInfo, feeManagementTermRecord, signup.getSession());
 
                 // Create a new SignupRate object:
                 FeeManagementSignupRate signupRate = new FeeManagementSignupRate();
 
                 signupRate.setRate(rate);
                 signupRate.setSignup(signup);
+
                 persistEntity(signupRate);
             }
         }
@@ -980,38 +1027,48 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @throws IllegalArgumentException If the parameters in the provided objects do not result in a hit.
      */
     private Rate findSignupRate(FeeManagementIncomingSignup incomingSignup, FeeManagementIncomingRateInfo incomingRateInfo,
-                                FeeManagementTermRecord feeManagementTermRecord) {
+                                FeeManagementTermRecord feeManagementTermRecord, FeeManagementSession session) {
 
         // Use the RateService to find the Rate:
         String rateCode = incomingRateInfo.getRateCode();
         String rateSubCode = incomingRateInfo.getRateSubCode();
         String atpId = incomingSignup.getAtpId();
+
         Rate rate = null;
 
         try {
             rate = rateService.getRate(rateCode, rateSubCode, atpId);
         } catch (Exception e) {
-            logger.error(String.format("Cannot find a Rate code [%s], subCode [%s], ATP ID [%s]", rateCode, rateSubCode, atpId), e);
+            String errMsg = String.format("Cannot find a Rate code [%s], subCode [%s], ATP ID [%s]", rateCode, rateSubCode, atpId);
+            if (session != null) {
+                writeSessionLog(session.getId(), FeeManagementSessionLogLevel.ERROR, errMsg);
+            }
+            logger.error(errMsg, e);
         }
 
         // If a Rate is not found, try the ATP ID from the TermRecord:
         if (rate == null) {
             atpId = feeManagementTermRecord.getAtpId();
-
             try {
                 rate = rateService.getRate(rateCode, rateSubCode, atpId);
             } catch (Exception e) {
-                logger.error(String.format("Cannot find a Rate code [%s], subCode [%s], ATP ID [%s]", rateCode, rateSubCode, atpId), e);
+                String errMsg = String.format("Cannot find a Rate code [%s], subCode [%s], ATP ID [%s]", rateCode, rateSubCode, atpId);
+                if (session != null) {
+                    writeSessionLog(session.getId(), FeeManagementSessionLogLevel.ERROR, errMsg);
+                }
+                logger.error(errMsg, e);
             }
         }
 
         // If the Rate is still not found, raise an exception:
         if (rate == null) {
-            String errorMsg = String.format("Cannot find a Rate code [%s], subCode [%s], ATP ID [%s] or [%s]",
+            String errMsg = String.format("Cannot find a Rate code [%s], subCode [%s], ATP ID [%s] or [%s]",
                     rateCode, rateSubCode, atpId, incomingSignup.getAtpId());
-
-            logger.error(errorMsg);
-            throw new IllegalArgumentException(errorMsg);
+            if (session != null) {
+                writeSessionLog(session.getId(), FeeManagementSessionLogLevel.ERROR, errMsg);
+            }
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
         }
 
         return rate;
@@ -1036,8 +1093,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private void validateSessionForCharge(FeeManagementSession fmSession, Long feeManagementSessionId) {
 
         if (fmSession == null) {
-            logger.error("Cannot find an FM session with the ID " + feeManagementSessionId);
-            throw new IllegalArgumentException("Cannot find an FM session with the ID " + feeManagementSessionId);
+            String errMsg = "Cannot find an FM session with ID = " + feeManagementSessionId;
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
         }
 
         // Check the session passed is RECONCILED or SIMULATED_RECONCILED:
@@ -1119,7 +1177,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             if (CollectionUtils.isNotEmpty(glBreakdownOverrides)) {
                 // TODO: Create GL Breakdown Overrides on the Charge??
                 if (!glService.isGlBreakdownValid(new ArrayList<AbstractGlBreakdown>(glBreakdownOverrides))) {
-                    logger.error("Manifest GL Breakdown Overrides are invalid: " + glBreakdownOverrides);
+                    String errMsg = "Manifest GL Breakdown Overrides are invalid: " + glBreakdownOverrides;
+                    writeSessionLog(session.getId(), FeeManagementSessionLogLevel.ERROR, errMsg);
+                    logger.error(errMsg);
                 }
             }
 
@@ -1171,8 +1231,13 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         } else {
 
-            // If there is no linked manifest, mark the session for manual review:
-            logger.warn(String.format("Processing reversal charge for FM Session %d. Manifest with ID %d does not have a linked manifest.", session.getId(), manifest.getId()));
+            // If there is no linked manifest, mark the session for manual review
+
+            String errMsg = String.format("Processing reversal charge for FM Session %d. Manifest with ID %d does not have a linked manifest.", session.getId(), manifest.getId());
+
+            writeSessionLog(session.getId(), FeeManagementSessionLogLevel.WARN, errMsg);
+
+            logger.warn(errMsg);
 
             session.setReviewRequired(true);
 
@@ -1235,7 +1300,6 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                 case TRANSFERRING:
                     // Process a TRANSFERRING Implicated Transaction and get back to this method:
                     processTransferFound(linkedManifest, session, implicatedTransaction, pbtDetails, tptDetails);
-
                     // Process the implicated transaction again:
                     processImplicatedTransaction(manifest, linkedManifest, implicatedTransaction, session, pbtDetails, tptDetails);
                     break;
@@ -1244,8 +1308,10 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                 case RECIPROCAL_OFFSET:
                 case REFUNDING:
                 case BOUNCING:
-                    // Record a log message, mark the session for manual review and skip:
-                    logger.warn("Inappropriate status of Implicated Transaction");
+                    // Record a log message, mark the session for manual review and skip
+                    String errMsg = "Inappropriate status of Implicated Transaction: " + implicatedTransaction.getStatus().name();
+                    writeSessionLog(session.getId(), FeeManagementSessionLogLevel.WARN, errMsg);
+                    logger.warn(errMsg);
                     session.setReviewRequired(true);
                     break;
 
@@ -1287,18 +1353,22 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             String transactionTransferGroupId = transactionTransfer.getGroupId();
 
             if (StringUtils.isNotBlank(transactionTransferGroupId)) {
+
                 // Find PaymentBillingTransferDetail object:
                 PaymentBillingTransferDetail pbtDetail = findPaymentBillingTransferDetail(transactionTransferGroupId);
 
                 // If found, store the details until later and reverse the PaymentBillingPlan:
                 if (pbtDetail != null) {
+
                     // Add the object found to the list:
                     pbtDetails.add(pbtDetail);
 
                     // Reverse the PaymentBillingPlan:
                     memoText = String.format("Payment Billing Transfer %d was reversed under fee management for session %d", pbtDetail.getId(), session.getId());
                     paymentBillingService.reversePaymentBillingTransfer(pbtDetail.getId(), memoText, true);
+
                 } else {
+
                     // Search for ThirdPartyTransferDetail with the same Transfer GroupId:
                     ThirdPartyTransferDetail tptDetail = findThirdPartyTransferDetail(transactionTransferGroupId);
 
@@ -1310,18 +1380,22 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                         // Reverse the ThirdPartyPlan:
                         memoText = String.format("Payment Billing Transfer %d was reversed under fee management for session %d", tptDetail.getId(), session.getId());
                         thirdPartyService.reverseThirdPartyTransfer(tptDetail.getId(), memoText);
+
                     } else {
+
                         // Reverse TransferGroup:
                         memoText = String.format("Transaction Transfer Group %s was reversed under fee management for session %d", transactionTransferGroupId, session.getId());
                         transactionTransferService.reverseTransferGroup(transactionTransferGroupId, memoText, true);
                     }
                 }
             } else {
+
                 // Reverse the one-off manual transfer:
                 memoText = String.format("Transaction Transfer %d was reversed under fee management for session %d", transactionTransfer.getId(), session.getId());
                 transactionTransferService.reverseTransactionTransfer(transactionTransfer.getId(), memoText);
             }
         } else {
+
             // Reverse the Implicated Transaction:
             memoText = String.format("No Transaction Transfer object found for Transaction %d", implicatedTransaction.getId());
             reverseTransaction(implicatedTransaction, implicatedTransaction.getAmount(), session);
@@ -1329,6 +1403,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
         // Mark session for manual review:
         if (StringUtils.isNotBlank(memoText)) {
+            writeSessionLog(session.getId(), FeeManagementSessionLogLevel.WARN, memoText);
             logger.warn(memoText);
             session.setReviewRequired(true);
             persistEntity(session);
@@ -1410,6 +1485,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
                 " left outer join fetch t.destReciprocalTransaction " +
                 " left outer join fetch t.transferType " +
                 " where t.sourceTransaction.id = :transactionId and t.reversalStatusCode in (:reversalStatusCodes)";
+
         Query query = em.createQuery(jpql);
 
         query.setParameter("transactionId", implicatedTransaction.getId());
@@ -1428,13 +1504,16 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param implicatedTransaction Transaction associated with the linked manifest.
      * @param session               FM Session.
      */
-    private void validateUnallocatedBalance(FeeManagementManifest originalManifest, FeeManagementManifest linkedManifest, Transaction implicatedTransaction, FeeManagementSession session) {
+    private void validateUnallocatedBalance(FeeManagementManifest originalManifest, FeeManagementManifest linkedManifest,
+                                            Transaction implicatedTransaction, FeeManagementSession session) {
 
         // Is there enough unallocated balance of the transaction to perform correction/cancel/discount:
         if (hasUnallocatedBalanceForCorrection(implicatedTransaction)) {
 
             // Write a warning, mark the session for manual review and reverse the transaction:
-            logger.warn("Performing transaction reversal. FM session manual review required.");
+            String warnMessage = "Performing transaction reversal. FM session manual review required.";
+            writeSessionLog(session.getId(), FeeManagementSessionLogLevel.WARN, warnMessage);
+            logger.warn(warnMessage);
 
             performTransactionReversal(originalManifest, linkedManifest);
 
@@ -1450,11 +1529,20 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
 
             // Is there enough unallocated balance of the transaction to perform correction/cancel/discount:
             if (hasUnallocatedBalanceForCorrection(implicatedTransaction)) {
-                logger.warn("Performing transaction reversal. FM session manual review required.");
+
+                String warnMessage = "Performing transaction reversal. FM session manual review required.";
+                writeSessionLog(session.getId(), FeeManagementSessionLogLevel.WARN, warnMessage);
+                logger.warn(warnMessage);
+
                 performTransactionReversal(originalManifest, linkedManifest);
             } else {
+
                 // Write a severe warning, mark the session for manual review:
-                logger.warn("SEVERE: Not enough unallocated balance to perform correction/cancel/discount after clearing manual allocation. FM session manual review required.");
+                String warnMessage = "Not enough unallocated balance to perform correction/cancel/discount after " +
+                        "clearing manual allocation. FM session manual review required.";
+                writeSessionLog(session.getId(), FeeManagementSessionLogLevel.WARN, warnMessage);
+                logger.warn(warnMessage);
+
                 originalManifest.setStatus(FeeManagementManifestStatus.SKIPPED);
             }
         }
@@ -1497,8 +1585,10 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             persistEntity(originalManifest);
 
         } else {
-            logger.error(String.format("Cannot perform reversal on Transaction with ID %d under FM session ID %d.",
-                    linkedTransaction.getId(), originalManifest.getSession().getId()));
+            String errMsg = String.format("Cannot perform reversal on Transaction with ID %d under FM session ID %d.",
+                    linkedTransaction.getId(), originalManifest.getSession().getId());
+            writeSessionLog(originalManifest.getSession().getId(), FeeManagementSessionLogLevel.ERROR, errMsg);
+            logger.error(errMsg);
         }
     }
 
@@ -1516,10 +1606,11 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         Transaction reversalTransaction = null;
 
         // Check if the Transaction status allows for reversal:
-        if (status == TransactionStatus.ACTIVE ||
-                (reversalAmount != null && transaction.getAmount() != null && reversalAmount.compareTo(transaction.getAmount()) == 0)) {
+        if (status == TransactionStatus.ACTIVE || (reversalAmount != null && transaction.getAmount() != null &&
+                reversalAmount.compareTo(transaction.getAmount()) == 0)) {
 
             String statementPrefix = ""; // According to Paul there are no statement prefix
+
             String memoText = String.format("Transaction (ID = %d) was reversed in the amount of %s by fee management under session %d",
                     transaction.getId(), TransactionUtils.formatAmount(reversalAmount), session.getId());
 
@@ -1602,8 +1693,9 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
     private void validateSessionForReconciliation(FeeManagementSession fmSession, Long feeManagementSessionId) {
 
         if (fmSession == null) {
-            logger.error("Cannot find an FM session with the ID " + feeManagementSessionId);
-            throw new IllegalArgumentException("Cannot find an FM session with the ID " + feeManagementSessionId);
+            String errMsg = "Cannot find FeeManagementSession with ID = " + feeManagementSessionId;
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
         }
 
         // Check the session passed is CURRENT or SIMULATED
@@ -1619,15 +1711,16 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         Account account = fmSession.getAccount();
 
         if (account == null) {
-            String errorMsg = String.format("Fee Management Session with id [%s] does not have an associated Account.", feeManagementSessionId);
+            String errorMsg = String.format("FeeManagementSession with ID [%s] does not have an associated Account.", feeManagementSessionId);
             logger.error(errorMsg);
             throw new IllegalStateException(errorMsg);
         } else {
+
             // Check if the Account associated with the FM Session is blocked:
             boolean accountBlocked = isAccountBlocked(account);
 
             if (accountBlocked) {
-                String errorMsg = String.format("The account %s associated with the FM session with id [%s] is blocked.", account.getId(), feeManagementSessionId);
+                String errorMsg = String.format("The account %s associated with FeeManagementSession (ID = [%s]) is blocked.", account.getId(), feeManagementSessionId);
                 logger.error(errorMsg);
                 throw new IllegalStateException(errorMsg);
             }
@@ -1644,7 +1737,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      */
     private FeeManagementSession getLastChargedSession(FeeManagementSession fmSession) {
         // Check if the current session is null or its status is CHARGED, end the recursion here:
-        if ((fmSession == null) || (fmSession.getStatus() == FeeManagementSessionStatus.CHARGED)) {
+        if (fmSession == null || fmSession.getStatus() == FeeManagementSessionStatus.CHARGED) {
             return fmSession;
         } else {
             // Get the prior session and continue the recursion:
