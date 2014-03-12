@@ -1175,8 +1175,23 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
             Set<ManifestGlBreakdownOverride> glBreakdownOverrides = manifest.getGlBreakdownOverrides();
 
             if (CollectionUtils.isNotEmpty(glBreakdownOverrides)) {
-                // TODO: Create GL Breakdown Overrides on the Charge??
-                if (!glService.isGlBreakdownValid(new ArrayList<AbstractGlBreakdown>(glBreakdownOverrides))) {
+
+                if (glService.isGlBreakdownValid(new ArrayList<AbstractGlBreakdown>(glBreakdownOverrides))) {
+
+                    for (AbstractGlBreakdownOverride glBreakdownOverride : glBreakdownOverrides) {
+
+                        GlBreakdownOverride override = new GlBreakdownOverride();
+
+                        override.setGlAccount(glBreakdownOverride.getGlAccount());
+                        override.setTransaction(newCharge);
+                        override.setBreakdown(glBreakdownOverride.getBreakdown());
+
+                        persistEntity(override);
+                    }
+
+                    newCharge.setGlOverridden(true);
+
+                } else {
                     String errMsg = "Manifest GL Breakdown Overrides are invalid: " + glBreakdownOverrides;
                     writeSessionLog(session.getId(), FeeManagementSessionLogLevel.ERROR, errMsg);
                     logger.error(errMsg);
@@ -1914,6 +1929,7 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
      * @param currentFmSession        Current FM session.
      */
     private void processUnmatchedPriorManifest(List<FeeManagementManifest> unmatchedPriorManifests, FeeManagementSession currentFmSession) {
+
         // Find all full-reversal manifest pairs:
         List<Pair<FeeManagementManifest, FeeManagementManifest>> fullReversalManifests = findReversalManifests(unmatchedPriorManifests, true);
 
@@ -1948,11 +1964,12 @@ public class FeeManagementServiceImpl extends GenericPersistenceService implemen
         int startIndex = 0;
 
         while (startIndex < copyList.size() - 1) {
+
             // Get the first Manifest to match against:
             FeeManagementManifest firstManifest = copyList.get(startIndex);
             boolean matchFound = false;
 
-            for (int i = startIndex + 1, sz = copyList.size(); (i < sz) && !matchFound; i++) {
+            for (int i = startIndex + 1, sz = copyList.size(); i < sz && !matchFound; i++) {
                 // Check if the next manifest is a full-reversal:
                 matchFound = isReversal(firstManifest, copyList.get(i), fullReversal);
 
