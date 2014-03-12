@@ -71,7 +71,7 @@ class BasePage < PageFactory
       action(:save_progress) { |b| b.button(text: "Save Progress").click }
       element(:cancel_link) { |b| b.a(id: "cancel") }
       action(:cancel_action) { |b| b.cancel_link.when_present.click }
-      action(:review_proposal) { |b| b.div(id: "KS-CourseView-ReviewLink").a(class: "uif-actionLink uif-boxLayoutVerticalItem clearfix").click }
+      action(:review_proposal) { |b| b.div(id: "KS-CourseView-ReviewProposalLink").a(class: "uif-actionLink uif-boxLayoutVerticalItem clearfix").click }
 
       element(:save_continue) { |b| b.button(id: 'usave') }
       action(:save_and_continue) { |b| b.save_continue.click; b.saving_wait }
