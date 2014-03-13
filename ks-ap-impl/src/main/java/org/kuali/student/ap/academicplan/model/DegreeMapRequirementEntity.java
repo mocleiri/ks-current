@@ -20,6 +20,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	// id, obj_id, ver_nbr "covered" by BaseVersionEntity
 	// by MetaEntity and it's superclass(ses).
 
+	@SuppressWarnings("unused")
 	private final static Logger LOG = Logger.getLogger(DegreeMapRequirementEntity.class);
 	
 // If the OneToMany uses a foreign key in the target object's table JPA requires that the relationship be bi-directional 
