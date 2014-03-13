@@ -193,45 +193,39 @@ When /^I sort the table by course code$/ do
 end
 
 
-Then /^the  course code listed should be sorted in "(.*?)" order$/ do |text|
+Then /^the course code listed should be sorted in "(.*?)" order$/ do |text|
   if text == "Descending"
     @course_offering.check_code_descending_order_in_all_pages.should be_true
-    puts "Test is Passed True"
-  elsif  text =="Ascending"
+    puts "Descending is Passed True"
+  else
+#------------Included sleep to avoid skip of the method operation------------
+    sleep(3)
     @course_offering.check_code_ascending_order_in_all_pages.should be_true
-        else
-          begin
-    rescue Watir::Exception::UnknownObjectException
-    end
+    puts "Ascending is Passed True"
   end
-
 end
-
-
-
 
 
 When /^I sort the table by title$/ do
   on CourseSearch do |page|
     puts " on click of sort icon in title 1"
     page.title_sort_icon
+    page.result_pagination.wait_until_present
   end
 end
 
 
-Then /^the  course Title listed should be sorted in "(.*?)" order$/ do |text|
+Then /^the course Title listed should be sorted in "(.*?)" order$/ do |text|
   if text == "Descending"
     @course_offering.check_title_descending_order_in_all_pages.should be_true
-    puts "Test is Passed True"
-  elsif  text =="Ascending"
-          @course_offering.check_title_ascending_order_in_all_pages.should be_true
-        else
-          begin
-          rescue Watir::Exception::UnknownObjectException
-          end
-        end
-
+    puts "Descending is Passed True"
+  else
+    #------------Included sleep to avoid skip of the method operation------------
+    sleep(6)
+    @course_offering.check_title_ascending_order_in_all_pages.should be_true
+    "Ascending is Passed True"
   end
+end
 
 
 

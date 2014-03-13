@@ -181,9 +181,9 @@ class CourseOffering
             page.results_list_previous_enabled.click
           end
         end
-        end
+      end
 
-        check_all_page_data_for_singletext(expected)      # when its Single Word
+      check_all_page_data_for_singletext(expected)      # when its Single Word
 
     end
   end
@@ -225,11 +225,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-        end
+      end
 
-        puts "------ page no = #{pgno}"
-        ### - The line executes when its Single Page and also Last page in Multi page
-        page.results_list_validation(split_text,search_FullText)
+      puts "------ page no = #{pgno}"
+      ### - The line executes when its Single Page and also Last page in Multi page
+      page.results_list_validation(split_text,search_FullText)
 
     end
   end
@@ -248,10 +248,10 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-        end
+      end
 
-        puts "------ page no = #{pgno}"
-        page.result_list_level(text)
+      puts "------ page no = #{pgno}"
+      page.result_list_level(text)
 
     end
   end
@@ -295,16 +295,15 @@ class CourseOffering
       if page.results_list_next_enabled.exists?
         until page.results_list_next_disabled.exists?
           puts "------ page no = #{pgno}"
-          page.check_ascending_order_code()
+          page.check_results_sort_order(true , 0)
           page.results_list_next_enabled.wait_until_present
           page.results_list_next_click
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
-        puts "------ page no = #{pgno}"
-        page.check_ascending_order_code()
       end
+      puts "------ page no = #{pgno}"
+      page.check_results_sort_order(true , 0)
     end
   end
 
@@ -314,16 +313,15 @@ class CourseOffering
       if page.results_list_next_enabled.exists?
         until page.results_list_next_disabled.exists?
           puts "------ page no = #{pgno}"
-          page.check_descending_order_code()
+          page.check_results_sort_order(false , 0)
           page.results_list_next_enabled.wait_until_present
           page.results_list_next_click
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
-        puts "------ page no = #{pgno}"
-        page.check_descending_order_code()
       end
+      puts "------ page no = #{pgno}"
+      page.check_results_sort_order(false , 0)
     end
   end
 
@@ -333,16 +331,15 @@ class CourseOffering
       if page.results_list_next_enabled.exists?
         until page.results_list_next_disabled.exists?
           puts "------ page no = #{pgno}"
-          page.check_ascending_order_title()
+          page.check_results_sort_order(true , 1)
           page.results_list_next_enabled.wait_until_present
           page.results_list_next_click
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
-        puts "------ page no = #{pgno}"
-        page.check_ascending_order_title()
       end
+      puts "------ page no = #{pgno}"
+      page.check_results_sort_order(true ,1)
     end
   end
 
@@ -352,16 +349,15 @@ class CourseOffering
       if page.results_list_next_enabled.exists?
         until page.results_list_next_disabled.exists?
           puts "------ page no = #{pgno}"
-          page.check_descending_order_title()
+          page.check_results_sort_order(false , 1)
           page.results_list_next_enabled.wait_until_present
           page.results_list_next_click
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      else
-        puts "------ page no = #{pgno}"
-        page.check_descending_order_title()
       end
+      puts "------ page no = #{pgno}"
+      page.check_results_sort_order(false , 1)
     end
   end
 end
