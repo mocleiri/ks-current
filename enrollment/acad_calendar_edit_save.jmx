@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="2.4" jmeter="2.9 r1437961">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Holiday Calendar Edit and Save" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Academic Calendar Edit and Save" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -125,7 +125,7 @@
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain">${__P(ENV)}</stringProp>
+        <stringProp name="HTTPSampler.domain">env17.ks.kuali.org</stringProp>
         <stringProp name="HTTPSampler.port"></stringProp>
         <stringProp name="HTTPSampler.connect_timeout"></stringProp>
         <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -135,13 +135,13 @@
         <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
       </ConfigTestElement>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Holiday Calendar Edit and Save" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Academic Calendar Edit and Save" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(VUSERS)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <longProp name="ThreadGroup.start_time">1373991277000</longProp>
         <longProp name="ThreadGroup.end_time">1373991277000</longProp>
@@ -1003,12 +1003,14 @@
                   <stringProp name="Argument.name">viewId</stringProp>
                   <stringProp name="Argument.value">calendarSearchView</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">start</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1053,6 +1055,15 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-701786186">Search for Calendar or Term</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Search 2015-2016" enabled="true">
@@ -1067,108 +1078,126 @@
                   <stringProp name="Argument.name">viewId</stringProp>
                   <stringProp name="Argument.value">calendarSearchView</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="formKey" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">formKey</stringProp>
                   <stringProp name="Argument.value">39d17118-241b-4a88-8826-bde701bcb1e9</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="requestedFormKey" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">requestedFormKey</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="flowKey" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">flowKey</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.applyDirtyCheck" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.applyDirtyCheck</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="dirtyForm" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">dirtyForm</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="renderedInLightBox" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">renderedInLightBox</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.singlePageView" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.singlePageView</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.disableBrowserCache" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.disableBrowserCache</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="calendarType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">calendarType</stringProp>
                   <stringProp name="Argument.value">AcademicCalendar</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">name</stringProp>
                   <stringProp name="Argument.value">2015-2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="year" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">year</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.currentPageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.currentPageId</stringProp>
                   <stringProp name="Argument.value">u100001</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">search</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxReturnType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxReturnType</stringProp>
                   <stringProp name="Argument.value">update-page</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxRequest" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxRequest</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="focusId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">focusId</stringProp>
                   <stringProp name="Argument.value">u81</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="jumpToId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">jumpToId</stringProp>
                   <stringProp name="Argument.value">u81</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1228,6 +1257,15 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
+            <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="1701969285">2015-2016 Academic Calendar</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/static/fonts/raleway/v6/xkvoNo9fC8O2RDydKj12b73hpw3pgy2gAi-Ip7WPMi0.woff" enabled="true">
@@ -1343,30 +1381,35 @@
                   <stringProp name="Argument.name">viewId</stringProp>
                   <stringProp name="Argument.value">academicCalendarFlowView</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="flow" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">flow</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="pageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">pageId</stringProp>
                   <stringProp name="Argument.value">academicCalendarEditPage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">start</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="id" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">id</stringProp>
                   <stringProp name="Argument.value">0a655d4b-5edc-4d28-academic-calendar</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1410,6 +1453,15 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
+            <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-298579126">Calendar Information</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
@@ -1495,24 +1547,28 @@
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">retrieveMessage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxRequest" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxRequest</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxReturnType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxReturnType</stringProp>
                   <stringProp name="Argument.value">update-none</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="key" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">key</stringProp>
                   <stringProp name="Argument.value">message.collapse</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1575,214 +1631,105 @@
                   <stringProp name="Argument.name">viewId</stringProp>
                   <stringProp name="Argument.value">academicCalendarFlowView</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="formKey" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">formKey</stringProp>
-                  <stringProp name="Argument.value">9684a575-40c2-49e6-956f-7f9e6c43a1ae</stringProp>
+                  <stringProp name="Argument.value">2118b756-f37f-416b-b196-a7f32bca0ccd</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="requestedFormKey" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">requestedFormKey</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="sessionId" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">sessionId</stringProp>
+                  <stringProp name="Argument.value">1B25D916F994B279D45FF2077AE25550</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="flowKey" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">flowKey</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.applyDirtyCheck" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.applyDirtyCheck</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="dirtyForm" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">dirtyForm</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="renderedInLightBox" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">renderedInLightBox</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.singlePageView" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.singlePageView</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.disableBrowserCache" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.disableBrowserCache</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="defaultTabToShow" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">defaultTabToShow</stringProp>
                   <stringProp name="Argument.value">info</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="academicCalendarInfo.name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">academicCalendarInfo.name</stringProp>
                   <stringProp name="Argument.value">2015-2016 Academic Calendar</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="academicCalendarInfo.startDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">academicCalendarInfo.startDate</stringProp>
                   <stringProp name="Argument.value">08/23/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="academicCalendarInfo.endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">academicCalendarInfo.endDate</stringProp>
-                  <stringProp name="Argument.value">08/22/2016</stringProp>
+                  <stringProp name="Argument.value">08/21/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="newCollectionLines[&apos;events&apos;].eventTypeKey" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">newCollectionLines[&apos;events&apos;].eventTypeKey</stringProp>
-                  <stringProp name="Argument.value"></stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="newCollectionLines[&apos;events&apos;].startDate" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">newCollectionLines[&apos;events&apos;].startDate</stringProp>
-                  <stringProp name="Argument.value"></stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createWatermark(&apos;u326_add_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
+                  <stringProp name="Argument.value">jQuery(&apos;#event-addline&apos;).on(&apos;click&apos;, function(e) {writeCurrentPageToSession(this, &apos;last&apos;);}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;u326_add_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {
-runValidationScript(function(){
-jQuery.validator.addMethod(&quot;validChar-newCollectionLines[\&apos;events\&apos;].startDate0&quot;, function(value, element) {
-return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="newCollectionLines[&apos;events&apos;].startTime" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">newCollectionLines[&apos;events&apos;].startTime</stringProp>
-                  <stringProp name="Argument.value"></stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createWatermark(&apos;u332_add_control&apos;, &apos;hh:mm &apos;);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {
-runValidationScript(function(){
-jQuery.validator.addMethod(&quot;validChar-newCollectionLines[\&apos;events\&apos;].startTime0&quot;, function(value, element) {
-return this.optional(element) || /^(1[0-2]|0?[1-9]):([0-5][0-9])(:[0-5][0-9])?$/.test(value);}, &quot;Must be a valid 12 hour time in HH:mm format, seconds are optional&quot;);});});</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">var condition = function(){return (isValueEmpty(coerceValue(&quot;newCollectionLines[&apos;events&apos;].startTime&quot;)));};
-setupDisabledCheck(&apos;newCollectionLines[\&apos;events\&apos;].startTime&apos;, &apos;u337_add_control&apos;, &apos;radioGroup&apos;, condition,
-true);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">setupOnChangeRefresh(&apos;#lp.startTime&apos;, &apos;u337_add_control&apos;,&apos;&apos;);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="newCollectionLines[&apos;events&apos;].endDate" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">newCollectionLines[&apos;events&apos;].endDate</stringProp>
-                  <stringProp name="Argument.value"></stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createWatermark(&apos;u342_add_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;u342_add_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {
-runValidationScript(function(){
-jQuery.validator.addMethod(&quot;validChar-newCollectionLines[\&apos;events\&apos;].endDate0&quot;, function(value, element) {
-return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="newCollectionLines[&apos;events&apos;].endTime" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">newCollectionLines[&apos;events&apos;].endTime</stringProp>
-                  <stringProp name="Argument.value"></stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createWatermark(&apos;u353_add_control&apos;, &apos;hh:mm &apos;);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {
-runValidationScript(function(){
-jQuery.validator.addMethod(&quot;validChar-newCollectionLines[\&apos;events\&apos;].endTime0&quot;, function(value, element) {
-return this.optional(element) || /^(1[0-2]|0?[1-9]):([0-5][0-9])(:[0-5][0-9])?$/.test(value);}, &quot;Must be a valid 12 hour time in HH:mm format, seconds are optional&quot;);});});</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">var condition = function(){return (isValueEmpty(coerceValue(&quot;newCollectionLines[&apos;events&apos;].endTime&quot;)));};
-setupDisabledCheck(&apos;newCollectionLines[\&apos;events\&apos;].endTime&apos;, &apos;u358_add_control&apos;, &apos;radioGroup&apos;, condition,
-true);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">setupOnChangeRefresh(&apos;#lp.endTime&apos;, &apos;u358_add_control&apos;,&apos;&apos;);</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="script" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(&apos;#acal-info-event_add&apos;).on(&apos;click&apos;, function(e) {findDirtyFields(&apos;AcalEdit-DirtyFields&apos;);}); </stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;holidayCalendarList&apos;].id" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -1801,24 +1748,28 @@ true);</stringProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList&apos;].startDate</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList&apos;].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList&apos;].endDate</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].name</stringProp>
                   <stringProp name="Argument.value">Fall 2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].startDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].startDate</stringProp>
                   <stringProp name="Argument.value">08/31/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -1829,7 +1780,7 @@ true);</stringProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
@@ -1846,24 +1797,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[0].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].endDate</stringProp>
                   <stringProp name="Argument.value">12/11/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_end_date_line0_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -1873,60 +1828,79 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[0].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line0&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line0&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">addAttribute(&apos;term_instructional_days_line0&apos;, &apos;class&apos;, &apos;uif-tooltip&apos;, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].termType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].termType</stringProp>
                   <stringProp name="Argument.value">kuali.atp.type.Fall</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList_0_.keyDatesGroupWrappers&apos;].keyDateGroupType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList_0_.keyDatesGroupWrappers&apos;].keyDateGroupType</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {window.setTimeout(removeNewItemHighlights(),5000); resetDirtyFields(&apos;AcalEdit-DirtyFields&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_0_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_0_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_0_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line0_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].examdates[0].startDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].examdates[0].startDate</stringProp>
                   <stringProp name="Argument.value">12/12/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;exam_date_start_date_line0_line0_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_start_date_line0_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_start_date_line0_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -1936,24 +1910,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[0].examdates[0].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].examdates[0].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].examdates[0].endDate</stringProp>
                   <stringProp name="Argument.value">12/19/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;exam_date_end_date_line0_line0_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_end_date_line0_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_end_date_line0_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -1975,24 +1953,28 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">termWrapperList[0].examdates[0].excludeSaturday</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_termWrapperList[0].examdates[0].excludeSunday" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_termWrapperList[0].examdates[0].excludeSunday</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[0].examdates[0].excludeSunday" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[0].examdates[0].excludeSunday</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {hideAddExamPeriodButton(&apos;acal-term-examdates_line0&apos;, &apos;exam_date_type&apos;, &apos;acal-term-examdates-add&apos;);});jQuery(&apos;#acal-term-examdates-add_line0&apos;).on(&apos;click&apos;, function(e) {writeCurrentPageToSession(this, &apos;last&apos;);}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[1].name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2011,18 +1993,21 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_start_date_line1_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line1_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line1_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(&apos;#term_start_date_line1_control&apos;).on(&apos;blur&apos;, function(e) {executeFieldQuery(&apos;term_start_date_line1_control&apos;,&apos;term_start_date_line1&apos;,{&quot;termWrapperList[1].{startDate&quot;:&quot;startDate&quot;,&quot;termWrapperList[1].termType&quot;:&quot;termType}&quot;},{&quot;termWrapperList[1].startDate&quot;:&quot;termWrapperList[1].startDate&quot;,&quot;termWrapperList[1].termType&quot;:&quot;termWrapperList[1].termType&quot;},{&quot;termWrapperList[1].termCode&quot;:&quot;termCode&quot;});}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2032,24 +2017,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[1].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[1].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[1].endDate</stringProp>
                   <stringProp name="Argument.value">10/21/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_end_date_line1_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line1_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line1_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2059,12 +2048,14 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[1].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line1&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line1&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2083,18 +2074,30 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList_1_.keyDatesGroupWrappers&apos;].keyDateGroupType</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {window.setTimeout(removeNewItemHighlights(),5000); resetDirtyFields(&apos;AcalEdit-DirtyFields&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_1_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_1_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_1_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line1_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2113,24 +2116,28 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">termWrapperList[2].startDate</stringProp>
                   <stringProp name="Argument.value">10/22/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_start_date_line2_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line2_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line2_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(&apos;#term_start_date_line2_control&apos;).on(&apos;blur&apos;, function(e) {executeFieldQuery(&apos;term_start_date_line2_control&apos;,&apos;term_start_date_line2&apos;,{&quot;termWrapperList[2].{startDate&quot;:&quot;startDate&quot;,&quot;termWrapperList[2].termType&quot;:&quot;termType}&quot;},{&quot;termWrapperList[2].startDate&quot;:&quot;termWrapperList[2].startDate&quot;,&quot;termWrapperList[2].termType&quot;:&quot;termWrapperList[2].termType&quot;},{&quot;termWrapperList[2].termCode&quot;:&quot;termCode&quot;});}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2140,24 +2147,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[2].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[2].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[2].endDate</stringProp>
                   <stringProp name="Argument.value">12/11/2015</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_end_date_line2_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line2_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line2_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2167,11 +2178,12 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[2].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line2&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line2&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
@@ -2185,23 +2197,35 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">termWrapperList[2].termType</stringProp>
                   <stringProp name="Argument.value">kuali.atp.type.HalfFall2</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList_2_.keyDatesGroupWrappers&apos;].keyDateGroupType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList_2_.keyDatesGroupWrappers&apos;].keyDateGroupType</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {window.setTimeout(removeNewItemHighlights(),5000); resetDirtyFields(&apos;AcalEdit-DirtyFields&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_2_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_2_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_2_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line2_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
@@ -2221,24 +2245,28 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">termWrapperList[3].startDate</stringProp>
                   <stringProp name="Argument.value">01/04/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_start_date_line3_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line3_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line3_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(&apos;#term_start_date_line3_control&apos;).on(&apos;blur&apos;, function(e) {executeFieldQuery(&apos;term_start_date_line3_control&apos;,&apos;term_start_date_line3&apos;,{&quot;termWrapperList[3].{startDate&quot;:&quot;startDate&quot;,&quot;termWrapperList[3].termType&quot;:&quot;termType}&quot;},{&quot;termWrapperList[3].startDate&quot;:&quot;termWrapperList[3].startDate&quot;,&quot;termWrapperList[3].termType&quot;:&quot;termWrapperList[3].termType&quot;},{&quot;termWrapperList[3].termCode&quot;:&quot;termCode&quot;});}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2264,7 +2292,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line3_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line3_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
@@ -2275,48 +2303,65 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[3].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line3&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line3&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">addAttribute(&apos;term_instructional_days_line3&apos;, &apos;class&apos;, &apos;uif-tooltip&apos;, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[3].termType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[3].termType</stringProp>
                   <stringProp name="Argument.value">kuali.atp.type.Winter</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList_3_.keyDatesGroupWrappers&apos;].keyDateGroupType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList_3_.keyDatesGroupWrappers&apos;].keyDateGroupType</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {window.setTimeout(removeNewItemHighlights(),5000); resetDirtyFields(&apos;AcalEdit-DirtyFields&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_3_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_3_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_3_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line3_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {hideAddExamPeriodButton(&apos;acal-term-examdates_line3&apos;, &apos;exam_date_type&apos;, &apos;acal-term-examdates-add&apos;);});jQuery(&apos;#acal-term-examdates-add_line3&apos;).on(&apos;click&apos;, function(e) {writeCurrentPageToSession(this, &apos;last&apos;);}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[4].name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2335,18 +2380,21 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_start_date_line4_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line4_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line4_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(&apos;#term_start_date_line4_control&apos;).on(&apos;blur&apos;, function(e) {executeFieldQuery(&apos;term_start_date_line4_control&apos;,&apos;term_start_date_line4&apos;,{&quot;termWrapperList[4].{startDate&quot;:&quot;startDate&quot;,&quot;termWrapperList[4].termType&quot;:&quot;termType}&quot;},{&quot;termWrapperList[4].startDate&quot;:&quot;termWrapperList[4].startDate&quot;,&quot;termWrapperList[4].termType&quot;:&quot;termWrapperList[4].termType&quot;},{&quot;termWrapperList[4].termCode&quot;:&quot;termCode&quot;});}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2356,6 +2404,7 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[4].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[4].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2372,7 +2421,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line4_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line4_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
@@ -2383,24 +2432,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[4].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line4&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line4&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">addAttribute(&apos;term_instructional_days_line4&apos;, &apos;class&apos;, &apos;uif-tooltip&apos;, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[4].termType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[4].termType</stringProp>
                   <stringProp name="Argument.value">kuali.atp.type.Spring</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList_4_.keyDatesGroupWrappers&apos;].keyDateGroupType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2417,26 +2470,37 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_4_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_4_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_4_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line4_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="termWrapperList[4].examdates[0].startDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[4].examdates[0].startDate</stringProp>
-                  <stringProp name="Argument.value">05/11/2016</stringProp>
+                  <stringProp name="Argument.value">05/12/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;exam_date_start_date_line4_line0_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_start_date_line4_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_start_date_line4_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2446,24 +2510,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[4].examdates[0].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[4].examdates[0].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[4].examdates[0].endDate</stringProp>
-                  <stringProp name="Argument.value">05/18/2016</stringProp>
+                  <stringProp name="Argument.value">05/19/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;exam_date_end_date_line4_line0_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_end_date_line4_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;exam_date_end_date_line4_line0_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2473,18 +2541,21 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[4].examdates[0].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_termWrapperList[4].examdates[0].excludeSaturday" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_termWrapperList[4].examdates[0].excludeSaturday</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[4].examdates[0].excludeSaturday" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[4].examdates[0].excludeSaturday</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_termWrapperList[4].examdates[0].excludeSunday" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2503,36 +2574,42 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {hideAddExamPeriodButton(&apos;acal-term-examdates_line4&apos;, &apos;exam_date_type&apos;, &apos;acal-term-examdates-add&apos;);});jQuery(&apos;#acal-term-examdates-add_line4&apos;).on(&apos;click&apos;, function(e) {writeCurrentPageToSession(this, &apos;last&apos;);}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[5].name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[5].name</stringProp>
                   <stringProp name="Argument.value">Summer I 2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[5].startDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[5].startDate</stringProp>
                   <stringProp name="Argument.value">05/31/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_start_date_line5_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line5_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line5_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(&apos;#term_start_date_line5_control&apos;).on(&apos;blur&apos;, function(e) {executeFieldQuery(&apos;term_start_date_line5_control&apos;,&apos;term_start_date_line5&apos;,{&quot;termWrapperList[5].{startDate&quot;:&quot;startDate&quot;,&quot;termWrapperList[5].termType&quot;:&quot;termType}&quot;},{&quot;termWrapperList[5].startDate&quot;:&quot;termWrapperList[5].startDate&quot;,&quot;termWrapperList[5].termType&quot;:&quot;termWrapperList[5].termType&quot;},{&quot;termWrapperList[5].termCode&quot;:&quot;termCode&quot;});}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2542,24 +2619,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[5].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[5].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[5].endDate</stringProp>
                   <stringProp name="Argument.value">07/08/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_end_date_line5_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line5_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line5_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2569,48 +2650,65 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[5].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line5&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line5&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">addAttribute(&apos;term_instructional_days_line5&apos;, &apos;class&apos;, &apos;uif-tooltip&apos;, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[5].termType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[5].termType</stringProp>
                   <stringProp name="Argument.value">kuali.atp.type.Summer1</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList_5_.keyDatesGroupWrappers&apos;].keyDateGroupType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList_5_.keyDatesGroupWrappers&apos;].keyDateGroupType</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {window.setTimeout(removeNewItemHighlights(),5000); resetDirtyFields(&apos;AcalEdit-DirtyFields&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_5_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_5_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_5_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line5_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {hideAddExamPeriodButton(&apos;acal-term-examdates_line5&apos;, &apos;exam_date_type&apos;, &apos;acal-term-examdates-add&apos;);});jQuery(&apos;#acal-term-examdates-add_line5&apos;).on(&apos;click&apos;, function(e) {writeCurrentPageToSession(this, &apos;last&apos;);}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[6].name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2629,18 +2727,21 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_start_date_line6_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line6_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_start_date_line6_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(&apos;#term_start_date_line6_control&apos;).on(&apos;blur&apos;, function(e) {executeFieldQuery(&apos;term_start_date_line6_control&apos;,&apos;term_start_date_line6&apos;,{&quot;termWrapperList[6].{startDate&quot;:&quot;startDate&quot;,&quot;termWrapperList[6].termType&quot;:&quot;termType}&quot;},{&quot;termWrapperList[6].startDate&quot;:&quot;termWrapperList[6].startDate&quot;,&quot;termWrapperList[6].termType&quot;:&quot;termWrapperList[6].termType&quot;},{&quot;termWrapperList[6].termCode&quot;:&quot;termCode&quot;});}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2650,24 +2751,28 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[6].startDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[6].endDate" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[6].endDate</stringProp>
                   <stringProp name="Argument.value">08/19/2016</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">createWatermark(&apos;term_end_date_line6_control&apos;, &apos;mm/dd/yyyy &apos;);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line6_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;{__P(ENV)}/themes/kboot/images/cal.gif&apos;,showOn:&apos;both&apos;,disabled:false});</stringProp>
+                  <stringProp name="Argument.value">createDatePicker(&apos;term_end_date_line6_control&apos;, {constrainInput:false,buttonImageOnly:false,buttonImage:&apos;http://env17.ks.kuali.org/themes/kboot/images/cal.gif&apos;,showOn:&apos;button&apos;,disabled:false});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -2677,90 +2782,114 @@ runValidationScript(function(){
 jQuery.validator.addMethod(&quot;validChar-termWrapperList[6].endDate0&quot;, function(value, element) {
 return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01])[\-\/]((19|2[0-9])?[0-9]{2})$)/.test(value);}, &quot;Must be a date in the following format(s): MM/dd/yy, MM/dd/yyyy, MM-dd-yy, MM-dd-yyyy&quot;);});});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line6&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,selectable:true,themeName:&apos;black&apos;,themePath:&apos;{__P(ENV)}/plugins/tooltip/jquerybubblepopup-theme/&apos;,align:&apos;left&apos;,tail:{ align:&apos;left&apos;, hidden: false }}, true, true);</stringProp>
+                  <stringProp name="Argument.value">createTooltip(&apos;term_instructional_days_line6&apos;, &apos;Instructional Days include MTWHF&apos;, {position:&apos;top&apos;,alwaysVisible:false,align:&apos;left&apos;,openingSpeed:250,tableStyle:{ margin:&apos;0px 0px 5px 0px&apos;},closingDelay:0,tail:{ align:&apos;left&apos;, hidden: false },distance:&apos;0px&apos;,selectable:true,themeName:&apos;all-black&apos;,themePath:&apos;http://env17.ks.kuali.org/plugins/tooltip/jquerybubblepopup-theme/&apos;,divStyle:{ margin:&apos;0px 0px 0px -5px&apos;},mouseOut:&apos;hide&apos;}, true, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">addAttribute(&apos;term_instructional_days_line6&apos;, &apos;class&apos;, &apos;uif-tooltip&apos;, true);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termWrapperList[6].termType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">termWrapperList[6].termType</stringProp>
                   <stringProp name="Argument.value">kuali.atp.type.Summer2</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="newCollectionLines[&apos;termWrapperList_6_.keyDatesGroupWrappers&apos;].keyDateGroupType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">newCollectionLines[&apos;termWrapperList_6_.keyDatesGroupWrappers&apos;].keyDateGroupType</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {window.setTimeout(removeNewItemHighlights(),5000); resetDirtyFields(&apos;AcalEdit-DirtyFields&apos;);});</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
-                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;{__P(ENV)}&apos;);});</stringProp>
+                  <stringProp name="Argument.value">var condition = function(){return ((coerceValue(&quot;newCollectionLines[&apos;termWrapperList_6_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos; ) || (coerceValue(&quot;newCollectionLines[&apos;termWrapperList_6_.keyDatesGroupWrappers&apos;].keyDateGroupType&quot;) == &apos;&apos;));};
+setupDisabledCheck(&apos;newCollectionLines[\&apos;termWrapperList_6_.keyDatesGroupWrappers\&apos;].keyDateGroupType&apos;, &apos;acal-term-keydatesgroup_line6_add&apos;, &apos;action&apos;, condition,
+false);</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="script" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.name">script</stringProp>
+                  <stringProp name="Argument.value">jQuery(document).ready(function(e) {highlightElements({}, true, &apos;http://env17.ks.kuali.org&apos;);});</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">script</stringProp>
                   <stringProp name="Argument.value">jQuery(document).ready(function(e) {hideAddExamPeriodButton(&apos;acal-term-examdates_line6&apos;, &apos;exam_date_type&apos;, &apos;acal-term-examdates-add&apos;);});jQuery(&apos;#acal-term-examdates-add_line6&apos;).on(&apos;click&apos;, function(e) {writeCurrentPageToSession(this, &apos;last&apos;);}); </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="dirtyFields" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">dirtyFields</stringProp>
                   <stringProp name="Argument.value">academicCalendarInfo.endDate,</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.currentPageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.currentPageId</stringProp>
                   <stringProp name="Argument.value">academicCalendarEditPage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">save</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxReturnType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxReturnType</stringProp>
                   <stringProp name="Argument.value">update-page</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxRequest" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxRequest</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="focusId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">focusId</stringProp>
-                  <stringProp name="Argument.value">u94</stringProp>
+                  <stringProp name="Argument.value">u93</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="jumpToId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">jumpToId</stringProp>
                   <stringProp name="Argument.value">TOP</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -2796,7 +2925,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 </elementProp>
                 <elementProp name="User-Agent" elementType="Header">
                   <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
                 </elementProp>
                 <elementProp name="Pragma" elementType="Header">
                   <stringProp name="Header.name">Pragma</stringProp>
@@ -2816,13 +2945,59 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 </elementProp>
                 <elementProp name="Referer" elementType="Header">
                   <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">{__P(ENV)}kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=9684a575-40c2-49e6-956f-7f9e6c43a1ae&amp;cacheKey=37mnthyv3be0ahkh753bucj&amp;pageId=academicCalendarEditPage</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=3qrqkyoxa7cn775q2hhvir&amp;pageId=academicCalendarEditPage</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/themes/ksboot/images/validation/error.png" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/themes/ksboot/images/validation/error.png</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept-Language" elementType="Header">
+                  <stringProp name="Header.name">Accept-Language</stringProp>
+                  <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">image/png,image/*;q=0.8,*/*;q=0.5</stringProp>
+                </elementProp>
+                <elementProp name="User-Agent" elementType="Header">
+                  <stringProp name="Header.name">User-Agent</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                </elementProp>
+                <elementProp name="Referer" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=jz0c5cv4bpmvyadasplrs&amp;pageId=academicCalendarEditPage</stringProp>
+                </elementProp>
+                <elementProp name="Accept-Encoding" elementType="Header">
+                  <stringProp name="Header.name">Accept-Encoding</stringProp>
+                  <stringProp name="Header.value">gzip, deflate</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/listener" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="methodToCall" elementType="HTTPArgument">
@@ -2856,8 +3031,8 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
-            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">//kr-krad/listener</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/kr-krad/listener</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2879,11 +3054,11 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 </elementProp>
                 <elementProp name="User-Agent" elementType="Header">
                   <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
                 </elementProp>
                 <elementProp name="Referer" elementType="Header">
                   <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">{__P(ENV)}kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=9684a575-40c2-49e6-956f-7f9e6c43a1ae&amp;cacheKey=rmq3rfqm5oaencm5vjpx5n&amp;pageId=academicCalendarEditPage</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=jz0c5cv4bpmvyadasplrs&amp;pageId=academicCalendarEditPage</stringProp>
                 </elementProp>
                 <elementProp name="X-Requested-With" elementType="Header">
                   <stringProp name="Header.name">X-Requested-With</stringProp>
@@ -2897,7 +3072,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/listener" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="methodToCall" elementType="HTTPArgument">
@@ -2932,7 +3107,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">//kr-krad/listener</stringProp>
+            <stringProp name="HTTPSampler.path">/kr-krad/listener</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2954,11 +3129,11 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 </elementProp>
                 <elementProp name="User-Agent" elementType="Header">
                   <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
                 </elementProp>
                 <elementProp name="Referer" elementType="Header">
                   <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">{__P(ENV)}kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=9684a575-40c2-49e6-956f-7f9e6c43a1ae&amp;cacheKey=rmq3rfqm5oaencm5vjpx5n&amp;pageId=academicCalendarEditPage</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=jz0c5cv4bpmvyadasplrs&amp;pageId=academicCalendarEditPage</stringProp>
                 </elementProp>
                 <elementProp name="X-Requested-With" elementType="Header">
                   <stringProp name="Header.name">X-Requested-With</stringProp>
@@ -2972,7 +3147,53 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/themes/ksboot/images/validation/warning.png" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/themes/ksboot/images/validation/warning.png</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept-Language" elementType="Header">
+                  <stringProp name="Header.name">Accept-Language</stringProp>
+                  <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">image/png,image/*;q=0.8,*/*;q=0.5</stringProp>
+                </elementProp>
+                <elementProp name="User-Agent" elementType="Header">
+                  <stringProp name="Header.name">User-Agent</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                </elementProp>
+                <elementProp name="Referer" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=jz0c5cv4bpmvyadasplrs&amp;pageId=academicCalendarEditPage</stringProp>
+                </elementProp>
+                <elementProp name="Accept-Encoding" elementType="Header">
+                  <stringProp name="Header.name">Accept-Encoding</stringProp>
+                  <stringProp name="Header.value">gzip, deflate</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/listener" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="methodToCall" elementType="HTTPArgument">
@@ -3007,7 +3228,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">//kr-krad/listener</stringProp>
+            <stringProp name="HTTPSampler.path">/kr-krad/listener</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -3029,11 +3250,11 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 </elementProp>
                 <elementProp name="User-Agent" elementType="Header">
                   <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
                 </elementProp>
                 <elementProp name="Referer" elementType="Header">
                   <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">{__P(ENV)}kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=9684a575-40c2-49e6-956f-7f9e6c43a1ae&amp;cacheKey=rmq3rfqm5oaencm5vjpx5n&amp;pageId=academicCalendarEditPage</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=jz0c5cv4bpmvyadasplrs&amp;pageId=academicCalendarEditPage</stringProp>
                 </elementProp>
                 <elementProp name="X-Requested-With" elementType="Header">
                   <stringProp name="Header.name">X-Requested-With</stringProp>
@@ -3047,53 +3268,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//themes/ksboot/images/validation/warning.png" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
-            </elementProp>
-            <stringProp name="HTTPSampler.domain"></stringProp>
-            <stringProp name="HTTPSampler.port"></stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
-            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">//themes/ksboot/images/validation/warning.png</stringProp>
-            <stringProp name="HTTPSampler.method">GET</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-            <boolProp name="HTTPSampler.monitor">false</boolProp>
-            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-              <collectionProp name="HeaderManager.headers">
-                <elementProp name="Accept-Language" elementType="Header">
-                  <stringProp name="Header.name">Accept-Language</stringProp>
-                  <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
-                </elementProp>
-                <elementProp name="Accept" elementType="Header">
-                  <stringProp name="Header.name">Accept</stringProp>
-                  <stringProp name="Header.value">image/png,image/*;q=0.8,*/*;q=0.5</stringProp>
-                </elementProp>
-                <elementProp name="User-Agent" elementType="Header">
-                  <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
-                </elementProp>
-                <elementProp name="Referer" elementType="Header">
-                  <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">{__P(ENV)}kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=9684a575-40c2-49e6-956f-7f9e6c43a1ae&amp;cacheKey=rmq3rfqm5oaencm5vjpx5n&amp;pageId=academicCalendarEditPage</stringProp>
-                </elementProp>
-                <elementProp name="Accept-Encoding" elementType="Header">
-                  <stringProp name="Header.name">Accept-Encoding</stringProp>
-                  <stringProp name="Header.value">gzip, deflate</stringProp>
-                </elementProp>
-              </collectionProp>
-            </HeaderManager>
-            <hashTree/>
-          </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/listener" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="methodToCall" elementType="HTTPArgument">
@@ -3101,24 +3276,28 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">retrieveMessage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxRequest" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxRequest</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxReturnType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxReturnType</stringProp>
                   <stringProp name="Argument.value">update-none</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="key" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">key</stringProp>
                   <stringProp name="Argument.value">message.totalWarnings</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -3128,7 +3307,7 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">//kr-krad/listener</stringProp>
+            <stringProp name="HTTPSampler.path">/kr-krad/listener</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -3150,11 +3329,11 @@ return this.optional(element) || /(^(0[1-9]|1[012])[\-\/](0[1-9]|[12][0-9]|3[01]
                 </elementProp>
                 <elementProp name="User-Agent" elementType="Header">
                   <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
                 </elementProp>
                 <elementProp name="Referer" elementType="Header">
                   <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">{__P(ENV)}kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=9684a575-40c2-49e6-956f-7f9e6c43a1ae&amp;cacheKey=rmq3rfqm5oaencm5vjpx5n&amp;pageId=academicCalendarEditPage</stringProp>
+                  <stringProp name="Header.value">http://env17.ks.kuali.org/kr-krad/academicCalendar?viewId=academicCalendarFlowView&amp;flow=&amp;methodToCall=start&amp;id=0a655d4b-5edc-4d28-academic-calendar&amp;formKey=2118b756-f37f-416b-b196-a7f32bca0ccd&amp;cacheKey=jz0c5cv4bpmvyadasplrs&amp;pageId=academicCalendarEditPage</stringProp>
                 </elementProp>
                 <elementProp name="X-Requested-With" elementType="Header">
                   <stringProp name="Header.name">X-Requested-With</stringProp>

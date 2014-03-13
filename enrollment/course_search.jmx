@@ -125,7 +125,7 @@
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain">${__P(ENV)}</stringProp>
+        <stringProp name="HTTPSampler.domain">env17.ks.kuali.org</stringProp>
         <stringProp name="HTTPSampler.port"></stringProp>
         <stringProp name="HTTPSampler.connect_timeout"></stringProp>
         <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -141,7 +141,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(VUSERS)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <longProp name="ThreadGroup.start_time">1373991277000</longProp>
         <longProp name="ThreadGroup.end_time">1373991277000</longProp>
@@ -167,12 +167,14 @@
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">start</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="viewId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">viewId</stringProp>
                   <stringProp name="Argument.value">ksFunctionalHomeView</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -985,24 +987,28 @@
                   <stringProp name="Argument.name">viewId</stringProp>
                   <stringProp name="Argument.value">courseOfferingManagementView</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="pageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">pageId</stringProp>
                   <stringProp name="Argument.value">searchInputPage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">start</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="withinPortal" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">withinPortal</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1048,6 +1054,11 @@
             </HeaderManager>
             <hashTree/>
           </hashTree>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Search ENGL101A" enabled="true">
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/courseOfferingManagement" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
@@ -1077,66 +1088,77 @@
                   <stringProp name="Argument.name">view.applyDirtyCheck</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="dirtyForm" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">dirtyForm</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="renderedInLightBox" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">renderedInLightBox</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.singlePageView" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.singlePageView</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.disableBrowserCache" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.disableBrowserCache</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termCode" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">termCode</stringProp>
                   <stringProp name="Argument.value">201301</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="inputCode" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">inputCode</stringProp>
                   <stringProp name="Argument.value">ENGL101A</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.currentPageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.currentPageId</stringProp>
                   <stringProp name="Argument.value">searchInputPage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">show</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="focusId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">focusId</stringProp>
                   <stringProp name="Argument.value">show_button</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="jumpToId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">jumpToId</stringProp>
                   <stringProp name="Argument.value">show_button</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1185,80 +1207,14 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-          </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
-              <collectionProp name="Arguments.arguments">
-                <elementProp name="methodToCall" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">methodToCall</stringProp>
-                  <stringProp name="Argument.value">retrieveMessage</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="ajaxRequest" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">ajaxRequest</stringProp>
-                  <stringProp name="Argument.value">true</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="ajaxReturnType" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">ajaxReturnType</stringProp>
-                  <stringProp name="Argument.value">update-none</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="key" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">key</stringProp>
-                  <stringProp name="Argument.value">message.collapse</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-1744913661">KS-CourseOfferingManagement-AO-ToolBarSection-ClusterTab</stringProp>
               </collectionProp>
-            </elementProp>
-            <stringProp name="HTTPSampler.domain"></stringProp>
-            <stringProp name="HTTPSampler.port"></stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            <stringProp name="HTTPSampler.protocol">http</stringProp>
-            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">//kr-krad/listener</stringProp>
-            <stringProp name="HTTPSampler.method">GET</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-            <boolProp name="HTTPSampler.monitor">false</boolProp>
-            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-              <collectionProp name="HeaderManager.headers">
-                <elementProp name="Accept-Language" elementType="Header">
-                  <stringProp name="Header.name">Accept-Language</stringProp>
-                  <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
-                </elementProp>
-                <elementProp name="Accept" elementType="Header">
-                  <stringProp name="Header.name">Accept</stringProp>
-                  <stringProp name="Header.value">application/json, text/javascript, */*; q=0.01</stringProp>
-                </elementProp>
-                <elementProp name="User-Agent" elementType="Header">
-                  <stringProp name="Header.name">User-Agent</stringProp>
-                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
-                </elementProp>
-                <elementProp name="Referer" elementType="Header">
-                  <stringProp name="Header.name">Referer</stringProp>
-                  <stringProp name="Header.value">${__P(ENV)}kr-krad/courseOfferingManagement</stringProp>
-                </elementProp>
-                <elementProp name="X-Requested-With" elementType="Header">
-                  <stringProp name="Header.name">X-Requested-With</stringProp>
-                  <stringProp name="Header.value">XMLHttpRequest</stringProp>
-                </elementProp>
-                <elementProp name="Accept-Encoding" elementType="Header">
-                  <stringProp name="Header.name">Accept-Encoding</stringProp>
-                  <stringProp name="Header.value">gzip, deflate</stringProp>
-                </elementProp>
-              </collectionProp>
-            </HeaderManager>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
@@ -1269,24 +1225,28 @@
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">retrieveMessage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxRequest" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxRequest</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxReturnType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxReturnType</stringProp>
                   <stringProp name="Argument.value">update-none</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="key" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">key</stringProp>
                   <stringProp name="Argument.value">message.expand</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1336,11 +1296,85 @@
             </HeaderManager>
             <hashTree/>
           </hashTree>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Search ENGL101A" enabled="true">
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="//kr-krad/listener" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="methodToCall" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">methodToCall</stringProp>
+                  <stringProp name="Argument.value">retrieveMessage</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="ajaxRequest" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">ajaxRequest</stringProp>
+                  <stringProp name="Argument.value">true</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="ajaxReturnType" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">ajaxReturnType</stringProp>
+                  <stringProp name="Argument.value">update-none</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+                <elementProp name="key" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">key</stringProp>
+                  <stringProp name="Argument.value">message.collapse</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+            <stringProp name="HTTPSampler.path">//kr-krad/listener</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept-Language" elementType="Header">
+                  <stringProp name="Header.name">Accept-Language</stringProp>
+                  <stringProp name="Header.value">en-us,en;q=0.5</stringProp>
+                </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/javascript, */*; q=0.01</stringProp>
+                </elementProp>
+                <elementProp name="User-Agent" elementType="Header">
+                  <stringProp name="Header.name">User-Agent</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:15.0) Gecko/20100101 Firefox/15.0</stringProp>
+                </elementProp>
+                <elementProp name="Referer" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">${__P(ENV)}kr-krad/courseOfferingManagement</stringProp>
+                </elementProp>
+                <elementProp name="X-Requested-With" elementType="Header">
+                  <stringProp name="Header.name">X-Requested-With</stringProp>
+                  <stringProp name="Header.value">XMLHttpRequest</stringProp>
+                </elementProp>
+                <elementProp name="Accept-Encoding" elementType="Header">
+                  <stringProp name="Header.name">Accept-Encoding</stringProp>
+                  <stringProp name="Header.value">gzip, deflate</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/courseOfferingManagement" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
@@ -1370,78 +1404,91 @@
                   <stringProp name="Argument.name">view.applyDirtyCheck</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="dirtyForm" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">dirtyForm</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="renderedInLightBox" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">renderedInLightBox</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.singlePageView" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.singlePageView</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.disableBrowserCache" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.disableBrowserCache</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="termCode" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">termCode</stringProp>
                   <stringProp name="Argument.value">201301</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="inputCode" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">inputCode</stringProp>
                   <stringProp name="Argument.value">ENGL101A</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="selectedTabId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">selectedTabId</stringProp>
                   <stringProp name="Argument.value">0</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_clusterResultList[0].aoWrapperList[0].isCheckedByCluster" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_clusterResultList[0].aoWrapperList[0].isCheckedByCluster</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_clusterResultList[0].aoWrapperList[3].isCheckedByCluster" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_clusterResultList[0].aoWrapperList[3].isCheckedByCluster</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_clusterResultList[0].aoWrapperList[2].isCheckedByCluster" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_clusterResultList[0].aoWrapperList[2].isCheckedByCluster</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_clusterResultList[0].aoWrapperList[1].isCheckedByCluster" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_clusterResultList[0].aoWrapperList[1].isCheckedByCluster</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_clusterResultList[0].aoWrapperList[4].isCheckedByCluster" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_clusterResultList[0].aoWrapperList[4].isCheckedByCluster</stringProp>
                   <stringProp name="Argument.value">on</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="script" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -1450,126 +1497,147 @@
 createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;string&quot;, &quot;sSortDataType&quot; : &quot;dom-text&quot;, &quot;aTargets&quot;: [0]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [1]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [2]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [3]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [4]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [5]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [6]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [7]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [8]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [9]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [10]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [11]} , {&quot;bSortable&quot; : false, &quot;sType&quot; : &quot;string&quot;, &quot;aTargets&quot;: [12]} ],sDom:&apos;rtip&apos;,aaSorting:[[0, &apos;asc&apos;]],sDownloadSource:&apos;${__P(ENV)}/kr-krad/courseOfferingManagement?tableId=registrationGroupsPerCluster_line0&amp;formKey=bd3e9f65-28fc-4ec7-babd-861ef4960398&amp;ajaxReturnType=update-none&amp;ajaxRequest=true&apos;,bAutoWidth:false,bPaginate:false,oLanguage:{&quot;sEmptyTable&quot; : &quot;No records found&quot;}}, null);
 </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="privateClusterNameForRenamePopover" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">privateClusterNameForRenamePopover</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="publishedClusterNameForRenamePopover" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">publishedClusterNameForRenamePopover</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="formatOfferingIdForNewAO" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">formatOfferingIdForNewAO</stringProp>
                   <stringProp name="Argument.value">64f8ae1a-8805-446b-99a5-1a25677d37ee</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="activityIdForNewAO" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">activityIdForNewAO</stringProp>
                   <stringProp name="Argument.value">2e3fb81d-19c7-40ee-8d06-a45e95cb2e83</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="clusterIdForNewAO" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">clusterIdForNewAO</stringProp>
                   <stringProp name="Argument.value">cdf525ef-7d6f-4182-82e3-2ac24f21040d</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="noOfActivityOfferings" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">noOfActivityOfferings</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="formatOfferingIdForViewRG" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">formatOfferingIdForViewRG</stringProp>
                   <stringProp name="Argument.value">64f8ae1a-8805-446b-99a5-1a25677d37ee</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="privateClusterNamePopover" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">privateClusterNamePopover</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="publishedClusterNamePopover" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">publishedClusterNamePopover</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="clusterIdForAOMove" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">clusterIdForAOMove</stringProp>
                   <stringProp name="Argument.value">cdf525ef-7d6f-4182-82e3-2ac24f21040d</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="privateClusterNameForMovePopover" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">privateClusterNameForMovePopover</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="publishedClusterNameForMovePopover" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">publishedClusterNameForMovePopover</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="view.currentPageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">view.currentPageId</stringProp>
                   <stringProp name="Argument.value">manageTheCourseOfferingPage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">editTheCO</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxReturnType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxReturnType</stringProp>
                   <stringProp name="Argument.value">update-page</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="ajaxRequest" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">ajaxRequest</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="actionParameters[actionEvent]" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">actionParameters[actionEvent]</stringProp>
                   <stringProp name="Argument.value">editCO</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="focusId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">focusId</stringProp>
                   <stringProp name="Argument.value">edit_co</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="jumpToId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">jumpToId</stringProp>
                   <stringProp name="Argument.value">edit_co</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="clientViewState" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">clientViewState</stringProp>
                   <stringProp name="Argument.value">{&apos;u311_line0&apos;:{&apos;richTableState&apos;:{&apos;iCreate&apos;:1383681975410,&apos;iStart&apos;:0,&apos;iEnd&apos;:5,&apos;iLength&apos;:10,&apos;aaSorting&apos;:[[3,&apos;desc&apos;,1],[1,&apos;asc&apos;,0]],&apos;oSearch&apos;:{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},&apos;aoSearchCols&apos;:[{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true}],&apos;abVisCols&apos;:[true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true]}},&apos;u603&apos;:{&apos;richTableState&apos;:{&apos;iCreate&apos;:1383681975686,&apos;iStart&apos;:0,&apos;iEnd&apos;:5,&apos;iLength&apos;:10,&apos;aaSorting&apos;:[[0,&apos;asc&apos;,0]],&apos;oSearch&apos;:{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},&apos;aoSearchCols&apos;:[{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true}],&apos;abVisCols&apos;:[true,true,true,true,true,true,true,true,true,true,true,true,true,true]}}}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1631,6 +1699,11 @@ createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;st
             </HeaderManager>
             <hashTree/>
           </hashTree>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Edit Course Offering" enabled="true">
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/courseOfferingEdit" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
@@ -1639,18 +1712,21 @@ createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;st
                   <stringProp name="Argument.name">courseOfferingInfo.id</stringProp>
                   <stringProp name="Argument.value">6fdf1ef0-9156-416e-9349-d0483299164b</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="methodToCall" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">methodToCall</stringProp>
                   <stringProp name="Argument.value">maintenanceEdit</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="dataObjectClassName" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">dataObjectClassName</stringProp>
                   <stringProp name="Argument.value">org.kuali.student.enrollment.class2.courseoffering.dto.CourseOfferingEditWrapper</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -1695,9 +1771,18 @@ createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;st
               </collectionProp>
             </HeaderManager>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="491100887">Course Offering Information</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Edit Course Offering" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Save Course Offering" enabled="true">
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
@@ -1914,13 +1999,6 @@ createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;st
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
-                <elementProp name="clientViewState" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.name">clientViewState</stringProp>
-                  <stringProp name="Argument.value">{&apos;ao-personnelgroup-table&apos;:{&apos;richTableState&apos;:{&apos;iCreate&apos;:1383682020949,&apos;iStart&apos;:0,&apos;iEnd&apos;:1,&apos;iLength&apos;:10,&apos;aaSorting&apos;:[[1,&apos;desc&apos;,1]],&apos;oSearch&apos;:{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},&apos;aoSearchCols&apos;:[{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true},{&apos;bCaseInsensitive&apos;:true,&apos;sSearch&apos;:&apos;&apos;,&apos;bRegex&apos;:false,&apos;bSmart&apos;:true}],&apos;abVisCols&apos;:[true,true,true,true]}}}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                </elementProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
@@ -1968,6 +2046,15 @@ createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;st
               </collectionProp>
             </HeaderManager>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="491100887">Course Offering Information</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/courseOfferingManagement" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -1977,30 +2064,28 @@ createTable(&apos;u466_line0&apos;, {aoColumnDefs:[{&quot;sType&quot; : &quot;st
                   <stringProp name="Argument.name">formKey</stringProp>
                   <stringProp name="Argument.value">bd3e9f65-28fc-4ec7-babd-861ef4960398</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-                <elementProp name="cacheKey" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">cacheKey</stringProp>
-                  <stringProp name="Argument.value">t1n0htart5aif007ob8tdm</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="pageId" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">pageId</stringProp>
                   <stringProp name="Argument.value">manageTheCourseOfferingPage</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="growl.message" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">growl.message</stringProp>
                   <stringProp name="Argument.value">info.enroll.courseoffering.edit.success</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="growl.message.params" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">growl.message.params</stringProp>
                   <stringProp name="Argument.value">ENGL101A</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
