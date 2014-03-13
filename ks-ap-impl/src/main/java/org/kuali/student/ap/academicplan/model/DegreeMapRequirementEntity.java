@@ -88,7 +88,6 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	public void copyFromInfo(DegreeMapRequirementInfo dto)
 			throws DataValidationErrorException, MissingParameterException {
 		
-		LOG.debug("MONTSE: Using the version of copyFromInfo where the id is copied");
 	   	if (dto == null){
     		throw new MissingParameterException("null degreeMapRequirementInfo");
     	}
@@ -166,6 +165,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
     public DegreeMapRequirementInfo toDto() {
         DegreeMapRequirementInfo dto = new DegreeMapRequirementInfo();
 
+        dto.setId(this.getId());
         
         dto.setCredit(getCredit());
         dto.setCritical(isCritical());
