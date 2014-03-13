@@ -74,7 +74,6 @@ Feature: BT.Course Search
     Then only "200" level courses "should" be displayed
 
 #************************* KSAP-821, US- KSAP-622**********************************************************************************
-  @draft
   Scenario Outline: CS10 Successfully search for a course and change the pagination options
     When I search for a course with multi word"<multi_text>" text option
     And I choose to see "<per_page>" records per page
