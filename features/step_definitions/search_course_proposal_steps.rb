@@ -1,4 +1,4 @@
-Given /^I have a course proposal created as CS$/ do
+Given /^I have a course proposal created as Curriculum Specialist$/ do
   steps %{Given I am logged in as Curriculum Specialist}
   @course_proposal = create CmCourseProposalObject, :curriculum_review_process => "Yes"
 end
@@ -8,7 +8,7 @@ Given /^I have a course proposal created as Faculty$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
-Given /^I have a admin course proposal created as CS and course proposal created as Faculty$/ do
+Given /^I have a admin course proposal created as Curriculum Specialist and course proposal created as Faculty$/ do
   steps %{Given I am logged in as Curriculum Specialist}
   @course_proposal_cs = create CmCourseProposalObject, :proposal_title => "Alice Math class #{random_alphanums(10,'test proposal title ') }"
   puts "CS proposal title is #{@course_proposal_cs.proposal_title}"
@@ -19,20 +19,20 @@ Given /^I have a admin course proposal created as CS and course proposal created
 end
 
 
-When /^I perform a full search for the Course Proposals$/ do
+When /^I perform a full search for the Course Proposal$/ do
   navigate_to_functional_home
   @course_proposal.search(@course_proposal.proposal_title)
 end
 
 
-Then /^I should see results matching my search criteria$/ do
+Then /^I should see my proposal listed in the search result$/ do
 on FindProposalPage do |page|
     page.proposal_title_element(@course_proposal.proposal_title).should exist
   end
 end
 
 
-Then /^I should see all results matching my search criteria$/ do
+Then /^I should see both proposals listed in the search result$/ do
   on FindProposalPage do |page|
     page.proposal_title_element(@course_proposal_cs.proposal_title).should exist
     page.proposal_title_element(@course_proposal_faculty.proposal_title).should exist
@@ -46,28 +46,35 @@ And /^I perform a partial search for Course Proposals$/ do
 end
 
 
-And /^I select my proposal from the results$/ do
-  @course_proposal.review_proposal_action
-end
+And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
 
-And /^I select the (.*?) proposal from the results$/ do |proposal_to_select|
-  if proposal_to_select == "CS"
+  if proposal_to_review == "Curriculum Specialist"
     @course_proposal_cs.review_proposal_action
+    on CmCourseInformation do |page|
+        page.proposal_title_review.should == @course_proposal_cs.proposal_title
+        page.course_title_review.should == @course_proposal_cs.course_title
+    end
   else
     @course_proposal_faculty.review_proposal_action
+    on CmCourseInformation do |page|
+      page.proposal_title_review.should == @course_proposal_faculty.proposal_title
+      page.course_title_review.should == @course_proposal_faculty.course_title
+    end
   end
 end
 
-And /^I should see the Review Proposal page for that proposal$/ do
+And /^I can review my proposal$/ do
+  @course_proposal.review_proposal_action
   on CmCourseInformation do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
   end
 end
 
-And /^I should see the Review Proposal page for the (.*?) proposal$/ do |proposal_author|
+=begin
+(And /^I should see the Review Proposal page for the (.*?) proposal$/ do |proposal_author|
   on CmCourseInformation do |page|
-    if proposal_author == "CS"
+    if proposal_author == "Curriculum Specialist"
       page.proposal_title_review.should == @course_proposal_cs.proposal_title
       page.course_title_review.should == @course_proposal_cs.course_title
     else
@@ -75,4 +82,5 @@ And /^I should see the Review Proposal page for the (.*?) proposal$/ do |proposa
       page.course_title_review.should == @course_proposal_faculty.course_title
     end
   end
-end
+end)
+=end
