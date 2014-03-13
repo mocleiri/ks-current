@@ -35,7 +35,9 @@ class RegistrationCart < RegisterForCourseBase
 
   # ADD NEW ITEM OPTIONS MODAL DIALOG
   element(:new_item_credits_selection) { |b| b.select(id: "newItemCredits") }
-  element(:new_item_grading_selection) { |b| b.select(id: "newItemGrading") }
+  element(:new_item_grading_audit) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.audit") }
+  element(:new_item_grading_letter) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.letter") }
+  element(:new_item_grading_pass_fail) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.passFail") }
   element(:new_item_save_button) { |b| b.button(id: "newItemSave") }
   action(:save_new_item) { |b| b.new_item_save_button.click }
   element(:new_item_cancel_button) { |b| b.button(id: "newItemCancel") }
@@ -43,7 +45,9 @@ class RegistrationCart < RegisterForCourseBase
 
   # EDIT COURSE OPTIONS DISCLOSURE
   element(:credits_selection) { |course_code,reg_group_code,b| b.select(id: "credits_#{course_code}_#{reg_group_code}") }
-  element(:grading_selection) { |course_code,reg_group_code,b| b.select(id: "grading_#{course_code}_#{reg_group_code}") }
+  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
   element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancel_#{course_code}_#{reg_group_code}") }
@@ -62,7 +66,11 @@ class RegistrationCart < RegisterForCourseBase
   end
 
   def select_grading_on_new_item(grading_option)
-    new_item_grading_selection.select(grading_option)
+    case grading_option
+      when "Audit" then new_item_grading_audit.set
+      when "Letter" then new_item_grading_letter.set
+      when "Pass/Fail" then new_item_grading_pass_fail.set
+    end
   end
 
   def select_credits_in_cart(course_code, reg_group_code, credits)
@@ -70,7 +78,11 @@ class RegistrationCart < RegisterForCourseBase
   end
 
   def select_grading_in_cart(course_code, reg_group_code, grading_option)
-    grading_selection(course_code, reg_group_code).select(grading_option)
+    case grading_option
+      when "Audit" then grading_audit(course_code,reg_group_code).set
+      when "Letter" then grading_letter(course_code,reg_group_code).set
+      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).set
+    end
   end
 
 end

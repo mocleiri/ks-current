@@ -16,7 +16,9 @@ class StudentSchedule < RegisterForCourseBase
   element(:confirm_drop) { |course_code,reg_group_code,b| b.button(id: "dropRegGroup_#{course_code}_#{reg_group_code}") }
   element(:cancel_drop) { |b| b.button(id: "dropRegGroupCancel") }
   element(:credits_selection) { |course_code,reg_group_code,b| b.select(id: "credits_#{course_code}_#{reg_group_code}") }
-  element(:grading_selection) { |course_code,reg_group_code,b| b.select(id: "grading_#{course_code}_#{reg_group_code}") }
+  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
   element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "saveScheduleItem_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancelEditScheduleItem_#{course_code}_#{reg_group_code}") }
@@ -43,7 +45,11 @@ class StudentSchedule < RegisterForCourseBase
   end
 
   def select_grading(course_code, reg_group_code, grading_option)
-    grading_selection(course_code, reg_group_code).select(grading_option)
+    case grading_option
+      when "Audit" then grading_audit(course_code,reg_group_code).set
+      when "Letter" then grading_letter(course_code,reg_group_code).set
+      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).set
+    end
   end
 
 end
