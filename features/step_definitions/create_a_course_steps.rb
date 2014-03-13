@@ -61,7 +61,6 @@ Then /^I should see data in required fields for the course admin proposal$/ do
     page.course_information
     page.proposal_title.value.should == @course_proposal.proposal_title
     page.course_title.value.should == @course_proposal.course_title
-    page.page_validation_text.should == "Document was successfully saved."
     page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
   end
 
@@ -85,29 +84,11 @@ Then /^I should receive an error message about the proposal title and course tit
  end
 end
 
-
-When /^I create a course proposal for testing$/ do
-  @course_proposal = create CmCourseProposalObject
-end
-
-
-Then /^I should see a course proposal being created$/ do
-  on CmCourseInformation do |page|
-    page.course_information
-    page.proposal_title.value.should == @course_proposal.proposal_title
-    page.course_title.value.should == @course_proposal.course_title
-    page.page_validation_text.should == "Document was successfully saved."
-  end
-end
-
-
-
 Then /^I should see data in required for save fields for the course proposal$/ do
   on CmCourseInformation do |page|
     page.course_information
     page.proposal_title.value.should == @course_proposal.proposal_title
     page.course_title.value.should == @course_proposal.course_title
-    page.page_validation_text.should == "Document was successfully saved."
   end
 end
 
