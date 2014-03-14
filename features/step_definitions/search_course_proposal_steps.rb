@@ -53,12 +53,14 @@ And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
     on CmCourseInformation do |page|
         page.proposal_title_review.should == @course_proposal_cs.proposal_title
         page.course_title_review.should == @course_proposal_cs.course_title
+        page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
     end
   else
     @course_proposal_faculty.review_proposal_action
     on CmCourseInformation do |page|
       page.proposal_title_review.should == @course_proposal_faculty.proposal_title
       page.course_title_review.should == @course_proposal_faculty.course_title
+      page.page_header_text.should == "#{@course_proposal_faculty.proposal_title} (Proposal)"
     end
   end
 end
