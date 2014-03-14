@@ -265,7 +265,7 @@ Then /^the Activity Offerings are assigned to the target subterms$/ do
     page.close
   end
 
-  @activity_offering_target.edit
+  @activity_offering_target.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == @activity_offering.subterm
     page.cancel
@@ -282,7 +282,7 @@ Then /^the Activity Offerings are assigned to the target subterms$/ do
     page.close
   end
 
-  @activity_offering_target2.edit
+  @activity_offering_target2.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == @activity_offering2.subterm
     page.cancel
@@ -308,7 +308,7 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
     page.close
   end
 
-  @activity_offering_copy.edit
+  @activity_offering_copy.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == @calendar_target2.terms[0].subterms[0].subterm_type
     page.cancel
@@ -325,7 +325,7 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
     page.close
   end
 
-  @activity_offering_target2.edit
+  @activity_offering_target2.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == @calendar_target2.terms[0].subterms[1].subterm_type
     page.cancel

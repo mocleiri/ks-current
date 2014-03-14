@@ -11,10 +11,7 @@ And /^I am editing an AO with RSIs in an open term$/ do
 end
 
 When /^I revise an AO's requested scheduling information$/ do
-  # capture the RSIs for editing
-  #@new_rsis = @activity_offering.requested_scheduling_information_list.values[0]
-  # edit RSIs
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   orig_key = @activity_offering.requested_scheduling_information_list.keys[0]
   @activity_offering.requested_scheduling_information_list.values[0].edit :days => "SU", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                                                                       :facility => "PHYS", :facility_long_name => "PHYS",:room => "4102"
@@ -42,7 +39,7 @@ When /^I add RSIs for an AO specifying (times|times and facility|times and room)
   #@new_rsis =  @activity_offering.requested_scheduling_information_list.values[0]
 
   # add new RSI row
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   si_obj = create SchedulingInformationObject, :days => "TH",
                   :facility => optional_field_facility,
                   :facility_long_name => optional_field_facility, :room => optional_field_room
@@ -56,7 +53,7 @@ Then /^the AO's scheduling information shows the new schedule$/ do
   course_offering = make CourseOffering, :term => @activity_offering.parent_course_offering.term, :course => @activity_offering.parent_course_offering.course
   course_offering.manage
   #@activity_offering = course_offering.get_ao_obj_by_code("A")
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
 #  norm_st, norm_et = @new_rsis.normalize_start_and_end_times
 
   on ActivityOfferingMaintenance do |page|
@@ -82,7 +79,7 @@ end
 
 Then /^the AO's scheduling information shows the new schedule as TBA$/ do
   @activity_offering.parent_course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
 
   sched_info = @activity_offering.requested_scheduling_information_list[""]
   on ActivityOfferingMaintenance do |page|
@@ -101,7 +98,7 @@ end
 
 When /^I add RSIs for an AO$/ do
   # add new RSI row
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   si_obj = create SchedulingInformationObject, :days => "TH"
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   @activity_offering.save
@@ -109,7 +106,7 @@ end
 
 When /^I add RSIs for an AO checking the TBA flag$/ do
   # add new TBA RSI row
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   si_obj = create SchedulingInformationObject,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
   @activity_offering.save
@@ -117,7 +114,7 @@ end
 
 And /^I delete the original RSIs$/ do
   @activity_offering.parent_course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   rsi_key = @activity_offering.requested_scheduling_information_list.keys[0]
   @activity_offering.requested_scheduling_information_list.values[0].delete_rsi
   @activity_offering.requested_scheduling_information_list.delete(rsi_key)
@@ -126,7 +123,7 @@ end
 
 When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
   # add new RSI row
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   if tsType=="standard"
     si_obj = create SchedulingInformationObject, :use_std_ts => true,
                     :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
@@ -140,11 +137,11 @@ When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
 end
 
 When /^I check the "approved for non-standard time slots" flag$/ do
-  @activity_offering.edit :allow_non_std_timeslots => true, :defer_save => false
+  @activity_offering.edit :allow_non_std_timeslots => true
 end
 
 Then /^the "approved for non-standard time slots" flag is set$/ do
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.view_requested_scheduling_information
     page.non_std_ts_checkbox.should be_checked
@@ -162,7 +159,7 @@ When /^I edit an Activity Offering with non-standard time slots (approved|not ap
 end
 
 Then /^there is a validation error on the EndTime field$/  do
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   #TODO: this code is duplicated from the ScheduledInfo object edit method
   @si_obj.end_time_ampm.upcase! unless @si_obj.end_time_ampm.nil?
   @si_obj.start_time_ampm.upcase! unless @si_obj.start_time_ampm.nil?

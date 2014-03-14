@@ -65,17 +65,17 @@ class ActivityOfferingObject
 
     defaults = {
         :parent_course_offering => (make CourseOffering),
-        :status => "Draft",
+        :status => DRAFT_STATUS,
         :format => nil, #nil means use default
         :activity_type => "Lecture",
-        :max_enrollment => 100,
+        :max_enrollment => 0,
         :actual_scheduling_information_list => {},
         :requested_scheduling_information_list => {},
         :personnel_list => collection('Personnel'),
-        :seat_pool_list => {},
-        :course_url => "www.test_course.com",
-        :requires_evaluation => true,
-        :honors_course => true,
+        :seat_pool_list => collection('SeatPool'),
+        :course_url => "",
+        :requires_evaluation => false,
+        :honors_course => false,
         :aoc_private_name => :default_cluster,
         :create_by_copy => nil, #if true create copy using :ao_code
         :colocated => false,
@@ -177,24 +177,24 @@ class ActivityOfferingObject
       @code = new_code[0]
     end
 
-    init = {
-        :parent_course_offering=> @parent_course_offering,
-        :max_enrollment => @max_enrollment,
-        :actual_scheduling_information_list => @actual_scheduling_information_list,
-        :requested_scheduling_information_list => @requested_scheduling_information_list,
-        :personnel_list => @personnel_list ,
-        :seat_pool_list => @seat_pool_list,
-        :course_url => @course_url,
-        :requires_evaluation => @requires_evaluation,
-        :honors_course => @honors_course,
-        :colocated => @colocated,
-        :colocate_ao_list => @colocate_ao_list,
-        :colocate_shared_enrollment => @colocate_shared_enrollment,
-        :subterm => @subterm,
-        :waitlist_config => @waitlist_config
-    }
-
-    edit(init)
+    #init = {
+    #    :parent_course_offering=> @parent_course_offering,
+    #    :max_enrollment => @max_enrollment,
+    #    :actual_scheduling_information_list => @actual_scheduling_information_list,
+    #    :requested_scheduling_information_list => @requested_scheduling_information_list,
+    #    :personnel_list => @personnel_list ,
+    #    :seat_pool_list => @seat_pool_list,
+    #    :course_url => @course_url,
+    #    :requires_evaluation => @requires_evaluation,
+    #    :honors_course => @honors_course,
+    #    :colocated => @colocated,
+    #    :colocate_ao_list => @colocate_ao_list,
+    #    :colocate_shared_enrollment => @colocate_shared_enrollment,
+    #    :subterm => @subterm,
+    #    :waitlist_config => @waitlist_config
+    #}
+    #
+    #edit(init)
   end
 
   def get_existing_info_from_page
@@ -274,7 +274,7 @@ class ActivityOfferingObject
   def edit opts={}
 
     defaults = {
-        :defer_save => true,
+        :defer_save => false,
         :edit_already_started => false,
         :send_to_scheduler => false
     }
@@ -291,7 +291,6 @@ class ActivityOfferingObject
     edit_course_url options
     edit_evaluation options
     edit_honors_course options
-    edit_seat_pool_list options
     edit_waitlist_config options
 
     on(ActivityOfferingMaintenance).send_to_scheduler if options[:send_to_scheduler]
@@ -477,22 +476,6 @@ class ActivityOfferingObject
   end #END: edit_honors_course
   private :edit_honors_course
 
-  def edit_seat_pool_list opts={}
-
-    if opts[:seat_pool_list].nil?
-      return nil
-    end
-
-    opts[:seat_pool_list].each do |key,seat_pool|
-      seat_pool.add_seatpool(seatpool_populations_used)
-      if !seat_pool.exp_add_succeed then
-        @seat_pool_list.delete(key)
-      end
-    end
-
-  end #END: edit_seat_pool_list
-  private  :edit_seat_pool_list
-
   def edit_waitlist_config opts={}
 
     return nil if opts[:waitlist_config].nil?
@@ -510,9 +493,43 @@ class ActivityOfferingObject
 
   def delete_personnel person
     on ActivityOfferingMaintenance do |page|
-      page.update_person_name(person.id,'blah, blah')
+      #page.update_person_name(person.id,'blah, blah')
       page.delete_personnel(person.id)
     end
+  end
+
+  def add_seat_pool opts={}
+
+    defaults = {
+        :defer_save => false,
+        :edit_already_started => false,
+    }
+    options = defaults.merge(opts)
+
+    edit unless options[:edit_already_started]
+
+    options[:seat_pool_obj].parent_ao = self
+    options[:seat_pool_obj].create seatpool_populations_used
+    on(ActivityOfferingMaintenance).save unless options[:defer_save]
+    @seat_pool_list << options[:seat_pool_obj] if options[:seat_pool_obj].exp_add_succeed
+  end
+
+  def add_seat_pool_list opts={}
+
+    defaults = {
+        :defer_save => false,
+        :edit_already_started => false,
+    }
+    options = defaults.merge(opts)
+
+    edit unless options[:edit_already_started]
+
+    options[:seat_pool_list].each do |seatpool|
+      add_seat_pool :seat_pool_obj => seatpool, :defer_save => true, :edit_already_started => true
+    end
+
+    on(ActivityOfferingMaintenance).save unless options[:defer_save]
+
   end
 
   #completes activity offering edit operation
@@ -534,7 +551,7 @@ class ActivityOfferingObject
   #@return [int] expected number of seats remaining
   def seats_remaining
     seats_used = 0
-    @seat_pool_list.each do |key,seat_pool|
+    @seat_pool_list.each do |seat_pool|
       seats_used += seat_pool.seats.to_i
     end
     [@max_enrollment - seats_used , 0].max
@@ -543,87 +560,19 @@ class ActivityOfferingObject
   #removes seatpool from activity offering
   #
   #@param [string] seat_pool_list hash key
-  def remove_seatpool(seatpool_key)
+  def remove_seatpool(seatpool_obj)
     on ActivityOfferingMaintenance do |page|
-      page.remove_seatpool(@seat_pool_list[seatpool_key].population_name)
+      page.remove_seatpool(seatpool_obj.population_name)
     end
-    @seat_pool_list.delete(seatpool_key)
-  end
-
-  #removes all seatpools from activity offering
-  def remove_seatpools()
-    @seat_pool_list.each do |seatpool_key|
-      if @seat_pool_list[seatpool_key].remove
-        on ActivityOfferingMaintenance do |page|
-          page.remove_seatpool(@seat_pool_list[seatpool_key].population_name)
-        end
-        @seat_pool_list.delete(seatpool_key)
-      end
-    end
+    @seat_pool_list.delete(seatpool_obj)
   end
 
   # updates the value in @seatpool.priority with @seatpool.priority_after_reseq for each seatpool
   #
   # e.g. after removing the seatpool with priory 1, the seatpool with priority 2 becomes priority 1
   def resequence_expected_seatpool_priorities()
-    @seat_pool_list.values.each do |seatpool|
-      seatpool.priority = seatpool.priority_after_reseq
-    end
-  end
-
-  #while on activity offering edit page and updates the details for a specific seatpool
-  # @example - must always call save
-  #  @activity_offering.edit :honors_course=> true
-  #  @activity_offering.edit_seatpool :seats => 2
-  #  @activity_offering.save
-  #
-  # NB: 'save' is a separate step from edit as it allows validation steps to occur during the edit process
-  #
-  # @param opts [Hash] key => value for attribute to be updated
-  def edit_seatpool opts = {}
-
-    sp_key = opts[:seatpool_key]
-    sp_key = @seat_pool_list.keys[0] unless sp_key != nil
-
-    defaults = {
-        :priority => @seat_pool_list[sp_key].priority,
-        :seats => @seat_pool_list[sp_key].seats,
-        :expiration_milestone => @seat_pool_list[sp_key].expiration_milestone,
-        :remove => false,
-        :priority_after_reseq => @seat_pool_list[sp_key].priority_after_reseq
-    }
-    options=defaults.merge(opts)
-    update_pop_name = @seat_pool_list[sp_key].population_name
-
-    on ActivityOfferingMaintenance do |page|
-      page.update_seats(update_pop_name, options[:seats])
-      @seat_pool_list[sp_key].seats = options[:seats]
-    end
-
-    if options[:priority] != @seat_pool_list[sp_key].priority
-      on ActivityOfferingMaintenance do |page|
-        page.update_priority(update_pop_name,options[:priority])
-        @seat_pool_list[sp_key].priority = options[:priority]
-      end
-    end
-
-    if options[:expiration_milestone] != @seat_pool_list[sp_key].expiration_milestone
-      on ActivityOfferingMaintenance do |page|
-        page.update_expiration_milestone(update_pop_name,options[:expiration_milestone])
-        @seat_pool_list[sp_key].expiration_milestone = options[:expiration_milestone]
-      end
-    end
-
-    if options[:priority_after_reseq] != @seat_pool_list[sp_key].priority_after_reseq
-      @seat_pool_list[sp_key].priority_after_reseq = options[:priority_after_reseq]
-    end
-
-    #remove has to be last...
-    if options[:remove]
-      on ActivityOfferingMaintenance do |page|
-        page.remove_seatpool(update_pop_name)
-        @seat_pool_list.delete(sp_key)
-      end
+    @seat_pool_list.each do |seatpool|
+      seatpool.priority = seatpool.priority_after_reseq unless seatpool.priority_after_reseq == ""
     end
   end
 
@@ -632,7 +581,7 @@ class ActivityOfferingObject
   # @returns [Array] list of population names
   def seatpool_populations_used
     populations_used = []
-    @seat_pool_list.values.each do |seatpool|
+    @seat_pool_list.each do |seatpool|
       populations_used << seatpool.population_name
     end
     populations_used

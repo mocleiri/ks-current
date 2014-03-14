@@ -172,7 +172,7 @@ When /^I select an activity offering in "([^"]*)" status$/ do |ao_status|
 end
 
 Then /^I edit the activity offering I do not have access to change the subterm$/ do
-  @activity_offering.edit
+  @activity_offering.edit  :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.change_subterm_element.present?.should == false
     page.cancel

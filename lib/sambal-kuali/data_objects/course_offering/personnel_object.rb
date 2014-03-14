@@ -70,14 +70,15 @@ class PersonnelObject
   # edits personnel based on values in options hash
   #
   #  @param opts [Hash] key => value for attribute to be updated
+  #TODO: only edits the first row!!!!
   def edit opts={}
     on ActivityOfferingMaintenance do |page|
-      page.personnel_table.rows[1].cells[PERSONNEL_ID_COLUMN].text_field.set opts[:id]
-      page.personnel_table.rows[1].cells[PERSONNEL_NAME_COLUMN].text_field.set opts[:name]
-      page.personnel_table.rows[1].cells[PERSONNEL_AFFILIATION_COLUMN].select().select(opts[:affiliation])
-      page.personnel_table.rows[1].cells[PERSONNEL_INST_EFFORT_COLUMN].text_field.set opts[:inst_effort]
+      page.personnel_table.rows[1].cells[PERSONNEL_ID_COLUMN].text_field.set opts[:id] unless opts[:id].nil?
+      page.personnel_table.rows[1].cells[PERSONNEL_NAME_COLUMN].text_field.set opts[:name] unless opts[:name].nil?
+      page.personnel_table.rows[1].cells[PERSONNEL_AFFILIATION_COLUMN].select().select(opts[:affiliation]) unless opts[:affiliation].nil?
+      page.personnel_table.rows[1].cells[PERSONNEL_INST_EFFORT_COLUMN].text_field.set opts[:inst_effort] unless opts[:inst_effort].nil?
     end
-#        update_options(opts)
+    update_options(opts)
   end
 
   def target_row_by_personnel_id
@@ -99,21 +100,6 @@ class PersonnelObject
     return nil
   end
 
-
-  # edits personnel based on values in options hash
-  #
-  #  @param opts [Hash] key => value for attribute to be updated
-  #  def add_personnel(opts={})
-  #    @id = opts[:id]
-  #    @affiliation = opts[:affiliation]
-  #    @inst_effort = opts[:inst_effort]
-  #    on ActivityOfferingMaintenance do |page|
-  #      page.add_person_id.set @id
-  #      page.add_affiliation.select @affiliation
-  #      page.add_inst_effort.set @inst_effort
-  #      page.add_personnel
-  #    end
-  #  end
 end
 
 class PersonnelCollection < CollectionsFactory

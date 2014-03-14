@@ -153,11 +153,10 @@ When /^I add an Activity Offering$/ do
 end
 
 When /^I update an Activity Offering to have less seats$/ do
-  @course_offering.edit_ao :ao_code=>"A"
+  #TODO: no need to loop here
   @course_offering.get_ao_list.each do |ao|
     if ao.code == "A"
-      ao.edit :max_enrollment => 200, :edit_already_started=>true
-      ao.save
+      ao.edit :max_enrollment => 200, :defer_save => true
     end
   end
 
@@ -170,12 +169,10 @@ Then /^a warning message is displayed stating "([^"]*)"$/ do |msg|
 end
 
 When /^I update an Activity Offering to create a time conflict$/ do
-  @course_offering.edit_ao :ao_code=>"B"
-
+  #TODO: no need to loop here
   @course_offering.get_ao_list.each do |ao|
     if ao.code == "B"
-      ao.edit :requested_scheduling_information_list => {"default"=> (make SchedulingInformationObject, :days=>"M")}, :edit_already_started=>true
-      ao.save
+      ao.edit :requested_scheduling_information_list => {"default"=> (make SchedulingInformationObject, :days=>"M")}
     end
   end
 end

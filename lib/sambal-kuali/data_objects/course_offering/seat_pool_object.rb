@@ -27,7 +27,8 @@ class SeatPoolObject
                 :expiration_milestone,
                 :remove,
                 :priority_after_reseq,
-                :exp_add_succeed
+                :exp_add_succeed,
+                :parent_ao
 
   alias_method :remove?, :remove
   alias_method :exp_add_succeed?, :exp_add_succeed
@@ -52,7 +53,7 @@ class SeatPoolObject
         :population_name => "random",
         :expiration_milestone => "First Day of Classes",
         :remove => false,
-        :priority_after_reseq => 0,
+        :priority_after_reseq => 1,
         :exp_add_succeed => true
     }
     options = defaults.merge(opts)
@@ -68,10 +69,10 @@ class SeatPoolObject
     "#{(@seats.to_i*100/max_enrollment.to_i).round(0)}%"
   end
 
-  # add_seatpool to activity offering
+  # create - add seatpool to activity offering
   #
   # @param [Array] list of populations used in seatpools already added
-  def add_seatpool(pops_used_list)
+  def create(pops_used_list)
     on ActivityOfferingMaintenance do |page|
       page.add_seat_pool unless page.add_pool_name == '' #check to see if blank line is already there
       page.add_pool_priority.set @priority
@@ -102,10 +103,73 @@ class SeatPoolObject
       page.add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
     end
   end
+
+  #while on activity offering edit page and updates the details for a specific seatpool
+  # @example - must always call save
+  #  @activity_offering.edit :honors_course=> true
+  #  @activity_offering.edit_seatpool :seats => 2
+  #  @activity_offering.save
+  #
+  # NB: 'save' is a separate step from edit as it allows validation steps to occur during the edit process
+  #
+  # @param opts [Hash] key => value for attribute to be updated
+  def edit opts = {}
+
+    defaults = {
+        :defer_save => false,
+        :edit_already_started => false,
+    }
+    options = defaults.merge(opts)
+
+    @parent_ao.edit unless options[:edit_already_started]
+
+    if !options[:seats].nil?
+      on ActivityOfferingMaintenance do |page|
+        page.update_seats(@population_name, options[:seats])
+      end
+    end
+
+    if !options[:priority].nil?
+      on ActivityOfferingMaintenance do |page|
+        page.update_priority(@population_name,options[:priority])
+      end
+    end
+
+    if !options[:expiration_milestone].nil?
+      on ActivityOfferingMaintenance do |page|
+        page.update_expiration_milestone(@population_name,options[:expiration_milestone])
+      end
+    end
+
+    if !options[:priority_after_reseq].nil?
+      @priority_after_reseq = options[:priority_after_reseq]
+    end
+
+    update_options(options)
+
+    @parent_ao.save unless options[:defer_save]
+  end
+
+  #removes seatpool from activity offering
+  #
+  #@param [string] seat_pool_list hash key
+  #TODO: if this works, get rid of parent.remove_seatpool
+  def delete
+    on ActivityOfferingMaintenance do |page|
+      page.remove_seatpool(@population_name)
+    end
+    @parent_ao.seat_pool_list.delete(self)
+  end
+
+
 end
 
 class SeatPoolCollection < CollectionsFactory
 
   contains SeatPoolObject
 
+  def by_population(population_name)
+    list = self.select {|sp| sp.population_name == population_name }
+    list.nil?? nil : list[0]
+  end
 end

@@ -10,8 +10,6 @@ Given /^I manage a course offering with draft and canceled activity offerings pr
   @draft_ao = @course_offering.get_ao_obj_by_code("A")
   @canceled_ao = @course_offering.get_ao_obj_by_code("B")
   on ManageCourseOfferings do |page|
-    @course_offering.manage_and_init
-    page.loading.wait_while_present
     page.ao_status(@draft_ao.code).should == "Draft"
     @canceled_ao.cancel
     page.loading.wait_while_present
@@ -39,8 +37,6 @@ Given /^I manage a course offering with a canceled activity offering present in 
   @activity_offering = @course_offering.get_ao_obj_by_code("A")
   @activity_offering.cancel
   on ManageCourseOfferings do |page|
-    @course_offering.manage_and_init
-    page.loading.wait_while_present
     page.ao_status(@activity_offering.code).should == "Canceled"
   end
 end
@@ -51,12 +47,11 @@ Given /^I manage a course offering with multiple canceled activity offerings pre
 
   @canceled_ao1 = @course_offering.get_ao_obj_by_code("A")
   @canceled_ao2 = @course_offering.get_ao_obj_by_code("B")
+  #have to put these in canceled status for the test
+  @canceled_ao1.cancel
+  @canceled_ao2.cancel
+
   on ManageCourseOfferings do |page|
-    #have to put these in canceled status for the test
-    @canceled_ao1.cancel
-    @canceled_ao2.cancel
-    @course_offering.manage_and_init
-    page.loading.wait_while_present
     page.ao_status(@canceled_ao1.code).should == "Canceled"
     page.ao_status(@canceled_ao2.code).should == "Canceled"
   end
@@ -67,12 +62,11 @@ Given /^I manage a course offering with canceled and draft activity offerings pr
   @course_offering.manage_and_init
 
   @canceled_ao = @course_offering.get_ao_obj_by_code("A")
+  #have to put the first in canceled status for the test
+  @canceled_ao.cancel
+
   @draft_ao = @course_offering.get_ao_obj_by_code("B")
   on ManageCourseOfferings do |page|
-    #have to put the first in canceled status for the test
-    @canceled_ao.cancel
-#    @course_offering.manage_and_init
-#    page.loading.wait_while_present
     page.ao_status(@canceled_ao.code).should == "Canceled"
     page.ao_status(@draft_ao.code).should == "Draft"
   end
@@ -83,15 +77,11 @@ Given /^I manage a course offering with suspended and offered activity offerings
   @course_offering.manage_and_init
 
   @suspended_ao = @course_offering.get_ao_obj_by_code("A")
+  @suspended_ao.edit :send_to_scheduler => true
   @offered_ao = @course_offering.get_ao_obj_by_code("B")
+  @offered_ao.edit :send_to_scheduler => true
+  @suspended_ao.suspend
   on ManageCourseOfferings do |page|
-    @suspended_ao.edit :send_to_scheduler => true
-    @suspended_ao.save
-    @offered_ao.edit :send_to_scheduler => true
-    @offered_ao.save
-    @suspended_ao.suspend
-    @course_offering.manage_and_init
-    page.loading.wait_while_present
     page.ao_status(@suspended_ao.code).should == "Suspended"
     page.ao_status(@offered_ao.code).should == "Offered"
   end
@@ -176,7 +166,6 @@ Given /^a new academic term has course and activity offerings in canceled and su
 
   @activity_offering_canceled = create ActivityOfferingObject, :parent_course_offering => @course_offering_canceled,
                                        :activity_type => "Lecture"
-  @activity_offering_canceled.save
   @activity_offering_canceled.cancel
 
   delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture"
@@ -188,7 +177,6 @@ Given /^a new academic term has course and activity offerings in canceled and su
   @activity_offering_suspended = create ActivityOfferingObject, :parent_course_offering => @course_offering_suspended,
                                         :activity_type => "Lecture"
 
-  @activity_offering_suspended.save
   @activity_offering_suspended.approve
   @manage_soc.advance_soc_from_open_to_final_edits
   @activity_offering_suspended.suspend
@@ -441,21 +429,20 @@ Given /^I manage a course offering with an approved activity offering present$/ 
 
   @activity_offering = @course_offering.get_ao_obj_by_code("A")
   @activity_offering.edit :send_to_scheduler => true
-  @activity_offering.save
 
   on ManageCourseOfferings do |page|
     page.ao_status(@activity_offering.code).should == "Offered"
   end
 end
 
-Given /^I manage a course offering with an offered activity offering present$/ do
+ Given /^I manage a course offering with an offered activity offering present$/ do
   @term_for_test = "201208" if @term_for_test.nil?
   @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :term=> @term_for_test , :course => "ENGL295")
   @course_offering.manage_and_init
 
   @activity_offering = @course_offering.get_ao_obj_by_code("A")
   @activity_offering.edit :send_to_scheduler => true
-  @activity_offering.save
+
   on ManageCourseOfferings do |page|
     page.ao_status(@activity_offering.code).should == "Offered"
   end
@@ -580,7 +567,7 @@ Given /^I create a course offering from catalog with a suspended activity offeri
 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => {}
-  @activity_offering.save
+
   @activity_offering.suspend :navigate_to_page => false
   on(ManageCourseOfferings).ao_status(@activity_offering.code).should == "Suspended"
 end
@@ -589,13 +576,10 @@ Given /^I add requested scheduling information to the activity offering$/ do
   @rsi_list = {}
   @rsi_list["MTW"] = make SchedulingInformationObject, :days => "MTW"
   @activity_offering.edit :requested_scheduling_information_list => @rsi_list
-
-  @activity_offering.save
 end
 
 Given /^I am able to send the activity offering to the scheduler$/ do
   @activity_offering.edit :send_to_scheduler => true
-  @activity_offering.save
 end
 
 And /^actual scheduling information for the activity offering are still shown$/ do
@@ -915,7 +899,7 @@ Given /^I manage a course offering with a colocated activity offering$/ do
 end
 
 Then /^I am unable submit the activity offering to the scheduler$/ do
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
 
   on ActivityOfferingMaintenance do |page|
     page.send_RSIs_to_scheduler_msg.should match /Scheduling information cannot be sent to the scheduler/
@@ -925,7 +909,7 @@ end
 
 
 Then /^I am unable to colocate the activity offering$/ do
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
 
   on ActivityOfferingMaintenance do |page|
     page.colocated_checkbox.enabled?.should be_false
@@ -1012,6 +996,5 @@ Given /^a new academic term has an activity offering in approved status$/ do
 
     @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                                          :format => "Lecture Only", :activity_type => "Lecture"
-    @activity_offering.save
     @activity_offering.approve
 end

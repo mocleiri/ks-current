@@ -705,7 +705,6 @@ When /^there is a course with a co-located SI in my admin org/ do
                                                                     :parent_course_offering => (make CourseOffering, :course => "ENGL295", :term => @term_for_test)},
                                                                     :max_enrollment=>25,
                                                                     :colocate_shared_enrollment=> true
-  @course_offering.activity_offering_cluster_list[0].ao_list[0].save
   step "I am logged in as a Department Schedule Coordinator"
 end
 

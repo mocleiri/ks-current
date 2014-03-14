@@ -938,7 +938,6 @@ class CourseOffering
     activity_offering_object = options[:ao_obj]
     activity_offering_object.parent_course_offering = self
     activity_offering_object.create
-    activity_offering_object.save
     get_cluster_obj_by_private_name(activity_offering_object.aoc_private_name).ao_list << activity_offering_object
     return activity_offering_object
   end
@@ -975,23 +974,6 @@ class CourseOffering
       page.edit(options[:ao_code], options[:cluster_private_name])
     end
   end
-
-  #TODO - how is this different from delete_ao?
-  #merged with delete_ao
-  #def delete_ao_cross_list_value(opts)
-  #  defaults = {
-  #      :cluster_private_name => :default_cluster
-  #  }
-  #  options = defaults.merge(opts)
-  #
-  #  on ManageCourseOfferings do |page|
-  #    page.select_aos(options[:code_list], options[:cluster_private_name])
-  #    page.delete_aos
-  #  end
-  #  on ActivityOfferingConfirmDelete do |page|
-  #    page.delete_confirm_message
-  #  end
-  #end
 
   # returns a list of AOs matching a given state
   # note: can return an empty array but not nil

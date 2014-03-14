@@ -1,19 +1,26 @@
 When /^I create a seat pool for an activity offering by completing all fields$/ do
-  course_offering = make CourseOffering
-  course_offering.manage
-  @activity_offering = create ActivityOfferingObject, :seat_pool_list =>  {"random"=> (make SeatPoolObject)}
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering)
+  @course_offering.manage
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :max_enrollment => 100, :defer_save => true
+  @activity_offering.add_seat_pool :seat_pool_obj => (make SeatPoolObject),
+                                   :edit_already_started => true,
+                                   :defer_save => true
 end
 
 Then /^the percent allocated for each row is updated$/ do
   on ActivityOfferingMaintenance do |page|
-         @activity_offering.seat_pool_list.each do |key, seat_pool|
+         @activity_offering.seat_pool_list.each do |seat_pool|
            page.pool_percentage(seat_pool.population_name).should == seat_pool.percent_of_total(@activity_offering.max_enrollment)
          end
     end
 end
 
 When /^seats is set higher than max enrollment$/ do
-  @activity_offering.edit_seatpool :seats => (@activity_offering.max_enrollment.to_i + 1).to_s
+  @activity_offering.seat_pool_list[0].edit :seats => (@activity_offering.max_enrollment.to_i + 1).to_s,
+                                   :edit_already_started => true,
+                                   :defer_save => true
+
 end
 
 Then /^a warning message is displayed about seats exceeding max enrollment$/ do
@@ -25,15 +32,19 @@ Then /^a warning message is displayed about seats exceeding max enrollment$/ do
 end
 
 When /^I create seat pools for an activity offering and priorities are duplicated and not sequential$/ do
-  course_offering = make CourseOffering
-  course_offering.manage
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering)
+  @course_offering.manage
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :max_enrollment => 100, :defer_save => true
 
-  seatpool_hash = {}
-  seatpool_hash[1] = make SeatPoolObject, :population_name => "Core", :seats => 10, :priority => 2, :priority_after_reseq => 1
-  seatpool_hash[2] = make SeatPoolObject, :population_name => "DSS", :seats => 11, :priority => 2, :priority_after_reseq => 2
-  seatpool_hash[3] = make SeatPoolObject, :population_name => "Fraternity/Sorority", :seats => 12, :priority => 4, :priority_after_reseq => 3
+  seatpools = []
+  seatpools[0] = make SeatPoolObject, :population_name => "Core", :seats => 10, :priority => 2, :priority_after_reseq => 1
+  seatpools[1] = make SeatPoolObject, :population_name => "DSS", :seats => 11, :priority => 2, :priority_after_reseq => 2
+  seatpools[2] = make SeatPoolObject, :population_name => "Fraternity/Sorority", :seats => 12, :priority => 4, :priority_after_reseq => 3
 
-  @activity_offering = create ActivityOfferingObject, :seat_pool_list => seatpool_hash
+  @activity_offering.add_seat_pool_list :seat_pool_list => seatpools,
+                                   :edit_already_started => true,
+                                   :defer_save => true
 
 end
 
@@ -45,20 +56,23 @@ Then /^the seat pool priorities are correctly sequenced$/ do
 end
 
 When /^I add a seat pool using a population that is already used for that activity offering$/ do
-  course_offering = make CourseOffering
-  course_offering.manage
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering)
+  @course_offering.manage
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :max_enrollment => 100, :defer_save => true
 
-  seatpool_hash = {}
-  seatpool_hash["Core"] = make SeatPoolObject, :population_name => "Core", :seats => 10, :priority => 1
-  seatpool_hash["dup"] = make SeatPoolObject, :population_name => "Core", :seats => 11, :priority => 2, :exp_add_succeed => false
+  seatpools = []
+  seatpools[0] = make SeatPoolObject, :population_name => "Core", :seats => 10, :priority => 1
+  seatpools[1] = make SeatPoolObject, :population_name => "Core", :seats => 11, :priority => 2, :exp_add_succeed => false
 
-  @activity_offering = create ActivityOfferingObject,  :seat_pool_list => seatpool_hash
-  @activity_offering.save
+  @activity_offering.add_seat_pool_list :seat_pool_list => seatpools,
+                                        :edit_already_started => true,
+                                        :defer_save => false
 end
 
 Then /^an error message is displayed about the duplicate population$/ do
   on ActivityOfferingMaintenance do |page|
-    page.seatpool_first_msg.should match /.*#{@activity_offering.seat_pool_list.values.last.population_name} is already in use.*/
+    page.seatpool_first_msg.should match /.*#{@activity_offering.seat_pool_list.last.population_name} is already in use.*/
   end
 end
 
@@ -70,12 +84,14 @@ end
 
 
 When /^I add a seat pool without specifying a population$/ do
-  course_offering = make CourseOffering
-  course_offering.manage
-
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering)
+  @course_offering.manage
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :max_enrollment => 100, :defer_save => true
   seatpool1 = make SeatPoolObject, :population_name => "", :seats => 10, :priority => 2, :exp_add_succeed => false
-  @activity_offering = create ActivityOfferingObject, :seat_pool_list => {"blank" => seatpool1}
-  @activity_offering.save
+  @activity_offering.add_seat_pool :seat_pool_obj => (seatpool1),
+                                   :edit_already_started => true,
+                                   :defer_save => false
 end
 
 Then /^an error message is displayed about the required seat pool fields$/ do
@@ -87,5 +103,5 @@ Then /^an error message is displayed about the required seat pool fields$/ do
   #remove blank to update expected
    page.remove_seatpool_by_index 1
   end
-  #@activity_offering.seat_pool_list.delete("blank")
+  #@activity_offering.seat_pool_list[0].delete
 end

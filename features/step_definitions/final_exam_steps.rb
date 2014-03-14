@@ -107,7 +107,7 @@ When /^I create a Course Offering from an existing Course Offering with a standa
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
 
   @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @course_offering_copy = create CourseOffering, :term=> @course_offering.term , :create_from_existing => @course_offering
   on(ManageCourseOfferings).edit_course_offering
@@ -266,7 +266,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
                                  :final_exam_driver => "Final Exam Per Course Offering"
   @course_offering.save
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
@@ -276,13 +276,13 @@ end
 Given /^there is an exsiting CO with a Standard Final Exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 end
 
 Given /^that Activity Offerings exist for the selected Course Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 end
 
 When /^I create a Course Offering from an existing CO with a Standard Final Exam option$/ do
@@ -341,7 +341,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
@@ -368,7 +368,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with multi
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
@@ -398,7 +398,7 @@ Given /^that the CO has two existing AOs and a standard final exam driven by Act
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
   @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 end
 
 When /^I add two new AOs to the CO and then create a copy of the CO$/ do
@@ -420,7 +420,7 @@ When /^I view the Exam Offerings for a CO with two new AOs and a standard final 
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
   @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
@@ -440,7 +440,7 @@ When /^I create a CO with two new AOs and then view the Exam Offerings where the
                                  :delivery_format_list => delivery_format_list
   @course_offering.save
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @add_ao_two = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only"), :navigate_to_page => false
@@ -1318,7 +1318,7 @@ end
 
 And /^I have created an Activity Offering that only has Requested Scheduling Information$/ do
   @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   si_obj = create SchedulingInformationObject, :use_std_ts => true,
                     :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
   @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj

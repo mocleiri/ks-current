@@ -49,7 +49,7 @@ Then /^the "(ASI|RSI)s" are successfully copied as RSIs in the new AO$/ do |sour
   source_scheduling_information.nil?.should be_false
 
   #@ao_copy.parent_course_offering.manage
-  @ao_copy.edit
+  @ao_copy.edit :defer_save => true
 
   on ActivityOfferingMaintenance do |page|
     page.view_requested_scheduling_information

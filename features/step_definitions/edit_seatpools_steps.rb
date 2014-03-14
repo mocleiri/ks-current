@@ -1,117 +1,59 @@
 When /^I change the seat pool count and expiration milestone$/ do
-  @activity_offering.edit_seatpool :seats => 20,:expiration_milestone => "Last Day of Registration"
+  @activity_offering.seat_pool_list[0].edit :edit_already_started => true,
+                                            :seats => 20,
+                                            :expiration_milestone => "Last Day of Registration"
 end
 
 Then /^the seats remaining is updated$/ do
   on ActivityOfferingMaintenance do |page|
-    sleep 1 #TODO required for headless
+    page.seats_remaining_span.wait_until_present
     page.seat_count_remaining.should == @activity_offering.seats_remaining.to_s
   end
 end
 
 When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
-  temp_list = {}
+  pool_list = []
   ctr = 0
   #create required number of seatpools
   while ctr < number.to_i do
     ctr = ctr + 1
-    seatpool = make SeatPoolObject, :priority => (ctr)
-    temp_list[ctr] = seatpool
+    seatpool = make SeatPoolObject, :priority => (ctr), :priority_after_reseq => (ctr)
+    pool_list << seatpool
   end
-  course_offering = make CourseOffering
-  course_offering.manage
 
-  @activity_offering = create ActivityOfferingObject, :seat_pool_list => temp_list
-  @activity_offering.save
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering)
+  @course_offering.manage
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :max_enrollment => 100, :defer_save => true
+
+  @activity_offering.add_seat_pool_list :seat_pool_list => pool_list,
+                                   :edit_already_started => true,
+                                   :defer_save => false
 
   @activity_offering.parent_course_offering.manage
-
-  on ManageCourseOfferings do |page|
-    page.edit @activity_offering.code
-  end
+  @activity_offering.edit :defer_save => true
 end
 
 When /^I switch the priorities for 2 seat pools$/ do
-  @activity_offering.edit_seatpool :seatpool_key => 1,:priority => 2, :priority_after_reseq => 2
-  @activity_offering.edit_seatpool :seatpool_key => 2,:priority => 1, :priority_after_reseq => 1
+  @activity_offering.seat_pool_list[0].edit :priority => 2, :priority_after_reseq => 2, :edit_already_started => true, :defer_save => true
+  @activity_offering.seat_pool_list[1].edit :priority => 1, :priority_after_reseq => 1, :edit_already_started => true, :defer_save => true
 end
 
 
 And /^I increase the overall max enrollment$/ do
-  @activity_offering.edit :max_enrollment => @activity_offering.max_enrollment.to_i + 20, :edit_already_started => true
+  @activity_offering.edit :max_enrollment => @activity_offering.max_enrollment.to_i + 20, :edit_already_started => true, :defer_save => true
 end
-
-
-#should match "seat pool is saved","updated seat pool is saved","seat pool is not saved", etc
-#in all cases activity offering (expected) must be updated to match actual page
-#Then /^the.*seat pool.*(?:saved|saving).*$/ do
-
-#end
 
 And /^the updated seat pool priorities are saved$/ do
   #checked in the 'the activity offering is updated when saved' step
 end
 
-
 And /^the seat pool is not saved with the activity offering$/ do
   #checked in the 'the activity offering is updated when saved' step
 end
 
-
 #checks the read only page after submit, and then reopens in edit mode to check persistence
 Then /^the activity offering is updated when saved$/ do
-
-
-
-  #TODO - uncomment this code when KSENROLL-5974 is fixed
-  #on ActivityOfferingMaintenanceView do |page|
-  #
-  #  page.first_msg.should match /.*successfully submitted.*/
-  #
-  #  @activity_offering.personnel_list.each do |p|
-  #    page.get_affiliation(p.id).should == p.affiliation.to_s
-  #    page.get_inst_effort(p.id).should == p.inst_effort.to_s
-  #  end
-  #
-  #  @activity_offering.seat_pool_list.values.each do |sp|
-  #    page.get_seats(sp.population_name).should == sp.seats.to_s
-  #    page.get_expiration_milestone(sp.population_name).should == sp.expiration_milestone
-  #    #  page.get_pool_percentage(sp.population_name).should == sp.percent_of_total
-  #    page.get_priority(sp.population_name).should == sp.priority.to_s
-  #  end
-  #
-  #  page.activity_code.should == @activity_offering.code
-  #  page.max_enrollment.should == @activity_offering.max_enrollment.to_s
-  #
-  #  if  @activity_offering.actual_scheduling_information_list.length != 0
-  #    page.actual_sched_info_table.rows[1..-1].each do |row|
-  #      row_key = "#{page.get_actual_sched_info_days(row)}#{page.get_actual_sched_info_start_time(row)}".delete(' ')
-  #      asi = @activity_offering.actual_scheduling_information_list[row_key]
-  #      if row_key != ''
-  #        if asi.tba?
-  #          page.get_actual_sched_info_tba(row).should == "TBA"
-  #        else
-  #          page.get_actual_sched_info_tba(row).should == ""
-  #        end
-  #        page.get_actual_sched_info_days(row).delete(' ').should == asi.days
-  #        page.get_actual_sched_info_start_time(row).should == "#{asi.start_time} #{asi.start_time_ampm.upcase}"
-  #        page.get_actual_sched_info_end_time(row).should == "#{asi.end_time} #{asi.end_time_ampm.upcase}"
-  #        page.get_actual_sched_info_facility(row).should == asi.facility_long_name
-  #        page.get_actual_sched_info_room(row).should == asi.room
-  #        #TODO - validate (facility) features when implemented
-  #      end
-  #    end
-  #  end
-  #
-  #  page.seat_pool_count.should == @activity_offering.seat_pool_list.count.to_s
-  #  page.seat_count_remaining.should == @activity_offering.seats_remaining.to_s
-  #  page.course_url.should == @activity_offering.course_url
-  #  page.evaluation.should == @activity_offering.evaluation
-  #  page.honors.should == @activity_offering.honors_course
-  #
-  #  page.home
-  #end
-
 
   #seat_pool priorities are resequenced when you go back into to edit AO
   @activity_offering.resequence_expected_seatpool_priorities()
@@ -153,7 +95,7 @@ Then /^the activity offering is updated when saved$/ do
       page.person_inst_effort(p.id).should == p.inst_effort.to_s
     end
 
-    @activity_offering.seat_pool_list.values.each do |seatpool|
+    @activity_offering.seat_pool_list.each do |seatpool|
       page.get_seats(seatpool.population_name).should == seatpool.seats.to_s
       page.get_expiration_milestone(seatpool.population_name).should == seatpool.expiration_milestone
       page.pool_percentage(seatpool.population_name).should == seatpool.percent_of_total(@activity_offering.max_enrollment)

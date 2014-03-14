@@ -96,7 +96,7 @@ When /^I edit a course offering requisite at the AO level by adding a new text s
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
       aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos.edit :send_to_scheduler => true
     end
   end
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "B"
@@ -117,7 +117,7 @@ When /^I suppress a course offering rule for an activity in a course$/ do
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
       aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos.edit :send_to_scheduler => true
     end
   end
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "B"
@@ -212,7 +212,7 @@ When /^I add a text rule to the Antirequisite section$/ do
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
       aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos.edit :send_to_scheduler => true
     end
   end
   @activityOR = make AORequisitesData, :section => "Antirequisite"
@@ -234,7 +234,7 @@ When /^I suppress a course offering rule for a specific activity in a course$/ d
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
       aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos.edit :send_to_scheduler => true
     end
   end
   @activityOR = make AORequisitesData, :section => "Corequisite"
@@ -248,7 +248,7 @@ When /^I edit a course offering rule at the AO level by adding a new text statem
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
       aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos.edit :send_to_scheduler => true
     end
   end
   @activityOR = make AORequisitesData, :section => "Corequisite", :activity => "B"
@@ -268,7 +268,7 @@ end
 Given /^I have made changes to multiple AO Requisites for the same course offering$/ do
   @course_offering = create CourseOffering, :term => "201208", :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true, :defer_save => false
+  @activity_offering.edit :send_to_scheduler => true
 
   @activityOR = make AORequisitesData
   @activityOR.make_changes_to_multiple_ao_reqs @course_offering.course
