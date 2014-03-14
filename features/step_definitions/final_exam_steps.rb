@@ -1318,11 +1318,9 @@ end
 
 And /^I have created an Activity Offering that only has Requested Scheduling Information$/ do
   @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
-  @activity_offering.edit :defer_save => true
-  si_obj = create SchedulingInformationObject, :use_std_ts => true,
+  si_obj =  make SchedulingInformationObject, :use_std_ts => true,
                     :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
-  @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
-  @activity_offering.save
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj
 end
 
 When /^I create a Course Offering from copy in a term with a defined final exam period that uses the matrix$/ do

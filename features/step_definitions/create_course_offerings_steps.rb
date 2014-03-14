@@ -85,16 +85,15 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 
-  @rsi_list = {}
-  @rsi_list["MT"] = make SchedulingInformationObject, :days => "MT"
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
+                              :format => "Lab Only", :activity_type => "Lab"
+  @activity_offering.edit :subterm => @calendar.terms[0].subterms[0].subterm_type, :defer_save => true
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT"), :edit_already_started => true
 
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,  :subterm => @calendar.terms[0].subterms[0].subterm_type,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list
-
-  @rsi_list2 = {}
-  @rsi_list2["WF"] = make SchedulingInformationObject, :days => "WF"
-  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering, :subterm => @calendar.terms[0].subterms[1].subterm_type,
-                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list2
+  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering,
+                               :format => "Lab Only", :activity_type => "Lab"
+  @activity_offering2.edit :subterm => @calendar.terms[0].subterms[1].subterm_type, :defer_save => true
+  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF"), :edit_already_started => true
 end
 
 And /^I create a Course Offering with an Activity Offerings assigned to subterms$/ do
@@ -109,15 +108,15 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
                             :course => "ENGL211",
                             :delivery_format_list => delivery_format_list
 
-  @rsi_list = {}
-  @rsi_list["MT"] = make SchedulingInformationObject, :days => "MT"
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,  :subterm => @calendar.terms[0].subterms[0].subterm_type,
-                              :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rsi_list
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
+                              :format => "Lab Only", :activity_type => "Lab"
+  @activity_offering.edit :subterm => @calendar.terms[0].subterms[0].subterm_type, :defer_save => true
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT"), :edit_already_started => true
 
-  @rsi_list2 = {}
-  @rsi_list2["WF"] = make SchedulingInformationObject, :days => "WF"
-  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering, :subterm => @calendar.terms[0].subterms[1].subterm_type,
-                               :format => "Lecture Only", :activity_type => "Lecture" , :requested_scheduling_information_list => @rsi_list2
+  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering,
+                               :format => "Lab Only", :activity_type => "Lab"
+  @activity_offering2.edit :subterm => @calendar.terms[0].subterms[1].subterm_type, :defer_save => true
+  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF"), :edit_already_started => true
 end
 
 And /^I create a Course Offering from catalog with Activity Offerings$/ do
@@ -128,13 +127,11 @@ And /^I create a Course Offering from catalog with Activity Offerings$/ do
                             :course => "CHEM132",
                             :delivery_format_list => delivery_format_list
 
-  @rsi_list = {}
-  @rsi_list["MT"] = make SchedulingInformationObject, :days => "MT"
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, # :subterm => @subterm_list[0].subterm_type,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
+                              :format => "Lab Only", :activity_type => "Lab"
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT")
 
-  @rsi_list2 = {}
-  @rsi_list2["WF"] = make SchedulingInformationObject, :days => "WF"
-  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering, #:subterm => @subterm_list[1].subterm_type,
-                               :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => @rsi_list2
+  @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering,
+                               :format => "Lab Only", :activity_type => "Lab"
+  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF")
 end

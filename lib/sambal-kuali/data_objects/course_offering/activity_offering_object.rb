@@ -30,7 +30,7 @@ class ActivityOfferingObject
                 :course_url,
                 :aoc_private_name,
                 :subterm
-  #type: hash - generally set using options hash
+  #type: collection
   attr_accessor :actual_scheduling_information_list,
                 :requested_scheduling_information_list,
                 :seat_pool_list
@@ -59,18 +59,14 @@ class ActivityOfferingObject
   def initialize(browser, opts={})
     @browser = browser
 
-    # :seat_pool_list =  {"random"=> (make SeatPoolObject)}
-    # :requested_scheduling_information_list = {"default"=> (make SchedulingInformationObject)}
-    # :personnel_list => [] -- Array.new(1){make PersonnelObject}
-
     defaults = {
         :parent_course_offering => (make CourseOffering),
         :status => DRAFT_STATUS,
         :format => nil, #nil means use default
         :activity_type => "Lecture",
         :max_enrollment => 0,
-        :actual_scheduling_information_list => {},
-        :requested_scheduling_information_list => {},
+        :actual_scheduling_information_list => collection('SchedulingInformation'),
+        :requested_scheduling_information_list => collection('SchedulingInformation'),
         :personnel_list => collection('Personnel'),
         :seat_pool_list => collection('SeatPool'),
         :course_url => "",
@@ -86,12 +82,7 @@ class ActivityOfferingObject
     }
 
     options = defaults.merge(opts)
-
-    #@format = options[:format]
-    #@activity_type = options[:activity_type]
-
     set_options(options)
-
   end
 
   def <=>(other)
@@ -176,25 +167,6 @@ class ActivityOfferingObject
       new_code =  post_add_ao_list - pre_add_ao_list
       @code = new_code[0]
     end
-
-    #init = {
-    #    :parent_course_offering=> @parent_course_offering,
-    #    :max_enrollment => @max_enrollment,
-    #    :actual_scheduling_information_list => @actual_scheduling_information_list,
-    #    :requested_scheduling_information_list => @requested_scheduling_information_list,
-    #    :personnel_list => @personnel_list ,
-    #    :seat_pool_list => @seat_pool_list,
-    #    :course_url => @course_url,
-    #    :requires_evaluation => @requires_evaluation,
-    #    :honors_course => @honors_course,
-    #    :colocated => @colocated,
-    #    :colocate_ao_list => @colocate_ao_list,
-    #    :colocate_shared_enrollment => @colocate_shared_enrollment,
-    #    :subterm => @subterm,
-    #    :waitlist_config => @waitlist_config
-    #}
-    #
-    #edit(init)
   end
 
   def get_existing_info_from_page
@@ -213,9 +185,9 @@ class ActivityOfferingObject
       si_list = get_existing_scheduling_information (ao_table_row)
       si_list.each do |si_object|
         if si_object.isRSI then
-          @requested_scheduling_information_list[si_object.si_key] = si_object
+          @requested_scheduling_information_list << si_object
         else
-          @actual_scheduling_information_list[si_object.si_key] = si_object
+          @actual_scheduling_information_list << si_object
         end
       end
     end
@@ -287,7 +259,6 @@ class ActivityOfferingObject
     edit_colocation options
     edit_max_enrollment_no_colocation options
     edit_non_std_timeslots options
-    edit_requested_scheduling_information options
     edit_course_url options
     edit_evaluation options
     edit_honors_course options
@@ -407,25 +378,6 @@ class ActivityOfferingObject
   end
   private :edit_non_std_timeslots
 
-  def edit_requested_scheduling_information opts={}
-
-    if opts[:requested_scheduling_information_list].nil? || opts[:requested_scheduling_information_list].empty?
-      return nil
-    end
-
-    #'save' vs 'save and process' determined by first rsi
-    first_rsi = opts[:requested_scheduling_information_list].values[0]
-    #list of requests added with updated keys
-    requests_added = {}
-
-    opts[:requested_scheduling_information_list].values.each do |request|
-      request.create
-      requests_added["#{request.days}#{request.start_time}#{request.start_time_ampm.upcase}".delete(' ')] = request
-    end
-
-  end #END: edit_request_scheduling_information
-  private :edit_requested_scheduling_information
-
   def edit_course_url opts={}
 
     if opts[:course_url].nil?
@@ -484,6 +436,22 @@ class ActivityOfferingObject
   end #END: edit_waitlist_config
   private :edit_waitlist_config
 
+  def add_req_sched_info opts={}
+
+    defaults = {
+        :defer_save => false,
+        :edit_already_started => false
+    }
+    options = defaults.merge(opts)
+    edit :defer_save => true unless options[:edit_already_started]
+
+    rsi_obj = options[:rsi_obj]
+    rsi_obj.parent_ao = self
+    rsi_obj.create
+    @requested_scheduling_information_list << rsi_obj
+    on(ActivityOfferingMaintenance).save unless options[:defer_save]
+  end
+
   def add_personnel person
     #edit
     person.parent_ao = self
@@ -502,11 +470,11 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false,
+        :edit_already_started => false
     }
     options = defaults.merge(opts)
 
-    edit unless options[:edit_already_started]
+    edit :defer_save => true unless options[:edit_already_started]
 
     options[:seat_pool_obj].parent_ao = self
     options[:seat_pool_obj].create seatpool_populations_used
@@ -518,7 +486,7 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false,
+        :edit_already_started => false
     }
     options = defaults.merge(opts)
 

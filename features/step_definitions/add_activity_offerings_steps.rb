@@ -42,9 +42,9 @@ Then /^the "(ASI|RSI)s" are successfully copied as RSIs in the new AO$/ do |sour
   course_offering.manage_and_init
   source_scheduling_information = nil
   if source_scheduling_information_type == "ASI"
-    source_scheduling_information = course_offering.get_ao_obj_by_code(@ao_source.code).actual_scheduling_information_list.values[0]
+    source_scheduling_information = course_offering.get_ao_obj_by_code(@ao_source.code).actual_scheduling_information_list[0]
   else
-    source_scheduling_information = course_offering.get_ao_obj_by_code(@ao_source.code).requested_scheduling_information_list.values[0]
+    source_scheduling_information = course_offering.get_ao_obj_by_code(@ao_source.code).requested_scheduling_information_list[0]
   end
   source_scheduling_information.nil?.should be_false
 

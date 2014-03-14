@@ -28,7 +28,7 @@ And /^The ASIs are Successfully copied to RSIs in the new AOs of the newly creat
       start_time = page.get_requested_sched_info_start_time(row).delete(' ')
       si_key = "#{days}#{start_time}"
       #get the corresponding ASI by key
-      asi = source_activity_offering.actual_scheduling_information_list[si_key]
+      asi = source_activity_offering.actual_scheduling_information_list.by_key(si_key)
       page.get_requested_sched_info_days(row).delete(' ').should == asi.days
       page.get_requested_sched_info_start_time(row).delete(' ').should == "#{asi.start_time}#{asi.start_time_ampm}"
       page.get_requested_sched_info_end_time(row).delete(' ').should == "#{asi.end_time}#{asi.end_time_ampm}"

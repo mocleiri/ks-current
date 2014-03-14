@@ -60,7 +60,7 @@ Then /^the activity offering scheduling information are copied to the rollover t
       start_time = page.get_requested_sched_info_start_time(row).delete(' ')
       si_key = "#{days}#{start_time}"
       #get the corresponding ASI by key
-      del_sched_info = source_activity_offering.requested_scheduling_information_list[si_key]
+      del_sched_info = source_activity_offering.requested_scheduling_information_list.by_key(si_key)
       page.get_requested_sched_info_days(row).delete(' ').should == del_sched_info.days
       page.get_requested_sched_info_start_time(row).delete(' ').should == "#{del_sched_info.start_time}#{del_sched_info.start_time_ampm}"
       page.get_requested_sched_info_end_time(row).delete(' ').should == "#{del_sched_info.end_time}#{del_sched_info.end_time_ampm}"

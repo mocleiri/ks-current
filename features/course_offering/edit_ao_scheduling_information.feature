@@ -32,7 +32,6 @@ Feature: CO.Edit AO scheduling information as CSC
     When I add RSIs for an AO specifying times and room only
     Then an error message is displayed about the required RSI fields
 
-  @bug @KSENROLL-11518
   Scenario: Add TBA RSIs for an AO
     When I add RSIs for an AO checking the TBA flag
     Then the AO's scheduling information shows the new schedule as TBA

@@ -70,7 +70,7 @@ Then /^the activity offering is updated when saved$/ do
     if  @activity_offering.actual_scheduling_information_list.length != 0
       page.actual_sched_info_table.rows[1..-1].each do |row|
         row_key = "#{page.get_actual_sched_info_days(row)}#{page.get_actual_sched_info_start_time(row)}".delete(' ')
-        asi = @activity_offering.actual_scheduling_information_list[row_key]
+        asi = @activity_offering.actual_scheduling_information_list.by_key(row_key)
         if row_key != ''
           if asi.tba?
             page.get_actual_sched_info_tba(row).should == "TBA"

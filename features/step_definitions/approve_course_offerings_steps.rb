@@ -566,16 +566,14 @@ Given /^I create a course offering from catalog with a suspended activity offeri
                             :delivery_format_list => delivery_format_list
 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
-                              :format => "Lab Only", :activity_type => "Lab" , :requested_scheduling_information_list => {}
+                              :format => "Lab Only", :activity_type => "Lab"
 
   @activity_offering.suspend :navigate_to_page => false
   on(ManageCourseOfferings).ao_status(@activity_offering.code).should == "Suspended"
 end
 
 Given /^I add requested scheduling information to the activity offering$/ do
-  @rsi_list = {}
-  @rsi_list["MTW"] = make SchedulingInformationObject, :days => "MTW"
-  @activity_offering.edit :requested_scheduling_information_list => @rsi_list
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MTW")
 end
 
 Given /^I am able to send the activity offering to the scheduler$/ do

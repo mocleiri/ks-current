@@ -12,11 +12,8 @@ end
 
 When /^I revise an AO's requested scheduling information$/ do
   @activity_offering.edit :defer_save => true
-  orig_key = @activity_offering.requested_scheduling_information_list.keys[0]
-  @activity_offering.requested_scheduling_information_list.values[0].edit :days => "SU", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
+  @activity_offering.requested_scheduling_information_list[0].edit :days => "SU", :start_time => "10:00", :start_time_ampm => "am", :end_time => "10:50", :end_time_ampm => "am",
                                                                       :facility => "PHYS", :facility_long_name => "PHYS",:room => "4102"
-  @activity_offering.requested_scheduling_information_list["SU10:00AM"] = @activity_offering.requested_scheduling_information_list.values[0]
-  @activity_offering.requested_scheduling_information_list.delete(orig_key)
   @activity_offering.save
 end
 
@@ -27,25 +24,21 @@ When /^I add RSIs for an AO specifying (times|times and facility|times and room)
     when "times and facility"
       optional_field_facility = "PHYS"
       optional_field_room = ""
+      expect_error = false
     when "times and room"
       optional_field_facility = ""
       optional_field_room = "0152"
+      expect_error = true
     else    # "times only"
       optional_field_facility = ""
       optional_field_room = ""
+      expect_error = false
   end
 
-  # capture the RSIs
-  #@new_rsis =  @activity_offering.requested_scheduling_information_list.values[0]
-
-  # add new RSI row
-  @activity_offering.edit :defer_save => true
-  si_obj = create SchedulingInformationObject, :days => "TH",
+  si_obj = make SchedulingInformationObject, :days => "TH",
                   :facility => optional_field_facility,
                   :facility_long_name => optional_field_facility, :room => optional_field_room
-  @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
-  # if entering an invalid combination, need to stay on page to see the error message, so skip the page submit
-  @activity_offering.save unless optional_field == "times and room"
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj, :defer_save => expect_error
 end
 
 Then /^the AO's scheduling information shows the new schedule$/ do
@@ -54,7 +47,6 @@ Then /^the AO's scheduling information shows the new schedule$/ do
   course_offering.manage
   #@activity_offering = course_offering.get_ao_obj_by_code("A")
   @activity_offering.edit :defer_save => true
-#  norm_st, norm_et = @new_rsis.normalize_start_and_end_times
 
   on ActivityOfferingMaintenance do |page|
     page.view_requested_scheduling_information
@@ -65,7 +57,7 @@ Then /^the AO's scheduling information shows the new schedule$/ do
       start_time = page.get_requested_sched_info_start_time(row).delete(' ')
       si_key = "#{days}#{start_time}"
       #get the corresponding ASI by key
-      del_sched_info = @activity_offering.requested_scheduling_information_list[si_key]
+      del_sched_info = @activity_offering.requested_scheduling_information_list.by_key(si_key)
       exp_room = (del_sched_info.room.nil?)?"":del_sched_info.room
       page.get_requested_sched_info_days(row).delete(' ').should == del_sched_info.days
       page.get_requested_sched_info_start_time(row).delete(' ').should == "#{del_sched_info.start_time}#{del_sched_info.start_time_ampm}"
@@ -81,7 +73,7 @@ Then /^the AO's scheduling information shows the new schedule as TBA$/ do
   @activity_offering.parent_course_offering.manage
   @activity_offering.edit :defer_save => true
 
-  sched_info = @activity_offering.requested_scheduling_information_list[""]
+  sched_info = @activity_offering.requested_scheduling_information_list.by_key('')
   on ActivityOfferingMaintenance do |page|
     row = page.target_rsi_row("")
     isTBA = page.get_requested_sched_info_tba(row) == "TBA"
@@ -97,43 +89,34 @@ Then /^an error message is displayed about the required RSI fields$/ do
 end
 
 When /^I add RSIs for an AO$/ do
-  # add new RSI row
-  @activity_offering.edit :defer_save => true
-  si_obj = create SchedulingInformationObject, :days => "TH"
-  @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
-  @activity_offering.save
+  si_obj = make SchedulingInformationObject, :days => "TH"
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj
 end
 
 When /^I add RSIs for an AO checking the TBA flag$/ do
   # add new TBA RSI row
-  @activity_offering.edit :defer_save => true
-  si_obj = create SchedulingInformationObject,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
-  @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
-  @activity_offering.save
+  si_obj = make SchedulingInformationObject,  :tba => true, :days => nil, :start_time => nil, :start_time_ampm => nil, :end_time => nil, :end_time_ampm => nil
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj
 end
 
 And /^I delete the original RSIs$/ do
   @activity_offering.parent_course_offering.manage
   @activity_offering.edit :defer_save => true
-  rsi_key = @activity_offering.requested_scheduling_information_list.keys[0]
-  @activity_offering.requested_scheduling_information_list.values[0].delete_rsi
-  @activity_offering.requested_scheduling_information_list.delete(rsi_key)
+  @activity_offering.requested_scheduling_information_list[0].delete
   @activity_offering.save
 end
 
 When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
   # add new RSI row
-  @activity_offering.edit :defer_save => true
   if tsType=="standard"
-    si_obj = create SchedulingInformationObject, :use_std_ts => true,
+    si_obj = make SchedulingInformationObject, :use_std_ts => true,
                     :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
-    @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
+    @activity_offering.add_req_sched_info :rsi_obj => si_obj
   elsif tsType=="non-standard"
-    si_obj = create SchedulingInformationObject, :use_std_ts => false, :days => "TH",
+    si_obj = make SchedulingInformationObject, :use_std_ts => false, :days => "TH",
                     :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
-    @activity_offering.requested_scheduling_information_list[si_obj.si_key] = si_obj
+    @activity_offering.add_req_sched_info :rsi_obj => si_obj
   end
-  @activity_offering.save
 end
 
 When /^I check the "approved for non-standard time slots" flag$/ do

@@ -46,7 +46,8 @@ end
 Given /^I (?:manage|create) an activity offering with the limit waitlist size set$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
   waitlist_config = make Waitlist, :enabled => true, :limit_size => 30
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :waitlist_config => waitlist_config
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -59,7 +60,8 @@ end
 Given /^I manage an activity offering with waitlists processing type set to (.*)$/ do |processing_type|
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
   waitlist_config = make Waitlist, :enabled => true, :type => processing_type
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :waitlist_config => waitlist_config
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -258,7 +260,8 @@ end
 Given /^I manage an activity offering with the waitlist allow hold list option enabled$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
   waitlist_config = make Waitlist, :enabled => true, :allow_hold_list => true
-  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.edit :waitlist_config => waitlist_config
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 

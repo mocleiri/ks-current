@@ -31,6 +31,8 @@ class SchedulingInformationObject
                 :facility_long_name,
                 :room,
                 :features_list
+  #object
+  attr_accessor :parent_ao
 
 
   alias_method :tba?, :tba
@@ -326,31 +328,22 @@ class SchedulingInformationObject
     return nil
   end
 
-  # delete Scheduling Information request row
-  #
-  # generally called from ActivityOffering class - see ActivityOffering
-  #
-  # @param row
-  def delete_rsi
+  def delete
     on ActivityOfferingMaintenance do |page|
-      row = page.target_rsi_row(si_key)
+      row = page.target_rsi_row(self.si_key)
       page.delete_rsi_row(row)
     end
-  end
-
-  def normalize_start_and_end_times
-    st_hr,st_min = @start_time.split(":")
-    st_hr = "0"+st_hr if st_hr.length==1
-    st = "#{st_hr}:#{st_min}"
-    et_hr,et_min = @end_time.split(":")
-    et_hr = "0"+et_hr if et_hr.length==1
-    et = "#{et_hr}:#{et_min}"
-    return st, et
+    @parent_ao.requested_scheduling_information_list.delete(rsi_obj)
   end
 end
 
 class SchedulingInformationCollection < CollectionsFactory
 
   contains SchedulingInformationObject
+
+  def by_key(key)
+    list = self.select {|si| si.si_key == key }
+    list.nil?? nil : list[0]
+  end
 
 end

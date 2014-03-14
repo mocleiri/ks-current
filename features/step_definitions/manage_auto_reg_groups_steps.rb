@@ -172,7 +172,7 @@ When /^I update an Activity Offering to create a time conflict$/ do
   #TODO: no need to loop here
   @course_offering.get_ao_list.each do |ao|
     if ao.code == "B"
-      ao.edit :requested_scheduling_information_list => {"default"=> (make SchedulingInformationObject, :days=>"M")}
+      ao.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days=>"M")
     end
   end
 end

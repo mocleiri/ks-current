@@ -1,7 +1,8 @@
 When /^I add requested scheduling information to an activity offering$/ do
   course_offering = make CourseOffering
   course_offering.manage
-  @activity_offering = create ActivityOfferingObject, :requested_scheduling_information_list => {"default"=> (make SchedulingInformationObject)}
+  @activity_offering = create ActivityOfferingObject
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject)
 end
 
 Then /^actual scheduling information are created with the activity offering$/ do
