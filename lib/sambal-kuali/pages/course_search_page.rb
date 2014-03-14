@@ -15,6 +15,9 @@ class CourseSearch < BasePage
   ################
   action(:code_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(text:"Code").click}
   action(:title_sort_icon) {|b| b.div(id:/course_search_results_wrapper/).table().thead().th(text:"Title").click}
+  element(:code_element) {|b| b.div(id:/course_search_results_wrapper/).table().tbody().tr().td(class:"ksap-text-nowrap sortable")}
+  element(:title_element)  {|b| b.div(id:/course_search_results_wrapper/).table().tbody().tr().td(class:"sortable details_link")}
+
   element(:result_pagination) {|b| b.div(id:"course_search_results_paginate")}
   element(:results_list_previous_enabled) { |b| b.a(id: "course_search_results_previous")}
   element(:results_list_previous_click) { |b| b.results_list_previous_enabled.click }
@@ -184,19 +187,19 @@ class CourseSearch < BasePage
     no_of_rows = results_table.rows.length-1
     for index in 1..no_of_rows do
       if index == no_of_rows
-      sleep(2)
-      course_code = results_table.rows[index].cells[COURSE_CODE].text
-      sleep(1)
-      course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
-      course_code_result_link(course_code).click
-      back_to_search_results.wait_until_present
-      course_description_text = course_description(course_code).downcase
-      back_to_search_results.click
-      sleep(2)
-      if ((course_code.downcase).include? (single_text).downcase) ||  ((course_name.include? (single_text).downcase )||(course_description_text.include? (single_text).downcase))
-      else
-        return false
-      end
+        sleep(2)
+        course_code = results_table.rows[index].cells[COURSE_CODE].text
+        sleep(1)
+        course_name = results_table.rows[index].cells[COURSE_NAME].text.downcase
+        course_code_result_link(course_code).click
+        back_to_search_results.wait_until_present
+        course_description_text = course_description(course_code).downcase
+        back_to_search_results.click
+        sleep(2)
+        if ((course_code.downcase).include? (single_text).downcase) ||  ((course_name.include? (single_text).downcase )||(course_description_text.include? (single_text).downcase))
+        else
+          return false
+        end
       end
     end
   end
@@ -336,53 +339,27 @@ class CourseSearch < BasePage
     puts no_of_rows
     current_code = nil
     previous_Code = nil
-    current_title = nil
-    previous_title = nil
     for index in 1..no_of_rows do
       sleep(1)
-      if sort_option == true && code_title_option == 0     #---- ASCENDING ORDER FOR CODE
+      current_code = results_table.rows[index].cells[code_title_option].text
+      sleep(1)
+      if  index > 1
         begin
-          current_code = results_table.rows[index].cells[COURSE_CODE].text
-          if index > 1
+          if sort_option == true      #---- ASCENDING ORDER FOR CODE and TITLE
+            puts "previous code #{previous_Code}"
+            puts "current code #{current_code}"
             if (previous_Code <=> current_code) > 0
               return false
             end
-          end
-          previous_Code = current_code
-        end
-      elsif  sort_option == true && code_title_option == 1       #---- ASCENDING ORDER FOR TITLE
-        begin
-          sleep(2)
-          current_title = results_table.rows[index].cells[COURSE_NAME].text
-          if index > 1
-            if (previous_title <=> current_title) > 0
-              return false
-            end
-          end
-          previous_title = current_title
-        end
 
-      elsif   sort_option == false && code_title_option == 0           #---DESCENDING ORDER FOR CODE
-        begin
-          sleep(1)
-          current_code = results_table.rows[index].cells[COURSE_CODE].text
-          if index > 1
+          else                        #---DESCENDING ORDER FOR CODE and TITLE
+            puts "previous code #{previous_Code}"
+            puts "current code #{current_code}"
             if (previous_Code <=> current_code) < 0
               return false
             end
+            previous_Code = current_code
           end
-          previous_Code = current_code
-        end
-      elsif   sort_option == false && code_title_option == 1            #---DESCENDING ORDER FOR TITLE
-        begin
-          sleep(2)
-          current_title1 = results_table.rows[index].cells[COURSE_NAME].text
-          if index > 1
-            if (previous_title1 <=> current_title1) < 0
-              return false
-            end
-          end
-          previous_title1 = current_title1
         end
       else
         return false
@@ -390,5 +367,7 @@ class CourseSearch < BasePage
     end
   end
 end
+
+
 
 

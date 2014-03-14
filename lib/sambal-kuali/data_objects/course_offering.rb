@@ -181,10 +181,12 @@ class CourseOffering
             page.results_list_previous_enabled.click
           end
         end
-      end
+      else
 
       check_all_page_data_for_singletext(expected)      # when its Single Word
 
+
+        end
     end
   end
 
@@ -203,11 +205,13 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+     else
       puts "------ page no = #{pgno}"
       ### - The line executes when its Single Page and also Last page in Multi page
       page.single_text_search_results_validation(single_text)
-    end
+     end
+
+      end
   end
 
 
@@ -225,13 +229,14 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+      else
 
       puts "------ page no = #{pgno}"
       ### - The line executes when its Single Page and also Last page in Multi page
       page.results_list_validation(split_text,search_FullText)
 
-    end
+      end
+      end
   end
 
   def check_all_results_data_for_level(text)
@@ -248,11 +253,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+    else
 
       puts "------ page no = #{pgno}"
       page.result_list_level(text)
-
+    end
     end
   end
 
@@ -301,10 +306,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+      else
       puts "------ page no = #{pgno}"
       page.check_results_sort_order(true , 0)
-    end
+      end
+      end
   end
 
   def check_code_descending_order_in_all_pages
@@ -319,10 +325,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+      else
       puts "------ page no = #{pgno}"
       page.check_results_sort_order(false , 0)
-    end
+      end
+      end
   end
 
   def check_title_ascending_order_in_all_pages
@@ -337,10 +344,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+      else
       puts "------ page no = #{pgno}"
       page.check_results_sort_order(true ,1)
-    end
+      end
+      end
   end
 
   def check_title_descending_order_in_all_pages
@@ -355,10 +363,11 @@ class CourseOffering
           pgno = pgno+1
           page.results_list_next_enabled.wait_until_present
         end
-      end
+      else
       puts "------ page no = #{pgno}"
       page.check_results_sort_order(false , 1)
-    end
+      end
+      end
   end
 end
 
