@@ -417,9 +417,9 @@ end
 
 Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
   on ViewExamOfferings do |page|
-    page.eo_by_co_days.should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/
-    page.eo_by_co_st_time.should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
-    page.eo_by_co_end_time.should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
+    page.get_eo_by_co_days_text.should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/
+    page.get_eo_by_co_st_time_text.should match /#{Regexp.escape(@matrix.rules[0].start_time)}/
+    page.get_eo_by_co_end_time_text.should match /#{Regexp.escape(@matrix.rules[0].end_time)}/
   end
 end
 
@@ -429,9 +429,9 @@ end
 
 Then /^the Schedule Information for the Exam Offering should be blank$/ do
   on ViewExamOfferings do |page|
-    page.eo_by_co_days.should == ""
-    page.eo_by_co_st_time.should == ""
-    page.eo_by_co_end_time.should == ""
+    page.get_eo_by_co_days_text.should == ""
+    page.get_eo_by_co_st_time_text.should == ""
+    page.get_eo_by_co_end_time_text.should == ""
   end
 end
 
@@ -473,17 +473,17 @@ end
 
 Then /^the Requested Scheduling Information for the Exam Offering of the AO should be populated$/ do
   on ViewExamOfferings do |page|
-    page.eo_by_ao_days(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/i
-    page.eo_by_ao_st_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)} #{Regexp.escape(@matrix.rules[0].st_time_ampm)}/i
-    page.eo_by_ao_end_time(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)} #{Regexp.escape(@matrix.rules[0].end_time_ampm)}/i
+    page.get_eo_by_ao_days_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/i
+    page.get_eo_by_ao_st_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)}/i
+    page.get_eo_by_ao_end_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)}/i
   end
 end
 
 Then /^the Requested Scheduling Information for the Exam Offering of the AO should not be populated$/ do
   on ViewExamOfferings do |page|
-    page.eo_by_ao_days(@activity_offering.code).should == ""
-    page.eo_by_ao_st_time(@activity_offering.code).should == ""
-    page.eo_by_ao_end_time(@activity_offering.code).should == ""
+    page.get_eo_by_ao_days_text(@activity_offering.code).should == ""
+    page.get_eo_by_ao_st_time_text(@activity_offering.code).should == ""
+    page.get_eo_by_ao_end_time_text(@activity_offering.code).should == ""
   end
 end
 

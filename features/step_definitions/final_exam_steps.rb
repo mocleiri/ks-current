@@ -1339,6 +1339,10 @@ Given /^I create a Course Offering with an AO-driven exam from catalog in a term
 end
 
 Given /^I create an Activity Offering that has no ASIs or RSIs$/ do
-  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :activity_type => "Lecture")
-  @activity_offering.approve :navigate_to_page => false, :send_to_scheduler => true
+  @activity_offering = make ActivityOfferingObject, :activity_type => "Lecture", :parent_course_offering => @course_offering
+  new_code_list = @activity_offering.create_simple
+  new_code_list.each do |code|
+    @activity_offering.code = code
+    @activity_offering.approve :navigate_to_page => false #, :send_to_scheduler => true
+  end
 end
