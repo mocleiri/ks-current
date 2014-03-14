@@ -85,4 +85,14 @@ class RegistrationCart < RegisterForCourseBase
     end
   end
 
+  def find_user_message(message_text)
+    begin
+      wait_until { user_message_div.exists? }
+      wait_until { user_message.include? message_text }
+    rescue
+      puts "Current exception: #{$!} "
+      raise "\"#{message_text}\" not found in user message"
+    end
+  end
+
 end
