@@ -127,6 +127,7 @@ And /^I add a delivery format option of Discussion Lecture$/ do
                          :grade_format => "Course Offering",
                          :final_exam_activity => "Lecture"
   @course_offering.add_delivery_format delivery_format
+  @course_offering.save
 end
 
 And /^I modify a delivery format option$/ do
@@ -232,10 +233,6 @@ Then /^I can submit and the added delivery format is not present$/ do
     page.close
   end
 
-end
-
-Then /^I can submit the edited course offering$/ do
-  @course_offering.save
 end
 
 Then /^I edit the same course offering$/ do

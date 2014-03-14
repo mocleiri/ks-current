@@ -207,7 +207,7 @@ Given /^I edit an Activity Offering that has available subterms$/ do
   @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :course=>"ENGL222", :term=>"201208")
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @course_offering.manage
-  @course_offering.edit_ao :ao_code=> @activity_offering.code
+  @activity_offering.edit :defer_save => true
 
   @calendar = make AcademicCalendar, :year => "2012"
   @calendar.terms << (make AcademicTermObject, :parent_calendar => @calendar)
