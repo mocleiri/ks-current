@@ -70,6 +70,7 @@ And /^I can review my proposal$/ do
   on CmCourseInformation do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)"
   end
 end
 
