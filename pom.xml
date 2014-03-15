@@ -31,7 +31,7 @@
         <janino.version>2.5.16</janino.version>
         <kuali.rice.version>2.3.1</kuali.rice.version>
         <kuali.student.version>1.2.1</kuali.student.version>
-        <kuali.student.enrollment.version>1.0.0-M7</kuali.student.enrollment.version>
+        <kuali.student.enrollment.version>1.0.0-M8</kuali.student.enrollment.version>
         <slf4j.version>1.6.4</slf4j.version>
         <jax-ws.version>2.2.6</jax-ws.version>
         <jaxb-impl.version>2.2.7</jaxb-impl.version>
