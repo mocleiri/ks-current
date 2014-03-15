@@ -4,6 +4,7 @@ import javax.ejb.EJB;
 
 import org.kuali.student.ap.academicplan.service.DegreeMapService;
 import org.kuali.student.ap.framework.context.CourseHelper;
+import org.kuali.student.ap.framework.context.DegreeMapHelper;
 import org.kuali.student.ap.framework.context.EnrollmentStatusHelper;
 import org.kuali.student.ap.framework.context.EnumerationHelper;
 import org.kuali.student.ap.framework.context.KsapContext;
@@ -197,6 +198,10 @@ public final class KsapFrameworkServiceLocator {
 	public static DegreeMapService getDegreeMapService() {
 		return getInstance().degreeMapService;
 	}
+	
+	public static DegreeMapHelper getDegreeMapHelper() {
+		return getInstance().degreeMapHelper;
+	}
 
 	/**
 	 * Get the KSAP context provider.
@@ -375,7 +380,9 @@ public final class KsapFrameworkServiceLocator {
 	@EJB
 	private transient PlanHelper planHelper;
 	@EJB
-	private transient DegreeMapService degreeMapService; 
+	private transient DegreeMapService degreeMapService;
+	@EJB
+	private transient DegreeMapHelper degreeMapHelper;
 
 	// provided by ks-ap-ui or institution override
 	@EJB
