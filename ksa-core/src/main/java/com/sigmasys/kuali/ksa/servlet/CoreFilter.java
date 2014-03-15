@@ -103,8 +103,7 @@ public class CoreFilter implements Filter {
         return false;
     }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
 
         try {
 

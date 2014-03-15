@@ -205,20 +205,6 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
         assertFalse("FM Session was not removed from queue.", fmSession.isQueued());
     }
 
-
-    /*
-    * **************************************************************
-    *
-    * Unit tests for "queueFeeManagement"
-    *
-    * **************************************************************
-    */
-
-    @Test
-    public void testQueueFeeManagementGoodCase() throws Exception {
-        // This method uses other methods that are covered by their respective unit tests
-    }
-
     /*
     * **************************************************************
     *
@@ -317,11 +303,6 @@ public class FeeManagementServiceTest extends AbstractServiceTest {
 
         // Assert Exception was caught
         assertTrue("Never caught an IllegalStateException", exceptionCaught);
-    }
-
-    @Test
-    public void testReconcileSessionAccountBlocked() throws Exception {
-        // TODO: Perform a check for a blocked account. When this method is implemented by Paul.
     }
 
     @Test

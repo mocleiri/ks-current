@@ -1284,6 +1284,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().setRateCatalog(null);
@@ -1303,6 +1304,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(null);
@@ -1322,6 +1324,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.ALWAYS);
@@ -1342,6 +1345,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.ALWAYS);
@@ -1361,6 +1365,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.UNTIL);
@@ -1381,6 +1386,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.UNTIL);
@@ -1400,6 +1406,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.UNTIL);
@@ -1439,6 +1446,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.UNTIL);
@@ -1461,6 +1469,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.UNTIL);
@@ -1480,6 +1489,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.AFTER);
@@ -1500,6 +1510,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.AFTER);
@@ -1519,6 +1530,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.AFTER);
@@ -1540,6 +1552,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.AFTER);
@@ -1560,6 +1573,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.AFTER);
@@ -1582,6 +1596,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().getRateCatalog().setTransactionDateType(TransactionDateType.AFTER);
@@ -1642,19 +1657,14 @@ public class RateServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void testGetRecognitionDateFromRateNoRateCatalogAtp() throws Exception {
-
-        // According to today's data schema design, Rate must have a RateCatalogAtp
-        // so this test succeeds by design:
-    }
-
-    @Test
     public void testGetRecognitionDateFromRateNoRateCatalog() throws Exception {
 
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
+
+        _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateCatalogAtp().setRateCatalog(null);
@@ -1675,7 +1685,9 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
+
+        _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.setRecognitionDate(null);
@@ -1697,7 +1709,9 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
+
+        _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
         Date transactionDate = new Date();
 
@@ -1721,7 +1735,9 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
+
+        _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
         Date transactionDate = new Date();
 
@@ -1747,6 +1763,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.setRecognitionDate(null);
@@ -1770,6 +1787,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
         Date recognitionDate = new Date();
 
@@ -1841,6 +1859,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         // Based on the design, Rates require RateType, so a Rate won't be found in the service method:
@@ -1871,6 +1890,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
         BigDecimal defaultAmount = new BigDecimal(27);
 
@@ -1894,7 +1914,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = null;
 
         rate.getRateType().setCode("soo.flatt.foo"); // It may contain "flat" or anything else to be "flat rate"
@@ -1916,6 +1938,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateType().setCode("flexible");
@@ -1944,6 +1967,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
         BigDecimal defaultAmount = new BigDecimal(10);
 
@@ -1975,6 +1999,7 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         rate.getRateType().setCode("54980--.fIxEdsdf809sdfklj3");
@@ -1996,7 +2021,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = new BigDecimal(24);
 
         rate.getRateType().setCode("fixed");
@@ -2022,7 +2049,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal limitAmount = new BigDecimal(24);
 
         rate.getRateType().setCode("fixed");
@@ -2049,7 +2078,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = new BigDecimal(24);
 
         int numUnits = 10;
@@ -2082,7 +2113,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = new BigDecimal(24);
         BigDecimal limitAmount = new BigDecimal(24);
 
@@ -2115,7 +2148,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = new BigDecimal(24);
 
         int numUnits = 10;
@@ -2147,7 +2182,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = new BigDecimal(24);
         BigDecimal limitAmount = new BigDecimal(24);
 
@@ -2179,7 +2216,9 @@ public class RateServiceTest extends AbstractServiceTest {
         String rateCode = "R_2013";
 
         _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
+
         BigDecimal defaultAmount = new BigDecimal(24);
 
         int numUnits = 4;
@@ -2257,7 +2296,9 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
+
+        _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
 
         UnitNumber numUnits = new UnitNumber(4);
@@ -2277,7 +2318,9 @@ public class RateServiceTest extends AbstractServiceTest {
         // Create Rate and remove the RateCatalog:
         String rateCatalogCode = "RC_2013";
         String rateCode = "R_2013";
-        RateCatalog rateCatalog = _createRateCatalog(rateCatalogCode);
+
+        _createRateCatalog(rateCatalogCode);
+
         Rate rate = _createRate(rateCode, rateCatalogCode);
         String transactionTypeId = "test-test";
 

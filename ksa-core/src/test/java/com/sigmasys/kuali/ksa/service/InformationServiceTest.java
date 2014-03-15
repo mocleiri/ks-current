@@ -143,7 +143,7 @@ public class InformationServiceTest extends AbstractServiceTest {
 
     }
 
-    private Memo createMemoForTransaction(String transactionId) throws Exception {
+    private Memo createMemoForTransaction(String transactionId) {
 
         String memoAccessLevelCode = informationService.getDefaultMemoLevel();
 

@@ -54,7 +54,7 @@ public class PaymentBillingServiceTest extends AbstractServiceTest {
         accountService.getOrCreateAccount(TEST_USER_ID);
     }
 
-    private void _createCharge(String chargeTypeId) throws Exception {
+    private void _createCharge(String chargeTypeId) {
 
         Transaction transaction = transactionService.createTransaction(chargeTypeId, TEST_USER_ID, new Date(),
                 new BigDecimal(300));
