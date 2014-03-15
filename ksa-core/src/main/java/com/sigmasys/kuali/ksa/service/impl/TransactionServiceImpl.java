@@ -1466,7 +1466,7 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
      */
     public CompositeAllocation createLockedAllocation(Long transactionId1, Long transactionId2, BigDecimal amount,
                                                       boolean isQueued, boolean internallyLocked) {
-        return createAllocation(transactionId1, transactionId2, amount, isQueued, true, true);
+        return createAllocation(transactionId1, transactionId2, amount, isQueued, true, internallyLocked);
     }
 
     /**
@@ -2845,10 +2845,9 @@ public class TransactionServiceImpl extends GenericPersistenceService implements
     @Override
     public boolean isTransactionAllowed(String accountId, String transactionTypeId, Date effectiveDate) {
 
-        String userId = userSessionManager.getUserId();
-
-        return accountService.accountExists(accountId) && transactionTypeExists(transactionTypeId) &&
-                getAccessControlService().isTransactionTypeAllowed(userId, transactionTypeId);
+        return accountService.accountExists(accountId) &&
+                getTransactionType(transactionTypeId, effectiveDate) != null &&
+                getAccessControlService().isTransactionTypeAllowed(userSessionManager.getUserId(), transactionTypeId);
     }
 
     /**

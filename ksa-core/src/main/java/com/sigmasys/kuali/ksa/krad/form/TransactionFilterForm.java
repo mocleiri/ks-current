@@ -9,19 +9,15 @@ import java.util.List;
 /**
  * This class encapsulates the state of a Transaction Filter form.
  * Such a form has a capability to perform the following filtering:
- *
+ * <p/>
  * 1. Account filtering
  * 2. Date range filtering
  * 3. Tag filtering
  * 4. Transaction status filtering
- *
+ * <p/>
  * More can be added by subclasses as needed. Such as custom date range filtering.
  *
- * Created with IntelliJ IDEA.
- * User: Sergey
- * Date: 11/5/13
- * Time: 2:14 AM
- * To change this template use File | Settings | File Templates.
+ * @author Sergey Godunov
  */
 public class TransactionFilterForm extends AbstractViewModel {
 
@@ -38,6 +34,7 @@ public class TransactionFilterForm extends AbstractViewModel {
 
     /**
      * Type of the Date range to find transactions.
+     *
      * @see com.sigmasys.kuali.ksa.krad.util.DateRangeFilterKeyValuesFinder
      */
     private String dateRangeType;

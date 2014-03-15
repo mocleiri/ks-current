@@ -27,8 +27,8 @@ public class RefundTypeModel extends AuditableEntityModel {
         return getParent().getCreditTypeId();
     }
 
-    public void setCreditType(String creditType) {
-        getParent().getCreditTypeId();
+    public void setCreditType(String creditTypeId) {
+        getParent().setCreditTypeId(creditTypeId);
     }
 
     @Override

@@ -4,8 +4,6 @@ import com.sigmasys.kuali.ksa.krad.model.GlBreakdownModel;
 import com.sigmasys.kuali.ksa.krad.model.TransactionTypeGroupModel;
 import com.sigmasys.kuali.ksa.krad.model.TransactionTypeModel;
 import com.sigmasys.kuali.ksa.model.*;
-import org.kuali.rice.core.api.util.ConcreteKeyValue;
-import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesFinder;
 
 import java.util.*;
@@ -20,7 +18,6 @@ public class TransactionTypeForm extends AbstractViewModel {
     private long transactionsAffectedCount = 0L;
 
     private Map<String, TransactionTypeGroupModel> transactionTypeGroups = new HashMap<String, TransactionTypeGroupModel>();
-    private int counter = 0;
 
     private String statusMessage;
 
@@ -28,7 +25,8 @@ public class TransactionTypeForm extends AbstractViewModel {
     private KeyValuesFinder rollupOptionsFinder;
 
     // Fields used for creating a new transaction type
-    private Boolean newTransactionType = false;
+    private boolean newTransactionType;
+
     private String type;
     private String code;
     private Integer subCode = -1;
@@ -44,7 +42,9 @@ public class TransactionTypeForm extends AbstractViewModel {
 
     // Credit types only
     private Integer clearPeriod;
-    private Boolean refundable;
+
+    private boolean refundable;
+
     private String refundRule;
     private String authorizationText;
     private String unallocatedGLAccount;
@@ -60,9 +60,6 @@ public class TransactionTypeForm extends AbstractViewModel {
     private boolean showEndDate;
     private Tag tagSearch;
 
-    /*
-      Get/Set methods
-    */
 
     public Account getAccount() {
         return account;
@@ -73,10 +70,7 @@ public class TransactionTypeForm extends AbstractViewModel {
     }
 
     public List<TransactionTypeGroupModel> getTransactionTypes() {
-        Collection<TransactionTypeGroupModel> models = transactionTypeGroups.values();
-        counter++;
-
-        return new ArrayList<TransactionTypeGroupModel>(models);
+        return new ArrayList<TransactionTypeGroupModel>(transactionTypeGroups.values());
     }
 
     public TransactionTypeModel getTransactionType() {
@@ -99,19 +93,6 @@ public class TransactionTypeForm extends AbstractViewModel {
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
     }
-
-    public List<KeyValue> getTransactionTypeCodes() {
-        List<KeyValue> labels = new ArrayList<KeyValue>();
-
-        labels.add(new ConcreteKeyValue("", ""));
-        labels.add(new ConcreteKeyValue("C", "Credit"));
-        return labels;
-    }
-
-    public void reset() {
-
-    }
-
 
     public String getType() {
         return type;
@@ -194,7 +175,7 @@ public class TransactionTypeForm extends AbstractViewModel {
     }
 
     public List<GlBreakdownModel> getGlBreakdowns() {
-        if(glBreakdowns == null){
+        if (glBreakdowns == null) {
             glBreakdowns = new ArrayList<GlBreakdownModel>();
         }
         return glBreakdowns;
@@ -245,7 +226,7 @@ public class TransactionTypeForm extends AbstractViewModel {
     }
 
     public List<Tag> getTags() {
-        if(this.tags == null){
+        if (this.tags == null) {
             this.tags = new ArrayList<Tag>();
         }
         return tags;
@@ -279,11 +260,11 @@ public class TransactionTypeForm extends AbstractViewModel {
         this.subCode = subCode;
     }
 
-    public Boolean getRefundable() {
+    public boolean getRefundable() {
         return refundable;
     }
 
-    public void setRefundable(Boolean refundable) {
+    public void setRefundable(boolean refundable) {
         this.refundable = refundable;
     }
 
@@ -319,16 +300,16 @@ public class TransactionTypeForm extends AbstractViewModel {
         this.startDateAuditReason = startDateAuditReason;
     }
 
-    public Boolean getNewTransactionType() {
+    public boolean getNewTransactionType() {
         return newTransactionType;
     }
 
-    public void setNewTransactionType(Boolean newTransactionType) {
+    public void setNewTransactionType(boolean newTransactionType) {
         this.newTransactionType = newTransactionType;
     }
 
     public List<CreditPermission> getCreditPermissions() {
-        if(creditPermissions == null) {
+        if (creditPermissions == null) {
             creditPermissions = new ArrayList<CreditPermission>();
         }
         return creditPermissions;

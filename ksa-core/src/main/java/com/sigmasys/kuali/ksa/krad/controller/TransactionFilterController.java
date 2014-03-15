@@ -6,8 +6,6 @@ import com.sigmasys.kuali.ksa.model.Account;
 import com.sigmasys.kuali.ksa.model.Tag;
 import com.sigmasys.kuali.ksa.service.AuditableEntityService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,19 +21,23 @@ import java.util.*;
  * This class contains all common behavior of a Transaction filter.
  * This controller extends the downloading capabilities of the DownloadController.
  *
- * Created with IntelliJ IDEA.
- * User: Sergey
- * Date: 11/5/13
- * Time: 2:13 AM
- * To change this template use File | Settings | File Templates.
+ * @author Sergey Godunov
  */
 @Controller
-public abstract class TransactionFilterController extends DownloadController{
+public abstract class TransactionFilterController extends DownloadController {
 
-    private static final Log logger = LogFactory.getLog(TransactionFilterController.class);
 
     @Autowired
     private AuditableEntityService auditableEntityService;
+
+
+    /**
+     * Refreshes the underlying data model. This action happens after a filter
+     * is changes and a refresh is required to apply the changed filter.
+     *
+     * @param model The form object.
+     */
+    protected abstract <T extends TransactionFilterForm> void refreshModel(T model);
 
 
     /**
@@ -46,17 +48,14 @@ public abstract class TransactionFilterController extends DownloadController{
      */
     @Override
     protected TransactionFilterForm createInitialForm(HttpServletRequest request) {
-
-        // Create a new empty form:
         TransactionFilterForm form = new TransactionFilterForm();
-
         initializeForm(form);
-
         return form;
     }
 
     /**
      * Account filtering support callback.
+     *
      * @param form The form object.
      * @return ModelAndView.
      */
@@ -115,7 +114,8 @@ public abstract class TransactionFilterController extends DownloadController{
     }
 
     /**
-     * Tag filtering supprot callback.
+     * Tag filtering callback.
+     *
      * @param form The form object.
      * @return ModelAndView.
      */
@@ -176,7 +176,7 @@ public abstract class TransactionFilterController extends DownloadController{
     /**
      * Invoked by the view to refresh the model.
      *
-     * @param form  The form object.
+     * @param form The form object.
      * @return ModelAndView
      * @throws Exception If an error occurred.
      */
@@ -188,14 +188,6 @@ public abstract class TransactionFilterController extends DownloadController{
 
         return getUIFModelAndView(form);
     }
-
-    /**
-     * Refreshes the underlying data model. This action happens after a filter
-     * is changes and a refresh is required to apply the changed filter.
-     *
-     * @param form  The form object.
-     */
-    protected abstract <T extends TransactionFilterForm> void refreshModel(T form);
 
 
     /**
@@ -218,6 +210,7 @@ public abstract class TransactionFilterController extends DownloadController{
 
     /**
      * Returns a List of filter Account IDs of the given form object.
+     *
      * @param form The form object.
      * @return A List of filter Account IDs.
      */

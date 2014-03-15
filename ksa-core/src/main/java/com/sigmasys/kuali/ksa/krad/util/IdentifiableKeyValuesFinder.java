@@ -17,21 +17,23 @@ public class IdentifiableKeyValuesFinder<T extends Identifiable> extends Generic
 
     public IdentifiableKeyValuesFinder(Class<T> type, boolean blankOption) {
         this.type = type;
-        this.setBlankOption(true);
+        this.setBlankOption(blankOption);
     }
 
     @Override
     protected List<KeyValue> buildKeyValues() {
+
         // Get all entities of the generic type:
         T[] entities = type.getEnumConstants();
 
-        List<KeyValue> result = new ArrayList<KeyValue>();
+        List<KeyValue> result = new ArrayList<KeyValue>(entities.length);
 
         // Iterate through entities and add Key Value pairs:
-        for (int i = 0; i < entities.length; i++) {
-            T entity = entities[i];
+        for (T entity : entities) {
+
             String key = entity.getId().toString();
             String value = entity.toString();
+
             ConcreteKeyValue keyValue = new ConcreteKeyValue(key, value);
 
             result.add(keyValue);

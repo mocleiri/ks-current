@@ -75,7 +75,6 @@ public class TransactionTypeController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=get")
     public ModelAndView get(@ModelAttribute("KualiForm") TransactionTypeForm form, HttpServletRequest request) {
 
-        // do get stuff...
         String viewId = request.getParameter("viewId");
         String pageId = request.getParameter("pageId");
 
@@ -136,7 +135,6 @@ public class TransactionTypeController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=create")
     public ModelAndView create(@ModelAttribute("KualiForm") TransactionTypeForm form, HttpServletRequest request) {
 
-        form.reset();
         form.setType(TransactionType.CREDIT_TYPE);
 
         String modelToCopy = request.getParameter("model");
@@ -191,12 +189,13 @@ public class TransactionTypeController extends GenericSearchController {
 
         boolean typeExists = transactionService.transactionTypeExists(code);
 
-        if(typeExists && (subCode == null || subCode == -1)) {
+        if (typeExists && (subCode == null || subCode == -1)) {
+
             TransactionType previousTransactionType = transactionService.getTransactionType(code, new Date());
 
             // make sure that this transaction type doesn't start on the same day (or before) the currently existing tt.
             // When this happens all kinds of bad things happen in the system.
-            if(previousTransactionType != null && (previousTransactionType.getStartDate().compareTo(startDate) >= 0)) {
+            if (previousTransactionType != null && (previousTransactionType.getStartDate().compareTo(startDate) >= 0)) {
 
 
                 DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -325,7 +324,7 @@ public class TransactionTypeController extends GenericSearchController {
             if (creditPermissions != null && creditPermissions.size() > 0) {
                 for (CreditPermission creditPermission : creditPermissions) {
                     Long id = creditPermission.getId();
-                    if(id == null) {
+                    if (id == null) {
                         transactionService.createCreditPermission(transactionType.getId(), creditPermission.getAllowableDebitType(), creditPermission.getPriority());
                     } else {
                         transactionService.persistCreditPermission(creditPermission);
@@ -356,7 +355,6 @@ public class TransactionTypeController extends GenericSearchController {
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=edit")
     public ModelAndView edit(@ModelAttribute("KualiForm") TransactionTypeForm form, HttpServletRequest request) {
 
-        form.reset();
         form.setType(TransactionType.CREDIT_TYPE);
 
         String modelToCopy = request.getParameter("model");
@@ -386,7 +384,7 @@ public class TransactionTypeController extends GenericSearchController {
 
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=update")
-    public <T extends AuditableEntity> ModelAndView update(@ModelAttribute("KualiForm") TransactionTypeForm form) {
+    public ModelAndView update(@ModelAttribute("KualiForm") TransactionTypeForm form) {
 
         TransactionTypeModel entity = form.getTransactionType();
 
@@ -399,12 +397,15 @@ public class TransactionTypeController extends GenericSearchController {
         logger.debug("Entity code: " + entity.getCode());
 
         try {
+
             // occurs in the detail page.
             auditableEntityService.persistAuditableEntity(entity.getTransactionType());
+
             // success in updating the currency.
             String statusMsg = "Success: Transaction Type entity updated. Entity ID =  " + entity.getId();
             form.setStatusMessage(statusMsg);
             logger.info(statusMsg);
+
         } catch (Exception e) {
             // failed to update the currency. Leave the currency information in the view
             String statusMsg = "Failure: Transaction Type entity did not update, Entity ID =  " + entity.getId() + ". " + e.getMessage();
@@ -584,7 +585,7 @@ public class TransactionTypeController extends GenericSearchController {
         boolean errors = false;
 
         // Handle the GL Breakdown sections.
-        BigDecimal total = new BigDecimal(0);
+        BigDecimal total = BigDecimal.ZERO;
 
         boolean zeroRow = false;
 
@@ -596,24 +597,29 @@ public class TransactionTypeController extends GenericSearchController {
             breakdown.setGeneralLedgerType(defaultGlType);
 
             breakdown.setGlAccount(breakdownModel.getGlAccount());
+
             if (!glService.isGlAccountValid(breakdown.getGlAccount())) {
                 GlobalVariables.getMessageMap().putError("glBreakdownList", RiceKeyConstants.ERROR_CUSTOM, "GL Account '" + breakdown.getGlAccount() + "' is not valid");
                 errors = true;
             }
 
             String operation = breakdownModel.getOperation();
+
             if (operation == null || "".equals(operation)) {
                 GlobalVariables.getMessageMap().putError("glBreakdownList", RiceKeyConstants.ERROR_CUSTOM, "Operation is required");
                 errors = true;
             }
+
             GlOperationType operationType = (GlOperationType.CREDIT.getId().equals(operation)) ? GlOperationType.CREDIT : GlOperationType.DEBIT;
 
             breakdown.setGlOperation(operationType);
 
             BigDecimal b = breakdownModel.getBreakdown();
+
             if (b == null) {
                 b = BigDecimal.ZERO;
             }
+
             breakdown.setBreakdown(b);
             total = total.add(b);
 
@@ -650,6 +656,7 @@ public class TransactionTypeController extends GenericSearchController {
     }
 
     private void persistAudit(TransactionTypeForm form, TransactionType transactionType) {
+
         ActivityType activityType = activityService.getActivityType("LOGMEMO");
 
         Activity activity = new Activity();
@@ -658,8 +665,6 @@ public class TransactionTypeController extends GenericSearchController {
         activity.setEntityType("TransactionType");
         activity.setEntityId(transactionType.getId().toString());
 
-
         activityService.persistActivity(activity);
-
     }
 }

@@ -85,6 +85,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
      */
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=displayInitialPage")
     public ModelAndView displayInitialPage(@ModelAttribute("KualiForm") CashLimitForm form) throws Exception {
+
         // Get the model data:
         refreshModel(form);
 
@@ -102,6 +103,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
      * @return null to stay on the same page after download starts.
      * @throws Exception If an error occurs.
      */
+    @SuppressWarnings("all")
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, params = "methodToCall=downloadGeneratedArchiveXml")
     public ModelAndView downloadGeneratedArchiveXml(@ModelAttribute("KualiForm") CashLimitForm form,
                                                     HttpServletResponse response,
@@ -114,7 +116,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
         File zipArchive = createForm8300Archive(cashLimitEvents);
 
         // If entries exist, start download:
-        if ((zipArchive != null) && zipArchive.exists()) {
+        if (zipArchive != null && zipArchive.exists()) {
 
             String zipFileName = String.format("Combined_Cash_Limit_Archive_%s.zip", DATE_FORMAT.format(new Date()));
 
@@ -171,6 +173,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
 
         // If the form content is available, start download:
         if (StringUtils.isNotEmpty(form8300)) {
+
             // Start download:
             String reportFileName = generateReportFileName(cashLimitEvent);
 
@@ -178,6 +181,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
 
             // Get rid of the generated form until this CashLimitEvent is Completed
             cashLimitEvent.setXmlDocument(null);
+
         } else {
             // Set the error on the form and return the ModelAndView:
             form.setFormSubmissionError("Error obtaining IRS form 8300. See log file for details.");
@@ -276,12 +280,14 @@ public class CombinedCashLimitController extends TransactionFilterController {
 
         // Ignore each selected CashLimitEvent:
         try {
+
             for (CashLimitEventModel model : selectedCashLimitEvents) {
 
                 Long id = model.getCashLimitEvent().getId();
 
                 cashLimitService.queueCashLimitEvent(id);
             }
+
         } catch (Exception e) {
             formSubmissionError = e.getMessage();
         }
@@ -297,20 +303,22 @@ public class CombinedCashLimitController extends TransactionFilterController {
      * Refreshes the underlying data model. This action happens after a filter
      * is changes and a refresh is required to apply the changed filter.
      *
-     * @param form The form object.
+     * @param model The form object.
      */
     @Override
-    protected void refreshModel(TransactionFilterForm form) {
+    protected <T extends TransactionFilterForm> void refreshModel(T model) {
+
+        CashLimitForm cashLimitForm = (CashLimitForm) model;
 
         // Create a List of CashModelEventModel objects:
-        List<CashLimitEventModel> cashLimitEventModels = createCashLimitEventModelList(form);
+        List<CashLimitEventModel> cashLimitEventModels = createCashLimitEventModelList(cashLimitForm);
 
         // Set the models on the form:
-        ((CashLimitForm) form).setCashLimitEvents(cashLimitEventModels);
+        cashLimitForm.setCashLimitEvents(cashLimitEventModels);
 
         // Remove the properties that must be reset on each refresh:
-        ((CashLimitForm) form).setLastCompletedCashLimitEventIds(null);
-        ((CashLimitForm) form).setFormSubmissionError(null);
+        cashLimitForm.setLastCompletedCashLimitEventIds(null);
+        cashLimitForm.setFormSubmissionError(null);
     }
 
 
@@ -489,8 +497,7 @@ public class CombinedCashLimitController extends TransactionFilterController {
         for (String idStr : stringIds) {
 
             // Find a CashLimitEvent:
-            Long id = Long.valueOf(idStr);
-            CashLimitEvent cashLimitEvent = cashLimitService.getCashLimitEvent(id);
+            CashLimitEvent cashLimitEvent = cashLimitService.getCashLimitEvent(Long.valueOf(idStr));
 
             if (cashLimitEvent != null) {
                 result.add(cashLimitEvent);

@@ -517,10 +517,10 @@ public class BatchRefundController extends GenericSearchController {
     }
 
     /**
-     * Returns a List of IDs of the currently selected Tags.
+     * Returns a S of IDs of the currently selected Tags.
      *
      * @param form The form object.
-     * @return
+     * @return a set  Tag
      */
     private Set<Long> getFilterTagIds(RefundForm form) {
 

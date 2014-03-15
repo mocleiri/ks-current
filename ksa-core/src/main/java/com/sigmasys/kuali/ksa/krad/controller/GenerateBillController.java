@@ -79,22 +79,22 @@ public class GenerateBillController extends DownloadController {
 
         List<Rollup> sameDayRollups = form.getRollupsOnSameDate();
         Set<Long> sameDayRollupIds = new HashSet<Long>(sameDayRollups.size());
-        for(Rollup rollup : sameDayRollups) {
+        for (Rollup rollup : sameDayRollups) {
             sameDayRollupIds.add(rollup.getId());
         }
 
         List<Rollup> sameStatementRollups = form.getRollupsOnSameStatement();
         Set<Long> sameStatementRollupsIds = new HashSet<Long>(sameStatementRollups.size());
-        for(Rollup rollup : sameStatementRollups) {
+        for (Rollup rollup : sameStatementRollups) {
             sameStatementRollupsIds.add(rollup.getId());
         }
 
         String xmlResponse = reportService.generateBill(form.getBillAccountId(), form.getBillMessage(),
-                                                    form.getBillDate(), form.getStartDate(), form.getStartDate(),
-                                                    sameDayRollupIds, sameStatementRollupsIds,
-                                                    form.getShowOnlyUnbilledTransactions(),
-                                                    form.getShowDeferments(), form.getShowDependents(),
-                                                    form.getShowInternalTransactions(), form.getRunPaymentApplication());
+                form.getBillDate(), form.getStartDate(), form.getStartDate(),
+                sameDayRollupIds, sameStatementRollupsIds,
+                form.getShowOnlyUnbilledTransactions(),
+                form.getShowDeferments(), form.getShowDependents(),
+                form.getShowInternalTransactions(), form.getRunPaymentApplication());
 
         String filename = form.getBillAccountId() + "_Bill.xml";
 
@@ -111,9 +111,7 @@ public class GenerateBillController extends DownloadController {
         FileCopyUtils.copy(IOUtils.toInputStream(xmlResponse), response.getOutputStream());
 
 
-        //return getUIFModelAndView(form);
         return null;
-
     }
 
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=addSameDayRollup")
@@ -123,7 +121,7 @@ public class GenerateBillController extends DownloadController {
 
         List<Rollup> rollups = auditableEntityService.getAuditableEntitiesByNamePattern(name, Rollup.class);
 
-        if(rollups != null && rollups.size() > 0) {
+        if (rollups != null && rollups.size() > 0) {
             form.getRollupsOnSameDate().add(rollups.get(0));
             form.setNewSameDayRollup("");
         }
@@ -138,7 +136,7 @@ public class GenerateBillController extends DownloadController {
 
         List<Rollup> rollups = auditableEntityService.getAuditableEntitiesByNamePattern(name, Rollup.class);
 
-        if(rollups != null && rollups.size() > 0) {
+        if (rollups != null && rollups.size() > 0) {
             form.getRollupsOnSameStatement().add(rollups.get(0));
             form.setNewSameStatementRollup("");
         }

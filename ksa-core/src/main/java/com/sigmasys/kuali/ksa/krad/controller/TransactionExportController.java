@@ -22,7 +22,7 @@ import com.sigmasys.kuali.ksa.service.TransactionExportService;
  * This controller initiates download of the XML file produced as the result
  * of the call to {@link TransactionExportService#exportTransactions()}
  *
- * @author Sergey
+ * @author Sergey Godunov
  */
 @Controller
 @RequestMapping(value = "/exportTransactions")
@@ -77,12 +77,14 @@ public class TransactionExportController extends GenericSearchController {
         ServletOutputStream outputStream = response.getOutputStream();
 
         try {
+
             int length;
             int bufSize = 1024;
             byte[] buffer = new byte[bufSize];
             while ((length = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, length);
             }
+
         } finally {
             inputStream.close();
             outputStream.flush();

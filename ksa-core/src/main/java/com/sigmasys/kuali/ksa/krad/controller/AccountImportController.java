@@ -46,32 +46,31 @@ public class AccountImportController extends GenericSearchController {
     }
 
     /**
-     * @param form
-     * @return
+     * @param form FileUploadForm
+     * @return ModelAndView
      */
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=get")
     public ModelAndView get(@ModelAttribute("KualiForm") FileUploadForm form) {
-
-        // do get stuff...
-
         return getUIFModelAndView(form);
     }
 
     /**
-     * @param form
-     * @return
+     * @param form FileUploadForm
+     * @return ModelAndView
      */
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=submit")
     @Transactional(readOnly = false)
     public ModelAndView submit(@ModelAttribute("KualiForm") FileUploadForm form) {
-        // do submit stuff...
 
         // org.springframework.web.multipart.MaxUploadSizeExceededException:
         // Maximum upload size of 500000 bytes exceeded; nested exception is
         // org.apache.commons.fileupload.FileUploadBase$SizeLimitExceededException:
         // the request was rejected because its size (992410) exceeds the configured maximum (500000)
+
         String processMsg = "";
+
         try {
+
             MultipartFile uploadXmlFile = form.getUploadFile();
             String contentType = uploadXmlFile.getContentType();
             if (contentType.endsWith("xml")) {
