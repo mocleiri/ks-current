@@ -328,7 +328,8 @@ class ActivityOfferingObject
             @max_enrollment = opts[:max_enrollment]
           else # ie: 'separately manage'
             page.select_separately_manage_enrollment_radio
-            page.edit_separate_max_enr(@parent_course_offering.course, @code, @max_enrollment)
+            page.edit_separate_max_enr(@parent_course_offering.course, @code, opts[:max_enrollment])
+            @max_enrollment = opts[:max_enrollment]
           end
         end
 
