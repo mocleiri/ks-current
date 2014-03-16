@@ -113,7 +113,7 @@ end
 
 Given /^I manage registration groups for a new course offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"CHEM135", :term=>"201301")
-  @course_offering.manage_and_init
+  @course_offering.manage
 end
 
 Then /^the Activity Offerings are present in the cluster table$/ do
@@ -153,13 +153,8 @@ When /^I add an Activity Offering$/ do
 end
 
 When /^I update an Activity Offering to have less seats$/ do
-  #TODO: no need to loop here
-  @course_offering.get_ao_list.each do |ao|
-    if ao.code == "A"
-      ao.edit :max_enrollment => 200, :defer_save => true
-    end
-  end
-
+  actvity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => 'A'
+  actvity_offering.edit :max_enrollment => 200
 end
 
 Then /^a warning message is displayed stating "([^"]*)"$/ do |msg|
@@ -169,13 +164,9 @@ Then /^a warning message is displayed stating "([^"]*)"$/ do |msg|
 end
 
 When /^I update an Activity Offering to create a time conflict$/ do
-  #TODO: no need to loop here
-  @course_offering.get_ao_list.each do |ao|
-    if ao.code == "B"
-      ao.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days=>"M")
-    end
-  end
-end
+  actvity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => 'B'
+  actvity_offering.edit :rsi_obj => (make SchedulingInformationObject, :days=>"M")
+ end
 
 When /^I edit the Activity Offering$/ do
   @course_offering.edit_ao :ao_code =>"A"
