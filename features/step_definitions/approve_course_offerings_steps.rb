@@ -577,7 +577,7 @@ Given /^I add requested scheduling information to the activity offering$/ do
 end
 
 Given /^I am able to send the activity offering to the scheduler$/ do
-  @activity_offering.edit :send_to_scheduler => true
+  @activity_offering.edit :send_to_scheduler => true, :edit_already_started => true
 end
 
 And /^actual scheduling information for the activity offering are still shown$/ do
@@ -590,13 +590,13 @@ end
 
 Given /^the actual scheduling information are displayed for the updated activity offering$/ do
   @activity_offering.parent_course_offering.manage
-
+   expected_asi = @activity_offering.requested_scheduling_information_list[0]
   on ManageCourseOfferings do |page|
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_DAYS].text.should == (@rsi_list["MTW"]).days
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ST_TIME].text.should == "#{(@rsi_list["MTW"]).start_time} #{(@rsi_list["MTW"]).start_time_ampm.upcase}"
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_END_TIME].text.should == "#{(@rsi_list["MTW"]).end_time} #{(@rsi_list["MTW"]).end_time_ampm.upcase}"
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_BLDG].text.should == (@rsi_list["MTW"]).facility
-    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ROOM].text.should == (@rsi_list["MTW"]).room
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_DAYS].text.should == expected_asi.days
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ST_TIME].text.should == "#{expected_asi.start_time} #{expected_asi.start_time_ampm.upcase}"
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_END_TIME].text.should == "#{expected_asi.end_time} #{expected_asi.end_time_ampm.upcase}"
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_BLDG].text.should == expected_asi.facility
+    page.target_row(@activity_offering.code).cells[ManageCourseOfferings::AO_ROOM].text.should == expected_asi.room
   end
 end
 
