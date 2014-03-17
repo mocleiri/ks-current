@@ -1,5 +1,5 @@
 Given /^I am editing the information attributes for an activity offering$/ do
-  @activity_offering.edit :max_enrollment => 50
+  @activity_offering.edit :max_enrollment => 50, :defer_save => true
 end
 
 When /^I edit an activity offering code/ do
