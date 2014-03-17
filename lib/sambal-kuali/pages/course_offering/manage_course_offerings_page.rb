@@ -264,8 +264,6 @@ class ManageCourseOfferings < BasePage
     codes
   end
 
-  ########################## cluster tab
-
   element(:cluster_list_div)  { |b| b.frm.div(id: "KS-CourseOfferingManagement-AOClustersCollection").div(class: "uif-stackedCollectionLayout") }
   element(:cluster_warning_list)  { |b| b.frm.ul(id: "pageValidationList") }
 
@@ -276,6 +274,14 @@ class ManageCourseOfferings < BasePage
     end
     #puts "div list #{div_list.length}"
     div_list
+  end
+
+  def cluster_private_names_list
+    cluster_names = []
+    cluster_div_list.each do |div|
+      cluster_names << cluster_div_private_name(div)
+    end
+    cluster_names
   end
 
   def target_cluster(private_name)

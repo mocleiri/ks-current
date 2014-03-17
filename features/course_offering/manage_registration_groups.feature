@@ -6,8 +6,8 @@ As an Administrator, I want to create registration groups for a Course Offering
   Background:
     Given I am logged in as a Schedule Coordinator
 
-  #ARG 6.1 - see Simple Rollover feature
-  #ARG 6.2 When creating a CO by copy AOC and AOs should also be copied and RGs are generated - see copy_activity_offering_clusters.feature
+  #RG 6.1 - see Simple Rollover feature
+  #RG 6.2 When creating a CO by copy AOC and AOs should also be copied and RGs are generated - see copy_activity_offering_clusters.feature
 
   Scenario: RG 6.3 Registration groups are automatically generated when adding or copying an AO
     Given I manage registration groups for a new course offering
@@ -49,7 +49,7 @@ As an Administrator, I want to create registration groups for a Course Offering
 
   Scenario: RG 6.6/6.9  Ability to view AOs in their AOCs and RG's are generated correctly
     Given I manage registration groups for a new course offering
-    Then the Activity Offerings are present in the cluster table
+    Then the Activity Offerings are present in the activity offering cluster
     And the corresponding number of registration groups for each cluster is correct
     Then I create an activity offering cluster
     And Move one lab and one lecture activity offering to the second cluster

@@ -113,22 +113,20 @@ end
 
 Given /^I manage registration groups for a new course offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"CHEM135", :term=>"201301")
-  @course_offering.manage
+  @course_offering.manage_and_init
 end
 
-Then /^the Activity Offerings are present in the cluster table$/ do
+Then /^the Activity Offerings are present in the activity offering cluster$/ do
   @course_offering.activity_offering_cluster_list[0].ao_list.count.should > 0
 end
 
 When /^the corresponding number of registration groups for each cluster is correct$/ do
   on ManageCourseOfferings do |page|
     @course_offering.activity_offering_cluster_list.each do |cluster|
-
       if page.view_reg_groups_table(cluster.private_name).present? == false
         page.view_cluster_reg_groups(cluster.private_name)
       end
       page.get_cluster_reg_groups_list(cluster.private_name).length.should == cluster.ao_list.count{|x| x.activity_type == "Discussion"} * cluster.ao_list.count{|x| x.activity_type == "Lecture"}
-
     end
   end
 end
