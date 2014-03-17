@@ -538,7 +538,7 @@ end
 
 When /^I update the colocation settings to manage enrolments separately$/ do
   @ao_list[0].parent_course_offering.manage
-  @ao_list[0].edit :colocate_shared_enrollment => false
+  @ao_list[0].edit :colocate_shared_enrollment => false, :max_enrollment => @ao_list[0].max_enrollment
 end
 
 When /^the other activity offering still has the default configuration$/ do
