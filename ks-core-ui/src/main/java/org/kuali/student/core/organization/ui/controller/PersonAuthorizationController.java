@@ -493,6 +493,9 @@ public class PersonAuthorizationController extends UifControllerBase {
         		getWorkflowDocumentActionsService().acknowledge(docActionParams);
         	}else {
         		LOG.info("Going for Updating Notes for clarification");
+        		if(latestProposal.getDescr() == null){
+        			latestProposal.setDescr(new RichTextInfo());
+        		}
         		latestProposal.getDescr().setPlain(proposalInfo.getDescr().getPlain());
         		proposalInfo = getProposalService().updateProposal(latestProposal.getId(), latestProposal, getContextInfo());
         		getWorkflowDocumentActionsService().approve(docActionParams);
