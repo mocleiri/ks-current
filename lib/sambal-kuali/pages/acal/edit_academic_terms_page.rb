@@ -27,7 +27,7 @@ class EditAcademicTerms < BasePage
   end
 
   def term_section_div_list
-    acal_term_list_div.divs(id: /^term_section_line\d+$/)
+    acal_term_list_div.divs(id: /^term_section_line\d+$/, data_parent: 'acal-term')
   end
 
   def open_term_section(term_type)

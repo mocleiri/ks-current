@@ -52,7 +52,7 @@ When /^I copy a newly created academic calendar that has a defined final exam pe
 end
 
 When /^I copy an existing academic calendar that has a defined final exam period$/ do
-  @source_calendar = make AcademicCalendar, :name => "2012-2013 Academic Calendar"
+  @source_calendar = make AcademicCalendar, :year => "2012", :name => "2012-2013 Academic Calendar"
 
   term = make AcademicTermObject, :parent_calendar => @source_calendar
   @source_calendar.terms << term
