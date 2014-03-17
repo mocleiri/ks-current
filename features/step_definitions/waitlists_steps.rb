@@ -45,9 +45,8 @@ end
 
 Given /^I (?:manage|create) an activity offering with the limit waitlist size set$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
-  waitlist_config = make Waitlist, :enabled => true, :limit_size => 30
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
-  @activity_offering.edit :waitlist_config => waitlist_config
+  @activity_offering.waitlist_config.edit :enabled => true, :limit_size => 30
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -59,9 +58,8 @@ end
 
 Given /^I manage an activity offering with waitlists processing type set to (.*)$/ do |processing_type|
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
-  waitlist_config = make Waitlist, :enabled => true, :type => processing_type
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
-  @activity_offering.edit :waitlist_config => waitlist_config
+  @activity_offering.waitlist_config.edit :enabled => true, :type => processing_type
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -72,9 +70,10 @@ Given /^I manage an activity offering with waitlists processing type set to (.*)
 end
 
 Given /^I can update the processing type to (.*)$/ do |processing_type|
-  waitlist = @activity_offering.waitlist_config
-  waitlist.type = processing_type
-  @activity_offering.edit :waitlist_config => waitlist
+  #waitlist = @activity_offering.waitlist_config
+  #waitlist.type =
+  #waitlist.enabled = true
+  @activity_offering.waitlist_config.edit :type => processing_type
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -86,54 +85,40 @@ end
 
 Then /^I make changes to the default waitlist configuration for one of the activity offerings$/ do
   @ao_list[0].parent_course_offering.manage
-  waitlist = @ao_list[0].waitlist_config
-  waitlist.enabled = true
-  waitlist.type = "Manual"
-  waitlist.limit_size = 10
-  waitlist.allow_hold_list = true
-  @ao_list[0].edit :waitlist_config => waitlist
+  @ao_list[0].waitlist_config.edit :enabled => true,
+                                   :type => "Manual",
+                                   :limit_size => 10,
+                                   :allow_hold_list => true
 end
 
 Then /^I make changes to the default waitlist configuration for the activity offering$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = true
-  waitlist.type = "Manual"
-  waitlist.limit_size = 10
-  waitlist.allow_hold_list = true
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                   :type => "Manual",
+                                   :limit_size => 10,
+                                   :allow_hold_list => true
 end
 
 
 Then /^I set the limit waitlist size$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = true
-  waitlist.limit_size = 25
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                   :limit_size => 25
 end
 
 Then /^I remove the limit waitlist size$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.limit_size = 0
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :limit_size => 0
 end
 
 Then /^I modify the limit waitlist size$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.limit_size = 50
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :limit_size => 50
 end
 
 Then /^I enable the allow hold list option$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = true
-  waitlist.allow_hold_list = true
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                   :allow_hold_list => true
 end
 
 Then /^I disable the allow hold list option$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.allow_hold_list = false
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :allow_hold_list => false
 end
 
 Given /^I add two activity offerings$/ do
@@ -236,9 +221,7 @@ Given /^I re-enable the waitlists option for the activity offering the modified 
 end
 
 Given /^I (?:can )?disable the waitlists option for the activity offering$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = false
-  @activity_offering.edit :waitlist_config => waitlist
+  @activity_offering.waitlist_config.edit :enabled => false
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -259,9 +242,9 @@ end
 
 Given /^I manage an activity offering with the waitlist allow hold list option enabled$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
-  waitlist_config = make Waitlist, :enabled => true, :allow_hold_list => true
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
-  @activity_offering.edit :waitlist_config => waitlist_config
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                          :allow_hold_list => true
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -344,7 +327,7 @@ Then /^all three activity offerings have the same waitlist limit size$/ do
 
     on ActivityOfferingInquiry do |page|
       page.waitlists_active?.should be_true
-      page.waitlists_max_size.should == @ao_list[0].waitlist_config.waitlist_limit_str
+      page.waitlists_max_size.should == @activity_offering.waitlist_config.waitlist_limit_str
       page.close
     end
   end
@@ -487,9 +470,7 @@ end
 
 When /^I deactivate waitlists on the first activity offering$/ do
   @ao_list[0].parent_course_offering.manage
-  waitlist = @ao_list[0].waitlist_config
-  waitlist.enabled = false
-  @ao_list[0].edit :waitlist_config => waitlist
+  @ao_list[0].waitlist_config.edit :enabled => false
 end
 
 Then /^the waitlist configuration for the.*activity offerings? is not changed$/ do

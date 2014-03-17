@@ -78,7 +78,7 @@ class ActivityOfferingObject
         :colocate_ao_list => [],
         :colocate_shared_enrollment => false,
         :subterm => nil,
-        :waitlist_config => (make Waitlist)
+        :waitlist_config => (make Waitlist, :parent_ao => self)
     }
 
     options = defaults.merge(opts)
@@ -262,7 +262,6 @@ class ActivityOfferingObject
     edit_course_url options
     edit_evaluation options
     edit_honors_course options
-    edit_waitlist_config options
 
     on(ActivityOfferingMaintenance).send_to_scheduler if options[:send_to_scheduler]
     self.save unless options[:defer_save]
@@ -350,9 +349,9 @@ class ActivityOfferingObject
   private :edit_break_colocation
 
   def edit_max_enrollment_no_colocation opts={}
-  if on(ActivityOfferingMaintenance).colocated_checkbox.exists?
-    return if on(ActivityOfferingMaintenance).colocated_checkbox.set?
-  end
+    if on(ActivityOfferingMaintenance).colocated_checkbox.exists?
+      return if on(ActivityOfferingMaintenance).colocated_checkbox.set?
+    end
 
     if opts[:max_enrollment] != nil
       on ActivityOfferingMaintenance do |page|
@@ -428,14 +427,6 @@ class ActivityOfferingObject
 
   end #END: edit_honors_course
   private :edit_honors_course
-
-  def edit_waitlist_config opts={}
-
-    return nil if opts[:waitlist_config].nil?
-    opts[:waitlist_config].edit
-
-  end #END: edit_waitlist_config
-  private :edit_waitlist_config
 
   def add_req_sched_info opts={}
 
@@ -675,7 +666,8 @@ class Waitlist
   attr_accessor :enabled,
                 :type, #Confirmation, Automatic, Manual
                 :limit_size, #0 means not enabled
-                :allow_hold_list
+                :allow_hold_list,
+                :parent_ao
 
   # provides default data:
   # defaults = {
@@ -701,40 +693,58 @@ class Waitlist
   # edits waitlist options based on instance vars
   #
   #  @param opts [Hash] key => value for attribute to be updated
-  def edit
-    return if @enabled.nil?
+  def edit opts={}
+    defaults = {
+        :defer_save => false,
+        :edit_already_started => false
+    }
+    options = defaults.merge(opts)
 
-    on ActivityOfferingMaintenance do |page|
-      @enabled ? page.waitlist_checkbox.set : page.waitlist_checkbox.clear
+    on(ManageCourseOfferings).edit @parent_ao.code unless options[:edit_already_started]
+
+    if !opts[:enabled].nil?
+      on ActivityOfferingMaintenance do |page|
+        options[:enabled] ? page.waitlist_checkbox.set : page.waitlist_checkbox.clear
+        @enabled = options[:enabled]
+      end
     end
 
-    return unless @enabled
+    #return unless @enabled
 
-    on ActivityOfferingMaintenance do |page|
-      case @type
-        when "Automatic"
-          page.waitlist_automatic_radio.set
-        when "Confirmation"
-          page.waitlist_confirmation_radio.set
-        when "Manual"
-          page.waitlist_manual_radio.set
+    if !options[:type].nil?
+      on ActivityOfferingMaintenance do |page|
+        case options[:type]
+          when "Automatic"
+            page.waitlist_automatic_radio.set
+          when "Confirmation"
+            page.waitlist_confirmation_radio.set
+          when "Manual"
+            page.waitlist_manual_radio.set
+          else
+            raise "error: '#{options[:type]}' waitlist type not found"
+        end
+      end
+    end
+
+    if !options[:limit_size].nil?
+      on ActivityOfferingMaintenance do |page|
+        if options[:limit_size] > 0
+          page.waitlist_limit_checkbox.set
+          page.waitlist_limit.set options[:limit_size]
         else
-          raise "error: '#{opts[:type]}' waitlist type not found"
+          page.waitlist_limit_checkbox.clear
+        end
       end
     end
 
-    on ActivityOfferingMaintenance do |page|
-      if @limit_size > 0
-        page.waitlist_limit_checkbox.set
-        page.waitlist_limit.set @limit_size
-      else
-        page.waitlist_limit_checkbox.clear
+    if !options[:allow_hold_list].nil?
+      on ActivityOfferingMaintenance do |page|
+        options[:allow_hold_list] ? page.waitlist_allow_hold_checkbox.set : page.waitlist_allow_hold_checkbox.clear
       end
     end
 
-    on ActivityOfferingMaintenance do |page|
-      @allow_hold_list ? page.waitlist_allow_hold_checkbox.set : page.waitlist_allow_hold_checkbox.clear
-    end
+    set_options(options)
+    @parent_ao.save unless options[:defer_save]
   end
 
   def waitlist_limit_str
