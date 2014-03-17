@@ -442,7 +442,7 @@ class ActivityOfferingObject
     rsi_obj.parent_ao = self
     rsi_obj.create
     @requested_scheduling_information_list << rsi_obj
-    on(ActivityOfferingMaintenance).save unless options[:defer_save]
+    save unless options[:defer_save]
   end
 
   def add_personnel person
