@@ -1,4 +1,4 @@
-@draft
+@nightly
 Feature: GT.Find a Course Proposal
 
 
@@ -28,4 +28,4 @@ Feature: GT.Find a Course Proposal
     Given I have a course proposal created as Curriculum Specialist
     When I perform a full search for the Course Proposal
     Then I should see my proposal listed in the search result
-    And I can review my proposal
+    And I can review my admin proposal
