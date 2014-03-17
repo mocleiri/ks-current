@@ -53,7 +53,7 @@ And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
     on CmCourseInformation do |page|
         page.proposal_title_review.should == @course_proposal_cs.proposal_title
         page.course_title_review.should == @course_proposal_cs.course_title
-        page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
+        page.page_header_text.should == "#{@course_proposal_cs.proposal_title} (Admin Proposal)"
     end
   else
     @course_proposal_faculty.review_proposal_action
@@ -65,25 +65,17 @@ And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
   end
 end
 
-And /^I can review my proposal$/ do
+And /^I can review my (.*?)$/ do |proposal_type|
   @course_proposal.review_proposal_action
   on CmCourseInformation do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
-    page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)"
+    if proposal_type == "proposal"
+      page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)"
+    else
+      page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
+    end
   end
 end
 
-=begin
-(And /^I should see the Review Proposal page for the (.*?) proposal$/ do |proposal_author|
-  on CmCourseInformation do |page|
-    if proposal_author == "Curriculum Specialist"
-      page.proposal_title_review.should == @course_proposal_cs.proposal_title
-      page.course_title_review.should == @course_proposal_cs.course_title
-    else
-      page.proposal_title_review.should == @course_proposal_faculty.proposal_title
-      page.course_title_review.should == @course_proposal_faculty.course_title
-    end
-  end
-end)
-=end
+
