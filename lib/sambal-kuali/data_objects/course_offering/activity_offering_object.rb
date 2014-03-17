@@ -184,6 +184,7 @@ class ActivityOfferingObject
       #there are scheduling information
       si_list = get_existing_scheduling_information (ao_table_row)
       si_list.each do |si_object|
+        si_object.parent_ao = self
         if si_object.isRSI then
           @requested_scheduling_information_list << si_object
         else

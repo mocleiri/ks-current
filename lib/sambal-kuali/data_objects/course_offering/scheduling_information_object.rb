@@ -333,7 +333,7 @@ class SchedulingInformationObject
       row = page.target_rsi_row(self.si_key)
       page.delete_rsi_row(row)
     end
-    @parent_ao.requested_scheduling_information_list.delete(rsi_obj)
+    @parent_ao.requested_scheduling_information_list.delete(self)
   end
 end
 
