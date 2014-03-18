@@ -383,7 +383,8 @@ end
 
 When /^I edit a course offering in my admin org that has multiple credit types$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
-  @course_offering = make CourseOffering, :term => @term_for_test, :course=>"ENGL369D"
+  #create copy, since don't want course in Offered state
+  @course_offering = create CourseOffering, :create_by_copy =>(make CourseOffering,  :course=>"ENGL369D", :term => @term_for_test)
   @course_offering.manage
   on ManageCourseOfferings do |page|
     page.edit_course_offering
