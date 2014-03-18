@@ -573,7 +573,7 @@ Given /^I create a course offering from catalog with a suspended activity offeri
 end
 
 Given /^I add requested scheduling information to the activity offering$/ do
-  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MTW")
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MTW"), :defer_save => true
 end
 
 Given /^I am able to send the activity offering to the scheduler$/ do
