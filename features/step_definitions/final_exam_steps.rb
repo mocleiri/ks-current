@@ -308,14 +308,14 @@ Then /^see Exam Offerings for each Activity Offering of the Course with a status
     array = page.return_array_of_ao_codes
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code).should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
@@ -326,7 +326,7 @@ end
 Then /^see one Exam Offering for the Course Offering with a status of ([^"]*)$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
-    page.eo_by_co_status.should match /#{exp_state}/
+    page.get_eo_by_co_status_text.should match /#{exp_state}/
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1013,7 +1013,7 @@ Then /^all the Final Exam and Exam Driver data for the COs should be retained af
   on(ManageCourseOfferings).view_exam_offerings
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
-    page.eo_by_co_status.should match /Draft/
+    page.get_eo_by_co_status_text.should match /Draft/
   end
 
   @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[1].course)
@@ -1025,21 +1025,21 @@ Then /^all the Final Exam and Exam Driver data for the COs should be retained af
   @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[2].course)
   @test_co_list[2].manage
   on(ManageCourseOfferings).view_exam_offerings
-  on(ViewExamOfferings).eo_by_ao_status("A").should match /Draft/
+  on(ViewExamOfferings).get_eo_by_ao_status_text("A").should match /Draft/
 
   @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[3].course)
   @test_co_list[3].manage
   on(ManageCourseOfferings).view_exam_offerings
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
-    page.eo_by_co_status.should match /Draft/
+    page.get_eo_by_co_status_text.should match /Draft/
   end
 end
 
 Then /^the Exam Offerings for Course Offering should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
-    page.eo_by_co_status.should match /#{exp_state}/
+    page.get_eo_by_co_status_text.should match /#{exp_state}/
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1047,7 +1047,7 @@ end
 Then /^the EO in the Exam Offerings for Course Offering table should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
-    page.eo_by_co_status.should match /#{exp_state}/
+    page.get_eo_by_co_status_text.should match /#{exp_state}/
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1059,7 +1059,7 @@ end
 Then /^the Exam Offerings for Course Offering in the EO for CO table should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
-    page.eo_by_co_status.should match /#{exp_state}/
+    page.get_eo_by_co_status_text.should match /#{exp_state}/
     page.count_no_of_eos_by_co.should == "1"
   end
 end
@@ -1069,12 +1069,12 @@ Then /^the Exam Offerings for each Activity Offering in the EO for AO table shou
     page.table_header_text.should match /for Activity Offering/
     array = page.return_array_of_ao_codes
     array.each do |code|
-      page.eo_by_ao_status(code).should match /#{exp_state}/
+      page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
       end
     end
   end
@@ -1085,7 +1085,7 @@ Then /^the Exam Offering for Activity Offering should not be in a ([^"]*) state$
     page.table_header_text.should match /for Activity Offering/
     array = page.return_array_of_ao_codes
     array.each do |code|
-      page.eo_by_ao_status(code).should_not match /#{exp_state}/
+      page.get_eo_by_ao_status_text(code).should_not match /#{exp_state}/
     end
   end
 end
@@ -1096,14 +1096,14 @@ Then /^the Exam Offerings? for Activity Offering should be in a ([^"]*) state$/ 
     array = page.return_array_of_ao_codes
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code).should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
@@ -1119,7 +1119,7 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
     if array != nil
       array.each do |code|
         if code == @activity_offering.code
-          page.eo_by_ao_status(code).should match /#{exp_state}/
+          page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
           no_of_eos += 1
         end
       end
@@ -1128,7 +1128,7 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
     if array != nil
       array.each do |code|
         if code == @activity_offering.code
-          page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+          page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
           no_of_eos += 1
         end
       end
@@ -1143,13 +1143,13 @@ Then /^the EOs in the Exam Offerings for Activity Offering table should be in a 
     array = page.return_array_of_ao_codes
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code).should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
       end
     end
   end
@@ -1175,14 +1175,14 @@ Then /^the ([\d]*) Exam Offerings? for Activity Offering should be in a ([^"]*) 
     array = page.return_array_of_ao_codes
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code).should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
     array = page.return_array_of_ao_codes("CL Leftovers")
     if array != nil
       array.each do |code|
-        page.eo_by_ao_status(code, "CL Leftovers").should match /#{exp_state}/
+        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
