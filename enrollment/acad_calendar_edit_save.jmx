@@ -17,6 +17,11 @@
             <stringProp name="Argument.value">${__P(ENV)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="Ramp Up" elementType="Argument">
+            <stringProp name="Argument.name">Ramp Up</stringProp>
+            <stringProp name="Argument.value">$__P(RAMP)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -125,7 +130,7 @@
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain">env17.ks.kuali.org</stringProp>
+        <stringProp name="HTTPSampler.domain">$__P(ENV)}</stringProp>
         <stringProp name="HTTPSampler.port"></stringProp>
         <stringProp name="HTTPSampler.connect_timeout"></stringProp>
         <stringProp name="HTTPSampler.response_timeout"></stringProp>
@@ -141,8 +146,8 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">$__P(VUSERS)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">$__P(RAMP)}</stringProp>
         <longProp name="ThreadGroup.start_time">1373991277000</longProp>
         <longProp name="ThreadGroup.end_time">1373991277000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
