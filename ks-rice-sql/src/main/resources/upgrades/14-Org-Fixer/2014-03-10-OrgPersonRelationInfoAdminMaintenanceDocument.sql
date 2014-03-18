@@ -5,10 +5,12 @@ Insert into KREW_DOC_TYP_T (DOC_TYP_ID,PARNT_ID,DOC_TYP_NM,DOC_TYP_VER_NBR,ACTV_
     FROM KREW_DOC_TYP_T
     WHERE KREW_DOC_TYP_T.DOC_TYP_NM='RiceDocument'
     )
-	,'OrgPersonRelationInfoAdminMaintenanceDocument',0,1,1,'Create a New OrgPersonRelation Maintenance Document','OrgPersonRelation Info Maintenance Document',null,null,'${application.url}/kr-krad/maintenance?methodToCall=docHandler&dataObjectClassName=org.kuali.student.r2.core.organization.dto.OrgPersonRelationInfo',null,null,'org.kuali.rice.krad.workflow.postprocessor.KualiPostProcessor','1','1',null,null,'1',null, EMPTY_CLOB(),null,null,SYS_GUID(),1);
+	,'OrgPersonRelationInfoAdminMaintenanceDocument',0,1,1,'Create a New OrgPersonRelation Maintenance Document','OrgPersonRelation Info Maintenance Document',null,null,'${application.url}/kr-krad/maintenance?methodToCall=docHandler&dataObjectClassName=org.kuali.student.r2.core.organization.dto.OrgPersonRelationInfo',null,null,'org.kuali.rice.krad.workflow.postprocessor.KualiPostProcessor','1','1',null,null,'1',null, EMPTY_CLOB(),null,null,SYS_GUID(),1)
+/
 
 -- INSERTING into KREW_RTE_NODE_T
-Insert into KREW_RTE_NODE_T (RTE_NODE_ID,DOC_TYP_ID,NM,TYP,RTE_MTHD_NM,FNL_APRVR_IND,MNDTRY_RTE_IND,GRP_ID,RTE_MTHD_CD,ACTVN_TYP,BRCH_PROTO_ID,NEXT_DOC_STAT,VER_NBR) values (KREW_RTE_NODE_S.NEXTVAL,(SELECT MAX(KREW_DOC_TYP_T.DOC_TYP_ID) FROM KREW_DOC_TYP_T WHERE KREW_DOC_TYP_T.DOC_TYP_NM='OrgPersonRelationInfoAdminMaintenanceDocument'),'Initiated','org.kuali.rice.kew.engine.node.InitialNode',null,0,0,'1',null,'P',null,null,1);
+Insert into KREW_RTE_NODE_T (RTE_NODE_ID,DOC_TYP_ID,NM,TYP,RTE_MTHD_NM,FNL_APRVR_IND,MNDTRY_RTE_IND,GRP_ID,RTE_MTHD_CD,ACTVN_TYP,BRCH_PROTO_ID,NEXT_DOC_STAT,VER_NBR) values (KREW_RTE_NODE_S.NEXTVAL,(SELECT MAX(KREW_DOC_TYP_T.DOC_TYP_ID) FROM KREW_DOC_TYP_T WHERE KREW_DOC_TYP_T.DOC_TYP_NM='OrgPersonRelationInfoAdminMaintenanceDocument'),'Initiated','org.kuali.rice.kew.engine.node.InitialNode',null,0,0,'1',null,'P',null,null,1)
+/
 
 
 -- INSERTING into KREW_RTE_NODE_CFG_PARM_T
