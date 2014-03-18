@@ -18,12 +18,14 @@ import org.kuali.rice.core.api.criteria.PredicateFactory;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.api.identity.PersonService;
 import org.kuali.rice.kim.api.identity.principal.EntityNamePrincipalName;
 import org.kuali.rice.kim.api.identity.principal.Principal;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.kim.impl.identity.PersonServiceImpl;
 import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.rice.krad.util.ObjectUtils;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.util.ContextBuilder;
@@ -56,11 +58,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = "/orgPersonRelationInfoAdminManage")
 public class OrgPersonRelationInfoAdminSearchController extends UifControllerBase {
+	
 	private static final Logger LOG = Logger.getLogger(OrgPersonRelationInfoAdminSearchController.class);
 	
 	private transient OrganizationService organizationService;
 	private transient TypeService typeService;
 	private transient StateService stateService;
+	private transient PersonService personService;
 	
 	{   
 		// Beanutils config
@@ -225,37 +229,45 @@ public class OrgPersonRelationInfoAdminSearchController extends UifControllerBas
 			
 			OrgPersonRelationUIModel orgPersonRelationUi = form.getOrgPersonRelation();
 			
-			try{
-				qBuilder.setPredicates(PredicateFactory.equal("longName",orgPersonRelationUi.getOrgInfo().getLongName()));
-	        	List<OrgInfo> orgInfos = this.getOrganizationService().searchForOrgs(qBuilder.build(), getContextInfo());
-	        	orgPersonRelationUi.setOrgId(orgInfos.get(0).getId());
-	        	orgPersonRelationUi.setOrgInfo(orgInfos.get(0));
-			}catch (Exception e){
-				GlobalVariables.getMessageMap().putError("KS-OrgPersonRelationInfoCreate-Section","unknownError",e.getMessage());
-				return getUIFModelAndView(form);
-			}
-					
-			try{
-				OrgPersonRelationInfo orgPersonRelation = getOrganizationService().createOrgPersonRelation(
-									orgPersonRelationUi.getOrgId(), orgPersonRelationUi.getPersonId(), 
-									orgPersonRelationUi.getTypeKey(), orgPersonRelationUi, getContextInfo());
+			qBuilder.setPredicates(PredicateFactory.equal("longName",orgPersonRelationUi.getOrgInfo().getLongName()));
+        	List<OrgInfo> orgInfos = this.getOrganizationService().searchForOrgs(qBuilder.build(), getContextInfo());
+        	if(!orgInfos.isEmpty()){
+        		orgPersonRelationUi.setOrgId(orgInfos.get(0).getId());
+        		orgPersonRelationUi.setOrgInfo(orgInfos.get(0));
+        	} else {
+        		GlobalVariables.getMessageMap().putError("KS-OrgPersonRelationInfoCreate-Section","noOrganizationFound",orgPersonRelationUi.getOrgInfo().getLongName());
+        		return getUIFModelAndView(form);
+        	}
+        	
+        	if(StringUtils.isNotBlank(orgPersonRelationUi.getPersonId())){
+        		Person person = getPersonService().getPerson(orgPersonRelationUi.getPersonId());
+        		
+        		if(ObjectUtils.isNull(person)){
+        			person = getPersonService().getPersonByPrincipalName(orgPersonRelationUi.getPersonId());
+        		}
+        		
+        		if(ObjectUtils.isNull(person)){
+        			GlobalVariables.getMessageMap().putError("KS-OrgPersonRelationInfoCreate-Section","noPersonFound",orgPersonRelationUi.getPersonId());
+        			return getUIFModelAndView(form);
+        		} else {
+        			orgPersonRelationUi.setPersonId(person.getPrincipalId());
+        		}
+        	}
 				
-				resetForm(form);
-				
-				BeanUtils.copyProperties(orgPersonRelationUi, orgPersonRelation);
-				this.setOtherInfo(orgPersonRelationUi);
-				form.setOrgPersonRelation(orgPersonRelationUi);
-				
-				GlobalVariables.getMessageMap().putInfo("KS-OrgPersonRelationInfoDetail-Section","databaseChnageSuccess");
-				
-				return getUIFModelAndView(form, "KS-OrgPersonRelationInfoDetail-View");
-			}catch (Exception e){
-				e.printStackTrace();
-				GlobalVariables.getMessageMap().putError("KS-OrgPersonRelationInfoCreate-Section","unknownError",e.getMessage());
-				return getUIFModelAndView(form);
-			}	
+			OrgPersonRelationInfo orgPersonRelation = getOrganizationService().createOrgPersonRelation(
+								orgPersonRelationUi.getOrgId(), orgPersonRelationUi.getPersonId(), 
+								orgPersonRelationUi.getTypeKey(), orgPersonRelationUi, getContextInfo());
+			
+			resetForm(form);
+			
+			BeanUtils.copyProperties(orgPersonRelationUi, orgPersonRelation);
+			this.setOtherInfo(orgPersonRelationUi);
+			form.setOrgPersonRelation(orgPersonRelationUi);
+			
+			GlobalVariables.getMessageMap().putInfo("KS-OrgPersonRelationInfoDetail-Section","databaseChnageSuccess");
+			
+			return getUIFModelAndView(form, "KS-OrgPersonRelationInfoDetail-View");
 		} 
-		
 		return getUIFModelAndView(form);		
 	}
 	
@@ -384,6 +396,13 @@ public class OrgPersonRelationInfoAdminSearchController extends UifControllerBas
 
 	public void setStateService(StateService stateService) {
 		this.stateService = stateService;
+	}
+	
+	public PersonService getPersonService(){
+		if(personService == null){
+			personService = (PersonServiceImpl) GlobalResourceLoader.getService(new QName("personService"));
+		}
+		return personService;
 	}
 	
 	
