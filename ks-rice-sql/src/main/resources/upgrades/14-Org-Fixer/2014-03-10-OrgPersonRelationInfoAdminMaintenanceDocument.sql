@@ -13,12 +13,7 @@ Insert into KREW_RTE_NODE_T (RTE_NODE_ID,DOC_TYP_ID,NM,TYP,RTE_MTHD_NM,FNL_APRVR
 
 -- INSERTING into KREW_RTE_NODE_CFG_PARM_T
 Insert into KREW_RTE_NODE_CFG_PARM_T (RTE_NODE_CFG_PARM_ID,RTE_NODE_ID,KEY_CD,VAL) 
-values (KREW_RTE_NODE_CFG_PARM_S.NEXTVAL,KREW_RTE_NODE_S.CURRVAL,'contentFragment','<start name="Initiated">
-<activationType>P</activationType>
-<mandatoryRoute>false</mandatoryRoute>
-<finalApproval>false</finalApproval>
-</start>
-')
+values (KREW_RTE_NODE_CFG_PARM_S.NEXTVAL,KREW_RTE_NODE_S.CURRVAL,'contentFragment','<start name="Initiated"><activationType>P</activationType><mandatoryRoute>false</mandatoryRoute><finalApproval>false</finalApproval></start>')
 /
 
 Insert into KREW_RTE_NODE_CFG_PARM_T (RTE_NODE_CFG_PARM_ID,RTE_NODE_ID,KEY_CD,VAL) 
