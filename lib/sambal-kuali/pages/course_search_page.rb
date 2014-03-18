@@ -77,12 +77,18 @@ class CourseSearch < BasePage
   # Get code from data table row safely
   def get_table_row_code(index,rescues)
     begin
-      return results_table.rows[index].cells[COURSE_CODE].text
-    rescue
+
+      code = results_table.rows[index].cells[COURSE_CODE].text
+      return code
+    rescue => e
       rescues = rescues+1
-      puts "rescue from Selenium::WebDriver::Error::StaleElementReferenceError: #{rescues}"
+      puts "Retrieve code for row #{index} rescue from #{e.message}: #{rescues}"
       if rescues<5
+        sleep(1)
         get_table_row_code(index,rescues)
+      else
+        puts "Failed to retrieve code for row #{index}"
+        return ""
       end
     end
   end
@@ -90,12 +96,17 @@ class CourseSearch < BasePage
   # Get title from data table row safely
   def get_table_row_title(index,rescues)
     begin
-      return results_table.rows[index].cells[COURSE_NAME].text
-    rescue
+      title = results_table.rows[index].cells[COURSE_NAME].text
+      return title
+    rescue => e
       rescues = rescues+1
-      puts "rescue from Selenium::WebDriver::Error::StaleElementReferenceError: #{rescues}"
+      puts "Retrieve title for row #{index} rescue from #{e.message}: #{rescues}"
       if rescues<5
+        sleep(1)
         get_table_row_title(index,rescues)
+      else
+        puts "Failed to retrieve title for row #{index}"
+        return ""
       end
     end
   end
@@ -103,12 +114,16 @@ class CourseSearch < BasePage
   # Get number of data table rows safely
   def get_results_table_rows_no(rescues)
     begin
+      sleep(2)
       return results_table.rows.length
-    rescue
+    rescue => e
       rescues = rescues+1
-      puts "rescue from Selenium::WebDriver::Error::StaleElementReferenceError: #{rescues}"
+      puts "Retrieve length rescue from #{e.message}: #{rescues}"
       if rescues<5
         return get_results_table_rows_no(rescues)
+      else
+        puts "Failed to retrieve length"
+        return 0
       end
     end
   end
@@ -313,15 +328,15 @@ class CourseSearch < BasePage
     course_code = get_table_row_code(row_number,0)
     course_name = get_table_row_title(row_number,0).downcase
 
-    course_code_result_link(course_code).click
+    course_code_result_link(result_code).click
     back_to_search_results.wait_until_present
-    course_description_text = course_description(course_code).downcase
+    course_description_text = course_description(result_code).downcase
     back_to_search_results.click
     sleep(2)
 
     for index in 0...no_of_text do
       text = expectedText[index]
-      if (((course_code.downcase).include? (text).downcase) ||  (course_name.include? (text).downcase )||(course_description_text.include? (text).downcase))
+      if (((result_code.downcase).include? (text).downcase) ||  (course_name.include? (text).downcase )||(course_description_text.include? (text).downcase))
         return true
       end
     end
