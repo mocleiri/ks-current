@@ -1,7 +1,8 @@
 When /^I change the seat pool count and expiration milestone$/ do
   @activity_offering.seat_pool_list[0].edit :edit_already_started => true,
                                             :seats => 20,
-                                            :expiration_milestone => "Last Day of Registration"
+                                            :expiration_milestone => "Last Day of Registration",
+                                            :defer_save => true
 end
 
 Then /^the seats remaining is updated$/ do
