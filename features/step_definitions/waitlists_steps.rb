@@ -334,7 +334,8 @@ Then /^all three activity offerings have the same waitlist limit size$/ do
 end
 
 Given /^I create three course offerings with one activity offering in each with waitlists enabled$/ do
-  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]),
+               :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @ao_list = []
 
@@ -490,7 +491,8 @@ end
 
 Given /^I create two colocated activity offerings \(shared enrolment\) with waitlists enabled$/ do
   #TODO: # of AOs can be parameterized
-  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar), :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]),
+               :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @ao_list = []
 

@@ -273,7 +273,7 @@ Then /^the updated term information is listed when I view the Academic Calendar$
 end
 
 Given /^I copy an existing Academic Calendar$/ do
-  @source_calendar = make AcademicCalendar, :name => "2012-2013 Continuing Education Calendar"
+  @source_calendar = make AcademicCalendar, :year => '2012', :name => "2012-2013 Continuing Education Calendar"
   @calendar = make AcademicCalendar
   @calendar.copy_from @source_calendar.name
 end
