@@ -8,7 +8,7 @@ When /^I edit an activity offering code/ do
 end
 
 When /^I revert the change to the activity code/ do
-  @activity_offering.edit :code => @orig_code, :edit_already_started => true
+  @activity_offering.edit :code => @orig_code, :edit_already_started => true, :defer_save => true
 end
 
 Then /^the activity offering code change is persisted/ do
