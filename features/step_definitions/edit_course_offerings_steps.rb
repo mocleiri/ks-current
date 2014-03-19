@@ -16,7 +16,7 @@ When /^I can edit the course offering$/ do
 end
 
 When /^I can return to search using the cancel button$/ do
-  @course_offering.cancel
+  on(CourseOfferingCreateEdit).cancel
 end
 
 When /^I edit a course offering with multiple format types$/ do
@@ -290,24 +290,24 @@ When /^I (set|clear) the Honors Course selection$/ do |shouldSetHonorsCourse|
 end
 
 And /^I save the changes and remain on the Edit CO page$/ do
-  @course_offering.save_progress
+  on(CourseOfferingCreateEdit).save_progress
 end
 
 And /^I jump to (the previous|the next|an arbitrary) CO while (saving|not saving) changes$/ do |coDirection, shouldSaveChanges|
   case coDirection
     when "the previous"
-      @course_offering.edit_previous_co
+      on(CourseOfferingCreateEdit).edit_previous_co
     when "the next"
-      @course_offering.edit_next_co
+      on(CourseOfferingCreateEdit).edit_next_co
     else # nav to an arbitrary CO via the drop-down selector
-      @course_offering.edit_arbitrary_co
+      on(CourseOfferingCreateEdit).edit_arbitrary_co
   end
 
   # whether changes should be saved
   if shouldSaveChanges == "saving"
-    @course_offering.save_and_continue
+    on(CourseOfferingCreateEdit).navigation_save_and_continue
   else
-    @course_offering.cancel_and_continue
+    on(CourseOfferingCreateEdit).navigation_cancel_and_continue
   end
 
 end
