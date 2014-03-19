@@ -171,7 +171,7 @@ class CourseOffering
   #  @course_offering.edit :honors_flag=> "YES"
   #
   # @param opts [Hash] key => value for attribute to be updated
-  def edit_offering options={}
+  def edit options={}
 
     on(ManageCourseOfferings).edit_course_offering unless options[:edit_in_progress]
 
@@ -663,7 +663,7 @@ class CourseOffering
   end
 
 # TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
-# the new format added to the list and the new list passed on the options hash to course_offering.edit_offering
+# the new format added to the list and the new list passed on the options hash to course_offering.edit
 
  def add_delivery_format (delivery_format_obj)
    delivery_format_obj.create
@@ -671,7 +671,7 @@ class CourseOffering
   end
 
 # TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
-# the format deleted from the list and the new list passed on the options hash to course_offering.edit_offering
+# the format deleted from the list and the new list passed on the options hash to course_offering.edit
 
   def delete_delivery_format (format)
     on CourseOfferingCreateEdit do |page|

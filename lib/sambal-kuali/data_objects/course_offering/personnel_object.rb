@@ -8,7 +8,7 @@
 #
 # personnel_list[0] = make PersonnelObject, :id=> "user1", :affiliation =>"Instructor"
 #
-# @activity_offering.edit_offering :affiliated_person_list => personnel_list
+# @activity_offering.edit :affiliated_person_list => personnel_list
 #
 #create generally called from ActivityOffering/CourseOffering class
 # Note the use of the ruby options hash pattern re: setting attribute values

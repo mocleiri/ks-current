@@ -512,7 +512,7 @@ end
 When /^I deactivate waitlists at the course offering level for one of the activity offerings$/ do
   @ao_list[0].parent_course_offering.search_by_subjectcode
   on(ManageCourseOfferingList).edit @ao_list[0].parent_course_offering.course
-  @ao_list[0].parent_course_offering.edit_offering :waitlist => false, :edit_in_progress => true
+  @ao_list[0].parent_course_offering.edit :waitlist => false, :edit_in_progress => true
   on(CourseOfferingCreateEdit).submit
 end
 

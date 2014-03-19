@@ -42,7 +42,7 @@ end
 And /^I remove a cross-listed Course Offering$/ do
   @cross_listed_co.manage
   #on(ManageCourseOfferings).edit_course_offering
-  @cross_listed_co.edit_offering :cross_listed => false
+  @cross_listed_co.edit :cross_listed => false
   @cross_listed_co.save
   #on(CourseOfferingCreateEdit).submit
 end
@@ -112,7 +112,7 @@ When /^I create a cross-listed Course Offering$/ do
   #@cross_listed_co = create CourseOffering, :create_by_copy => (make CourseOffering, :course => "ENGL250", :suffix => @suffix_with_cl, :term => Rollover::MAIN_TEST_TERM_SOURCE)
   #@cross_listed_co = make CourseOffering, :course => "ENGL250D", :term => Rollover::MAIN_TEST_TERM_SOURCE
   @cross_listed_co.manage
-#  @cross_listed_co.edit_offering :cross_listed => true
+#  @cross_listed_co.edit :cross_listed => true
   @cross_listed_co.capture_crosslist_aliases
 end
 

@@ -8,7 +8,7 @@
 #
 # rsi_list[0] = make SchedulingInformationObject, :days=> M, ...
 #
-# @activity_offering.edit_offering :requested_scheduling_information_list = rsi_list
+# @activity_offering.edit :requested_scheduling_information_list = rsi_list
 #
 #create generally called from ActivityOffering
 # Note the use of the ruby options hash pattern re: setting attribute values
