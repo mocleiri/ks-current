@@ -171,11 +171,15 @@ class CourseOffering
   #  @course_offering.edit :honors_flag=> "YES"
   #
   # @param opts [Hash] key => value for attribute to be updated
-  def edit options={}
+  def edit opts={}
+    defaults = {
+        :defer_save => false,
+        :start_edit => true
+    }
+    options = defaults.merge(opts)
 
-    on(ManageCourseOfferings).edit_course_offering unless options[:edit_in_progress]
+    on(ManageCourseOfferings).edit_course_offering if options[:start_edit]
 
-    #TODO change method name to 'edit'
     if options[:suffix] != nil
       on(CourseOfferingCreateEdit).suffix.set options[:suffix]
       @course = "#{@course[0..6]}#{options[:suffix]}"
@@ -355,6 +359,9 @@ class CourseOffering
         options[:cross_listed] ? page.cross_listed_co_set : page.cross_listed_co_clear
       end
     end
+
+    #set_options(options) -- can't use this, some custom values e.g final_exam_type
+    save unless options[:defer_save]
   end
 
   def save
@@ -666,6 +673,7 @@ class CourseOffering
 # the new format added to the list and the new list passed on the options hash to course_offering.edit
 
  def add_delivery_format (delivery_format_obj)
+   edit :defer_save => true
    delivery_format_obj.create
    @delivery_format_list <<  delivery_format_obj
   end
@@ -737,22 +745,6 @@ class CourseOffering
 
     confirmation_message
   end
-
-  #this method is not used
-  #delete specified number of activity offerings
-  #
-  #def delete_top_n_aos(num_aos_to_delete_from_top)
-  #  last_index_to_delete = num_aos_to_delete_from_top.to_i - 1
-  #
-  #  manage
-  #
-  #  aos_to_delete = Array.new
-  #  ao_list[0..last_index_to_delete].each do |ao|
-  #    aos_to_delete << ao
-  #  end
-  #
-  #  delete_ao_list :code_list => aos_to_delete
-  #end
 
   # checks to see if AOs of a specific status can be deleted (for Authorization testing)
   # @example

@@ -43,8 +43,6 @@ And /^I remove a cross-listed Course Offering$/ do
   @cross_listed_co.manage
   #on(ManageCourseOfferings).edit_course_offering
   @cross_listed_co.edit :cross_listed => false
-  @cross_listed_co.save
-  #on(CourseOfferingCreateEdit).submit
 end
 
 

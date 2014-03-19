@@ -15,13 +15,13 @@ When /^two users are concurrently editing the same course offering$/ do
   orig_co_code = @course_offering.course
 
   @course_offering.manage
-  @course_offering.edit :suffix => random_alphanums(2).upcase
+  @course_offering.edit :suffix => random_alphanums(2).upcase, :defer_save => true
 
   @browser = @browser2
 
   @course_offering_concurrent = make CourseOffering, :course=>orig_co_code, :term=>@course_offering.term
   @course_offering_concurrent.manage
-  @course_offering_concurrent.edit :suffix => random_alphanums(2).upcase
+  @course_offering_concurrent.edit :suffix => random_alphanums(2).upcase, :defer_save => true
 
   @browser = @browser1
 end
@@ -120,4 +120,3 @@ When /^the two new course offerings have unique suffixes$/ do
 
  new_co_code1.should_not == new_co_code2
 end
-
