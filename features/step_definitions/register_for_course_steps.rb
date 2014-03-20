@@ -81,6 +81,7 @@ end
 
 And /^I register for the course$/ do
   @reg_request.register
+  sleep 2
 end
 
 Then /^there is a message indicating registration submittal$/ do
@@ -101,20 +102,19 @@ When /^I? ?remove the course from my schedule and cancel the drop$/ do
 end
 
 When /^I view my schedule$/ do
-  on RegistrationCart do |page1|
-    page1.schedule_link.click
+  on RegistrationCart do |page|
+    page.schedule_link.click
   end
 end
 
 And /^the course is (present|not present) in my schedule$/ do |presence|
-  on StudentSchedule do |page2|
-    sleep 2
+  on StudentSchedule do |page|
     if presence == "present"
-      page2.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
-      page2.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
+      page.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
       begin
-        page2.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
+        page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
       rescue Watir::Exception::UnknownObjectException
         # the course is not there: good
       end
