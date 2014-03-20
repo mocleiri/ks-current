@@ -124,6 +124,7 @@ And /^I add a delivery format option of Discussion Lecture$/ do
                          :grade_format => "Course Offering",
                          :final_exam_activity => "Lecture"
   @course_offering.add_delivery_format delivery_format
+  @course_offering.save
 end
 
 And /^I modify a delivery format option$/ do
