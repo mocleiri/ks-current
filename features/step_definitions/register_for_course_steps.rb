@@ -5,6 +5,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="ENGL" then "ENGL211"
                   when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
+                  when subj=="full" then "Full-TBD"
                   else ""
                 end
   @reg_request = make RegistrationRequest, :student_id=>"student",
@@ -215,4 +216,16 @@ Then /^the course is present in my schedule, with the updated options$/ do
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
   end
+end
+
+Then /^I am given the option to add myself to a waitlist for the course$/ do
+  pending
+end
+
+When /^I add myself to a waitlist for the course$/ do
+  pending
+end
+
+Then /^there is a message indicating that I have been added to the waitlist$/ do
+  pending
 end

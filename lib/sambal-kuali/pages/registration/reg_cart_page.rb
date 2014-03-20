@@ -5,9 +5,13 @@ class RegistrationCart < RegisterForCourseBase
   expected_element :credit_count_title
 
   #element(:item_count) { |b| b.span(id: "course_count") }
-  element(:credit_count_title) { |b| b.span(id: "credit_count_title") }
+  element(:credit_count_title) { |b| b.div(id: "credit_count_title") }
   element(:register_button) { |b| b.button(id: "register") }
   action(:register) { |b| b.register_button.click }
+  element(:register_confirm_button) { |b| b.button(id: "confirmRegistration") }
+  action(:confirm_registration) { |b| b.register_confirm_button.click }
+
+  element(:schedule_counts) { |b| b.span(id: "reg_course_count") }
 
   element(:course_code_input) { |b| b.text_field(id: "courseCode") }
   element(:reg_group_code_input) { |b| b.text_field(id: "regCode") }

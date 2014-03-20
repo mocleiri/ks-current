@@ -183,6 +183,8 @@ class RegistrationRequest
   def register
     on RegistrationCart do |page|
       page.register
+      page.register_confirm_button.wait_until_present
+      page.confirm_registration
     end
   end
 
