@@ -1,6 +1,6 @@
 Given /^I have a course proposal created as Curriculum Specialist$/ do
   steps %{Given I am logged in as Curriculum Specialist}
-  @course_proposal = create CmCourseProposalObject, :curriculum_review_process => "Yes"
+  @course_proposal = create CmCourseProposalObject
 end
 
 Given /^I have a course proposal created as Faculty$/ do
