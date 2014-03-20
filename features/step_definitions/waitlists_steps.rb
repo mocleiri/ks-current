@@ -510,10 +510,8 @@ Given /^I create two colocated activity offerings \(shared enrolment\) with wait
 end
 
 When /^I deactivate waitlists at the course offering level for one of the activity offerings$/ do
-  @ao_list[0].parent_course_offering.search_by_subjectcode
-  on(ManageCourseOfferingList).edit @ao_list[0].parent_course_offering.course
-  @ao_list[0].parent_course_offering.edit :waitlist => false, :start_edit => false
-  on(CourseOfferingCreateEdit).submit
+  @ao_list[0].parent_course_offering.manage
+  @ao_list[0].parent_course_offering.edit :waitlist => false
 end
 
 Then /^waitlists is deactived for both activity offerings$/ do
