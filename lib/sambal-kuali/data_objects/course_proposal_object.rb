@@ -357,11 +357,12 @@ class CmCourseProposalObject < DataObject
       page.cancel
     end
   end
-  
 
-
-
-
+  def cancel_course_proposal
+     on CmCourseInformation do |page|
+       page.cancel
+     end
+  end
 
   def set_curriculum_review
   on CmCreateCourseStart do |create|
@@ -397,7 +398,6 @@ class CmCourseProposalObject < DataObject
   end
 
   def search(search_text)
-    navigate_rice_to_cm_home
     navigate_to_find_course_proposal
        on FindProposalPage do |page|
           page.name.set search_text

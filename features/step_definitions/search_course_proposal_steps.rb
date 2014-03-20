@@ -24,6 +24,10 @@ When /^I perform a full search for the Course Proposal$/ do
   @course_proposal.search(@course_proposal.proposal_title)
 end
 
+And /^I perform a complete search for the Course Proposal$/ do
+  #navigate_to_functional_home
+  @course_proposal.search(@course_proposal.proposal_title)
+end
 
 Then /^I should see my proposal listed in the search result$/ do
 on FindProposalPage do |page|

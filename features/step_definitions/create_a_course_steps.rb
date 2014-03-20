@@ -20,6 +20,10 @@ And /^I cancel create a course$/ do
   @course_proposal.cancel_create_course
 end
 
+And /^I cancel the course proposal page$/ do
+  @course_proposal.cancel_course_proposal
+end
+
 Then /^I should see CM Home$/ do
   on CmCurriculum do |page|
     page.cmcurriculum_header.exists?.should == true

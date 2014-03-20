@@ -12,6 +12,7 @@ class CmCourseInformation < BasePage
   element(:transcript_course_title) {|b| b.text_field(name: /transcriptTitle$/) }
   element(:subject_code) { |b| b.text_field(name: /subjectArea$/) }
   element(:course_number) { |b| b.text_field(name: /courseNumberSuffix$/) }
+  action(:cancel) { |b| b.a(id: 'ucancel').click; b.loading_wait }
 
 #CROSS LIST SECTION
   element(:course_listing_section_collapsed) { |b| b.img(id: /^KS-CrossListingEtcDisclosure-Section/, alt: 'collapse') }
