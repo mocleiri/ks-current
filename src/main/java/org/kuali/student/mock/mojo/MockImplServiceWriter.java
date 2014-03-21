@@ -369,7 +369,20 @@ public class MockImplServiceWriter extends JavaClassWriter {
                 type = param.getType();
                 realType = stripList(type);
                 print(comma);
-                print(calcType(type, realType));
+                
+                String calculatedType = realType;
+                
+                try {
+                		
+                	calculatedType = calcType(type, realType);
+                	
+                }
+                catch (Exception e) {
+                	log.warn(String.format("Method (%s) : failed to calculate type (%s), real type (%s)", method.getName(), type, realType), e);
+                }
+                
+                print(calculatedType);
+                
                 print(" ");
                 print(param.getName());
                 comma = ", ";
@@ -436,6 +449,7 @@ public class MockImplServiceWriter extends JavaClassWriter {
                     writeThrowsNotImplemented(method);
             }
             closeBrace();
+        	
         }
 
         writeBoilerPlate();
