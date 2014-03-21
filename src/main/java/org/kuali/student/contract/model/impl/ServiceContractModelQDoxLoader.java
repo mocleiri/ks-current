@@ -326,9 +326,6 @@ public class ServiceContractModelQDoxLoader implements
         if (javaClass.getPackageName().startsWith("com.sigmasys.kuali.ksa.service")) {
             return true;
         }
-        if (javaClass.getPackageName().startsWith("edu.mit.oeit")) {
-            return true;
-        }
         if (javaClass.getPackageName().startsWith("org.kuali.mobility")) {
             return true;
         }
