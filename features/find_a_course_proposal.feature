@@ -20,12 +20,12 @@ Feature: GT.Find a Course Proposal
 
   Scenario: FCP1.3 Find my Course Proposal as Faculty
     Given I have a course proposal created as Faculty
-    When I perform a full search for the Course Proposal
+    When I perform a full search for the course proposal
     Then I should see my proposal listed in the search result
-    And I can review my proposal
+    And I can review the course proposal
 
   Scenario: FCP1.4 Find my Course Proposal as Curriculum Specialist
     Given I have a course proposal created as Curriculum Specialist
-    When I perform a full search for the Course Proposal
+    When I perform a full search for the course proposal
     Then I should see my proposal listed in the search result
-    And I can review my admin proposal
+    And I can review the course admin proposal

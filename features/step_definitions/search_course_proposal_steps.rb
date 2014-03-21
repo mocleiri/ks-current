@@ -19,12 +19,12 @@ Given /^I have a admin course proposal created as Curriculum Specialist and cour
 end
 
 
-When /^I perform a full search for the Course Proposal$/ do
+When /^I perform a full search for the course proposal$/ do
   navigate_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
 end
 
-And /^I perform a complete search for the Course Proposal$/ do
+And /^I perform a complete search for the course proposal$/ do
   navigate_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
 end
@@ -70,7 +70,7 @@ And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
   end
 end
 
-And /^I can review my (.*?)$/ do |proposal_type|
+And /^I can review the course (.*?)$/ do |proposal_type|
   @course_proposal.review_proposal_action
   on CmCourseInformation do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title

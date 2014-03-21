@@ -22,7 +22,7 @@ And I edit the required for save fields and save
 Then I should see the updated data on the Review proposal page
 
 
-Scenario: CC4.1 Create an admin course proposal with only required for save fields
+Scenario: CC4.1 Create an course admin proposal with only required for save fields
 When I complete the required fields for save on the course admin proposal
 Then I should see data in required fields for the course admin proposal
 
