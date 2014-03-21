@@ -20,7 +20,7 @@ end
 
 
 When /^I perform a full search for the Course Proposal$/ do
-  navigate_to_functional_home
+  navigate_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
 end
 
@@ -44,6 +44,7 @@ Then /^I should see both proposals listed in the search result$/ do
 end
 
 And /^I perform a partial search for Course Proposals$/ do
+  navigate_rice_to_cm_home
   #using part of the text that is common across both test proposals
   search_text = @course_proposal_cs.proposal_title.slice(6,15)
   @course_proposal_cs.search(search_text)
