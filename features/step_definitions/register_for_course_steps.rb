@@ -5,7 +5,6 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="ENGL" then "ENGL211"
                   when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
-                  when subj=="full" then "Full-TBD"
                   else ""
                 end
   @reg_request = make RegistrationRequest, :student_id=>"student",
@@ -228,4 +227,16 @@ end
 
 Then /^there is a message indicating that I have been added to the waitlist$/ do
   pending
+end
+
+When /^I register as (\w+) for a course offering with a seat capacity of one$/ do |user|
+  @reg_request = make RegistrationRequest, :student_id=>user,
+                      :term_code=>"201208",
+                      :term_descr=>"Fall 2012",
+                      :course_code=>"ENGL101",
+                      :reg_group_code=>"1060",
+                      :course_has_options=>false
+  @reg_request.create
+  @reg_request.register
+  sleep 2
 end

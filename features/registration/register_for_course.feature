@@ -79,9 +79,11 @@ Feature: REG.Register for course
 
   #KSENROLL-12219
 #  @wip
-#  Scenario: CR 7.1 I want to add myself to a waitlist for a full registration group after I submit my cart so I can establish priority for a space when it becomes available
-#    When I add a full course offering to my registration cart
-#    And I register for the course
+  Scenario: CR 7.1 I want to add myself to a waitlist for a full registration group after I submit my cart so I can establish priority for a space when it becomes available
+    When I register as student for a course offering with a seat capacity of one
+    And I log out
+    When I am logged in as admin
+    And I register as admin for a course offering with a seat capacity of one
 #    Then I am given the option to add myself to a waitlist for the course
 #    When I add myself to a waitlist for the course
 #    Then there is a message indicating that I have been added to the waitlist

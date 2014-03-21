@@ -11,15 +11,16 @@ class RegistrationRequest
   include Workflows
 
   #string - generally set using options hash
-  attr_accessor :student_id,
+  attr_reader   :student_id,
                 :term_code,
                 :term_descr,              #TODO - get term descr from term_code so they are always in sync
                 :course_code,
                 :reg_group_code
   #array - generally set using options hash
-  attr_accessor :course_options
+  attr_reader   :course_options
   #boolean - - generally set using options hash true/false
-  attr_accessor :modify_course_options
+  attr_reader   :course_has_options
+  attr_reader   :modify_course_options
 
   # provides default data:
   #  defaults = {
@@ -28,6 +29,7 @@ class RegistrationRequest
   #    :term_descr=>"Spring 2012",
   #    :course_code=>"CHEM231",
   #    :reg_group_code=>"1001",
+  #    :course_has_options=> true,
   #    :modify_course_options=> false   This refers only to modifying during add to cart operation
   #  }
   # initialize is generally called using TestFactory Foundry .make or .create methods
@@ -42,6 +44,7 @@ class RegistrationRequest
       :course_code=>"CHEM231",
       :reg_group_code=>"1001",
       :course_options=> (make CourseOptions),
+      :course_has_options=> true,
       :modify_course_options=> false
     }
     options = defaults.merge(opts)
@@ -57,11 +60,13 @@ class RegistrationRequest
       page.reg_group_code_input.set @reg_group_code
       page.submit_button.wait_until_present
       page.add_to_cart
-      page.new_item_cancel_button.wait_until_present
-      if @modify_course_options
-        edit_course_options_on_new_item
+      if @course_has_options
+        page.new_item_cancel_button.wait_until_present
+        if @modify_course_options
+          edit_course_options_on_new_item
+        end
+        page.save_new_item
       end
-      page.save_new_item
     end
   end
 
@@ -214,7 +219,7 @@ class CourseOptions
     include StringFactory
     include Workflows
 
-    attr_accessor :credit_option,
+    attr_accessor :credit_option,     #TODO - change to attr_reader and implement edit method
                   :grading_option
 
     def initialize(browser, opts={})
