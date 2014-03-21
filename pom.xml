@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.kuali.pom</groupId>
     <artifactId>kuali-maven</artifactId>
-    <version>3.3.17</version>
+    <version>3.3.43</version>
   </parent>
   <groupId>org.kuali.maven.plugins</groupId>
   <artifactId>kscontractdoc-maven-plugin</artifactId>
