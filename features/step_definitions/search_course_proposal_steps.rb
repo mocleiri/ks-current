@@ -25,7 +25,7 @@ When /^I perform a full search for the Course Proposal$/ do
 end
 
 And /^I perform a complete search for the Course Proposal$/ do
-  #navigate_to_functional_home
+  navigate_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
 end
 

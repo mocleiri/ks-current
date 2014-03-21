@@ -46,7 +46,7 @@ And /^I should see data in the course title on course information$/ do
   end
 end
 
-When /^I complete the required fields for save on the course proposal$/ do
+When /^I complete the required fields for save on the new course proposal$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
