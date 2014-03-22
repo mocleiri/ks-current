@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kuali.student.api</groupId>
         <artifactId>ks-api</artifactId>
-        <version>2.1.1-FR2-M1-SNAPSHOT</version>
+        <version>2.1.1-FR2-M1-build-706</version>
     </parent>
     <artifactId>ks-enroll-api</artifactId>
     <name>KS Enroll API</name>
@@ -198,7 +198,7 @@
                             </sourceDirs>
                         </configuration>
                     </execution>
-		    <execution>
+                    <execution>
                         <id>generate-conformance-tests</id>
                         <phase>${ks.conftest.phase}</phase>
                         <goals>
@@ -214,7 +214,6 @@
                             </sourceDirs>
                         </configuration>
                     </execution>
-
                 </executions>
                 <dependencies>
                     <dependency>
