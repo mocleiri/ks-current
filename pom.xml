@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.kuali.student</groupId>
     <artifactId>student</artifactId>
-    <version>2.1.1-FR2-M1-SNAPSHOT</version>
+    <version>2.1.1-FR2-M1-build-706</version>
     <packaging>pom</packaging>
     <name>Kuali Student</name>
     <description>
@@ -34,12 +34,12 @@
         <url>http://ci.rice.kuali.org</url>
     </ciManagement>
     <properties>
-        <ks.api.version>2.1.1-FR2-M1-SNAPSHOT</ks.api.version>
-        <ks.core.version>2.1.1-FR2-M1-SNAPSHOT</ks.core.version>
-        <ks.enroll.version>0.2.0-FR2-M1-SNAPSHOT</ks.enroll.version>
-        <ks.lum.version>2.1.1-FR2-M1-SNAPSHOT</ks.lum.version>
-        <ks.deployments.version>2.1.1-FR2-M1-SNAPSHOT</ks.deployments.version>
-        <ks.ap.version>0.8.0-FR2-M1-SNAPSHOT</ks.ap.version>
+        <ks.api.version>2.1.1-FR2-M1-build-706</ks.api.version>
+        <ks.core.version>2.1.1-FR2-M1-build-706</ks.core.version>
+        <ks.enroll.version>0.2.0-FR2-M1-build-706</ks.enroll.version>
+        <ks.lum.version>2.1.1-FR2-M1-build-706</ks.lum.version>
+        <ks.deployments.version>2.1.1-FR2-M1-build-706</ks.deployments.version>
+        <ks.ap.version>0.8.0-FR2-M1-build-706</ks.ap.version>
         <!-- 3rd party library/plugin version definitions -->
         <antlr.runtime.version>3.1.1</antlr.runtime.version>
         <antlr.legacy.version>2.7.7</antlr.legacy.version>
@@ -137,7 +137,7 @@
         <!-- should align to the same or earlier phase than the contract doc or dictionary doc phase -->
         <ks.prepare-contract-dependencies.phase>site</ks.prepare-contract-dependencies.phase>
         <ks.vdecorator.phase>none</ks.vdecorator.phase>
-	<ks.conftest.phase>none</ks.conftest.phase>
+        <ks.conftest.phase>none</ks.conftest.phase>
         <!-- Spring config that creates META-INF files describing SQL resources -->
         <metainf.sql.context>org.kuali.common.util.metainf.spring.SqlConfig</metainf.sql.context>
         <metainf.sql.propertySource>org.kuali.student.deploy.spring.SqlPropertySourceConfig</metainf.sql.propertySource>
@@ -274,9 +274,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/trunk</connection>
-        <developerConnection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/trunk</developerConnection>
-        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/trunk</url>
+        <connection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/tags/builds/student-2.1/2.1.1-FR2-M1/build-706</connection>
+        <developerConnection>scm:svn:https://svn.kuali.org/repos/student/enrollment/aggregate/tags/builds/student-2.1/2.1.1-FR2-M1/build-706</developerConnection>
+        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/tags/builds/student-2.1/2.1.1-FR2-M1/build-706</url>
     </scm>
     <prerequisites>
         <maven>${maven.min.version}</maven>
