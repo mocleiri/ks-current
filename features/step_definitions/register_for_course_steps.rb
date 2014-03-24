@@ -86,10 +86,7 @@ end
 
 Then /^there is a message indicating registration submittal$/ do
   on RegistrationCart do |page|
-    register_message_text = "Cart was submitted"
-    page.find_user_message register_message_text
-    puts "User Message: |#{page.user_message}|"
-    page.user_message.should include register_message_text
+    page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should == "Registered"
   end
 end
 
@@ -103,6 +100,8 @@ end
 
 When /^I view my schedule$/ do
   on RegistrationCart do |page|
+    page.menu
+    page.schedule_link.wait_until_present
     page.schedule_link.click
   end
 end
@@ -177,6 +176,7 @@ And /^I? ?view my registration cart$/ do
     page.menu
     page.wait_until {page.term_select.include? term_descr }
     page.select_term term_descr
+    page.menu
   end
 end
 
@@ -240,4 +240,10 @@ When /^I register as (\w+) for a course offering with a seat capacity of one$/ d
   @reg_request.create
   @reg_request.register
   sleep 2
+end
+
+Then /^there is a message indicating that the course is full$/  do
+  on RegistrationCart do |page|
+    page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should == "No Seats Available"
+  end
 end

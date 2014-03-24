@@ -36,6 +36,7 @@ class RegistrationCart < RegisterForCourseBase
   element(:user_message) { |b| b.div(id: "user_message").text }
   element(:undo_remove_link) { |b| b.link(id: "userMessageInvoke") }
   action(:undo_remove) { |b| b.undo_remove_link.click }
+  element(:result_status) { |course_code,reg_group_code,b| b.div(id: "result_status_#{course_code}_#{reg_group_code}").text }
 
   # ADD NEW ITEM OPTIONS MODAL DIALOG
   element(:new_item_credits_selection) { |b| b.select(id: "newItemCredits") }
