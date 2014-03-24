@@ -121,8 +121,8 @@ Feature: BT.Course Search
     When I search for a course with "<combined_multi_text>" option
     Then course code or course title or course description containing any text of "<combined_multi_text>" text option are returned
   Examples:
-    |combined_multi_text  |
-    |introduction ENGL 278|
-    |play's ENGL          |
+    |combined_multi_text      |
+    |introduction ENGL 278    |
+    |play's ENGL              |
     |"western literature" HIST|
-    |eighteenth_century HIST|
+    |eighteenth_century HIST  |
