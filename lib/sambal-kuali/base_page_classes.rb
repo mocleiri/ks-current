@@ -273,11 +273,13 @@ class RegisterForCourseBase < BasePage
   expected_element :cr_header_div
 
   element(:cr_header_div) { |b| b.div(class: "kscr-Header") }
-  element(:term_select) { |b| b.select(id: "searchTerm") }
 
+  element(:menu_button) { |b| b.cr_header_div.button(id: "reg_menu_button")}
+  action(:menu) { |b| b.menu_button.click }
+  element(:term_select) { |b| b.select(id: "searchTerm") }
   element(:search) { |b| b.cr_header_div.link(id: "goToSearch")}
-  element(:cart_link) { |b| b.cr_header_div.link(id: "goToCart") }
   element(:schedule_link) { |b| b.cr_header_div.link(id: "goToSchedule") }
+  element(:cart_link) { |b| b.cr_header_div.link(id: "goToCart") }
 
   def select_term(term)
     term_select.select(term)

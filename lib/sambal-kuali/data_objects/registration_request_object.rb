@@ -54,6 +54,8 @@ class RegistrationRequest
   def create
     visit RegistrationCart do |page|
       # wait in case list has not loaded yet
+      page.menu_button.wait_until_present
+      page.menu
       page.wait_until {page.term_select.include? @term_descr }
       page.select_term @term_descr
       page.course_code_input.set @course_code

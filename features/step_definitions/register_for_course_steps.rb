@@ -173,7 +173,8 @@ end
 And /^I? ?view my registration cart$/ do
   visit RegistrationCart do |page|
     term_descr = "Spring 2012"
-    # wait in case list has not loaded yet
+    page.menu_button.wait_until_present
+    page.menu
     page.wait_until {page.term_select.include? term_descr }
     page.select_term term_descr
   end
