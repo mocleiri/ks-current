@@ -55,7 +55,7 @@ Before do
   @browser = browser
 end
 
-# at_exit { browser.close unless browser == nil }
+at_exit { browser.close unless browser == nil }
 
 if ENV['HEADLESS']
   # commented out to allow parallel execution
