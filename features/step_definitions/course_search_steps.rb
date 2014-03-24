@@ -100,6 +100,7 @@ Then(/^course code or course title or course description containing any word of 
   if condition == "should"
     @course_offering.multi_text_search(expected).should be_true
   else
+    puts " In Course Steps inside false"
     begin
       @course_offering.multi_text_search(expected).should_not be_true
     rescue Watir::Exception::UnknownObjectException
@@ -233,5 +234,18 @@ Then /^the course Title listed should be sorted in "(.*?)" order$/ do |text|
   end
 end
 
+#-----------------------------------------------------------------------------------------------------------------------
+
+When /^I search for a course with "(.*?)" option$/ do |text|
+  @course_offering = make CourseOffering, :search_text => text
+  @course_offering.course_search_with_search_text
+end
+
+Then /^the "(.*?)" and courses matching at least one "(.*?)" are returned$/ do |expected_courses, expected_component|
+  @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
+end
 
 
+Then /^course code or course title or course description containing any text of "(.*?)" text option are returned$/ do |expected|
+  @course_offering.multi_text_search(expected).should be_true
+end

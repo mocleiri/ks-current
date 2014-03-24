@@ -180,15 +180,34 @@ class CourseSearch < BasePage
         if ((course_code.downcase).include? (split_text).downcase) ||  ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
         else
           split_name = search_FullText.split(' ')
+          falseCount = 0
           for index in 0 ... split_name.size
             split_text = "#{split_name[index]}"
+
+            puts "split_text  = = #{split_text}"
+
             if ((course_code.downcase).include? (split_text).downcase) ||
                 ((course_name.include? (split_text).downcase )||(course_description_text.include? (split_text).downcase))
             else
-              puts "#{course_code}"
-              return false
+              puts ' comes to else loop '
+              falseCount = falseCount + 1
+
             end
+
           end
+
+          puts "falseCount = #{falseCount}"
+          puts " split size = #{split_name.size}"
+          if  falseCount ==  split_name.size
+            puts " All Search texts are not found"
+            #begin
+              puts "#{course_code}"
+            #rescue Watir::Exception::UnknownObjectException
+              return false
+           # end
+
+          end
+
         end
       end
     end
