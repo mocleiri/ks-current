@@ -404,7 +404,7 @@ Then /^I should have a choice of terms from which to associate the Final Exam Ma
 end
 
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM241"
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []

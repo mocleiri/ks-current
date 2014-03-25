@@ -43,7 +43,6 @@ Feature: CO.Exam Offering Schedule Information
     And the Schedule Information for the Exam Offering should be blank
 
   #KSENROLL-12086
-  @bug
   Scenario: FE4.8.2 Test that when Course Offering with a CO-driven exam is created from copy and is present on the FE Matrix that the schedule info is populated
     Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
     And I create a Course Offering from copy in a term with a defined final exam period that uses the FE matrix
@@ -66,7 +65,6 @@ Feature: CO.Exam Offering Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12104
-  @bug
   Scenario: FE4.9.3 Test that when Course Offering with AO-driven exam is created from copy that the schedule info is not populated
     Given I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period
     And I create an Activity Offering that has no ASIs or RSIs
