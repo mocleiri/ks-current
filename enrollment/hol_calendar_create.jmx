@@ -1350,9 +1350,9 @@
         <hashTree>
           <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
             <stringProp name="variableName">testcalname</stringProp>
-            <stringProp name="outputFormat">testholcal000</stringProp>
-            <stringProp name="minimumValue">10</stringProp>
-            <stringProp name="maximumValue">100</stringProp>
+            <stringProp name="outputFormat">jmeterholcal000</stringProp>
+            <stringProp name="minimumValue">101</stringProp>
+            <stringProp name="maximumValue">900</stringProp>
             <stringProp name="randomSeed"></stringProp>
             <boolProp name="perThread">true</boolProp>
           </RandomVariableConfig>
@@ -1589,7 +1589,7 @@
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
-                <stringProp name="7025228">Last modified by admin on</stringProp>
+                <stringProp name="-1135203442">has been saved successfully</stringProp>
               </collectionProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
               <boolProp name="Assertion.assume_success">false</boolProp>
