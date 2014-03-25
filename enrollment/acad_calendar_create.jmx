@@ -1701,9 +1701,9 @@
         </TransactionController>
         <hashTree>
           <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
-            <stringProp name="maximumValue">100</stringProp>
-            <stringProp name="minimumValue">10</stringProp>
-            <stringProp name="outputFormat">testcal000</stringProp>
+            <stringProp name="maximumValue">1000</stringProp>
+            <stringProp name="minimumValue">1</stringProp>
+            <stringProp name="outputFormat">testcal0000</stringProp>
             <boolProp name="perThread">true</boolProp>
             <stringProp name="randomSeed"></stringProp>
             <stringProp name="variableName">testcalname</stringProp>
