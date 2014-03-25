@@ -424,7 +424,7 @@ Then /^the Requested Scheduling Information for the Exam Offering should be popu
 end
 
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
+  @course_offering = make CourseOffering, :term => "201401", :course => "CHEM242"
 end
 
 Then /^the Schedule Information for the Exam Offering should be blank$/ do
@@ -467,7 +467,7 @@ Given /^that the Course Offering has an AO-driven exam that is marked to use the
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix$/ do
-  @course_offering = make CourseOffering, :term => "201208", :course => "HIST120"
+  @course_offering = make CourseOffering, :term => "201401", :course => "CHEM395"
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
