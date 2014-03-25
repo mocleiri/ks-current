@@ -117,6 +117,7 @@ Feature: BT.Course Search
     | Organic 3xx             |                      | organic,3xx                 |
     | modern WMST             |ENGL278               | modern, WMST                |
 
+ @draft
   Scenario Outline: 8.2.2: To List the courses having the search text with special character ("",',_)
     When I search for a course with "<combined_multi_text>" option
     Then course code or course title or course description containing any text of "<combined_multi_text>" text option are returned
