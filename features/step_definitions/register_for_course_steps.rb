@@ -81,7 +81,7 @@ end
 
 And /^I register for the course$/ do
   @reg_request.register
-  sleep 2
+  sleep 3
 end
 
 Then /^there is a message indicating registration submittal$/ do
@@ -239,7 +239,7 @@ When /^I register as (\w+) for a course offering with a seat capacity of one$/ d
                       :course_has_options=>false
   @reg_request.create
   @reg_request.register
-  sleep 2
+  sleep 3
 end
 
 Then /^there is a message indicating that the course is full$/  do
