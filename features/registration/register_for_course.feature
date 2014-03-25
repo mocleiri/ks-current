@@ -37,7 +37,7 @@ Feature: REG.Register for course
     When I add a HIST course offering to my registration cart
     Then the course is present in my cart
     And I register for the course
-    Then there is a message indicating registration submittal
+    Then there is a message indicating successful registration
     When I view my schedule
     Then the course is present in my schedule
     And I can view the details of my selection in my schedule
@@ -78,13 +78,10 @@ Feature: REG.Register for course
     Then the course is present in my schedule
 
   #KSENROLL-12219
-#  @wip
-  Scenario: CR 7.1 I want to add myself to a waitlist for a full registration group after I submit my cart so I can establish priority for a space when it becomes available
+  Scenario: CR 7.1 I want to be notified if a registration group is full after I submit my cart so that I can adjust my registration appropriately
     When I register as student for a course offering with a seat capacity of one
+    Then there is a message indicating successful registration
     And I log out
     When I am logged in as admin
     And I register as admin for a course offering with a seat capacity of one
     Then there is a message indicating that the course is full
-#    Then I am given the option to add myself to a waitlist for the course
-#    When I add myself to a waitlist for the course
-#    Then there is a message indicating that I have been added to the waitlist

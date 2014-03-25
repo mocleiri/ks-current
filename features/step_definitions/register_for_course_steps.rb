@@ -84,7 +84,7 @@ And /^I register for the course$/ do
   sleep 3
 end
 
-Then /^there is a message indicating registration submittal$/ do
+Then /^there is a message indicating successful registration$/ do
   on RegistrationCart do |page|
     page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should == "Registered"
   end
