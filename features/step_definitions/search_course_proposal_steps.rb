@@ -3,6 +3,11 @@ Given /^I have a course proposal created as Curriculum Specialist$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
+Given /^I have a course admin proposal created as Curriculum Specialist$/ do
+  steps %{Given I am logged in as Curriculum Specialist}
+  @course_proposal = create CmCourseProposalObject, :curriculum_review_process => "Yes"
+end
+
 Given /^I have a course proposal created as Faculty$/ do
   steps %{Given I am logged in as Fred}
   @course_proposal = create CmCourseProposalObject
@@ -18,6 +23,21 @@ Given /^I have a admin course proposal created as Curriculum Specialist and cour
   puts "Faculty proposal title is #{@course_proposal_faculty.proposal_title}"
 end
 
+Given /^I have a course proposal created as Faculty and logged in as Curriculum Specialist$/ do
+  steps %{Given I am logged in as Fred}
+  @course_proposal_faculty = create CmCourseProposalObject, :proposal_title => "Freds Math class #{random_alphanums(10,'test proposal title ') }"
+  puts "Faculty proposal title is #{@course_proposal_faculty.proposal_title}"
+
+  steps %{Given I am logged in as Curriculum Specialist}
+end
+
+Given /^I have a course admin proposal created as Curriculum Specialist and logged in as Faculty$/ do
+  steps %{Given I am logged in as Curriculum Specialist}
+  @course_proposal_cs = create CmCourseProposalObject, :proposal_title => "Alice Math class #{random_alphanums(10,'test proposal title ') }"
+  puts "CS proposal title is #{@course_proposal_cs.proposal_title}"
+
+  steps %{Given I am logged in as Fred}
+end
 
 When /^I perform a full search for the course proposal$/ do
   navigate_to_cm_home
@@ -25,12 +45,17 @@ When /^I perform a full search for the course proposal$/ do
 end
 
 And /^I perform a complete search for the course proposal$/ do
-  navigate_to_cm_home
-  @course_proposal.search(@course_proposal.proposal_title)
+  navigate_rice_to_cm_home
+  @course_proposal_faculty.search(@course_proposal_faculty.proposal_title)
+end
+
+And /^I perform a complete search for the course admin proposal$/ do
+  navigate_rice_to_cm_home
+  @course_proposal_cs.search(@course_proposal_cs.proposal_title)
 end
 
 Then /^I should see my proposal listed in the search result$/ do
-on FindProposalPage do |page|
+  on FindProposalPage do |page|
     page.proposal_title_element(@course_proposal.proposal_title).should exist
   end
 end

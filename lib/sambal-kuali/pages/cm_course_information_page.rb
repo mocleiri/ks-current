@@ -53,6 +53,7 @@ class CmCourseInformation < BasePage
   action(:error_message) { |error_number='2', b| b.h3(text: "This page has #{error_number} errors") }
 
 # REVIEW PROPOSAL
+  action(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil").click }
   action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
   value(:proposal_title_review) { |b| b.div(id: 'KS-CourseView-CourseInfo-ReviewWidgets_disclosureContent').div(data_label: 'Proposal Title').span(class: "uif-readOnlyContent").text }
   value(:course_title_review) { |b| b.div(id: 'KS-CourseView-CourseInfo-ReviewWidgets_disclosureContent').div(data_label: 'Course Title').span(class: "uif-readOnlyContent").text }

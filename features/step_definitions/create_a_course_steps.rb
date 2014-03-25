@@ -116,6 +116,20 @@ And /^I edit the required for save fields and save$/ do
    @course_proposal.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
 end
 
+And /^I edit the course proposal$/ do
+  @course_proposal.edit_find_course_proposal :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+end
+
+And /^I edit the course proposal for Faculty$/ do
+  @course_proposal_faculty.edit_find_course_proposal :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+end
+
+Then /^I should not see the edit option in the search results for CS in faculty login$/ do
+  on FindProposalPage do |page|
+    page.edit_find_course_proposal.exists?.should == false
+  end
+end
+
 And /^I should see the updated data on the Review proposal page$/ do
   on CmCourseInformation do |page|
     page.review_proposal
@@ -125,7 +139,26 @@ And /^I should see the updated data on the Review proposal page$/ do
     #puts "Updated Course Title is #{page.course_title_review}"
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
+  end
+end
 
+And /^I should see the updated data on the Review proposal page for course (.*?)$/ do |proposal_type|
+  if proposal_type == "proposal"
+    on CmCourseInformation do |page|
+      page.review_proposal
+      page.loading_wait
+      page.growl_text.should == "Document was successfully saved."
+      page.proposal_title_review.should == @course_proposal_faculty.proposal_title
+      page.course_title_review.should == @course_proposal_faculty.course_title
+    end
+  else
+    on CmCourseInformation do |page|
+      page.review_proposal
+      page.loading_wait
+      page.growl_text.should == "Document was successfully saved."
+      page.proposal_title_review.should == @course_proposal_cs.proposal_title
+      page.course_title_review.should == @course_proposal_cs.course_title
+    end
   end
 end
 

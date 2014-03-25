@@ -8,6 +8,7 @@ action(:find_a_proposal) { |b| b.div(id: "Uif-PageContentWrapper").button(class:
 action(:proposal_title_element)  { |proposal_title,b| b.div(id:"#{proposal_title}" ).span(class: "uif-readOnlyContent") }
 action(:proposal_title_text)  { |proposal_title,b| b.div(id:"#{proposal_title}" ).span(class: "uif-readOnlyContent").text }
 action(:review_proposal_action_link) { |proposal_title,b| b.a(id: "#{proposal_title}_view").i(class: "ks-fontello-icon-eye" ).click }
+element(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil") }
 
 expected_element :name
 
