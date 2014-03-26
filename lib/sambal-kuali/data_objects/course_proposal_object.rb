@@ -21,9 +21,11 @@ class CmCourseProposalObject < DataObject
         :term_any, :term_fall, :term_spring, :term_summer,
         :assessment_scale,:final_exam_type, :final_exam_rationale,
         :exam_standard, :exam_alternate, :exam_none,
-        :outcome_type, :outcome_value, :credit_value_max, :credit_value_min,
-        :outcome_multiple, :outcome_multiple2, :outcome_credit_value, :outcome_credit_value_max,
-        :outcome_credit_value_multiple, :outcome_credit_value_multiple2,
+        #
+        :outcome_type_fixed, :outcome_level_fixed, :credit_value,
+        :outcome_type_range, :outcome_level_range, :credit_value_max, :credit_value_min,
+        :outcome_type_multiple,:outcome_level_multiple, :credit_value_multiple_1,:credit_value_multiple_2,
+        #
         :course_format_activity_type, :duration_type, :duration_count,
         :activity_type, :activity_duration_type, :activity_frequency,
         :activity_contacted_hours, :activity_duration_count, :activity_class_size,
@@ -109,8 +111,9 @@ class CmCourseProposalObject < DataObject
         course_number:              "123",
         description_rationale:      random_alphanums(20, 'test description rationale '),
         proposal_rationale:         random_alphanums(20, 'test proposal rationale '),
-
-
+        #GOVERNANCE
+        campus_location: [:location_all, :location_extended, :location_north, :location_south],
+        curriculum_oversight:       '::random::',
         #COURSE LOGISTICS
         assessment_scale:           [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
         final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
@@ -177,7 +180,7 @@ class CmCourseProposalObject < DataObject
 
     if @create_new_proposal
       create_course_continue
-      create_course_proposal_required_fields unless @proposal_title.nil?
+      create_course_proposal_required unless @proposal_title.nil?
       determine_save_action
     end
   end
@@ -212,58 +215,66 @@ class CmCourseProposalObject < DataObject
     on CmCourseInformation do |page|
       page.course_information unless page.current_page('Course Information').exists?
 
-      page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
+      fill_out page, :proposal_title, :course_title, :transcript_course_title
 
-      fill_out page, :description_rationale, :proposal_rationale, :course_number, :transcript_course_title
-      page.save_and_continue
+      page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
+      page.subject_code.fit @subject_code
+      page.auto_lookup @subject_code unless @subject_code.nil?
+
+      fill_out page, :course_number, :description_rationale, :proposal_rationale
+      determine_save_action
     end
 
     on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
 
-      fill_out page, :curriculum_oversight
-      page.add_oversight unless @curriculum_oversight.nil?
-      page.save_and_continue
+      fill_out page, :location_all, :location_extended, :location_north, :location_south
+
+      #fill_out page, :curriculum_oversight
+      page.curriculum_oversight.pick! @curriculum_oversight
+      page.add_oversight
+      determine_save_action
     end
 
     on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
 
       page.loading_wait
-      page.add_outcome unless @outcome_type.nil?
+      #page.add_outcome unless @outcome_type.nil?
       # outcome_type needs to be done first because of how page loading is working
-      fill_out page, :outcome_type
+#      page.outcome_type.pick! '::random::'
+#      fill_out page, :outcome_type
       fill_out page,
                :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail,
                :assessment_percentage, :assessment_satisfactory
 
       sleep 1
-      set_outcome_type
-      page.add_additional_format
-      page.add_activity unless @activity_type.nil?
+      #set_outcome_type
+      set_outcome
+      set_additional_format
 
-      ##Test to check that only one exam can be checked
-      #page.exam_alternate.set
-      #page.exam_standard.set
 
-      fill_out page, :activity_type, :exam_standard, :exam_alternate, :exam_none
 
+      fill_out page, :exam_standard, :exam_alternate, :exam_none
       #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
       #if that radio is selected
+      page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
       page.final_exam_rationale.fit @final_exam_rationale unless page.exam_standard.set?
-      page.save_and_continue
+      determine_save_action
     end
 
     on CmActiveDates do |page|
       page.active_dates unless page.current_page('Active Dates').exists?
-      page.start_term.fit @start_term
-      page.pilot_course.fit @pilot_course
-      page.loading_wait
+      page.start_term.pick! @start_term
+
+      #page.pilot_course.fit @pilot_course
+      #page.loading_wait
       # SPECIAL:: Need this second start_term because end_term not immediately selectable after checkbox is selected
       #page.start_term.fit @start_term
-      sleep 1
-      page.end_term.fit @end_term
-      page.save_and_continue
+      #sleep 1
+      #page.end_term.fit @end_term
+
+      determine_save_action
     end
 
   end # required proposal
@@ -291,7 +302,7 @@ class CmCourseProposalObject < DataObject
     on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
 
-      fill_out page, :location_all, :location_extended, :location_north, :location_south
+
 
       # Admin organization in private method do to complexity of advanced search adding
       adding_admin_organization
@@ -429,15 +440,68 @@ class CmCourseProposalObject < DataObject
 
   def checkbox_trans
      { "Yes" => :set, "No" => :clear }
-   end
+  end
+
+  def set_outcome
+    set_outcome_fixed(@outcome_level_fixed) unless @outcome_type_fixed == nil
+    set_outcome_range(@outcome_level_range) unless @outcome_type_range == nil
+    set_outcome_multiple(@outcome_level_multiple) unless @outcome_type_multiple == nil
+  end
+
+  def set_additional_format
+    on CmCourseLogistics do |page|
+      page.activity_type.pick! @activity_type
+      page.activity_contacted_hours.fit @activity_contacted_hours
+      page.activity_frequency.pick! @activity_frequency
+      page.activity_duration_type.pick! @activity_duration_type
+      page.activity_duration_count.fit @activity_duration_count
+      page.activity_class_size.fit @activity_class_size
+    end
+  end
+
+  def set_outcome_fixed(outcome_level)
+    on CmCourseLogistics do |page|
+      page.add_outcome
+      page.outcome_type(outcome_level-1).pick! "Fixed"
+      page.loading_wait
+      page.credit_value_fixed(outcome_level-1).set @credit_value
+    end
+  end
+
+
+  def set_outcome_range(outcome_level)
+    on CmCourseLogistics do |page|
+      page.add_outcome
+      page.outcome_type(outcome_level-1).pick! "Range"
+      page.loading_wait
+      page.credit_value_min(outcome_level-1).set @credit_value_min
+      page.credit_value_max(outcome_level-1).set @credit_value_max
+    end
+  end
+
+  def set_outcome_multiple(outcome_level)
+    multiple_value_count = 0
+    on CmCourseLogistics do |page|
+      page.add_outcome
+      page.outcome_type(outcome_level-1).pick! "Multiple"
+      page.loading_wait
+      # sleep here is to wait for the element to be visible
+      sleep 1
+      page.credit_value_multiple_1(outcome_level-1).set @credit_value_multiple_1
+      page.outcome_add_multiple_btn(outcome_level-1)
+      page.loading_wait
+      page.credit_value_multiple_2(outcome_level-1, multiple_value_count).set @credit_value_multiple_2
+      page.outcome_add_multiple_btn(outcome_level-1)
+    end
+  end
 
 
   #Used to fill out the outcome type by setting the @outcome_type adding multiple outcomes will require to pass in the outcome level for multiple fields
   def set_outcome_type(outcome_level='0')
     on CmCourseLogistics do |page|
       page.credit_value(outcome_level).set @outcome_value if @outcome_type == 'Fixed'
-      page.credit_value_max(outcome_level).set credit_value_max if @outcome_type == 'Range'
-      page.credit_value_min(outcome_level).set credit_value_min if @outcome_type == 'Range'
+      page.credit_value_max(outcome_level).set @credit_value_max if @outcome_type == 'Range'
+      page.credit_value_min(outcome_level).set @credit_value_min if @outcome_type == 'Range'
 
       #TODO:: Find a way to make type Multiple work with the outcome_level variable for multiple outcome types
       if @outcome_type == 'Multiple'

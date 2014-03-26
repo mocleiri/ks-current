@@ -9,9 +9,9 @@ class CmCourseInformation < BasePage
   element(:course_title) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.courseInfo.courseTitle') }
   element(:course_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.courseInfo.courseTitle', class: 'uif-textControl required validChar-document.newMaintainableObject.dataObject.courseInfo.courseTitle0 error') }
 
-  element(:transcript_course_title) {|b| b.text_field(name: /transcriptTitle$/) }
-  element(:subject_code) { |b| b.text_field(name: /subjectArea$/) }
-  element(:course_number) { |b| b.text_field(name: /courseNumberSuffix$/) }
+  element(:transcript_course_title) {|b| b.text_field(id: 'KS-TranscriptTitle_control') }
+  element(:subject_code) { |b| b.text_field(id: 'KS-SubjectArea-Field_control') }
+  element(:course_number) { |b| b.text_field(id: 'KS-CourseNumberSuffix-Field_control') }
   action(:cancel) { |b| b.a(id: 'ucancel').click; b.loading_wait }
 
 #CROSS LIST SECTION
@@ -23,7 +23,7 @@ class CmCourseInformation < BasePage
   element(:add_another_course_button) { |b| b.button(id: 'KS-JointlyOffered-Section_add') }
   element(:add_a_version_code_button) { |b| b.button(id: 'KS-VersionCodes-Section_add') }
 
-  action(:add_another_course_listing) { |b| b.add_another_course_listing_button.click; b.loading_wait }
+  action(:add_another_course_listing) { |b| b.add_another_course_listing_button.click; b.adding_line_wait }
   action(:add_another_course) { |b| b.add_another_course_button.click; b.loading_wait }
   action(:add_a_version_code) { |b| b.add_a_version_code_button.click; b.loading_wait }
 
@@ -43,8 +43,8 @@ class CmCourseInformation < BasePage
   action(:instructor_advanced_search) { |b| b.div(id: 'KS-Instructor-displayName_add').link(text: 'Advanced Search' ).click; b.adv_search_button.wait_until_present }
 
 #DESCRIPTION AND RATIONALE
-  element(:description_rationale) { |b| b.text_field(name: /course.descr.plain$/) }
-  element(:proposal_rationale) { |b| b.text_field(name: /proposal.rationale.plain$/) }
+  element(:description_rationale) { |b| b.text_field(name: /courseInfo.descr.plain$/) }
+  element(:proposal_rationale) { |b| b.text_field(name: /proposalInfo.rationale.plain$/) }
 
 # ADVANCED SEARCH
   action(:joint_offering_advanced_search) { |b| b.div(id: 'KS-JointlyOffered-Section').link(text: 'Advanced Search').click }
@@ -52,12 +52,15 @@ class CmCourseInformation < BasePage
   element(:error_popup) { |b| b.div(text: 'The form contains errors. Please correct these errors and try again.') }
   action(:error_message) { |error_number='2', b| b.h3(text: "This page has #{error_number} errors") }
 
-# REVIEW PROPOSAL
+# COURSE INFORMATION REVIEW FIELDS
   action(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil").click }
   action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
-  value(:proposal_title_review) { |b| b.div(id: 'KS-CourseView-CourseInfo-ReviewWidgets_disclosureContent').div(data_label: 'Proposal Title').span(class: "uif-readOnlyContent").text }
-  value(:course_title_review) { |b| b.div(id: 'KS-CourseView-CourseInfo-ReviewWidgets_disclosureContent').div(data_label: 'Course Title').span(class: "uif-readOnlyContent").text }
-
+  value(:proposal_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Title").span(class: "uif-readOnlyContent").text }
+  value(:course_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Title").span(class: "uif-readOnlyContent").text }
+  value(:subject_code_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Subject Code").span(class: "uif-readOnlyContent").text }
+  value(:course_number_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Number").span(class: "uif-readOnlyContent").text }
+  value(:description_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Description").span(class: "uif-readOnlyContent").text }
+  value(:proposal_rationale_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Rationale").span(class: "uif-readOnlyContent").text }
 
   # table results
   # b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table.row.cells[1].text

@@ -44,6 +44,12 @@ When /^I perform a full search for the course proposal$/ do
   @course_proposal.search(@course_proposal.proposal_title)
 end
 
+
+When /^I perform a search for the proposal$/ do
+  navigate_to_cm_home
+  @course_proposal.search(@course_proposal.proposal_title)
+end
+
 And /^I perform a complete search for the course proposal$/ do
   navigate_rice_to_cm_home
   @course_proposal_faculty.search(@course_proposal_faculty.proposal_title)
@@ -106,6 +112,74 @@ And /^I can review the course (.*?)$/ do |proposal_type|
       page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
     end
   end
+end
+
+And /^I can review the required fields on the (.*?)$/ do |proposal_type|
+  @course_proposal.review_proposal_action
+
+  #COURSE INFORMATION SECTION
+  on CmCourseInformation do |page|
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)" if proposal_type == "admin proposal"
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)" if proposal_type == "course proposal"
+    page.subject_code_review.should == @course_proposal.subject_code
+    page.course_number_review.should == @course_proposal.course_number
+    page.description_review.should == @course_proposal.description_rationale
+    page.proposal_rationale_review.should == @course_proposal.proposal_rationale
+  end
+
+  #GOVERNANCE SECTION
+  on CmGovernance do |page|
+    page.campus_locations_review.should == "North Campus" if @course_proposal.location_north == :set
+    page.campus_locations_review.should == "South Campus" if @course_proposal.location_south == :set
+    page.campus_locations_review.should == "Extended Campus" if @course_proposal.location_extended == :set
+    page.campus_locations_review.should == "All Campus" if @course_proposal.location_all == :set
+    page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
+  end
+
+
+  #LOGISTICS SECTION
+  on CmCourseLogistics do |page|
+
+    #ASSESSMENT SCALE
+    page.assessment_scale_review.should == "A-F with Plus/Minus Grading" if @course_proposal.assessment_a_f == :set
+    page.assessment_scale_review.should == "Accepts a completed notation" if @course_proposal.assessment_notation == :set
+    page.assessment_scale_review.should == "Letter" if @course_proposal.assessment_letter == :set
+    page.assessment_scale_review.should == "Pass/Fail Grading" if @course_proposal.assessment_pass_fail == :set
+    page.assessment_scale_review.should == "Percentage Grading 0-100%" if @course_proposal.assessment_percentage == :set
+    page.assessment_scale_review.should == "Administrative Grade of Satisfactory" if @course_proposal.assessment_satisfactory == :set
+
+    #FINAL EXAM
+    page.final_exam_status_review.should == "Standard Final Exam" unless @course_proposal.exam_standard.nil?
+    page.final_exam_status_review.should == "Alternate Final Assessment" unless @course_proposal.exam_alternate.nil?
+    page.final_exam_status_review.should == "No Final Exam or Assessment" unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
+
+
+    #FIXED OUTCOME
+    page.outcome_level_fixed_review.should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
+    page.outcome_type_fixed_review.should == "Fixed" if @course_proposal.outcome_type_fixed.nil?
+    page.outcome_credit_value_review.should == "#{@course_proposal.credit_value}.0" unless @course_proposal.outcome_type_fixed.nil?
+
+
+
+    #TODO: RANGE OUTCOMES KSCM-1647
+
+    #TODO: MULTIPLE OUTCOMES KSCM-1647
+
+    #TODO: FORMATS KSCM-1602
+
+
+  end
+
+
+  #ACTIVE DATES SECTION
+  on CmActiveDates do |page|
+    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+  end
+
+
 end
 
 

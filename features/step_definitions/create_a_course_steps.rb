@@ -56,17 +56,86 @@ end
 
 
 When /^I complete the required fields for save on the course admin proposal$/ do
-  @course_proposal = create CmCourseProposalObject
+  @course_proposal = create CmCourseProposalObject,
+                            transcript_course_title: random_alphanums(5,'test transcript'),
+                            campus_location: [:location_all, :location_extended, :location_north, :location_south],
+                            curriculum_oversight: '::random::',
+                            outcome_type_fixed: true,
+                            outcome_level_fixed: 1,
+                            credit_value: rand(1..5).to_s,
+                            activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
+                            activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
+                            activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
+                            activity_contacted_hours: rand(1..9).to_s,
+                            activity_duration_count: rand(1..9).to_s,
+                            activity_class_size: rand(1..9).to_s,
+                            start_term: '::random::'
+                            #:outcome_type_range => true,
+                            #:outcome_level_range => 2,
+                            #:credit_value_min => rand(1..3).to_s,
+                            #:credit_value_max =>  rand(4..8).to_s,
+                            #:outcome_type_multiple => true,
+                            #:outcome_level_multiple => 3,
+                            #:credit_value_multiple_1 => rand(1..4).to_s,
+                            #:credit_value_multiple_2 => rand(4..8).to_s@course_proposal = create CmCourseProposalObject
 end
 
 
-Then /^I should see data in required fields for the course admin proposal$/ do
+Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
+
+
+  on(CmCourseInformation).course_information
+
   on CmCourseInformation do |page|
-    page.course_information
     page.proposal_title.value.should == @course_proposal.proposal_title
     page.course_title.value.should == @course_proposal.course_title
-    page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
     page.growl_text.should == "Document was successfully saved."
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)" if proposal_type == "admin proposal"
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)" if proposal_type == "course proposal"
+    page.subject_code.value.should == @course_proposal.subject_code
+    page.course_number.value.should == @course_proposal.course_number
+    page.description_rationale.value.should == @course_proposal.description_rationale
+    page.proposal_rationale.value.should == @course_proposal.proposal_rationale
+  end
+
+  on CmGovernance do |page|
+    page.governance
+    page.location_north.should be_checked if @course_proposal.location_north == :set
+    page.location_south.should be_checked if @course_proposal.location_south == :set
+    page.location_extended.should be_checked if @course_proposal.location_extended == :set
+    page.location_all.should be_checked if @course_proposal.location_all == :set
+    page.curriculum_oversight_when_added(@course_proposal.curriculum_oversight).should be_present
+  end
+
+  on CmCourseLogistics do |page|
+    page.course_logistics
+
+    page.exam_standard.should be_checked unless @course_proposal.exam_standard.nil?
+    page.exam_alternate.should be_checked  unless @course_proposal.exam_alternate.nil?
+    page.exam_none.should be_checked unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale.value.should == @course_proposal.final_exam_rationale unless page.exam_standard.set?
+    page.credit_value_fixed(@course_proposal.outcome_level_fixed-1).value.should == @course_proposal.credit_value if @course_proposal.outcome_type_fixed == true
+
+    #TODO RANGE & MULTIPLE OUTCOMES - KSCM-1647
+    #page.credit_value_min(@course_proposal.outcome_level_multiple).value.should == @course_proposal.credit_value_min if @course_proposal.outcome_type_range == true
+    #page.credit_value_max(@course_proposal.outcome_level_multiple).value.should == @course_proposal.credit_value_max if @course_proposal.outcome_type_range == true
+    #page.credit_value_multiple('0').value.should == @course_proposal.outcome_multiple if @course_proposal.outcome_type_multiple == true
+    #page.credit_value_multiple('1').value.should == @course_proposal.outcome_multiple2 if @course_proposal.outcome_type_multiple == true
+
+    page.activity_type.selected?(@course_proposal.activity_type).should == true
+    page.assessment_a_f.should be_checked if @course_proposal.assessment_a_f == :set
+    page.assessment_notation.should be_checked if @course_proposal.assessment_notation == :set
+    page.assessment_letter.should be_checked if @course_proposal.assessment_letter == :set
+    page.assessment_pass_fail.should be_checked if @course_proposal.assessment_pass_fail == :set
+    page.assessment_percentage.should be_checked if @course_proposal.assessment_percentage== :set
+    page.assessment_satisfactory.should be_checked if @course_proposal.assessment_satisfactory == :set
+  end
+
+  on CmActiveDates do |page|
+    page.active_dates
+    page.start_term.selected?(@course_proposal.start_term).should == true unless @course_proposal.start_term.nil?
+    #page.pilot_course.should be_checked
+    #page.end_term.selected?(@course_proposal.end_term).should == true unless @course_proposal.end_term.nil?
   end
 
 end
@@ -97,6 +166,7 @@ Then /^I should see data in required for save fields for the course proposal$/ d
     page.growl_text.should == "Document was successfully saved."
   end
 end
+
 
 
 And /^I should see data in required for save fields on the Review Proposal page$/ do
@@ -162,9 +232,39 @@ And /^I should see the updated data on the Review proposal page for course (.*?)
   end
 end
 
+When /^I complete the required fields on the course proposal$/ do
+  @course_proposal = create CmCourseProposalObject,
+                            transcript_course_title: random_alphanums(5,'test transcript'),
+                            campus_location: [:location_all, :location_extended, :location_north, :location_south],
+                            curriculum_oversight: '::random::',
+                            outcome_type_fixed: true,
+                            outcome_level_fixed: 1,
+                            credit_value: rand(1..5).to_s,
+                            activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
+                            activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
+                            activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
+                            activity_contacted_hours: rand(1..9).to_s,
+                            activity_duration_count: rand(1..9).to_s,
+                            activity_class_size: rand(1..9).to_s,
+                            start_term: '::random::'
+                            #:outcome_type_range => true,
+                            #:outcome_level_range => 2,
+                            #:credit_value_min => rand(1..3).to_s,
+                            #:credit_value_max =>  rand(4..8).to_s,
+                            #:outcome_type_multiple => true,
+                            #:outcome_level_multiple => 3,
+                            #:credit_value_multiple_1 => rand(1..4).to_s,
+                            #:credit_value_multiple_2 => rand(4..8).to_s
+end
+
+
 #-----
 # S2
 #-----
+
+
+
+=begin
 When /^I complete the required fields on the course proposal$/ do
 
   # Change to 'I complete the fields required to submit the course proposal'
@@ -211,6 +311,7 @@ When /^I complete the required fields on the course proposal$/ do
                            pilot_course: :set,
                            end_term: 'Fall 1980'
 end
+=end
 
 
 
@@ -621,7 +722,7 @@ end
 #-----
 # S5
 #-----
-
+=begin
 When /^I complete all fields on the course proposal with auto\-lookup$/ do
   @course_proposal  = create CmCourseProposalObject,
                            subject_code: 'MATH',
@@ -650,7 +751,7 @@ When /^I complete all fields on the course proposal with auto\-lookup$/ do
                            activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
                            activity_contacted_hours: rand(1..9).to_s,
                            activity_duration_count: rand(1..9).to_s,
-                           activity_class_size: rand(1..9).to_s,
+                           activity_class_size: rand(1..9).tfieldso_s,
 
                            #ACTIVE DATES
                            start_term: 'Spring 1980',
@@ -750,4 +851,5 @@ When /^I complete all fields on the course proposal with auto\-lookup$/ do
   #@course_proposal.course_proposal_nonrequired
 
 end
+=end
 
