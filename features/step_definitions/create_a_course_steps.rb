@@ -751,7 +751,7 @@ When /^I complete all fields on the course proposal with auto\-lookup$/ do
                            activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
                            activity_contacted_hours: rand(1..9).to_s,
                            activity_duration_count: rand(1..9).to_s,
-                           activity_class_size: rand(1..9).tfieldso_s,
+                           activity_class_size: rand(1..9).to_s,
 
                            #ACTIVE DATES
                            start_term: 'Spring 1980',
