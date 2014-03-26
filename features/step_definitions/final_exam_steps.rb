@@ -1268,7 +1268,15 @@ When /^I create a Course Offering from copy in a term with a defined final exam 
 end
 
 Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
-  on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
+  #on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
+  on ManageCourseOfferings do |page|
+    begin
+      wait_until(120) { page.growl_warning_text.exists? }
+      page.growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
+    rescue
+      puts "growl warning message for the EO did not appear"
+    end
+  end
 end
 
 When /^I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix$/ do
@@ -1295,7 +1303,7 @@ When /^I create a copy of the initial course offering in a term that uses the FE
 end
 
 Given /^I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period$/ do
-  @course_offering = create CourseOffering, :term => "201401", :course => "BSCI361",
+  @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
                             :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
 end
 
