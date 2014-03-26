@@ -244,6 +244,6 @@ end
 
 Then /^there is a message indicating that the course is full$/  do
   on RegistrationCart do |page|
-    page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should == "No Seats Available"
+    page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should include "No Seats Available"
   end
 end
