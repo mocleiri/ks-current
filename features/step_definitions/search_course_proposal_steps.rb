@@ -160,7 +160,7 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
     #FIXED OUTCOME
     page.outcome_level_fixed_review.should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
     page.outcome_type_fixed_review.should == "Fixed" if @course_proposal.outcome_type_fixed.nil?
-    page.outcome_credit_value_review.should == "#{@course_proposal.credit_value}.0" unless @course_proposal.outcome_type_fixed.nil?
+    page.outcome_credit_value_review.should == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
 
 
 

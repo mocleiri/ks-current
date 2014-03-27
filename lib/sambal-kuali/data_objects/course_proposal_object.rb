@@ -103,21 +103,44 @@ class CmCourseProposalObject < DataObject
   def initialize(browser, opts={})
     @browser = browser
     defaults = {
-        #REQUIRED ON SAVE
         #COURSE INFORMATION
         proposal_title:             random_alphanums(10,'test proposal title '),
         course_title:               random_alphanums(10, 'test course title '),
         subject_code:               "MATH",
         course_number:              "123",
+        transcript_course_title: random_alphanums(5,'test transcript'),
         description_rationale:      random_alphanums(20, 'test description rationale '),
         proposal_rationale:         random_alphanums(20, 'test proposal rationale '),
         #GOVERNANCE
         campus_location: [:location_all, :location_extended, :location_north, :location_south],
         curriculum_oversight:       '::random::',
         #COURSE LOGISTICS
+          #ASSESSMENT SCALE
         assessment_scale:           [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
+          #FINAL EXAM
         final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
         final_exam_rationale:       random_alphanums(10,'test final exam rationale '),
+          #OUTCOMES
+        outcome_type_fixed: true,
+        outcome_level_fixed: 1,
+        credit_value: rand(1..5).to_s,
+          #TODO: ADD OTHER OUTCOMES AFTER KSCM-1782 IS RESOVLED
+        #:outcome_type_range => true,
+        #:outcome_level_range => 2,
+        #:credit_value_min => rand(1..3).to_s,
+        #:credit_value_max =>  rand(4..8).to_s,
+        #:outcome_type_multiple => true,
+        #:outcome_level_multiple => 3,
+        #:credit_value_multiple_1 => rand(1..4).to_s,
+        #:credit_value_multiple_2 => rand(4..8).to_s,
+          #FORMATS
+        activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
+        activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
+        activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
+        activity_contacted_hours: rand(1..9).to_s,
+        activity_duration_count: rand(1..9).to_s,
+        activity_class_size: rand(1..9).to_s,
+        start_term: '::random::',
         #FINANCIALS
         course_fees:                random_alphanums(10, 'test course fees '),
         curriculum_review_process:  nil,
