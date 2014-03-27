@@ -107,6 +107,7 @@ When /^I view my schedule$/ do
 end
 
 And /^the course is (present|not present) in my schedule$/ do |presence|
+  sleep 1
   on StudentSchedule do |page|
     if presence == "present"
       page.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present

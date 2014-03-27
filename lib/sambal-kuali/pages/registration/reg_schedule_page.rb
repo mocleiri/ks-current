@@ -29,6 +29,7 @@ class StudentSchedule < RegisterForCourseBase
   end
 
   def remove_course_from_schedule(course_code,reg_group_code)
+    remove_course_button(course_code,reg_group_code).wait_until_present
     remove_course_button(course_code,reg_group_code).click
     confirm_drop(course_code,reg_group_code).wait_until_present
     confirm_drop(course_code,reg_group_code).click

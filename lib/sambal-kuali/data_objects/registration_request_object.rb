@@ -190,7 +190,7 @@ class RegistrationRequest
 
   def register
     on RegistrationCart do |page|
-      page.register_button.wait_until_present
+      page.wait_until { page.register_button.enabled? }
       page.register
       page.register_confirm_button.wait_until_present
       page.confirm_registration
