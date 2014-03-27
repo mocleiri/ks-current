@@ -236,7 +236,7 @@ When /^I register as (\w+) for a course offering with a seat capacity of one$/ d
                       :term_code=>"201208",
                       :term_descr=>"Fall 2012",
                       :course_code=>"ENGL101",
-                      :reg_group_code=>"1060",
+                      :reg_group_code=>"1009",
                       :course_has_options=>false
   @reg_request.create
   @reg_request.register
