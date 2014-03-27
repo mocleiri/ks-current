@@ -246,6 +246,6 @@ Then /^the "(.*?)" and courses matching at least one "(.*?)" are returned$/ do |
 end
 
 
-Then /^course code or course title or course description containing any text of "(.*?)" text option are returned$/ do |expected|
-  @course_offering.multi_text_search(expected).should be_true
+Then /^course code or course title or course description containing any text of "(.*?)" text option are returned$/ do |expected_courses, expected_component|
+    @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
 end

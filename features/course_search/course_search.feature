@@ -106,24 +106,27 @@ Feature: BT.Course Search
     | Engl 2XX Hist 3XX       |                                 | Engl200,Engl300,Hist200,Hist300,Engl,Hist,2XX,3XX   |
 
 #*************************  KSAP-851, US-  837*********************************************************************************************************
-@draft
+# Hard-coding expected result. As the CO data from  enrollment is yet to be implemented in KSAP course details page.
+# Changes need to implemented---> Verification of the text of CO data on KSAP course details page should be created
+@Pending
   Scenario Outline: 8.2.1- Successfully list the courses having any of the the search text present in the  course code or course title or course description
        When I search for a course with "<combined_multi_text>" option
        Then the "<expected_courses>" and courses matching at least one "<expected_component>" are returned
   Examples:
-    | combined_multi_text     |expected_courses      | expected_component          |
-    | Rome HIST               |                      | Rome,Hist                   |
-    | History 200             |HIST200               | Hist,History, 200           |
-    | Organic 3xx             |                      | organic,3xx                 |
-    | modern WMST             |ENGL278               | modern, WMST                |
+    | combined_multi_text  |expected_courses        | expected_component                 |
+    | Rome HIST            |ENGL379                 | Rome,Hist                          |
+    | History 200          |ENGL278                 | Hist,History,200                   |
+    | Organic 3xx          |                        | organic,3xx                        |
+    | modern WMST          |ENGL278,ENGL379,ENGL329 | WMST,modern,ENGL329                |
 
  @draft
   Scenario Outline: 8.2.2: To List the courses having the search text with special character ("",',_)
     When I search for a course with "<combined_multi_text>" option
-    Then course code or course title or course description containing any text of "<combined_multi_text>" text option are returned
+   Then the "<expected_courses>" and courses matching at least one "<expected_component>" are returned
   Examples:
-    |combined_multi_text      |
-    |introduction ENGL 278    |
-    |play's ENGL              |
-    |"western literature" HIST|
-    |eighteenth_century HIST  |
+    |combined_multi_text      |expected_courses |expected_component                         |
+    |introduction ENGL 278    |ENGL278          | introduction,Engl,278                     |
+    |play's ENGL              |                 | play,Engl                                 |
+    |"western literature" HIST|ENGL379          | Hist,western literature                   |
+    |eighteenth_century HIST  |ENGL379          | Hist,eighteenth_century,eighteenth,century|
+
