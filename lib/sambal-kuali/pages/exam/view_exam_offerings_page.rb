@@ -33,6 +33,21 @@ class ViewExamOfferings < BasePage
   AO_BLDG = 8
   AO_ROOM = 9
 
+  VIEW_STATUS = 0
+  VIEW_CO_DAYS = 1
+  VIEW_CO_ST_TIME = 2
+  VIEW_CO_END_TIME = 3
+  VIEW_CO_BLDG = 4
+  VIEW_CO_ROOM = 5
+
+  VIEW_AO_CODE = 1
+  VIEW_AO_TYPE = 2
+  VIEW_AO_DAYS = 3
+  VIEW_AO_ST_TIME = 4
+  VIEW_AO_END_TIME = 5
+  VIEW_AO_BLDG = 6
+  VIEW_AO_ROOM = 7
+
   def eo_by_co_results_table
     return eo_table_section.table unless !eo_table_section.table.exists?
   end
@@ -75,43 +90,53 @@ class ViewExamOfferings < BasePage
   end
 
   def get_eo_by_co_days_text
-    eo_by_co_target_row.cells[CO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
+    #eo_by_co_target_row.cells[CO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
+    eo_by_co_target_row.cells[VIEW_CO_DAYS].text
   end
 
   def get_eo_by_ao_days_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[AO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
+    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_DAYS].text
   end
 
   def get_eo_by_co_st_time_text
-    eo_by_co_target_row.cells[CO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
+    #eo_by_co_target_row.cells[CO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
+    eo_by_co_target_row.cells[VIEW_CO_ST_TIME].text
   end
 
   def get_eo_by_ao_st_time_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[AO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
+    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_ST_TIME].text
   end
 
   def get_eo_by_co_end_time_text
-    eo_by_co_target_row.cells[CO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
+    #eo_by_co_target_row.cells[CO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
+    eo_by_co_target_row.cells[VIEW_CO_END_TIME].text
   end
 
   def get_eo_by_ao_end_time_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[AO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
+    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_END_TIME].text
   end
 
   def get_eo_by_co_bldg_text
-    eo_by_co_target_row.cells[CO_BLDG].div(id: /eoRsiBuilding/).text
+    #eo_by_co_target_row.cells[CO_BLDG].div(id: /eoRsiBuilding/).text
+    eo_by_co_target_row.cells[VIEW_CO_BLDG].text
   end
 
   def get_eo_by_ao_bldg_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[AO_BLDG].div(id: /eoRsiBuilding/).text
+    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_BLDG].div(id: /eoRsiBuilding/).text
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_BLDG].text
   end
 
   def get_eo_by_co_room_text
-    eo_by_co_target_row.cells[CO_ROOM].div(id: /eoRsiRoom/).text
+    #eo_by_co_target_row.cells[CO_ROOM].div(id: /eoRsiRoom/).text
+    eo_by_co_target_row.cells[VIEW_CO_ROOM].text
   end
 
   def get_eo_by_ao_room_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[AO_ROOM].div(id: /eoRsiRoom/).text
+    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_ROOM].div(id: /eoRsiRoom/).text
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_ROOM].text
   end
 
   def count_no_of_eos_by_co
