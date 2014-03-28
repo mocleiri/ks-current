@@ -672,6 +672,7 @@ public class ServiceContractModelQDoxLoader implements
             ms.setDescription(calcMissing(calcDescription(messageStructureJavaClass, getterMethod, setterMethod,
                     beanField, shortName)));
             ms.setImplNotes(calcImplementationNotes(getterMethod, setterMethod, beanField));
+            ms.setColumnName(calcImplementationColumn(getterMethod, setterMethod, beanField));
             ms.setDeprecated(isDeprecated(getterMethod));
             ms.setStatus("???");
             ms.setLookup(calcLookup (messageStructureJavaClass, getterMethod, setterMethod,
@@ -1125,6 +1126,17 @@ public class ServiceContractModelQDoxLoader implements
             JavaMethod setterMethod, JavaField beanField) {
         if (getterMethod != null) {
             DocletTag tag = getterMethod.getTagByName("impl", true);
+            if (tag != null) {
+                return tag.getValue();
+            }
+        }
+        return null;
+    }
+    
+    private String calcImplementationColumn (JavaMethod getterMethod,
+            JavaMethod setterMethod, JavaField beanField) {
+        if (getterMethod != null) {
+            DocletTag tag = getterMethod.getTagByName("implColumn", true);
             if (tag != null) {
                 return tag.getValue();
             }

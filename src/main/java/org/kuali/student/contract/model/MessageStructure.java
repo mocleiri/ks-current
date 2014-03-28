@@ -38,6 +38,7 @@ public class MessageStructure {
     private boolean deprecated;
     private Lookup lookup;
     private boolean primaryKey;
+    private String columnName;
 
     public String getId() {
         return id;
@@ -173,6 +174,14 @@ public class MessageStructure {
 
     public void setPrimaryKey(boolean primaryKey) {
         this.primaryKey = primaryKey;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
     @Override

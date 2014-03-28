@@ -236,10 +236,19 @@ public class XmlType implements Serializable {
         this.deprecated = deprecated;
     }
 
-	@Override
-	public String toString() {
+    private String tableName;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    @Override
+    public String toString() {
 		return "XmlType [javaPackage=" + javaPackage + ", name=" + name + "]";
-	}
-    
+    }
     
 }
