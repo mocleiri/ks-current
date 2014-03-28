@@ -5,6 +5,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="ENGL" then "ENGL211"
                   when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
+                  when subj=="WMST" then "WMST360"
                   else ""
                 end
   @reg_request = make RegistrationRequest, :student_id=>"student",
@@ -246,5 +247,30 @@ end
 Then /^there is a message indicating that the course is full$/  do
   on RegistrationCart do |page|
     page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should include "No Seats Available"
+  end
+end
+
+Then /^I can view the number of courses and credits I am registered for in my registration cart$/ do
+  on RegistrationCart do |page|
+    schedule_counts = page.schedule_counts.text
+    @course_count = schedule_counts.match('for (\d*) course')[1].to_i
+    @credit_count = schedule_counts.match('\((.*) credit')[1].to_f
+  end
+end
+
+Then /^the number of courses and credits I am registered for is correctly updated in my registration cart$/ do
+  on RegistrationCart do |page|
+    schedule_counts = page.schedule_counts.text
+    updated_course_count = schedule_counts.match('for (\d*) course')[1].to_i
+    updated_credit_count = schedule_counts.match('\((.*) credit')[1].to_f
+    updated_course_count.should == (@course_count + 1)
+    updated_credit_count.should == (@credit_count + 3.0)
+  end
+end
+
+Then /^the number of courses and credits I am registered for is correctly updated in my schedule$/ do
+  on StudentSchedule do |page|
+    sched_credit_count = page.reg_credit_count.match('(.*) credits')[1].to_f
+    sched_credit_count.should == (@credit_count + 3.0)
   end
 end

@@ -1,5 +1,6 @@
 class StudentSchedule < RegisterForCourseBase
 
+  element(:reg_credit_count) { |b| b.span(id: "reg_credit_count").text }
 
   element(:remove_course_button) { |course_code,reg_group_code,b| b.button(id: "remove_#{course_code}_#{reg_group_code}") }
   element(:course_code) { |course_code,reg_group_code,b| b.span(id: "course_code_#{course_code}_#{reg_group_code}") }

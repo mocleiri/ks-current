@@ -42,6 +42,16 @@ Feature: REG.Register for course
     Then the course is present in my schedule
     And I can view the details of my selection in my schedule
 
+  #KSENROLL-12353
+  @wip
+  Scenario: I want my registration cart and schedule to accurately reflect the number of courses and credits I am registered for so that I can be aware of my credit load.
+    When I add a WMST course offering to my registration cart
+    Then I can view the number of courses and credits I am registered for in my registration cart
+    When I register for the course
+    Then the number of courses and credits I am registered for is correctly updated in my registration cart
+    When I view my schedule
+    Then the number of courses and credits I am registered for is correctly updated in my schedule
+
   #KSENROLL-11922
   Scenario: CR 1.9 I want my course selections to persist so that I can return in another session and continue my registration process.
     When I add a PHYS course offering to my registration cart
