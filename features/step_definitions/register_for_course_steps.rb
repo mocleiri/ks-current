@@ -8,11 +8,18 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="WMST" then "WMST360"
                   else ""
                 end
+  if subj=="WMST"
+    visit RegistrationCart do |page|
+      @orig_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
+      @orig_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
+    end
+  end
+
   @reg_request = make RegistrationRequest, :student_id=>"student",
-                                           :term_code=>"201201",
-                                           :term_descr=>"Spring 2012",
-                                           :course_code=>course_code,
-                                           :reg_group_code=>"1001"
+                      :term_code=>"201201",
+                      :term_descr=>"Spring 2012",
+                      :course_code=>course_code,
+                      :reg_group_code=>"1001"
   @reg_request.create
 end
 
@@ -60,7 +67,6 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
     else
       begin
         sleep 1
-        puts "User Message: #{page.user_message}"
         page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
         page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
       rescue Watir::Exception::UnknownObjectException
@@ -252,25 +258,27 @@ end
 
 Then /^I can view the number of courses and credits I am registered for in my registration cart$/ do
   on RegistrationCart do |page|
-    schedule_counts = page.schedule_counts.text
-    @course_count = schedule_counts.match('for (\d*) course')[1].to_i
-    @credit_count = schedule_counts.match('\((.*) credit')[1].to_f
+    sleep 1
+    @updated_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
+    @updated_cart_course_count.should == (@orig_cart_course_count + 1)
+    @updated_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
+    @updated_cart_credit_count.should == (@orig_cart_credit_count + 3.0)
+    
+    cart_schedule_counts = page.schedule_counts.text
+    @cart_reg_course_count = cart_schedule_counts.match('for (\d*) course')[1].to_i
+    @cart_reg_credit_count = cart_schedule_counts.match('\((.*) credit')[1].to_f
   end
 end
 
 Then /^the number of courses and credits I am registered for is correctly updated in my registration cart$/ do
   on RegistrationCart do |page|
-    schedule_counts = page.schedule_counts.text
-    updated_course_count = schedule_counts.match('for (\d*) course')[1].to_i
-    updated_credit_count = schedule_counts.match('\((.*) credit')[1].to_f
-    updated_course_count.should == (@course_count + 1)
-    updated_credit_count.should == (@credit_count + 3.0)
+    page.schedule_counts.text.match('for (\d*) course')[1].to_i.should == (@cart_reg_course_count + @updated_cart_course_count)
+    page.schedule_counts.text.match('\((.*) credit')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
   end
 end
 
 Then /^the number of courses and credits I am registered for is correctly updated in my schedule$/ do
   on StudentSchedule do |page|
-    sched_credit_count = page.reg_credit_count.match('(.*) credits')[1].to_f
-    sched_credit_count.should == (@credit_count + 3.0)
+    page.reg_credit_count.match('(.*) credits')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
   end
 end
