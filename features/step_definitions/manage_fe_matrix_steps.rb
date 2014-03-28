@@ -466,6 +466,22 @@ Given /^that the Course Offering has an AO-driven exam that is marked to use the
   @matrix.add_rule :rule_obj => rule
 end
 
+Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201301", :course => "HIST110")
+  @course_offering.edit :final_exam_activity => "Discussion"
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "MW", :start_time => "12:00", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 1", :start_time => "04:00", :st_time_ampm => "pm",
+              :end_time => "05:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^there is an Activity Offering that has RSI data but has no ASI data$/ do
+  @activity_offering =  make ActivityOfferingObject, :code => "F", :parent_course_offering => @course_offering
+end
+
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "CHEM395"
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering

@@ -1268,11 +1268,21 @@ When /^I create a Course Offering from copy in a term with a defined final exam 
 end
 
 Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
-  #on(ManageCourseOfferings).growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
   on ManageCourseOfferings do |page|
     begin
       wait_until(120) { page.growl_warning_text.exists? }
-      page.growl_warning_text.should match /#{Regexp.escape(exp_msg)}/
+      page.growl_warning_text.should match /#{@course_offering.course}.*#{Regexp.escape(exp_msg)}/
+    rescue
+      puts "growl warning message for the EO did not appear"
+    end
+  end
+end
+
+Then /^there should be a warning message for the AO stating that "(.*?)"$/ do |exp_msg|
+  on ManageCourseOfferings do |page|
+    begin
+      wait_until(120) { page.growl_warning_text.exists? }
+      page.growl_warning_text.should match /#{@course_offering.course}.*#{@activity_offering.code}.*#{Regexp.escape(exp_msg)}/
     rescue
       puts "growl warning message for the EO did not appear"
     end
@@ -1314,4 +1324,30 @@ Given /^I create an Activity Offering that has no ASIs or RSIs$/ do
     @activity_offering.code = code
     @activity_offering.approve :navigate_to_page => false #, :send_to_scheduler => true
   end
+end
+
+When /^I add new Requested Scheduling Information to the Activity Offering$/ do
+  @course_offering.manage
+  #@activity_offering.edit :defer_save => true
+  start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
+  end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
+
+  rsi_object = make SchedulingInformationObject, :days  => "W", :start_time  => @matrix.rules[0].statements[0].start_time,
+                    :start_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm,
+                    :end_time  => end_time, :end_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm
+
+  @activity_offering.add_req_sched_info :rsi_obj => rsi_object
+end
+
+When /^I add new Requested Scheduling Information to the Activity Offering that does not exist on the Exam Matrix$/ do
+  @course_offering.manage
+  #@activity_offering.edit :defer_save => true
+  start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
+  end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
+
+  rsi_object = make SchedulingInformationObject, :days  => "F", :start_time  => @matrix.rules[0].statements[0].start_time,
+                    :start_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm,
+                    :end_time  => end_time, :end_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm
+
+  @activity_offering.add_req_sched_info :rsi_obj => rsi_object
 end

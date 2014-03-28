@@ -60,7 +60,7 @@ Feature: CO.Create Exam Offering for Schedule Information
   Scenario: FE4.9.2 Test that when Course Offering witn an AO-driven exam is created from copy where AO has no RSI then the schedule info is not populated
     Given that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix
     When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
-    Then there should be a warning message stating that "No match found on the Exam Matrix."
+    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
     And I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
@@ -69,7 +69,7 @@ Feature: CO.Create Exam Offering for Schedule Information
     Given I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period
     And I create an Activity Offering that has no ASIs or RSIs
     When I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
-    Then there should be a warning message stating that "No match found on the Exam Matrix."
+    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
     And I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
@@ -86,14 +86,3 @@ Feature: CO.Create Exam Offering for Schedule Information
     And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
     When I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
-
-
-
-
-#    Given I create an Academic Calendar and add an official term
-#    And I have created a Final Exam Period for the term in the newly created Academic Calendar
-#    And I have created a Course Offering from catalog in the source term that uses the matrix and has a final exam period defined
-#    And I have created an Activity Offering that only has Requested Scheduling Information
-#    And I ensure that the Course Offering exists on the Final Exam Matrix
-#    And I encure that the AO's Requested Scheduling Information exists on the Final Exam Matrix
-
