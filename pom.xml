@@ -1101,7 +1101,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate.validator.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>cglib</groupId>
