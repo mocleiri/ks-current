@@ -62,6 +62,20 @@ public interface DegreeMapRequirement extends HasId, TypedObjectReference {
     * @name The number of credits
     */
     public BigDecimal getCredit();
+
+    
+    /**
+    * The requirement maximum credits
+    * @name The number of maximum credits
+    */
+    public BigDecimal getCreditMax();
+    
+    /**
+    * The requirement minimum credits
+    * @name The number of mininum credits
+    */
+    public BigDecimal getCreditMin();
+    
     
   
     /**

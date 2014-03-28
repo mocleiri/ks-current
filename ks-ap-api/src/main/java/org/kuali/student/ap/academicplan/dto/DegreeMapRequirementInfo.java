@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DegreeMapRequirementInfo", propOrder = { "id", "degreeMapId",
 		"degreeMapEffectiveDate", "itemSeq", "refObjectId", "refObjectType",
-		"seqKey", "seqNo", "credit", "critical", "milestone", "minimumGrade",
+		"seqKey", "seqNo", "credit", "creditMax", "creditMin", "critical", "milestone", "minimumGrade",
 		"suggestedTermId", "requiredTermId", "_futureElements" })
 public class DegreeMapRequirementInfo implements DegreeMapRequirement, Serializable {
 	
@@ -54,6 +54,12 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement, Serializa
 
     @XmlAttribute
     private BigDecimal credit;
+    
+    @XmlAttribute
+    private BigDecimal creditMax;
+    
+    @XmlAttribute
+    private BigDecimal creditMin;
     
     @XmlAttribute
     private boolean critical;
@@ -96,6 +102,8 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement, Serializa
     	refObjectType = copy.getRefObjectType();
     	descr = copy.getDescr();
     	credit = copy.getCredit();
+    	creditMax = copy.getCreditMax();
+    	creditMin = copy.getCreditMin();
     	critical = copy.isCritical();
     	milestone = copy.isMilestone();
     	minimumGrade = copy.getMinimumGrade();
@@ -178,6 +186,22 @@ public class DegreeMapRequirementInfo implements DegreeMapRequirement, Serializa
 		this.credit = credit;
 	}
 
+
+	public BigDecimal getCreditMax() {
+		return creditMax;
+	}
+
+	public void setCreditMax(BigDecimal creditMax) {
+		this.creditMax = creditMax;
+	}
+
+	public BigDecimal getCreditMin() {
+		return creditMin;
+	}
+
+	public void setCreditMin(BigDecimal creditMin) {
+		this.creditMin = creditMin;
+	}
 
 	public boolean isCritical() {
 		return critical;
