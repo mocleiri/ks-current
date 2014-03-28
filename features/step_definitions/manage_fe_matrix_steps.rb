@@ -519,3 +519,15 @@ Given /^that the Course Offering has one Activity Offering with Requested Schedu
   @course_offering = make CourseOffering, :term => "201301", :course => "ENGL611"
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
+
+Given /^I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period that uses the matrix$/ do
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "H", :start_time => "04:00", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "05:00", :st_time_ampm => "pm",
+              :end_time => "05:50", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+
+  @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
+                            :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
+end
