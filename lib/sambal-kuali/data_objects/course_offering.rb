@@ -176,8 +176,7 @@ class CourseOffering
           puts  "split_name[#{index}] = #{split_name[index].inspect}"
           result = check_all_results_data_for_text("#{split_name[index]}",expected)
           if result == false
-            puts " Returning False in multi_text_search !!!!"
-            return false
+             return false
           end
           until page.results_list_previous_disabled.exists? do
             sleep(2)
@@ -201,7 +200,6 @@ class CourseOffering
       if page.results_list_next_enabled.exists?
 
         until page.results_list_next_disabled.exists?
-          puts" into the loop1"
           puts "------ page no = #{pgno}"
           page.single_text_search_results_validation(single_text)
           page.results_list_next_enabled.wait_until_present
@@ -229,7 +227,6 @@ class CourseOffering
           puts "------ page no = #{pgno}"
           result = page.results_list_validation(split_text,search_FullText)
           if result == false
-            puts " Returning False !!!!"
             return false
           end
           page.results_list_next_enabled.wait_until_present

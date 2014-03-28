@@ -108,7 +108,7 @@ Feature: BT.Course Search
 #*************************  KSAP-851, US-  837*********************************************************************************************************
 # Hard-coding expected result. As the CO data from  enrollment is yet to be implemented in KSAP course details page.
 # Changes need to implemented---> Verification of the text of CO data on KSAP course details page should be created
-@Pending
+
   Scenario Outline: 8.2.1- Successfully list the courses having any of the the search text present in the  course code or course title or course description
        When I search for a course with "<combined_multi_text>" option
        Then the "<expected_courses>" and courses matching at least one "<expected_component>" are returned
@@ -119,7 +119,7 @@ Feature: BT.Course Search
     | Organic 3xx          |                        | organic,3xx                        |
     | modern WMST          |ENGL278,ENGL379,ENGL329 | WMST,modern,ENGL329                |
 
- @draft
+
   Scenario Outline: 8.2.2: To List the courses having the search text with special character ("",',_)
     When I search for a course with "<combined_multi_text>" option
    Then the "<expected_courses>" and courses matching at least one "<expected_component>" are returned

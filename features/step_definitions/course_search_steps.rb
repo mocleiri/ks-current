@@ -100,7 +100,6 @@ Then(/^course code or course title or course description containing any word of 
   if condition == "should"
     @course_offering.multi_text_search(expected).should be_true
   else
-    puts " In Course Steps inside false"
     begin
       @course_offering.multi_text_search(expected).should_not be_true
     rescue Watir::Exception::UnknownObjectException
