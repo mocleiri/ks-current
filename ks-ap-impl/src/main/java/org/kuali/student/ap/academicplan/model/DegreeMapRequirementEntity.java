@@ -61,6 +61,12 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  @Column(name="CREDIT")
 	  private BigDecimal credit;
 	  
+	  @Column(name="CREDIT")
+	  private BigDecimal creditMax;
+	  
+	  @Column(name="CREDIT")
+	  private BigDecimal creditMin;
+	  
 	  @Column(name="CRITICAL")
 	  private Boolean critical;
 	  
@@ -137,6 +143,8 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 		}
 
 		setCredit(dto.getCredit());
+		setCreditMax(dto.getCreditMax());
+		setCreditMin(dto.getCreditMin());
 		setCritical(dto.isCritical());
 		setDescr(dto.getDescr());
 		setItemSeq(dto.getItemSeq());
@@ -340,6 +348,26 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+
+	public BigDecimal getCreditMax() {
+		return creditMax;
+	}
+
+
+	public void setCreditMax(BigDecimal creditMax) {
+		this.creditMax = creditMax;
+	}
+
+
+	public BigDecimal getCreditMin() {
+		return creditMin;
+	}
+
+
+	public void setCreditMin(BigDecimal creditMin) {
+		this.creditMin = creditMin;
 	}
 
 
