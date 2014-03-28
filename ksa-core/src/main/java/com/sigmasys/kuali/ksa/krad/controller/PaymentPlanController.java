@@ -900,6 +900,11 @@ public class PaymentPlanController extends GenericSearchController {
             plan.setChargePeriodEndDate(form.getChargePeriodEndDate());
         }
 
+        if(plan.getChargePeriodEndDate() == null) {
+            GlobalVariables.getMessageMap().putError(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Charge Period End Date is a required field");
+            errors = true;
+        }
+
         if (plan.getMaxAmount() == null) {
             plan.setMaxAmount(form.getMaxAmount());
         }
@@ -930,8 +935,15 @@ public class PaymentPlanController extends GenericSearchController {
 
         List<PaymentBillingAllowableChargeModel> allowableCharges = form.getPaymentBillingAllowableCharges();
         for (PaymentBillingAllowableCharge charge : allowableCharges) {
+            BigDecimal maxPercentage = charge.getMaxPercentage();
+            if(maxPercentage != null) {
+                maxPercentage = maxPercentage.multiply(Constants.BIG_DECIMAL_HUNDRED);
+            } else {
+                maxPercentage = BigDecimal.ZERO;
+            }
+
             paymentBillingService.createPaymentBillingAllowableCharge(planId, charge.getTransactionTypeMask(),
-                    charge.getMaxAmount(), charge.getMaxPercentage().multiply(Constants.BIG_DECIMAL_HUNDRED),
+                    charge.getMaxAmount(), maxPercentage,
                     charge.getPriority());
         }
 
@@ -951,10 +963,9 @@ public class PaymentPlanController extends GenericSearchController {
 
             if (!errors) {
                 paymentBillingService.createPaymentBillingDate(planId, rollupId, model.getPercentage(), model.getEffectiveDate());
+                GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Payment Billing Plan saved.");
             }
         }
-
-        GlobalVariables.getMessageMap().putInfo(form.getViewId(), RiceKeyConstants.ERROR_CUSTOM, "Payment Billing Plan saved.");
 
         return getUIFModelAndView(form);
     }
