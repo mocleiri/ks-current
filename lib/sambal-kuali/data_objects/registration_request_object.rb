@@ -73,6 +73,9 @@ class RegistrationRequest
     end
   end
 
+  def inspect
+    "Registration Request\nID: #{@student_id}, Term: #{@term_descr}, Course: #{@course_code}, Reg group: #{@reg_group_code}, Credits: #{@course_options.credit_option}, Grading: #{@course_options.grading_option}"
+  end
   def edit opts={}
     options = defaults.merge(opts)
     edit_student_id options

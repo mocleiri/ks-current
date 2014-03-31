@@ -1,4 +1,5 @@
 When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
+  # Set course code and credits
   course_code = case
                   when subj=="BSCI" then "BSCI106"
                   when subj=="CHEM" then "CHEM231"
@@ -8,18 +9,26 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="WMST" then "WMST360"
                   else ""
                 end
-  if subj=="WMST"
+  credit_option = case
+                    when subj=="BSCI" then "4.0"
+                    else "3.0"
+                  end
+
+  # Get original counts before adding course to cart
+  if subj=="WMST" || subj=="BSCI"
     visit RegistrationCart do |page|
       @orig_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
       @orig_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
     end
   end
 
+  course_options = (make CourseOptions, :credit_option => credit_option)
   @reg_request = make RegistrationRequest, :student_id=>"student",
                       :term_code=>"201201",
                       :term_descr=>"Spring 2012",
                       :course_code=>course_code,
-                      :reg_group_code=>"1001"
+                      :reg_group_code=>"1001",
+                      :course_options => course_options
   @reg_request.create
 end
 
@@ -97,7 +106,7 @@ Then /^there is a message indicating successful registration$/ do
   end
 end
 
-When /^I remove the course from my schedule$/ do
+When /^I remove the ?(PHYS)? course from my schedule$/ do |phys|
   @reg_request.remove_from_schedule
 end
 
@@ -262,7 +271,8 @@ Then /^I can view the number of courses and credits I am registered for in my re
     @updated_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
     @updated_cart_course_count.should == (@orig_cart_course_count + 1)
     @updated_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
-    @updated_cart_credit_count.should == (@orig_cart_credit_count + 3.0)
+    p @reg_request
+    @updated_cart_credit_count.should == (@orig_cart_credit_count + @reg_request.course_options.credit_option.to_f)
     
     cart_schedule_counts = page.schedule_counts.text
     @cart_reg_course_count = cart_schedule_counts.match('for (\d*) course')[1].to_i
@@ -277,8 +287,13 @@ Then /^the number of courses and credits I am registered for is correctly update
   end
 end
 
-Then /^the number of courses and credits I am registered for is correctly updated in my schedule$/ do
+Then /^the number of courses and credits I am registered for is correctly updated in my schedule ?(after the drop)?$/ do  |drop|
   on StudentSchedule do |page|
-    page.reg_credit_count.match('(.*) credits')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
+    expected_count = @cart_reg_credit_count + @updated_cart_credit_count
+    if drop == "after the drop"
+      credits_to_drop = @reg_request.course_options.credit_option
+      expected_count -= credits_to_drop.to_f
+    end
+    page.reg_credit_count.match('(.*) credits')[1].to_f.should == expected_count
   end
 end
