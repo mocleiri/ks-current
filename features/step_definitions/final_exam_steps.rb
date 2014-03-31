@@ -1317,31 +1317,47 @@ Given /^I create a Course Offering with an AO-driven exam from catalog in a term
                             :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
 end
 
+Given /^that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
+  @activity_offering = make ActivityOfferingObject, :code => "A"
+end
+
+When /^I create a copy of the Course Offering and decide to exclude all scheduling information$/ do
+  @copy_co = create CourseOffering, :create_by_copy => @course_offering, :exclude_scheduling => true
+end
+
 Given /^I create an Activity Offering that has no ASIs or RSIs$/ do
   @activity_offering = make ActivityOfferingObject, :activity_type => "Lecture", :parent_course_offering => @course_offering
   new_code_list = @activity_offering.create_simple
   new_code_list.each do |code|
     @activity_offering.code = code
-    @activity_offering.approve :navigate_to_page => false #, :send_to_scheduler => true
+    @activity_offering.approve :navigate_to_page => false
   end
 end
 
-When /^I add additional Requested Scheduling Information to the Activity Offering$/ do
+Given /^I create an Activity Offering that has RSI data but has no ASI data$/ do
+  @activity_offering = make ActivityOfferingObject, :activity_type => "Lecture", :parent_course_offering => @course_offering
+  new_code_list = @activity_offering.create_simple
+  new_code_list.each do |code|
+    @activity_offering.code = code
+    @activity_offering.approve :navigate_to_page => false
+  end
+
   @course_offering.manage
-  #@activity_offering.edit :defer_save => true
-  start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
-  end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
-
-  rsi_object = make SchedulingInformationObject, :days  => "W", :start_time  => @matrix.rules[0].statements[0].start_time,
-                    :start_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm,
-                    :end_time  => end_time, :end_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm
-
+  rsi_object = make SchedulingInformationObject, :days  => "M", :start_time  => "09:30", :start_time_ampm  => "am",
+                    :end_time  => "10:30", :end_time_ampm  => "am"
   @activity_offering.add_req_sched_info :rsi_obj => rsi_object
 end
 
-When /^I add (?:additional|new) Requested Scheduling Information to the Activity Offering that does not exist on the Exam Matrix$/ do
+When /^I add additional Requested Scheduling Information to the Activity Offering that matches an entry on the exam matrix$/ do
   @course_offering.manage
-  #@activity_offering.edit :defer_save => true
+  rsi_object = make SchedulingInformationObject, :days  => "W", :start_time  => "09:30", :start_time_ampm  => "am",
+                    :end_time  => "10:30", :end_time_ampm  => "am"
+  @activity_offering.add_req_sched_info :rsi_obj => rsi_object
+end
+
+When /^I add new Requested Scheduling Information to the Activity Offering that does not match an entry on the exam matrix$/ do
+  @course_offering.manage
   start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
   end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
 
@@ -1352,9 +1368,8 @@ When /^I add (?:additional|new) Requested Scheduling Information to the Activity
   @activity_offering.add_req_sched_info :rsi_obj => rsi_object
 end
 
-When /^I add new Requested Scheduling Information to the Activity Offering$/ do
+When /^I add new Requested Scheduling Information to the Activity Offering that matches an entry on the exam matrix$/ do
   @course_offering.manage
-  #@activity_offering.edit :defer_save => true
   start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
   end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
 

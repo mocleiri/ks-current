@@ -66,9 +66,8 @@ Feature: CO.Create Exam Offering for Schedule Information
 
   #KSENROLL-12104
   Scenario: FE4.9.3 Test that when Course Offering with AO-driven exam is created from copy that the schedule info is not populated
-    Given I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period
-    And I create an Activity Offering that has no ASIs or RSIs
-    When I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
+    Given that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period
+    When I create a copy of the Course Offering and decide to exclude all scheduling information
     Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
     And I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
