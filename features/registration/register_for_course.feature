@@ -97,6 +97,6 @@ Feature: REG.Register for course
     Then the number of courses and credits I am registered for is correctly updated in my registration cart
     When I view my schedule
     Then the number of courses and credits I am registered for is correctly updated in my schedule
-    When I remove the PHYS course from my schedule
+    When I remove the BSCI course from my schedule
     Then the number of courses and credits I am registered for is correctly updated in my schedule after the drop
 

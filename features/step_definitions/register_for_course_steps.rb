@@ -106,7 +106,7 @@ Then /^there is a message indicating successful registration$/ do
   end
 end
 
-When /^I remove the ?(PHYS)? course from my schedule$/ do |phys|
+When /^I remove the ?(BSCI)? course from my schedule$/ do |phys|
   @reg_request.remove_from_schedule
 end
 
@@ -261,7 +261,8 @@ end
 
 Then /^there is a message indicating that the course is full$/  do
   on RegistrationCart do |page|
-    page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should include "No Seats Available"
+    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code).downcase
+    page_status.should include "no seats available"
   end
 end
 
