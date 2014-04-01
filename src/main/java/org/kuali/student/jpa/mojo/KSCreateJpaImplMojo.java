@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class KSCreateJpaImplMojo extends AbstractKSMojo {
 
-    private static Logger log = LoggerFactory.getLogger(KSCreateJpaImplMojo.class);
+    private static final Logger log = LoggerFactory.getLogger(KSCreateJpaImplMojo.class);
     
     public KSCreateJpaImplMojo() {
     }

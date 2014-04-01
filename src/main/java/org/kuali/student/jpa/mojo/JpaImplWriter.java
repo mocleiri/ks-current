@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaImplWriter {
 
-    private static Logger log = LoggerFactory.getLogger(JpaImplWriter.class);
+    private static final Logger log = LoggerFactory.getLogger(JpaImplWriter.class);
     
     protected ServiceContractModel model;
     protected String directory;
@@ -70,7 +70,7 @@ public class JpaImplWriter {
         this.validate();
 
         for (Service service : filterServices()) {
-            log.info ("**************writing service=" + service.getKey());
+            log.info ("**************writing service={}", service.getKey());
             new JpaImplWriterForOneService(model, directory, rootPackage, service.getKey(), isR1).write();
         }
 

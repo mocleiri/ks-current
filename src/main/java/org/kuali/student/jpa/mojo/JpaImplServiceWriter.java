@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class JpaImplServiceWriter extends JavaClassWriter {
 
-    private static Logger log = LoggerFactory.getLogger(JpaImplServiceWriter.class);
+    private static final Logger log = LoggerFactory.getLogger(JpaImplServiceWriter.class);
 
     //////////////////////////////
     // Constants
@@ -364,8 +364,6 @@ public class JpaImplServiceWriter extends JavaClassWriter {
      * Write out the entire file
      */
     public void write() {
-        indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class})");
-        importsAdd(Transactional.class.getName());
         indentPrint("public class " + calcClassName(servKey));
         println(" implements " + calcServiceInterfaceClassName(servKey));
         Service serv = finder.findService(servKey);
@@ -401,45 +399,61 @@ public class JpaImplServiceWriter extends JavaClassWriter {
             indentPrintln("@Override");
             switch (methodType) {
                 case CREATE:
-                    indentPrintln("@Transactional");
+                    indentPrintln("@Transactional(readOnly = false, rollbackFor = {Throwable.class})");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case ADD:
-                    indentPrintln("@Transactional");
+                    indentPrintln("@Transactional(readOnly = false, rollbackFor = {Throwable.class})");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case UPDATE:
-                    indentPrintln("@Transactional");
+                    indentPrintln("@Transactional(readOnly = false, rollbackFor = {Throwable.class})");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case DELETE:
-                    indentPrintln("@Transactional");
+                    indentPrintln("@Transactional(readOnly = false, rollbackFor = {Throwable.class})");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case REMOVE:
-                    indentPrintln("@Transactional");
+                    indentPrintln("@Transactional(readOnly = false, rollbackFor = {Throwable.class})");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_BY_ID:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_BY_IDS:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_IDS_BY_TYPE:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_IDS_BY_OTHER:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_INFOS_BY_OTHER:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_TYPE:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case GET_TYPES:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 case RICE_GET_BY_NAMESPACE_AND_NAME:
-                    indentPrintln("@Transactional(readOnly = true)");
+                    indentPrintln("@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
                     break;
                 default:
+                    indentPrintln("//TODO: JPAIMPL check and set the right transactional values for this method");
+                    indentPrintln("//@Transactional(readOnly = true, noRollbackFor = {DoesNotExistException.class}, rollbackFor = {Throwable.class}))");
+                    importsAdd(Transactional.class.getName());
             }
             String type = method.getReturnValue().getType();
             String realType = stripList(type);
@@ -587,7 +601,7 @@ public class JpaImplServiceWriter extends JavaClassWriter {
         if (jpaEntitiesWritten.add(variableName)) {
             XmlType xmlType = finder.findXmlType(objectName + "Info");
             if (xmlType == null) {
-                System.out.println ("Cannot write DAO because the object does not follow patterns.  ObjectName=" 
+                System.out.println("Cannot write DAO because the object does not follow patterns.  ObjectName="
                         + objectName + " method=" + method);
                 return;
             }
@@ -672,8 +686,8 @@ public class JpaImplServiceWriter extends JavaClassWriter {
     }
 
     private void writeAdd(ServiceMethod method) {
-        indentPrintln ("//TODO: JPAIMPL this needs to be implemented");
-        indentPrintln ("throw new OperationFailedException (\"Not implemented\");");
+        indentPrintln("//TODO: JPAIMPL this needs to be implemented");
+        indentPrintln("throw new OperationFailedException (\"Not implemented\");");
     }
 
     private ServiceMethodParameter findIdParameter(ServiceMethod method) {
@@ -712,7 +726,7 @@ public class JpaImplServiceWriter extends JavaClassWriter {
                 }
             }
         }
-        log.warn("Could not find the Id paramter for " + method.getService() + "." + method.getName() + " so returning the first one");
+        log.warn("Could not find the Id paramter for {}.{} so returning the first one", method.getService(), method.getName());
         return method.getParameters().get(0);
     }
 
@@ -920,8 +934,8 @@ public class JpaImplServiceWriter extends JavaClassWriter {
     }
 
     private void writeRemove(ServiceMethod method) {
-        indentPrintln ("//TODO: JPAIMPL this needs to be implemented");
-        indentPrintln ("throw new OperationFailedException (\"Not implemented\");");
+        indentPrintln("//TODO: JPAIMPL this needs to be implemented");
+        indentPrintln("throw new OperationFailedException (\"Not implemented\");");
     }
 
     private void writeGetById(ServiceMethod method) {
@@ -1053,7 +1067,7 @@ public class JpaImplServiceWriter extends JavaClassWriter {
         importsAdd(ArrayList.class.getName());
         importsAdd(List.class.getName());
         indentPrintln("List<String> results = new ArrayList<String>();");
-        importsAdd (GenericQueryResults.class.getName ());
+        importsAdd(GenericQueryResults.class.getName());
         indentPrintln("GenericQueryResults<" + entityClassName + "> entities");
         indentPrintln("    = " + criteriaLookupVariableName + ".lookup(" + entityClassName + ".class, " + criteriaParam.getName() + ");");
         indentPrintln("if (null != entities && !entities.getResults().isEmpty()) {");
@@ -1086,7 +1100,7 @@ public class JpaImplServiceWriter extends JavaClassWriter {
         importsAdd(ArrayList.class.getName());
         importsAdd(List.class.getName());
         indentPrintln("List<" + infoName + "> results = new ArrayList<" + infoName + ">();");
-        importsAdd (GenericQueryResults.class.getName ());
+        importsAdd(GenericQueryResults.class.getName());
         indentPrintln("GenericQueryResults<" + entityClassName + "> entities");
         indentPrintln("    = " + criteriaLookupVariableName + ".lookup(" + entityClassName + ".class, " + criteriaParam.getName() + ");");
         indentPrintln("if (null != entities && !entities.getResults().isEmpty()) {");
@@ -1137,8 +1151,8 @@ public class JpaImplServiceWriter extends JavaClassWriter {
     }
 
     private void writeRiceGetByNamespaceAndName(ServiceMethod method) {
-        indentPrintln ("//TODO: JPAIMPL this needs to be implemented");
-        indentPrintln ("throw new OperationFailedException (\"Not implemented\");");
+        indentPrintln("//TODO: JPAIMPL this needs to be implemented");
+        indentPrintln("throw new OperationFailedException (\"Not implemented\");");
     }
 
     private void writeGetInfosByOther(ServiceMethod method) {
@@ -1176,13 +1190,13 @@ public class JpaImplServiceWriter extends JavaClassWriter {
     }
 
     private void writeGetType(ServiceMethod method) {
-        indentPrintln ("//TODO: JPAIMPL this needs to be implemented");
-        indentPrintln ("throw new OperationFailedException (\"Not implemented\");");
+        indentPrintln("//TODO: JPAIMPL this needs to be implemented");
+        indentPrintln("throw new OperationFailedException (\"Not implemented\");");
     }
 
     private void writeGetTypes(ServiceMethod method) {
-        indentPrintln ("//TODO: JPAIMPL this needs to be implemented");
-        indentPrintln ("throw new OperationFailedException (\"Not implemented\");");
+        indentPrintln("//TODO: JPAIMPL this needs to be implemented");
+        indentPrintln("throw new OperationFailedException (\"Not implemented\");");
     }
 
     private String initUpper(String str) {

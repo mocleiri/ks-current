@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaImplWriterForOneService {
 
-    private static Logger log = LoggerFactory.getLogger(JpaImplWriterForOneService.class);
+    private static final Logger log = LoggerFactory.getLogger(JpaImplWriterForOneService.class);
     
     protected ServiceContractModel model;
     protected ModelFinder finder;
@@ -65,12 +65,12 @@ public class JpaImplWriterForOneService {
     public void write() {
         List<ServiceMethod> methods = finder.getServiceMethodsInService(servKey);
         if (methods.size() == 0) {
-            log.warn("No methods defined for servKey: " + servKey);
+            log.warn("No methods defined for servKey: {}", servKey);
             return;
         }
 
         // the main servKey
-        log.info("Generating jpa impls for " + servKey);
+        log.info("Generating jpa impls for {}", servKey);
         new JpaImplServiceWriter(model, directory, rootPackage, servKey, methods, isR1).write();
         
 //        for (XmlType xmlType : getXmlTypesUsedJustByService()) {

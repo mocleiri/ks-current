@@ -43,7 +43,7 @@ import org.kuali.student.contract.model.MessageStructure;
  */
 public class JpaAttributeEntityWriter extends JavaClassWriter {
 
-    private static Logger log = LoggerFactory.getLogger(JpaAttributeEntityWriter.class);
+    private static final Logger log = LoggerFactory.getLogger(JpaAttributeEntityWriter.class);
 
     //////////////////////////////
     // Constants
@@ -555,7 +555,7 @@ public class JpaAttributeEntityWriter extends JavaClassWriter {
                 }
             }
         }
-        log.warn("Could not find the Id paramter for " + method.getService() + "." + method.getName() + " so returning the first one");
+        log.warn("Could not find the Id paramter for {}.{} so returning the first one", method.getService(), method.getName());
         return method.getParameters().get(0);
     }
 
