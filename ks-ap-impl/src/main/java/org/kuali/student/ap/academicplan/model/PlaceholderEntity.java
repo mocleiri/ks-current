@@ -27,6 +27,9 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 
 	@Column(name = "TYPE_KEY")
 	private String typeKey;
+	
+	@Column(name="EXCLUSION")
+	private boolean exclusion;
 
 	@Column(name = "PARM1")
 	private String parm1;
@@ -59,6 +62,7 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
     	PlaceholderInfo dto = new PlaceholderInfo();
     	dto.setId(this.getId());
     	dto.setTypeKey(this.getTypeKey());
+    	dto.setExclusion(this.isExclusion());
     	dto.setParm1(this.getParm1());
     	dto.setParm2(this.getParm2());
     	dto.setParm3(this.getParm3());
@@ -84,6 +88,7 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 		   	
 		setTypeKey(dto.getTypeKey());
 		
+		setExclusion(dto.isExclusion());
 		setParm1(dto.getParm1());
 		setParm2(dto.getParm2());
 		setParm3(dto.getParm3());
@@ -107,6 +112,17 @@ public class PlaceholderEntity extends BaseVersionEntity implements Comparable<P
 	public void setTypeKey(String typeKey) {
 		this.typeKey = typeKey;
 	}
+
+	
+	public boolean isExclusion() {
+		return exclusion;
+	}
+
+
+	public void setExclusion(boolean exclusion) {
+		this.exclusion = exclusion;
+	}
+
 
 	public String getParm1() {
 		return parm1;
