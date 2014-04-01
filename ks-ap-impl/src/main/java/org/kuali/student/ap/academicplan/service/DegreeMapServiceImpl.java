@@ -13,6 +13,7 @@ import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInstanceInfo;
+import org.kuali.student.ap.academicplan.dto.ReferenceObjectListInfo;
 import org.kuali.student.ap.academicplan.model.DegreeMapRequirementEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderInstanceEntity;
@@ -367,6 +368,54 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 
 		placeholderInstanceDao.remove(pe);
 		return status;
+	}
+
+	@Override
+	public List<ReferenceObjectListInfo> getReferenceObjectItems(String listId,
+			ContextInfo context) throws DoesNotExistException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ReferenceObjectListInfo getReferenceOjbectItem(
+			String referenceObjectItemId, ContextInfo context)
+			throws DoesNotExistException, InvalidParameterException,
+			MissingParameterException, OperationFailedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ReferenceObjectListInfo createReferenceObjectItem(
+			ReferenceObjectListInfo referenceObjectItem, ContextInfo context)
+			throws AlreadyExistsException, DataValidationErrorException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ReferenceObjectListInfo updateReferenceObjectItem(
+			String referenceObjectItemId,
+			ReferenceObjectListInfo referenceObjectItem, ContextInfo context)
+			throws DataValidationErrorException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException, DoesNotExistException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public StatusInfo deleteReferenceObjectItem(String referenceObjectItemId,
+			ContextInfo context) throws DoesNotExistException,
+			InvalidParameterException, MissingParameterException,
+			OperationFailedException, PermissionDeniedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
