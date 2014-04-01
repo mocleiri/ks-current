@@ -12,6 +12,7 @@ import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInstanceInfo;
+import org.kuali.student.ap.academicplan.dto.ReferenceObjectListInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
@@ -44,7 +45,7 @@ public interface DegreeMapService {
     public DegreeMapRequirementInfo createRequirement(@WebParam(name = "requirement") DegreeMapRequirementInfo requirement,
     		@WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
-    public DegreeMapRequirementInfo updateRequirement(@WebParam(name = "requirementId") String requirementId, @WebParam(name = "requirementId") DegreeMapRequirementInfo Requirement, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+    public DegreeMapRequirementInfo updateRequirement(@WebParam(name = "requirementId") String requirementId, @WebParam(name = "requirement") DegreeMapRequirementInfo Requirement, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
 
 
     public StatusInfo deleteRequirement(@WebParam(name = "requirementId") String requirementId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
@@ -81,6 +82,21 @@ public interface DegreeMapService {
 
 
     public StatusInfo deletePlaceholderInstance(@WebParam(name = "placeholderInstanceId") String placeholderInstanceId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+
+    
+ // REFERENCE OBJECT LIST 
+    public List<ReferenceObjectListInfo> getReferenceObjectItems(@WebParam(name = "listId") String listId,  @WebParam(name = "context") ContextInfo context) 
+    		throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+
+    public ReferenceObjectListInfo getReferenceOjbectItem(@WebParam(name = "referenceObjectItemId") String referenceObjectItemId,  @WebParam(name = "context") ContextInfo context) 
+    		throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+    
+    public ReferenceObjectListInfo createReferenceObjectItem(@WebParam(name = "referenceObjectItem") ReferenceObjectListInfo referenceObjectItem,
+    		@WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+
+    public ReferenceObjectListInfo updateReferenceObjectItem(@WebParam(name = "referenceObjectItemId") String referenceObjectItemId, @WebParam(name = "referenceObjectItem") ReferenceObjectListInfo referenceObjectItem, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+
+    public StatusInfo deleteReferenceObjectItem(@WebParam(name = "referenceObjectItemId") String referenceObjectItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     
     
