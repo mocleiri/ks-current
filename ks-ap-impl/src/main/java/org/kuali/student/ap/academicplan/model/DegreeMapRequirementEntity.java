@@ -61,10 +61,10 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  @Column(name="CREDIT")
 	  private BigDecimal credit;
 	  
-	  @Column(name="CREDIT")
+	  @Column(name="CREDIT_MAX")
 	  private BigDecimal creditMax;
 	  
-	  @Column(name="CREDIT")
+	  @Column(name="CREDIT_MIN")
 	  private BigDecimal creditMin;
 	  
 	  @Column(name="CRITICAL")

@@ -370,6 +370,9 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 		return status;
 	}
 
+	
+	// REFERENCE OBJECT LIST
+	
 	@Override
 	public List<ReferenceObjectListInfo> getReferenceObjectItems(String listId,
 			ContextInfo context) throws DoesNotExistException,
