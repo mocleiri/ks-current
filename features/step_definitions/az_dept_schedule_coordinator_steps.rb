@@ -67,7 +67,7 @@ When /^I manage a course offering for a subject code not in my admin org$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
   @course_offering = make CourseOffering, :course=>"CHEM611", :term=>@term_for_test
   @course_offering.manage
-  @activity_offering = make ActivityOffering, :code=>"A"
+  @activity_offering = make ActivityOfferingObject, :code=>"A"
 end
 
 When /^I manage the course offering$/ do
@@ -94,7 +94,7 @@ When /^I manage a course offering in my admin org$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
   @course_offering = make CourseOffering, :course=>"ENGL245", :term=>@term_for_test
   @course_offering.manage
-  @activity_offering = make ActivityOffering, :code=>"A"
+  @activity_offering = make ActivityOfferingObject, :code=>"A"
 end
 
 Then /^I have access to view course offering details$/ do
@@ -383,7 +383,8 @@ end
 
 When /^I edit a course offering in my admin org that has multiple credit types$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM unless @term_for_test != nil
-  @course_offering = make CourseOffering, :term => @term_for_test, :course=>"ENGL369D"
+  #create copy, since don't want course in Offered state
+  @course_offering = create CourseOffering, :create_by_copy =>(make CourseOffering,  :course=>"ENGL369D", :term => @term_for_test)
   @course_offering.manage
   on ManageCourseOfferings do |page|
     page.edit_course_offering
@@ -631,9 +632,8 @@ Then /^I do not have access to select the "([^"]*)" course offering for approve,
     page.approve_course_offering_button.enabled?.should be_false
     #page.create_course_offering_button.enabled?.should be_false
     #page.draft_activity_button.enabled?.should be_false
-    co_row = page.target_row(@course_offering.course)
-    page.co_row_status(co_row).should == co_status
-    co_row.checkbox.present?.should be_false
+    page.co_status(@course_offering.course).should == co_status
+    page.select_co_checkbox(@course_offering.course).present?.should be_false
   end
 end
 
@@ -645,7 +645,7 @@ Then /^I do not have access to select course offerings for approve, delete$/ do
     #page.create_course_offering_button.enabled?.should be_false
     #page.draft_activity_button.enabled?.should be_false
     page.co_list.each do |co_code|
-      page.target_row(co_code).checkbox.present?.should be_false
+      page.select_co_checkbox(co_code).present?.should be_false
     end
   end
 end
@@ -666,8 +666,8 @@ Then /^I do not have access to select course offerings for approve$/ do
   on ManageCourseOfferingList do |page|
     page.approve_course_offering_button.enabled?.should be_false
     page.co_list.each do |co_code|
-      checkbox = page.target_row(co_code).checkbox
-      if checkbox.present? then
+      checkbox = page.select_co_checkbox(co_code)
+      if checkbox.present?
         checkbox.set
         page.approve_course_offering_button.enabled?.should be_false
       end
@@ -701,12 +701,13 @@ When /^there is a course with a co-located SI in my admin org/ do
   step "I am logged in as a Schedule Coordinator"
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"ENGL462", :term=>@term_for_test)
   @course_offering.manage_and_init
+  colocated_ao = make ActivityOfferingObject, :code=> "A",
+                      :parent_course_offering => (make CourseOffering, :course => "ENGL295", :term => @term_for_test)
+
   @course_offering.activity_offering_cluster_list[0].ao_list[0].edit :colocated => true,
-                                                                    :colocate_ao_list => Array.new(1){make ActivityOffering, :code=> "A",
-                                                                    :parent_course_offering => (make CourseOffering, :course => "ENGL295", :term => @term_for_test)},
+                                                                    :colocate_ao_list => [ colocated_ao ],
                                                                     :max_enrollment=>25,
                                                                     :colocate_shared_enrollment=> true
-  @course_offering.activity_offering_cluster_list[0].ao_list[0].save
   step "I am logged in as a Department Schedule Coordinator"
 end
 

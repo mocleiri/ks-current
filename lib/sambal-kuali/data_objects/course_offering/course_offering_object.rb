@@ -1,8 +1,3 @@
-#TODO: check this jira - still relevant?
-# additional notes about future-refactoring were left in this jira: https://jira.kuali.org/browse/KSENROLL-5895
-
-
-
 # stores test data for creating/editing and validating course offerings and provides convenience methods for navigation and data entry
 #
 # CourseOffering objects contain ActivityOfferings, ActivityOfferingClusters, DeliveryFormats....
@@ -57,35 +52,6 @@ class CourseOffering
   PLANNED_STATUS = "Planned"
   OFFERED_STATUS = "Offered"
 
-  # provides default data:
-  #  defaults = {
-  #    :term=>Rollover::MAIN_TEST_TERM_SOURCE,
-  #    :course=>"ENGL211",
-  #    :suffix=>"",
-  #    :activity_offering_cluster_list=>[],
-  #    :final_exam_type => "NONE",
-  #    :wait_list => "Active",
-  #    :wait_list_level => "Course Offering",
-  #    :wait_list_type => "Automatic",
-  #    :grade_format => "",
-  #    :delivery_format_list => [],
-  #    :final_exam_activity => "",
-  #    :honors_flag => "NO",
-  #    :affiliated_person_list => {},
-  #    :affiliated_org_list => {},
-  #    :grade_options => "Letter",
-  #    :reg_options => "None available",
-  #    :pass_fail_flag => true,
-  #    :audit_flag => false,
-  #    :search_by_subj => false,
-  #    :credit_type => "",
-  #    :fixed_credit_count => "",
-  #    :multiple_credit_list => {},
-  #    :create_by_copy => nil,
-  #    :cross_listed => false,  (applies only to create from catalog)
-  #    :joint_co_to_create
-  #  }
-  # initialize is generally called using TestFactory Foundry .make or .create methods
   def initialize(browser, opts={})
     @browser = browser
 
@@ -93,7 +59,7 @@ class CourseOffering
         :term=>Rollover::MAIN_TEST_TERM_TARGET,
         :course=>"ENGL211",
         :suffix=>"",
-        :activity_offering_cluster_list=> [ (make ActivityOfferingCluster, :private_name=> :default_cluster ) ],
+        :activity_offering_cluster_list=> collection('ActivityOfferingCluster'),
         :final_exam_type => "STANDARD",
         :waitlist => nil,
         :grade_format => "",
@@ -205,11 +171,15 @@ class CourseOffering
   #  @course_offering.edit :honors_flag=> "YES"
   #
   # @param opts [Hash] key => value for attribute to be updated
-  def edit_offering options={}
+  def edit opts={}
+    defaults = {
+        :defer_save => false,
+        :start_edit => true
+    }
+    options = defaults.merge(opts)
 
-    on(ManageCourseOfferings).edit_course_offering unless options[:edit_in_progress]
+    on(ManageCourseOfferings).edit_course_offering if options[:start_edit]
 
-    #TODO change method name to 'edit'
     if options[:suffix] != nil
       on(CourseOfferingCreateEdit).suffix.set options[:suffix]
       @course = "#{@course[0..6]}#{options[:suffix]}"
@@ -261,6 +231,20 @@ class CourseOffering
             @final_exam_type = "NONE"
         end
       end
+    end
+
+    if options[:final_exam_driver] != nil
+      on CourseOfferingCreateEdit do |page|
+        page.final_exam_driver_select(options[:final_exam_driver])
+      end
+      @final_exam_driver = options[:final_exam_driver]
+    end
+
+    if options[:final_exam_activity] != nil
+      on CourseOfferingCreateEdit do |page|
+        page.final_exam_activity_select(options[:final_exam_activity])
+      end
+      @final_exam_activity = options[:final_exam_activity]
     end
 
     if options[:delivery_format_list] != nil
@@ -333,13 +317,6 @@ class CourseOffering
       end
     end
 
-    if options[:final_exam_driver] != nil
-      on CourseOfferingCreateEdit do |page|
-        page.final_exam_driver_select(options[:final_exam_driver])
-      end
-      @final_exam_driver = options[:final_exam_driver]
-    end
-
     if options[:affiliated_person_list] != nil
       options[:affiliated_person_list].values.each do |person|
         on CourseOfferingCreateEdit do |page|
@@ -382,6 +359,9 @@ class CourseOffering
         options[:cross_listed] ? page.cross_listed_co_set : page.cross_listed_co_clear
       end
     end
+
+    #set_options(options) -- can't use this, some custom values e.g final_exam_type
+    save unless options[:defer_save]
   end
 
   def save
@@ -390,48 +370,6 @@ class CourseOffering
     end
   end
 
-  def save_progress
-    on CourseOfferingCreateEdit do |page|
-      page.save_progress
-    end
-  end
-
-  def cancel
-    on CourseOfferingCreateEdit do |page|
-      page.cancel
-    end
-  end
-
-  def cancel_and_continue
-    on CourseOfferingCreateEdit do |page|
-      page.navigation_cancel_and_continue
-    end
-  end
-
-  def save_and_continue
-    on CourseOfferingCreateEdit do |page|
-      page.navigation_save_and_continue
-    end
-  end
-
-  def edit_previous_co
-    on CourseOfferingCreateEdit do |page|
-      page.edit_previous_co
-    end
-  end
-  
-  def edit_next_co
-    on CourseOfferingCreateEdit do |page|
-      page.edit_next_co
-    end
-  end
-  
-  def edit_arbitrary_co
-    on CourseOfferingCreateEdit do |page|
-      page.edit_relatedCos_dropdown_list.options[10].select
-    end
-  end
-  
   def set_reg_options (options)
     if options[:pass_fail_flag] and options[:audit_flag]
       @reg_options = "Allow students to audit; Pass/Fail Grading"
@@ -465,8 +403,7 @@ class CourseOffering
       end
 
       on ManageCourseOfferingList do |page|
-        page.target_row(@course).i(class: "ks-fontello-icon-wrench").click
-        page.loading.wait_while_present
+        page.manage(@course)
       end
     rescue Watir::Wait::TimeoutError
       #means was single CO returned (or nothing returned), AO list is already displayed
@@ -488,7 +425,7 @@ class CourseOffering
     else
       @activity_offering_cluster_list = []
       cluster_divs.each do |cluster_div|
-        temp_aoc = make ActivityOfferingCluster
+        temp_aoc = make ActivityOfferingClusterObject
         temp_aoc.init_existing(cluster_div, self)
 
         @activity_offering_cluster_list.push(temp_aoc)
@@ -525,8 +462,7 @@ class CourseOffering
       end_time = Time.new
       #in case there is only 1 course, want to show list
       if page.list_all_course_link.exists? then
-        page.list_all_course_link.click
-        page.loading.wait_while_present
+        page.list_all_courses
       end
       puts "#{@course[0,4]} subj code search time: #{end_time-st_time}"
     end
@@ -580,8 +516,7 @@ class CourseOffering
       @course = existing_co
     else
       @course = create_co_copy(@course, @term)
-      on(ManageCourseOfferings).list_all_course_link.click
-      on(ManageCourseOfferings).loading.wait_while_present
+      on(ManageCourseOfferings).list_all_courses
 
       if options[:co_status] == OFFERED_STATUS or options[:co_status] == PLANNED_STATUS
         approve_co
@@ -612,13 +547,13 @@ class CourseOffering
     options = defaults.merge(opts)
 
     manage_and_init
-    ao_obj = make ActivityOffering, :parent_course_offering => self
+    ao_obj = make ActivityOfferingObject, :parent_course_offering => self
     on ManageCourseOfferings do |page|
       ao_obj.code = page.select_ao_by_status(options[:ao_status])
       if ao_obj.code.nil?
         ao_code = ao_obj.create_simple
         ao_obj.code = ao_code[0]
-        if options[:ao_status] == ActivityOffering::OFFERED_STATUS
+        if options[:ao_status] == ActivityOfferingObject::OFFERED_STATUS
           approve_ao :ao_obj => ao_obj
         end
       end
@@ -693,15 +628,16 @@ class CourseOffering
   end
 
 # TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
-# the new format added to the list and the new list passed on the options hash to course_offering.edit_offering
+# the new format added to the list and the new list passed on the options hash to course_offering.edit
 
  def add_delivery_format (delivery_format_obj)
+   edit :defer_save => true
    delivery_format_obj.create
    @delivery_format_list <<  delivery_format_obj
   end
 
 # TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
-# the format deleted from the list and the new list passed on the options hash to course_offering.edit_offering
+# the format deleted from the list and the new list passed on the options hash to course_offering.edit
 
   def delete_delivery_format (format)
     on CourseOfferingCreateEdit do |page|
@@ -768,25 +704,9 @@ class CourseOffering
     confirmation_message
   end
 
-  #this method is not used
-  #delete specified number of activity offerings
-  #
-  #def delete_top_n_aos(num_aos_to_delete_from_top)
-  #  last_index_to_delete = num_aos_to_delete_from_top.to_i - 1
-  #
-  #  manage
-  #
-  #  aos_to_delete = Array.new
-  #  ao_list[0..last_index_to_delete].each do |ao|
-  #    aos_to_delete << ao
-  #  end
-  #
-  #  delete_ao_list :code_list => aos_to_delete
-  #end
-
   # checks to see if AOs of a specific status can be deleted (for Authorization testing)
   # @example
-  #  @course_offering.attempt_ao_delete_by_status(ActivityOffering::OFFERED_STATUS)
+  #  @course_offering.attempt_ao_delete_by_status(ActivityOfferingObject::OFFERED_STATUS)
   #    :cluster_private_name default value is first cluster
   #
   # @param opts [Hash] :co_obj_list => [co_obj1, co_obj2, ...]
@@ -810,7 +730,7 @@ class CourseOffering
       else
         new_ao = copy_ao :ao_code => "A"
         page.select_ao(new_ao.code)
-        if ao_state == ActivityOffering::APPROVED_STATUS
+        if ao_state == ActivityOfferingObject::APPROVED_STATUS
           page.approve_activity
           new_ao = page.select_ao_by_status(ao_state)
         end
@@ -854,7 +774,7 @@ class CourseOffering
 
   # checks to see if AOs of a specific status can be selected (for Authorization testing)
   # @example
-  #  @course_offering.attempt_ao_select_by_status(ActivityOffering::OFFERED_STATUS)
+  #  @course_offering.attempt_ao_select_by_status(ActivityOfferingObject::OFFERED_STATUS)
   #    :cluster_private_name default value is first cluster
   #
   # @param opts [Hash] :co_obj_list => [co_obj1, co_obj2, ...]
@@ -959,7 +879,7 @@ class CourseOffering
 
     defaults = {
         :navigate_to_page => true,
-        :ao_obj => (make ActivityOffering)
+        :ao_obj => (make ActivityOfferingObject)
     }
     options = defaults.merge(opts)
 
@@ -968,7 +888,6 @@ class CourseOffering
     activity_offering_object = options[:ao_obj]
     activity_offering_object.parent_course_offering = self
     activity_offering_object.create
-    activity_offering_object.save
     get_cluster_obj_by_private_name(activity_offering_object.aoc_private_name).ao_list << activity_offering_object
     return activity_offering_object
   end
@@ -986,7 +905,7 @@ class CourseOffering
         :cluster_private_name => :default_cluster
     }
     options = defaults.merge(opts)
-    new_activity_offering = make ActivityOffering, :code => options[:ao_code], :aoc_private_name => options[:cluster_private_name], :create_by_copy => true, :parent_course_offering => self
+    new_activity_offering = make ActivityOfferingObject, :code => options[:ao_code], :aoc_private_name => options[:cluster_private_name], :create_by_copy => true, :parent_course_offering => self
 
     new_activity_offering.create
     get_cluster_obj_by_private_name(options[:cluster_private_name]).ao_list << new_activity_offering
@@ -1006,23 +925,6 @@ class CourseOffering
     end
   end
 
-  #TODO - how is this different from delete_ao?
-  #merged with delete_ao
-  #def delete_ao_cross_list_value(opts)
-  #  defaults = {
-  #      :cluster_private_name => :default_cluster
-  #  }
-  #  options = defaults.merge(opts)
-  #
-  #  on ManageCourseOfferings do |page|
-  #    page.select_aos(options[:code_list], options[:cluster_private_name])
-  #    page.delete_aos
-  #  end
-  #  on ActivityOfferingConfirmDelete do |page|
-  #    page.delete_confirm_message
-  #  end
-  #end
-
   # returns a list of AOs matching a given state
   # note: can return an empty array but not nil
   #
@@ -1034,7 +936,7 @@ class CourseOffering
     defaults = {
         :cluster_private_name => :default_cluster,
         :aos => [],
-        :ao_status => ActivityOffering::DRAFT_STATUS
+        :ao_status => ActivityOfferingObject::DRAFT_STATUS
     }
     options = defaults.merge(opts)
 
@@ -1055,7 +957,7 @@ class CourseOffering
   #  @course_offering.add_ao_cluster(ao_cluster_object)
   #
   #
-  # @param ao_cluster [ActivityOfferingCluster]
+  # @param ao_cluster [ActivityOfferingClusterObject]
   def add_ao_cluster(ao_cluster)
     ao_cluster.create
     @activity_offering_cluster_list << ao_cluster
@@ -1066,7 +968,7 @@ class CourseOffering
   #  @course_offering.delete_ao_cluster(ao_cluster_object)
   #
   #
-  # @param ao_cluster [ActivityOfferingCluster]
+  # @param ao_cluster [ActivityOfferingClusterObject]
   def delete_ao_cluster(ao_cluster)
     ao_cluster.delete
     @activity_offering_cluster_list.delete(get_cluster_obj_by_private_name(ao_cluster.private_name))
@@ -1078,7 +980,7 @@ class CourseOffering
   #
   #
   # @param cluster_private_name [String]
-  # @returns  ActivityOfferingCluster object
+  # @returns  ActivityOfferingClusterObject
   def get_cluster_obj_by_private_name(cluster_private_name)
     return @activity_offering_cluster_list[0] unless cluster_private_name != :default_cluster
     @activity_offering_cluster_list.select{|cluster| cluster.private_name == cluster_private_name}[0]

@@ -14,7 +14,7 @@ end
 
 Given /^there is an existing course offering with activity offerings that have waitlists enabled$/ do
   @course_offering = make CourseOffering, :course => "ENGL293"
-  @activity_offering = make ActivityOffering, :parent_course_offering => @course_offering, :code => "A"
+  @activity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => "A"
 end
 
 #Given /^I create a course and activity offering with waitlists enabled$/ do
@@ -24,25 +24,29 @@ end
 #I create a course and activity offering with waitlists enabled
 #I manage an activity offering with waitlists enabled
 Given /^I (?:manage|create)(?: a course)? and? activity offering with waitlists enabled$/ do
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
-
-  @course_offering = create CourseOffering, :term => @term.term_code, :course => "ENGL300", :waitlists => true
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
-  @activity_offering.save
+  if @calendar.nil?
+    @calendar = make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]
+    term = make AcademicTermObject, :parent_calendar => @calendar, :term_code => Rollover::MAIN_TEST_TERM_TARGET
+    @calendar.terms << term
+  end
+  @course_offering = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL300", :waitlists => true
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
 end
 
 Given /^I create a course and activity offering with waitlists disabled$/ do
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
-  @course_offering_wl_disabled = create CourseOffering, :term => @term.term_code, :course => "ENGL300", :waitlist => false
-  @activity_offering_wl_disabled = create ActivityOffering, :parent_course_offering => @course_offering_wl_disabled
-  @activity_offering_wl_disabled.save
+  if @calendar.nil?
+    @calendar = make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]
+    term = make AcademicTermObject, :parent_calendar => @calendar, :term_code => Rollover::MAIN_TEST_TERM_TARGET
+    @calendar.terms << term
+  end
+  @course_offering_wl_disabled = create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL300", :waitlist => false
+  @activity_offering_wl_disabled = create ActivityOfferingObject, :parent_course_offering => @course_offering_wl_disabled
 end
 
 Given /^I (?:manage|create) an activity offering with the limit waitlist size set$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
-  waitlist_config = make Waitlist, :enabled => true, :limit_size => 30
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
-  @activity_offering.save
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.waitlist_config.edit :enabled => true, :limit_size => 30
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -54,9 +58,8 @@ end
 
 Given /^I manage an activity offering with waitlists processing type set to (.*)$/ do |processing_type|
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
-  waitlist_config = make Waitlist, :enabled => true, :type => processing_type
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
-  @activity_offering.save
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.waitlist_config.edit :enabled => true, :type => processing_type
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -67,10 +70,10 @@ Given /^I manage an activity offering with waitlists processing type set to (.*)
 end
 
 Given /^I can update the processing type to (.*)$/ do |processing_type|
-  waitlist = @activity_offering.waitlist_config
-  waitlist.type = processing_type
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  #waitlist = @activity_offering.waitlist_config
+  #waitlist.type =
+  #waitlist.enabled = true
+  @activity_offering.waitlist_config.edit :type => processing_type
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -82,74 +85,50 @@ end
 
 Then /^I make changes to the default waitlist configuration for one of the activity offerings$/ do
   @ao_list[0].parent_course_offering.manage
-  waitlist = @ao_list[0].waitlist_config
-  waitlist.enabled = true
-  waitlist.type = "Manual"
-  waitlist.limit_size = 10
-  waitlist.allow_hold_list = true
-  @ao_list[0].edit :waitlist_config => waitlist
-  @ao_list[0].save
+  @ao_list[0].waitlist_config.edit :enabled => true,
+                                   :type => "Manual",
+                                   :limit_size => 10,
+                                   :allow_hold_list => true
 end
 
 Then /^I make changes to the default waitlist configuration for the activity offering$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = true
-  waitlist.type = "Manual"
-  waitlist.limit_size = 10
-  waitlist.allow_hold_list = true
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                   :type => "Manual",
+                                   :limit_size => 10,
+                                   :allow_hold_list => true
 end
 
 
 Then /^I set the limit waitlist size$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = true
-  waitlist.limit_size = 25
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                   :limit_size => 25
 end
 
 Then /^I remove the limit waitlist size$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.limit_size = 0
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :limit_size => 0
 end
 
 Then /^I modify the limit waitlist size$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.limit_size = 50
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :limit_size => 50
 end
 
 Then /^I enable the allow hold list option$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = true
-  waitlist.allow_hold_list = true
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                   :allow_hold_list => true
 end
 
 Then /^I disable the allow hold list option$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.allow_hold_list = false
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :allow_hold_list => false
 end
 
 Given /^I add two activity offerings$/ do
   @course_offering.manage
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
-  @activity_offering.save
-  @activity_offering2 = create ActivityOffering, :parent_course_offering => @course_offering
-  @activity_offering2.save
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering2 = create ActivityOfferingObject, :parent_course_offering => @course_offering
 end
 
 Given /^I add an activity offering$/ do
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering
-  @activity_offering.save
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
 end
 
 Given /^the activity offerings have active waitlists and waitlists have the default configuration$/ do
@@ -173,7 +152,7 @@ Given /^the activity offerings have active waitlists and waitlists have the defa
     page.close
   end
 
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.waitlist_checkbox.set?.should be_true
     page.waitlist_confirmation_radio.set?.should be_true
@@ -182,7 +161,7 @@ Given /^the activity offerings have active waitlists and waitlists have the defa
     page.cancel
   end
 
-  @activity_offering2.edit
+  @activity_offering2.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.waitlist_checkbox.set?.should be_true
     page.waitlist_confirmation_radio.set?.should be_true
@@ -201,7 +180,7 @@ Given /^the waitlist option cannot be enabled for the activity offering$/ do
     page.close
   end
 
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.no_waitlists_msg.should == "Waitlists are deactivated for the Course Offering"
     page.cancel
@@ -229,7 +208,7 @@ Given /^the allow hold list option is successfully updated$/ do
 end
 
 Given /^I re-enable the waitlists option for the activity offering the modified waitlist configuration is restored$/ do
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
 
   on ActivityOfferingMaintenance do |page|
     page.waitlist_checkbox.set
@@ -242,10 +221,7 @@ Given /^I re-enable the waitlists option for the activity offering the modified 
 end
 
 Given /^I (?:can )?disable the waitlists option for the activity offering$/ do
-  waitlist = @activity_offering.waitlist_config
-  waitlist.enabled = false
-  @activity_offering.edit :waitlist_config => waitlist
-  @activity_offering.save
+  @activity_offering.waitlist_config.edit :enabled => false
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -266,9 +242,9 @@ end
 
 Given /^I manage an activity offering with the waitlist allow hold list option enabled$/ do
   @course_offering = create CourseOffering, :course => "ENGL300", :waitlists => true
-  waitlist_config = make Waitlist, :enabled => true, :allow_hold_list => true
-  @activity_offering = create ActivityOffering, :parent_course_offering => @course_offering, :waitlist_config => waitlist_config
-  @activity_offering.save
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
+  @activity_offering.waitlist_config.edit :enabled => true,
+                                          :allow_hold_list => true
 
   on(ManageCourseOfferings).view_activity_offering(@activity_offering.code)
 
@@ -280,7 +256,7 @@ end
 
 
 Given /^the waitlist enabled configuration is copied to the new course and activity offering in the target term$/ do
-  @course_offering_copy = make CourseOffering, :course => @course_offering.course, :term => @term_target.term_code
+  @course_offering_copy = make CourseOffering, :course => @course_offering.course, :term => @calendar_target.terms[0].term_code
   step "the waitlist configuration is copied to the new course and activity offering"
 end
 
@@ -304,8 +280,8 @@ Given /^the waitlist configuration is copied to the new course and activity offe
 end
 
 Given /^the waitlist disabled configuration is copied to the course and activity offering in the target term$/ do
-  @course_offering_copy = make CourseOffering, :course => @course_offering_wl_disabled.course, :term => @term_target.term_code
-
+  @course_offering_copy = make CourseOffering, :course => @course_offering_wl_disabled.course, :term => @calendar_target.terms[0].term_code
+  @course_offering_copy.manage
  step "the waitlists are disabled for the new course and activity offering"
 end
 
@@ -329,8 +305,7 @@ Given /^there are two other activity offering with waitlists enabled and no wait
   @ao_list = []
   ["ENGL416","ENGL420"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
-    activity_offering.save
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     @ao_list << activity_offering
   end
 end
@@ -341,7 +316,6 @@ When /^I colocate the activity offering with other two offerings and select shar
                           :colocate_ao_list => @ao_list,
                           :colocate_shared_enrollment => true,
                           :max_enrollment => 48
-  @activity_offering.save
 
   @ao_list.unshift(@activity_offering)
 end
@@ -353,21 +327,21 @@ Then /^all three activity offerings have the same waitlist limit size$/ do
 
     on ActivityOfferingInquiry do |page|
       page.waitlists_active?.should be_true
-      page.waitlists_max_size.should == @ao_list[0].waitlist_config.waitlist_limit_str
+      page.waitlists_max_size.should == @activity_offering.waitlist_config.waitlist_limit_str
       page.close
     end
   end
 end
 
 Given /^I create three course offerings with one activity offering in each with waitlists enabled$/ do
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]),
+               :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @ao_list = []
 
   ["ENGL300","WMST300","WMST400"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true, :term => @term.term_code
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
-    activity_offering.save
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     @ao_list << activity_offering
   end
 end
@@ -378,7 +352,6 @@ Given /^I colocate the three activity offerings \(shared enrolment\)$/ do
                    :colocate_ao_list => @ao_list[1..2],
                    :colocate_shared_enrollment => true,
                    :max_enrollment => 120
-  @ao_list[0].save
 end
 
 Then /activity offerings have the same waitlist configuration$/ do
@@ -399,7 +372,7 @@ end
 Then /^the waitlist configuration is copied to the(?: new)? colocated activity offering/ do
   course_offering_target = make CourseOffering, :course => @ao_list[0].parent_course_offering.course,
                                 :term => @term.term_code
-  @activity_offering_copy = make ActivityOffering, :code => @ao_list[0].code, :parent_course_offering => course_offering_target
+  @activity_offering_copy = make ActivityOfferingObject, :code => @ao_list[0].code, :parent_course_offering => course_offering_target
 
   @activity_offering_copy.parent_course_offering.manage
   on(ManageCourseOfferings).view_activity_offering(@activity_offering_copy.code)
@@ -419,9 +392,9 @@ Given /^there is an existing course offering with a colocated activity offering 
   @course_offering.manage
 
   @ao_list = []
-  @ao_list << (make ActivityOffering, :code => "A", :parent_course_offering => @course_offering)
+  @ao_list << (make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering)
   colocated_ao_parent = make CourseOffering, :course => "HIST310", :term => "201208"
-  @ao_list << (make ActivityOffering, :code => "A", :parent_course_offering => colocated_ao_parent, :colocated => true)
+  @ao_list << (make ActivityOfferingObject, :code => "A", :parent_course_offering => colocated_ao_parent, :colocated => true)
   @ao_list[0].colocate_ao_list << @ao_list[1]
   on(ManageCourseOfferings).has_colo_icon(@ao_list[0].code).should be_true
 end
@@ -498,10 +471,7 @@ end
 
 When /^I deactivate waitlists on the first activity offering$/ do
   @ao_list[0].parent_course_offering.manage
-  waitlist = @ao_list[0].waitlist_config
-  waitlist.enabled = false
-  @ao_list[0].edit :waitlist_config => waitlist
-  @ao_list[0].save
+  @ao_list[0].waitlist_config.edit :enabled => false
 end
 
 Then /^the waitlist configuration for the.*activity offerings? is not changed$/ do
@@ -521,14 +491,14 @@ end
 
 Given /^I create two colocated activity offerings \(shared enrolment\) with waitlists enabled$/ do
   #TODO: # of AOs can be parameterized
-  @term = make AcademicTerm, :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
+  @term = make AcademicTermObject, :parent_calendar => (make AcademicCalendar, :year => Rollover::MAIN_TEST_TERM_TARGET[0..3]),
+               :term_code => Rollover::MAIN_TEST_TERM_TARGET if @term.nil?
 
   @ao_list = []
 
   ["ENGL300","WMST300"].each do |co_code|
     course_offering = create CourseOffering, :course => co_code, :waitlists => true, :term => @term.term_code
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
-    activity_offering.save
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     @ao_list << activity_offering
   end
 
@@ -537,15 +507,11 @@ Given /^I create two colocated activity offerings \(shared enrolment\) with wait
                    :colocate_ao_list => @ao_list[1..1],
                    :colocate_shared_enrollment => true,
                    :max_enrollment => 120
-  @ao_list[0].save
-
 end
 
 When /^I deactivate waitlists at the course offering level for one of the activity offerings$/ do
-  @ao_list[0].parent_course_offering.search_by_subjectcode
-  on(ManageCourseOfferingList).edit @ao_list[0].parent_course_offering.course
-  @ao_list[0].parent_course_offering.edit_offering :waitlist => false, :edit_in_progress => true
-  on(CourseOfferingCreateEdit).submit
+  @ao_list[0].parent_course_offering.manage
+  @ao_list[0].parent_course_offering.edit :waitlist => false
 end
 
 Then /^waitlists is deactived for both activity offerings$/ do
@@ -562,23 +528,17 @@ end
 
 When /^I add another activity offering to the colocated set$/ do
     course_offering = create CourseOffering, :course => "WMST400", :waitlists => true, :term => @term.term_code
-    activity_offering = create ActivityOffering, :parent_course_offering => course_offering
-    activity_offering.save
+    activity_offering = create ActivityOfferingObject, :parent_course_offering => course_offering
     @ao_list << activity_offering
 
     @ao_list[0].parent_course_offering.manage
     @ao_list[0].edit :colocated => true,
                      :colocate_ao_list => [activity_offering]
-                     #:colocate_shared_enrollment => true,
-                     #:max_enrollment => 120
-    @ao_list[0].save
-
 end
 
 When /^I update the colocation settings to manage enrolments separately$/ do
   @ao_list[0].parent_course_offering.manage
-  @ao_list[0].edit :colocate_shared_enrollment => false
-  @ao_list[0].save
+  @ao_list[0].edit :colocate_shared_enrollment => false, :max_enrollment => @ao_list[0].max_enrollment
 end
 
 When /^the other activity offering still has the default configuration$/ do

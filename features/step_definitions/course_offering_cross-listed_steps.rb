@@ -22,7 +22,7 @@ And /^the cross-listing is indicated for the alias Course Offering$/ do
 
   #  Validate the crosslisting messaging is present.
   on ManageCourseOfferings do |page|
-    page.cross_listed_message_div.wait_until_present
+    page.cross_listed_message_span.wait_until_present
     page.cross_listed_message.include? "crosslisted alias for: " << cross_listed_infoText_targetValue
   end
 end
@@ -42,9 +42,7 @@ end
 And /^I remove a cross-listed Course Offering$/ do
   @cross_listed_co.manage
   #on(ManageCourseOfferings).edit_course_offering
-  @cross_listed_co.edit_offering :cross_listed => false
-  @cross_listed_co.save
-  #on(CourseOfferingCreateEdit).submit
+  @cross_listed_co.edit :cross_listed => false
 end
 
 
@@ -85,7 +83,7 @@ end
 
 
 Then /^the alias is indicated as cross-listed with the owner CO$/ do
-  expect_result = "#{@cross_listed_co.cross_listed_codes[0]} is a crosslisted alias for: #{@cross_listed_co.course} (Owner)"
+  expect_result = "#{@cross_listed_co.cross_listed_codes[0]} is a crosslisted alias for: #{@cross_listed_co.course}"
   #expect_result = "#{@cross_listed_co.cross_listed_codes[0]}#{@suffix_with_cl} is a crosslisted alias for #{@cross_listed_co.course}#{@suffix_with_cl} (Owner)"
   on ManageCourseOfferings do |page|
     page.cross_listed_message.should include expect_result
@@ -112,7 +110,7 @@ When /^I create a cross-listed Course Offering$/ do
   #@cross_listed_co = create CourseOffering, :create_by_copy => (make CourseOffering, :course => "ENGL250", :suffix => @suffix_with_cl, :term => Rollover::MAIN_TEST_TERM_SOURCE)
   #@cross_listed_co = make CourseOffering, :course => "ENGL250D", :term => Rollover::MAIN_TEST_TERM_SOURCE
   @cross_listed_co.manage
-#  @cross_listed_co.edit_offering :cross_listed => true
+#  @cross_listed_co.edit :cross_listed => true
   @cross_listed_co.capture_crosslist_aliases
 end
 

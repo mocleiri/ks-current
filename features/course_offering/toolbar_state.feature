@@ -13,7 +13,7 @@ Feature: CO.Toolbar state
     When I select a course offering in "Offered" status
     Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
     When I select a course offering in "Draft" status
-    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
+    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "enabled"; Delete: "enabled"
 
   Scenario: TB_FinalEdits.1 Validate CO toolbar button state for final edits SOC
     Given I am working on a term in "Final Edits" SOC state
@@ -22,9 +22,9 @@ Feature: CO.Toolbar state
     When I manage course offerings for the specified subject code
     Then the expected initial state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "disabled"
     When I select a course offering in "Planned" status
-    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
+    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "enabled"; Delete: "enabled"
     When I select a course offering in "Draft" status
-    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "disabled"; Delete: "enabled"
+    Then the expected state of the CO toolbar is: Create: "enabled"; Approve: "enabled"; Delete: "enabled"
 
   Scenario: TB_Locked.1 Validate CO toolbar button state for locked SOC
     Given I am working on a term in "Locked" SOC state
@@ -84,7 +84,7 @@ Feature: CO.Toolbar state
     Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "disabled"; AddCluster: "enabled"; Move: "disabled"
     Given there is an activity in "Draft" status
     When I select an activity offering in "Draft" status
-    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
+    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "enabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
 
   Scenario: TB_FinalEdits.2A Validate AO toolbar buttons for a CO in Offered status and SOC state Final Edits
     Given I am working on a term in "Final Edits" SOC state
@@ -93,7 +93,7 @@ Feature: CO.Toolbar state
     Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "disabled"; AddCluster: "enabled"; Move: "disabled"
     Given there is an activity in "Approved" status
     When I select an activity offering in "Approved" status
-    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "enabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
+    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
 
   @bug @KSENROLL-7434
   Scenario: TB_FinalEdits.2B Validate AO toolbar buttons for a CO in Draft status and SOC state Final Edits
@@ -103,7 +103,7 @@ Feature: CO.Toolbar state
     Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "disabled"; AddCluster: "enabled"; Move: "disabled"
     Given there is an activity in "Draft" status
     When I select an activity offering in "Draft" status
-    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "disabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
+    Then the expected state of the AO toolbar is: Create: "enabled"; Approve: "enabled"; SetAsDraft: "disabled"; Delete: "enabled"; AddCluster: "enabled"; Move: "enabled"
 
   Scenario: TB_Locked.2A Validate AO toolbar buttons for a CO in Planned status and SOC state Locked
     Given I am working on a term in "Locked" SOC state

@@ -120,4 +120,11 @@ module Workflows
     end
   end
 
+  def log_out
+    visit KSFunctionalHome do |page|
+      Watir::Wait.until { page.enrollment_link.present? || page.username_field.present? }
+      page.logout
+    end
+  end
+
 end

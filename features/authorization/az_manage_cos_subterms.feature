@@ -24,7 +24,7 @@ Feature: CO.AZ Manage Course Offerings with subterms
   Scenario: CO 26.6B Carol has access to add/remove/update the subterm for an AO (in admin org) when SOC=FINAL EDITS
     Given I advance the SOC state from open to final edits state
     And I am logged in as a Department Schedule Coordinator
-    And I manage the Course Offering in the term
+    And I manage the course offering
     When I remove the subterm for the activity offering
     Then the AO subterm is successfully removed
     When I edit the Activity Offering
@@ -36,6 +36,6 @@ Feature: CO.AZ Manage Course Offerings with subterms
   Scenario: CO 26.6C Carol does not have access to add/remove/update the subterm for an AO (in admin org) when SOC=PUBLISHED
     Given I advance the SOC state from open to published state
     And I am logged in as a Department Schedule Coordinator
-    And I manage the Course Offering in the term
+    And I manage the course offering
     When I edit the activity offering I do not have access to change the subterm
 

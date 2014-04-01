@@ -27,7 +27,7 @@ class EditAcademicTerms < BasePage
   end
 
   def term_section_div_list
-    acal_term_list_div.divs(id: /^term_section_line\d+$/)
+    acal_term_list_div.divs(id: /^term_section_line\d+$/, data_parent: 'acal-term')
   end
 
   def open_term_section(term_type)
@@ -59,7 +59,6 @@ class EditAcademicTerms < BasePage
 
   def delete_term(term_type)
     term_index = term_index_by_term_type(term_type)
-    puts "term_index: #{term_index}"
     acal_term_list_div.div(id: "term_section_line#{term_index}").link(text: "Delete").click
     loading.wait_while_present
     delete_confirm
@@ -181,14 +180,14 @@ class EditAcademicTerms < BasePage
 
   #KeyDates
   action(:key_date_button) { |term_index, key_date_group_index, b| b.frm.div(id: "acal-term-keydates_line#{term_index}_line#{key_date_group_index}").button(text: "Add Key Date")}
-  action(:key_date_dropdown_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].select(id: /key_date_type/)}
-  action(:key_date_start_date_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_start_date/)}
-  action(:key_date_starttime_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_start_time_line/)}
-  action(:key_date_starttimeampm_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].fieldset(id: /key_date_start_time_ampm/)}
-  action(:key_date_end_date_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_end_date_line/)}
-  action(:key_date_endtime_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_end_time_line/)}
-  action(:key_date_endtimeampm_addline) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].fieldset(id: /key_date_end_time_ampm_line/)}
-  action(:key_date_addline_delete) { |term_index, key_date_group_index, b| b.frm.key_date_table(term_index, key_date_group_index).rows[-2].link(id: /key_date_delete_button_line/)}
+  action(:key_date_dropdown_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].select(id: /key_date_type/)}
+  action(:key_date_start_date_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_start_date/)}
+  action(:key_date_starttime_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_start_time_line/)}
+  action(:key_date_starttimeampm_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].fieldset(id: /key_date_start_time_ampm/)}
+  action(:key_date_end_date_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_end_date_line/)}
+  action(:key_date_endtime_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].text_field(id: /key_date_end_time_line/)}
+  action(:key_date_endtimeampm_addline) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].fieldset(id: /key_date_end_time_ampm_line/)}
+  action(:key_date_addline_delete) { |term_index, key_date_group_index, b| b.key_date_table(term_index, key_date_group_index).rows[-2].link(id: /key_date_delete_button_line/)}
 
   #TODO: check exsting rows
 

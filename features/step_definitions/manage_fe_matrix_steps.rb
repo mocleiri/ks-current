@@ -37,14 +37,6 @@ When /^I add a Standard Final Exam text rule to the Final Exam Matrix$/ do
 end
 
 Given /^I have a Final Exam Matrix to which I have added multiple Standard Final Exam rule statements$/ do
-  #@matrix_rule_list = []
-  #@matrix_rule_list << (create FinalExamMatrix, :term_type => "Winter Term", :days => "TH", :start_time => "06:00",
-  #                 :end_time => "07:00", :time_ampm => "am", :rule_requirements => "TH at 06:00 AM - 07:00 AM")
-  #
-  #@matrix_rule_list << (create FinalExamMatrix, :term_type => "Winter Term", :rule => "Free Form Text",
-  #                             :free_text => "To test the editing of the statement",
-  #                             :rule_requirements => "To test the editing of the statement")
-
   @matrix = make FinalExamMatrix, :term_type => "Winter Term"
   statement = []
   statement << (make ExamMatrixStatementObject,
@@ -66,16 +58,11 @@ Given /^I have added a Standard Final Exam timeslot rule to the Final Exam Matri
   @matrix = make FinalExamMatrix, :term_type => "Winter Term"
   @matrix.add_rule :rule_obj => (make ExamMatrixRuleObject,  :days => "TH", :start_time => "06:00", :st_time_ampm => "am",
                                       :end_time => "07:00", :end_time_ampm => "am")
-
-  #@matrix = create FinalExamMatrix, :term_type => "Winter Term",, :rule_requirements => "TH at 06:00 AM - 07:00 AM"
 end
 
 Given /^I have added a Common Final Exam course rule to the Final Exam Matrix$/ do
   @matrix = make FinalExamMatrix, :term_type => "Winter Term"
   @matrix.add_rule :rule_obj => (make ExamMatrixRuleObject, :exam_type => "Common")
-
-#  @matrix = create FinalExamMatrix, :rule => "If course is <Course>",
-#         :exam_type => "Common", :courses => "CHEM272", :rule_requirements => "CHEM272"
 end
 
 When /^I edit the Standard Final Exam rule$/ do
@@ -108,7 +95,7 @@ end
 
 When /^I choose to edit the existing rule statement$/ do
   @matrix.manage
-  on(FEMatrixView).edit @matrix.rules[0].rule_requirements, @matrix.rules[0].exam_type
+  on(FEMatrixView).edit @matrix.rules[0], @matrix.rules[0].exam_type
 end
 
 When /^I delete the statement and attempt to update the rule$/ do
@@ -125,16 +112,12 @@ When /^I delete an existing Standard Final Exam text rule to the Final Exam Matr
               :end_time => "09:00", :end_time_ampm => "pm",
               :statements => [ statement ]
   @matrix.add_rule :rule_obj => rule
-  @deleted_rule_requirements = @matrix.rules[0].rule_requirements
+  @deleted_rule_obj = @matrix.rules[0]
 
   @matrix.rules[0].delete
 end
 
 When /^I create a Final Exam Matrix with multiple rule statements$/ do
-  #@matrix = create FinalExamMatrix, :term_type => "Winter Term", :rule => "If course is <Course>",
-  #                 :exam_type => "Common", :courses => "HIST111", :rule_requirements => "HIST111",
-  #                 :add_more_statements => true
-
   @matrix = make FinalExamMatrix, :term_type => "Winter Term"
   statement = []
   statement << (make ExamMatrixStatementObject,
@@ -281,24 +264,24 @@ end
 Then /^I should be able to see the newly created course rule in the Common Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.common_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
+    page.common_fe_target_row( @matrix.rules[0]).should_not == nil
   end
 end
 
 Then /^I should be able to see the location data for the exam specified in the course rule in the Common Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.common_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
-    page.get_common_fe_facility( @matrix.rules[0].rule_requirements).should match /Mathematics Bldg/
-    page.get_common_fe_room( @matrix.rules[0].rule_requirements).should match /0304/
+    page.common_fe_target_row( @matrix.rules[0]).should_not == nil
+    page.get_common_fe_facility( @matrix.rules[0]).should match /Mathematics Bldg/
+    page.get_common_fe_room( @matrix.rules[0]).should match /0304/
   end
 end
 
 Then /^I should be able to see the newly created timeslot rule in the Standard Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.get_standard_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
-    page.get_standard_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
+    page.get_standard_fe_day( @matrix.rules[0]).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_standard_fe_time( @matrix.rules[0]).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
@@ -314,17 +297,17 @@ end
 Then /^I should be able to see the edited timeslot rule in the Standard Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.get_standard_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
-    page.get_standard_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
+    page.get_standard_fe_day( @matrix.rules[0]).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_standard_fe_time( @matrix.rules[0]).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
 Then /^I should be able to see the edited course rule in the Common Final Exam table$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.common_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
-    page.get_common_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
-    page.get_common_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.end_time_ampm.upcase}/
+    page.common_fe_target_row( @matrix.rules[0]).should_not == nil
+    page.get_common_fe_day( @matrix.rules[0]).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_common_fe_time( @matrix.rules[0]).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
@@ -338,22 +321,22 @@ end
 Then /^I should be able to see the Common Final Exam rule with the multiple statements$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.get_common_fe_day( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].rsi_days}/
-    page.get_common_fe_time( @matrix.rules[0].rule_requirements).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
+    page.get_common_fe_day( @matrix.rules[0]).should match /#{@matrix.rules[0].rsi_days}/
+    page.get_common_fe_time( @matrix.rules[0]).should match /#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}-#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}/
   end
 end
 
 Then /^I should be able to see all the changes I have made on the Final Exam Matrix$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.standard_fe_target_row( @matrix.rules[0].rule_requirements).should_not == nil
+    page.standard_fe_target_row( @matrix.rules[0]).should_not == nil
   end
 end
 
 Then /^the deleted text rule should not exist on the Final Exam Matrix$/ do
   @matrix.manage
   on FEMatrixView do |page|
-    page.standard_fe_target_row( @deleted_rule_requirements ).should == nil
+    page.standard_fe_target_row( @deleted_rule_obj).should == nil
     page.cancel
   end
 end
@@ -418,4 +401,133 @@ Then /^I should have a choice of terms from which to associate the Final Exam Ma
     page.term_type_select.option(value: "kuali.atp.type.Fall").text.should == "Fall Term"
     page.term_type_select.option(value: "kuali.atp.type.Spring").text.should == "Spring Term"
   end
+end
+
+Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM241"
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :courses => @course_offering.course)
+  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
+  on ViewExamOfferings do |page|
+    page.get_eo_by_co_days_text.should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/
+    page.get_eo_by_co_st_time_text.should match /#{Regexp.escape(@matrix.rules[0].start_time)}/
+    page.get_eo_by_co_end_time_text.should match /#{Regexp.escape(@matrix.rules[0].end_time)}/
+  end
+end
+
+Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM242"
+end
+
+Then /^the Schedule Information for the Exam Offering should be blank$/ do
+  on ViewExamOfferings do |page|
+    page.get_eo_by_co_days_text.should == ""
+    page.get_eo_by_co_st_time_text.should == ""
+    page.get_eo_by_co_end_time_text.should == ""
+  end
+end
+
+Given /^I ensure that the Course Offering exists on the Final Exam Matrix$/ do
+  @matrix = make FinalExamMatrix, :term_type => @calendar.terms[0].term_type
+  statement = []
+  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :courses => @course_offering.course)
+  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^I encure that the AO's Requested Scheduling Information exists on the Final Exam Matrix$/ do
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => @activity_offering.days, :start_time => @activity_offering.start_time,
+                     :st_time_ampm => @activity_offering.start_time_ampm)
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+               :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "MW", :start_time => "01:00", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do
+  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201301", :course => "HIST110")
+  @course_offering.edit :final_exam_activity => "Discussion"
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "MW", :start_time => "12:00", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 1", :start_time => "04:00", :st_time_ampm => "pm",
+              :end_time => "05:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^there is an Activity Offering that has RSI data but has no ASI data$/ do
+  @activity_offering =  make ActivityOfferingObject, :code => "F", :parent_course_offering => @course_offering
+end
+
+Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM395"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+end
+
+Then /^the Requested Scheduling Information for the Exam Offering of the AO should be populated$/ do
+  on ViewExamOfferings do |page|
+    page.get_eo_by_ao_days_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/i
+    page.get_eo_by_ao_st_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)}/i
+    page.get_eo_by_ao_end_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)}/i
+  end
+end
+
+Then /^the Requested Scheduling Information for the Exam Offering of the AO should not be populated$/ do
+  on ViewExamOfferings do |page|
+    page.get_eo_by_ao_days_text(@activity_offering.code).should == ""
+    page.get_eo_by_ao_st_time_text(@activity_offering.code).should == ""
+    page.get_eo_by_ao_end_time_text(@activity_offering.code).should == ""
+  end
+end
+
+Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL313"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "03:30", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "10:30", :st_time_ampm => "am",
+              :end_time => "12:30", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+end
+
+Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL611"
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+end
+
+Given /^I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "H", :start_time => "04:00", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "05:00", :st_time_ampm => "pm",
+              :end_time => "05:50", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+
+  @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
+                            :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
 end

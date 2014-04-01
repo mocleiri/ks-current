@@ -10,27 +10,27 @@ Feature: CO.Edit AO scheduling information as DSC
   #CO 20.2 (KSENROLL-10318)
   Scenario: Add standard RSIs for an AO with non-standard time slots not approved
     When I edit an Activity Offering with non-standard time slots not approved
-    And I add standard RSIs for an AO as a DSC
+    And I add standard RSIs for an AO
     Then the AO's scheduling information shows the new schedule
 
   #CO 20.2 (KSENROLL-10318)
   @bug @KSENROLL-11322
   Scenario: Add non-standard RSIs for an AO with non-standard time slots not approved
     When I edit an Activity Offering with non-standard time slots not approved
-    And I attempt to add non-standard RSIs for an AO as a DSC
+    And I attempt to add non-standard RSIs for an AO
     Then there is a validation error on the EndTime field
 
   #CO 20.2 (KSENROLL-10318)
   @bug @KSENROLL-11526
   Scenario: Add non-standard RSIs for an AO with non-standard time slots approved
     When I edit an Activity Offering with non-standard time slots approved
-    And I add non-standard RSIs for an AO as a DSC
+    And I add non-standard RSIs for an AO
     Then the AO's scheduling information shows the new schedule
 
   #CO 20.2 (KSENROLL-10318)
   Scenario: Add standard RSIs for an AO with non-standard time slots approved
     When I edit an Activity Offering with non-standard time slots approved
-    And I add standard RSIs for an AO as a DSC
+    And I add standard RSIs for an AO
     Then the AO's scheduling information shows the new schedule
 
   #CO 20.6 (KSENROLL-10317)

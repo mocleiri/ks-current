@@ -108,6 +108,7 @@ Feature: CO.Cancel Suspend Reinstate AOs
   Scenario: CO 23.3A.5 CSR Reinstate an AO with ASIs in locked SOC state
     Given a new academic term has an activity offering in approved status
     And I add requested scheduling information to the activity offering
+    And I submit the AO changes
     And I advance the SOC state from open to scheduler complete state
     And I suspend the activity offering
     When I reinstate the activity offering

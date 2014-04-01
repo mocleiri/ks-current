@@ -1,19 +1,19 @@
 Given /^I am editing the information attributes for an activity offering$/ do
-  @activity_offering.edit :max_enrollment => 50
+  @activity_offering.edit :max_enrollment => 50, :defer_save => true
 end
 
 When /^I edit an activity offering code/ do
   @orig_code = @activity_offering.code
-  @activity_offering.edit :code => @activity_offering.code + @activity_offering.code
+  @activity_offering.edit :code => @activity_offering.code + @activity_offering.code, :defer_save => true
 end
 
 When /^I revert the change to the activity code/ do
-  @activity_offering.edit :code => @orig_code, :edit_already_started => true
+  @activity_offering.edit :code => @orig_code, :edit_already_started => true, :defer_save => true
 end
 
 Then /^the activity offering code change is persisted/ do
   @course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.activity_code.value.should ==  @activity_offering.code.to_s
   end
@@ -35,7 +35,7 @@ end
 
 Then /^the changes of Activity Offering attributes are persisted$/ do
   @course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.total_maximum_enrollment.value.should == @activity_offering.max_enrollment.to_s
   end
@@ -43,7 +43,7 @@ end
 
 Then /^the changes of information attributes (are|are not) persisted$/ do |are_are_not|
   @course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     if are_are_not == "are"
       page.total_maximum_enrollment.value.should == @activity_offering.max_enrollment.to_s
@@ -130,13 +130,15 @@ When /^I jump to an arbitrary AO but cancel the change$/ do
 
 end
 When /^I change Personnel attributes$/ do
-  person = make Personnel, :id => "admin", :name => "admin, admin", :affiliation => "Instructor", :inst_effort => 30
-  @activity_offering.edit :personnel_list => [person]
+  #TODO: this is the same as add, should edit existing personnel
+  @activity_offering.edit :defer_save => true
+  person = make PersonnelObject, :id => "admin", :name => "admin, admin", :affiliation => "Instructor", :inst_effort => 30
+  @activity_offering.add_personnel person
 end
 
 Then /^the changes of the Personnel attributes are persisted$/ do
   @course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   personnel = @activity_offering.personnel_list[0]
   personnel.should_not == nil
   on ActivityOfferingMaintenance do |page|
@@ -148,26 +150,26 @@ end
 
 Then /^the deleted Personnel line should not be present$/ do
   @course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.target_person_row(@person.id).nil?.should be_true
   end
 end
 
 When /^I add Personnel attributes$/ do
-  @activity_offering.edit
-  person = make Personnel, :id => "S.DAVIDB", :name => "SMITH, DAVID", :affiliation => "Instructor", :inst_effort => 30
+  @activity_offering.edit :defer_save => true
+  person = make PersonnelObject, :id => "S.DAVIDB", :name => "SMITH, DAVID", :affiliation => "Instructor", :inst_effort => 30
   @activity_offering.add_personnel person
 end
 
 When(/^I delete Personnel attributes$/) do
-  @activity_offering.edit
-  @person = make Personnel, :id => "O.JEFFREYF" #in reference data
+  @activity_offering.edit :defer_save => true
+  @person = make PersonnelObject, :id => "O.JEFFREYF" #in reference data
   @activity_offering.delete_personnel @person
 end
 
 When /^I change Miscellaneous Activity Offering attributes$/ do
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
 
   on ActivityOfferingMaintenance do |page|
     page.requires_evaluation.set?.should be_false
@@ -178,12 +180,13 @@ When /^I change Miscellaneous Activity Offering attributes$/ do
   @activity_offering.edit :edit_already_started => true,
                           :requires_evaluation => true,
                           :honors_course => true,
-                          :course_url => "www.kuali.org"
+                          :course_url => "www.kuali.org",
+                          :defer_save => true
 end
 
 Then /^the miscellaneous changes are persisted$/ do
   @course_offering.manage
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.requires_evaluation.set?.should ==  @activity_offering.requires_evaluation
     page.honors_flag.set?.should == @activity_offering.honors_course
@@ -197,36 +200,35 @@ Given /^I manage a given Course Offering$/ do
 end
 
 Given /^I edit an Activity Offering$/ do
-  @activity_offering = make ActivityOffering, :parent_offering => @course_offering, :code => 'B'
+  @activity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => 'B'
 end
 
 Given /^I edit an Activity Offering that has available subterms$/ do
   @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :course=>"ENGL222", :term=>"201208")
-  @activity_offering =  make ActivityOffering, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @course_offering.manage
-  @course_offering.edit_ao :ao_code=> @activity_offering.code
+  @activity_offering.edit :defer_save => true
 
-  @subterm_list = Array.new(2)
-  @subterm_list[0] = make AcademicTerm, :term_year => "2012", :start_date => "08/29/2012", :end_date => "10/21/2012",
-                          :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
-  @subterm_list[1] = make AcademicTerm, :term_year => "2012", :start_date => "10/22/2012", :end_date => "12/11/2012",
-                          :term_type=> "Half Fall 2", :parent_term=> "Fall Term", :subterm => true
+  @calendar = make AcademicCalendar, :year => "2012"
+  @calendar.terms << (make AcademicTermObject, :parent_calendar => @calendar)
+
+  @calendar.terms[0].subterms << (make AcademicTermObject, :parent_calendar => @calendar, :start_date => "08/29/2012",
+                          :end_date => "10/21/2012", :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true)
+  @calendar.terms[0].subterms << (make AcademicTermObject, :parent_calendar => @calendar, :start_date => "10/22/2012",
+                          :end_date => "12/11/2012", :term_type=> "Half Fall 2", :parent_term=> "Fall Term", :subterm => true)
 
 end
 
 Then /^I set a subterm for the activity offering$/ do
-  @activity_offering.edit :edit_already_started => true, :subterm => @subterm_list[0].subterm_type
-  @activity_offering.save
+  @activity_offering.edit :edit_already_started => true, :subterm => @calendar.terms[0].subterms[0].subterm_type
 end
 
 Then /^I update the subterm for the activity offering$/ do
-  @activity_offering.edit :subterm => @subterm_list[1].subterm_type
-  @activity_offering.save
+  @activity_offering.edit :subterm => @calendar.terms[0].subterms[1].subterm_type
 end
 
 Then /^I remove the subterm for the activity offering$/ do
   @activity_offering.edit :subterm => "None"
-  @activity_offering.save
 end
 
 Then /^the AO subterm change is successful$/ do
@@ -241,7 +243,7 @@ Then /^the AO subterm change is successful$/ do
     page.close
   end
 
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
       page.subterm.should == @activity_offering.subterm
       page.cancel
@@ -260,7 +262,7 @@ Then /^the AO subterm is successfully removed$/ do
     page.close
   end
 
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == "None"
     page.cancel
@@ -268,7 +270,7 @@ Then /^the AO subterm is successfully removed$/ do
 end
 
 Then /^I copy the activity offering$/ do
-  @activity_offering_copy = create ActivityOffering, :create_by_copy => true,
+  @activity_offering_copy = create ActivityOfferingObject, :create_by_copy => true,
                                                 :code => @activity_offering.code,
                                                 :parent_course_offering => @activity_offering.parent_course_offering
 end
@@ -289,7 +291,7 @@ Then /^the AO subterm indicator is successfully copied$/ do
     page.close
   end
 
-  @activity_offering_copy.edit
+  @activity_offering_copy.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == @activity_offering.subterm
     page.cancel
@@ -308,7 +310,7 @@ Then /^the AO subterm indicator is successfully copied with the parent CO$/ do
     page.close
   end
 
-  @activity_offering.edit
+  @activity_offering.edit :defer_save => true
   on ActivityOfferingMaintenance do |page|
     page.subterm.should == @activity_offering.subterm
     page.cancel

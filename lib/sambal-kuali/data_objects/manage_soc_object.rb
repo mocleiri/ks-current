@@ -159,9 +159,9 @@ class ManageSoc
     on StatusViewPage do |page|
       raise "expected SOC state 'Locked', was #{page.soc_state}" unless page.soc_state == 'Locked'
       raise "expected SOC scheduling state 'Completed', was #{page.soc_scheduling_state}" unless page.soc_scheduling_state == 'Completed'
-      raise "expected CO state 'Planned', was #{page.co_state}" unless (page.co_state =~ /Planned$/) != nil
+      raise "expected CO state 'Offered', was #{page.co_state}" unless (page.co_state =~ /Offered/) != nil
       page.approved_aos.each do |row|
-        raise "expected FO state 'Planned', was #{page.fo_state(row)}" unless page.fo_state(row) == 'Planned'
+        raise "expected FO state 'Offered', was #{page.fo_state(row)}" unless page.fo_state(row) == 'Offered'
       end
     end
   end

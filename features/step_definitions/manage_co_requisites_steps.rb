@@ -22,8 +22,8 @@ When /^I add a new course offering rule to a course$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "PHYS272")
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
-      aos = make ActivityOffering, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
+      aos.edit :send_to_scheduler => true
     end
   end
   @courseOR = make CORequisitesData
@@ -155,8 +155,8 @@ When /^I add a new course offering requisite to a course$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "PHYS272")
   on ManageCourseOfferings do |page|
     page.codes_list.each do |code|
-      aos = make ActivityOffering, :code => code, :parent_course_offering => @course_offering
-      aos.edit :send_to_scheduler => true, :defer_save => false
+      aos = make ActivityOfferingObject, :code => code, :parent_course_offering => @course_offering
+      aos.edit :send_to_scheduler => true
     end
   end
   @courseOR = make CORequisitesData

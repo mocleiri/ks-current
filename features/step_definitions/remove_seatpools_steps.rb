@@ -1,14 +1,14 @@
 When /^I remove the seat pool with priority 1$/ do
-  @activity_offering.edit_seatpool :seatpool_key => 1, :remove => true
-  @activity_offering.edit_seatpool :seatpool_key => 2, :priority_after_reseq => 1
-  @activity_offering.edit_seatpool :seatpool_key => 3, :priority_after_reseq => 2
+  @activity_offering.seat_pool_list[1].priority_after_reseq = 1
+  @activity_offering.seat_pool_list[2].priority_after_reseq = 2
+  @activity_offering.seat_pool_list[0].delete
 end
 
 
 When /^I remove all seat pools$/ do
-  @activity_offering.edit_seatpool :seatpool_key => 1, :remove => true
-  @activity_offering.edit_seatpool :seatpool_key => 2, :remove => true
-  @activity_offering.edit_seatpool :seatpool_key => 3, :remove => true
+  @activity_offering.seat_pool_list[2].delete
+  @activity_offering.seat_pool_list[1].delete
+  @activity_offering.seat_pool_list[0].delete
 end
 
 When /^the seat pool priorities are re-sequenced$/ do

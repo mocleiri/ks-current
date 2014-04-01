@@ -19,6 +19,7 @@ class CourseOfferingCreateEdit < BasePage
   action(:edit_previous_co) { |b| b.edit_previous_co_link.click; b.loading.wait_while_present }
   element(:edit_next_co_link) { |b| b.frm.link(id: "edit_co_next") }
   action(:edit_next_co) { |b| b.edit_next_co_link.click; b.loading.wait_while_present }
+  action(:edit_arbitrary_co){ |b| b.edit_relatedCos_dropdown_list.options[10].select; b.loading.wait_while_present }
   element(:navigation_confirmation_dialog) { |b| b.div(class: "fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened").div(id: "CourseOfferingEdit-NavigationConfirmation") }
 
   element(:nav_save_and_continue_element) { |b| b.navigation_confirmation_dialog.button(id: "edit_co_save_and_continue") }
@@ -81,6 +82,9 @@ class CourseOfferingCreateEdit < BasePage
 
   element(:final_exam_driver_element) { |b| b.frm.select(id: "KS-CourseOfferingEdit-FinalExamDriver_control") }
   action(:final_exam_driver_select) { |driver,b| b.final_exam_driver_element.select driver; b.loading.wait_while_present }
+
+  element(:final_exam_activity_element) { |b| b.frm.select(id: "edit_co_final_exam_type_line0_control")}
+  action(:final_exam_activity_select) { |activity,b| b.final_exam_activity_element.select activity; b.loading.wait_while_present }
 
   element(:use_exam_matrix_div) { |b| b.frm.div(id: "finalExamMatrix")}
   element(:use_exam_matrix_checkbox) { |b| b.use_exam_matrix_div.checkbox}

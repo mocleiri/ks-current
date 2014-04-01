@@ -5,7 +5,7 @@ Feature: CO.FE7-2 Exclude Non-Active Days for Scheduling of Exam Period
 
   Background:
     Given I am logged in as admin
-    And I create an Academic Calendar and add an official term
+    And I create an Academic Calendar and add an official term with no exam period
 
   #FE7.2.EB1 (KSENROLL-9792)
   Scenario: Test whether the exclude non-active day toggles are selected by default

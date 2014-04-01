@@ -18,6 +18,8 @@ class BasePage < PageFactory
       element(:growl_div) { |b| b.frm.div(id: "jGrowl") }
       element(:growl_message_div) { |b| b.growl_div.div(class: "jGrowl-message") }
       value(:growl_text) { |b| b.growl_message_div.wait_until_present; b.growl_message_div.text }
+      element(:growl_message_warning_div) { |b| b.growl_div.div(class: /WARNING/).div(class: "jGrowl-message") }
+      value(:growl_warning_text) { |b| b.growl_message_warning_div.wait_until_present; b.growl_message_warning_div.text }
     end
 
     def frame_element

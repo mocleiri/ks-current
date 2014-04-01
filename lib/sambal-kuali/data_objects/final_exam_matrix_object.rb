@@ -157,7 +157,7 @@ class ExamMatrixRuleObject
     options = defaults.merge(opts)
 
     @parent_exam_matrix.manage unless options[:navigate_to_page] == false
-    on(FEMatrixView).edit rule_requirements, @exam_type
+    on(FEMatrixView).edit self, @exam_type
 
     on FEMatrixEdit do |page|
       if options[:rsi_days] != nil
@@ -219,7 +219,7 @@ class ExamMatrixRuleObject
     @parent_exam_matrix.manage
 
     on FEMatrixView do |page|
-      page.delete rule_requirements, @exam_type
+      page.delete self, @exam_type
     end
 
     unless options[:defer_submit]
@@ -257,8 +257,8 @@ class ExamMatrixStatementObject
   include Workflows
 
   attr_accessor :parent_rule, :courses, :days, :start_time, :st_time_ampm,
-                :end_time, :end_time_ampm, :free_text, :courses, :courses_type,
-                :statement_operator, :statement_option
+                :free_text, :courses, :courses_type,
+                :statement_operator, :statement_option, :rsi_days
 
   TIME_SLOT_OPTION = 'If Course meets on <timeslot>'
   FREE_TEXT_OPTION = 'Free Form Text'
@@ -276,8 +276,6 @@ class ExamMatrixStatementObject
         :days => "MWF",
         :start_time => "01:00",
         :st_time_ampm => "pm",
-        :end_time => "03:00",
-        :end_time_ampm => "pm",
         :free_text => "Free Form Text",
         :courses => "ENGL101",
         :rsi_days => "Day 1",
@@ -323,7 +321,7 @@ class ExamMatrixStatementObject
 
     if options[:navigate_to_page]
       parent_matrix.manage
-      on(FEMatrixView).edit @parent_rule.rule_requirements, @parent_rule.exam_type
+      on(FEMatrixView).edit @parent_rule, @parent_rule.exam_type
     end
 
     on FEMatrixEdit do |page|
@@ -339,8 +337,6 @@ class ExamMatrixStatementObject
           page.rule_days.set options[:days] unless options[:days].nil?
           page.rule_starttime.set options[:start_time] unless options[:start_time].nil?
           page.rule_starttime_ampm.select options[:st_time_ampm] unless options[:st_time_ampm].nil?
-          page.rule_endtime.set options[:end_time] unless options[:end_time].nil?
-          page.rule_endtime_ampm.select options[:end_time_ampm] unless options[:end_time_ampm].nil?
         when COURSE_OPTION
           page.proposition_section.a( text: /Advanced Search/).click
           page.lookup_course_code.when_present.set options[:courses]
@@ -387,7 +383,7 @@ class ExamMatrixStatementObject
   def stmt_str
     case @statement_option
       when TIME_SLOT_OPTION
-        return "#{@days} at #{@start_time} #{@st_time_ampm.upcase} - #{@end_time} #{@end_time_ampm.upcase}"
+        return "#{@days} at #{@start_time} #{@st_time_ampm.upcase}"
       when COURSE_OPTION
         return "#{@courses}"
       when COURSE_PART_OF_OPTION
@@ -452,8 +448,6 @@ class ExamMatrixStatementObject
       page.rule_days.set @days
       page.rule_starttime.set @start_time
       page.rule_starttime_ampm.select @st_time_ampm
-      page.rule_endtime.set @end_time
-      page.rule_endtime_ampm.select @end_time_ampm
     end
   end
 

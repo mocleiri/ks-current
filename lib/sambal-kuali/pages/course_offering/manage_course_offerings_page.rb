@@ -10,6 +10,7 @@ class ManageCourseOfferings < BasePage
 
   element(:previous_course_link){ |b| b.frm.link(id: "LoadPrev") }
   element(:list_all_course_link){ |b| b.frm.link(id: "ListAll") }
+  action(:list_all_courses){ |b| b.list_all_course_link.click; b.loading.wait_while_present(200) }
   element(:next_course_link){ |b| b.frm.link(id: "LoadNext") }
 
   element(:term) { |b| b.frm.text_field(name: "termCode") }
@@ -32,11 +33,11 @@ class ManageCourseOfferings < BasePage
   action(:manage_course_offering_requisites) { |b| b.manage_course_offering_requisites_link.click; b.loading.wait_while_present(200) }
   element(:view_all_reg_groups_link) { |b| b.manage_offering_links_div.link(text: /View All Registration Groups/) }
   action(:view_all_reg_groups) { |b| b.view_all_reg_groups_link.click; b.loading.wait_while_present }
-  element(:view_exam_offerings_link) { |b| b.manage_offering_links_div.link(:text => /View Exam Offerings/) }
+  element(:view_exam_offerings_link) { |b| b.manage_offering_links_div.link(:text => /Manage Exam Offerings/) }
   action(:view_exam_offerings) { |b| b.view_exam_offerings_link.click; b.loading.wait_while_present }
 
-  element(:cross_listed_message_div) { |b| b.frm.div(id: "KS-CourseOfferingManagement-AliasMessage") }
-  value(:cross_listed_message) { |b| b.cross_listed_message_div.span.text }
+  element(:cross_listed_message_span) { |b| b.frm.span(id: "KS-CourseOfferingManagement-AliasMessage_span") }
+  value(:cross_listed_message) { |b| b.cross_listed_message_span.text }
 
   #NB - CO Toolbar is not on this page - this one element is listed here to allow nagivation to single CO when a CO List is
   # not expected (ie search for ENGL206, returns ENGL206 and ENG206A)
@@ -263,8 +264,6 @@ class ManageCourseOfferings < BasePage
     codes
   end
 
-  ########################## cluster tab
-
   element(:cluster_list_div)  { |b| b.frm.div(id: "KS-CourseOfferingManagement-AOClustersCollection").div(class: "uif-stackedCollectionLayout") }
   element(:cluster_warning_list)  { |b| b.frm.ul(id: "pageValidationList") }
 
@@ -275,6 +274,14 @@ class ManageCourseOfferings < BasePage
     end
     #puts "div list #{div_list.length}"
     div_list
+  end
+
+  def cluster_private_names_list
+    cluster_names = []
+    cluster_div_list.each do |div|
+      cluster_names << cluster_div_private_name(div)
+    end
+    cluster_names
   end
 
   def target_cluster(private_name)

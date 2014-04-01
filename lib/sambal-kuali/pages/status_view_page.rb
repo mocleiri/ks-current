@@ -20,7 +20,7 @@ class StatusViewPage < BasePage
   end
 
   def approved_aos()
-    target_rows(ActivityOffering::APPROVED_STATUS)
+    target_rows(ActivityOfferingObject::APPROVED_STATUS)
   end
 
   def ao_state(row)

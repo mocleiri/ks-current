@@ -454,7 +454,7 @@ When /^I add Scheduling Information to a large activity offering and save$/ do
     page.add_start_time.click
     page.add_start_time.set "10:00 AM"
     page.add_start_time.fire_event "onblur"
-    page.add_end_time.click
+    #page.add_end_time.click
     page.loading.wait_while_present
     page.add_end_time.set "11:00 AM"
     page.add_facility.click
@@ -513,7 +513,7 @@ When /^I add Scheduling Information to a small activity offering and save$/ do
     page.add_start_time.click
     page.add_start_time.set "10:00 AM"
     page.add_start_time.fire_event "onblur"
-    page.add_end_time.click
+    #page.add_end_time.click
     page.loading.wait_while_present
     page.add_end_time.set "11:00 AM"
     page.add_facility.click
@@ -715,8 +715,13 @@ end
 
 When /^when I edit the matrix$/ do
   on FEMatrixView do |page|
+    statement = []
+    statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "11:00", :st_time_ampm => "am")
+    rule = make ExamMatrixRuleObject, :rsi_days => "Day 1", :start_time => "08:00", :st_time_ampm => "am",
+                :end_time => "10:00", :end_time_ampm => "am", :statements => statement
+    @matrix.rules << rule
     @performance_test.start
-    page.edit "TH at 11:00 AM - 12:15 PM.", "Standard"
+    page.edit rule, "Standard"
     @performance_test.end
   end
 end
@@ -726,13 +731,17 @@ When /^when I add a standard rule$/ do
     page.add_statement
     page.rule_dropdown.select "If Course meets on <timeslot>"
 
-    page.rule_days.set @matrix.days
-    page.rule_starttime.set @matrix.start_time
-    page.rule_starttime_ampm.select @matrix.time_ampm
-    page.rule_endtime.set @matrix.end_time
-    page.rule_endtime_ampm.select @matrix.time_ampm
+    page.rule_days.set @matrix.rules[0].statements[0].days
+    page.rule_starttime.set @matrix.rules[0].statements[0].start_time
+    page.rule_starttime_ampm.select @matrix.rules[0].statements[0].st_time_ampm
     page.preview_change
     page.loading.wait_while_present
+
+    page.rsi_days.select @matrix.rules[0].rsi_days
+    page.rsi_starttime.set @matrix.rules[0].start_time
+    page.rsi_starttime_ampm.select @matrix.rules[0].st_time_ampm
+    page.rsi_endtime.set @matrix.rules[0].end_time
+    page.rsi_endtime_ampm.select @matrix.rules[0].end_time_ampm
 
 
     @performance_test.start

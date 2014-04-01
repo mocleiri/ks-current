@@ -5,17 +5,17 @@ end
 Given /^I have created an additional activity offering cluster for a catalog course offering$/ do
   @course_offering = make CourseOffering, :term=>Rollover::MAIN_TEST_TERM_TARGET, :course=>"CHEM277"
   @course_offering.manage_and_init
-  ao_cluster = make ActivityOfferingCluster
+  ao_cluster = make ActivityOfferingClusterObject
   @course_offering.add_ao_cluster(ao_cluster)
 end
 
 When /^I create a(?:n| new) activity offering cluster$/ do
-  @ao_cluster = make ActivityOfferingCluster
+  @ao_cluster = make ActivityOfferingClusterObject
   @course_offering.add_ao_cluster(@ao_cluster)
 end
 
 When /^I create a Discussion Lecture activity offering cluster$/ do
-  @ao_cluster = make ActivityOfferingCluster, :format => "Discussion/Lecture"
+  @ao_cluster = make ActivityOfferingClusterObject, :format => "Discussion/Lecture"
   @course_offering.add_ao_cluster(@ao_cluster)
 end
 
@@ -40,7 +40,7 @@ Given /^I have created an additional activity offering cluster for a course offe
   @course_offering.manage_and_init
   existing_cluster = @course_offering.activity_offering_cluster_list[0]
   new_ao = @course_offering.copy_ao :ao_code =>  existing_cluster.ao_list[0].code
-  new_cluster = make ActivityOfferingCluster
+  new_cluster = make ActivityOfferingClusterObject
   @course_offering.add_ao_cluster(new_cluster)
   existing_cluster.move_ao_to_another_cluster(new_ao.code, new_cluster)
 
@@ -53,11 +53,11 @@ end
 
 
 When /^I try to create a second activity offering cluster with the same private name$/ do
-  @ao_cluster2 = create ActivityOfferingCluster, :private_name=>@ao_cluster.private_name
+  @ao_cluster2 = create ActivityOfferingClusterObject, :private_name=>@ao_cluster.private_name
 end
 
 When /^I try to create a second activity offering cluster with a different private name$/ do
-  @ao_cluster2 = create ActivityOfferingCluster
+  @ao_cluster2 = create ActivityOfferingClusterObject
 end
 
 Then /^a cluster error message appears stating "(.*?)"$/ do |expected_errMsg|
@@ -116,19 +116,17 @@ Given /^I manage registration groups for a new course offering$/ do
   @course_offering.manage_and_init
 end
 
-Then /^the Activity Offerings are present in the cluster table$/ do
+Then /^the Activity Offerings are present in the activity offering cluster$/ do
   @course_offering.activity_offering_cluster_list[0].ao_list.count.should > 0
 end
 
 When /^the corresponding number of registration groups for each cluster is correct$/ do
   on ManageCourseOfferings do |page|
     @course_offering.activity_offering_cluster_list.each do |cluster|
-
       if page.view_reg_groups_table(cluster.private_name).present? == false
         page.view_cluster_reg_groups(cluster.private_name)
       end
       page.get_cluster_reg_groups_list(cluster.private_name).length.should == cluster.ao_list.count{|x| x.activity_type == "Discussion"} * cluster.ao_list.count{|x| x.activity_type == "Lecture"}
-
     end
   end
 end
@@ -149,18 +147,12 @@ When /^I copy an Activity Offering$/ do
 end
 
 When /^I add an Activity Offering$/ do
-  @course_offering.create_ao :ao_obj => (make ActivityOffering, :format => "Lecture/Discussion")
+  @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion")
 end
 
 When /^I update an Activity Offering to have less seats$/ do
-  @course_offering.edit_ao :ao_code=>"A"
-  @course_offering.get_ao_list.each do |ao|
-    if ao.code == "A"
-      ao.edit :max_enrollment => 200, :edit_already_started=>true
-      ao.save
-    end
-  end
-
+  actvity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => 'A'
+  actvity_offering.edit :max_enrollment => 200
 end
 
 Then /^a warning message is displayed stating "([^"]*)"$/ do |msg|
@@ -170,15 +162,9 @@ Then /^a warning message is displayed stating "([^"]*)"$/ do |msg|
 end
 
 When /^I update an Activity Offering to create a time conflict$/ do
-  @course_offering.edit_ao :ao_code=>"B"
-
-  @course_offering.get_ao_list.each do |ao|
-    if ao.code == "B"
-      ao.edit :requested_scheduling_information_list => {"default"=> (make SchedulingInformation, :days=>"M")}, :edit_already_started=>true
-      ao.save
-    end
-  end
-end
+  actvity_offering = make ActivityOfferingObject, :parent_course_offering => @course_offering, :code => 'B'
+  actvity_offering.edit :rsi_obj => (make SchedulingInformationObject, :days=>"M")
+ end
 
 When /^I edit the Activity Offering$/ do
   @course_offering.edit_ao :ao_code =>"A"

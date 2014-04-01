@@ -15,8 +15,15 @@ World Workflows
 client = Selenium::WebDriver::Remote::Http::Default.new
 #client.timeout = 15 # seconds default is 60
 
+Selenium::WebDriver::Firefox.path = ENV['FIREFOX_PATH'] unless ENV['FIREFOX_PATH'].nil?
+
 browser = nil
 headless = nil
+
+#Profile Proxy Configuration
+#profile = Selenium::WebDriver::Firefox::Profile.new
+#profile.proxy = Selenium::WebDriver::Proxy.new :http => 'localhost:8001'
+#, :profile => profile
 
 if ENV['HEADLESS']
   require 'headless'

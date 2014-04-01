@@ -1,11 +1,9 @@
 When /^I create an Academic Calendar$/ do
-  @calendar = make AcademicCalendar
-  @calendar.create
+  @calendar = create AcademicCalendar
 end
 
 When /^I create an Academic Calendar in Official status$/ do
-  @calendar = make AcademicCalendar
-  @calendar.create
+  @calendar = create AcademicCalendar
   @calendar.make_official
 end
 
@@ -30,7 +28,7 @@ When /^I search for holiday calendars$/ do
 end
 
 When /^I search for academic terms$/ do
-  @term = make AcademicTerm, :term_name => "Term", :term_year => ""
+  @term = make AcademicTermObject, :term_name => "Term", :parent_calendar => (make AcademicCalendar, :year => "")
   @term.search
 end
 
@@ -94,27 +92,22 @@ When /^I update the Academic Calendar$/ do
 end
 
 When /^I edit the term and make it official$/ do
-  @calendar.search
-  on CalendarSearch do |page|
-    page.edit @calendar.name
-  end
-  on EditAcademicTerms do |page|
-    page.go_to_terms_tab
-    @term.make_official
-    page.save
-  end
+  @calendar.terms[0].make_official
+  on(EditAcademicTerms).save
 end
 
 When /^I delete the Academic Calendar draft$/ do
-  @calendar.edit
-  on EditAcademicCalendar do |page|
-    page.delete_draft
-    page.confirm_delete
-  end
+  @calendar.delete_draft
+end
+
+When /^I delete the parent Academic Calendar draft$/ do
+  @deleted_subterm = @calendar.terms[0].subterms[0]
+  @calendar.delete_draft
 end
 
 When /^I delete the parent term of a subterm$/ do
-  @calendar.delete_term(@term)
+  @deleted_subterm = @calendar.terms[0].subterms[0]
+  @calendar.terms[0].delete
 end
 
 Then /^the academic calendar should reflect the updates$/ do
@@ -127,7 +120,7 @@ Then /^the academic calendar should reflect the updates$/ do
 end
 
 And /^I make the term official$/ do
-  @term.make_official
+  @calendar.terms[0].make_official
 end
 
 Then /^I should be able to view the calendars$/ do
@@ -199,39 +192,38 @@ And /^I should not be able to edit a term$/ do
 end
 
 When /^I add a new term to the Academic Calendar$/ do
-  @term = make AcademicTerm, :term => 'Fall', :term_year => @calendar.year
-  @calendar.add_term(@term)
-  @manage_soc = make ManageSoc, :term_code => @term.term_code
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => 'Fall'
+  @calendar.add_term term
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
 end
 
 When /^I add a new term to the Academic Calendar with a defined instructional period$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year
-  @calendar.add_term @term
-  @term.expected_instructional_days = @term.weekdays_in_term
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
+  @calendar.terms[0].expected_instructional_days = @calendar.terms[0].weekdays_in_term
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup,
-                    :key_date_type => "Instructional Period",
-                    :start_date => @term.start_date,
-                    :end_date => @term.end_date
-  @keydategroup.key_dates <<  @keydate
-  @keydategroup.create
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type=> "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
+                    :key_date_type => "Instructional Period", :start_date => @calendar.terms[0].start_date,
+                    :end_date => @calendar.terms[0].end_date
+  keydategroup.key_dates << keydate
+  @calendar.terms[0].add_key_date_group keydategroup
 end
 
 When /^I add a new subterm to the Academic Calendar with a defined instructional period$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
-  @calendar.add_term(@term)
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term_type=> "Half Fall 1",
+               :parent_term=> "Fall Term", :subterm => true
+  @calendar.add_term term
 
-  @term.expected_instructional_days = @term.weekdays_in_term
+  @calendar.terms[0].expected_instructional_days = @calendar.terms[0].weekdays_in_term
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  key_date = make KeyDate, :parent_key_date_group => @keydategroup,
-                  :key_date_type => "Instructional Period",
-                  :start_date => @term.start_date,
-                  :end_date => @term.end_date
-  @keydategroup.key_dates = [ key_date ]
-  @keydategroup.create
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type=> "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
+                  :key_date_type => "Instructional Period", :start_date => @calendar.terms[0].start_date,
+                  :end_date => @calendar.terms[0].end_date
+  keydategroup.key_dates << keydate
+  @calendar.terms[0].add_key_date_group keydategroup
 end
 
 Then /^the term is listed when I view the Academic Calendar$/ do
@@ -243,16 +235,16 @@ Then /^the term is listed when I view the Academic Calendar$/ do
 
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.term_name(@term.term_type).should == @term.term_name
-    #page.term_code(@term.term_type)
-    page.term_start_date(@term.term_type).should == @term.start_date
-    page.term_end_date(@term.term_type).should == @term.end_date
-    page.term_status(@term.term_type).should == "DRAFT"
-    #puts page.term_instructional_days(@term.term_type)
-    #puts page.term_status(@term.term_type)
-    #puts page.key_date_start(@term.term_type,"instructional","Grades Due")
-    #puts page.key_date_start(@term.term_type,"registration","Last Day to Add Classes")
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.term_name(@calendar.terms[0].term_type).should == @calendar.terms[0].term_name
+    #page.term_code(@calendar.terms[0].term_type)
+    page.term_start_date(@calendar.terms[0].term_type).should == @calendar.terms[0].start_date
+    page.term_end_date(@calendar.terms[0].term_type).should == @calendar.terms[0].end_date
+    page.term_status(@calendar.terms[0].term_type).should == "DRAFT"
+    #puts page.term_instructional_days(@calendar.terms[0].term_type)
+    #puts page.term_status(@calendar.terms[0].term_type)
+    #puts page.key_date_start(@calendar.terms[0].term_type,"instructional","Grades Due")
+    #puts page.key_date_start(@calendar.terms[0].term_type,"registration","Last Day to Add Classes")
 
   end
 end
@@ -266,45 +258,48 @@ Then /^the updated term information is listed when I view the Academic Calendar$
 
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.term_name(@term.term_type).should == @term.term_name
-    #page.term_code(@term.term_type)
-    page.term_start_date(@term.term_type).should == @term.start_date
-    page.term_end_date(@term.term_type).should == @term.end_date
-    page.term_status(@term.term_type).should == "DRAFT"
-    #puts page.term_instructional_days(@term.term_type)
-    #puts page.term_status(@term.term_type)
-    #puts page.key_date_start(@term.term_type,"instructional","Grades Due")
-    #puts page.key_date_start(@term.term_type,"registration","Last Day to Add Classes")
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.term_name(@calendar.terms[0].term_type).should == @calendar.terms[0].term_name
+    #page.term_code(@calendar.terms[0].term_type)
+    page.term_start_date(@calendar.terms[0].term_type).should == @calendar.terms[0].start_date
+    page.term_end_date(@calendar.terms[0].term_type).should == @calendar.terms[0].end_date
+    page.term_status(@calendar.terms[0].term_type).should == "DRAFT"
+    #puts page.term_instructional_days(@calendar.terms[0].term_type)
+    #puts page.term_status(@calendar.terms[0].term_type)
+    #puts page.key_date_start(@calendar.terms[0].term_type,"instructional","Grades Due")
+    #puts page.key_date_start(@calendar.terms[0].term_type,"registration","Last Day to Add Classes")
 
   end
 end
 
 Given /^I copy an existing Academic Calendar$/ do
-  @source_calendar = make AcademicCalendar, :name => "2012-2013 Continuing Education Calendar"
+  @source_calendar = make AcademicCalendar, :year => '2012', :name => "2012-2013 Continuing Education Calendar"
   @calendar = make AcademicCalendar
   @calendar.copy_from @source_calendar.name
 end
 
 Given /^I create an Academic Calendar that supports subterms$/ do
   @calendar = create AcademicCalendar
-  @term = make AcademicTerm, :term_year => @calendar.year
-  @calendar.add_term(@term)
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
 end
 
 When /^I edit the information for a term$/ do
-#  @calendar.edit
-  @term.edit :term_name => "CE Term1",
-             :start_date => (Date.strptime( @term.start_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), #add 2 days
-             :end_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")     #add 2 days
+  @calendar.terms[0].edit :term_name => "CE Term1",
+             :start_date => (Date.strptime( @calendar.terms[0].start_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), #add 2 days
+             :end_date => (Date.strptime( @calendar.terms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")     #add 2 days
 end
 
 When /^I add events to the Academic Calendar$/ do
   @calendar.search
   on CalendarSearch do |page|
     page.edit @calendar.name
-    @event = create CalendarEvent, :acal_year =>  @calendar.year
-    @event1 = create CalendarEvent, :acal_year =>  @calendar.year , :event_type => "Homecoming Week"
+  end
+  events = []
+  events << (make CalendarEventObject, :parent_calendar => @calendar)
+  events << (make CalendarEventObject, :parent_calendar => @calendar, :event_type => "Homecoming Week")
+  events.each do |event|
+    @calendar.add_event event
   end
 end
 
@@ -312,17 +307,18 @@ When /^I update the event dates$/ do
   @calendar.search
   on CalendarSearch do |page|
     page.edit @calendar.name
-    @event.edit :start_date => "04/06/#{@event.acal_year.to_i + 1}", :end_date=>"05/29/#{@event.acal_year.to_i + 1}",
-                :start_time=>"11:11", :end_time=>"09:45"
   end
+  @calendar.events[0].edit :start_date => "04/06/#{@calendar.year.to_i + 1}", :end_date=>"05/29/#{@calendar.year.to_i + 1}",
+                  :start_time=>"11:11", :end_time=>"09:45"
 end
 
 When /^I remove the events from the Academic Calendar$/ do
   @calendar.search
   on CalendarSearch do |page|
     page.edit @calendar.name
-    @event.delete
   end
+  @event_to_delete = @calendar.events[0].event_type
+  @calendar.events[0].delete
 end
 
 When /^I add a Holiday Calendar to the Academic Calendar$/ do
@@ -357,12 +353,12 @@ Then /^the .*event.*s are listed when I view the Academic Calendar$/ do
   on ViewAcademicCalendar do |page|
     page.go_to_calendar_tab
     page.open_events_section
-    event_row = page.target_event_row_in_view(@event.event_type)
+    event_row = page.target_event_row_in_view(@calendar.events[0].event_type)
     if event_row == nil
       raise 'Created event not found in event table'
     else
-      start_date_time = @event.start_date + " " + @event.start_time + " " + @event.start_time_ampm.upcase
-      end_date_time = @event.end_date + " " + @event.end_time + " " + @event.end_time_ampm.upcase
+      start_date_time = @calendar.events[0].start_date + " " + @calendar.events[0].start_time + " " + @calendar.events[0].start_time_ampm.upcase
+      end_date_time = @calendar.events[0].end_date + " " + @calendar.events[0].end_time + " " + @calendar.events[0].end_time_ampm.upcase
       event_row.cells[ViewAcademicCalendar::VIEW_START_DATE_COL].text.should == start_date_time
       event_row.cells[ViewAcademicCalendar::VIEW_END_DATE_COL].text.should == end_date_time
     end
@@ -381,19 +377,20 @@ Then /^the event list is updated when I view the Academic Calendar$/ do
     page.go_to_calendar_tab
     page.open_events_section
     event_row = nil
-    event_row = page.target_event_row_in_view(@event.event_type)
+    event_row = page.target_event_row_in_view(@event_to_delete)
     event_row.should == nil
   end
 end
 
 When /^I delete the term$/ do
-  @calendar.delete_term(@term)
+  @term_to_delete = @calendar.terms[0]
+  @calendar.terms[0].delete
 end
 
 When /^the term is not listed when I view the Academic Calendar$/ do
   @calendar.view
   on ViewAcademicTerms do |page|
-    page.term_index_by_term_type(@term.term_type).should == -1 #means not present
+    page.term_index_by_term_type(@term_to_delete.term_type).should == -1 #means not present
   end
 end
 
@@ -401,7 +398,7 @@ Then /^the term is listed in official status when I view the Academic Calendar$/
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.term_status(@term.term_type).should == "OFFICIAL"
+    page.term_status(@calendar.terms[0].term_type).should == "OFFICIAL"
   end
 end
 
@@ -409,7 +406,7 @@ Then /^the subterm is listed in official status when I view the Academic Calenda
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.term_status(@subterm_list[0].term_type).should == "OFFICIAL"
+    page.term_status(@calendar.terms[0].subterms[0].term_type).should == "OFFICIAL"
   end
 end
 
@@ -419,58 +416,64 @@ Then /^I add a new term to the Academic Calendar with an instructional key date$
 end
 
 Then /^I add an instructional Key Date$/ do
-  @term.edit
+  @calendar.terms[0].edit
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
-  @keydategroup.key_dates << @keydate
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "Last Day of Classes", :start_date => "12/09/#{@term.term_year}", :end_date => ""
-  @keydategroup.key_dates << @keydate
-  @keydategroup.create
+  keydates = []
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type=> "Instructional"
+  keydates << (make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
+                  :key_date_type => "First Day of Classes", :start_date => "09/12/#{@calendar.year}", :end_date => "")
+  keydates << (make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
+                  :key_date_type => "Last Day of Classes", :start_date => "12/09/#{@calendar.year}", :end_date => "")
+  keydategroup.key_dates = keydates
+  @calendar.terms[0].add_key_date_group keydategroup
 end
 
 Then /^I add an instructional Key Date to a subterm$/ do
-  @subterm_list[0].edit
+  @calendar.terms[0].subterms[0].edit
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => "09/12/#{@term.term_year}", :end_date => ""
-  @keydategroup.key_dates << @keydate
-  @keydategroup.create
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0].subterms[0], :key_date_group_type=> "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0].subterms[0], :parent_key_date_group => keydategroup,
+                  :key_date_type => "First Day of Classes", :start_date => "09/12/#{@calendar.year}", :end_date => ""
+  keydategroup.key_dates << keydate
+  @calendar.terms[0].subterms[0].add_key_date_group keydategroup
 end
 
-
 Then /^I edit an instructional Key Date$/ do
-  @term.edit
-
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes"
-  @keydate.edit :start_date => "09/14/#{@term.term_year}"
+  @calendar.terms[0].edit
+  @calendar.terms[0].key_date_groups[0].key_dates[0].edit :start_date => "09/14/#{@calendar.year}"
 end
 
 Then /^I delete an instructional Key Date Group$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term => "Continuing Education Term 1"
-  @term.edit
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Continuing Education Term 1"
+  @calendar.terms << term
+  @calendar.terms[0].edit
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydategroup.delete
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type => "Instructional"
+  @calendar.terms[0].key_date_groups << keydategroup
+  @calendar.terms[0].key_date_groups[0].delete
 end
 
 
 Then /^I delete an instructional Key Date$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term => "Continuing Education Term 1"
-  @term.edit
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Continuing Education Term 1"
+  @calendar.terms << term
+  @calendar.terms[0].edit
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes"
-  @keydate.delete
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type => "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
+                  :key_date_type => "First Day of Classes"
+  keydategroup.key_dates << keydate
+  @calendar.terms[0].key_date_groups << keydategroup
+  @key_date_to_delete = @calendar.terms[0].key_date_groups[0].key_dates[0]
+  @calendar.terms[0].key_date_groups[0].key_dates[0].delete
 end
 
 Then /^the Key Date is listed with the academic term information$/ do
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.key_date_start(@term.term_type, "Instructional", @keydate.key_date_type ).should == @keydate.start_date
+    page.open_term_section @calendar.terms[0].term_type
+    page.key_date_start(@calendar.terms[0].term_type, "Instructional", @calendar.terms[0].key_date_groups[0].key_dates[0].key_date_type ).should == @calendar.terms[0].key_date_groups[0].key_dates[0].start_date
   end
 end
 
@@ -478,8 +481,8 @@ Then /^the updated Key Date is listed with the academic term information$/ do
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.key_date_start(@term.term_type, "Instructional", @keydate.key_date_type ).should == @keydate.start_date
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.key_date_start(@calendar.terms[0].term_type, "Instructional", @calendar.terms[0].key_date_groups[0].key_dates[0].key_date_type ).should == @calendar.terms[0].key_date_groups[0].key_dates[0].start_date
   end
 end
 
@@ -487,8 +490,8 @@ Then /^the Key Date is not listed with the academic term information$/ do
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.target_key_date_row(@term.term_type, "Instructional", @keydate.key_date_type).exists?.should == false
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.target_key_date_row(@calendar.terms[0].term_type, "Instructional", @key_date_to_delete.key_date_type).exists?.should == false
   end
 end
 
@@ -496,34 +499,29 @@ Then /^the Key Date Group is not listed with the academic term information$/ do
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.key_date_group_div(@term.term_type, "Instructional").nil?.should == true
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.key_date_group_div(@calendar.terms[0].term_type, "Instructional").nil?.should == true
   end
 end
 
 Then /^the Key Dates are copied without date values$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :term => "Continuing Education Term 1"
-  @term.edit
-
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes"
-
-  @keydategroup2 = make KeyDateGroup, :key_date_group_type=> "Registration", :term_type=> @term.term_type
-  @keydate2 = make KeyDate, :parent_key_date_group => @keydategroup2, :key_date_type => "Drop Date"
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Continuing Education Term 1"
+  @calendar.terms << term
+  @calendar.terms[0].edit
 
   on EditAcademicTerms do |page|
     page.go_to_terms_tab
-    page.key_date_exists?(@term.term_type, "Instructional", "First Day of Classes").should == true
+    page.key_date_exists?(@calendar.terms[0].term_type, "Instructional", "First Day of Classes").should == true
 
-    row = page.key_date_target_row(@term.term_type, "Instructional", "First Day of Classes")
+    row = page.key_date_target_row(@calendar.terms[0].term_type, "Instructional", "First Day of Classes")
     page.key_date_start_date(row).should == ""
     page.key_date_start_time(row).should == ""
     page.key_date_end_date(row).should == ""
     page.key_date_end_time(row).should == ""
 
-    page.key_date_exists?(@term.term_type, "Registration", "Drop Date").should == true
+    page.key_date_exists?(@calendar.terms[0].term_type, "Registration", "Drop Date").should == true
 
-    row = page.key_date_target_row(@term.term_type, "Registration", "Drop Date")
+    row = page.key_date_target_row(@calendar.terms[0].term_type, "Registration", "Drop Date")
     page.key_date_start_date(row).should == ""
     page.key_date_start_time(row).should == ""
     page.key_date_end_date(row).should == ""
@@ -536,13 +534,13 @@ Then /^the instructional days calculation is correct$/ do
   @calendar.view
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@term.term_type)
-    page.term_instructional_days(@term.term_type).to_i.should == @term.expected_instructional_days.to_i
+    page.open_term_section(@calendar.terms[0].term_type)
+    page.term_instructional_days(@calendar.terms[0].term_type).to_i.should == @calendar.terms[0].expected_instructional_days.to_i
   end
 end
 
 When /^I add a Holiday Calendar with holidays in the term$/ do
-  holiday_list =  Array.new(1){make Holiday, :type=>"Columbus Day", :start_date=>"09/05/#{@term.term_year}", :instructional=>false}
+  holiday_list =  Array.new(1){make Holiday, :type=>"Columbus Day", :start_date=>"09/05/#{@calendar.year}", :instructional=>false}
   @holiday_calendar = create HolidayCalendar, :year => @calendar.year,
                              :start_date => @calendar.start_date,
                              :end_date => @calendar.end_date,
@@ -550,14 +548,15 @@ When /^I add a Holiday Calendar with holidays in the term$/ do
   @holiday_calendar.make_official
 
   @calendar.add_holiday_calendar(@holiday_calendar)
-  @term.expected_instructional_days -= 1 # 1 holiday added
+  @calendar.terms[0].expected_instructional_days -= 1 # 1 holiday added
 
 end
 
 Given /^I add a subterm$/ do
-  @subterm_list = Array.new(2)
-  @subterm_list[0] = make AcademicTerm, :term_year => @calendar.year, :term_type=> "Half Fall 1", :parent_term=> "Fall Term", :subterm => true
-  @calendar.add_term(@subterm_list[0])
+  terms = []
+  terms << (make AcademicTermObject, :parent_calendar => @calendar, :term_type=> "Half Fall 1",
+                          :parent_term=> "Fall Term", :subterm => true)
+  @calendar.add_term terms[0]
 end
 
 Then /^the subterm is listed when I view the Academic Calendar$/ do
@@ -569,12 +568,12 @@ Then /^the subterm is listed when I view the Academic Calendar$/ do
 
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@subterm_list[0].term_type)
-    page.term_name(@subterm_list[0].term_type).should == @subterm_list[0].term_name
+    page.open_term_section(@calendar.terms[1].term_type)
+    page.term_name(@calendar.terms[1].term_type).should == @calendar.terms[1].term_name
     #page.term_code(@term.term_type)
-    page.term_start_date(@subterm_list[0].term_type).should == @subterm_list[0].start_date
-    page.term_end_date(@subterm_list[0].term_type).should == @subterm_list[0].end_date
-    page.term_status(@subterm_list[0].term_type).should == "DRAFT"
+    page.term_start_date(@calendar.terms[1].term_type).should == @calendar.terms[1].start_date
+    page.term_end_date(@calendar.terms[1].term_type).should == @calendar.terms[1].end_date
+    page.term_status(@calendar.terms[1].term_type).should == "DRAFT"
     #puts page.term_instructional_days(@term.term_type)
     #puts page.term_status(@term.term_type)
     #puts page.key_date_start(@term.term_type,"instructional","Grades Due")
@@ -622,34 +621,31 @@ end
 
 Given /^I create an Academic Calendar with subterms$/ do
   @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
-  @term = make AcademicTerm, :term_year => @calendar.year
-  @calendar.add_term(@term)
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
 
-  @subterm_list = Array.new(2)
-  @subterm_list[0] = make AcademicTerm, :term_year => @calendar.year,
-                          :term_type=> "Half Fall 1",
-                          :parent_term=> "Fall Term",
-                          :subterm => true,
-                          :start_date => "09/02/#{@calendar.year}",
-                          :end_date => "09/11/#{@calendar.year}"
-  @calendar.add_term(@subterm_list[0])
+  @calendar.terms[0].add_subterm (make AcademicTermObject,
+                                       :parent_calendar => @calendar,
+                                       :subterm => true,
+                                       :term_type=> "Half Fall 1",
+                                       :start_date => "09/02/#{@calendar.year}",
+                                       :end_date => "09/11/#{@calendar.year}")
 
-  @subterm_list[1] = make AcademicTerm, :term_year => @calendar.year,
-                          :term_type=> "Half Fall 2",
-                          :parent_term=> "Fall Term",
-                          :subterm => true,
-                          :start_date => "09/12/#{@calendar.year}",
-                          :end_date => "09/24/#{@calendar.year}"
-  @calendar.add_term(@subterm_list[1])
+  @calendar.terms[0].add_subterm (make AcademicTermObject,
+                                       :parent_calendar => @calendar,
+                                       :subterm => true,
+                                       :term_type=> "Half Fall 2",
+                                       :start_date => "09/12/#{@calendar.year}",
+                                       :end_date => "09/24/#{@calendar.year}")
 
-  @manage_soc = make ManageSoc, :term_code => @term.term_code
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
-  @manage_soc.perform_manual_soc_state_change("open")
+  @manage_soc.perform_manual_soc_state_change "open"
 end
 
 Given /^I make the subterms official$/ do
   @calendar.edit
-  @subterm_list.each do |subterm|
+  @calendar.terms[0].subterms.each do |subterm|
     subterm.make_official
   end
 end
@@ -661,7 +657,7 @@ Then /^the subterms are successfully copied$/ do
     page.view @calendar.name
   end
 
-  @subterm_list.each do |subterm|
+  @calendar.terms[1..2].each do |subterm|
     on ViewAcademicTerms do |page|
       page.go_to_terms_tab
       page.open_term_section(subterm.term_type)
@@ -676,28 +672,27 @@ Then /^the subterms are successfully copied$/ do
 end
 
 Then /^I can search and view the subterm in read only mode$/ do
-  @subterm_list[0].search
+  @calendar.terms[0].subterms[0].search
 
   on CalendarSearch do |page|
-    page.view @subterm_list[0].term_name
+    page.view @calendar.terms[0].subterms[0].term_name
   end
 
+  term_type = @calendar.terms[0].subterms[0].term_type
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@subterm_list[0].term_type)
-    page.term_name(@subterm_list[0].term_type).should == @subterm_list[0].term_name
-    #page.term_code(@term.term_type)
-    page.term_start_date(@subterm_list[0].term_type).should == @subterm_list[0].start_date
-    page.term_end_date(@subterm_list[0].term_type).should == @subterm_list[0].end_date
-    page.term_status(@subterm_list[0].term_type).should == "DRAFT"
-
+    page.open_term_section(term_type)
+    page.term_name(term_type).should == @calendar.terms[0].subterms[0].term_name
+    page.term_start_date(term_type).should == @calendar.terms[0].subterms[0].start_date
+    page.term_end_date(term_type).should == @calendar.terms[0].subterms[0].end_date
+    page.term_status(term_type).should == "DRAFT"
   end
 end
 
 When /^I edit the subterm information$/ do
-  @subterm_list[0].edit :term_name => random_alphanums ,
-                        :start_date => (Date.strptime( @subterm_list[0].start_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), #add 2 days
-                        :end_date => (Date.strptime( @subterm_list[0].end_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y")  #less 2 days
+  @calendar.terms[0].subterms[0].edit :term_name => random_alphanums ,
+                        :start_date => (Date.strptime( @calendar.terms[0].subterms[0].start_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), #add 2 days
+                        :end_date => (Date.strptime( @calendar.terms[0].subterms[0].end_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y")  #less 2 days
 end
 
 When /^I edit the calendar$/ do
@@ -705,24 +700,24 @@ When /^I edit the calendar$/ do
 end
 
 When /^I delete a subterm$/ do
-  @subterm_list[0].delete
+  @deleted_subterm = @calendar.terms[0].subterms[0]
+  @deleted_subterm.delete
 end
 
 Then /^the subterm in updated successfully$/ do
-  @subterm_list[0].search
+  @calendar.terms[0].subterms[0].search
 
   on CalendarSearch do |page|
-    page.view @subterm_list[0].term_name
+    page.view @calendar.terms[0].subterms[0].term_name
   end
-
+  term_type = @calendar.terms[0].subterms[0].term_type
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.open_term_section(@subterm_list[0].term_type)
-    page.term_name(@subterm_list[0].term_type).should == @subterm_list[0].term_name
-    #page.term_code(@term.term_type)
-    page.term_start_date(@subterm_list[0].term_type).should == @subterm_list[0].start_date
-    page.term_end_date(@subterm_list[0].term_type).should == @subterm_list[0].end_date
-    page.term_status(@subterm_list[0].term_type).should == "DRAFT"
+    page.open_term_section(term_type)
+    page.term_name(term_type).should == @calendar.terms[0].subterms[0].term_name
+    page.term_start_date(term_type).should == @calendar.terms[0].subterms[0].start_date
+    page.term_end_date(term_type).should == @calendar.terms[0].subterms[0].end_date
+    page.term_status(term_type).should == "DRAFT"
   end
 
 end
@@ -736,117 +731,117 @@ Then /^the subterm is no longer listed on the calendar$/ do
 
   on ViewAcademicTerms do |page|
     page.go_to_terms_tab
-    page.term_index_by_term_type(@subterm_list[0].term_type).should == -1 #ie not found
+    page.term_index_by_term_type(@deleted_subterm.term_type).should == -1 #ie not found
   end
 
 end
 
 When /^I add a new term with start date earlier than the Academic Calendar start date$/ do
-  @term = make AcademicTerm, :term_year => @calendar.year, :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
-  @calendar.add_term(@term)
+  term = make AcademicTermObject, :parent_calendar => @calendar,
+               :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
+  @calendar.add_term term
 end
 
 When /^I add a new subterm with start date earlier than the Academic Calendar start date$/ do
-  @subterm_list = Array.new(2)
-  @subterm_list[0] = make AcademicTerm, :term_year => @calendar.year,
-                          :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y"), #minus 2 days
-                          :subterm => true,
-                          :term_type=> "Half Fall 1",
-                          :parent_term=> "Fall Term"
-  @calendar.add_term(@subterm_list[0])
+  @calendar.terms[0].add_subterm (make AcademicTermObject,
+                                       :parent_calendar => @calendar,
+                                       :subterm => true,
+                                       :term_type=> "Half Fall 1",
+                                       :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y")) #minus 2 days
+                                       #:end_date => "09/11/#{@calendar.year}")
 end
 
 Then /^a term warning message is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.open_term_section(@term.term_type)
-    page.term_validation_messages(@term.term_type)[0].text.should match /#{exp_msg}/
+    page.open_term_section @calendar.terms[0].term_type
+    page.term_validation_messages(@calendar.terms[0].term_type)[0].text.should match /#{exp_msg}/
   end
 end
 
 Then /^a subterm warning message is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.open_term_section(@subterm_list[0].term_type)
-    page.term_validation_messages(@subterm_list[0].term_type)[0].text.should match /#{exp_msg}/
+    page.open_term_section @calendar.terms[0].subterms[0].term_type
+    page.term_validation_messages(@calendar.terms[0].subterms[0].term_type)[0].text.should match /#{exp_msg}/
   end
 end
 
 Given /^I create an Academic Calendar with a term$/ do
   @calendar = create AcademicCalendar
-  @term = make AcademicTerm, :term_year => @calendar.year
-  @calendar.add_term(@term)
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
 end
 
 When /^I edit the term so that the start date is earlier than the Academic Calendar start date$/ do
-  @term.edit :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
+  @calendar.terms[0].edit :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
 end
 
 When /^I edit the subterm so that the start date is earlier than the Academic Calendar start date$/ do
-  @subterm_list[0].edit :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
+  @calendar.terms[0].subterms[0].edit :start_date => (Date.strptime( @calendar.start_date , '%m/%d/%Y') - 2).strftime("%m/%d/%Y") #minus 2 days
 end
 
 When /^I add a new key date with a date later than the Academic Term end date$/ do
-  @term.edit
+  @calendar.terms[0].edit
 
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @term.term_type
-  keydate = make KeyDate, :parent_key_date_group => @keydategroup,
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type=> "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
                     :key_date_type => "First Day of Classes",
-                    :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"),
-                    :end_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
-  @keydategroup.key_dates = [ keydate ]
-  @keydategroup.create :exp_success => false
-
+                    :start_date => (Date.strptime( @calendar.terms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"),
+                    :end_date => (Date.strptime( @calendar.terms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
+  keydategroup.key_dates << keydate
+  @calendar.terms[0].add_key_date_group keydategroup
 end
 
 When /^I add a new key date with a date later than the Academic Subterm end date$/ do
-  @subterm_list[0].edit
+  @calendar.terms[0].subterms[0].edit
 
-  key_date_list = []
-  @keydategroup = make KeyDateGroup, :key_date_group_type=> "Instructional", :term_type=> @subterm_list[0].term_type
-  @keydate = make KeyDate, :parent_key_date_group => @keydategroup, :key_date_type => "First Day of Classes", :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), :end_date => ""
-  @keydategroup.key_dates << @keydate
-  @keydategroup.create
+  keydategroup = make KeyDateGroupObject, :parent_term => @calendar.terms[0], :key_date_group_type=> "Instructional"
+  keydate = make KeyDateObject, :parent_term => @calendar.terms[0], :parent_key_date_group => keydategroup,
+                  :key_date_type => "First Day of Classes",
+                  :start_date => (Date.strptime( @calendar.terms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"), :end_date => ""
+  keydategroup.key_dates << keydate
+  @calendar.terms[0].subterms[0].add_key_date_group keydategroup
 end
 
 
 When /^I edit the key date so that the start date is later than the Academic Term end date$/ do
-  @term.edit
-  @keydate.edit :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
+  @calendar.terms[0].edit
+  @calendar.terms[0].key_date_groups[0].key_dates[0].edit :start_date => (Date.strptime( @calendar.terms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
 end
 
 When /^I edit the key date so that the start date is later than the Academic Subterm end date$/ do
-  @subterm_list[0].edit
-  @keydate.edit :start_date => (Date.strptime( @term.end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y"),
-                :exp_success => false
+  @calendar.terms[0].subterms[0].edit
+  @calendar.terms[0].subterms[0].key_date_groups[0].key_dates[0].edit :exp_success => false,
+                    :start_date => (Date.strptime( @calendar.terms[0].subterms[0].end_date , '%m/%d/%Y') + 2).strftime("%m/%d/%Y")
 end
 
 When /^I make the key date blank$/ do
-  @term.edit
-  @keydate.edit :start_date => "", :exp_success => false
+  @calendar.terms[0].edit
+  @calendar.terms[0].key_date_groups[0].key_dates[0].edit :start_date => "", :exp_success => false
 end
 
 When /^I make the subterm key date blank$/ do
-  @subterm_list[0].edit
-  @keydate.edit :start_date => "", :exp_success => false
+  @calendar.terms[0].subterms[0].edit
+  @calendar.terms[0].subterms[0].key_date_groups[0].key_dates[0].edit :start_date => "", :exp_success => false
 end
 
 Then /^a Key Dates warning message is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.key_date_validation_messages(@term.term_type)[0].text.should match /#{exp_msg}/
+    page.key_date_validation_messages(@calendar.terms[0].term_type)[0].text.should match /#{exp_msg}/
   end
 end
 
 Then /^a subterm Key Dates warning message is displayed stating "([^"]*)"$/ do |exp_msg|
   on EditAcademicTerms do |page|
-    page.key_date_validation_messages(@subterm_list[0].term_type)[0].text.should match /#{exp_msg}/
+    page.key_date_validation_messages(@calendar.terms[0].subterms[0].term_type)[0].text.should match /#{exp_msg}/
   end
 end
 
 Then /^the subterm is also deleted$/ do
-  @subterm_list[0].search
+  @deleted_subterm.search
 
   on CalendarSearch do |page|
     begin
-      page.results_list.should_not include @subterm_list[0].term_name
+      page.results_list.should_not include @deleted_subterm.term_name
     rescue Watir::Exception::UnknownObjectException
       # Implication here is that there were no search results at all.
     end

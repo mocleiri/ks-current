@@ -11,15 +11,16 @@ class RegistrationRequest
   include Workflows
 
   #string - generally set using options hash
-  attr_accessor :student_id,
+  attr_reader   :student_id,
                 :term_code,
                 :term_descr,              #TODO - get term descr from term_code so they are always in sync
                 :course_code,
                 :reg_group_code
   #array - generally set using options hash
-  attr_accessor :course_options_list
+  attr_reader   :course_options
   #boolean - - generally set using options hash true/false
-  attr_accessor :modify_course_options
+  attr_reader   :course_has_options
+  attr_reader   :modify_course_options
 
   # provides default data:
   #  defaults = {
@@ -28,8 +29,8 @@ class RegistrationRequest
   #    :term_descr=>"Spring 2012",
   #    :course_code=>"CHEM231",
   #    :reg_group_code=>"1001",
-  #    :course_options_list=> [],
-  #    :modify_course_options=> false
+  #    :course_has_options=> true,
+  #    :modify_course_options=> false   This refers only to modifying during add to cart operation
   #  }
   # initialize is generally called using TestFactory Foundry .make or .create methods
   
@@ -42,7 +43,8 @@ class RegistrationRequest
       :term_descr=>"Spring 2012",
       :course_code=>"CHEM231",
       :reg_group_code=>"1001",
-      :course_options_list=> [ (make CourseOptions ) ],
+      :course_options=> (make CourseOptions),
+      :course_has_options=> true,
       :modify_course_options=> false
     }
     options = defaults.merge(opts)
@@ -50,18 +52,30 @@ class RegistrationRequest
   end
 
   def create
-    on RegistrationCart do |page|
+    visit RegistrationCart do |page|
+      # wait in case list has not loaded yet
+      page.menu_button.wait_until_present
+      page.menu
+      page.wait_until {page.term_select.include? @term_descr }
       page.select_term @term_descr
-      page.course_code.set @course_code
-      page.reg_group_code.set @reg_group_code
+      page.menu
+      page.course_code_input.set @course_code
+      page.reg_group_code_input.set @reg_group_code
+      page.submit_button.wait_until_present
       page.add_to_cart
-      if @modify_course_options
-        edit_course_options :course_options_list
+      if @course_has_options
+        page.new_item_cancel_button.wait_until_present
+        if @modify_course_options
+          edit_course_options_on_new_item
+        end
+        page.save_new_item
       end
-      #return new RegistrationRequest
     end
   end
 
+  def inspect
+    "Registration Request\nID: #{@student_id}, Term: #{@term_descr}, Course: #{@course_code}, Reg group: #{@reg_group_code}, Credits: #{@course_options.credit_option}, Grading: #{@course_options.grading_option}"
+  end
   def edit opts={}
     options = defaults.merge(opts)
     edit_student_id options
@@ -107,23 +121,103 @@ class RegistrationRequest
   private :edit_reg_group
 
   def remove_from_cart
-    on CourseRegistration do |page|
-      page.remove_course
+    on RegistrationCart do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
 
-  def edit_course_options(course_opts)
-    if course_opts.nil?
+  def edit_course_options_on_new_item
+    if @course_options.nil?
       return nil
     end
-    on CourseRegistration do |page|
-      page.set_credits course_opts.credit_option
-      page.set_credits course_opts.grading_option
+    on RegistrationCart do |page|
+      page.new_item_credits_selection.wait_until_present
+      page.select_credits_on_new_item @course_options.credit_option
+      page.select_grading_on_new_item @course_options.grading_option
     end
   end
-  private :edit_course_options
+  private :edit_course_options_on_new_item
 
-  class CourseOptions
+  def edit_course_options_in_cart opts = {}
+    if @course_options.nil?
+      return nil
+    end
+
+    defaults = {
+    }
+    options = defaults.merge(opts)
+
+    on RegistrationCart do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.edit_course_options @course_code,@reg_group_code
+
+      page.select_credits_in_cart @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
+      page.select_grading_in_cart @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
+      page.save_edits @course_code,@reg_group_code
+    end
+
+    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
+  end
+  #private :edit_course_options_in_cart
+
+  def edit_course_options_in_schedule opts = {}
+    if @course_options.nil?
+      return nil
+    end
+
+    defaults = {
+    }
+    options = defaults.merge(opts)
+
+    on StudentSchedule do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.edit_course_options @course_code,@reg_group_code
+
+      page.select_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
+      page.select_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
+      page.save_edits @course_code,@reg_group_code
+    end
+
+    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
+  end
+
+  def undo_remove_from_cart
+    on RegistrationCart do |page|
+      page.undo_remove
+    end
+  end
+
+  def register
+    on RegistrationCart do |page|
+      page.wait_until { page.register_button.enabled? }
+      page.register
+      page.register_confirm_button.wait_until_present
+      page.confirm_registration
+    end
+  end
+
+  def remove_from_schedule
+    on StudentSchedule do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.remove_course_from_schedule @course_code,@reg_group_code
+    end
+  end
+
+  def remove_from_schedule_and_cancel
+    on StudentSchedule do |page|
+      page.course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code
+      page.cancel_drop_course @course_code,@reg_group_code
+    end
+  end
+end
+
+class CourseOptions
 
     include Foundry
     include DataFactory
@@ -131,14 +225,14 @@ class RegistrationRequest
     include StringFactory
     include Workflows
 
-    attr_accessor :credit_option,
+    attr_accessor :credit_option,     #TODO - change to attr_reader and implement edit method
                   :grading_option
 
     def initialize(browser, opts={})
       @browser = browser
 
       defaults = {
-          :credit_option => "3",
+          :credit_option => "3.0",
           :grading_option => "Letter"
       }
       options = defaults.merge(opts)
@@ -146,4 +240,3 @@ class RegistrationRequest
     end
 
   end
-end

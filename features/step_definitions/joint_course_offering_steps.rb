@@ -53,7 +53,7 @@ end
 Then /^The joint course offerings are created.$/ do
 
   @joint_cos.each do |joint_co|
-    @activity_offering = make ActivityOffering, :format => "Lecture Only"
+    @activity_offering = make ActivityOfferingObject, :format => "Lecture Only"
 
     joint_co.create_list_aos :ao_object => @activity_offering, :number_aos_to_create=>2
     joint_co.manage_and_init
