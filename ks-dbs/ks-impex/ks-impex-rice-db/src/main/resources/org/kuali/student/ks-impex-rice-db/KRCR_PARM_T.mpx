@@ -32,8 +32,6 @@ NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRT
 "KR-WKFLW","EDocLite","DEBUG_TRANSFORM_IND","68B2EA08E13A4FF3B9EDBD5415818C93","1","CONFG","N","Defines whether the debug transform is enabled for eDcoLite.","A","KUALI"
 "KR-WKFLW","EDocLite","USE_XSLTC_IND","FCAEE745A7E64AF5982937C47EBC2698","1","CONFG","N","Defines whether XSLTC is used for eDocLite.","A","KUALI"
 "KR-WKFLW","Feature","IS_LAST_APPROVER_ACTIVATE_FIRST_IND","BEBDBCFA74A5458EADE2CF075FFF206E","1","CONFG","${mpx.null}","A flag to specify whether the WorkflowInfo.isLastApproverAtNode(...) API method attempts to active requests first, prior to execution.","A","KUALI"
-"KR-KRAD","Lookup","DEFAULT_HELP_URL","69A9BABE4A0FBD56E0404F8189D82511","1","HELP","http://site.kuali.org/rice/latest/reference/html/Help.html#lookup","Default External Help Url","A","KUALI"
-"KR-KRAD","Lookup","MULTIPLE_VALUE_RESULTS_LIMIT","F1FE30313FA91BE1E0406E0AC31D3189","1","CONFG","100","Maximum number of rows that will be displayed on a look-up results screen.","A","KUALI"
 "KR-KRAD","Lookup","RESULTS_LIMIT","E3F2146BBD179481E0406E0AC31D69DB","1","CONFG","200","Maximum number of results returned in a look-up query.","A","KUALI"
 "KR-NS","Lookup","MULTIPLE_VALUE_RESULTS_EXPIRATION_SECONDS","53680C68F5A3AD9BE0404F8189D80A6C","1","CONFG","86400","Lookup results may continue to be persisted in the DB long after they are needed. This parameter represents the maximum amount of time, in seconds, that the results will be allowed to persist in the DB before they are deleted from the DB.","A","KUALI"
 "KR-NS","Lookup","MULTIPLE_VALUE_RESULTS_PER_PAGE","53680C68F5A6AD9BE0404F8189D80A6C","1","CONFG","100","Maximum number of rows that will be displayed on a look-up results screen.","A","KUALI"

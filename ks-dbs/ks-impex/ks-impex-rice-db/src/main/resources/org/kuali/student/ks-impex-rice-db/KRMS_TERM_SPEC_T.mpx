@@ -30,3 +30,4 @@ TERM_SPEC_ID,NM,TYP,ACTV,VER_NBR,DESC_TXT,NMSPC_CD
 "KS-KRMS-TERM-SPEC-10028","Population","java.lang.Integer","Y","1","Population","KS-SYS"
 "KS-KRMS-TERM-SPEC-10029","AdmittedToProgramLimitCoursesInOrgForDuration","java.lang.Integer","Y","1","Program Courses Organization Duration","KS-SYS"
 "KS-KRMS-TERM-SPEC-10030","Score","java.lang.Integer","Y","1","Score","KS-SYS"
+"KS-KRMS-TERM-SPEC-55756","ExamFreeFormText","java.lang.Boolean","Y","1","Exam Free Form Text","KS-SYS"
