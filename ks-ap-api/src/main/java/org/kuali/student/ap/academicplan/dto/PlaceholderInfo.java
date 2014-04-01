@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PlaceholderInfo", propOrder = { "id", "typeKey", "parm1", "parm2", "parm3",  "_futureElements"})
+@XmlType(name = "PlaceholderInfo", propOrder = { "id", "typeKey", "exclusion", "parm1", "parm2", "parm3",  "_futureElements"})
 public class PlaceholderInfo implements Placeholder {
 
 	@XmlAttribute
@@ -29,6 +29,9 @@ public class PlaceholderInfo implements Placeholder {
     
 	@XmlAttribute
     private String typeKey;
+	
+    @XmlAttribute
+    private boolean exclusion;
     
 	@XmlAttribute
     private String parm1;
@@ -66,6 +69,15 @@ public class PlaceholderInfo implements Placeholder {
 	@Override
 	public String getType() {
 		return typeKey;
+	}
+
+	@Override
+	public boolean isExclusion() {
+		return exclusion;
+	}
+
+	public void setExclusion(boolean exclusion) {
+		this.exclusion = exclusion;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import org.kuali.student.r2.common.infc.HasType;
  */
 public interface Placeholder extends HasId, HasType {
 
+	boolean isExclusion();
 	String getParm1();
 	String getParm2();
 	String getParm3();
