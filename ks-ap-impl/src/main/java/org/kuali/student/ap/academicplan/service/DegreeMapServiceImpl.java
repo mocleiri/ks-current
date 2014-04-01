@@ -9,6 +9,7 @@ import org.kuali.student.ap.academicplan.dao.DegreeMapDao;
 import org.kuali.student.ap.academicplan.dao.DegreeMapRequirementDao;
 import org.kuali.student.ap.academicplan.dao.PlaceholderDao;
 import org.kuali.student.ap.academicplan.dao.PlaceholderInstanceDao;
+import org.kuali.student.ap.academicplan.dao.ReferenceObjectListDao;
 import org.kuali.student.ap.academicplan.dto.DegreeMapInfo;
 import org.kuali.student.ap.academicplan.dto.DegreeMapRequirementInfo;
 import org.kuali.student.ap.academicplan.dto.PlaceholderInfo;
@@ -17,6 +18,7 @@ import org.kuali.student.ap.academicplan.dto.ReferenceObjectListInfo;
 import org.kuali.student.ap.academicplan.model.DegreeMapRequirementEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderInstanceEntity;
+import org.kuali.student.ap.academicplan.model.ReferenceObjectListEntity;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -39,6 +41,7 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	private DegreeMapRequirementDao degreeMapRequirementDao;
 	private PlaceholderDao placeholderDao;
 	private PlaceholderInstanceDao placeholderInstanceDao;
+	private ReferenceObjectListDao referenceObjectListDao;
 
 	public DegreeMapDao getDegreeMapDao() {
 		return degreeMapDao;
@@ -378,27 +381,63 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			ContextInfo context) throws DoesNotExistException,
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException {
-		// TODO Auto-generated method stub
-		return null;
+
+
+		if (listId == null ){
+			throw new MissingParameterException("listId must not be null");
+		}
+		
+		List<ReferenceObjectListEntity> refObjEntities = referenceObjectListDao.getReferenceOjbectListItems(listId);
+
+		List<ReferenceObjectListInfo> refObjInfos = new ArrayList<ReferenceObjectListInfo>();
+
+		if (null == refObjEntities) {
+			throw new DoesNotExistException(
+					String.format(
+							"There are no items for listId %s ", listId));
+		} else {
+			for (ReferenceObjectListEntity refObjEntity : refObjEntities) {
+				refObjInfos.add(refObjEntity.toDto());
+			}
+		}
+		return refObjInfos;
 	}
+	
 
 	@Override
 	public ReferenceObjectListInfo getReferenceOjbectItem(
 			String referenceObjectItemId, ContextInfo context)
 			throws DoesNotExistException, InvalidParameterException,
 			MissingParameterException, OperationFailedException {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (referenceObjectItemId == null ) {
+			throw new MissingParameterException("referenceObjectItemId is null.");
+		}
+		
+		ReferenceObjectListEntity referenceOjbectListItem = referenceObjectListDao.find(referenceObjectItemId);
+		if (null == referenceOjbectListItem) {
+			throw new DoesNotExistException(String.format("referenceObjectItem with id Id [%s] does not exist", referenceObjectItemId));
+		}
+		
+		return referenceOjbectListItem.toDto();
 	}
+	
 
 	@Override
 	public ReferenceObjectListInfo createReferenceObjectItem(
-			ReferenceObjectListInfo referenceObjectItem, ContextInfo context)
+			ReferenceObjectListInfo dto, ContextInfo context)
 			throws AlreadyExistsException, DataValidationErrorException,
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException, PermissionDeniedException {
-		// TODO Auto-generated method stub
-		return null;
+
+
+		ReferenceObjectListEntity pe = new ReferenceObjectListEntity();
+		String rId = UUIDHelper.genStringUUID();		
+		pe.setId(rId);		
+		pe.copyFromInfo(dto);
+		referenceObjectListDao.persist(pe);
+		return referenceObjectListDao.find(rId).toDto();
+
 	}
 
 	@Override
@@ -408,17 +447,37 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			throws DataValidationErrorException, InvalidParameterException,
 			MissingParameterException, OperationFailedException,
 			PermissionDeniedException, DoesNotExistException {
-		// TODO Auto-generated method stub
-		return null;
+
+		ReferenceObjectListEntity referenceObjectListEntity = referenceObjectListDao.find(referenceObjectItemId);
+		
+		if (null == referenceObjectListEntity) {
+			throw new DoesNotExistException(String.format("referenceObjectList Item with id Id [%s] does not exist", referenceObjectItemId));
+		}
+
+		referenceObjectListEntity.copyFromInfo(referenceObjectItem);
+		referenceObjectListDao.update(referenceObjectListEntity);
+		return referenceObjectListDao.find(referenceObjectItemId).toDto();
+
 	}
 
+	
 	@Override
 	public StatusInfo deleteReferenceObjectItem(String referenceObjectItemId,
 			ContextInfo context) throws DoesNotExistException,
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException, PermissionDeniedException {
-		// TODO Auto-generated method stub
-		return null;
+
+		StatusInfo status = new StatusInfo();
+		status.setSuccess(true);
+		
+		ReferenceObjectListEntity pe = referenceObjectListDao.find(referenceObjectItemId);
+		if (pe == null ) {
+			throw new DoesNotExistException(String.format("ReferenceObjectListItem with id Id [%s] does not exist", referenceObjectItemId));
+		}
+
+		referenceObjectListDao.remove(pe);
+		return status;
+		
 	}
 
 	

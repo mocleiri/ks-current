@@ -177,6 +177,8 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         dto.setId(this.getId());
         
         dto.setCredit(getCredit());
+        dto.setCreditMax(getCreditMax());
+        dto.setCreditMin(getCreditMin());
         dto.setCritical(isCritical());
         dto.setDegreeMapEffectiveDate(getDegreeMapEffectiveDate());
         dto.setDegreeMapId(getDegreeMapId());
