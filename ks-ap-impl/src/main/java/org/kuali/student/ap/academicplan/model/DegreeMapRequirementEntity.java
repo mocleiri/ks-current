@@ -80,7 +80,7 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	  private String seqKey;
 	  
 	  @Column(name="SEQ_NO")
-	  private int seqNo;
+	  private Integer seqNo;
 
 	  @Column(name="SUGGESTED_TERM_ID")
 	  private String suggestedTermId;
@@ -190,7 +190,9 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
         dto.setRequiredTermId(getRequiredTermId());
         dto.setSuggestedTermId(getSuggestedTermId());
         dto.setSeqKey(getSeqKey());
-        dto.setSeqNo(getSeqNo());      
+        if (getSeqNo() != null) {
+        	dto.setSeqNo(getSeqNo()); 
+        }
 
         return dto;
     }
@@ -311,12 +313,12 @@ public class DegreeMapRequirementEntity extends BaseVersionEntity implements Com
 	}
 
 
-	public int getSeqNo() {
+	public Integer getSeqNo() {
 		return seqNo;
 	}
 
 
-	public void setSeqNo(int seqNo) {
+	public void setSeqNo(Integer seqNo) {
 		this.seqNo = seqNo;
 	}
 

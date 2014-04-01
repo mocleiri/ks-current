@@ -682,9 +682,9 @@ public class DefaultTermHelper implements TermHelper {
 			}
 
 			if (rl == null) {
-				List<TermInfo> rli = KsapFrameworkServiceLocator
+				List<TermInfo> rli = new ArrayList<TermInfo>(KsapFrameworkServiceLocator
 						.getAcademicCalendarService().getTermsForAcademicCalendar(ac.getId(),
-								KsapFrameworkServiceLocator.getContext().getContextInfo());
+								KsapFrameworkServiceLocator.getContext().getContextInfo()));
 				Collections.sort(rli, new Comparator<Term>() {
 					@Override
 					public int compare(Term term1, Term term2) {
