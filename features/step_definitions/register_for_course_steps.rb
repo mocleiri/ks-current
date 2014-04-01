@@ -1,7 +1,8 @@
 When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
   # Set course code and credits
   course_code = case
-                  when subj=="BSCI" then "BSCI106"
+                  when subj=="BSCI1" then "BSCI106"
+                  when subj=="BSCI2" then "BSCI201"
                   when subj=="CHEM" then "CHEM231"
                   when subj=="ENGL" then "ENGL211"
                   when subj=="HIST" then "HIST111"
@@ -10,13 +11,14 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   else ""
                 end
   credit_option = case
-                    when subj=="BSCI" then "4.0"
+                    when subj.match("BSCI") then "4.0"
                     else "3.0"
                   end
 
   # Get original counts before adding course to cart
-  if subj=="WMST" || subj=="BSCI"
+  if subj=="WMST" || subj=="BSCI2"
     visit RegistrationCart do |page|
+      sleep 1
       @orig_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
       @orig_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
     end
@@ -106,7 +108,7 @@ Then /^there is a message indicating successful registration$/ do
   end
 end
 
-When /^I remove the ?(BSCI)? course from my schedule$/ do |phys|
+When /^I remove the ?(BSCI2)? course from my schedule$/ do |phys|
   @reg_request.remove_from_schedule
 end
 
@@ -295,6 +297,7 @@ Then /^the number of courses and credits I am registered for is correctly update
       credits_to_drop = @reg_request.course_options.credit_option
       expected_count -= credits_to_drop.to_f
     end
+    sleep 1
     page.reg_credit_count.match('(.*) credits')[1].to_f.should == expected_count
   end
 end

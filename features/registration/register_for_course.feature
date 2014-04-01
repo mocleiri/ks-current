@@ -53,7 +53,7 @@ Feature: REG.Register for course
 
   #KSENROLL-11923
   Scenario: CR 1.10 I want to reverse my decision to remove a course from my selections so that I can continue my registration process.
-    When I add a BSCI course offering to my registration cart
+    When I add a BSCI1 course offering to my registration cart
     And I remove the course from my registration cart
     Then the course is not present in my cart
     Then I undo the drop action
@@ -91,12 +91,12 @@ Feature: REG.Register for course
   Scenario: I want my registration cart and schedule to accurately reflect the number of courses and credits I am registered for so that I can be aware of my credit load.
     When I add a WMST course offering to my registration cart
     Then I can view the number of courses and credits I am registered for in my registration cart
-    When I add a BSCI course offering to my registration cart
+    When I add a BSCI2 course offering to my registration cart
     Then I can view the number of courses and credits I am registered for in my registration cart
     When I register for the course
     Then the number of courses and credits I am registered for is correctly updated in my registration cart
     When I view my schedule
     Then the number of courses and credits I am registered for is correctly updated in my schedule
-    When I remove the BSCI course from my schedule
+    When I remove the BSCI2 course from my schedule
     Then the number of courses and credits I am registered for is correctly updated in my schedule after the drop
 
