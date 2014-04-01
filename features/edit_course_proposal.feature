@@ -1,4 +1,4 @@
-@draft
+@nightly
 Feature: GT.Edit Course Proposal for both Fred and CS
 
 Scenario: CC8.1 Edit the Course Proposal - CS
@@ -17,13 +17,15 @@ Scenario: CC8.2 Edit the Course Proposal - Faculty
 
 
 Scenario: CC8.3 Edit the faculty proposal - CS
-  Given I have a course proposal created as Faculty and logged in as Curriculum Specialist
-  When I perform a complete search for the course proposal
-  And I edit the course proposal for Faculty
-  Then I should see the updated data on the Review proposal page for course proposal
+  Given I have a course proposal created as Faculty
+  When I am logged in as Curriculum Specialist
+  Then I perform a search for the course proposal
+  And I edit the course proposal
+  Then I should see the updated data on the Review proposal page
 
 
 Scenario: CC8.4 Faculty cannot edit CS proposal
-  Given I have a course admin proposal created as Curriculum Specialist and logged in as Faculty
-  When I perform a complete search for the course admin proposal
-  Then I should not see the edit option in the search results for CS in faculty login
+  Given I have a course admin proposal created as Curriculum Specialist
+  When I am logged in as Fred
+  Then I perform a search for the course proposal
+  And I should not see the edit option in the search results for the Course Admin Proposal

@@ -25,7 +25,7 @@ Then I should see the updated data on the Review proposal page
 Scenario: CC4.1 Create a course admin proposal with required for approve fields and review
 When I complete the required fields for save on the course admin proposal
 Then I should see data in required fields for the admin proposal
-And I perform a search for the proposal
+And I perform a full search for the course proposal
 Then I can review the required fields on the admin proposal
 
 

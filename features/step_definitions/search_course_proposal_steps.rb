@@ -45,8 +45,8 @@ When /^I perform a full search for the course proposal$/ do
 end
 
 
-When /^I perform a search for the proposal$/ do
-  navigate_to_cm_home
+When /^I perform a search for the course proposal$/ do
+  navigate_rice_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
 end
 
