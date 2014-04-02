@@ -18,7 +18,7 @@ class ManageCourseOfferings < BasePage
   action(:show) { |b| b.frm.button(text: "Show").click; sleep 2; b.loading.wait_while_present(600) }
   action(:perf_show) { |b| b.frm.button(text: "Show").click; b.loading.wait_while_present(600) }
 
-  value(:course_title) { |b| b.ao_results_div.h3.text }
+  value(:course_title) { |b| b.h1(class: 'uif-headerText').text }
 
   element(:delete_cluster_div) { |b| b.frm.div(id: "ClusterDeleteConfirmationPage") }
   action(:confirm_delete_cluster) {|b| b.delete_cluster_div.button(text: "Delete Cluster").click; b.loading.wait_while_present }

@@ -520,7 +520,7 @@ Given /^that the Course Offering has one Activity Offering with Requested Schedu
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
-Given /^I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
+Given /^I create from catalog a Course Offering with an AO\-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
   statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "04:00", :st_time_ampm => "pm")

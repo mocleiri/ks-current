@@ -138,6 +138,16 @@ Feature: CO.AZ Schedule Coordinator
     And I have access to copy an activity offering
     #And I have access to manage registration groups TODO: validate access to various reg groups links on page
 
+#KSENROLL-2860/3022 - not technically AZ test
+  Scenario: Test that user is unable to manage course offerings when SOC is in certain states
+    When I manually change a given soc-state to "Publishing"
+    Then I verify that I "cannot" manage course offerings
+    And I manually change a given soc-state to "In Progress"
+    Then I verify that I "cannot" manage course offerings
+    And I manually change a given soc-state to "Open"
+    Then I verify that I "can" manage course offerings
+
+
   @draft @deprecated @KSENROLL-8286
   Scenario: AZ CCO.1 - Schedule Coordinator has access to create jointly defined courses
     Given I am working on a term in "Open" SOC state
