@@ -1270,7 +1270,7 @@ end
 Then /^there should be a warning message stating that "(.*?)"$/ do |exp_msg|
   on ManageCourseOfferings do |page|
     begin
-      wait_until(120) { page.growl_warning_text.exists? }
+      page.wait_until(120) { page.growl_warning_text.exists? }
       page.growl_warning_text.should match /#{@course_offering.course}.*#{Regexp.escape(exp_msg)}/
     rescue
       puts "growl warning message for the EO did not appear"
@@ -1281,7 +1281,7 @@ end
 Then /^there should be a warning message for the AO stating that "(.*?)"$/ do |exp_msg|
   on ManageCourseOfferings do |page|
     begin
-      wait_until { page.growl_message_warning_div.exists? }
+      page.wait_until(120) { page.growl_message_warning_div.exists? }
       page.growl_warning_text.should match /#{@course_offering.course}.*#{@activity_offering.code}.*#{Regexp.escape(exp_msg)}/
     rescue
       puts "growl warning message for the EO did not appear"
@@ -1358,8 +1358,7 @@ end
 
 When /^I add new Requested Scheduling Information to the Activity Offering that does not match an entry on the exam matrix$/ do
   @course_offering.manage
-  start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
-  end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
+  end_time = (DateTime.strptime("#{@matrix.rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
 
   rsi_object = make SchedulingInformationObject, :days  => "F", :start_time  => @matrix.rules[0].statements[0].start_time,
                     :start_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm,
@@ -1370,8 +1369,7 @@ end
 
 When /^I add new Requested Scheduling Information to the Activity Offering that matches an entry on the exam matrix$/ do
   @course_offering.manage
-  start_time_arr = @matrix.rules[0].statements[0].start_time.split('')
-  end_time = "#{start_time_arr[0]}#{start_time_arr[1]}:50"
+  end_time = (DateTime.strptime("#{@matrix.rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
 
   rsi_object = make SchedulingInformationObject, :days  => @matrix.rules[0].statements[0].days,
                     :start_time  => @matrix.rules[0].statements[0].start_time,
@@ -1380,3 +1378,4 @@ When /^I add new Requested Scheduling Information to the Activity Offering that 
 
   @activity_offering.add_req_sched_info :rsi_obj => rsi_object
 end
+

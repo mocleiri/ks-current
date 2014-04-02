@@ -34,19 +34,21 @@ class ViewExamOfferings < BasePage
   AO_ROOM = 9
 
   VIEW_STATUS = 0
-  VIEW_CO_DAYS = 1
-  VIEW_CO_ST_TIME = 2
-  VIEW_CO_END_TIME = 3
-  VIEW_CO_BLDG = 4
-  VIEW_CO_ROOM = 5
+  VIEW_OVERRIDE_MATRIX = 1
+  VIEW_CO_DAYS = 2
+  VIEW_CO_ST_TIME = 3
+  VIEW_CO_END_TIME = 4
+  VIEW_CO_BLDG = 5
+  VIEW_CO_ROOM = 6
 
   VIEW_AO_CODE = 1
   VIEW_AO_TYPE = 2
-  VIEW_AO_DAYS = 3
-  VIEW_AO_ST_TIME = 4
-  VIEW_AO_END_TIME = 5
-  VIEW_AO_BLDG = 6
-  VIEW_AO_ROOM = 7
+  VIEW_AO_OVERRIDE_MATRIX = 3
+  VIEW_AO_DAYS = 4
+  VIEW_AO_ST_TIME = 5
+  VIEW_AO_END_TIME = 6
+  VIEW_AO_BLDG = 7
+  VIEW_AO_ROOM = 8
 
   def eo_by_co_results_table
     return eo_table_section.table unless !eo_table_section.table.exists?
