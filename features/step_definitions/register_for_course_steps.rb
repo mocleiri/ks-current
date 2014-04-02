@@ -237,18 +237,6 @@ Then /^the course is present in my schedule, with the updated options$/ do
   end
 end
 
-Then /^I am given the option to add myself to a waitlist for the course$/ do
-  pending
-end
-
-When /^I add myself to a waitlist for the course$/ do
-  pending
-end
-
-Then /^there is a message indicating that I have been added to the waitlist$/ do
-  pending
-end
-
 When /^I register as (\w+) for a course offering with a seat capacity of one$/ do |user|
   @reg_request = make RegistrationRequest, :student_id=>user,
                       :term_code=>"201208",
