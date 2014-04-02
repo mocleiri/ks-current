@@ -123,8 +123,7 @@ class CmCourseProposalObject < DataObject
           #OUTCOMES
         outcome_type_fixed: true,
         outcome_level_fixed: 1,
-     #   credit_value: rand(1..5).to_s,
-        credit_value: rand(9),
+        credit_value: (1..5).to_a.sample,
           #TODO: ADD OTHER OUTCOMES AFTER KSCM-1782 IS RESOVLED
         #:outcome_type_range => true,
         #:outcome_level_range => 2,
@@ -138,12 +137,9 @@ class CmCourseProposalObject < DataObject
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
         activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
-        #activity_contacted_hours: rand(1..9).to_s,
-        #activity_duration_count: rand(1..9).to_s,
-        #activity_class_size: rand(1..9).to_s,
-        activity_contacted_hours: rand(9),
-        activity_duration_count: rand(9),
-        activity_class_size: rand(9),
+        activity_contacted_hours: (1..9).to_a.sample,
+        activity_duration_count: (1..9).to_a.sample,
+        activity_class_size: (1..9).to_a.sample,
         start_term: '::random::',
         #FINANCIALS
         course_fees:                random_alphanums(10, 'test course fees '),

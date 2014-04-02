@@ -4,7 +4,7 @@ class CmCourseInformation < BasePage
   cm_elements
 
   element(:proposal_title) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.proposalInfo.name') }
-  element(:proposal_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.proposalInfo.name', class: 'uif-textControl required error') }
+  element(:proposal_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.proposalInfo.name', class: /error/) }
 
   element(:course_title) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.courseInfo.courseTitle') }
   element(:course_title_error_state) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.courseInfo.courseTitle', class: 'uif-textControl required validChar-document.newMaintainableObject.dataObject.courseInfo.courseTitle0 error') }
@@ -55,12 +55,12 @@ class CmCourseInformation < BasePage
 # COURSE INFORMATION REVIEW FIELDS
   action(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil").click }
   action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
-  value(:proposal_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Title").span(class: "uif-readOnlyContent").text }
-  value(:course_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Title").span(class: "uif-readOnlyContent").text }
-  value(:subject_code_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Subject Code").span(class: "uif-readOnlyContent").text }
-  value(:course_number_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Number").span(class: "uif-readOnlyContent").text }
-  value(:description_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Description").span(class: "uif-readOnlyContent").text }
-  value(:proposal_rationale_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Rationale").span(class: "uif-readOnlyContent").text }
+  value(:proposal_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Title").text_field(name: /proposalInfo/).value }
+  value(:course_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Title").text_field(name: /courseTitle/).value }
+  value(:subject_code_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Subject Code").text_field(name: /subjectArea/).value }
+  value(:course_number_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Number").text_field(name: /courseNumberSuffix/).value }
+  value(:description_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Description").text_field(name: /descr/).value }
+  value(:proposal_rationale_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Rationale").text_field(name: /rationale/).value}
 
   # table results
   # b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table.row.cells[1].text

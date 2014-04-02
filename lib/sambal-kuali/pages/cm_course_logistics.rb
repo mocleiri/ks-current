@@ -45,7 +45,7 @@ class CmCourseLogistics < BasePage
   action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
 
 #COURSE FORMAT(S)
-  action(:add_additional_format) { |b| b.button(id: /CourseFormats-Widgets_add$/).click; b.loading_wait }
+  action(:add_additional_format) { |b| b.button(id: /CourseFormats-Widgets_add$/).click; b.adding_line_wait }
   action(:add_activity) { |b| b.button(text: 'Activity').click; b.loading_wait }
   action(:activity_type) { |b| b.select_list(name: "newCollectionLines['document.newMaintainableObject.dataObject.courseInfo.formats_0_.activities'].typeKey") }
   element(:activity_contacted_hours) { |b| b.text_field(name: /contactHours.unitQuantity$/) }
