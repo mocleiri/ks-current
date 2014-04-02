@@ -18,7 +18,7 @@ import org.kuali.student.ap.academicplan.dto.ReferenceObjectListInfo;
 import org.kuali.student.ap.academicplan.model.DegreeMapRequirementEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderEntity;
 import org.kuali.student.ap.academicplan.model.PlaceholderInstanceEntity;
-import org.kuali.student.ap.academicplan.model.ReferenceObjectListEntity;
+import org.kuali.student.ap.academicplan.model.ReferenceObjectListItemEntity;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -30,6 +30,8 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.gwt.user.client.rpc.core.java.util.Collections;
 
 /**
  * Degree Map Service Implementation.
@@ -374,111 +376,185 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 	}
 
 	
+	
 	// REFERENCE OBJECT LIST
 	
 	@Override
-	public List<ReferenceObjectListInfo> getReferenceObjectItems(String listId,
+	public ReferenceObjectListInfo getReferenceObjectList(String id,
 			ContextInfo context) throws DoesNotExistException,
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException {
 
 
-		if (listId == null ){
-			throw new MissingParameterException("listId must not be null");
-		}
-		
-		List<ReferenceObjectListEntity> refObjEntities = referenceObjectListDao.getReferenceOjbectListItems(listId);
-
-		List<ReferenceObjectListInfo> refObjInfos = new ArrayList<ReferenceObjectListInfo>();
-
-		if (null == refObjEntities) {
-			throw new DoesNotExistException(
-					String.format(
-							"There are no items for listId %s ", listId));
-		} else {
-			for (ReferenceObjectListEntity refObjEntity : refObjEntities) {
-				refObjInfos.add(refObjEntity.toDto());
-			}
-		}
-		return refObjInfos;
+		if (id == null ){
+		throw new MissingParameterException("id must not be null");
 	}
 	
+	List<ReferenceObjectListItemEntity> refObjEntities = referenceObjectListDao.getReferenceOjbectListItems(id);
 
-	@Override
-	public ReferenceObjectListInfo getReferenceOjbectItem(
-			String referenceObjectItemId, ContextInfo context)
-			throws DoesNotExistException, InvalidParameterException,
-			MissingParameterException, OperationFailedException {
-
-		if (referenceObjectItemId == null ) {
-			throw new MissingParameterException("referenceObjectItemId is null.");
-		}
-		
-		ReferenceObjectListEntity referenceOjbectListItem = referenceObjectListDao.find(referenceObjectItemId);
-		if (null == referenceOjbectListItem) {
-			throw new DoesNotExistException(String.format("referenceObjectItem with id Id [%s] does not exist", referenceObjectItemId));
-		}
-		
-		return referenceOjbectListItem.toDto();
+	if (refObjEntities == null || refObjEntities.isEmpty()){
+		throw new DoesNotExistException("list does not exist " + id);
 	}
 	
+	ReferenceObjectListInfo refObjList = new ReferenceObjectListInfo();
+	refObjList.setId(id);
+	refObjList.setReferences(refObjEntities);
+	
+	return refObjList;
 
+	}
+	
+	
+	
 	@Override
-	public ReferenceObjectListInfo createReferenceObjectItem(
-			ReferenceObjectListInfo dto, ContextInfo context)
+	public ReferenceObjectListInfo createReferenceObjectList(
+			ReferenceObjectListInfo referenceObjectList, ContextInfo context)
 			throws AlreadyExistsException, DataValidationErrorException,
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException, PermissionDeniedException {
-
-
-		ReferenceObjectListEntity pe = new ReferenceObjectListEntity();
-		String rId = UUIDHelper.genStringUUID();		
-		pe.setId(rId);		
-		pe.copyFromInfo(dto);
-		referenceObjectListDao.persist(pe);
-		return referenceObjectListDao.find(rId).toDto();
-
+		// TODO Auto-generated method stub
+		
+		/// do a get
+		// catch does no exist exception before proceeding.
+		// if I don't catch it, throw already exists exception
+		
+		return null;
 	}
 
 	@Override
-	public ReferenceObjectListInfo updateReferenceObjectItem(
-			String referenceObjectItemId,
-			ReferenceObjectListInfo referenceObjectItem, ContextInfo context)
+	public ReferenceObjectListInfo updateReferenceObjectList(String id,
+			ReferenceObjectListInfo referenceObjectList, ContextInfo context)
 			throws DataValidationErrorException, InvalidParameterException,
 			MissingParameterException, OperationFailedException,
 			PermissionDeniedException, DoesNotExistException {
-
-		ReferenceObjectListEntity referenceObjectListEntity = referenceObjectListDao.find(referenceObjectItemId);
+		// TODO Auto-generated method stub
 		
-		if (null == referenceObjectListEntity) {
-			throw new DoesNotExistException(String.format("referenceObjectList Item with id Id [%s] does not exist", referenceObjectItemId));
-		}
+		
+		/// delete and insert
+		// make sure it exists.
+		
+		return null;
+	}
 
-		referenceObjectListEntity.copyFromInfo(referenceObjectItem);
-		referenceObjectListDao.update(referenceObjectListEntity);
-		return referenceObjectListDao.find(referenceObjectItemId).toDto();
-
+	@Override
+	public StatusInfo deleteReferenceObjectList(String id, ContextInfo context)
+			throws DoesNotExistException, InvalidParameterException,
+			MissingParameterException, OperationFailedException,
+			PermissionDeniedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
-	@Override
-	public StatusInfo deleteReferenceObjectItem(String referenceObjectItemId,
-			ContextInfo context) throws DoesNotExistException,
-			InvalidParameterException, MissingParameterException,
-			OperationFailedException, PermissionDeniedException {
 
-		StatusInfo status = new StatusInfo();
-		status.setSuccess(true);
-		
-		ReferenceObjectListEntity pe = referenceObjectListDao.find(referenceObjectItemId);
-		if (pe == null ) {
-			throw new DoesNotExistException(String.format("ReferenceObjectListItem with id Id [%s] does not exist", referenceObjectItemId));
-		}
-
-		referenceObjectListDao.remove(pe);
-		return status;
-		
-	}
+	
+	
+	
+	
+	
+//	@Override
+//	public List<ReferenceObjectListInfo> getReferenceObjectItems(String listId,
+//			ContextInfo context) throws DoesNotExistException,
+//			InvalidParameterException, MissingParameterException,
+//			OperationFailedException {
+//
+//
+//		if (listId == null ){
+//			throw new MissingParameterException("listId must not be null");
+//		}
+//		
+//		List<ReferenceObjectListEntity> refObjEntities = referenceObjectListDao.getReferenceOjbectListItems(listId);
+//
+//		List<ReferenceObjectListInfo> refObjInfos = new ArrayList<ReferenceObjectListInfo>();
+//
+//		if (null == refObjEntities) {
+//			throw new DoesNotExistException(
+//					String.format(
+//							"There are no items for listId %s ", listId));
+//		} else {
+//			for (ReferenceObjectListEntity refObjEntity : refObjEntities) {
+//				refObjInfos.add(refObjEntity.toDto());
+//			}
+//		}
+//		return refObjInfos;
+//	}
+//	
+//
+//	@Override
+//	public ReferenceObjectListInfo getReferenceOjbectItem(
+//			String referenceObjectItemId, ContextInfo context)
+//			throws DoesNotExistException, InvalidParameterException,
+//			MissingParameterException, OperationFailedException {
+//
+//		if (referenceObjectItemId == null ) {
+//			throw new MissingParameterException("referenceObjectItemId is null.");
+//		}
+//		
+//		ReferenceObjectListEntity referenceOjbectListItem = referenceObjectListDao.find(referenceObjectItemId);
+//		if (null == referenceOjbectListItem) {
+//			throw new DoesNotExistException(String.format("referenceObjectItem with id Id [%s] does not exist", referenceObjectItemId));
+//		}
+//		
+//		return referenceOjbectListItem.toDto();
+//	}
+//	
+//
+//	@Override
+//	public ReferenceObjectListInfo createReferenceObjectItem(
+//			ReferenceObjectListInfo dto, ContextInfo context)
+//			throws AlreadyExistsException, DataValidationErrorException,
+//			InvalidParameterException, MissingParameterException,
+//			OperationFailedException, PermissionDeniedException {
+//
+//
+//		ReferenceObjectListEntity pe = new ReferenceObjectListEntity();
+//		String rId = UUIDHelper.genStringUUID();		
+//		pe.setId(rId);		
+//		pe.copyFromInfo(dto);
+//		referenceObjectListDao.persist(pe);
+//		return referenceObjectListDao.find(rId).toDto();
+//
+//	}
+//
+//	@Override
+//	public ReferenceObjectListInfo updateReferenceObjectItem(
+//			String referenceObjectItemId,
+//			ReferenceObjectListInfo referenceObjectItem, ContextInfo context)
+//			throws DataValidationErrorException, InvalidParameterException,
+//			MissingParameterException, OperationFailedException,
+//			PermissionDeniedException, DoesNotExistException {
+//
+//		ReferenceObjectListEntity referenceObjectListEntity = referenceObjectListDao.find(referenceObjectItemId);
+//		
+//		if (null == referenceObjectListEntity) {
+//			throw new DoesNotExistException(String.format("referenceObjectList Item with id Id [%s] does not exist", referenceObjectItemId));
+//		}
+//
+//		referenceObjectListEntity.copyFromInfo(referenceObjectItem);
+//		referenceObjectListDao.update(referenceObjectListEntity);
+//		return referenceObjectListDao.find(referenceObjectItemId).toDto();
+//
+//	}
+//
+//	
+//	@Override
+//	public StatusInfo deleteReferenceObjectItem(String referenceObjectItemId,
+//			ContextInfo context) throws DoesNotExistException,
+//			InvalidParameterException, MissingParameterException,
+//			OperationFailedException, PermissionDeniedException {
+//
+//		StatusInfo status = new StatusInfo();
+//		status.setSuccess(true);
+//		
+//		ReferenceObjectListEntity pe = referenceObjectListDao.find(referenceObjectItemId);
+//		if (pe == null ) {
+//			throw new DoesNotExistException(String.format("ReferenceObjectListItem with id Id [%s] does not exist", referenceObjectItemId));
+//		}
+//
+//		referenceObjectListDao.remove(pe);
+//		return status;
+//		
+//	}
 
 	
 	

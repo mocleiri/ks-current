@@ -5,17 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.apache.log4j.Logger;
-import org.kuali.student.ap.academicplan.dto.ReferenceObjectListInfo;
+import org.kuali.student.ap.academicplan.dto.TypedObjectReferenceInfo;
+import org.kuali.student.ap.academicplan.infc.TypedObjectReference;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.springframework.util.StringUtils;
+
 
 @Entity
 @Table(name = "KSPL_REF_LIST")
-public class ReferenceObjectListEntity extends BaseVersionEntity implements Comparable<ReferenceObjectListEntity> {
+public class ReferenceObjectListItemEntity extends BaseVersionEntity implements TypedObjectReference{
 
 	@SuppressWarnings("unused")
-	private final static Logger LOG = Logger.getLogger(ReferenceObjectListEntity.class);
+	private final static Logger LOG = Logger.getLogger(ReferenceObjectListItemEntity.class);
 	
 	
 	  @Column(name="LIST_ID")
@@ -28,38 +31,36 @@ public class ReferenceObjectListEntity extends BaseVersionEntity implements Comp
 	  private String refObjectType;
 	  
 
-	public void copyFromInfo(ReferenceObjectListInfo dto)
+	public void copyFromInfo(TypedObjectReference ref, String listId)
 			throws DataValidationErrorException, MissingParameterException {
 		
-	   	if (dto == null){
-    		throw new MissingParameterException("null ReferenceObjectListInfo");
+	   	if (ref == null){
+    		throw new MissingParameterException("null ref");
     	}
 
 		if (this.getId() == null) {
-			this.setId(dto.getId());
-		}
-	   	
-		if (dto.getListId() == null) {
-			throw new DataValidationErrorException(
-					"list id  must not be null.");
+			this.setId(ref.getId());
 		}
 
-		if (dto.getRefObjectType() == null) {
+
+		if (ref.getRefObjectType() == null) {
 			throw new DataValidationErrorException(
 					"refOjbectType must not be null.");
 		}
 
-		if (dto.getRefObjectId() == null) {
+		if (ref.getRefObjectId() == null) {
 			throw new DataValidationErrorException(
 					"refOjbectId must not be null.");
 		}
 		
-		if (getListId() == null) {
-			setListId(dto.getListId());
+		if (StringUtils.isEmpty(listId)) {
+			throw new DataValidationErrorException(
+					"list id can't be empty.");
 		}
 
-		setRefObjectType(dto.getRefObjectType());
-		setRefObjectId(dto.getRefObjectId());
+		setRefObjectType(ref.getRefObjectType());
+		setRefObjectId(ref.getRefObjectId());
+		setListId(listId);
 
 	}
 
@@ -74,11 +75,10 @@ public class ReferenceObjectListEntity extends BaseVersionEntity implements Comp
      * Provides and data transfer object representation of the Degree Map Requirement.
      * @return DegreeMapRequirementInfo
      */
-    public ReferenceObjectListInfo toDto() {
-    	ReferenceObjectListInfo dto = new ReferenceObjectListInfo();
-
+    public TypedObjectReferenceInfo toDto() {
+    	TypedObjectReferenceInfo dto = new TypedObjectReferenceInfo();
+    	
         dto.setId(this.getId());
-        dto.setListId(getListId());
         dto.setRefObjectType(getRefObjectType());
         dto.setRefObjectId(getRefObjectId());
 
@@ -114,20 +114,4 @@ public class ReferenceObjectListEntity extends BaseVersionEntity implements Comp
 	public void setRefObjectId(String refObjectId) {
 		this.refObjectId = refObjectId;
 	}
-
-
-	@Override
-    public int compareTo(ReferenceObjectListEntity other) {
-
-        if (other == null) {
-            return -1;
-        }
-
-        if (! other.getId().equals(this.getId())) {
-            return this.getId().compareTo(other.getId());
-        }
-        
-        return 0;
-    }
-
 }
