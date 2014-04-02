@@ -1,5 +1,7 @@
 package org.kuali.student.ap.academicplan.infc;
 
+import java.util.List;
+
 import org.kuali.student.r2.common.infc.HasId;
 
 /**
@@ -7,15 +9,10 @@ import org.kuali.student.r2.common.infc.HasId;
  *
  * @Author mguilla
  */
-public interface ReferenceObjectList extends HasId, TypedObjectReference {  
+public interface ReferenceObjectList extends HasId {  
     
-
-    /**
-    * The list id
-    * @name The list id
-    */
-   
-	public String getListId();
+	
+	public List<TypedObjectReference> getReferences();
 	  
 
 }

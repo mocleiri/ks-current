@@ -85,18 +85,16 @@ public interface DegreeMapService {
 
     
  // REFERENCE OBJECT LIST 
-    public List<ReferenceObjectListInfo> getReferenceObjectItems(@WebParam(name = "listId") String listId,  @WebParam(name = "context") ContextInfo context) 
-    		throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
-
-    public ReferenceObjectListInfo getReferenceOjbectItem(@WebParam(name = "referenceObjectItemId") String referenceObjectItemId,  @WebParam(name = "context") ContextInfo context) 
+ 
+    public ReferenceObjectListInfo getReferenceObjectList(@WebParam(name = "id") String id,  @WebParam(name = "context") ContextInfo context) 
     		throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
     
-    public ReferenceObjectListInfo createReferenceObjectItem(@WebParam(name = "referenceObjectItem") ReferenceObjectListInfo referenceObjectItem,
+    public ReferenceObjectListInfo createReferenceObjectList(@WebParam(name = "referenceObjectList") ReferenceObjectListInfo referenceObjectList,
     		@WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
-    public ReferenceObjectListInfo updateReferenceObjectItem(@WebParam(name = "referenceObjectItemId") String referenceObjectItemId, @WebParam(name = "referenceObjectItem") ReferenceObjectListInfo referenceObjectItem, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+    public ReferenceObjectListInfo updateReferenceObjectList(@WebParam(name = "id") String id, @WebParam(name = "referenceObjectList") ReferenceObjectListInfo referenceObjectList, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
 
-    public StatusInfo deleteReferenceObjectItem(@WebParam(name = "referenceObjectItemId") String referenceObjectItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public StatusInfo deleteReferenceObjectList(@WebParam(name = "id") String id, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     
     
