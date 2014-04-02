@@ -10,7 +10,7 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Given I am logged in as admin
 
   #KSENROLL-12280
-  @draft
+  @pending
   Scenario: FE5.1.1 When adding RSI to the Activity Offering then the Exam Offerings should be updated with the new info
     Given I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period
     And I create an Activity Offering that has RSI data but has no ASI data
@@ -19,7 +19,7 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
 
   #KSENROLL-12280
-  @draft
+  @pending
   Scenario: FE5.1.2 When adding RSI to the Activity Offering and RSI not found on Exam Matrix then the EO data should not be populated
     Given I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period
     And I create an Activity Offering that has RSI data but has no ASI data

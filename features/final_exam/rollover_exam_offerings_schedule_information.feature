@@ -6,7 +6,7 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
   Background:
     Given I am logged in as admin
 
-  #KSENROLL-9628
+  #KSENROLL-12375
   @pending
   Scenario: FE4.1.1 Test whether Exam Offering Schedule Info is populated after a rollover is completed
     Given I create an Academic Calendar and add an official term

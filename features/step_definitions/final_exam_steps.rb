@@ -1344,16 +1344,16 @@ Given /^I create an Activity Offering that has RSI data but has no ASI data$/ do
   end
 
   @course_offering.manage
-  rsi_object = make SchedulingInformationObject, :days  => "M", :start_time  => "09:30", :start_time_ampm  => "am",
-                    :end_time  => "10:30", :end_time_ampm  => "am"
-  @activity_offering.add_req_sched_info :rsi_obj => rsi_object
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days  => "T",
+                                                          :start_time  => "04:00", :start_time_ampm  => "pm",
+                                                          :end_time  => "05:00", :end_time_ampm  => "pm")
 end
 
 When /^I add additional Requested Scheduling Information to the Activity Offering that matches an entry on the exam matrix$/ do
   @course_offering.manage
-  rsi_object = make SchedulingInformationObject, :days  => "W", :start_time  => "09:30", :start_time_ampm  => "am",
-                    :end_time  => "10:30", :end_time_ampm  => "am"
-  @activity_offering.add_req_sched_info :rsi_obj => rsi_object
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days  => "H",
+                                                          :start_time  => "04:00", :start_time_ampm  => "pm",
+                                                          :end_time  => "05:00", :end_time_ampm  => "pm")
 end
 
 When /^I add new Requested Scheduling Information to the Activity Offering that does not match an entry on the exam matrix$/ do

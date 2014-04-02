@@ -523,7 +523,7 @@ end
 Given /^I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
-  statement << (make ExamMatrixStatementObject, :days => "H", :start_time => "04:00", :st_time_ampm => "pm")
+  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "04:00", :st_time_ampm => "pm")
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "05:00", :st_time_ampm => "pm",
               :end_time => "05:50", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
