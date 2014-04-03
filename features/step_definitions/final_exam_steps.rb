@@ -1557,3 +1557,26 @@ Then /^all the Exam Offerings RSI data should be populated or not depending on w
     page.get_eo_by_ao_end_time_text(@ao_list[9].code).should == ""
   end
 end
+
+Given /^I create a Course Offering from catalog with an Alternate Exam that is not found on the matrix in a term with a defined final exam period$/ do
+  @course_offering = create CourseOffering, :term=> "201208", :course => "CHEM242", :final_exam_type => "ALTERNATE"
+end
+
+Given /^I create a Course Offering from catalog with No Exam that is found on the matrix in a term with a defined final exam period$/ do
+  @course_offering = make CourseOffering, :term=> "201208", :course => "ENGL304", :final_exam_type => "NONE"
+
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                     :courses => @course_offering.course)
+  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 3", :start_time => "01:00", :st_time_ampm => "pm",
+              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
+  @matrix.add_rule :rule_obj => rule
+
+  @course_offering.create
+end
+
+When /^I edit the Course Offering to use a Standard Exam that is CO-Driven$/ do
+  @course_offering.edit :final_exam_type => "Standard Final Exam", :final_exam_driver => "Final Exam Per Course Offering",
+                        :use_final_exam_matrix => true
+end

@@ -241,6 +241,13 @@ class CourseOffering
       @final_exam_driver = options[:final_exam_driver] if options[:exp_success]
     end
 
+    if options[:use_final_exam_matrix]
+      on CourseOfferingCreateEdit do |page|
+        page.check_final_exam_matrix( options[:use_final_exam_matrix])
+      end
+      @use_final_exam_matrix = options[:use_final_exam_matrix] if options[:exp_success]
+    end
+
     if options[:final_exam_activity] != nil
       on CourseOfferingCreateEdit do |page|
         page.final_exam_activity_select(options[:final_exam_activity])
