@@ -87,7 +87,6 @@ Feature: REG.Register for course
     Then there is a message indicating that the course is full
 
   #KSENROLL-12353
-  @wip
   Scenario: I want my registration cart and schedule to accurately reflect the number of courses and credits I am registered for so that I can be aware of my credit load.
     When I add a WMST course offering to my registration cart
     Then I can view the number of courses and credits I am registered for in my registration cart
