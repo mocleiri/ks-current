@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReferenceObjectListInfo", propOrder = { "id", "refObjectId", "refObjectType", "_futureElements" })
+@XmlType(name = "TypedObjectReferenceInfo", propOrder = { "id", "refObjectId", "refObjectType", "_futureElements" })
 public class TypedObjectReferenceInfo implements TypedObjectReference, Serializable {
 	
 	private static final long serialVersionUID = 6019908398241577527L;

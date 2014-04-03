@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReferenceObjectListInfo", propOrder = { "id", "references", "refObjectType", "_futureElements" })
+@XmlType(name = "ReferenceObjectListInfo", propOrder = { "id", "references", "_futureElements" })
 public class ReferenceObjectListInfo implements ReferenceObjectList, Serializable {
 	
 	private static final long serialVersionUID = 6019908398241577527L;

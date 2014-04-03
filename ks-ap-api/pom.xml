@@ -2,14 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ks-ap-api</artifactId>
-		<version>0.7.7-iu-m20</version>
+		<version>0.7.7-iu-m21</version>
     <name>KSAP API</name>
     <description>KSAP API</description>
 
     <parent>
         <groupId>org.kuali.student.api</groupId>
         <artifactId>ks-api</artifactId>
-        <version>2.0.0-iu-m20</version>
+        <version>2.0.0-iu-m21</version>
     </parent>
 
     <dependencies>
