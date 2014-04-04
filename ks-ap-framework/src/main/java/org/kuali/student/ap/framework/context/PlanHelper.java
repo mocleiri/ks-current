@@ -1,5 +1,7 @@
 package org.kuali.student.ap.framework.context;
 
+import java.util.Set;
+
 import org.kuali.student.ap.academicplan.infc.DegreeMapRequirement;
 import org.kuali.student.ap.academicplan.infc.Placeholder;
 import org.kuali.student.ap.academicplan.infc.PlaceholderInstance;
@@ -53,7 +55,12 @@ public interface PlanHelper {
 
   public PlaceholderInstance getPlaceHolderInstance(TypedObjectReference ref);
 
-  
+  /**
+   * Get the course IDs for courses that satisfy a given PlaceHolder
+   * @param ph the Placeholder to resolve
+   * @return a set of one or more course IDs
+   */
+  public Set<String> getCourseIdsForPlaceHolder(Placeholder ph); 
   
   /**
    * Get the degree map requirement from a TypedOjbectReference

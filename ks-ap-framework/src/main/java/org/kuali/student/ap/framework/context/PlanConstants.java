@@ -95,6 +95,12 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String REF_TYPE_PLACEHOLDER_INSTANCE = "kuali.ap.ref.type.placeholderInstance";
     public static final String REF_TYPE_DEGREE_MAP_REQUIREMENT = "kuali.ap.ref.type.degreeMapRequirement";
 	
+    /* Placeholder Types */
+    public static final String PLACEHOLDER_MILESTONE = "org.kuali.student.ap.placeholder.milestone";
+    public static final String PLACEHOLDER_COURSE = "org.kuali.student.ap.placeholder.course";
+    public static final String PLACEHOLDER_SEARCH = "org.kuali.student.ap.placeholder.search";
+    public static final String PLACEHOLDER_LIST = "org.kuali.student.ap.placeholder.list";
+    
 	
     /**
 	 * Names of javascript events that can be scheduled in response to the
