@@ -412,15 +412,32 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 			throws AlreadyExistsException, DataValidationErrorException,
 			InvalidParameterException, MissingParameterException,
 			OperationFailedException, PermissionDeniedException {
-		// TODO Auto-generated method stub
 		
-		/// do a get
-		// catch does no exist exception before proceeding.
-		// if I don't catch it, throw already exists exception
+		if (referenceObjectList == null){
+			throw new InvalidParameterException("referenceOjbectList cannot be null.");
+		}
 		
-		return null;
+		String id = referenceObjectList.getId();
+		try {
+			getReferenceObjectList(id, context);
+		} catch (DoesNotExistException e) {
+			//TODO: SAVE HERE 
+			doCreate(referenceObjectList, context);
+			return null;
+		}
+		
+		throw new AlreadyExistsException("referenceOjbectList with this id already exists: " + id);
+	}
+	
+
+	private void doCreate(ReferenceObjectListInfo referenceObjectList,
+			ContextInfo context) {
+	
+			// assumes it doesn't exists. checking up to caller.
+		
 	}
 
+	
 	@Override
 	public ReferenceObjectListInfo updateReferenceObjectList(String id,
 			ReferenceObjectListInfo referenceObjectList, ContextInfo context)
@@ -430,8 +447,12 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 		// TODO Auto-generated method stub
 		
 		
-		/// delete and insert
-		// make sure it exists.
+		// delete 
+		
+		
+		// call doCreate.
+
+
 		
 		return null;
 	}
