@@ -56,6 +56,7 @@
     	<property name="degreeMapRequirementDao" ref="degreeMapRequirementDao" />
     	<property name="placeholderDao" ref="placeholderDao" />
     	<property name="placeholderInstanceDao" ref="placeholderInstanceDao" />
+    	<property name="referenceObjectListDao" ref="referenceObjectListDao" />
     </bean>
 
 	<bean id="ks.exp.degreeMapService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
@@ -140,6 +141,10 @@
     </bean>
 
     <bean id="placeholderInstanceDao" class="org.kuali.student.ap.academicplan.dao.PlaceholderInstanceDao">
+        <property name="em" ref="lpEntityManager"/>
+    </bean>
+
+    <bean id="referenceObjectListDao" class="org.kuali.student.ap.academicplan.dao.ReferenceObjectListDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 

@@ -31,8 +31,6 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gwt.user.client.rpc.core.java.util.Collections;
-
 /**
  * Degree Map Service Implementation.
  */
@@ -80,6 +78,15 @@ public class DegreeMapServiceImpl implements DegreeMapService {
 		this.placeholderInstanceDao = placeholderInstanceDao;
 	}
 	
+
+	public ReferenceObjectListDao getReferenceObjectListDao() {
+		return referenceObjectListDao;
+	}
+
+	public void setReferenceObjectListDao(
+			ReferenceObjectListDao referenceObjectListDao) {
+		this.referenceObjectListDao = referenceObjectListDao;
+	}
 
 	@Override
 	public DegreeMapInfo getDegreeMap(String degreeMapId, Date effdt,
