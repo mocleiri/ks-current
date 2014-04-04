@@ -77,15 +77,6 @@ Feature: REG.Register for course
     When I remove the course from my schedule and cancel the drop
     Then the course is present in my schedule
 
-  #KSENROLL-12219
-  Scenario: CR 7.1 I want to be notified if a registration group is full after I submit my cart so that I can adjust my registration appropriately
-    When I register as student for a course offering with a seat capacity of one
-    Then there is a message indicating successful registration
-    And I log out
-    When I am logged in as admin
-    And I register as admin for a course offering with a seat capacity of one
-    Then there is a message indicating that the course is full
-
   #KSENROLL-12353
   Scenario: I want my registration cart and schedule to accurately reflect the number of courses and credits I am registered for so that I can be aware of my credit load.
     When I add a WMST course offering to my registration cart
