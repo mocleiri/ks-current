@@ -55,7 +55,7 @@ When /^I complete the required for save fields on the course proposal and save$/
 end
 
 
-When /^I complete the required fields for save on the course admin proposal$/ do
+When /^I complete the required fields on the course admin proposal$/ do
   @course_proposal = create CmCourseProposalObject
 end
 
