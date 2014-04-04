@@ -26,6 +26,6 @@ Scenario: CC8.3 Edit the faculty proposal - CS
 
 Scenario: CC8.4 Faculty cannot edit CS proposal
   Given I have a course admin proposal created as Curriculum Specialist
-  When I am logged in as Fred
+  When I am logged in as Faculty
   Then I perform a search for the course proposal
   And I should not see the edit option in the search results for the Course Admin Proposal

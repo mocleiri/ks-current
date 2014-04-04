@@ -9,7 +9,7 @@ Given /^I have a course admin proposal created as Curriculum Specialist$/ do
 end
 
 Given /^I have a course proposal created as Faculty$/ do
-  steps %{Given I am logged in as Fred}
+  steps %{Given I am logged in as Faculty}
   @course_proposal = create CmCourseProposalObject
 end
 
@@ -18,13 +18,13 @@ Given /^I have a admin course proposal created as Curriculum Specialist and cour
   @course_proposal_cs = create CmCourseProposalObject, :proposal_title => "Alice Math class #{random_alphanums(10,'test proposal title ') }"
   puts "CS proposal title is #{@course_proposal_cs.proposal_title}"
 
-  steps %{Given I am logged in as Fred}
+  steps %{Given I am logged in as Faculty}
   @course_proposal_faculty = create CmCourseProposalObject, :proposal_title => "Freds Math class #{random_alphanums(10,'test proposal title ') }"
   puts "Faculty proposal title is #{@course_proposal_faculty.proposal_title}"
 end
 
 Given /^I have a course proposal created as Faculty and logged in as Curriculum Specialist$/ do
-  steps %{Given I am logged in as Fred}
+  steps %{Given I am logged in as Faculty}
   @course_proposal_faculty = create CmCourseProposalObject, :proposal_title => "Freds Math class #{random_alphanums(10,'test proposal title ') }"
   puts "Faculty proposal title is #{@course_proposal_faculty.proposal_title}"
 
@@ -36,7 +36,7 @@ Given /^I have a course admin proposal created as Curriculum Specialist and logg
   @course_proposal_cs = create CmCourseProposalObject, :proposal_title => "Alice Math class #{random_alphanums(10,'test proposal title ') }"
   puts "CS proposal title is #{@course_proposal_cs.proposal_title}"
 
-  steps %{Given I am logged in as Fred}
+  steps %{Given I am logged in as Faculty}
 end
 
 When /^I perform a full search for the course proposal$/ do

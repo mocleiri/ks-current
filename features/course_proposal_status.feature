@@ -4,7 +4,7 @@ Feature: View status of Course Propsoal
   Saved, Active, Enroute, Cancelled, or Approved
 
   Background:
-    Given I am logged in as Fred
+    Given I am logged in as Faculty
     And I create a course proposal
 
   Scenario: Saving a course proposal should make the status Saved

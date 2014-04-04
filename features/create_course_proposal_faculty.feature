@@ -2,7 +2,7 @@
 Feature: GT.Create a Course Proposal as Faculty
 
   Background:
-    Given I am logged in as Fred
+    Given I am logged in as Faculty
 
 
   Scenario: CC2.1 Create a course proposal with required fields and review

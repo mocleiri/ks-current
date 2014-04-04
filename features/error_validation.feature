@@ -2,7 +2,7 @@
 Feature: Course Proposal should message the user for incorrect or missing information
 
   Background:
-    Given I am logged in as Fred
+    Given I am logged in as Faculty
     And I create a course proposal
 
   Scenario: Verify course proposal cannot be saved if required fields are empty

@@ -14,7 +14,7 @@ Given /^I am logged in as a Department Schedule Coordinator$/ do
   log_in 'carol', 'carol'
 end
 
-Given /^I am logged in as Fred$/ do
+Given /^I am logged in as Faculty$/ do
   log_in 'fred', 'fred'
 end
 

@@ -4,7 +4,7 @@ Feature: GT.Find a Course Proposal
 
   Scenario: FCP1.1 Find Course Proposals as Faculty and review a proposal created by Curriculum Specialist
     Given I have a admin course proposal created as Curriculum Specialist and course proposal created as Faculty
-    When I am logged in as Fred
+    When I am logged in as Faculty
     And I perform a partial search for Course Proposals
     Then I should see both proposals listed in the search result
     And I can review the proposal created by Curriculum Specialist
