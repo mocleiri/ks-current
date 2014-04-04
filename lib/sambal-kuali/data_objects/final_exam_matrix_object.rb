@@ -53,6 +53,28 @@ class FinalExamMatrix < DataObject
     @rules.delete(opts['rule_obj'])
   end
 
+  def find_exam_slotting_info( exam_type, requirements)
+    arr = []
+    manage
+    on FEMatrixView do |page|
+      row = page.get_row_by_rule_requirements( exam_type, requirements)
+      if !row.nil?
+        arr << row.cells[1].text
+        if row.cells[2].text =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
+          arr << $1
+          arr << $2.downcase
+          arr << $3
+          arr << $4.downcase
+        end
+      end
+    end
+    if arr.empty?
+      for i in 1..5
+        arr << ""
+      end
+    end
+    return arr
+  end
 end
 
 class ExamMatrixRuleObject

@@ -150,4 +150,23 @@ class FEMatrixView < BasePage
     end
     return array
   end
+
+  def get_row_by_rule_requirements( exam_type, requirements)
+    if exam_type == "Standard"
+      rows = standard_final_exam_table.rows(text: /#{Regexp.escape(requirements)}/)
+      rows.each do |row|
+        if row.cells[COURSE_REQUIREMENTS].text =~ /#{Regexp.escape(requirements)}/m
+          return row
+        end
+      end
+    else
+      rows = common_final_exam_table.rows(text: /#{Regexp.escape(requirements)}/)
+      rows.each do |row|
+        if row.cells[COURSE_REQUIREMENTS].text =~ /#{Regexp.escape(requirements)}/m
+          return row
+        end
+      end
+    end
+  end
+
 end

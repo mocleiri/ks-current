@@ -12,4 +12,5 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
     Given I create an Academic Calendar and add an official term
     When I create multiple Course Offerings each with different Exam Offerings and Requested Scheduling Information
     And I rollover the term to a new academic term that has an exam period
-    Then all the Exam Offerings RSI data should be populated or not depending on whether the data is found on the Exam Matrix
+#    Then all the Exam Offerings Slotting info should be populated or left blank depending on whether or not it was found on the Exam Matrix
+    Then all the Exam Offerings Slotting info should be populated or left blank depending on whether or not it was found on the Exam M

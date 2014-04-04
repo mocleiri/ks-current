@@ -27,7 +27,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12283
-  @pending
   Scenario: FE5.4.1 When adding RSI to an Activity Offering that has no RSI or ASI then the EO RSI data should be populated
     Given I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period
     And I create an Activity Offering that has no ASIs or RSIs
@@ -36,7 +35,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
 
   #KSENROLL-12283
-  @pending
   Scenario: FE5.4.2 When adding RSI to an Activity Offering that has no RSI or ASI and the RSI is not found on the matrix then the EO data should not be populated
     Given I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period
     And I create an Activity Offering that has no ASIs or RSIs

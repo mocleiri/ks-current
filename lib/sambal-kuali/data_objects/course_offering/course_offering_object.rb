@@ -23,7 +23,9 @@ class CourseOffering
   attr_accessor :term,
                 :course,
                 :suffix,
-                :final_exam_type
+                :final_exam_type,
+                :final_exam_driver,
+                :final_exam_activity
   #array - generally set using options hash
   attr_accessor :activity_offering_cluster_list,
                 :affiliated_person_list,
@@ -126,7 +128,8 @@ class CourseOffering
 
         if @final_exam_type == "STANDARD"
           page.final_exam_option_standard
-          page.final_exam_driver_select(@final_exam_driver)
+          page.final_exam_driver_select( @final_exam_driver)
+          page.final_exam_activity_select( @final_exam_activity) unless @final_exam_activity.nil?
           page.check_final_exam_matrix( @use_final_exam_matrix)
         elsif @final_exam_type == "ALTERNATE"
           page.final_exam_option_alternate
