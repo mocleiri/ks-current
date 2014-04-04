@@ -5,7 +5,7 @@ Feature: GT.Create a Course Proposal as Faculty
     Given I am logged in as Fred
 
 
-  Scenario: CC2.1 Create a course proposal with required for approve fields and review
+  Scenario: CC2.1 Create a course proposal with required fields and review
     When I complete the required fields on the course proposal
     Then I should see data in required fields for the course proposal
     And I perform a full search for the course proposal
