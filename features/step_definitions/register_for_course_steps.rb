@@ -4,7 +4,8 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="BSCI1" then "BSCI106"
                   when subj=="BSCI2" then "BSCI201"
                   when subj=="CHEM" then "CHEM231"
-                  when subj=="ENGL" then "ENGL211"
+                  when subj=="ENGL1" then "ENGL211"
+                  when subj=="ENGL2" then "ENGL295"
                   when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
                   when subj=="WMST" then "WMST360"
@@ -24,12 +25,22 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
     end
   end
 
+  if subj == "ENGL2"
+    reg_group_code = "1002"
+    term_code = "201208"
+    term_descr = "Fall 2012"
+  else
+    reg_group_code = "1001"
+    term_code = "201201"
+    term_descr = "Spring 2012"
+  end
+
   course_options = (make CourseOptions, :credit_option => credit_option)
   @reg_request = make RegistrationRequest, :student_id=>"student",
-                      :term_code=>"201201",
-                      :term_descr=>"Spring 2012",
+                      :term_code=> term_code,
+                      :term_descr=> term_descr,
                       :course_code=>course_code,
-                      :reg_group_code=>"1001",
+                      :reg_group_code=>reg_group_code,
                       :course_options => course_options
   @reg_request.create
 end
