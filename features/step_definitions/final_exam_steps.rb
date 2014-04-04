@@ -1459,8 +1459,8 @@ Then /^all the Exam Offerings Slotting info should be populated or left blank de
         test_co.manage
         on(ManageCourseOfferings).view_exam_offerings
         page.get_eo_by_ao_days_text(ao.code).should match /#{eo_si_array[0]}/
-        page.get_eo_by_ao_st_time_text(ao.code).should match /#{eo_si_array[1]} #{eo_si_array[2]}/i
-        page.get_eo_by_ao_end_time_text(ao.code).should match /#{eo_si_array[3]} #{eo_si_array[4]}/i
+        page.get_eo_by_ao_st_time_text(ao.code).should match /#{eo_si_array[1]}/i
+        page.get_eo_by_ao_end_time_text(ao.code).should match /#{eo_si_array[2]}/i
       end
     else
       eo_si_array = matrix_obj.find_exam_slotting_info( "Common", test_co.course)
@@ -1468,8 +1468,8 @@ Then /^all the Exam Offerings Slotting info should be populated or left blank de
       on(ManageCourseOfferings).view_exam_offerings
       on ViewExamOfferings do |page|
         page.get_eo_by_co_days_text.should match /#{eo_si_array[0]}/
-        page.get_eo_by_co_st_time_text.should match /#{eo_si_array[1]} #{eo_si_array[2]}/i
-        page.get_eo_by_co_end_time_text.should match /#{eo_si_array[3]} #{eo_si_array[4]}/i
+        page.get_eo_by_co_st_time_text.should match /#{eo_si_array[1]}/i
+        page.get_eo_by_co_end_time_text.should match /#{eo_si_array[2]}/i
       end
     end
   end

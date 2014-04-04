@@ -61,10 +61,8 @@ class FinalExamMatrix < DataObject
       if !row_arr.empty?
         arr << row_arr[0]
         if row_arr[1] =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
-          arr << $1
-          arr << $2.downcase
-          arr << $3
-          arr << $4.downcase
+          arr << "#{$1} #{$2.downcase}"
+          arr << "#{$3} #{$4.downcase}"
         end
       end
     end
