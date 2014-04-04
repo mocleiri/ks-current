@@ -19,7 +19,7 @@ Feature: REG.Wait List
   @wip
   Scenario: CR 8.1 I want to add myself to the waitlist for a full registration group after I submit my cart so I can establish priority for a space when it becomes available
     When I register for a full ENGL2 course offering that has a waitlist
-    Then there is a message indicating that the course is waitlisted
+    Then there is a message indicating that registration failed
     And I am given the option to add myself to a waitlist for the course
     When I add myself to a waitlist for the course
     Then there is a message indicating that I have been added to the waitlist

@@ -6,19 +6,19 @@ end
 
 When /^I add myself to a waitlist for the course$/ do
   on RegistrationCart do |page|
-    add_to_waitlist(@reg_request.course_code,@reg_request.reg_group_code)
+    page.add_to_waitlist(@reg_request.course_code,@reg_request.reg_group_code)
   end
 end
 
 Then /^there is a message indicating that I have been added to the waitlist$/  do
   on RegistrationCart do |page|
-    page.result_status(@reg_request.course_code,@reg_request.reg_group_code).should include "Added to Waitlist"
+    page.waitlist_status(@reg_request.course_code,@reg_request.reg_group_code).should match /added to waitlist/i
   end
 end
 
-Then /^there is a message indicating that the course is waitlisted$/  do
+Then /^there is a message indicating that registration failed$/  do
   on RegistrationCart do |page|
-    page.course_code(@reg_request.course_code,@reg_request.reg_group_code).text.should include "Waitlist"
+    page.course_code(@reg_request.course_code,@reg_request.reg_group_code).text.should match /failed/i
   end
 end
 
