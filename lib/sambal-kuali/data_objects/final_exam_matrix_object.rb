@@ -57,10 +57,10 @@ class FinalExamMatrix < DataObject
     arr = []
     manage
     on FEMatrixView do |page|
-      row = page.get_row_by_rule_requirements( exam_type, requirements)
-      if !row.nil?
-        arr << row.cells[1].text
-        if row.cells[2].text =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
+      row_arr = page.get_row_array_by_rule_requirements( exam_type, requirements)
+      if !row_arr.empty?
+        arr << row_arr[0]
+        if row_arr[1] =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
           arr << $1
           arr << $2.downcase
           arr << $3
