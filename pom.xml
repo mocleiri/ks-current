@@ -26,7 +26,7 @@
   <groupId>org.kuali.maven.plugins</groupId>
   <artifactId>kscontractdoc-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.11</version>
+  <version>1.0.12-SNAPSHOT</version>
   <url>http://${kuali.site.hostname}/maven/plugins/${project.artifactId}/${project.version}</url>
   <name>Kuali Student Contract Documentation Generator</name>
   <description>Generates documentation for Kuali Student service contracts</description>
@@ -85,8 +85,8 @@
     </dependency>
   </dependencies>
   <scm>
-    <connection>scm:svn:https://svn.kuali.org/repos/student/tools/maven-kscontractdoc-plugin/tags/kscontractdoc-maven-plugin-1.0.11</connection>
-    <developerConnection>scm:svn:https://svn.kuali.org/repos/student/tools/maven-kscontractdoc-plugin/tags/kscontractdoc-maven-plugin-1.0.11</developerConnection>
-    <url>https://svn.kuali.org/repos/student/tools/maven-kscontractdoc-plugin/tags/kscontractdoc-maven-plugin-1.0.11</url>
+    <connection>scm:svn:https://svn.kuali.org/repos/student/tools/maven-kscontractdoc-plugin/trunk</connection>
+    <developerConnection>scm:svn:https://svn.kuali.org/repos/student/tools/maven-kscontractdoc-plugin/trunk</developerConnection>
+    <url>https://svn.kuali.org/repos/student/tools/maven-kscontractdoc-plugin/trunk</url>
   </scm>
 </project>
