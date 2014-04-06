@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author nwright
  * 
- *  @goal kscreatejpaimpl
+ *  @goal ks-create-jpa-impl
  *  @phase site
  *  @requiresProject true
  */
