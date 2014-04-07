@@ -7,8 +7,8 @@ Feature: CO.ELIG8-23 Ensure that changes made to AO or CO Requisites displays di
   Background:
     Given I am logged in as admin
 
-  #ELIG8.23.EB1 (KSENROLL-10128)
-  Scenario: Verify that suppressing the Course Offering rule for an Activity displays correctly on the Schedule of Classes for the Reg Group
+  #KSENROLL-10128
+  Scenario: ELIG8.23.1 Verify that suppressing the Course Offering rule for an Activity displays correctly on the Schedule of Classes for the Reg Group
     Given I suppress a course offering rule for an activity in a course
     And I am using the schedule of classes page
     When I search for course offerings by course
@@ -16,8 +16,8 @@ Feature: CO.ELIG8-23 Ensure that changes made to AO or CO Requisites displays di
     Then the suppressed rule should be visible for any unchanged activity that shares a Reg Group with the changed activity
     And any un-suppressed course offering rules should be visible with the course data
 
-  #ELIG8.23.EB2 (KSENROLL-10128)
-  Scenario: Verify that a CO level rule edited at the AO level displays correctly on the Schedule of Classes for the Reg Group
+  #KSENROLL-10128
+  Scenario: ELIG8.23.2 Verify that a CO level rule edited at the AO level displays correctly on the Schedule of Classes for the Reg Group
     Given I edit a course offering rule at the AO level by adding a new text statement
     And I am using the schedule of classes page
     When I search for course offerings by course
@@ -25,8 +25,8 @@ Feature: CO.ELIG8-23 Ensure that changes made to AO or CO Requisites displays di
     Then the edited course offering rule should be displayed at the activity level on Reg Groups that contain the affected activity
     But the unedited course offering rule should be displayed at the Reg Group level on Reg Groups that do not contain the affected activity
 
-  #ELIG8.23.EB3 (KSENROLL-10128)
-  Scenario: Verify that adding an AO Rule is displayed on the Schedule of Classes for the Reg Group
+  #KSENROLL-10128
+  Scenario: ELIG8.23.3. Verify that adding an AO Rule is displayed on the Schedule of Classes for the Reg Group
     Given I add a new course offering rule to a course
     And I am using the schedule of classes page
     When I search for course offerings by course
