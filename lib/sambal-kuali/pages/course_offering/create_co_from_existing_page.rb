@@ -21,7 +21,7 @@ class CreateCOFromExisting < BasePage
   action(:select_exclude_instructor) { |b| b.exclude_instructor.wait_until_present; b.exclude_instructor.click }
 
   element(:course_offering_existing_table) { |b| b.frm.div(id: "KS-ExistingOffering-ListCOs").table() }
-
+  element(:next_page) { |b| b.frm.div(id: "KS-ExistingOffering-ListCOs").link(id: /next/) }
   #TODO just selects the first row - needs to be deprecated
   element(:course_offering_copy_element) {|b| b.frm.course_offering_existing_table.rows[1].cells[ACTIONS_COLUMN_CO].radio.click  }
   action(:course_offering_copy) {|b| b.course_offering_copy_element.click }
@@ -30,8 +30,18 @@ class CreateCOFromExisting < BasePage
   CO_CODE_COLUMN = 1
   OFFERED_TERM_COLUMN = 2
 
+ #TODO: update to handle multiple pages
  def existing_co_target_row(term, course)
-    course_offering_existing_table.row(text: /#{Regexp.escape(course)}[\S\s]#{Regexp.escape(term)}/)
+   row = nil
+   if course_offering_existing_table.row(text: /#{Regexp.escape(course)}[\S\s]#{Regexp.escape(term)}/).exists?
+    row = course_offering_existing_table.row(text: /#{Regexp.escape(course)}[\S\s]#{Regexp.escape(term)}/)
+   else
+     if next_page.exists?
+      next_page.click
+      row = course_offering_existing_table.row(text: /#{Regexp.escape(course)}[\S\s]#{Regexp.escape(term)}/)
+     end
+   end
+   return row
   end
 
   def select_copy_for_existing_course(term, course)

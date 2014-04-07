@@ -165,7 +165,7 @@ When /^I have multiple Course Offerings each with a different Exam Offering in t
   co = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603", :use_final_exam_matrix => false
   co.delivery_format_list[0].format = "Lecture"
   co.delivery_format_list[0].grade_format = "Course Offering"
-  co.delivery_format_list[0].final_exam_driver = "Course Offering"
+  co.delivery_format_list[0].final_exam_activity = "Lecture"
   @co_list << co.create
 end
 
@@ -194,7 +194,7 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
                            :final_exam_driver => "Final Exam Per Course Offering"
   course_offering.delivery_format_list[0].format = "Lecture"
   course_offering.delivery_format_list[0].grade_format = "Course Offering"
-  course_offering.delivery_format_list[0].final_exam_driver = "Course Offering"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
   @co_list << course_offering.create
 
   @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
@@ -208,7 +208,7 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
                       :final_exam_driver => "Final Exam Per Activity Offering")
   course_offering.delivery_format_list[0].format = "Lecture"
   course_offering.delivery_format_list[0].grade_format = "Course Offering"
-  course_offering.delivery_format_list[0].final_exam_driver = "Lecture"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
   @co_list << course_offering.create
   @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 

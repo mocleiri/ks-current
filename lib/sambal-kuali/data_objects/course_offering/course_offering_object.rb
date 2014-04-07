@@ -161,6 +161,7 @@ class CourseOffering
         page.create_offering unless @defer_save
       end
     end
+    return self
   end
 
   def create_joint_co()
