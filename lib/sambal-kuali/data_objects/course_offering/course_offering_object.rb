@@ -24,8 +24,7 @@ class CourseOffering
                 :course,
                 :suffix,
                 :final_exam_type,
-                :final_exam_driver,
-                :final_exam_activity
+                :final_exam_driver
   #array - generally set using options hash
   attr_accessor :activity_offering_cluster_list,
                 :affiliated_person_list,
@@ -66,7 +65,6 @@ class CourseOffering
         :waitlist => nil,
         :grade_format => "",
         :delivery_format_list => collection('DeliveryFormat') << (make DeliveryFormatObject),
-        :final_exam_activity => nil,
         :honors_flag => false,
         :affiliated_person_list => {},
         :affiliated_org_list => {},
@@ -133,7 +131,6 @@ class CourseOffering
         if @final_exam_type == "STANDARD"
           page.final_exam_option_standard
           page.final_exam_driver_select( @final_exam_driver)
-          page.final_exam_activity_select( @final_exam_activity) unless @final_exam_activity.nil?
           page.check_final_exam_matrix( @use_final_exam_matrix)
         elsif @final_exam_type == "ALTERNATE"
           page.final_exam_option_alternate
@@ -257,13 +254,6 @@ class CourseOffering
         page.check_final_exam_matrix( options[:use_final_exam_matrix])
       end
       @use_final_exam_matrix = options[:use_final_exam_matrix] if options[:exp_success]
-    end
-
-    if options[:final_exam_activity] != nil
-      on CourseOfferingCreateEdit do |page|
-        page.final_exam_activity_select(options[:final_exam_activity])
-      end
-      @final_exam_activity = options[:final_exam_activity] if options[:exp_success]
     end
 
     if options[:grade_format] != nil
