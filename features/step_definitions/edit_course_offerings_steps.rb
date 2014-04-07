@@ -9,21 +9,18 @@ end
 
 When /^I edit a course offering with multiple format types$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"ENGL271")
-  existing_delivery_format =  make DeliveryFormat,
-                                   :format=>"Lecture Only",
-                                   :grade_format => "Lecture",
-                                   :final_exam_activity => "Lecture"
-  @course_offering.delivery_format_list[0] = existing_delivery_format
+  #setup values for existing delivery format
+  @course_offering.delivery_format_list[0].format="Lecture Only"
+  @course_offering.delivery_format_list[0].grade_format="Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity="Lecture"
 end
 
 When /^I edit a course offering with 2 format types$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :course=>"ENGL271")
-  existing_delivery_format =  make DeliveryFormat,
-                                   :format=>"Lecture Only",
-                                   :grade_format => "Course Offering",
-                                   :final_exam_activity => "Lecture"
-  @course_offering.delivery_format_list[0] = existing_delivery_format
-  @course_offering.manage
+  #setup values for existing delivery format
+  @course_offering.delivery_format_list[0].format="Lecture Only"
+  @course_offering.delivery_format_list[0].grade_format="Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity="Lecture"
 end
 
 When /^I edit a course offering with multiple registration options and credit types$/ do
@@ -52,7 +49,6 @@ And /^I change the multiple credit values$/ do
 end
 
 Then /^after I update the credit options are changed$/ do
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
   on CourseOfferingInquiry do  |page|
     page.course_credit_count.should == @course_offering.fixed_credit_count
@@ -61,7 +57,6 @@ Then /^after I update the credit options are changed$/ do
 end
 
 Then /^after I update the credit values are changed$/ do
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
 
   on CourseOfferingInquiry do  |page|
@@ -70,32 +65,28 @@ Then /^after I update the credit values are changed$/ do
   end
 end
 
-When /^I change the grade roster level value$/ do
-  updated_delivery_format = []
-  updated_delivery_format[0] =  make DeliveryFormat,
-                                   :format=>"Lecture Only",
-                                   :grade_format => "Lecture",
-                                   :final_exam_activity => "Lecture"
-
-  @course_offering.edit :delivery_format_list => updated_delivery_format
+When /^I change the grade roster level value for a delivery format offering$/ do
+  @course_offering.delivery_format_list[0].edit :grade_format => "Course Offering"
 end
 
 And /^I add a delivery format option$/ do
-  delivery_format = make DeliveryFormat,
+  delivery_format = make DeliveryFormatObject,
                          :format => "Discussion/Lecture",
                          :grade_format => "Lecture",
                          :final_exam_activity => "Lecture"
-  @course_offering.add_delivery_format delivery_format
-  @course_offering.save
+  @course_offering.add_delivery_format :delivery_format => delivery_format
 end
 
 And /^I add a delivery format option of Discussion Lecture$/ do
-  delivery_format = make DeliveryFormat,
+  delivery_format = make DeliveryFormatObject,
                          :format => "Discussion/Lecture",
                          :grade_format => "Course Offering",
                          :final_exam_activity => "Lecture"
-  @course_offering.add_delivery_format delivery_format
-  @course_offering.save
+  @course_offering.add_delivery_format :delivery_format => delivery_format
+end
+
+And /^I modify a delivery format option$/ do
+  @course_offering.delivery_format_list[0].edit :grade_format => "Lecture"
 end
 
 Then /^I delete the added delivery format offering$/ do
@@ -122,7 +113,6 @@ Then /^after I update the course offering the waitlist option is updated$/ do
     page.growl_text.should include "#{@course_offering.course} was successfully updated"
   end
 
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
 
   on CourseOfferingInquiry do  |page|
@@ -136,7 +126,6 @@ Then /^after I update the course offering exam options and delivery format are u
     page.growl_text.should include "#{@course_offering.course} was successfully updated"
   end
 
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
 
   on CourseOfferingInquiry do  |page|
@@ -168,7 +157,6 @@ Then /^after I update the new delivery format offering is present$/ do
 end
 
 Then /^after I update the registration options are changed$/ do
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
   on CourseOfferingInquiry do  |page|
     page.registration_options.should == @course_offering.reg_options
@@ -177,13 +165,12 @@ Then /^after I update the registration options are changed$/ do
 end
 
 Then /^after I update the grade roster level reflects the changes$/ do
-  @course_offering.search_by_subjectcode
-       @course_offering.view_course_details
-       on CourseOfferingInquiry do  |page|
-         page.get_delivery_format("Lecture Only").should == "Lecture Only"
-         page.get_grade_roster_level("Lecture Only").should == "Lecture"
-         page.get_final_exam_activity("Lecture Only").should == "Lecture"
-         page.close
+  @course_offering.view_course_details
+  format = @course_offering.delivery_format_list[0].format
+  on CourseOfferingInquiry do  |page|
+    page.get_grade_roster_level(format).should == @course_offering.delivery_format_list[0].grade_format
+    page.get_final_exam_activity(format).should == @course_offering.delivery_format_list[0].final_exam_activity
+    page.close
   end
 end
 
@@ -194,7 +181,6 @@ Then /^after I update the added delivery format offering is not present$/ do
     page.delivery_format_row("Discussion/Lecture").should == nil
     page.close
   end
-
 end
 
 Then /^I edit the same course offering$/ do

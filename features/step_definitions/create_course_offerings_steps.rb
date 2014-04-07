@@ -1,25 +1,35 @@
-When /^I create a Course Offering with "([^"]*)" delivery Formats$/ do |format_type|
-  delivery_format_list = []
-  if format_type == "selected lecture"
-    delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture")
-  else
-    delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture")
-    delivery_format_list << (make DeliveryFormat, :format => "Discussion/Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture")
-  end
-  @course_offering = create CourseOffering, :term=> Rollover::OPEN_SOC_TERM, :course => "ENGL222", :delivery_format_list => delivery_format_list
+When /^I create a Course Offering with a lecture Delivery Format$/ do
+  @course_offering = make CourseOffering, :term=> Rollover::OPEN_SOC_TERM, :course => "ENGL222", :final_exam_driver => 'Final Exam Per Activity Offering'
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
+end
+
+When /^I create a Course Offering with two Delivery Formats$/ do
+  @course_offering = make CourseOffering, :term=> Rollover::OPEN_SOC_TERM, :course => "ENGL222", :final_exam_driver => 'Final Exam Per Activity Offering'
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+
+  @course_offering.delivery_format_list << (make DeliveryFormatObject,
+                                                 :format => "Discussion/Lecture",
+                                                 :grade_format => "Lecture",
+                                                 :final_exam_activity => "Lecture",
+                                                 :parent_co => @course_offering)
+  @course_offering.create
 end
 
 And /^I create a Course Offering with random Delivery Formats$/ do
-  @course_offering = create CourseOffering, :term=> Rollover::MAIN_TEST_TERM_TARGET
+  @course_offering = create CourseOffering, :term=> Rollover::MAIN_TEST_TERM_TARGET, :final_exam_driver => 'Final Exam Per Activity Offering'
 end
 
 Then /^the new Course Offering should contain only the selected delivery formats$/ do
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
   on CourseOfferingInquiry do  |page|
     @course_offering.delivery_format_list.each do |del_option|
-      page.get_delivery_format(del_option.format).should == del_option.format
       page.get_grade_roster_level(del_option.format).should == del_option.grade_format
+      page.get_final_exam_activity(del_option.format).should == del_option.final_exam_activity
     end
     page.close
   end
@@ -51,7 +61,6 @@ When /^I create a course offering from an existing offering within same term and
 end
 
 Then /^the new Course Offering should be displayed in the list of available offerings$/ do
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
 end
 
@@ -78,12 +87,12 @@ And /^the new Course Offering should not contain any scheduling information in i
 end
 
 And /^I create a Course Offering from catalog with Activity Offerings assigned to subterms$/ do
-  delivery_format_list = []
-  delivery_format_list << (make DeliveryFormat, :format => "Lab", :grade_format => "Lab", :final_exam_activity => "Lab")
-
-  @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
-                            :course => "CHEM132",
-                            :delivery_format_list => delivery_format_list
+  @course_offering = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                            :course => "CHEM132"
+  @course_offering.delivery_format_list[0].format = "Lab"
+  @course_offering.delivery_format_list[0].grade_format = "Lab"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lab"
+  @course_offering.create
 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lab Only", :activity_type => "Lab"
@@ -101,12 +110,12 @@ And /^I create a Course Offering with an Activity Offerings assigned to subterms
 end
 
 And /^I create a Course Offering from catalog with Activity Offerings assigned to subterms in my admin org$/ do
-  delivery_format_list = []
-  delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture")
-
-  @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
-                            :course => "ENGL211",
-                            :delivery_format_list => delivery_format_list
+  @course_offering = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                            :course => "ENGL211"
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lecture Only", :activity_type => "Lecture"
@@ -120,12 +129,12 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
 end
 
 And /^I create a Course Offering from catalog with Activity Offerings$/ do
-  delivery_format_list = []
-  delivery_format_list << (make DeliveryFormat, :format => "Lab", :grade_format => "Lab", :final_exam_activity => "Lab")
-
-  @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
-                            :course => "CHEM132",
-                            :delivery_format_list => delivery_format_list
+  @course_offering = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                            :course => "CHEM132"
+  @course_offering.delivery_format_list[0].format = "Lab"
+  @course_offering.delivery_format_list[0].grade_format = "Lab"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lab"
+  @course_offering.create
 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lab Only", :activity_type => "Lab"

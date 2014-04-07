@@ -67,6 +67,14 @@ class ActivityOfferingClusterObject
       on ManageCourseOfferings do |page|
         page.add_cluster
         if @format != nil
+          #ordering of compound format type (eg Lecture/Discussion) is flexible
+          #if the selectlist doesn't include the option, then try reordering
+          if !@format.index('/').nil?
+            if !page.format_aoc_select.include?(@format)
+              formats = @format.split('/')
+              @format = "#{formats[1]}/#{formats[0]}"
+            end
+          end
           page.format_aoc_select.select(@format)
         end
         page.private_name_add.set @private_name
@@ -185,11 +193,5 @@ class ActivityOfferingClusterObject
 end
 
 class ActivityOfferingClusterCollection < CollectionsFactory
-  include Foundry
-
   contains ActivityOfferingClusterObject
-
-  def initialize browser
-    self << (make ActivityOfferingClusterObject, :private_name=> :default_cluster)
-  end
 end

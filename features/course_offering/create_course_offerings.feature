@@ -9,11 +9,11 @@ Background:
     Then the new Course Offering should contain only the selected delivery formats
 
   Scenario: Create Course Offerings with lecture delivery formats
-    When I create a Course Offering with "selected lecture" delivery Formats
+    When I create a Course Offering with a lecture Delivery Format
     Then the new Course Offering should contain only the selected delivery formats
 
   Scenario: Create Course Offerings with 2 delivery formats
-    When I create a Course Offering with "2" delivery Formats
+    When I create a Course Offering with two Delivery Formats
     Then the new Course Offering should contain only the selected delivery formats
 
   @smoke_test

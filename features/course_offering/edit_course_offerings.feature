@@ -24,7 +24,7 @@ Feature: CO.Edit Course Offerings
 #KSENROLL-1503.1
   Scenario: Edit an existing course offering to update the grade roster level
     Given I edit a course offering with multiple format types
-    And I change the grade roster level value
+    And I change the grade roster level value for a delivery format offering
     Then after I update the grade roster level reflects the changes
 
   Scenario: Edit an existing course offering and add and delete a delivery format line

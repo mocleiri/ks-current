@@ -10,12 +10,12 @@ class ManageCourseOfferings < BasePage
 
   element(:previous_course_link){ |b| b.frm.link(id: "LoadPrev") }
   element(:list_all_course_link){ |b| b.frm.link(id: "ListAll") }
-  action(:list_all_courses){ |b| b.list_all_course_link.click; b.loading.wait_while_present(200) }
+  action(:list_all_courses){ |b| b.list_all_course_link.click; b.loading.wait_while_present(60) }
   element(:next_course_link){ |b| b.frm.link(id: "LoadNext") }
 
   element(:term) { |b| b.frm.text_field(name: "termCode") }
   element(:input_code) { |b| b.frm.text_field(name: "inputCode") }
-  action(:show) { |b| b.frm.button(text: "Show").click; sleep 2; b.loading.wait_while_present(600) }
+  action(:show) { |b| b.frm.button(text: "Show").click; sleep 2; b.loading.wait_while_present(60) }
   action(:perf_show) { |b| b.frm.button(text: "Show").click; b.loading.wait_while_present(600) }
 
   value(:course_title) { |b| b.h1(class: 'uif-headerText').text }
@@ -26,7 +26,7 @@ class ManageCourseOfferings < BasePage
   element(:manage_offering_links_div) { |b| b.frm.div(id: "KS-CourseOfferingManagement-TheCourseOfferingLinks")}
   element(:view_co_details_link) { |b| b.manage_offering_links_div.link(text: "View") }
   element(:edit_course_offering_link) { |b| b.frm.link(id: "edit_co")}
-  action(:edit_course_offering) { |b| b.edit_course_offering_link.click; b.loading.wait_while_present(200) }
+  action(:edit_course_offering) { |b| b.edit_course_offering_link.click; b.loading.wait_while_present(60) }
   element(:delete_course_offering_link) { |b| b.manage_offering_links_div.link(id: "ActivityOfferingResultSection-deleteOneCoWithLink") }
   action(:delete_course_offering) { |b| b.delete_course_offering_link.click; b.loading.wait_while_present }
   element(:manage_course_offering_requisites_link) { |b| b.manage_offering_links_div.link(:text => /Course Offering Requisites/) }

@@ -6,7 +6,7 @@ When /^I create a joint\-defined Course Offering$/ do
   @course_offering.start_create_by_search
   on CreateCourseOffering do  |page|
     @course = @catalogue_course_code
-    delivery_obj = make DeliveryFormat, :format=>"Lecture", :grade_format => "Course", :final_exam_activity => "Lecture"
+    delivery_obj = make DeliveryFormatObject, :format=>"Lecture", :grade_format => "Course", :final_exam_activity => "Lecture"
     delivery_obj.select_random_delivery_formats
     page.create_offering
   end

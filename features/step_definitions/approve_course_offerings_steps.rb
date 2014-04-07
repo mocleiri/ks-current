@@ -157,22 +157,24 @@ Given /^a new academic term has course and activity offerings in canceled and su
   @manage_soc.set_up_soc
   @manage_soc.perform_manual_soc_state_change
 
+  @course_offering_canceled = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                                     :course => "ENGL211"
+  @course_offering_canceled.delivery_format_list[0].format = "Lecture"
+  @course_offering_canceled.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering_canceled.delivery_format_list[0].final_exam_activity = "Lecture"
 
-  delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture"
-
-  @course_offering_canceled = create CourseOffering, :term=> @calendar.terms[0].term_code,
-                                     :course => "ENGL211",
-                                     :delivery_format_list => [delivery_format]
+  @course_offering_canceled.create
 
   @activity_offering_canceled = create ActivityOfferingObject, :parent_course_offering => @course_offering_canceled,
                                        :activity_type => "Lecture"
   @activity_offering_canceled.cancel
 
-  delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture"
-
-  @course_offering_suspended = create CourseOffering, :term=> @calendar.terms[0].term_code,
-                                      :course => "ENGL211",
-                                      :delivery_format_list => [delivery_format]
+  @course_offering_suspended = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                                      :course => "ENGL211"
+  @course_offering_suspended.delivery_format_list[0].format = "Lecture"
+  @course_offering_suspended.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering_suspended.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering_suspended.create
 
   @activity_offering_suspended = create ActivityOfferingObject, :parent_course_offering => @course_offering_suspended,
                                         :activity_type => "Lecture"
@@ -558,12 +560,13 @@ end
 
 Given /^I create a course offering from catalog with a suspended activity offering$/ do
   @term_for_test = Rollover::OPEN_SOC_TERM if @term_for_test.nil?
-  delivery_format_list = []
-  delivery_format_list << (make DeliveryFormat, :format => "Lab", :grade_format => "Lab", :final_exam_activity => "Lab")
 
-  @course_offering = create CourseOffering, :term=> @term_for_test,
-                            :course => "CHEM132",
-                            :delivery_format_list => delivery_format_list
+  @course_offering = make CourseOffering, :term=> @term_for_test,
+                            :course => "CHEM132"
+  @course_offering.delivery_format_list[0].format = "Lab"
+  @course_offering.delivery_format_list[0].grade_format = "Lab"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lab"
+  @course_offering.create
 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lab Only", :activity_type => "Lab"
@@ -925,7 +928,7 @@ end
 #  @manage_soc.perform_manual_soc_state_change
 #
 #  delivery_format_list = []
-#  delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture")
+#  delivery_format_list << (make DeliveryFormatObject, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture")
 #
 #  @course_offering_canceled = create CourseOffering, :term=> @term.term_code,
 #                            :course => "ENGL211",
@@ -985,12 +988,12 @@ Given /^a new academic term has an activity offering in approved status$/ do
     @manage_soc.set_up_soc
     @manage_soc.perform_manual_soc_state_change
 
-    delivery_format_list = []
-    delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Lecture", :final_exam_activity => "Lecture")
-
-    @course_offering = create CourseOffering, :term=> @calendar.terms[0].term_code,
-                                :course => "ENGL462",
-                                :delivery_format_list => delivery_format_list
+    @course_offering = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                                :course => "ENGL462"
+    @course_offering.delivery_format_list[0].format = "Lecture"
+    @course_offering.delivery_format_list[0].grade_format = "Lecture"
+    @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+    @course_offering.create
 
     @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                                          :format => "Lecture Only", :activity_type => "Lecture"

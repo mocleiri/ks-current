@@ -468,7 +468,7 @@ end
 
 Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201301", :course => "HIST110")
-  @course_offering.edit :final_exam_activity => "Discussion"
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Discussion"
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
@@ -528,8 +528,14 @@ Given /^I create from catalog a Course Offering with an AO\-driven exam that use
               :end_time => "05:50", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
 
-  @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
-                            :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
+  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361",
+                            :final_exam_driver => "Final Exam Per Activity Offering"
+
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
+
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Actual Scheduling Information for the exam does exist$/ do

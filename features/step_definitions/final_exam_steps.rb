@@ -155,18 +155,18 @@ end
 
 When /^I have multiple Course Offerings each with a different Exam Offering in the source term$/ do
   @co_list = []
+
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603",
                       :final_exam_type => "NONE")
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603",
                       :final_exam_type => "ALTERNATE")
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603",
                       :final_exam_driver => "Final Exam Per Activity Offering")
-
-  delivery_format_list = []
-  delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering",
-                                :final_exam_driver => "Course Offering")
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603", @use_final_exam_matrix => false,
-                      :delivery_format_list => delivery_format_list)
+  co = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS603", :use_final_exam_matrix => false
+  co.delivery_format_list[0].format = "Lecture"
+  co.delivery_format_list[0].grade_format = "Course Offering"
+  co.delivery_format_list[0].final_exam_driver = "Course Offering"
+  @co_list << co.create
 end
 
 And /^I rollover the source term to a new academic term$/ do
@@ -189,15 +189,13 @@ end
 
 When /^I create multiple Course Offerings each with a different Exam Driver in the new term$/ do
   @co_list = []
-  delivery_format_list = []
-  delivery_format_list << (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering",
-                                :final_exam_driver => "Course Offering")
-  course_offering = create CourseOffering, :term => @calendar.terms[0].term_code,
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code,
                            :course => "BSCI215",
-                           :delivery_format_list => delivery_format_list,
                            :final_exam_driver => "Final Exam Per Course Offering"
-
-  @co_list << course_offering
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  course_offering.delivery_format_list[0].final_exam_driver = "Course Offering"
+  @co_list << course_offering.create
 
   @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
@@ -206,12 +204,12 @@ When /^I create multiple Course Offerings each with a different Exam Driver in t
                            :final_exam_driver => "Final Exam Per Activity Offering"
   @co_list << course_offering
 
-  delivery_format_list[0] = (make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering",
-                                  :final_exam_driver => "Lecture")
-
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS272",
-                      :delivery_format_list => delivery_format_list,
+  course_offering = (make CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS272",
                       :final_exam_driver => "Final Exam Per Activity Offering")
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  course_offering.delivery_format_list[0].final_exam_driver = "Lecture"
+  @co_list << course_offering.create
   @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM611",
@@ -278,6 +276,8 @@ end
 
 Given /^that Activity Offerings exist for the selected Course Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  #setup existing format
+  @course_offering.delivery_format_list[0].format = "Lecture/Discussion"
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
@@ -328,43 +328,20 @@ Then /^see one Exam Offering for the Course Offering with a status of ([^"]*)$/ 
 end
 
 When /^I view the Exam Offerings for a CO created from an existing CO with a standard final exam driven by Activity Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL305")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
-  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true
-
+  @course_offering = make CourseOffering, :term => "201208", :course => "ENGL305"
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
-
   on(ManageCourseOfferings).view_exam_offerings
 end
 
 When /^I select Final Exam Per Activity Offering as the Final Exam Driver and Update the Course Offering$/ do
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
+                                 :defer_save => true
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 end
 
 When /^I view the Exam Offerings for a CO created from an existing CO with multiple AOs and a standard final exam driven by Activity Offering$/ do
-  @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "HIST110")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
-  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
-  @activity_offering.edit :send_to_scheduler => true
-
+  @course_offering = make CourseOffering, :term => "201208", :course => "HIST110"
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
 
   on(ManageCourseOfferings).view_exam_offerings
@@ -372,25 +349,11 @@ end
 
 When /^I view the Exam Offerings for a CO with two AOs and a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
   on(ManageCourseOfferings).view_exam_offerings
 end
 
 Given /^that the CO has two existing AOs and a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
   @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
@@ -404,15 +367,9 @@ When /^I add two new AOs to the CO and then create a copy of the CO$/ do
   on(ManageCourseOfferings).view_exam_offerings
 end
 
+#TODO: confirm not used
 When /^I view the Exam Offerings for a CO with two new AOs and a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
   @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
@@ -426,13 +383,6 @@ end
 
 When /^I create a CO with two new AOs and then view the Exam Offerings where the CO has a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
@@ -458,12 +408,11 @@ end
 
 When /^I view the Exam Offerings for a CO in an Open SOC with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201301", :course => "ENGL304")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
+                                 :defer_save => true
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -471,9 +420,11 @@ end
 When /^I view the Exam Offerings for a CO where the Course Offering Standard FE is changed to No Final Exam$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL305")
   @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Course Offering"
+                                 :final_exam_driver => "Final Exam Per Course Offering",
+                                 :defer_save => true
 
-  @course_offering.edit :final_exam_type => "No Final Exam or Assessment"
+  @course_offering.edit :final_exam_type => "No Final Exam or Assessment",
+                        :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -486,12 +437,6 @@ end
 
 Given /^that the CO is set to have exam offerings driven by AO$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL305")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
 end
 
 When /^I view the Exam Offerings for a CO where the Course Offering Standard FE setting is changed to No Final Exam$/ do
@@ -502,13 +447,6 @@ end
 
 When /^I view the Exam Offerings for a CO where the Activity Offering Standard FE is changed to Alternate Final Exam$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
   @course_offering.edit :final_exam_type => "Alternate Final Assessment"
 
   on(ManageCourseOfferings).view_exam_offerings
@@ -537,12 +475,10 @@ When /^I view the Exam Offerings for a CO where the Course Offering No Standard 
 end
 
 When /^I view the Exam Offerings for a CO where the exam is changed to Standard Final Exam driven by Activity Offering$/ do
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
+                                 :defer_save => true
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -565,24 +501,22 @@ end
 
 When /^I view the Exam Offerings? after changing the Course Offering back to Standard FE and the Final Exam Driver to Activity Offering$/ do
   @course_offering.manage
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
+                                 :defer_save => true
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
 end
 
 When /^I view the Exam Offerings after changing the Final Exam Driver to Activity Offering$/ do
   @course_offering.manage
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
+                                 :defer_save => true
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -596,12 +530,11 @@ end
 
 When /^I view the Exam Offerings for a CO created from catalog with a standard final exam driven by Course Offering$/ do
   @course_offering = create CourseOffering, :term => "201208", :course => "ENGL304"
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture Only", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering",
-                                 :delivery_format_list => delivery_format_list
+                                 :defer_save => true
+  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -644,13 +577,6 @@ end
 
 When /^I cancel an Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
-  delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :delivery_format_list => delivery_format_list
-
   @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
@@ -658,7 +584,7 @@ end
 Given /^that the Lecture AO that drives the exam is not in a cancelled state$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
+  delivery_format_list[0] = make DeliveryFormatObject, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
@@ -694,7 +620,7 @@ end
 When /^I cancel all Activity Offerings for a CO with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
+  delivery_format_list[0] = make DeliveryFormatObject, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
@@ -749,7 +675,7 @@ end
 When /^I suspend an Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
   delivery_format_list = []
-  delivery_format_list[0] = make DeliveryFormat, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
+  delivery_format_list[0] = make DeliveryFormatObject, :format => "Lecture/Discussion", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Activity Offering",
@@ -1035,6 +961,7 @@ Then /^the Exam Offerings for Course Offering in the EO for CO table should be i
 end
 
 Then /^the Exam Offerings for each Activity Offering in the EO for AO table should be in a ([^"]*) state$/ do |exp_state|
+  #TODO: validation is very slow, needs to use @course_offering object
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
     array = page.return_array_of_ao_codes
@@ -1108,6 +1035,7 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
 end
 
 Then /^the EOs in the Exam Offerings for Activity Offering table should be in a ([^"]*) state$/ do |exp_state|
+  #TODO: should be driven by @course_offering object
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
     array = page.return_array_of_ao_codes
@@ -1251,9 +1179,8 @@ Given /^that a CO allows for multiple Format Offerings and has one existing form
 end
 
 When /^I edit the CO to add a second Format Offering$/ do
-  delivery_format = make DeliveryFormat, :format => "Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
-  @course_offering.add_delivery_format delivery_format
-  @course_offering.save
+  delivery_format = make DeliveryFormatObject, :format => "Lecture", :grade_format => "Course Offering", :final_exam_activity => "Lecture"
+  @course_offering.add_delivery_format :delivery_format => delivery_format
 end
 
 When /^I create a Course Offering from copy in a term that uses the matrix and has a final exam period defined$/ do
@@ -1313,8 +1240,12 @@ When /^I create a copy of the initial course offering in a term that uses the FE
 end
 
 Given /^I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period$/ do
-  @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
-                            :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
+  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361",
+                            :final_exam_driver => "Final Exam Per Activity Offering"
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
 end
 
 Given /^that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period$/ do
@@ -1423,8 +1354,13 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
                                                 :days  => "F",  :start_time  => "03:00", :start_time_ampm  => "pm",
                                                 :end_time  => "04:00", :end_time_ampm  => "pm")
   #5#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
-                      :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture")
+
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
+      :final_exam_driver => "Final Exam Per Activity Offering"
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Lecture"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @co_list << (course_offering.create)
   # @co_list[4].edit :final_exam_activity => "Lecture"
 
   @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject)
@@ -1437,8 +1373,12 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
                                                 :days  => "F", :start_time  => "03:00", :start_time_ampm  => "pm",
                                                 :end_time  => "04:00", :end_time_ampm  => "pm")
   #6#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
-                      :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture")
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
+      :final_exam_driver => "Final Exam Per Activity Offering"
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Lecture"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @co_list << (course_offering.create)
 
   @co_list[5].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture" )
 end

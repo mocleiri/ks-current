@@ -1,6 +1,6 @@
 # stores test data for creating/editing and validating course offerings and provides convenience methods for navigation and data entry
 #
-# CourseOffering objects contain ActivityOfferings, ActivityOfferingClusters, DeliveryFormats....
+# CourseOffering objects contain ActivityOfferings, ActivityOfferingClusters, DeliveryFormatObjects....
 #
 # class attributes are initialized with default data unless values are explicitly provided
 #
@@ -61,11 +61,11 @@ class CourseOffering
         :term=>Rollover::MAIN_TEST_TERM_TARGET,
         :course=>"ENGL211",
         :suffix=>"",
-        :activity_offering_cluster_list=> collection('ActivityOfferingCluster'),
+        :activity_offering_cluster_list=> collection('ActivityOfferingCluster') << (make ActivityOfferingClusterObject, :private_name=> :default_cluster),
         :final_exam_type => "STANDARD",
         :waitlist => nil,
         :grade_format => "",
-        :delivery_format_list => [ (make DeliveryFormat ) ],
+        :delivery_format_list => collection('DeliveryFormat') << (make DeliveryFormatObject),
         :final_exam_activity => nil,
         :honors_flag => false,
         :affiliated_person_list => {},
@@ -92,6 +92,10 @@ class CourseOffering
     }
     options = defaults.merge(opts)
     set_options(options)
+    #make sure parent_co setup for all collections
+    @delivery_format_list.each do |dl|
+      dl.parent_co = self
+    end
   end
 
   def <=>(other)
@@ -137,8 +141,11 @@ class CourseOffering
           page.final_exam_option_none
         end
 
-        @delivery_format_list.each_with_index do |dfl,index|
+        index = 0 #FIXME
+        @delivery_format_list.each do |dfl|
           on(CourseOfferingCreateEdit).add_format if index > 0  #update default df row on first iteration
+          index += 1
+          dfl.parent_co = self
           dfl.create
         end
 
@@ -258,14 +265,6 @@ class CourseOffering
       @final_exam_activity = options[:final_exam_activity] if options[:exp_success]
     end
 
-    if options[:delivery_format_list] != nil
-      options[:delivery_format_list].each do |delivery_obj|
-        @delivery_format_list.each do |existing_si|
-          existing_si.update_delivery_format(delivery_obj) if existing_si.format == delivery_obj.format
-        end
-      end
-    end
-
     if options[:grade_format] != nil
       on CourseOfferingCreateEdit do |page|
         page.select_grade_roster_level(options[:grade_format])
@@ -292,8 +291,8 @@ class CourseOffering
         else
           page.audit_checkbox.clear
         end
-        @audit_flag = options[:audit_flag] if options[:exp_success]
-        @reg_options = set_reg_options(options) if options[:exp_success]
+        @audit_flag = options[:audit_flag]
+        @reg_options = set_reg_options(options)
       end
     end
 
@@ -441,7 +440,6 @@ class CourseOffering
 
         @activity_offering_cluster_list.push(temp_aoc)
       end
-      #show_debug_details
     end
 
   end
@@ -452,15 +450,6 @@ class CourseOffering
     #       SUFFIX of the cross-listed course
     search_by_subjectcode
     @cross_listed_codes = on(ManageCourseOfferingList).crosslisted_codes(course)
-  end
-
-  def show_debug_details
-    @activity_offering_cluster_list.each do |cluster|
-      puts "cluster name: #{cluster.private_name}"
-      cluster.ao_list.each do |ao|
-        puts "Assigned AO: #{ao.code}, #{ao.activity_type}, #{ao.max_enrollment} "
-      end
-    end
   end
 
   def search_by_subjectcode
@@ -638,13 +627,19 @@ class CourseOffering
     end
   end
 
-# TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
-# the new format added to the list and the new list passed on the options hash to course_offering.edit
+ def add_delivery_format opts
+   defaults = {
+       :config_only => false,
+       :defer_save => false
+   }
+   options = defaults.merge(opts)
 
- def add_delivery_format (delivery_format_obj)
+   delivery_format_obj = options[:delivery_format]
    edit :defer_save => true
-   delivery_format_obj.create
+   delivery_format_obj.create unless options[:config_only]
+   delivery_format_obj.parent_co = self
    @delivery_format_list <<  delivery_format_obj
+   save unless options[:defer_save]
   end
 
 # TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
@@ -1145,105 +1140,3 @@ class CourseOffering
 
 end
 
-class AffiliatedOrg
-
-  include Foundry
-  include DataFactory
-  include DateFactory
-  include StringFactory
-  include Workflows
-
-  attr_accessor :org_id,
-                :org_name
-
-  def initialize(browser, opts={})
-    @browser = browser
-
-    defaults = {
-        :org_id => "ORGID-BIOL",
-        :org_name => "Biology"
-    }
-    options = defaults.merge(opts)
-    set_options(options)
-  end
-
-end
-
-class DeliveryFormat
-  include Foundry
-  include DataFactory
-  include DateFactory
-  include StringFactory
-  include Workflows
-
-  attr_accessor :format,
-                :grade_format,
-                :final_exam_activity,
-                :final_exam_driver
-
-  def initialize(browser, opts={})
-    @browser = browser
-
-    defaults = {
-        :format => "random",
-        :grade_format => "Course Offering",
-        :final_exam_activity => "Lecture",
-        :final_exam_driver => ""
-    }
-    options = defaults.merge(opts)
-    set_options(options)
-  end
-
-  def create
-    on CourseOfferingCreateEdit do |page|
-      if ! page.new_format_select.present?
-        page.add_format
-      end
-    end
-
-    if @format == "random" then
-      set_random_delivery_formats
-    else
-      on CourseOfferingCreateEdit do |page|
-        page.new_format_select.select(@format)
-        page.new_grade_roster_level_select.wait_until_present
-        page.new_grade_roster_level_select.select(@grade_format)
-        page.new_final_exam_activity_select.select(@final_exam_activity) if page.new_final_exam_activity_select.present?
-      end
-    end
-    standardize_format_values
-  end
-
-  def set_random_delivery_formats
-    on CourseOfferingCreateEdit do  |page|
-      @format = page.select_random_option(page.new_format_select)
-      page.new_grade_roster_level_select.wait_until_present
-      @grade_format = page.select_random_option(page.new_grade_roster_level_select)
-      @final_exam_activity = page.select_random_option(page.new_final_exam_activity_select) if page.new_final_exam_activity_select.present?
-    end
-    standardize_format_values
-  end
-
-  def standardize_format_values
-    if @format == "Lab"
-      @format = "Lab Only"
-    elsif @format == "Lecture"
-      @format = "Lecture Only"
-    end
-    if @grade_format == "Course"
-      @grade_format = "Course Offering"
-    else
-    end
-  end
-  private  :standardize_format_values
-
-  def update_delivery_format(delivery_format_obj)
-    on CourseOfferingCreateEdit do |page|
-      page.edit_grade_roster_level(@format,delivery_format_obj.grade_format)
-      @grade_format = delivery_format_obj.grade_format
-      page.edit_final_exam_activity(@format,delivery_format_obj.final_exam_activity)
-      @final_exam_activity = delivery_format_obj.final_exam_activity
-    end
-  end
-
-end

@@ -335,7 +335,7 @@ When /^I create a basic course offering$/ do
   end
   on CourseOfferingCreateEdit do |page|
     page.suffix.set random_alphanums.strip
-    create DeliveryFormat
+    create DeliveryFormatObject
     @performance_test.start
     page.create_offering
     @performance_test.end
@@ -354,7 +354,7 @@ When /^I create a jointly defined course offering$/ do
   on CourseOfferingCreateEdit do |page|
     page.suffix.set random_alphanums.strip
     page.create_new_joint_defined_course_row_1
-    create DeliveryFormat
+    create DeliveryFormatObject
     @performance_test.start
     page.create_offering
     @performance_test.end
