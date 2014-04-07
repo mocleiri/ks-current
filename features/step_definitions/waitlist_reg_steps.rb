@@ -23,7 +23,10 @@ Then /^there is a message indicating that registration failed$/  do
 end
 
 And /^I can verify I am on the waitlist$/  do
-  #pending
+  #check that course appears as a waitlisted course
+  on StudentSchedule do |page|
+    page.waitlisted_course_code(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+  end
 end
 
 Given /^I register for an? full (\w+) course offering that has a waitlist$/ do |subj|
