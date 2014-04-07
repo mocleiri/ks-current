@@ -397,7 +397,7 @@ class ExamMatrixStatementObject
   end
 
   def operator_str
-    statement_operator.nil? ? "" : " #{@statement_operator} "
+    statement_operator.nil? ? "" : " #{@statement_operator}\n"
   end
 
   def stmt_str

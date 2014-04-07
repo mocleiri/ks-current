@@ -44,7 +44,7 @@ Given /^I have a Final Exam Matrix to which I have added multiple Standard Final
                      :free_text => "To test the editing of the statement")
   statement << (make ExamMatrixStatementObject,
                      :statement_option => ExamMatrixStatementObject::TIME_SLOT_OPTION,
-                     :statement_operator => 'And',
+                     :statement_operator => 'AND',
                      :days => 'FS')
 
   rule = make ExamMatrixRuleObject,
@@ -125,7 +125,7 @@ When /^I create a Final Exam Matrix with multiple rule statements$/ do
                    :free_text => "To test multi-statements")
   statement << (make ExamMatrixStatementObject,
                      :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
-                     :statement_operator => 'And',
+                     :statement_operator => 'AND',
                      :courses => 'ENGL211')
 
   rule = make ExamMatrixRuleObject,

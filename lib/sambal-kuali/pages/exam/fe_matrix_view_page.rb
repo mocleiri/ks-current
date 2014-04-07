@@ -36,7 +36,7 @@ class FEMatrixView < BasePage
   action(:add_common_fe_rule) { |b| b.common_final_exam_section.a( text: "Add").click; b.loading.wait_while_present}
 
   def standard_fe_target_row( rule_obj)
-    rows = standard_final_exam_table.rows(text: /#{Regexp.escape(rule_obj.rule_requirements)}/)
+    rows = standard_final_exam_table.rows(text: /#{rule_obj.rule_requirements}/)
     rows.each do |row|
       if row.text =~ /#{Regexp.escape(rule_obj.rsi_days)}.*#{Regexp.escape(rule_obj.start_time)}.*#{Regexp.escape(rule_obj.end_time)}/m
         return row
@@ -46,7 +46,7 @@ class FEMatrixView < BasePage
   end
 
   def common_fe_target_row( rule_obj)
-    rows = common_final_exam_table.rows(text: /#{Regexp.escape(rule_obj.rule_requirements)}/)
+    rows = common_final_exam_table.rows(text: /#{rule_obj.rule_requirements}/)
     rows.each do |row|
       if row.text =~ /#{Regexp.escape(rule_obj.rsi_days)}.*#{Regexp.escape(rule_obj.start_time)}.*#{Regexp.escape(rule_obj.end_time)}/m
         return row
