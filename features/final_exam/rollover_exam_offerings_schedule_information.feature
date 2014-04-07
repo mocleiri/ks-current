@@ -8,9 +8,8 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
 
   #KSENROLL-12375
   @pending
-  Scenario: FE4.1.1 Test whether Exam Offering Schedule Info is populated after a rollover is completed
+  Scenario: FE4.1.1 Exam Offering Slotting Info should populated or not after a rollover depending on whether the AO RSI data is found on the matrix
     Given I create an Academic Calendar and add an official term
     When I create multiple Course Offerings each with different Exam Offerings and Requested Scheduling Information
     And I rollover the term to a new academic term that has an exam period
-#    Then all the Exam Offerings Slotting info should be populated or left blank depending on whether or not it was found on the Exam Matrix
-    Then all the Exam Offerings Slotting info should be populated or left blank depending on whether or not it was found on the Exam M
+    Then the Exam Offerings Slotting info should be populated or left blank depending on whether the AO RSI was found on the Exam Matrix

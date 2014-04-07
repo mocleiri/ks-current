@@ -1312,10 +1312,10 @@ end
 
 When /^I create multiple Course Offerings each with different Exam Offerings and Requested Scheduling Information$/ do
   @co_list = []
-  #1#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
                       :final_exam_driver => "Final Exam Per Course Offering")
-  #2#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS161",
                       :final_exam_driver => "Final Exam Per Course Offering")
 
@@ -1330,7 +1330,7 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
                                                 :end_time  => "04:00", :end_time_ampm  => "pm")
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion", :activity_type => "Discussion")
-  #3#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL362",
                       :final_exam_driver => "Final Exam Per Activity Offering")
 
@@ -1345,7 +1345,7 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
                                                 :start_time_ampm  => "pm", :end_time  => "10:00", :end_time_ampm  => "pm")
 
   @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
-  #4#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS171",
                       :final_exam_driver => "Final Exam Per Activity Offering")
 
@@ -1353,7 +1353,6 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
   @co_list[3].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
                                                 :days  => "F",  :start_time  => "03:00", :start_time_ampm  => "pm",
                                                 :end_time  => "04:00", :end_time_ampm  => "pm")
-  #5#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
       :final_exam_driver => "Final Exam Per Activity Offering"
@@ -1363,16 +1362,16 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
   @co_list << (course_offering.create)
   # @co_list[4].edit :final_exam_activity => "Lecture"
 
-  @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject)
-  @co_list[4].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @co_list[0].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
                                                 :days  => "TH", :start_time  => "09:30", :start_time_ampm  => "am",
                                                 :end_time  => "11:30", :end_time_ampm  => "am")
 
-  @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject)
-  @co_list[4].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @co_list[0].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
                                                 :days  => "F", :start_time  => "03:00", :start_time_ampm  => "pm",
                                                 :end_time  => "04:00", :end_time_ampm  => "pm")
-  #6#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
       :final_exam_driver => "Final Exam Per Activity Offering"
   course_offering.delivery_format_list[0].format = "Lecture"
@@ -1380,153 +1379,55 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
   course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
   @co_list << (course_offering.create)
 
-  @co_list[5].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture" )
+  @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture" )
 end
 
-Then /^all the Exam Offerings Slotting info should be populated or left blank depending on whether or not it was found on the Exam M$/ do
+Then /^the Exam Offerings Slotting info should be populated or left blank depending on whether the AO RSI was found on the Exam Matrix$/ do
   matrix_obj = make FinalExamMatrix, :term_type => "Fall Term"
   @co_list.each do |co|
     test_co = make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => co.course
     if test_co.activity_offering_cluster_list.any? && test_co.final_exam_driver == "Final Exam Per Activity Offering"
       test_co.activity_offering_cluster_list[0].ao_list.each do |ao|
         ao_rsi_list = ao.requested_scheduling_information_list
+        matrix_rule = ""
         if ao_rsi_list[0].days != ""
           matrix_rule = "#{ao_rsi_list[0].days} at #{ao_rsi_list[0].start_time} #{ao_rsi_list[0].start_time_ampm.upcase}"
-          eo_si_array = matrix_obj.find_exam_slotting_info( "Standard", matrix_rule)
-        else
-          eo_si_array = matrix_obj.find_exam_slotting_info( "Standard", "")
         end
+        eo_si_array = matrix_obj.find_exam_slotting_info( "Standard", matrix_rule)
         test_co.manage
-        on(ManageCourseOfferings).view_exam_offerings
-        page.get_eo_by_ao_days_text(ao.code).should match /#{eo_si_array[0]}/
-        page.get_eo_by_ao_st_time_text(ao.code).should match /#{eo_si_array[1]}/i
-        page.get_eo_by_ao_end_time_text(ao.code).should match /#{eo_si_array[2]}/i
+        on ManageCourseOfferings do |page|
+          begin
+            page.wait_until { page.growl_message_warning_div.exists? }
+            page.growl_warning_text.should match /#{test_co.course}.*#{ao_rsi_list[0].ao_list[0].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
+          rescue
+            puts "growl warning message for the EO did not appear"
+          end
+          page.view_exam_offerings
+        end
+        on ViewExamOfferings do |page|
+          page.get_eo_by_ao_days_text(ao.code).should match /#{eo_si_array[0]}/
+          page.get_eo_by_ao_st_time_text(ao.code).should match /#{eo_si_array[1]}/i
+          page.get_eo_by_ao_end_time_text(ao.code).should match /#{eo_si_array[2]}/i
+        end
       end
     else
       eo_si_array = matrix_obj.find_exam_slotting_info( "Common", test_co.course)
       test_co.manage
-      on(ManageCourseOfferings).view_exam_offerings
+      on ManageCourseOfferings do |page|
+        begin
+          page.wait_until { page.growl_warning_text.exists? }
+          page.growl_warning_text.should match /#{test_co.course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
+        rescue
+          puts "growl warning message for the EO did not appear"
+        end
+        page.view_exam_offerings
+      end
       on ViewExamOfferings do |page|
         page.get_eo_by_co_days_text.should match /#{eo_si_array[0]}/
         page.get_eo_by_co_st_time_text.should match /#{eo_si_array[1]}/i
         page.get_eo_by_co_end_time_text.should match /#{eo_si_array[2]}/i
       end
     end
-  end
-end
-
-Then /^all the Exam Offerings Slotting info should be populated or left blank depending on whether or not it was found on the Exam Matrix$/ do
-  @test_co_list = []
-  #1#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[0].course)
-  @test_co_list[0].manage
-  on ManageCourseOfferings do |page|
-    begin
-      page.wait_until { page.growl_warning_text.exists? }
-      page.growl_warning_text.should match /#{@test_co_list[0].course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-    rescue
-      puts "growl warning message for the EO did not appear"
-    end
-    page.view_exam_offerings
-  end
-  on ViewExamOfferings do |page|
-    page.get_eo_by_co_days_text.should == ""
-    page.get_eo_by_co_st_time_text.should == ""
-    page.get_eo_by_co_end_time_text.should == ""
-  end
-  #2#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[1].course)
-  @test_co_list[1].manage
-  on(ManageCourseOfferings).view_exam_offerings
-  on ViewExamOfferings do |page|
-    page.get_eo_by_co_days_text.should match /Day 2/
-    page.get_eo_by_co_st_time_text.should match /06:30/
-    page.get_eo_by_co_end_time_text.should match /08:30/
-  end
-  #3#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[2].course)
-  ao_cluster = @co_list[2].activity_offering_cluster_list[0]
-  @test_co_list[2].manage
-  on ManageCourseOfferings do |page|
-    begin
-      page.wait_until { page.growl_message_warning_div.exists? }
-      page.growl_warning_text.should match /#{@test_co_list[2].course}.*#{ao_cluster.ao_list[1].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-      page.growl_warning_text.should match /#{@test_co_list[2].course}.*#{ao_cluster.ao_list[2].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-    rescue
-      puts "growl warning message for the EO did not appear"
-    end
-    page.view_exam_offerings
-  end
-  on ViewExamOfferings do |page|
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[0].code).should match /Day 5/
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[0].code).should match /01:30/
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[0].code).should match /03:30/
-
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[1].code).should == ""
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[1].code).should == ""
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[1].code).should == ""
-
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[2].code).should == ""
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[2].code).should == ""
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[2].code).should == ""
-  end
-  #4#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[3].course)
-  ao_cluster = @co_list[3].activity_offering_cluster_list[0]
-  @test_co_list[3].manage
-  on ManageCourseOfferings do |page|
-    begin
-      page.wait_until { page.growl_message_warning_div.exists? }
-      page.growl_warning_text.should match /#{@test_co_list[3].course}.*#{ao_cluster.ao_list[0].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-    rescue
-      puts "growl warning message for the EO did not appear"
-    end
-    page.view_exam_offerings
-  end
-  on ViewExamOfferings do |page|
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[0].code).should == ""
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[0].code).should == ""
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[0].code).should == ""
-  end
-  #5#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[4].course)
-  ao_cluster = @co_list[4].activity_offering_cluster_list[0]
-  @test_co_list[4].manage
-  on ManageCourseOfferings do |page|
-    begin
-      page.wait_until { page.growl_message_warning_div.exists? }
-      page.growl_warning_text.should match /#{@test_co_list[4].course}.*#{ao_cluster.ao_list[1].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-    rescue
-      puts "growl warning message for the EO did not appear"
-    end
-    page.view_exam_offerings
-  end
-  on ViewExamOfferings do |page|
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[0].code).should match /Day 2/
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[0].code).should match /08:00/
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[0].code).should match /10:00/
-
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[1].code).should == ""
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[1].code).should == ""
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[1].code).should == ""
-  end
-  #6#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @test_co_list << (make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => @co_list[5].course)
-  ao_cluster = @co_list[5].activity_offering_cluster_list[0]
-  @test_co_list[5].manage
-  on ManageCourseOfferings do |page|
-    begin
-      page.wait_until { page.growl_message_warning_div.exists? }
-      page.growl_warning_text.should match /#{@test_co_list[5].course}.*#{ao_cluster.ao_list[0].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-    rescue
-      puts "growl warning message for the EO did not appear"
-    end
-    page.view_exam_offerings
-  end
-  on ViewExamOfferings do |page|
-    page.get_eo_by_ao_days_text(ao_cluster.ao_list[0].code).should == ""
-    page.get_eo_by_ao_st_time_text(ao_cluster.ao_list[0].code).should == ""
-    page.get_eo_by_ao_end_time_text(ao_cluster.ao_list[0].code).should == ""
   end
 end
 
