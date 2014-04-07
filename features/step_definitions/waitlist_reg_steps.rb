@@ -27,6 +27,7 @@ And /^I can verify I am on the waitlist$/  do
 end
 
 Given /^I register for an? full (\w+) course offering that has a waitlist$/ do |subj|
+  #course has 1 remaining seat, so first fill it as admin, then try to register as student
   steps %{
     When I add an #{subj} course offering to my registration cart
     And I register for the course

@@ -21,7 +21,7 @@ Feature: REG.Register for course
 
   #KSENROLL-11809
   Scenario: CR 1.4 I want to remove a course from my selections because I dont want to register for it anymore
-    When I add an ENGL course offering to my registration cart
+    When I add an ENGL1 course offering to my registration cart
     And I remove the course from my registration cart
     Then the course is not present in my cart
 
@@ -67,13 +67,13 @@ Feature: REG.Register for course
 
   #KSENROLL-12065
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.
-    Given I have registered for an ENGL course
+    Given I have registered for an ENGL1 course
     When I remove the course from my schedule
     Then the course is not present in my schedule
 
   #KSENROLL-12065
   Scenario: CR 6.1 I want to drop a registered course and cancel the drop so that I am still registered for it.
-    Given I have registered for an ENGL course
+    Given I have registered for an ENGL1 course
     When I remove the course from my schedule and cancel the drop
     Then the course is present in my schedule
 
