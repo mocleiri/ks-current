@@ -8,6 +8,8 @@ class CourseOffering
   include Comparable
 
   COURSE_ARRAY = 0
+  COURSE_CODE = 0
+  COURSE_NAME = 1
   attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text
 
   def initialize(browser, opts={})
@@ -176,7 +178,7 @@ class CourseOffering
           puts  "split_name[#{index}] = #{split_name[index].inspect}"
           result = check_all_results_data_for_text("#{split_name[index]}",expected)
           if result == false
-             return false
+            return false
           end
           until page.results_list_previous_disabled.exists? do
             sleep(2)
@@ -374,6 +376,196 @@ class CourseOffering
       end
     end
   end
+
+
+#KSAP-1000--------------------------------------------------------------------------
+
+
+
+  def check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+    on CourseSearch do |page|
+      no_of_rows = page.results_table.rows.length-1
+      cloned_textArray= textArray.clone
+      cloned_numArray= numArray.clone
+      numArray_length = numArray.size
+      cloned_textArray_length = cloned_textArray.size
+      cloned_numArray_length = cloned_numArray.size
+
+      # have to implement for other pages
+      if textArray_length > 0
+        #check for courseCode in Text Array
+        for index in 1..no_of_rows do
+          course_code = page.results_table.rows[index].cells[COURSE_CODE].text
+          sleep(1)
+          course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
+          if course_code.include? "#{textArray[0]}"
+
+          else
+
+            if textArray_length > 1
+              textArray.delete_at(0)
+              #text_array_element=text_array_element+1
+              if course_code.include? "#{textArray[0]}"
+              else
+                textArray.delete_at(0)
+                if course_code.include? "#{numArray[0]}"
+                else
+                  if numArray_length > 1
+                    numArray.delete_at(0)
+                    if course_code.include? "#{numArray[0]}"
+
+                    else
+                    end
+                  else
+                    numArray.delete_at(0)
+                    if ((course_name.include? "#{cloned_textArray[0]}".downcase) ||(course_description_text.include? "#{cloned_textArray[0]}".downcase))
+                    else
+                      if cloned_textArray_length > 1
+                        cloned_textArray.delete_at(0)
+                        #text_array_element=text_array_element+1
+                        if ((course_name. include? "#{cloned_textArray[0]}".downcase )||(course_description_text.include? "#{cloned_textArray[0]}".downcase))
+                        else
+                        end
+                      else
+                        cloned_textArray.delete_at(0)
+                        if ((course_name. include? "#{cloned_numArray[0]}".downcase )||(course_description_text.include? "#{cloned_textArray[0]}".downcase))
+
+                        else
+                          if numArray_length > 1
+                            cloned_numArray.delete_at(0)
+                            if ((course_name. include? "#{cloned_numArray[0]}" .downcase )||(course_description_text.include? "#{cloned_textArray[0]}".downcase))
+                            else
+                              return false
+                            end
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      else
+        # check directly in Num Array
+        for index in 1..no_of_rows do
+          course_code = page.results_table.rows[index].cells[COURSE_CODE].text
+          sleep(1)
+          course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
+          if course_code. include? "#{numArray[0]}"
+          else
+            if numArray > 1
+              numArray.delete_at(0)
+              if course_code. include? "#{numArray[0]}"
+              else
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+
+  def check_logical_order_display_of_elements_in_firstpage(textArray, numArray, output)
+    on CourseSearch do |page|
+      no_of_rows = page.results_table.rows.length-1
+      concat_array_length=  output.size
+      for index in 1..no_of_rows do
+        sleep(1)
+        course_code = page.results_table.rows[index].cells[COURSE_CODE].text
+        sleep(1)
+        course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
+        if index > concat_array_length
+          #for k in 0 ..textArray_length
+          if course_code.include? "#{textArray[0]}"
+          else
+            if textArray_length > 1
+              textArray.delete_at(0)
+              #text_array_element=text_array_element+1
+              if course_code. include? "#{textArray[0]}"
+              else
+              end
+            else
+              textArray.delete_at(0)
+              if course_code.include? "#{numArray[0]}"
+              else
+                if numArray_length > 1
+                  numArray.delete_at(0)
+                  if course_code.include? "#{numArray[0]}"
+                  else
+                  end
+                end
+              end
+            end
+          end
+        else
+          puts "else loop  concatArray =  #{concat_array_length}"
+          courseCode =  course_code
+          puts "index = #{index};  courseCode = #{courseCode};   ConcatArray 1 = #{output[index-1]}"
+          if  (courseCode == output[index-1])
+
+          else
+            return false
+          end
+        end
+      end # end of for loop
+    end
+  end
+
+  def logical_order_sort(text)
+    output=[]
+    arr = text.split( " " )
+    numArray = Array.new
+    textArray = Array.new
+    for index in 0 ... arr.size
+      arrValue = "#{arr[index]}"
+
+      if (arrValue.match(/^\d+$/))
+
+        numArray.push arrValue
+      else
+        textArray.push arrValue
+      end
+    end
+    numArray_length=numArray.size
+    textArray_length=textArray.size
+    puts numArray_length
+    puts textArray_length
+    for j in 0...textArray_length do
+      for i in 0...numArray_length do
+        output<< textArray[j] + numArray[i].to_s
+      end
+    end
+    on CourseSearch do |page|
+      no_of_rows = page.results_table.rows.length-1
+      pgno = 1
+      if page.results_list_next_enabled.exists?
+        until page.results_list_next_disabled.exists?
+          puts "------ page no = #{pgno}"
+          if pgno == 1
+            result = check_logical_order_display_of_elements_in_firstpage(textArray,numArray,output)
+            if result == false
+              return false
+            end
+          else
+            puts "<<<<<<<<<<<<<<<<<<<<<<<  page no = #{pgno}   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+            check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+          end
+          page.results_list_next_enabled.wait_until_present
+          page.results_list_next_click
+          pgno = pgno+1
+          page.results_list_next_enabled.wait_until_present
+        end
+      else
+        if pgno == 1
+          check_logical_order_display_of_elements_in_firstpage(textArray,numArray, output)
+          if result == false
+            return false
+          end
+        end
+      end
+    end
+  end
 end
-
-

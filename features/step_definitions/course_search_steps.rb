@@ -248,3 +248,19 @@ end
 Then /^course code or course title or course description containing any text of "(.*?)" text option are returned$/ do |expected_courses, expected_component|
     @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
 end
+
+
+#KSAP-1000-----------------------------------------------------------------------------------------------------------------------
+
+
+When /^I search for a "(.*?)" having divisions and levels with space in the search text$/ do |text|
+  @course_offering = make CourseOffering, :search_text => text
+  @course_offering.course_search_with_search_text
+end
+
+
+Then  /^the courses containing the "(.*?)" should be displayed in logical order$/ do |text|
+  @course_offering.logical_order_sort(text).should be_true
+end
+
+
