@@ -1,4 +1,4 @@
-@blue_team
+@nightly @blue_team
 Feature: CO.Exam Offerings change when Modifying Schedule Information
   FE 5.2: As a Central Administrator I want exam offering requested scheduling information to be updated dynamically
   when I change AO ASIs so that scheduling information remains in line with those of the AO driving the exam and matrix slotting
@@ -26,7 +26,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Actual Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12380
-  @wip @llf
   Scenario: FE4.10.1 When the Exam is updated from Alternate Exam to Standard while the CO is not on the matrix then the EO data should not be populated
     Given I create a Course Offering from catalog with an Alternate Exam that is not found on the matrix in a term with a defined final exam period
     When I edit the Course Offering to use a Standard Exam that is CO-Driven
@@ -34,7 +33,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Schedule Information for the Exam Offering should be blank
 
   #KSENROLL-12380
-  @wip @llf
   Scenario: FE4.10.2 When the Exam is updated from No Exam to Standard while the CO is on the matrix then the EO data should be populated
     Given I create a Course Offering from catalog with No Exam that is found on the matrix in a term with a defined final exam period
     When I edit the Course Offering to use a Standard Exam that is CO-Driven
