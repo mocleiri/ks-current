@@ -103,7 +103,8 @@ end
 When /^I create a Course Offering from an existing Course Offering with a standard final exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
 
-  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
   @course_offering_copy = create CourseOffering, :term=> @course_offering.term , :create_from_existing => @course_offering
@@ -260,7 +261,8 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
 
-  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
@@ -270,7 +272,8 @@ end
 
 Given /^there is an exsiting CO with a Standard Final Exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
-  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
 
@@ -278,7 +281,8 @@ Given /^that Activity Offerings exist for the selected Course Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
   #setup existing format
   @course_offering.delivery_format_list[0].format = "Lecture/Discussion"
-  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
 
@@ -354,7 +358,8 @@ end
 
 Given /^that the CO has two existing AOs and a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
 
@@ -370,7 +375,8 @@ end
 #TODO: confirm not used
 When /^I view the Exam Offerings for a CO with two new AOs and a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
   @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
@@ -383,7 +389,8 @@ end
 
 When /^I create a CO with two new AOs and then view the Exam Offerings where the CO has a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
   @add_ao_one = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
@@ -571,13 +578,15 @@ When /^I cancel an Activity Offering for a CO with a standard final exam driven 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
 
-  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
 When /^I cancel an Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
-  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -592,7 +601,8 @@ Given /^that the Lecture AO that drives the exam is not in a cancelled state$/ d
 end
 
 When /^I cancel a Discussion Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
-  @activity_offering = make ActivityOfferingObject, :code => "C", :parent_course_offering => @course_offering
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[2]
+  # make ActivityOfferingObject, :code => "C", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -644,7 +654,8 @@ When /^I suspend an Activity Offering for a CO with a standard final exam driven
                                  :final_exam_driver => "Final Exam Per Course Offering"
 
   @course_offering.manage_and_init
-  @activity_offering = @course_offering.find_ao_obj_by_code('A')
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # @course_offering.find_ao_obj_by_code('A')
   @activity_offering.suspend :navigate_to_page => false
 end
 
@@ -682,7 +693,8 @@ When /^I suspend an Activity Offering for a CO with a standard final exam driven
                                  :delivery_format_list => delivery_format_list
 
   @course_offering.manage_and_init
-  @activity_offering = @course_offering.find_ao_obj_by_code('A')
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # @course_offering.find_ao_obj_by_code('A')
   @activity_offering.suspend :navigate_to_page => false
 end
 
@@ -1250,7 +1262,8 @@ end
 
 Given /^that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
-  @activity_offering = make ActivityOfferingObject, :code => "A"
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  # make ActivityOfferingObject, :code => "A"
 end
 
 When /^I create a copy of the Course Offering and decide to exclude all scheduling information$/ do
@@ -1395,7 +1408,7 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
         eo_si_array = matrix_obj.find_exam_slotting_info( "Standard", matrix_rule)
         test_co.manage
         on ManageCourseOfferings do |page|
-          if eo_si_array[0] == ""
+          if eo_si_array[1] == ""
             begin
               page.wait_until { page.growl_message_warning_div.exists? }
               page.growl_warning_text.should match /#{test_co.course}.*#{ao_rsi_list[0].ao_list[0].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
@@ -1406,16 +1419,16 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
           page.view_exam_offerings
         end
         on ViewExamOfferings do |page|
-          page.get_eo_by_ao_days_text(ao.code).should match /#{eo_si_array[0]}/
-          page.get_eo_by_ao_st_time_text(ao.code).should match /#{eo_si_array[1]}/i
-          page.get_eo_by_ao_end_time_text(ao.code).should match /#{eo_si_array[2]}/i
+          page.get_eo_by_ao_days_text(ao.code).should match /#{eo_si_array[1]}/
+          page.get_eo_by_ao_st_time_text(ao.code).should match /#{eo_si_array[2]}/i
+          page.get_eo_by_ao_end_time_text(ao.code).should match /#{eo_si_array[3]}/i
         end
       end
     else
       eo_si_array = matrix_obj.find_exam_slotting_info( "Common", test_co.course)
       test_co.manage
       on ManageCourseOfferings do |page|
-        if eo_si_array[0] == ""
+        if eo_si_array[1] == ""
           begin
             page.wait_until { page.growl_warning_text.exists? }
             page.growl_warning_text.should match /#{test_co.course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
@@ -1426,9 +1439,9 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
         page.view_exam_offerings
       end
       on ViewExamOfferings do |page|
-        page.get_eo_by_co_days_text.should match /#{eo_si_array[0]}/
-        page.get_eo_by_co_st_time_text.should match /#{eo_si_array[1]}/i
-        page.get_eo_by_co_end_time_text.should match /#{eo_si_array[2]}/i
+        page.get_eo_by_co_days_text.should match /#{eo_si_array[1]}/
+        page.get_eo_by_co_st_time_text.should match /#{eo_si_array[2]}/i
+        page.get_eo_by_co_end_time_text.should match /#{eo_si_array[3]}/i
       end
     end
   end
@@ -1455,4 +1468,45 @@ end
 When /^I edit the Course Offering to use a Standard Exam that is CO-Driven$/ do
   @course_offering.edit :final_exam_type => "Standard Final Exam", :final_exam_driver => "Final Exam Per Course Offering",
                         :use_final_exam_matrix => true
+end
+
+Given /^I create a Course Offering from catalog with No Exam that has an AO with RSI data found on the matrix in a term with a defined final exam period$/ do
+  @course_offering = make CourseOffering, :term=> "201208", :course => "ENGL304", :final_exam_type => "NONE"
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  rsi_data_arr = @matrix.create_data_for_rsi( "Standard", "MWF")
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => rsi_data_arr[0], :start_time => rsi_data_arr[1],
+                     :st_time_ampm => rsi_data_arr[2])
+  rule = make ExamMatrixRuleObject, :rsi_days => rsi_data_arr[3], :start_time => rsi_data_arr[4],
+              :st_time_ampm => rsi_data_arr[5], :end_time => rsi_data_arr[6], :end_time_ampm => rsi_data_arr[7],
+              :statements => statement
+  @matrix.rules << rule
+
+  @course_offering.create
+
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
+  end_time = (DateTime.strptime("#{@matrix.rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  @course_offering.activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+                                                     :days => @matrix.rules[0].statements[0].days,
+                                                     :start_time => @matrix.rules[0].statements[0].start_time,
+                                                     :start_time_ampm => @matrix.rules[0].statements[0].st_time_ampm,
+                                                     :end_time => end_time, :end_time_ampm => @matrix.rules[0].statements[0].st_time_ampm)
+end
+
+When /^I edit the Course Offering to use a Standard Exam that is AO-Driven$/ do
+  @course_offering.edit :final_exam_type => "Standard Final Exam", :final_exam_driver => "Final Exam Per Activity Offering",
+                        :use_final_exam_matrix => true
+end
+
+Given /^I create a Course Offering from catalog with an Alternate Exam that has an AO with RSI data not found on the matrix in a term with a defined final exam period$/ do
+  @course_offering = create CourseOffering, :term=> "201208", :course => "CHEM242", :final_exam_type => "ALTERNATE"
+
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture",
+                                                                   :activity_type => "Lab")
+  @course_offering.activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+                                                     :days => "F", :start_time => "04:00", :start_time_ampm => "pm",
+                                                     :end_time => "06:00", :end_time_ampm => "pm")
 end

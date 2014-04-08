@@ -157,6 +157,7 @@ class FEMatrixView < BasePage
       rows = standard_final_exam_table.rows(text: /#{Regexp.escape(requirements)}/)
       rows.each do |row|
         if row.cells[COURSE_REQUIREMENTS].text =~ /#{Regexp.escape(requirements)}/m
+          arr << row.cells[COURSE_REQUIREMENTS].text
           arr << row.cells[EXAM_DAY].text
           arr << row.cells[EXAM_TIME].text
           return arr
@@ -166,6 +167,7 @@ class FEMatrixView < BasePage
       rows = common_final_exam_table.rows(text: /#{Regexp.escape(requirements)}/)
       rows.each do |row|
         if row.cells[COURSE_REQUIREMENTS].text =~ /#{Regexp.escape(requirements)}/m
+          arr << row.cells[COURSE_REQUIREMENTS].text
           arr << row.cells[EXAM_DAY].text
           arr << row.cells[EXAM_TIME].text
           return arr

@@ -1,6 +1,6 @@
 @blue_team
 Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
-  FE 4.1: As a Central Administrator I want to have on matrix exam offerings populated with requested scheduling
+  FE 4.1 As a Central Administrator I want to have on matrix exam offerings populated with requested scheduling
   information when created in bulk so that exam offering scheduling requests are consistent with the established exam matrix
 
   Background:

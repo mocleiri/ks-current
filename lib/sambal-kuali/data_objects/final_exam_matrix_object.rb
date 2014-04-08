@@ -60,14 +60,71 @@ class FinalExamMatrix < DataObject
       row_arr = page.get_row_array_by_rule_requirements( exam_type, requirements)
       if !row_arr.empty?
         arr << row_arr[0]
-        if row_arr[1] =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
+        arr << row_arr[1]
+        if row_arr[2] =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
           arr << "#{$1} #{$2.downcase}"
           arr << "#{$3} #{$4.downcase}"
         end
+      else
+        for i in 1..4
+          arr << ""
+        end
       end
     end
-    if arr.empty?
-      for i in 1..3
+    return arr
+  end
+
+  def create_data_for_rsi( exam_type, requirements)
+    arr = []
+    row_arr = find_exam_slotting_info( exam_type, requirements)
+    arr << requirements
+    if exam_type == "Standard"
+      split_arr = split_requirements_into_array( row_arr[0], requirements)
+      arr << split_arr[0]
+      arr << split_arr[1]
+    end
+    arr << row_arr[1]
+    if row_arr[2] =~ /(\d\d\:\d\d) ([APM]{2})/i
+      arr << $1
+      arr << $2
+    else
+      arr << ""
+      arr << ""
+    end
+    if row_arr[3] =~ /(\d\d\:\d\d) ([APM]{2})/i
+      arr << $1
+      arr << $2
+    else
+      arr << ""
+      arr << ""
+    end
+    return arr
+  end
+
+  def split_requirements_into_array( to_split, requirements)
+    arr = []
+    if to_split =~ /^([MTWHFSU]+) at (.+)/
+      days = $1
+      rest = $2
+      if days == requirements
+        if rest =~ /^(\d\d\:\d\d) ([APM]{2})\..+/
+          arr << $1
+          arr << $2.downcase
+        else
+          arr << ""
+          arr << ""
+        end
+      elsif rest =~ /^[^\.]+\..+([MTWHFSU]+) at (\d\d\:\d\d) ([APM]{2}).+/m
+        if $1 == requirements
+          arr << $2
+          arr << $3.downcase
+        else
+          arr << ""
+          arr << ""
+        end
+      else
+        arr << ""
+        arr << ""
         arr << ""
       end
     end
