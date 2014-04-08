@@ -22,6 +22,13 @@ Then /^there is a message indicating that registration failed$/  do
   end
 end
 
+And /^there is a message indicating that no waitlist is offered$/  do
+  on RegistrationCart do |page|
+    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code).downcase
+    page_status.should match /waitlist not offered/i
+  end
+end
+
 And /^I can verify I am on the waitlist$/  do
   #check that course appears as a waitlisted course
   on StudentSchedule do |page|
@@ -29,7 +36,7 @@ And /^I can verify I am on the waitlist$/  do
   end
 end
 
-Given /^I register for an? full (\w+) course offering that has a waitlist$/ do |subj|
+Given /^I register for an? full (\w+) course offering that (has|does not have) a waitlist$/ do |subj,waitlist|
   #course has 1 remaining seat, so first fill it as admin, then try to register as student
   steps %{
     When I add an #{subj} course offering to my registration cart

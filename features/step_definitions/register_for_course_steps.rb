@@ -6,6 +6,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="CHEM" then "CHEM231"
                   when subj=="ENGL1" then "ENGL211"
                   when subj=="ENGL2" then "ENGL101"
+                  when subj=="ENGL3" then "ENGL101"
                   when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
                   when subj=="WMST" then "WMST360"
@@ -25,16 +26,22 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
     end
   end
 
-  if subj == "ENGL2"
-    reg_group_code = "1001"
-    term_code = "201208"
-    term_descr = "Fall 2012"
-    course_has_options = false
-  else
-    reg_group_code = "1001"
-    term_code = "201201"
-    term_descr = "Spring 2012"
-    course_has_options = true
+  case subj
+    when "ENGL2" then
+      reg_group_code = "1002"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      course_has_options = false
+    when "ENGL3" then
+      reg_group_code = "1009"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      course_has_options = false
+    else
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      course_has_options = true
   end
 
   course_options = (make CourseOptions, :credit_option => credit_option)
