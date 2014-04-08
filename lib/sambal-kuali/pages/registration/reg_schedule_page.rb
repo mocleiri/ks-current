@@ -26,6 +26,10 @@ class StudentSchedule < RegisterForCourseBase
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancelEditScheduleItem_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
+  element(:remove_from_waitlist_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_remove_#{course_code}_#{reg_group_code}") }
+  element(:confirm_remove_waitlist_button) { |b| b.button(id: "removeWaitlist") }
+  element(:cancel_remove_waitlist_button) { |b| b.button(id: "removeWaitlistCancel") }
+
   def toggle_course_details(course_code, reg_group_code)
     course_code(course_code,reg_group_code).click
   end
@@ -53,6 +57,13 @@ class StudentSchedule < RegisterForCourseBase
       when "Letter" then grading_letter(course_code,reg_group_code).set
       when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).set
     end
+  end
+
+  def remove_course_from_waitlist(course_code,reg_group_code)
+    remove_from_waitlist_button(course_code,reg_group_code).wait_until_present
+    remove_from_waitlist_button(course_code,reg_group_code).click
+    confirm_remove_waitlist_button(course_code,reg_group_code).wait_until_present
+    confirm_remove_waitlist_button(course_code,reg_group_code).click
   end
 
 end
