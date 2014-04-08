@@ -1360,26 +1360,25 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
   course_offering.delivery_format_list[0].grade_format = "Lecture"
   course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
   @co_list << (course_offering.create)
-  # @co_list[4].edit :final_exam_activity => "Lecture"
 
-  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
-  @co_list[0].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+  @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @co_list[4].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
                                                 :days  => "TH", :start_time  => "09:30", :start_time_ampm  => "am",
                                                 :end_time  => "11:30", :end_time_ampm  => "am")
 
-  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
-  @co_list[0].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+  @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @co_list[4].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
                                                 :days  => "F", :start_time  => "03:00", :start_time_ampm  => "pm",
                                                 :end_time  => "04:00", :end_time_ampm  => "pm")
 
   course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
       :final_exam_driver => "Final Exam Per Activity Offering"
-  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].format = "Lab/Lecture"
   course_offering.delivery_format_list[0].grade_format = "Lecture"
   course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
   @co_list << (course_offering.create)
 
-  @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture" )
+  @co_list[5].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture" )
 end
 
 Then /^the Exam Offerings Slotting info should be populated or left blank depending on whether the AO RSI was found on the Exam Matrix$/ do
@@ -1396,11 +1395,13 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
         eo_si_array = matrix_obj.find_exam_slotting_info( "Standard", matrix_rule)
         test_co.manage
         on ManageCourseOfferings do |page|
-          begin
-            page.wait_until { page.growl_message_warning_div.exists? }
-            page.growl_warning_text.should match /#{test_co.course}.*#{ao_rsi_list[0].ao_list[0].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-          rescue
-            puts "growl warning message for the EO did not appear"
+          if eo_si_array[0] == ""
+            begin
+              page.wait_until { page.growl_message_warning_div.exists? }
+              page.growl_warning_text.should match /#{test_co.course}.*#{ao_rsi_list[0].ao_list[0].code}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
+            rescue
+              puts "growl warning message for the EO did not appear"
+            end
           end
           page.view_exam_offerings
         end
@@ -1414,11 +1415,13 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
       eo_si_array = matrix_obj.find_exam_slotting_info( "Common", test_co.course)
       test_co.manage
       on ManageCourseOfferings do |page|
-        begin
-          page.wait_until { page.growl_warning_text.exists? }
-          page.growl_warning_text.should match /#{test_co.course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-        rescue
-          puts "growl warning message for the EO did not appear"
+        if eo_si_array[0] == ""
+          begin
+            page.wait_until { page.growl_warning_text.exists? }
+            page.growl_warning_text.should match /#{test_co.course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
+          rescue
+            puts "growl warning message for the EO did not appear"
+          end
         end
         page.view_exam_offerings
       end

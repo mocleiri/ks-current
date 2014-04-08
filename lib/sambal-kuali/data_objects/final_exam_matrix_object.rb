@@ -67,7 +67,7 @@ class FinalExamMatrix < DataObject
       end
     end
     if arr.empty?
-      for i in 1..5
+      for i in 1..3
         arr << ""
       end
     end
