@@ -28,6 +28,6 @@ Feature: CO.FE3-13 Update Exam Offerings
   #FE3.13.EB4(KSENROLL-9801)
   Scenario: Modify exam setting for Course Offering with Exam Driver to AO and confirm Exam Offerings are in a Draft state
     Given that the CO is set to have exam offerings driven by AO
-    #FIXME: next step does not actually change anything
+    And I edit the CO to have an Alternate Final Exam
     When I view the Exam Offerings for a CO where the exam is changed to Standard Final Exam driven by Activity Offering
     Then the EOs in the Exam Offerings for Activity Offering table should be in a Draft state

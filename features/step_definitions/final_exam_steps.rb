@@ -407,6 +407,8 @@ end
 
 When /^I view the Exam Offerings for a CO with a standard final exam driven by Course Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => "ENGL304")
+  @course_offering.delivery_format_list[0].format = "Lecture/Discussion"
+
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
 
@@ -415,10 +417,11 @@ end
 
 When /^I view the Exam Offerings for a CO in an Open SOC with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201301", :course => "ENGL304")
+  @course_offering.delivery_format_list[0].format = "Lecture/Discussion"
 
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Activity Offering",
-                                 :defer_save => true
+  @course_offering.edit :final_exam_type => "Standard Final Exam", :final_exam_driver => "Final Exam Per Activity Offering",
+                        :defer_save => true
+
   @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
 
   on(ManageCourseOfferings).view_exam_offerings
@@ -426,12 +429,11 @@ end
 
 When /^I view the Exam Offerings for a CO where the Course Offering Standard FE is changed to No Final Exam$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL305")
-  @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Course Offering",
-                                 :defer_save => true
+  # @course_offering.delivery_format_list[0].format = "Lecture Only"
 
-  @course_offering.edit :final_exam_type => "No Final Exam or Assessment",
-                        :start_edit => false
+  @course_offering.edit :final_exam_type => "Standard Final Exam", :final_exam_driver => "Final Exam Per Course Offering"
+
+  @course_offering.edit :final_exam_type => "No Final Exam or Assessment"
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -444,6 +446,13 @@ end
 
 Given /^that the CO is set to have exam offerings driven by AO$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL305")
+  @course_offering.delivery_format_list[0].format = "Lecture Only"
+end
+
+When /^I edit the CO to have an Alternate Final Exam$/ do
+  @course_offering.manage_and_init
+
+  @course_offering.edit :final_exam_type => "Alternate Final Assessment"
 end
 
 When /^I view the Exam Offerings for a CO where the Course Offering Standard FE setting is changed to No Final Exam$/ do
@@ -454,6 +463,9 @@ end
 
 When /^I view the Exam Offerings for a CO where the Activity Offering Standard FE is changed to Alternate Final Exam$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
+  @course_offering.delivery_format_list[0].format = "Lecture/Discussion"
+  @course_offering.manage_and_init
+
   @course_offering.edit :final_exam_type => "Alternate Final Assessment"
 
   on(ManageCourseOfferings).view_exam_offerings
@@ -973,17 +985,11 @@ Then /^the Exam Offerings for Course Offering in the EO for CO table should be i
 end
 
 Then /^the Exam Offerings for each Activity Offering in the EO for AO table should be in a ([^"]*) state$/ do |exp_state|
-  #TODO: validation is very slow, needs to use @course_offering object
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
-    array = page.return_array_of_ao_codes
-    array.each do |code|
-      page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
-    end
-    array = page.return_array_of_ao_codes("CL Leftovers")
-    if array != nil
-      array.each do |code|
-        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
+    @course_offering.activity_offering_cluster_list.each do |cluster|
+      cluster.ao_list.each do |ao|
+        page.get_eo_by_ao_status_text(ao.code).should match /#{exp_state}/ if ao.activity_type == @course_offering.delivery_format_list[0].final_exam_activity
       end
     end
   end
@@ -1050,16 +1056,9 @@ Then /^the EOs in the Exam Offerings for Activity Offering table should be in a 
   #TODO: should be driven by @course_offering object
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
-    array = page.return_array_of_ao_codes
-    if array != nil
-      array.each do |code|
-        page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
-      end
-    end
-    array = page.return_array_of_ao_codes("CL Leftovers")
-    if array != nil
-      array.each do |code|
-        page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
+    @course_offering.activity_offering_cluster_list.each do |cluster|
+      cluster.ao_list.each do |ao|
+        page.get_eo_by_ao_status_text(ao.code).should match /#{exp_state}/ if ao.activity_type == @course_offering.delivery_format_list[0].final_exam_activity
       end
     end
   end
