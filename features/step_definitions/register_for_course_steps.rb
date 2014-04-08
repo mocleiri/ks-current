@@ -28,7 +28,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
 
   case subj
     when "ENGL2" then
-      reg_group_code = "1002"
+      reg_group_code = "1001"
       term_code = "201208"
       term_descr = "Fall 2012"
       course_has_options = false
