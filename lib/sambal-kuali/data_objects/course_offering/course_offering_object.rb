@@ -44,7 +44,8 @@ class CourseOffering
                 :joint_co_to_create,
                 :cross_listed_codes
   #object - generally set using options hash - course offering object to copy
-  attr_accessor  :create_by_copy
+  attr_accessor  :create_by_copy,
+                 :eo_rsi
   #boolean - - generally set using options hash true/false
   attr_accessor :cross_listed,
                 :waitlist #nil means use default setting
@@ -86,7 +87,8 @@ class CourseOffering
         :exclude_cancelled_aos => false,
         :exclude_scheduling => false,
         :exclude_instructor => false,
-        :use_final_exam_matrix => true
+        :use_final_exam_matrix => true,
+        :eo_rsi => nil
     }
     options = defaults.merge(opts)
     set_options(options)

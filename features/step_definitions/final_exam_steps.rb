@@ -305,14 +305,14 @@ end
 Then /^see Exam Offerings for each Activity Offering of the Course with a status of ([^"]*)$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     if array != nil
       array.each do |code|
         page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
-    array = page.return_array_of_ao_codes("CL Leftovers")
+    array = page.ao_code_list("CL Leftovers")
     if array != nil
       array.each do |code|
         page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
@@ -656,6 +656,16 @@ When /^I cancel all Activity Offerings for a CO with a standard final exam drive
   end
 end
 
+When /^I can update all fields on the eo rsi$/ do
+  eo_rsi = make EoRsiObject, :day => @matrix.rules[0].rsi_days,
+                :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
+                :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
+                :facility_short =>@matrix.rules[0].facility,
+                :room => @matrix.rules[0].room
+
+  eo_rsi.edit :do_navigation => false, :day => 'Day 5'
+end
+
 When /^I view the Exam Offerings for the Course Offering$/ do
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -985,6 +995,13 @@ Then /^the Exam Offerings for Course Offering in the EO for CO table should be i
 end
 
 Then /^the Exam Offerings for each Activity Offering in the EO for AO table should be in a ([^"]*) state$/ do |exp_state|
+  @course_offering.activity_offering_cluster_list.each do |cluster|
+    cluster.ao_list.each do |ao|
+      page.get_eo_by_ao_status_text(ao.code).should match /#{exp_state}/ if ao.activity_type == page.get_eo_by_ao_type_text(ao.code, cluster.private_name)
+    end
+  end
+
+
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
     @course_offering.activity_offering_cluster_list.each do |cluster|
@@ -998,7 +1015,7 @@ end
 Then /^the Exam Offering for Activity Offering should not be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     array.each do |code|
       page.get_eo_by_ao_status_text(code).should_not match /#{exp_state}/
     end
@@ -1008,14 +1025,14 @@ end
 Then /^the Exam Offerings? for Activity Offering should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     if array != nil
       array.each do |code|
         page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
-    array = page.return_array_of_ao_codes("CL Leftovers")
+    array = page.ao_code_list("CL Leftovers")
     if array != nil
       array.each do |code|
         page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
@@ -1030,7 +1047,7 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
     no_of_eos = 0
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     if array != nil
       array.each do |code|
         if code == @activity_offering.code
@@ -1039,7 +1056,7 @@ Then /^the EO for the suspended AO in the Exam Offering for Activity Offering ta
         end
       end
     end
-    array = page.return_array_of_ao_codes("CL Leftovers")
+    array = page.ao_code_list("CL Leftovers")
     if array != nil
       array.each do |code|
         if code == @activity_offering.code
@@ -1066,11 +1083,11 @@ end
 
 Then /^there should be one EO for each AO of the course in the Exam Offering for Activity Offering table$/ do
   on ViewExamOfferings do |page|
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     if array != nil
       no_of_eos = array.length
     end
-    array = page.return_array_of_ao_codes("CL Leftovers")
+    array = page.ao_code_list("CL Leftovers")
     if array != nil
       no_of_eos = array.length
     end
@@ -1081,14 +1098,14 @@ end
 Then /^the ([\d]*) Exam Offerings? for Activity Offering should be in a ([^"]*) state$/ do |num,exp_state|
   on ViewExamOfferings do |page|
     page.ao_table_header_text.should match /for Activity Offering/
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     if array != nil
       array.each do |code|
         page.get_eo_by_ao_status_text(code).should match /#{exp_state}/
       end
       no_of_eos = array.length
     end
-    array = page.return_array_of_ao_codes("CL Leftovers")
+    array = page.ao_code_list("CL Leftovers")
     if array != nil
       array.each do |code|
         page.get_eo_by_ao_status_text(code, "CL Leftovers").should match /#{exp_state}/
@@ -1101,14 +1118,14 @@ end
 
 Then /^there should be ([^"]*) Exam Offerings? by Activity Offering for the course$/ do |no_of_aos|
   on ViewExamOfferings do |page|
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     array.length.should == no_of_aos.to_i
   end
 end
 
 Then /^there should be ([\d]*) EOs in the Exam Offerings by Activity Offering table for the course$/ do |no_of_aos|
   on ViewExamOfferings do |page|
-    array = page.return_array_of_ao_codes
+    array = page.ao_code_list
     array.length.should == no_of_aos.to_i
   end
 end
@@ -1294,7 +1311,7 @@ end
 
 When /^I add additional Requested Scheduling Information to the Activity Offering that matches an entry on the exam matrix$/ do
   @course_offering.manage
-  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days  => "H",
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days  => "TH",
                                                           :start_time  => "04:00", :start_time_ampm  => "pm",
                                                           :end_time  => "05:00", :end_time_ampm  => "pm")
 end

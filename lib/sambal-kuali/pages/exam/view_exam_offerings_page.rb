@@ -15,23 +15,9 @@ class ViewExamOfferings < BasePage
 
   element(:cluster_list_div)  { |b| b.frm.eo_table_section.div(class: "uif-stackedCollectionLayout") }
 
-  STATUS = 0
-  CO_DAYS = 1
-  AO_CODE = 1
-  CO_ST_TIME = 2
-  AO_TYPE = 2
-  CO_ST_TIME_AMPM = 3
-  AO_DAYS = 3
-  CO_END_TIME = 4
-  AO_ST_TIME = 4
-  CO_END_TIME_AMPM = 5
-  AO_ST_TIME_AMPM = 5
-  CO_BLDG = 6
-  AO_END_TIME = 6
-  CO_ROOM = 7
-  AO_END_TIME_AMPM = 7
-  AO_BLDG = 8
-  AO_ROOM = 9
+  def co_eo_table
+    return eo_table_section.table unless !eo_table_section.table.exists? #TODO: should fail here if not found
+  end
 
   VIEW_STATUS = 0
   VIEW_OVERRIDE_MATRIX = 1
@@ -40,6 +26,54 @@ class ViewExamOfferings < BasePage
   VIEW_CO_END_TIME = 4
   VIEW_CO_BLDG = 5
   VIEW_CO_ROOM = 6
+
+  def co_target_row #always returns row 1, but this setup will allow future flexibility?
+    co_eo_table.rows[1]
+  end
+
+  def get_eo_by_co_status_text #TODO: standardize these method names - eg 'co_status' instead of 'get_eo_by_co_status_text'
+    co_target_row.cells[VIEW_STATUS].text
+  end
+
+  def get_eo_by_co_days_text
+    #eo_by_co_target_row.cells[CO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
+    co_target_row.cells[VIEW_CO_DAYS].text
+  end
+
+
+  def get_eo_by_co_st_time_text
+    #eo_by_co_target_row.cells[CO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
+    co_target_row.cells[VIEW_CO_ST_TIME].text
+  end
+
+
+  def get_eo_by_co_end_time_text
+    #eo_by_co_target_row.cells[CO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
+    co_target_row.cells[VIEW_CO_END_TIME].text
+  end
+
+
+  def get_eo_by_co_bldg_text
+    #eo_by_co_target_row.cells[CO_BLDG].div(id: /eoRsiBuilding/).text
+    co_target_row.cells[VIEW_CO_BLDG].text
+  end
+
+  def get_eo_by_co_room_text
+    #eo_by_co_target_row.cells[CO_ROOM].div(id: /eoRsiRoom/).text
+    co_target_row.cells[VIEW_CO_ROOM].text
+  end
+
+  def co_eo_count
+    row_count = 0
+    co_eo_table.rows.each do |row|
+      if row.text !~ /^Status.*$/ and row.text != ""
+        row_count += 1
+      end
+    end
+    return "#{row_count}"
+  end
+
+###############################
 
   VIEW_AO_CODE = 1
   VIEW_AO_TYPE = 2
@@ -50,11 +84,7 @@ class ViewExamOfferings < BasePage
   VIEW_AO_BLDG = 7
   VIEW_AO_ROOM = 8
 
-  def eo_by_co_results_table
-    return eo_table_section.table unless !eo_table_section.table.exists?
-  end
-
-  def eo_by_ao_results_table(cluster_private_name = :default_cluster)
+  def ao_eo_table(cluster_private_name = :default_cluster)
     if cluster_private_name == :default_cluster then
       return cluster_div_list[0].table unless !cluster_div_list[0].table.exists?
     else
@@ -65,35 +95,20 @@ class ViewExamOfferings < BasePage
         return nil
       end
     end
-    raise "error in activity_offering_results_table - no AOs for #{cluster_private_name}"
-  end
-
-  def eo_by_co_target_row
-    row = eo_by_co_results_table.rows[1]
-    return row unless row.nil?
+    raise "error in activity_offering_results_table - no AOs for cluster: #{cluster_private_name}"
   end
 
   def eo_by_ao_target_row(code, cluster_private_name = :default_cluster)
-    row = eo_by_ao_results_table(cluster_private_name).row(text: /\b#{Regexp.escape(code)}\b/)
-    return row unless row.nil?
-    raise "error in target_row: #{code} not found"
+    ao_eo_table(cluster_private_name).row(text: /\b#{Regexp.escape(code)}\b/)
   end
 
-  def get_eo_by_co_status_text
-    eo_by_co_target_row.cells[STATUS].text
-  end
 
   def get_eo_by_ao_status_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[STATUS].text
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_STATUS].text
   end
 
   def get_eo_by_ao_type_text(code, cluster_private_name = :default_cluster)
-    eo_by_ao_target_row(code, cluster_private_name).cells[AO_TYPE].text
-  end
-
-  def get_eo_by_co_days_text
-    #eo_by_co_target_row.cells[CO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
-    eo_by_co_target_row.cells[VIEW_CO_DAYS].text
+    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_TYPE].text
   end
 
   def get_eo_by_ao_days_text(code, cluster_private_name = :default_cluster)
@@ -101,19 +116,9 @@ class ViewExamOfferings < BasePage
     eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_DAYS].text
   end
 
-  def get_eo_by_co_st_time_text
-    #eo_by_co_target_row.cells[CO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
-    eo_by_co_target_row.cells[VIEW_CO_ST_TIME].text
-  end
-
   def get_eo_by_ao_st_time_text(code, cluster_private_name = :default_cluster)
     #eo_by_ao_target_row(code, cluster_private_name).cells[AO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
     eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_ST_TIME].text
-  end
-
-  def get_eo_by_co_end_time_text
-    #eo_by_co_target_row.cells[CO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
-    eo_by_co_target_row.cells[VIEW_CO_END_TIME].text
   end
 
   def get_eo_by_ao_end_time_text(code, cluster_private_name = :default_cluster)
@@ -121,34 +126,14 @@ class ViewExamOfferings < BasePage
     eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_END_TIME].text
   end
 
-  def get_eo_by_co_bldg_text
-    #eo_by_co_target_row.cells[CO_BLDG].div(id: /eoRsiBuilding/).text
-    eo_by_co_target_row.cells[VIEW_CO_BLDG].text
-  end
-
   def get_eo_by_ao_bldg_text(code, cluster_private_name = :default_cluster)
     #eo_by_ao_target_row(code, cluster_private_name).cells[AO_BLDG].div(id: /eoRsiBuilding/).text
     eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_BLDG].text
   end
 
-  def get_eo_by_co_room_text
-    #eo_by_co_target_row.cells[CO_ROOM].div(id: /eoRsiRoom/).text
-    eo_by_co_target_row.cells[VIEW_CO_ROOM].text
-  end
-
   def get_eo_by_ao_room_text(code, cluster_private_name = :default_cluster)
     #eo_by_ao_target_row(code, cluster_private_name).cells[AO_ROOM].div(id: /eoRsiRoom/).text
     eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_ROOM].text
-  end
-
-  def count_no_of_eos_by_co
-    row_count = 0
-    eo_by_co_results_table.rows.each do |row|
-      if row.text !~ /^Status.*$/ and row.text != ""
-        row_count += 1
-      end
-    end
-    return "#{row_count}"
   end
 
   def view_eo_by_ao(code, cluster_private_name = :default_cluster)
@@ -160,7 +145,7 @@ class ViewExamOfferings < BasePage
     eo_by_ao_results_table(cluster_private_name).link(text: code)
   end
 
-  def return_array_of_ao_codes(cluster_private_name = :default_cluster)
+  def ao_code_list(cluster_private_name = :default_cluster)
     array = []
     results = eo_by_ao_results_table(cluster_private_name)
     if results != nil
@@ -170,6 +155,7 @@ class ViewExamOfferings < BasePage
         end
       end
     end
+    #TODO: nil check is built-in to step def logic, need some analysis to figure out if this is really necessary
     if !array.empty?
       return array
     else
@@ -202,4 +188,51 @@ class ViewExamOfferings < BasePage
     end_of_private_name = tmp_text.index('(')-2 unless tmp_text.index('(') == nil
     tmp_text[9..end_of_private_name]
   end
+
+#edit fields methods
+  def edit_rsi(row)
+    row.link(id: /EO-toggleEditButton_line/).click
+  end
+
+  def override_checkbox(row)
+    row.checkbox(id: /eoOverrideMatrix_line\d+_control/)
+  end
+
+  def rsi_day(row)
+    row.select(id: /eoRsiDayInExamPeriod_line\d+_control/)
+  end
+
+  def rsi_start_time(row)
+    row.text_field(id: /eoRsiStartTime_line\d+_control/)
+  end
+
+  def rsi_end_time(row)
+    row.text_field(id: /eoRsiEndTime_line\d+_control/)
+  end
+
+  def rsi_facility(row)
+    row.text_field(id: /eoRsiBuilding_line\d+_control/)
+  end
+
+  def rsi_facility_lookup(row)
+    row.div(id: /eoRsiBuilding_line/).image
+  end
+
+  def rsi_room(row)
+    row.text_field(id: /eoRsiRoom_line\d+_control/)
+  end
+
+  def rsi_room_lookup(row)
+    row.div(id: /eoRsiRoom_line/).image
+  end
+
+  def save_edit(row)
+    row.link(id: /EO-toggleUpdateButton_line/).click
+  end
+
+  def cancel_edit(row)
+    row.link(id: /EO-toggleUpdateButton_line/,index: 1).click
+  end
+
+
 end
