@@ -8,6 +8,7 @@ import org.kuali.student.ap.academicplan.infc.Placeholder;
 import org.kuali.student.ap.academicplan.infc.PlaceholderInstance;
 import org.kuali.student.ap.academicplan.infc.TypedObjectReference;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.PlaceholderResolver;
 import org.kuali.student.ap.framework.context.PlanConstants;
 import org.kuali.student.ap.framework.context.PlanHelper;
 import org.kuali.student.enrollment.courseoffering.infc.ActivityOffering;
@@ -126,6 +127,7 @@ public class DefaultPlanHelper implements PlanHelper {
 
 			String pid = ref.getRefObjectId();
 			PlaceholderInstance pi;
+			
 			try {
 				pi = KsapFrameworkServiceLocator.getDegreeMapService()
 						.getPlaceholderInstance(
@@ -191,7 +193,24 @@ public class DefaultPlanHelper implements PlanHelper {
 
 	@Override
 	public Set<String> getCourseIdsForPlaceHolder(Placeholder ph) {
-		throw new UnsupportedOperationException("TODO: Grant will write this");
-	}
+		// TODO Change to bean-switched version
+		PlaceholderResolver phr;
 
+		if (PlanConstants.PLACEHOLDER_COURSE.equals(ph.getTypeKey())) {
+			phr = new CoursePlaceholderResolver();
+		} else if (PlanConstants.PLACEHOLDER_SEARCH.equals(ph.getTypeKey())) {
+			phr = new SearchPlaceholderResolver();
+		} else {
+			throw new IllegalArgumentException("Placeholder type "
+					+ ph.getTypeKey() + " not recognized.");
+		}
+
+		try {
+			return phr.resolve(ph);
+		} catch (MissingParameterException e) {
+			throw new IllegalArgumentException(
+					"Missing requirement parameter for placeholder type "
+							+ ph.getTypeKey());
+		}
+	}
 }
