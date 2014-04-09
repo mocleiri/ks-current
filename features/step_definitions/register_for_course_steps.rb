@@ -194,7 +194,7 @@ end
 
 And /^I? ?can view the details of my selection in my schedule$/ do
   on StudentSchedule do |page|
-    page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code)
+    page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code, "registered")
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
     page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "The Medieval World"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"

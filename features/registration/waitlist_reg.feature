@@ -23,6 +23,16 @@ Feature: REG.Wait List
     Then there is a message indicating that registration failed
     And there is a message indicating that no waitlist is offered
 
+#KSENROLL-12348
+  Scenario: CR 8.4 I want to remove myself from a waitlist for a registration group so I am no longer considered for a space that becomes available
+    When I register for a full BSCI3 course offering that has a waitlist
+    Then there is a message indicating that registration failed
+    And I am given the option to add myself to a waitlist for the course
+    When I add myself to a waitlist for the course
+    And I view my schedule
+    And I remove myself from the waitlist
+    Then I can verify I am not on the waitlist
+
   #KSENROLL-12351
   Scenario: CR 8.7 I want to edit the parameters of a waitlisted registration group so if I am registered for it I can take it with my preferred options
     When I register for a full BSCI3 course offering and add myself to a waitlist
