@@ -3,6 +3,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
   course_code = case
                   when subj=="BSCI1" then "BSCI106"
                   when subj=="BSCI2" then "BSCI201"
+                  when subj=="BSCI3" then "BSCI120"
                   when subj=="CHEM" then "CHEM231"
                   when subj=="ENGL1" then "ENGL211"
                   when subj=="ENGL2" then "ENGL101"
@@ -27,6 +28,11 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
   end
 
   case subj
+    when "BSCI3" then
+      reg_group_code = "1001"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      course_has_options = true
     when "ENGL2" then
       reg_group_code = "1001"
       term_code = "201208"
@@ -180,9 +186,9 @@ And /^I? ?can view the details of my selection in the registration cart$/ do
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "DIS"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "M 3:00 pm - 3:50 pm CHM"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /M 3:00 pm - 3:50 pm(\s+)CHM/i
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should include "TH 11:00 am - 12:15 pm EGR"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /TuTh 11:00 am - 12:15 pm(\s+)EGR/i
   end
 end
 
@@ -197,9 +203,9 @@ And /^I? ?can view the details of my selection in my schedule$/ do
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "LEC"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should include "TH 14:00 - 14:50 KEY 0106"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /TuTh 14:00 - 14:50(\s+)KEY 0106/i
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "DIS"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should include "H 11:00 - 11:50 LEF 1222"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /Th 11:00 - 11:50(\s+)LEF 1222/
   end
 end
 
