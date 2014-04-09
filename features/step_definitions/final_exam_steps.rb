@@ -272,8 +272,7 @@ end
 
 Given /^there is an exsiting CO with a Standard Final Exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
 
@@ -281,8 +280,7 @@ Given /^that Activity Offerings exist for the selected Course Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL304")
   #setup existing format
   @course_offering.delivery_format_list[0].format = "Lecture/Discussion"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
 
@@ -550,9 +548,7 @@ When /^I view the Exam Offerings for a CO created from catalog with a standard f
   @course_offering = create CourseOffering, :term => "201208", :course => "ENGL304"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
-                                 :final_exam_driver => "Final Exam Per Course Offering",
-                                 :defer_save => true
-  @course_offering.delivery_format_list[0].edit :final_exam_activity => "Lecture", :start_edit => false
+                                 :final_exam_driver => "Final Exam Per Course Offering"
 
   on(ManageCourseOfferings).view_exam_offerings
 end
@@ -595,8 +591,7 @@ end
 
 When /^I cancel an Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL301")
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -611,8 +606,7 @@ Given /^that the Lecture AO that drives the exam is not in a cancelled state$/ d
 end
 
 When /^I cancel a Discussion Activity Offering for a CO with a standard final exam driven by Activity Offering$/ do
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[2]
-  # make ActivityOfferingObject, :code => "C", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "C", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
