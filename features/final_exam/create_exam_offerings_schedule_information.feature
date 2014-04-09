@@ -12,42 +12,42 @@ Feature: CO.Create Exam Offering for Schedule Information
   Background:
     Given I am logged in as admin
 
-#  #KSENROLL-12013
-#  Scenario: FE4.7.1 Test that when an on-matrix CO is created from catalog that the requested scheduling info is correctly populated on the EO
-#    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
-#    And I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
-#    When I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering should be populated
-#
-#  #KSENROLL-12090
-#  Scenario: FE4.7.2 Test that when Course offering with CO-driven exam is created from catalog and is not present on the FE Matrix that the schedule info is not populated
-#    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term
-#    When I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
-#    Then there should be a warning message stating that "No match found on the Exam Matrix."
-#    And I view the Exam Offerings for the Course Offering
-#    And the Schedule Information for the Exam Offering should be blank
-#
-#  #KSENROLL-12090
-#  Scenario: FE4.7.3 Test that when Course Offering with CO-driven exam is created from catalog and is present on the FE Matrix that the schedule info is populated
-#    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
-#    And I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
-#    When I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering should be populated
-#
-#  #KSENROLL-12086
-#  Scenario: FE4.8.1 Test that when Course Offering with a CO-driven exam is created from copy and is not present on the FE Matrix that the schedule info is not populated
-#    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term
-#    When I create a Course Offering from copy in a term with a defined final exam period that uses the FE matrix
-#    Then there should be a warning message stating that "No match found on the Exam Matrix."
-#    And I view the Exam Offerings for the Course Offering
-#    And the Schedule Information for the Exam Offering should be blank
-#
-#  #KSENROLL-12086
-#  Scenario: FE4.8.2 Test that when Course Offering with a CO-driven exam is created from copy and is present on the FE Matrix that the schedule info is populated
-#    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
-#    And I create a Course Offering from copy in a term with a defined final exam period that uses the FE matrix
-#    When I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering should be populated
+  #KSENROLL-12013
+  Scenario: FE4.7.1 Test that when an on-matrix CO is created from catalog that the requested scheduling info is correctly populated on the EO
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
+    And I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
+    When I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering should be populated
+
+  #KSENROLL-12090
+  Scenario: FE4.7.2 Test that when Course offering with CO-driven exam is created from catalog and is not present on the FE Matrix that the schedule info is not populated
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term
+    When I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
+    Then there should be a warning message stating that "No match found on the Exam Matrix."
+    And I view the Exam Offerings for the Course Offering
+    And the Schedule Information for the Exam Offering should be blank
+
+  #KSENROLL-12090
+  Scenario: FE4.7.3 Test that when Course Offering with CO-driven exam is created from catalog and is present on the FE Matrix that the schedule info is populated
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
+    And I create a Course Offering from catalog in a term with a defined final exam period that uses the FE matrix
+    When I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering should be populated
+
+  #KSENROLL-12086
+  Scenario: FE4.8.1 Test that when Course Offering with a CO-driven exam is created from copy and is not present on the FE Matrix that the schedule info is not populated
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term
+    When I create a Course Offering from copy in a term with a defined final exam period that uses the FE matrix
+    Then there should be a warning message stating that "No match found on the Exam Matrix."
+    And I view the Exam Offerings for the Course Offering
+    And the Schedule Information for the Exam Offering should be blank
+
+  #KSENROLL-12086
+  Scenario: FE4.8.2 Test that when Course Offering with a CO-driven exam is created from copy and is present on the FE Matrix that the schedule info is populated
+    Given that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term
+    And I create a Course Offering from copy in a term with a defined final exam period that uses the FE matrix
+    When I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering should be populated
 
   #KSENROLL-12087
   Scenario: FE4.9.1 Test that when Course Offering with an AO-driven exam is created from copy where AO has RSI then the Exam RSI data is populated
@@ -55,33 +55,33 @@ Feature: CO.Create Exam Offering for Schedule Information
     When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
     And I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
-#
-#  #KSENROLL-12087
-#  Scenario: FE4.9.2 Test that when Course Offering witn an AO-driven exam is created from copy where AO has no RSI then the schedule info is not populated
-#    Given that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix
-#    When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
-#    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
-#    And I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
-#
-#  #KSENROLL-12104
-#  Scenario: FE4.9.3 Test that when Course Offering with AO-driven exam is created from copy that the schedule info is not populated
-#    Given that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period
-#    When I create a copy of the Course Offering and decide to exclude all scheduling information
-#    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
-#    And I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
-#  #KSENROLL-12105
-#  Scenario: FE4.9.4 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that exists on the FE matrix is copied that the EO RSI is populated
-#    Given that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix
-#    And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
-#    When I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
+  #KSENROLL-12087
+  Scenario: FE4.9.2 Test that when Course Offering witn an AO-driven exam is created from copy where AO has no RSI then the schedule info is not populated
+    Given that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix
+    When I create a Course Offering from copy in a term with a defined final exam period that uses the matrix
+    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
+    And I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
-#  #KSENROLL-12105
-#  Scenario: FE4.9.5 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that does not exist on the FE matrix is copied that the EO RSI is not populated
-#    Given that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix
-#    And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
-#    When I view the Exam Offerings for the Course Offering
-#    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
+  #KSENROLL-12104
+  Scenario: FE4.9.3 Test that when Course Offering with AO-driven exam is created from copy that the schedule info is not populated
+    Given that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period
+    When I create a copy of the Course Offering and decide to exclude all scheduling information
+    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
+    And I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
+
+  #KSENROLL-12105
+  Scenario: FE4.9.4 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that exists on the FE matrix is copied that the EO RSI is populated
+    Given that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix
+    And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
+    When I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
+
+  #KSENROLL-12105
+  Scenario: FE4.9.5 Test that when a Course Offering with an AO-driven exam that has one AO with RSI data that does not exist on the FE matrix is copied that the EO RSI is not populated
+    Given that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix
+    And I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period
+    When I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
