@@ -5,6 +5,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="BSCI2" then "BSCI201"
                   when subj=="BSCI3" then "BSCI120"
                   when subj=="CHEM" then "CHEM231"
+                  when subj=="CHEM3" then "CHEM399A"
                   when subj=="ENGL1" then "ENGL211"
                   when subj=="ENGL2" then "ENGL101"
                   when subj=="ENGL3" then "ENGL101"
@@ -29,6 +30,11 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
 
   case subj
     when "BSCI3" then
+      reg_group_code = "1001"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      course_has_options = true
+    when "CHEM3" then
       reg_group_code = "1001"
       term_code = "201208"
       term_descr = "Fall 2012"

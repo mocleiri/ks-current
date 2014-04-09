@@ -68,23 +68,28 @@ end
 
 Then /^there is an option to edit the waitlisted course$/ do
   on StudentSchedule do |page|
-    page.toggle_waitlist_course_details(@reg_request.course_code,@reg_request.reg_group_code)
+    page.toggle_course_details(@reg_request.course_code,@reg_request.reg_group_code,"waitlisted")
     page.edit_waitlist_item_button(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
-    page.toggle_waitlist_course_details(@reg_request.course_code,@reg_request.reg_group_code)
+    page.toggle_course_details(@reg_request.course_code,@reg_request.reg_group_code,"waitlisted")
   end
 end
 
 When /^I edit the waitlisted course$/ do
-  # @reg_request.course_options.credit_option = "1.5"  -- need different ref data course to implement this feature
+  @reg_request.course_options.credit_option = "1.5"
   @reg_request.course_options.grading_option = "Pass/Fail"
-  @reg_request.edit_course_options_in_waitlist  :grading_option => @reg_request.course_options.grading_option
-                                              # :credit_option => @reg_request.course_options.credit_option
+  @reg_request.edit_course_options_in_waitlist  :grading_option => @reg_request.course_options.grading_option,
+                                                :credit_option => @reg_request.course_options.credit_option
 end
 
 Then /^the course is present in my waitlist, with the updated options$/ do
   on StudentSchedule do |page|
-    page.waitlist_grading_option_badge(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
-    page.waitlist_grading_option(@reg_request.course_code,@reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    page.waitlist_course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+    sleep 1
+    page.waitlist_course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
+    unless @reg_request.course_options.grading_option == "Letter"
+      page.waitlist_grading_option_badge(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+      page.waitlist_grading_option(@reg_request.course_code,@reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
+    end
   end
 end
 

@@ -196,7 +196,7 @@ class RegistrationRequest
 
     on StudentSchedule do |page|
       page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_waitlist_course_details(@course_code,@reg_group_code)
+      page.toggle_course_details(@course_code,@reg_group_code,"waitlisted")
       page.edit_waitlist_item_button(@course_code,@reg_group_code).wait_until_present
       page.edit_waitlisted_course_options @course_code,@reg_group_code
 

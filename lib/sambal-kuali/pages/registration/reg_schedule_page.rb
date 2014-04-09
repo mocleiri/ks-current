@@ -29,6 +29,8 @@ class StudentSchedule < RegisterForCourseBase
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancelEditScheduleItem_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
+  element(:waitlist_course_info_div) { |course_code,reg_group_code,b| b.div(id: "waitlist_course_info_#{course_code}_#{reg_group_code}") }
+  element(:waitlist_course_info) { |course_code,reg_group_code,b| b.waitlist_course_info_div(course_code,reg_group_code).text }
   element(:edit_waitlist_item_button)  { |course_code,reg_group_code,b| b.button(id: "waitlist_edit_#{course_code}_#{reg_group_code}") }
   action(:edit_waitlisted_course_options) { |course_code,reg_group_code,b| b.edit_waitlist_item_button(course_code,reg_group_code).click }
   element(:waitlist_credits_selection) { |course_code,reg_group_code,b| b.select(id: "waitlist_credits_#{course_code}_#{reg_group_code}") }
@@ -79,10 +81,10 @@ class StudentSchedule < RegisterForCourseBase
     end
   end
 
-  def toggle_waitlist_course_details(course_code, reg_group_code)
-    waitlisted_course_code(course_code,reg_group_code).wait_until_present
-    waitlisted_course_code(course_code,reg_group_code).click
-  end
+  # def toggle_waitlist_course_details(course_code, reg_group_code)
+  #   waitlisted_course_code(course_code,reg_group_code).wait_until_present
+  #   waitlisted_course_code(course_code,reg_group_code).click
+  # end
 
   def select_waitlist_credits(course_code, reg_group_code, credits)
     waitlist_credits_selection(course_code, reg_group_code).select(credits)
