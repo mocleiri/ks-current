@@ -89,25 +89,38 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
   on CmCourseLogistics do |page|
     page.course_logistics
 
-    page.exam_standard.should be_checked unless @course_proposal.exam_standard.nil?
-    page.exam_alternate.should be_checked  unless @course_proposal.exam_alternate.nil?
-    page.exam_none.should be_checked unless @course_proposal.exam_none.nil?
-    page.final_exam_rationale.value.should == @course_proposal.final_exam_rationale unless page.exam_standard.set?
-    page.credit_value_fixed(@course_proposal.outcome_level_fixed-1).value.should == @course_proposal.credit_value if @course_proposal.outcome_type_fixed == true
-
-    #TODO RANGE & MULTIPLE OUTCOMES - KSCM-1647
-    #page.credit_value_min(@course_proposal.outcome_level_multiple).value.should == @course_proposal.credit_value_min if @course_proposal.outcome_type_range == true
-    #page.credit_value_max(@course_proposal.outcome_level_multiple).value.should == @course_proposal.credit_value_max if @course_proposal.outcome_type_range == true
-    #page.credit_value_multiple('0').value.should == @course_proposal.outcome_multiple if @course_proposal.outcome_type_multiple == true
-    #page.credit_value_multiple('1').value.should == @course_proposal.outcome_multiple2 if @course_proposal.outcome_type_multiple == true
-
-    page.activity_type.selected?(@course_proposal.activity_type).should == true
+    #GRADES AND ASSESSMENTS
     page.assessment_a_f.should be_checked if @course_proposal.assessment_a_f == :set
     page.assessment_notation.should be_checked if @course_proposal.assessment_notation == :set
     page.assessment_letter.should be_checked if @course_proposal.assessment_letter == :set
     page.assessment_pass_fail.should be_checked if @course_proposal.assessment_pass_fail == :set
     page.assessment_percentage.should be_checked if @course_proposal.assessment_percentage== :set
     page.assessment_satisfactory.should be_checked if @course_proposal.assessment_satisfactory == :set
+
+    #FINAL EXAM
+    page.exam_standard.should be_checked unless @course_proposal.exam_standard.nil?
+    page.exam_alternate.should be_checked  unless @course_proposal.exam_alternate.nil?
+    page.exam_none.should be_checked unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale.value.should == @course_proposal.final_exam_rationale unless page.exam_standard.set?
+
+    #OUTCOMES
+    page.credit_value_fixed(@course_proposal.outcome_level_fixed-1).value.should == "#{@course_proposal.credit_value}" if @course_proposal.outcome_type_fixed == true
+    page.credit_value_min(@course_proposal.outcome_level_range-1).value.should == @course_proposal.credit_value_min if @course_proposal.outcome_type_range == true
+    page.credit_value_max(@course_proposal.outcome_level_range-1).value.should == @course_proposal.credit_value_max if @course_proposal.outcome_type_range == true
+    page.credit_value_multiple(@course_proposal.outcome_level_multiple-1,1).value.should == @course_proposal.credit_value_multiple_1 if @course_proposal.outcome_type_multiple == true
+    page.credit_value_multiple(@course_proposal.outcome_level_multiple-1,2).value.should == @course_proposal.credit_value_multiple_2 if @course_proposal.outcome_type_multiple == true
+
+
+    #FORMATS
+    page.activity_type_added(1).selected?(@course_proposal.activity_type).should == true
+    page.activity_contacted_hours_added(1).should == "#{@course_proposal.activity_contacted_hours}"
+    page.activity_frequency_added(1).selected?(@course_proposal.activity_frequency).should == true
+    page.activity_duration_type_added(1).selected?(@course_proposal.activity_duration_type).should == true
+    page.activity_duration_count_added(1).should == "#{@course_proposal.activity_duration_count}"
+    page.activity_class_size_added(1).should == "#{@course_proposal.activity_class_size}"
+
+
+
   end
 
   on CmActiveDates do |page|

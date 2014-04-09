@@ -4,7 +4,7 @@ class CmActiveDates < BasePage
   cm_elements
 
   # Example of options 'Spring 1980', 'Fall 1985'
-  element(:start_term) {|b| b.select_list(name: 'document.newMaintainableObject.dataObject.startTerm') }
+  element(:start_term) {|b| b.select_list(name: 'document.newMaintainableObject.dataObject.courseInfo.startTerm') }
   element(:pilot_course) { |b| b.checkbox(name: 'document.newMaintainableObject.dataObject.pilotCourse') }
   action(:set_pilot_course) { |b| b.pilot_course.set; b.loading_wait }
   element(:end_term) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.endTerm') }
@@ -12,5 +12,5 @@ class CmActiveDates < BasePage
 
   # ACTIVE DATES REVIEW FIELDS
   action(:edit_course_logistics) { |b| b.a(id: 'ActiveDates-Review-Edit-link').click }
-  value(:start_term_review) { |b| b.div(id: 'ActiveDates-Review-section').div(data_label: 'Start Term').span(class: "uif-readOnlyContent").text }
+  value(:start_term_review) { |b| b.div(id: 'ActiveDates-Review-section').div(data_label: 'Start Term').input(class: "uif-textControl").value }
 end

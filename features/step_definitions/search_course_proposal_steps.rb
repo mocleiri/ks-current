@@ -131,10 +131,10 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
 
   #GOVERNANCE SECTION
   on CmGovernance do |page|
-    page.campus_locations_review.should == "North Campus" if @course_proposal.location_north == :set
-    page.campus_locations_review.should == "South Campus" if @course_proposal.location_south == :set
-    page.campus_locations_review.should == "Extended Campus" if @course_proposal.location_extended == :set
-    page.campus_locations_review.should == "All Campus" if @course_proposal.location_all == :set
+    page.campus_locations_review.should == "North" if @course_proposal.location_north == :set
+    page.campus_locations_review.should == "South" if @course_proposal.location_south == :set
+    page.campus_locations_review.should == "Extended" if @course_proposal.location_extended == :set
+    page.campus_locations_review.should == "All" if @course_proposal.location_all == :set
     page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
   end
 
@@ -157,19 +157,11 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
     page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
 
 
+    #TODO Fix after in flight styling changes are completed KSCM-1647
     #FIXED OUTCOME
-    page.outcome_level_fixed_review.should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
-    page.outcome_type_fixed_review.should == "Fixed" if @course_proposal.outcome_type_fixed.nil?
-    page.outcome_credit_value_review.should == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
-
-
-
-    #TODO: RANGE OUTCOMES KSCM-1647
-
-    #TODO: MULTIPLE OUTCOMES KSCM-1647
-
-    #TODO: FORMATS KSCM-1602
-
+    #page.outcome_level_fixed_review.should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
+    #page.outcome_type_fixed_review.should == "Fixed" unless @course_proposal.outcome_type_fixed.nil?
+    #page.outcome_credit_value_review.should == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
 
   end
 

@@ -125,14 +125,14 @@ class CmCourseProposalObject < DataObject
         outcome_level_fixed: 1,
         credit_value: (1..5).to_a.sample,
           #TODO: ADD OTHER OUTCOMES AFTER KSCM-1782 IS RESOVLED
-        #:outcome_type_range => true,
-        #:outcome_level_range => 2,
-        #:credit_value_min => rand(1..3).to_s,
-        #:credit_value_max =>  rand(4..8).to_s,
-        #:outcome_type_multiple => true,
-        #:outcome_level_multiple => 3,
-        #:credit_value_multiple_1 => rand(1..4).to_s,
-        #:credit_value_multiple_2 => rand(4..8).to_s,
+        :outcome_type_range => true,
+        :outcome_level_range => 2,
+        :credit_value_min => rand(1..3).to_s,
+        :credit_value_max =>  rand(4..8).to_s,
+        :outcome_type_multiple => true,
+        :outcome_level_multiple => 3,
+        :credit_value_multiple_1 => rand(1..4).to_s,
+        :credit_value_multiple_2 => rand(5..8).to_s,
           #FORMATS
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
@@ -213,10 +213,8 @@ class CmCourseProposalObject < DataObject
 
     on CmCourseInformation do |page|
       page.edit_course_information
-
       page.proposal_title.fit opts[:proposal_title]
       page.course_title.fit opts[:course_title]
-
       page.save_progress
     end
 
@@ -252,10 +250,7 @@ class CmCourseProposalObject < DataObject
       page.governance unless page.current_page('Governance').exists?
 
       fill_out page, :location_all, :location_extended, :location_north, :location_south
-
-      #fill_out page, :curriculum_oversight
       page.curriculum_oversight.pick! @curriculum_oversight
-      page.add_oversight
       determine_save_action
     end
 
@@ -474,11 +469,13 @@ class CmCourseProposalObject < DataObject
   def set_additional_format
     on CmCourseLogistics do |page|
       page.activity_type.pick! @activity_type
+      sleep 1 # to allow to drop down selection to catch up
       page.activity_contacted_hours.fit @activity_contacted_hours
       page.activity_frequency.pick! @activity_frequency
       page.activity_duration_type.pick! @activity_duration_type
       page.activity_duration_count.fit @activity_duration_count
       page.activity_class_size.fit @activity_class_size
+      page.add_activity
     end
   end
 
@@ -508,13 +505,13 @@ class CmCourseProposalObject < DataObject
       page.add_outcome
       page.outcome_type(outcome_level-1).pick! "Multiple"
       page.loading_wait
-      # sleep here is to wait for the element to be visible
-      sleep 1
-      page.credit_value_multiple_1(outcome_level-1).set @credit_value_multiple_1
-      page.outcome_add_multiple_btn(outcome_level-1)
+      page.credit_value_multiple_entry(outcome_level-1).wait_until_present
+      page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_1
+      page.outcome_add_multiple_btn
       page.loading_wait
-      page.credit_value_multiple_2(outcome_level-1, multiple_value_count).set @credit_value_multiple_2
-      page.outcome_add_multiple_btn(outcome_level-1)
+      page.credit_value_multiple_entry(outcome_level-1).wait_until_present
+      page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_2
+      page.outcome_add_multiple_btn
     end
   end
 

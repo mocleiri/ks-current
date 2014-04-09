@@ -40,9 +40,11 @@ class CmCourseLogistics < BasePage
   action(:credit_value_fixed) {|outcome_level, b| b.text_field(id: "fixedCreditVale_line#{outcome_level}_control") }
   action(:credit_value_min) {|outcome_level, b| b.text_field(id:"MinRangeCreditVale_line#{outcome_level}_control") }
   action(:credit_value_max) {|outcome_level, b| b.text_field(id: "MaxRangeCreditVale_line#{outcome_level}_control") }
-  action(:credit_value_multiple_1) { |outcome_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_add_control") }
-  action(:credit_value_multiple_2) { |outcome_level,multiple_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_line#{multiple_level}_control") }
-  action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
+  action(:credit_value_multiple_entry) { |outcome_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_add_control") }
+  action(:credit_value_multiple) { |outcome_level,multiple_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_line#{multiple_level-1}_control") }
+  #TODO remove temp definiton after KSCM-1909 is resolved.
+  #action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
+  action(:outcome_add_multiple_btn) {|b| b.button(text:"Add").click; b.loading_wait }
 
 #COURSE FORMAT(S)
   action(:add_additional_format) { |b| b.button(id: /CourseFormats-Widgets_add$/).click; b.adding_line_wait }
@@ -54,19 +56,38 @@ class CmCourseLogistics < BasePage
   action(:activity_duration_count) { |b| b.text_field(name: "newCollectionLines['document.newMaintainableObject.dataObject.courseInfo.formats_0_.activities'].duration.timeQuantity") }
   action(:activity_class_size) { |b| b.text_field(name: /defaultEnrollmentEstimate$/) }
 
-
-
+  #ADDED COURSE FORMATS
+  action(:activity_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].typeKey") }
+  element(:activity_contacted_hours_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].contactHours.unitQuantity").value }
+  element(:activity_frequency_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].contactHours.unitTypeKey") }
+  action(:activity_duration_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].duration.atpDurationTypeKey") }
+  action(:activity_duration_count_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].duration.timeQuantity").value }
+  action(:activity_class_size_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].defaultEnrollmentEstimate").value }
 
 
 # LOGISTICS REVIEW FIELDS
   action(:edit_course_logistics) { |b| b.a(id: "CourseLogistics-Review-Edit-link").click }
-  value(:assessment_scale_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Assessment Scale").span(class: "uif-readOnlyContent").text }
-  value(:final_exam_status_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Final Exam Status").span(class: "uif-readOnlyContent").text }
-  value(:final_exam_rationale_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Final Exam Rationale").span(class: "uif-readOnlyContent").text }
+  value(:assessment_scale_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Assessment Scale").input(class: "uif-textControl").value }
+  value(:final_exam_status_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Final Exam Status").input(class: "uif-textControl").value }
+  value(:final_exam_rationale_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Final Exam Rationale").textarea(id: "final_exam_rationale_control").value }
 
-  value(:outcome_type_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Type").span(class: "uif-readOnlyContent").text }
-  value(:outcome_credit_value_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Credit Value").span(class: "uif-readOnlyContent").text }
-  value(:outcome_level_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").span(class: "uif-headerText-span").text }
+  value(:outcome_type_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Type").input(class: "uif-textControl").value }
+  value(:outcome_credit_value_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Credit Value").input(class: "uif-readOnlyContent").text }
+  value(:outcome_level_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(class: "uif-header").span(class:"uif-headerText-span").text }
+
+  #TODO fix definitions after in flight styling changes are completed KSCM-1647
+
+  #value(:outcome_type_range_review)
+  #value(:outcome_credit_min_review)
+  #value(:outcome_credit_min_review)
+  #value(:outcome_level_range_review)
+
+  #value(:outcome_type_multiple_review)
+  #value(:outcome_credit_value_multiple1_review)
+  #value(:outcome_credit_value_multiple2_review)
+  #value(:outcome_level_multiple_review)
+
+
 end
 
 
