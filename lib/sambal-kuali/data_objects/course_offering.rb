@@ -516,17 +516,19 @@ class CourseOffering
     output=[]
     arr = text.split( " " )
     numArray = Array.new
+    numberArray = Array.new
     textArray = Array.new
+    textstringArray = Array.new
     for index in 0 ... arr.size
       arrValue = "#{arr[index]}"
-
       if (arrValue.match(/^\d+$/))
-
-        numArray.push arrValue
+        numberArray.push arrValue
       else
-        textArray.push arrValue
+        textstringArray.push arrValue
       end
     end
+    numArray=  numberArray.sort
+    textArray =  textstringArray.sort
     numArray_length=numArray.size
     textArray_length=textArray.size
     puts numArray_length

@@ -56,5 +56,6 @@ Feature: BT.Search_result_sort
   Examples:
     |text             |
     |ENGL 206 HIST 360|
+    |WMST 410 PHYS 275|
 
 
