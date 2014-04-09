@@ -1,4 +1,5 @@
 When /^I change the final exam period start date to be before the term start date and save$/ do
+  #TODO: this modifies reference data
   @calendar = make AcademicCalendar, :year => "2012"
 
   term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
@@ -11,6 +12,7 @@ When /^I change the final exam period start date to be before the term start dat
 end
 
 When /^I change the final exam period end date to be after the term end date and save$/ do
+  #TODO: this modifies reference data
   @calendar = make AcademicCalendar, :year => "2012"
 
   term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
@@ -103,8 +105,7 @@ end
 When /^I create a Course Offering from an existing Course Offering with a standard final exam option$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "CHEM277")
 
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
   @course_offering_copy = create CourseOffering, :term=> @course_offering.term , :create_from_existing => @course_offering
@@ -261,8 +262,7 @@ When /^I view the Exam Offerings for a CO created from an existing CO with a sta
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
 
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 
   @create_co = create CourseOffering, :term=> @course_offering.term, :create_from_existing => @course_offering
@@ -358,8 +358,7 @@ end
 
 Given /^that the CO has two existing AOs and a standard final exam driven by Activity Offering$/ do
   @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => "201208", :course => "ENGL201")
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.edit :send_to_scheduler => true
 end
 
@@ -1278,8 +1277,7 @@ end
 
 Given /^that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  # make ActivityOfferingObject, :code => "A"
+  @activity_offering = make ActivityOfferingObject, :code => "A"
 end
 
 When /^I create a copy of the Course Offering and decide to exclude all scheduling information$/ do
