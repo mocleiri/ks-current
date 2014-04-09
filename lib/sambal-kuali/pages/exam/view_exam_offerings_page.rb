@@ -147,11 +147,11 @@ class ViewExamOfferings < BasePage
 
   def ao_code_list(cluster_private_name = :default_cluster)
     array = []
-    results = eo_by_ao_results_table(cluster_private_name)
+    results = ao_eo_table(cluster_private_name)
     if results != nil
       results.rows.each do |row|
-        if row.cells[AO_CODE].text =~ /^[A-Z]$/
-          array << row.cells[AO_CODE].text
+        if row.cells[VIEW_AO_CODE].text =~ /^[A-Z]$/
+          array << row.cells[VIEW_AO_CODE].text
         end
       end
     end
