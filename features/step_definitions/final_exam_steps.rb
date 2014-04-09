@@ -1230,7 +1230,7 @@ Then /^there should be a warning message for the AO stating that "(.*?)"$/ do |e
   on ManageCourseOfferings do |page|
     begin
       page.wait_until(120) { page.growl_message_warning_div.exists? }
-      page.growl_warning_text.should match /#{@course_offering.course}.*#{@activity_offering.code}.*#{Regexp.escape(exp_msg)}/
+      page.growl_warning_text.should match /#{@course_offering.course}.*#{@course_offering.activity_offering_cluster_list[0].ao_list[0].code}.*#{Regexp.escape(exp_msg)}/
     rescue
       puts "growl warning message for the EO did not appear"
     end
@@ -1253,11 +1253,13 @@ And /^I have created an Activity Offering that only has Requested Scheduling Inf
 end
 
 When /^I create a Course Offering from copy in a term with a defined final exam period that uses the matrix$/ do
-  @copy_co = create CourseOffering, :create_by_copy => @course_offering
+  @course_offering = create CourseOffering, :create_by_copy => @original_co
+  @course_offering.manage_and_init
 end
 
 When /^I create a copy of the initial course offering in a term that uses the FE matrix and has defined final exam period$/ do
-  @copy_co = create CourseOffering, :create_by_copy => @course_offering
+  @course_offering = create CourseOffering, :create_by_copy => @original_co
+  @course_offering.manage_and_init
 end
 
 Given /^I create a Course Offering with an AO-driven exam from catalog in a term with a defined final exam period$/ do
@@ -1270,12 +1272,12 @@ Given /^I create a Course Offering with an AO-driven exam from catalog in a term
 end
 
 Given /^that the Course Offering has an AO-driven exam in a term that uses the FE matrix and has defined final exam period$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361"
-  @activity_offering = make ActivityOfferingObject, :code => "A"
+  @original_co = make CourseOffering, :term => "201301", :course => "BSCI361"
 end
 
 When /^I create a copy of the Course Offering and decide to exclude all scheduling information$/ do
-  @copy_co = create CourseOffering, :create_by_copy => @course_offering, :exclude_scheduling => true
+  @course_offering = create CourseOffering, :create_by_copy => @original_co, :exclude_scheduling => true
+  @course_offering.manage_and_init
 end
 
 Given /^I create an Activity Offering that has no ASIs or RSIs$/ do
@@ -1332,6 +1334,12 @@ When /^I add new Requested Scheduling Information to the Activity Offering that 
 end
 
 When /^I create multiple Course Offerings each with different Exam Offerings and Requested Scheduling Information$/ do
+  @matrix_list = []
+  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "CHEM242"))
+  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "PHYS161"))
+  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "TH"))
+  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "F"))
+
   @co_list = []
 
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",

@@ -68,4 +68,52 @@ class FEMatrixEdit < BasePage
   element(:lookup_search_btn) { |b| b.frm_popup.button( text: "Search")} #revert this
   action(:lookup_search) { |b| b.lookup_search_btn.click}
 
+  def get_statement_rule_text
+    rule_dropdown.option(selected: "selected").text
+  end
+
+  def get_statement_days_text
+    rule_days.value
+  end
+
+  def get_statement_starttime_text
+    rule_starttime.value
+  end
+
+  def get_statement_starttime_ampm_text
+    rule_starttime_ampm.option(selected: "selected").text
+  end
+
+  # def get_rsi_tba_checkbox_text
+  #   rsi_tba_checkbox
+  # end
+
+  def get_rsi_days_text
+    rsi_days.option(selected: "selected").text
+  end
+
+  def get_rsi_starttime_text
+    rsi_starttime.value
+  end
+
+  def get_rsi_starttime_ampm_text
+    rsi_starttime_ampm.option(selected: "selected").text
+  end
+
+  def get_rsi_endtime_text
+    rsi_endtime.value
+  end
+
+  def get_rsi_endtime_ampm_text
+    rsi_endtime_ampm.option(selected: "selected").text
+  end
+
+  def get_rsi_facility_text
+    rsi_facility.value
+  end
+
+  def get_rsi_room_text
+    rsi_room.value
+  end
+
 end

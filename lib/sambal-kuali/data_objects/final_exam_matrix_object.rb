@@ -20,7 +20,6 @@ class FinalExamMatrix < DataObject
     set_options(options)
   end
 
-
   def manage
     search
     on ManageFEMatrix do |page|
@@ -53,82 +52,81 @@ class FinalExamMatrix < DataObject
     @rules.delete(opts['rule_obj'])
   end
 
-  def find_exam_slotting_info( exam_type, requirements)
-    arr = []
+  def create_standard_rule_matrix_object_for_rsi( requirements)
+    rule_found = true
     manage
     on FEMatrixView do |page|
-      row_arr = page.get_row_array_by_rule_requirements( exam_type, requirements)
-      if !row_arr.empty?
-        arr << row_arr[0]
-        arr << row_arr[1]
-        if row_arr[2] =~ /(\d\d\:\d\d) ([APM]{2})\-(\d\d\:\d\d) ([APM]{2})/i
-          arr << "#{$1} #{$2.downcase}"
-          arr << "#{$3} #{$4.downcase}"
-        end
-      else
-        for i in 1..4
-          arr << ""
+      page.standard_final_exam_table.rows.each do |row|
+        if row.text =~ /^#{requirements}.*$/m
+          row.i(class: "ks-fontello-icon-pencil").click
+          rule_found = true
+          break
+        else
+          rule_found = false
         end
       end
     end
-    return arr
+    if rule_found
+      on FEMatrixEdit do |page|
+        page.rule_tree_section.span(:text => /#{requirements}/).when_present.click
+        page.edit
+        statement = []
+        statement << (make ExamMatrixStatementObject, :days => requirements, :start_time => page.get_statement_starttime_text,
+                         :st_time_ampm => page.get_statement_starttime_ampm_text)
+        rule = make ExamMatrixRuleObject, :rsi_days => page.get_rsi_days_text,
+                    :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text,
+                    :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text,
+                    :statements => statement
+        self.rules << rule
+        page.cancel_rule
+      end
+    else
+      statement = []
+      statement << (make ExamMatrixStatementObject, :days => requirements, :start_time => "04:00",:st_time_ampm => "pm")
+      rule = make ExamMatrixRuleObject, :rsi_days => "Day 3", :start_time => "05:00",
+                  :st_time_ampm => "am", :end_time => "07:00",:end_time_ampm => "am", :statements => statement
+      self.rules << rule
+    end
+    return self
   end
 
-  def create_data_for_rsi( exam_type, requirements)
-    arr = []
-    row_arr = find_exam_slotting_info( exam_type, requirements)
-    arr << requirements
-    if exam_type == "Standard"
-      split_arr = split_requirements_into_array( row_arr[0], requirements)
-      arr << split_arr[0]
-      arr << split_arr[1]
-    end
-    arr << row_arr[1]
-    if row_arr[2] =~ /(\d\d\:\d\d) ([APM]{2})/i
-      arr << $1
-      arr << $2
-    else
-      arr << ""
-      arr << ""
-    end
-    if row_arr[3] =~ /(\d\d\:\d\d) ([APM]{2})/i
-      arr << $1
-      arr << $2
-    else
-      arr << ""
-      arr << ""
-    end
-    return arr
-  end
-
-  def split_requirements_into_array( to_split, requirements)
-    arr = []
-    if to_split =~ /^([MTWHFSU]+) at (.+)/
-      days = $1
-      rest = $2
-      if days == requirements
-        if rest =~ /^(\d\d\:\d\d) ([APM]{2})\..+/
-          arr << $1
-          arr << $2.downcase
+  def create_common_rule_matrix_object_for_rsi( requirements)
+    rule_found = true
+    manage
+    on FEMatrixView do |page|
+      page.common_final_exam_table.rows.each do |row|
+        if row.text =~ /#{requirements}/m
+          row.i(class: "ks-fontello-icon-pencil").click
+          rule_found = true
+          break
         else
-          arr << ""
-          arr << ""
+          rule_found = false
         end
-      elsif rest =~ /^[^\.]+\..+([MTWHFSU]+) at (\d\d\:\d\d) ([APM]{2}).+/m
-        if $1 == requirements
-          arr << $2
-          arr << $3.downcase
-        else
-          arr << ""
-          arr << ""
-        end
-      else
-        arr << ""
-        arr << ""
-        arr << ""
       end
     end
-    return arr
+    if rule_found
+      on FEMatrixEdit do |page|
+        page.rule_tree_section.span(:text => /#{requirements}/).when_present.click
+        page.edit
+        statement = []
+        statement << (make ExamMatrixStatementObject, :statement_option => page.get_statement_rule_text,
+                         :courses => requirements)
+        rule = make ExamMatrixRuleObject, :rsi_days => page.get_rsi_days_text,
+                    :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text,
+                    :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text,
+                    :statements => statement
+        self.rules << rule
+        page.cancel_rule
+      end
+    else
+      statement = []
+      statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
+                       :courses => requirements)
+      rule = make ExamMatrixRuleObject, :rsi_days => "Day 5", :start_time => "09:30",
+                  :st_time_ampm => "am",  :end_time => "11:30",:end_time_ampm => "am", :statements => statement
+      self.rules << rule
+    end
+    return self
   end
 end
 
