@@ -327,7 +327,7 @@ Then /^see one Exam Offering for the Course Offering with a status of ([^"]*)$/ 
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.get_eo_by_co_status_text.should match /#{exp_state}/
-    page.count_no_of_eos_by_co.should == "1"
+    page.co_eo_count.should == "1"
   end
 end
 
@@ -970,7 +970,7 @@ Then /^the Exam Offerings for Course Offering should be in a ([^"]*) state$/ do 
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.get_eo_by_co_status_text.should match /#{exp_state}/
-    page.count_no_of_eos_by_co.should == "1"
+    page.co_eo_count.should == "1"
   end
 end
 
@@ -978,19 +978,19 @@ Then /^the EO in the Exam Offerings for Course Offering table should be in a ([^
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.get_eo_by_co_status_text.should match /#{exp_state}/
-    page.count_no_of_eos_by_co.should == "1"
+    page.co_eo_count.should == "1"
   end
 end
 
 Then /^there should only be one EO in the Exam Offerings for Course Offering table$/ do
-  on(ViewExamOfferings).count_no_of_eos_by_co.should == "1"
+  on(ViewExamOfferings).co_eo_count.should == "1"
 end
 
 Then /^the Exam Offerings for Course Offering in the EO for CO table should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
     page.table_header_text.should match /for Course Offering/
     page.get_eo_by_co_status_text.should match /#{exp_state}/
-    page.count_no_of_eos_by_co.should == "1"
+    page.co_eo_count.should == "1"
   end
 end
 
