@@ -80,7 +80,6 @@ import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.AutoPopulatingList;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -93,6 +92,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -198,24 +198,7 @@ public class CourseController extends CourseRuleEditorController {
         ModelAndView modelAndView = super.docHandler(formBase, result, request, response);
 
         if (formBase.getPageId().equals(CurriculumManagementConstants.CourseViewPageIds.REVIEW_PROPOSAL)) {
-            //  Build a redirect to the reviewCourseProposal handler for validation.
-            java.util.Map requestParameterMap = request.getParameterMap();
-            Properties urlParameters = new Properties();
-            for (Object p  : requestParameterMap.keySet()) {
-                urlParameters.put((String) p, ((String[]) requestParameterMap.get(p))[0]);
-            }
-            urlParameters.put("methodToCall", "reviewCourseProposal");
-            urlParameters.put("formKey", formBase.getFormKey());
-
-            /*
-             * Calling performRedirect() to build the response, but undoing the call to form.setRequestRedirect(true)
-             * that happens within performRedirect() before returning. Setting that flag causes the postedView to be
-             * discarded in UifControllerHandlerInterceptor#afterCompletion(). If the postedView isn't available the
-             * validation in the reviewCourseProposal handler method will fail.
-             */
-            ModelAndView mv = performRedirect(formBase, "courses", urlParameters);
-            formBase.setRequestRedirected(false);
-            return mv;
+            KRADServiceLocatorWeb.getViewValidationService().validateViewAgainstNextState(formBase);
         }
         return modelAndView;
     }
@@ -224,8 +207,8 @@ public class CourseController extends CourseRuleEditorController {
     public ModelAndView route(@ModelAttribute("KualiForm") DocumentFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
         // manually call the view validation service as this validation cannot be run client-side in current setup
 //        KRADServiceLocatorWeb.getViewValidationService().validateView(form.getPostedView(), form, KewApiConstants.ROUTE_HEADER_ENROUTE_CD);
-        KSViewAttributeValueReader reader = new KSViewAttributeValueReader(form.getPostedView(), form);
-        KRADServiceLocatorWeb.getDictionaryValidationService().validate(reader, true, KewApiConstants.ROUTE_HEADER_ENROUTE_CD, form.getPostedView().getStateMapping());
+        KSViewAttributeValueReader reader = new KSViewAttributeValueReader(form);
+        KRADServiceLocatorWeb.getDictionaryValidationService().validate(reader, true, KewApiConstants.ROUTE_HEADER_ENROUTE_CD, form.getView().getStateMapping());
         if (!GlobalVariables.getMessageMap().hasErrors()) {
             return super.route(form, result, request, response);    //To change body of overridden methods use File | Settings | File Templates.
         }
@@ -339,7 +322,7 @@ public class CourseController extends CourseRuleEditorController {
         CourseInfoWrapper courseInfoWrapper = (CourseInfoWrapper) form.getDocument().getNewMaintainableObject().getDataObject();
         // final ModelAndView retval = super.deleteLine(form, result, request, response);
 
-        final String selectedCollectionPath = form.getActionParamaterValue(UifParameters.SELLECTED_COLLECTION_PATH);
+        final String selectedCollectionPath = form.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH);
         if (StringUtils.isBlank(selectedCollectionPath)) {
             GlobalVariables.getMessageMap().putErrorForSectionId(CourseViewSections.SUPPORTING_DOCUMENTS.getSectionId(), CurriculumManagementConstants.MessageKeys.UNABLE_TO_ADD_LINE);
             return getUIFModelAndView(form);
@@ -424,7 +407,7 @@ public class CourseController extends CourseRuleEditorController {
     protected void performWorkflowAction(DocumentFormBase form, UifConstants.WorkflowAction action, boolean checkSensitiveData) {
         CourseControllerTransactionHelper helper = GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "courseControllerTransactionHelper", CourseControllerTransactionHelper.class.getSimpleName()));
         helper.performWorkflowActionSuper(form, action, checkSensitiveData, this);
-        AutoPopulatingList<ErrorMessage> infoMessages = GlobalVariables.getMessageMap().getInfoMessagesForProperty(KRADConstants.GLOBAL_MESSAGES);
+        List<ErrorMessage> infoMessages = GlobalVariables.getMessageMap().getInfoMessagesForProperty(KRADConstants.GLOBAL_MESSAGES);
         if (infoMessages != null) {
             for (ErrorMessage message : infoMessages) {
                 KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, message.getErrorKey(), message.getMessageParameters());
@@ -504,24 +487,24 @@ public class CourseController extends CourseRuleEditorController {
 
         // Update course section
         final ReviewProposalDisplay reviewData = courseInfoWrapper.getReviewProposalDisplay();
-        reviewData.getcourseSection().setProposalName(courseInfoWrapper.getProposalInfo().getName());
-        reviewData.getcourseSection().setCourseTitle(savedCourseInfo.getCourseTitle());
-        reviewData.getcourseSection().setTranscriptTitle(savedCourseInfo.getTranscriptTitle());
-        reviewData.getcourseSection().setSubjectArea(savedCourseInfo.getSubjectArea());
-        reviewData.getcourseSection().setCourseNumberSuffix(savedCourseInfo.getCourseNumberSuffix());
+        reviewData.getCourseSection().setProposalName(courseInfoWrapper.getProposalInfo().getName());
+        reviewData.getCourseSection().setCourseTitle(savedCourseInfo.getCourseTitle());
+        reviewData.getCourseSection().setTranscriptTitle(savedCourseInfo.getTranscriptTitle());
+        reviewData.getCourseSection().setSubjectArea(savedCourseInfo.getSubjectArea());
+        reviewData.getCourseSection().setCourseNumberSuffix(savedCourseInfo.getCourseNumberSuffix());
 
         // Update governance section
-        reviewData.getgovernanceSection().getCampusLocations().clear();
-        reviewData.getgovernanceSection().getCampusLocations().addAll(savedCourseInfo.getCampusLocations());
-        reviewData.getgovernanceSection().getCurriculumOversight().clear();
-        reviewData.getgovernanceSection().getCurriculumOversight().addAll(savedCourseInfo.getUnitsContentOwner());
+        reviewData.getGovernanceSection().getCampusLocations().clear();
+        reviewData.getGovernanceSection().getCampusLocations().addAll(savedCourseInfo.getCampusLocations());
+        reviewData.getGovernanceSection().getCurriculumOversight().clear();
+        reviewData.getGovernanceSection().getCurriculumOversight().addAll(savedCourseInfo.getUnitsContentOwner());
 
         // update course logistics section
-        reviewData.getcourseLogisticsSection().getTerms().clear();
+        reviewData.getCourseLogisticsSection().getTerms().clear();
         try {
             for(String termType : savedCourseInfo.getTermsOffered())  {
                 TypeInfo term = getTypeService().getType(termType, ContextUtils.getContextInfo());
-                reviewData.getcourseLogisticsSection().getTerms().add(term.getName());
+                reviewData.getCourseLogisticsSection().getTerms().add(term.getName());
             }
         } catch (Exception e) {
             throw new RiceIllegalStateException(e);
@@ -530,13 +513,13 @@ public class CourseController extends CourseRuleEditorController {
       if(savedCourseInfo.getDuration() != null &&  StringUtils.isNotBlank(savedCourseInfo.getDuration().getAtpDurationTypeKey())) {
         try{
                 TypeInfo term = getTypeService().getType(savedCourseInfo.getDuration().getAtpDurationTypeKey(), ContextUtils.getContextInfo());
-                reviewData.getcourseLogisticsSection().setAtpDurationType(term.getName());
+                reviewData.getCourseLogisticsSection().setAtpDurationType(term.getName());
             } catch (Exception e) {
                 throw new RiceIllegalStateException(e);
             }
       }
 
-        reviewData.getcourseLogisticsSection().setTimeQuantity(savedCourseInfo.getDuration().getTimeQuantity());
+        reviewData.getCourseLogisticsSection().setTimeQuantity(savedCourseInfo.getDuration().getTimeQuantity());
 
         // update learning Objectives Section;
         // update  course Requisites Section;

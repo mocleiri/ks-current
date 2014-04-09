@@ -99,6 +99,32 @@ limitations under the License.
         </property>
     </bean>
 
+    <bean id="KRMS-ListItems-DataGroup-parent" parent="Uif-StackedCollectionGroup"
+          p:style="width: 600px; padding: 0; margin-bottom: 0px;">
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems" p:additionalCssClasses="krms-stackedCollectionLayout">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionHorizontalBoxItem" p:additionalCssClasses="krms-stackedPreviewItem">
+                        <property name="renderFooter" value="false"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="lineActions">
+            <list></list>
+        </property>
+        <property name="renderAddLine" value="false"/>
+        <property name="propertyName" value="listItems"/>
+        <property name="collectionObjectClass" value="java.lang.String"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="@{#line}"
+                      p:style="width: 290px; margin: 0px;"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="KRMS-ListItems-DataGroup" parent="KRMS-ListItems-DataGroup-parent"/>
+
     <bean id="KS-ListItems-DataGroup-parent" parent="KRMS-ListItems-DataGroup-parent" p:renderAddLine="false">
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems" class="org.kuali.student.core.krms.HorizontalActionsStackedLayoutManager"
@@ -342,7 +368,7 @@ limitations under the License.
         </property>
     </bean>
 
-    <bean id="KS-EditWithLogic-TreeGroup" parent="KRMS-EditWithLogic-TreeGroup" p:componentSecurity.editAuthz="true">
+    <bean id="KS-EditWithLogic-TreeGroup" parent="KRMS-EditWithLogic-TreeGroup" p:editAuthz="true">
         <property name="items">
             <list>
                 <ref bean="KRMS-LogicArea-InputField"/>
@@ -568,5 +594,6 @@ limitations under the License.
             </list>
         </property>
     </bean>
+
 
 </beans>

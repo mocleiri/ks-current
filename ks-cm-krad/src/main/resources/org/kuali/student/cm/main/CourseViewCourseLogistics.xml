@@ -65,7 +65,7 @@
                       p:propertyName="courseInfo.duration.atpDurationTypeKey" p:label="Duration Type"
                       p:optionsFinderClass="org.kuali.student.lum.lu.ui.course.keyvalues.DurationTypeKeyValueFinder">
                     <property name="control">
-                        <bean parent="KS-Uif-DropdownControl" p:cssClasses="validDurationTypeAndCountInput" p:onBlurScript="durationTypeOnBlur();"/>
+                        <bean parent="KS-Uif-DropdownControl" />
                     </property>
                 </bean>
                 <bean id="KS-DurationTimeQuantity-Field" parent="KS-Uif-InputField-LabelTop"
@@ -93,7 +93,7 @@
         <property name="validationMessages.displayMessages" value="false" />
         <property name="items">
             <list>
-                <bean id="KS-CourseView-gradingOptions" parent="Uif-InputField-LabelTop" p:propertyName="courseInfo.gradingOptions" >
+                <bean id="KS-CourseView-gradingOptions" parent="KS-Uif-InputField-LabelTop" p:propertyName="courseInfo.gradingOptions" >
                     <property name="control">
                         <bean parent="Uif-VerticalCheckboxesControl" />
                     </property>
@@ -124,9 +124,12 @@
                             </property>
                         </bean>
                     </property>
+                    <!-- Rice 2.4 upgrade : removing fieldLabel.requiredMessage -->
+<!--
                     <property name="fieldLabel.requiredMessage">
                         <bean parent="CM-StateAware-RequiredMessage" />
                     </property>
+-->
                 </bean>
             </list>
         </property>
@@ -177,9 +180,12 @@
                             </property>
                         </bean>
                     </property>
+                    <!-- Rice 2.4 upgrade : removing fieldLabel.requiredMessage -->
+<!--
                     <property name="fieldLabel.requiredMessage">
                         <bean parent="CM-StateAware-RequiredMessage" />
                     </property>
+-->
                 </bean>
                 <bean id="KS-FinalExamRationale" parent="KS-Uif-InputField-LabelTop"
                       p:label="Final Exam Rationale" p:required="true"
@@ -210,6 +216,12 @@
                 <value>cm_requiredMessage_sectionHeader</value>
             </list>
         </property>
+        <!-- Rice 2.4 upgrade : removing as required message is no longer available -->
+<!--
+        <property name="instructionalMessage">
+            <bean parent="CM-StateAware-RequiredMessage" />
+        </property>
+-->
         <property name="collectionObjectClass" value="org.kuali.student.cm.course.form.ResultValuesGroupInfoWrapper" />
         <property name="addLineActions">
             <list>
@@ -254,10 +266,13 @@
                     </property>
                 </bean>
                 <bean id="MaxRangeCreditVale" parent="KS-Uif-InputField-LabelTop"
-                      p:render="@{#lp.typeKey eq 'kuali.result.values.group.type.range'}"
-                      p:label="Maximum Credit Value" p:propertyName="resultValueRange.maxValue">
+                       p:render="@{#lp.typeKey eq 'kuali.result.values.group.type.range'}"
+                       p:label="Maximum Credit Value" p:propertyName="resultValueRange.maxValue">
                     <property name="validCharactersConstraint">
                         <bean parent="NumericPatternConstraint" />
+                    </property>
+                    <property name="control">
+                        <bean parent="KS-Uif-TextControl" p:cssClasses="rangeMaxMinCheck" p:onBlurScript="verifyMaxRangeOnBlur();"/>
                     </property>
                 </bean>
             </list>
@@ -393,7 +408,7 @@
                                 </property>
                             </bean>
                             <bean id="KS-Logistics-Format-DurationTimeQuantity-Field" parent="KS-Uif-InputField-LabelTop"
-                                  p:label="Durantion Count" p:propertyName="duration.timeQuantity">
+                                  p:label="Duration Count" p:propertyName="duration.timeQuantity">
                                 <property name="validCharactersConstraint">
                                     <bean parent="NumericPatternConstraint" />
                                 </property>
