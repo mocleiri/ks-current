@@ -229,7 +229,7 @@ end
 
 When /^I add an administering organization to the course offering$/ do
  organization_list = {}
- organization_list[0] = make AffiliatedOrg
+ organization_list[0] = make AffiliatedOrgObject
 
  @course_offering.edit :affiliated_org_list=> organization_list, :start_edit => false
 
