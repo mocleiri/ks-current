@@ -12,7 +12,8 @@ end
 
 Then /^there is a message indicating that I have been added to the waitlist$/  do
   on RegistrationCart do |page|
-    page.waitlist_status(@reg_request.course_code,@reg_request.reg_group_code).should match /added to waitlist/i
+    page.waitlist_status(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+    page.waitlist_status(@reg_request.course_code,@reg_request.reg_group_code).text.should match /added to waitlist/i
   end
 end
 
