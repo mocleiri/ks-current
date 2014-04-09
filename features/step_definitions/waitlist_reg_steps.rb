@@ -83,6 +83,7 @@ end
 
 Then /^the course is present in my waitlist, with the updated options$/ do
   on StudentSchedule do |page|
+    page.waitlist_grading_option_badge(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     page.waitlist_grading_option(@reg_request.course_code,@reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
   end
 end

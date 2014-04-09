@@ -24,7 +24,6 @@ Feature: REG.Wait List
     And there is a message indicating that no waitlist is offered
 
   #KSENROLL-12351
-  @wip
   Scenario: CR 8.7 I want to edit the parameters of a waitlisted registration group so if I am registered for it I can take it with my preferred options
     When I register for a full BSCI3 course offering and add myself to a waitlist
     And I view my schedule
