@@ -456,8 +456,7 @@ end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-      # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
@@ -486,8 +485,7 @@ end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "CHEM395"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-      # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
 Then /^the (?:Requested|Actual) Scheduling Information for the Exam Offering of the AO should be populated$/ do
@@ -508,8 +506,7 @@ end
 
 Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "ENGL313"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
@@ -521,8 +518,7 @@ end
 
 Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "ENGL611"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  #  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
 Given /^I create from catalog a Course Offering with an AO\-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
