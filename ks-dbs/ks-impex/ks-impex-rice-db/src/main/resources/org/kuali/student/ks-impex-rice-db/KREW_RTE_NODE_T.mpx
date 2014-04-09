@@ -37,6 +37,7 @@ RTE_NODE_ID,DOC_TYP_ID,NM,TYP,RTE_MTHD_NM,RTE_MTHD_CD,FNL_APRVR_IND,MNDTRY_RTE_I
 "KS-1245","KS-1027","Senate Review","org.kuali.rice.kew.engine.node.RoleNode","org.kuali.rice.kew.role.RoleRouteModule","RM","0","0","P","${mpx.null}","1","${mpx.null}","${mpx.null}","${mpx.null}"
 "KS-1251","KS-1027","Publication Review","org.kuali.rice.kew.engine.node.RoleNode","org.kuali.rice.kew.role.RoleRouteModule","RM","0","0","P","${mpx.null}","1","${mpx.null}","${mpx.null}","${mpx.null}"
 "KS-1257","KS-1000","AdHoc","org.kuali.rice.kew.engine.node.InitialNode","${mpx.null}","${mpx.null}","0","0","S","${mpx.null}","13","${mpx.null}","${mpx.null}","${mpx.null}"
+"KS-1282","KS-1015","Initiated","org.kuali.rice.kew.engine.node.InitialNode","${mpx.null}","${mpx.null}","0","0","P","${mpx.null}","1","${mpx.null}","1","${mpx.null}"
 "KS-1289","KS-1026","PreRoute","org.kuali.rice.kew.engine.node.InitialNode","${mpx.null}","${mpx.null}","0","0","P","${mpx.null}","1","${mpx.null}","${mpx.null}","${mpx.null}"
 "KS-1296","KS-1026","Department Review","org.kuali.rice.kew.engine.node.RoleNode","org.kuali.rice.kew.role.RoleRouteModule","RM","0","0","P","${mpx.null}","1","${mpx.null}","${mpx.null}","${mpx.null}"
 "KS-1303","KS-1026","Division Review","org.kuali.rice.kew.engine.node.RoleNode","org.kuali.rice.kew.role.RoleRouteModule","RM","0","0","P","${mpx.null}","1","${mpx.null}","${mpx.null}","${mpx.null}"

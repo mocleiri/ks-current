@@ -6,4 +6,3 @@ NL_USAGE_ID,NM,NMSPC_CD,DESC_TXT,ACTV,VER_NBR
 "KS-KRMS-NL-USAGE-1004","kuali.krms.type.description","KS-SYS","Kuali Rule Type Description","Y","0"
 "KS-KRMS-NL-USAGE-1005","kuali.krms.catalog","KS-SYS","Kuali Rule Catalog","Y","0"
 "KS-KRMS-NL-USAGE-1006","kuali.krms.type.instruction","KS-SYS","Kuali Rule Type Instructions","Y","0"
-"KS-KRMS-NL-USAGE-1007","kuali.krms.matrix","KS-SYS","Kuali Rule Matrix","Y","0"
