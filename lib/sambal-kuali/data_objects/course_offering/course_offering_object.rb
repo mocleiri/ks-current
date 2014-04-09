@@ -65,7 +65,7 @@ class CourseOffering
         :grade_format => "",
         :delivery_format_list => [ (make DeliveryFormat ) ],
         :final_exam_activity => nil,
-        :honors_flag => "NO",
+        :honors_flag => false,
         :affiliated_person_list => {},
         :affiliated_org_list => {},
         :grade_options => "Letter",
@@ -168,13 +168,14 @@ class CourseOffering
 
   # searches for and edits an existing course offering course_code matching @course attribute
   # @example
-  #  @course_offering.edit :honors_flag=> "YES"
+  #  @course_offering.edit :honors_flag=> true
   #
   # @param opts [Hash] key => value for attribute to be updated
   def edit opts={}
     defaults = {
         :defer_save => false,
-        :start_edit => true
+        :start_edit => true,
+        :exp_success => true
     }
     options = defaults.merge(opts)
 
@@ -188,7 +189,7 @@ class CourseOffering
     if options[:grade_options] != nil
       on CourseOfferingCreateEdit do |page|
         page.set_grading_option(options[:grade_options])
-        @grade_options = options[:grade_options]
+        @grade_options = options[:grade_options] if options[:exp_success]
       end
     end
 
@@ -202,18 +203,18 @@ class CourseOffering
           page.waitlist_off
           page.waitlist_continue_action
         end
-        @waitlist = options[:waitlist]
+        @waitlist = options[:waitlist] if options[:exp_success]
       end
     end
 
     if options[:honors_flag] != nil
       on CourseOfferingCreateEdit do |page|
-        if options[:honors_flag] == "YES"
+        if options[:honors_flag]
           page.honors_flag.set
         else
           page.honors_flag.clear
         end
-        @honors_flag = options[:honors_flag]
+        @honors_flag = options[:honors_flag] if options[:exp_success]
       end
     end
 
@@ -237,14 +238,14 @@ class CourseOffering
       on CourseOfferingCreateEdit do |page|
         page.final_exam_driver_select(options[:final_exam_driver])
       end
-      @final_exam_driver = options[:final_exam_driver]
+      @final_exam_driver = options[:final_exam_driver] if options[:exp_success]
     end
 
     if options[:final_exam_activity] != nil
       on CourseOfferingCreateEdit do |page|
         page.final_exam_activity_select(options[:final_exam_activity])
       end
-      @final_exam_activity = options[:final_exam_activity]
+      @final_exam_activity = options[:final_exam_activity] if options[:exp_success]
     end
 
     if options[:delivery_format_list] != nil
@@ -259,7 +260,7 @@ class CourseOffering
       on CourseOfferingCreateEdit do |page|
         page.select_grade_roster_level(options[:grade_format])
       end
-      @grade_format = options[:grade_format]
+      @grade_format = options[:grade_format] if options[:exp_success]
     end
 
     if options[:pass_fail_flag] != nil
@@ -270,7 +271,7 @@ class CourseOffering
           page.pass_fail_checkbox.clear
         end
         @pass_fail_flag = options[:pass_fail_flag]
-        @reg_options = set_reg_options(options)
+        @reg_options = set_reg_options(options) if options[:exp_success]
       end
     end
 
@@ -281,8 +282,8 @@ class CourseOffering
         else
           page.audit_checkbox.clear
         end
-        @audit_flag = options[:audit_flag]
-        @reg_options = set_reg_options(options)
+        @audit_flag = options[:audit_flag] if options[:exp_success]
+        @reg_options = set_reg_options(options) if options[:exp_success]
       end
     end
 
@@ -298,14 +299,14 @@ class CourseOffering
     end
 
     if options[:fixed_credit_count] != nil
-      @fixed_credit_count = options[:fixed_credit_count]
+      @fixed_credit_count = options[:fixed_credit_count] if options[:exp_success]
       on CourseOfferingCreateEdit do |page|
         page.select_fixed_credits(@fixed_credit_count)
       end
     end
 
     if options[:multiple_credit_list] != nil
-      @multiple_credit_list = options[:multiple_credit_list]
+      @multiple_credit_list = options[:multiple_credit_list] if options[:exp_success]
       on CourseOfferingCreateEdit do |page|
         @multiple_credit_list.each do |credits, checked|
           if checked
@@ -332,7 +333,7 @@ class CourseOffering
           page.add_personnel
         end
       end
-      @affiliated_person_list = options[:affiliated_person_list]
+      @affiliated_person_list = options[:affiliated_person_list] if options[:exp_success]
     end
 
     if options[:affiliated_org_list] != nil
@@ -347,9 +348,9 @@ class CourseOffering
         end
 
         on OrgLookupPopUp do |page|
-          page.short_name.set org.org_name
+          page.long_name.set org.org_name
           page.search
-          page.return_value(org.org_name)
+          page.return_value(org.org_id)
         end
       end
     end
@@ -1149,7 +1150,7 @@ class AffiliatedOrg
     @browser = browser
 
     defaults = {
-        :org_id => "65",
+        :org_id => "ORGID-BIOL",
         :org_name => "Biology"
     }
     options = defaults.merge(opts)

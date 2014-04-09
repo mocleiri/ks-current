@@ -487,7 +487,7 @@ Given /^that the Course Offering has an AO-driven exam that is marked to use the
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
-Then /^the Requested Scheduling Information for the Exam Offering of the AO should be populated$/ do
+Then /^the (?:Requested|Actual) Scheduling Information for the Exam Offering of the AO should be populated$/ do
   on ViewExamOfferings do |page|
     page.get_eo_by_ao_days_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/i
     page.get_eo_by_ao_st_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)}/i
@@ -495,7 +495,7 @@ Then /^the Requested Scheduling Information for the Exam Offering of the AO shou
   end
 end
 
-Then /^the Requested Scheduling Information for the Exam Offering of the AO should not be populated$/ do
+Then /^the (?:Requested|Actual) Scheduling Information for the Exam Offering of the AO should not be populated$/ do
   on ViewExamOfferings do |page|
     page.get_eo_by_ao_days_text(@activity_offering.code).should == ""
     page.get_eo_by_ao_st_time_text(@activity_offering.code).should == ""
@@ -520,14 +520,43 @@ Given /^that the Course Offering has one Activity Offering with Requested Schedu
   @activity_offering =  make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
 end
 
-Given /^I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
+Given /^I create from catalog a Course Offering with an AO\-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   statement = []
-  statement << (make ExamMatrixStatementObject, :days => "H", :start_time => "04:00", :st_time_ampm => "pm")
+  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "04:00", :st_time_ampm => "pm")
   rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "05:00", :st_time_ampm => "pm",
               :end_time => "05:50", :end_time_ampm => "pm", :statements => statement
   @matrix.add_rule :rule_obj => rule
 
   @course_offering = create CourseOffering, :term => "201301", :course => "BSCI361",
                             :final_exam_driver => "Final Exam Per Activity Offering", :final_exam_activity => "Lecture"
+end
+
+Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Actual Scheduling Information for the exam does exist$/ do
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  statement = []
+  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "02:00", :st_time_ampm => "pm")
+  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "10:30", :st_time_ampm => "am",
+              :end_time => "12:30", :end_time_ampm => "pm", :statements => statement
+  @matrix.rules << rule
+
+  @course_offering = create CourseOffering, :term => "201208",
+                            :create_from_existing => ( make CourseOffering, :term => "201208", :course => "ENGL304")
+
+  @course_offering.manage_and_init
+  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
+  @activity_offering.edit :send_to_scheduler => true
+end
+
+When /^I update the Actual Scheduling Information for the Activity Offering$/ do
+  @activity_offering.edit :send_to_scheduler => true, :defer_save => true
+  @activity_offering.requested_scheduling_information_list[0].edit :start_time => "02:00", :start_time_ampm => "pm",
+                                                       :end_time => "03:00", :end_time_ampm => "pm"
+  @activity_offering.save
+end
+
+When /^I update the Actual Scheduling Information for the Activity Offering which does not match the Exam Matrix$/ do
+  @activity_offering.edit :send_to_scheduler => true, :defer_save => true
+  @activity_offering.requested_scheduling_information_list[0].edit :days => "F"
+  @activity_offering.save
 end

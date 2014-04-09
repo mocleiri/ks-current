@@ -217,17 +217,6 @@ module PopulationEdit
 
 end
 
-class OrganizationBase < BasePage
-
-  class << self
-    def organization_elements
-      element(:short_name) { |b| b.frm.text_field(name: "lookupCriteria[shortName]") }
-      element(:long_name) { |b| b.frm.text_field(name: "lookupCriteria[longName]") }
-    end
-  end
-
-end
-
 class RegistrationWindowsBase < BasePage
 
   wrapper_elements

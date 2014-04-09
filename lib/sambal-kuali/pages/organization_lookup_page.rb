@@ -1,43 +1,34 @@
-class OrganizationLookup < OrganizationBase
+class OrgLookupPopUp < BasePage
 
+  wrapper_elements
+  green_search_buttons
 
   expected_element :short_name
 
-  frame_element
-  wrapper_elements
-  green_search_buttons
-
-  organization_elements
-
-end
-
-class OrgLookupPopUp < OrganizationBase
-
-  wrapper_elements
-  green_search_buttons
-  organization_elements
+  element(:short_name) { |b| b.frm.text_field(name: "lookupCriteria[shortName]") }
+  element(:long_name) { |b| b.frm.text_field(name: "lookupCriteria[longName]") }
+  element(:results_table) { |b| b.frm.div(id: "uLookupResults").table(index: 0) }
 
   def frm
     self.frame(class: "fancybox-iframe") # Persistent ID needed!
   end
 
-  expected_element :short_name
-
-  element(:results_table) { |b| b.frm.div(id: "uLookupResults").table(index: 0) }
-
-  def return_value(short_name)
-    target_org_row(short_name).wait_until_present
-    target_org_row(short_name).link(text: "Select").wait_until_present
+  def return_value(id)
+    target_org_row(id).wait_until_present
+    target_org_row(id).link(text: "Select").wait_until_present
     begin
-      target_org_row(short_name).link(text: "Select").click
+      target_org_row(id).link(text: "Select").click
       rescue Timeout::Error => e
       puts "rescued Select timeout"
     end
     loading.wait_while_present
   end
 
-  def target_org_row(short_name)
-    results_table.row(text: /\b#{Regexp.escape(short_name.to_s)}\b/)
+  def target_org_row(id)
+    results_table.rows.each do |row|
+      return row if row.cells[1].text.match /^#{Regexp.escape(id.to_s)}$/
+    end
+    return nil
   end
 
 end
