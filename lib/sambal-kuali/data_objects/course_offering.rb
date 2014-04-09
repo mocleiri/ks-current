@@ -132,8 +132,6 @@ class CourseOffering
     on CourseSearch do |page|
       page.plus_symbol.wait_until_present
       page.plus_symbol_popover
-      page.adding_plan
-      #sleep(2)
       page.term.wait_until_present
       page.term.select @term
       page.add_to_plan_credit.set @credit
@@ -540,18 +538,24 @@ class CourseOffering
     end
     on CourseSearch do |page|
       no_of_rows = page.results_table.rows.length-1
+      puts "no of rows = #{no_of_rows}"
       pgno = 1
       if page.results_list_next_enabled.exists?
         until page.results_list_next_disabled.exists?
           puts "------ page no = #{pgno}"
           if pgno == 1
+            puts "inside pageno = 1 "
             result = check_logical_order_display_of_elements_in_firstpage(textArray,numArray,output)
             if result == false
               return false
             end
           else
             puts "<<<<<<<<<<<<<<<<<<<<<<<  page no = #{pgno}   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+            puts   " text Array Size = #{textArray.size}"
+            puts   " Num Array Size = #{numArray.size}"
+
+            #check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+
           end
           page.results_list_next_enabled.wait_until_present
           page.results_list_next_click
@@ -560,7 +564,7 @@ class CourseOffering
         end
       else
         if pgno == 1
-          check_logical_order_display_of_elements_in_firstpage(textArray,numArray, output)
+          result = check_logical_order_display_of_elements_in_firstpage(textArray,numArray, output)
           if result == false
             return false
           end

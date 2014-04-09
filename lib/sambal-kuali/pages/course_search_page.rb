@@ -42,7 +42,7 @@ class CourseSearch < BasePage
   ################
 
   #plus symbol representing the add to plan and bookmark
-  element(:plus_symbol) { |b| b.frm.input(class:"uif-field uif-imageField ksap-add") }
+  element(:plus_symbol) { |b| b.a(class:"ks-fontello-icon-hollow-circled-plus") }
   action(:plus_symbol_popover) { |b| b.plus_symbol.click}
 
   # Add to plan pop over elements
