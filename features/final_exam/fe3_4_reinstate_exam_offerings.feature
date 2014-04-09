@@ -6,7 +6,7 @@ Feature: CO.FE3-4 Reinstate Activity Offering will reinstate the Exam Offerings 
   Background:
     Given I am logged in as admin
 
-  #FE3.4.EB1 (KSENROLL-10322)
+  #FE3.4.EB1 (KSENROLL-10322)  TODO: this test takes over 5 mins
   Scenario: Test that a suspended AO does have an EO after it has been reinstated
     Given I suspend an Activity Offering for a CO with a standard final exam driven by Activity Offering
     When I reinstate the activity offering

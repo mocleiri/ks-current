@@ -589,8 +589,7 @@ When /^I cancel an Activity Offering for a CO with a standard final exam driven 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
 
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @activity_offering = make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
   @activity_offering.cancel :navigate_to_page => false
 end
 
@@ -714,8 +713,7 @@ When /^I suspend an Activity Offering for a CO with a standard final exam driven
                                  :delivery_format_list => delivery_format_list
 
   @course_offering.manage_and_init
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-  # @course_offering.find_ao_obj_by_code('A')
+  @activity_offering = @course_offering.find_ao_obj_by_code('A')
   @activity_offering.suspend :navigate_to_page => false
 end
 
@@ -994,9 +992,11 @@ Then /^the Exam Offerings for Course Offering in the EO for CO table should be i
 end
 
 Then /^the Exam Offerings for each Activity Offering in the EO for AO table should be in a ([^"]*) state$/ do |exp_state|
-  @course_offering.activity_offering_cluster_list.each do |cluster|
-    cluster.ao_list.each do |ao|
-      page.get_eo_by_ao_status_text(ao.code).should match /#{exp_state}/ if ao.activity_type == page.get_eo_by_ao_type_text(ao.code, cluster.private_name)
+  on ViewExamOfferings do |page|
+    @course_offering.activity_offering_cluster_list.each do |cluster|
+      cluster.ao_list.each do |ao|
+        page.get_eo_by_ao_status_text(ao.code).should match /#{exp_state}/ if ao.activity_type == page.get_eo_by_ao_type_text(ao.code, cluster.private_name)
+      end
     end
   end
 
