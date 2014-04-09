@@ -24,7 +24,7 @@ When /^I create three Course Offerings with colocated AOs in the new term$/ do
   @ao_list = []
 
   for i in 1..3
-    co = make CourseOffering, :course => "ENGL211", :term => @calendar.terms[0].term_code, :final_exam_driver => "Lecture"
+    co = make CourseOffering, :course => "ENGL211", :term => @calendar.terms[0].term_code, :final_exam_driver => "Final Exam Per Activity Offering"
     co.delivery_format_list[0].format = "Lecture"
     co.delivery_format_list[0].grade_format = "Course Offering"
     co.delivery_format_list[0].final_exam_activity = "Lecture"
