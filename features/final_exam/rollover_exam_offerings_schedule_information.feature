@@ -1,4 +1,4 @@
-@blue_team
+@nightly @blue_team
 Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
   FE 4.1 As a Central Administrator I want to have on matrix exam offerings populated with requested scheduling
   information when created in bulk so that exam offering scheduling requests are consistent with the established exam matrix
@@ -7,7 +7,6 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
     Given I am logged in as admin
 
   #KSENROLL-12375
-  @pending
   Scenario: FE4.1.1 Exam Offering Slotting Info should populated or not after a rollover depending on whether the AO RSI data is found on the matrix
     Given I create an Academic Calendar and add an official term
     When I create multiple Course Offerings each with different Exam Offerings and Requested Scheduling Information
