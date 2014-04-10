@@ -9,6 +9,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
                   when subj=="ENGL1" then "ENGL211"
                   when subj=="ENGL2" then "ENGL101"
                   when subj=="ENGL3" then "ENGL101"
+                  when subj=="ENGL4" then "ENGL101"
                   when subj=="HIST" then "HIST111"
                   when subj=="PHYS" then "PHYS102"
                   when subj=="WMST" then "WMST360"
@@ -46,6 +47,11 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       course_has_options = false
     when "ENGL3" then
       reg_group_code = "1009"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      course_has_options = false
+    when "ENGL4" then
+      reg_group_code = "1003"
       term_code = "201208"
       term_descr = "Fall 2012"
       course_has_options = false

@@ -25,8 +25,16 @@ end
 
 And /^there is a message indicating that no waitlist is offered$/  do
   on RegistrationCart do |page|
-    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code).downcase
+    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code)
     page_status.should match /waitlist not offered/i
+  end
+end
+
+And /^there is a message indicating that the waitlist is full$/  do
+  on RegistrationCart do |page|
+    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code)
+    puts "Page status: #{page_status}"
+    page_status.should match /waitlist full/i
   end
 end
 

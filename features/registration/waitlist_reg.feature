@@ -23,6 +23,18 @@ Feature: REG.Wait List
     Then there is a message indicating that registration failed
     And there is a message indicating that no waitlist is offered
 
+#KSENROLL-12347
+  @wip
+  Scenario: CR 8.3 As an administrator I want to enforce any waitlist capacity restrictions for a specific registration group so that students are not able to add themselves to that waitlist if there is not space available
+    When I register for a full ENGL4 course offering that has a waitlist
+    Then there is a message indicating that registration failed
+    And I am given the option to add myself to a waitlist for the course
+    When I add myself to a waitlist for the course
+    And I add an ENGL4 course offering to my registration cart
+    And I register for the course
+    Then there is a message indicating that registration failed
+    And there is a message indicating that the waitlist is full
+
 #KSENROLL-12348
   Scenario: CR 8.4 I want to remove myself from a waitlist for a registration group so I am no longer considered for a space that becomes available
     When I register for a full BSCI3 course offering that has a waitlist
