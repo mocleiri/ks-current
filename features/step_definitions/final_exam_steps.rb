@@ -1550,6 +1550,40 @@ Given /^I create a Course Offering from catalog with No Exam that has an AO with
 
 end
 
+Given /^I create a Course Offering from catalog with No Exam that has an AO with ASI data found on the matrix in a term with a defined final exam period$/ do
+  @course_offering = make CourseOffering, :term=> "201208", :course => "ENGL304", :final_exam_type => "NONE"
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
 
+  matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH")
 
+  @course_offering.create
 
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
+  @course_offering.activity_offering_cluster_list[0].ao_list[0].edit :send_to_scheduler => true
+
+  end_time = (DateTime.strptime("#{@matrix.rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  @course_offering.activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+                                                     :days => @matrix.rules[0].statements[0].days,
+                                                     :start_time => @matrix.rules[0].statements[0].start_time,
+                                                     :start_time_ampm => @matrix.rules[0].statements[0].st_time_ampm,
+                                                     :end_time => end_time, :end_time_ampm => @matrix.rules[0].statements[0].st_time_ampm)
+end
+
+Given /^I create a Course Offering from catalog with an Alternate Exam that has an AO with ASI data not found on the matrix in a term with a defined final exam period$/ do
+  matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "F")
+
+  @course_offering = create CourseOffering, :term=> "201208", :course => "CHEM242", :final_exam_type => "ALTERNATE"
+
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lab/Lecture",:activity_type => "Lab")
+  @course_offering.activity_offering_cluster_list[0].ao_list[0].edit :send_to_scheduler => true
+
+  end_time = (DateTime.strptime("#{@matrix.rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  @course_offering.activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+                                                     :days => @matrix.rules[0].statements[0].days,
+                                                     :start_time => @matrix.rules[0].statements[0].start_time,
+                                                     :start_time_ampm => @matrix.rules[0].statements[0].st_time_ampm,
+                                                     :end_time => end_time, :end_time_ampm => @matrix.rules[0].statements[0].st_time_ampm)
+end

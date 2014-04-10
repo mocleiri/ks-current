@@ -68,12 +68,28 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     And I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
-
-#KSENROLL-12377
+  #KSENROLL-12377
   @pending
   Scenario: FE4.11.4 When the Exam is updated from No Exam to a Standard AO-Driven exam while the AO has no RSI and ASI then the EO slotting  data should not be populated
     Given I create a Course Offering from catalog with No Exam that has an AO with no RSI or ASI data
     And I create an Activity Offering that has no ASIs or RSIs
     When I edit the Course Offering to use a Standard Exam that is AO-Driven
+    And I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
+
+  #KSENROLL-12379
+  @draft
+  Scenario: FE4.11.5 When the Exam is updated from No Exam to a Standard AO-Driven exam while the ASI of the AO is on the matrix then the EO data should be populated
+    Given I create a Course Offering from catalog with No Exam that has an AO with ASI data found on the matrix in a term with a defined final exam period
+    When I edit the Course Offering to use a Standard Exam that is AO-Driven
+    And I view the Exam Offerings for the Course Offering
+    Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
+
+  #KSENROLL-12379
+  @draft
+  Scenario: FE4.11.6 When the Exam is updated from Alternate Exam to a Standard AO-Driven exam while the ASI of the AO is not on the matrix then the EO data should not be populated
+    Given I create a Course Offering from catalog with an Alternate Exam that has an AO with ASI data not found on the matrix in a term with a defined final exam period
+    When I edit the Course Offering to use a Standard Exam that is AO-Driven
+    Then there should be a warning message for the AO stating that "No match found on the Exam Matrix."
     And I view the Exam Offerings for the Course Offering
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
