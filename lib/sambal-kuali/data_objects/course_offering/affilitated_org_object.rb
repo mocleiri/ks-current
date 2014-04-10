@@ -13,7 +13,7 @@ class AffiliatedOrgObject
     @browser = browser
 
     defaults = {
-        :org_id => "65",
+        :org_id => "ORGID-BIOL",
         :org_name => "Biology"
     }
     options = defaults.merge(opts)
