@@ -7,21 +7,23 @@ Feature: BT.Search_result_sort
 
   Scenario Outline: CS 14.1.1 Successfully sorting the course Title in both ascending and descending order.
     When I search for a course on course search
+    When I sort the table by course code
+    Then the course code listed should be sorted in "<Order>"
     Then I sort the table by title
-    Then the course Title listed should be sorted in "<Expected>" order
+
   Examples:
-    |Expected|
-    |Descending|
-    |Ascending|
+    |Order      |
+    |Descending |
+    |Ascending  |
 
   Scenario Outline: CS 14.1.2 Successfully sorting the course Title in both ascending and descending order.
     When I search for a course on course search
     Then I sort the table by title
-    Then the course Title listed should be sorted in "<Expected>" order
+    Then the course Title listed should be sorted in "<Order>"
   Examples:
-    |Expected|
-    |Ascending|
-    |Descending|
+    |Order       |
+    |Ascending   |
+    |Descending  |
 
 
 

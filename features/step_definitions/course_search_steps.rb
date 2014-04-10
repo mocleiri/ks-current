@@ -193,7 +193,7 @@ When /^I sort the table by course code$/ do
 end
 
 
-Then /^the course Title listed should be sorted in "(.*?)" order$/ do  |text|
+Then /^the course code listed should be sorted in "(.*?)"$/ do  |text|
   if text == "Descending"
    on CourseSearch do |page|
      page.code_element.wait_until_present

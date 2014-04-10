@@ -466,7 +466,7 @@ class CourseOffering
   end
 
 
-  def check_logical_order_display_of_elements_in_firstpage(textArray, numArray, output)
+  def check_logical_order_display_of_elements_in_firstpage(textArray_length,numArray_length,textArray,numArray,output)
     on CourseSearch do |page|
       no_of_rows = page.results_table.rows.length-1
       concat_array_length=  output.size
@@ -547,7 +547,7 @@ class CourseOffering
           puts "------ page no = #{pgno}"
           if pgno == 1
             puts "inside pageno = 1 "
-            result = check_logical_order_display_of_elements_in_firstpage(textArray,numArray,output)
+            result = check_logical_order_display_of_elements_in_firstpage(textArray_length,numArray_length,textArray,numArray,output)
             if result == false
               return false
             end
@@ -556,7 +556,7 @@ class CourseOffering
             puts   " text Array Size = #{textArray.size}"
             puts   " Num Array Size = #{numArray.size}"
 
-            #check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+            check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
 
           end
           page.results_list_next_enabled.wait_until_present
@@ -566,7 +566,7 @@ class CourseOffering
         end
       else
         if pgno == 1
-          result = check_logical_order_display_of_elements_in_firstpage(textArray,numArray, output)
+          result = check_logical_order_display_of_elements_in_firstpage(textArray_length,numArray_length,textArray,numArray, output)
           if result == false
             return false
           end
