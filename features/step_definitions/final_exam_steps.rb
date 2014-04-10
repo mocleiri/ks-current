@@ -1526,3 +1526,30 @@ Given /^I create a Course Offering from catalog with an Alternate Exam that has 
                                                      :days => "F", :start_time => "04:00", :start_time_ampm => "pm",
                                                      :end_time => "06:00", :end_time_ampm => "pm")
 end
+
+Given /^I create a Course Offering from catalog with an Alternate Exam that has an AO with no RSI or ASI data$/ do
+  @course_offering = make CourseOffering, :term => "201208", :course => "ENGL250",
+                          :final_exam_type => "ALTERNATE"
+
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
+
+end
+
+
+Given /^I create a Course Offering from catalog with No Exam that has an AO with no RSI or ASI data$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL250",
+                          :final_exam_type => "NONE"
+
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
+
+end
+
+
+
+
