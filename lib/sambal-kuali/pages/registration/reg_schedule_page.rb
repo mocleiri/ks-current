@@ -50,8 +50,10 @@ class StudentSchedule < RegisterForCourseBase
   def toggle_course_details(course_code, reg_group_code, course_status)
     case course_status
       when "registered"
+        course_code(course_code,reg_group_code).wait_until_present
         course_code(course_code,reg_group_code).click
       when "waitlisted"
+        waitlisted_course_code(course_code,reg_group_code).wait_until_present
         waitlisted_course_code(course_code,reg_group_code).click
     end
   end
