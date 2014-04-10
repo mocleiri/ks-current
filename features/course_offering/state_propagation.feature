@@ -1,4 +1,4 @@
-@wip @yellow_team
+@nightly @yellow_team
 Feature: CO.State Propagation
 
   Background:
