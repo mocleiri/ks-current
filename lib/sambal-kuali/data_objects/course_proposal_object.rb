@@ -127,12 +127,12 @@ class CmCourseProposalObject < DataObject
           #TODO: ADD OTHER OUTCOMES AFTER KSCM-1782 IS RESOVLED
         :outcome_type_range => true,
         :outcome_level_range => 2,
-        :credit_value_min => rand(1..3).to_s,
-        :credit_value_max =>  rand(4..8).to_s,
+        :credit_value_min => (1..3).to_a.sample,
+        :credit_value_max =>  (4..8).to_a.sample,
         :outcome_type_multiple => true,
         :outcome_level_multiple => 3,
-        :credit_value_multiple_1 => rand(1..4).to_s,
-        :credit_value_multiple_2 => rand(5..8).to_s,
+        :credit_value_multiple_1 => (1..4).to_a.sample,
+        :credit_value_multiple_2 => (5..8).to_a.sample,
           #FORMATS
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
@@ -505,11 +505,13 @@ class CmCourseProposalObject < DataObject
       page.add_outcome
       page.outcome_type(outcome_level-1).pick! "Multiple"
       page.loading_wait
-      page.credit_value_multiple_entry(outcome_level-1).wait_until_present
+      sleep 2 #until 1909 is resolved
+      #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
       page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_1
       page.outcome_add_multiple_btn
       page.loading_wait
-      page.credit_value_multiple_entry(outcome_level-1).wait_until_present
+      sleep 2 #until 1909 is resolved
+      #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
       page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_2
       page.outcome_add_multiple_btn
     end
