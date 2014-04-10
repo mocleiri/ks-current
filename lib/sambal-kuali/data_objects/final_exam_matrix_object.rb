@@ -53,7 +53,7 @@ class FinalExamMatrix < DataObject
   end
 
   def create_standard_rule_matrix_object_for_rsi( requirements)
-    rule_found = true
+    rule_found = false
     manage
     on FEMatrixView do |page|
       page.standard_final_exam_table.rows.each do |row|
@@ -61,8 +61,6 @@ class FinalExamMatrix < DataObject
           row.i(class: "ks-fontello-icon-pencil").click
           rule_found = true
           break
-        else
-          rule_found = false
         end
       end
     end
@@ -91,7 +89,7 @@ class FinalExamMatrix < DataObject
   end
 
   def create_common_rule_matrix_object_for_rsi( requirements)
-    rule_found = true
+    rule_found = false
     manage
     on FEMatrixView do |page|
       page.common_final_exam_table.rows.each do |row|
@@ -99,8 +97,6 @@ class FinalExamMatrix < DataObject
           row.i(class: "ks-fontello-icon-pencil").click
           rule_found = true
           break
-        else
-          rule_found = false
         end
       end
     end
