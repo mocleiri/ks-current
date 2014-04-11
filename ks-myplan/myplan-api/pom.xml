@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.kuali.student.myplan</groupId>
         <artifactId>ks-myplan</artifactId>
-        <version>1.9.x</version>
+        <version>1.9</version>
     </parent>
 
 
