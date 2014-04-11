@@ -69,7 +69,7 @@ class FinalExamMatrix < DataObject
         page.rule_tree_section.span(:text => /#{requirements}/).when_present.click
         page.edit
         statement = []
-        statement << (make ExamMatrixStatementObject, :days => requirements, :start_time => page.get_statement_starttime_text,
+        statement << (make ExamMatrixStatementObject, :days => page.get_statement_days_text, :start_time => page.get_statement_starttime_text,
                          :st_time_ampm => page.get_statement_starttime_ampm_text)
         rule = make ExamMatrixRuleObject, :rsi_days => page.get_rsi_days_text,
                     :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text,
