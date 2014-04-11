@@ -197,10 +197,11 @@ class RegistrationRequest
 
     on StudentSchedule do |page|
       page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details(@course_code,@reg_group_code,"waitlisted")
+      sleep 1
+      page.toggle_course_details(@course_code,@reg_group_code,"waitlisted") unless page.edit_waitlist_item_button(@course_code,@reg_group_code).visible?
       page.edit_waitlist_item_button(@course_code,@reg_group_code).wait_until_present
       page.edit_waitlisted_course_options @course_code,@reg_group_code
-
+      sleep 1
       page.select_waitlist_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
       page.select_waitlist_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
       page.save_waitlist_edits @course_code,@reg_group_code
