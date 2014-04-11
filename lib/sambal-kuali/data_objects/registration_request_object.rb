@@ -175,6 +175,7 @@ class RegistrationRequest
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
       page.toggle_course_details @course_code,@reg_group_code,"registered"
+      page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
       page.edit_course_options @course_code,@reg_group_code
 
       page.select_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
