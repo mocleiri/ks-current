@@ -70,7 +70,7 @@ public class RemoteImplWriterForOneService {
         // the main servKey
         log.info("Generating remote impl and search unit test for " + servKey + " directory = " + directory);
         new RemoteImplServiceWriter(model, directory, rootPackage, servKey, methods).write();
-        new RemoteImplServiceTestWriter(model, directory, rootPackage, servKey, methods).write();
+//        new RemoteImplServiceTestWriter(model, directory, rootPackage, servKey, methods).write();
         
     }
 

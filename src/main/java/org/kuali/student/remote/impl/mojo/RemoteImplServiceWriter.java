@@ -1,17 +1,17 @@
 /**
  * Copyright 2004-2014 The Kuali Foundation
  *
- * Licensed under the Educational Community License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Licensed under the Educational Community License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.opensource.org/licenses/ecl2.php
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.kuali.student.remote.impl.mojo;
 
@@ -83,7 +83,7 @@ public class RemoteImplServiceWriter extends JavaClassWriter {
     public static String calcClassName(String servKey) {
         String name = GetterSetterNameCalculator.calcInitUpper(servKey + "ServiceRemoteImpl");
         if (name.startsWith("RICE.")) {
-         name = name.substring("RICE.".length());   
+            name = name.substring("RICE.".length());
         }
         return name;
     }
@@ -91,7 +91,7 @@ public class RemoteImplServiceWriter extends JavaClassWriter {
     public static String calcDecoratorClassName(String servKey) {
         String name = GetterSetterNameCalculator.calcInitUpper(servKey + "ServiceDecorator");
         if (name.startsWith("RICE.")) {
-         name = name.substring("RICE.".length());   
+            name = name.substring("RICE.".length());
         }
         return name;
     }
@@ -124,84 +124,81 @@ public class RemoteImplServiceWriter extends JavaClassWriter {
         println(" extends " + calcDecoratorClassName(servKey));
         // TODO: figure out how to add import for the decorator
         openBrace();
-        writeHostUrlGetterSetter();
-//
-//        This is no longer needed since rice upgraded to CXF 2.7.0
-//        
-//        indentPrintln("//");
-//        indentPrintln("// Have to override and check for null because of a bug in CXF 2.3.8 our current version");
-//        indentPrintln("// It was fixed in 2.6.1 but 2.3.8 still renders empty lists as null when transported by soap");
-//        indentPrintln("// see http://stackoverflow.com/questions/11384986/apache-cxf-web-services-problems");
-//        indentPrintln("//");
-//        for (ServiceMethod method : methods) {
-//            if (!method.getReturnValue().getType().endsWith("List")) {
-//                continue;
-//            }
-//
-//            indentPrintln("");
-////            indentPrintln("/**");
-////            indentPrintWrappedComment(method.getDescription());
-////            indentPrintln("* ");
-////            for (ServiceMethodParameter param : method.getParameters()) {
-////                indentPrintWrappedComment("@param " + param.getName() + " - "
-////                        + param.getType() + " - "
-////                        + param.getDescription());
-////            }
-////            indentPrintWrappedComment("@return " + method.getReturnValue().
-////                    getDescription());
-////            indentPrintln("*/");
-//            indentPrintln("@Override");
-//            String type = method.getReturnValue().getType();
-//            String realType = stripList(type);
-//            indentPrint("public " + calcType(type, realType) + " " + method.getName()
-//                    + "(");
-//            // now do parameters
-//            String comma = "";
+        writeBiolerPlate();
+        indentPrintln("//");
+        indentPrintln("// Have to override and check each method that returns a list for null");
+        indentPrintln("// This is because SOAP/JAXB renders and empty list as null ");
+        indentPrintln("// but our contract standard says we ALWAYS return an empty list");
+        indentPrintln("//");
+        for (ServiceMethod method : methods) {
+            if (!method.getReturnValue().getType().endsWith("List")) {
+                continue;
+            }
+
+            indentPrintln("");
+//            indentPrintln("/**");
+//            indentPrintWrappedComment(method.getDescription());
+//            indentPrintln("* ");
 //            for (ServiceMethodParameter param : method.getParameters()) {
-//                type = param.getType();
-//                realType = stripList(type);
-//                print(comma);
-//                print(calcType(type, realType));
-//                print(" ");
-//                print(param.getName());
-//                comma = ", ";
+//                indentPrintWrappedComment("@param " + param.getName() + " - "
+//                        + param.getType() + " - "
+//                        + param.getDescription());
 //            }
-//            println(")");
-//            // now do exceptions
-//            comma = "throws ";
-//            incrementIndent();
-//            for (ServiceMethodError error : method.getErrors()) {
-//                indentPrint(comma);
-//                String exceptionClassName = calcExceptionClassName(error);
-//                String exceptionPackageName = this.calcExceptionPackageName(error);
-//                println(exceptionClassName);
-//                this.importsAdd(exceptionPackageName + "." + exceptionClassName);
-//                comma = "      ,";
-//            }
-//            decrementIndent();
-//            openBrace();
-//            type = method.getReturnValue().getType();
-//            realType = stripList(type);
-//            XmlType retValXmlType = finder.findXmlType(realType);
-//            importsAdd(retValXmlType.getJavaPackage() + "." + retValXmlType.getName());
-//            indentPrint("List<" + retValXmlType.getName() + "> list = this.getNextDecorator ()." + method.getName() + "(");
-//            comma = "";
-//            for (ServiceMethodParameter param : method.getParameters()) {
-//                type = param.getType();
-//                realType = stripList(type);
-//                print(comma);
-//                print(param.getName());
-//                comma = ", ";
-//            }
-//            println(");");
-//            indentPrintln("if (list == null)");
-//            openBrace();
-//            importsAdd(ArrayList.class.getName());
-//            indentPrintln("return new ArrayList<" + retValXmlType.getName() + "> ();");
-//            closeBrace();
-//            indentPrintln("return list;");
-//            closeBrace();
-//        }
+//            indentPrintWrappedComment("@return " + method.getReturnValue().
+//                    getDescription());
+//            indentPrintln("*/");
+            indentPrintln("@Override");
+            String type = method.getReturnValue().getType();
+            String realType = stripList(type);
+            indentPrint("public " + calcType(type, realType) + " " + method.getName()
+                    + "(");
+            // now do parameters
+            String comma = "";
+            for (ServiceMethodParameter param : method.getParameters()) {
+                type = param.getType();
+                realType = stripList(type);
+                print(comma);
+                print(calcType(type, realType));
+                print(" ");
+                print(param.getName());
+                comma = ", ";
+            }
+            println(")");
+            // now do exceptions
+            comma = "throws ";
+            incrementIndent();
+            for (ServiceMethodError error : method.getErrors()) {
+                indentPrint(comma);
+                String exceptionClassName = calcExceptionClassName(error);
+                String exceptionPackageName = this.calcExceptionPackageName(error);
+                println(exceptionClassName);
+                this.importsAdd(exceptionPackageName + "." + exceptionClassName);
+                comma = "      ,";
+            }
+            decrementIndent();
+            openBrace();
+            type = method.getReturnValue().getType();
+            realType = stripList(type);
+            XmlType retValXmlType = finder.findXmlType(realType);
+            importsAdd(retValXmlType.getJavaPackage() + "." + retValXmlType.getName());
+            indentPrint("List<" + retValXmlType.getName() + "> list = this.getNextDecorator ()." + method.getName() + "(");
+            comma = "";
+            for (ServiceMethodParameter param : method.getParameters()) {
+                type = param.getType();
+                realType = stripList(type);
+                print(comma);
+                print(param.getName());
+                comma = ", ";
+            }
+            println(");");
+            indentPrintln("if (list == null)");
+            openBrace();
+            importsAdd(ArrayList.class.getName());
+            indentPrintln("return new ArrayList<" + retValXmlType.getName() + "> ();");
+            closeBrace();
+            indentPrintln("return list;");
+            closeBrace();
+        }
         closeBrace();
 
         this.writeJavaClassAndImportsOutToFile();
@@ -232,40 +229,14 @@ public class RemoteImplServiceWriter extends JavaClassWriter {
         return error.getPackageName();
     }
 
-    private void writeHostUrlGetterSetter() {
+    private void writeBiolerPlate() {
 
-        String initUpper = GetterSetterNameCalculator.calcInitUpper(servKey);
-        if (initUpper.startsWith("RICE.")) {
-            initUpper = initUpper.substring("RICE.".length());
+        String initUpperServKey = GetterSetterNameCalculator.calcInitUpper(servKey);
+        if (initUpperServKey.startsWith("RICE.")) {
+            initUpperServKey = initUpperServKey.substring("RICE.".length());
         }
 
-        indentPrintln("private String hostUrl;");
-        println("");
-        indentPrintln("public String getHostUrl()");
-        openBrace();
-        indentPrintln("return hostUrl;");
-        closeBrace();
-        indentPrintln("public void setHostUrl(String hostUrl)");
-        openBrace();
-        indentPrintln("this.hostUrl = hostUrl;");
-        indentPrintln("if (hostUrl == null)");
-        openBrace();
-        indentPrintln("this.setNextDecorator(null);");
-        indentPrintln("return;");
-        closeBrace();
-        indentPrintln("URL wsdlURL;");
-        indentPrintln("try");
-        openBrace();
-        String constantsFile = initUpper + "ServiceConstants";
         // TODO: figure out how to add import for the service constants
-        indentPrintln("String urlStr = hostUrl + \"/services/\" + " + constantsFile + ".SERVICE_NAME_LOCAL_PART + \"?wsdl\";");
-        indentPrintln("wsdlURL = new URL(urlStr);");
-        closeBrace();
-        indentPrintln("catch (MalformedURLException ex)");
-        openBrace();
-        indentPrintln("throw new IllegalArgumentException(ex);");
-        closeBrace();
-
         importsAdd("java.net.MalformedURLException");
         importsAdd("java.net.URL");
         importsAdd("javax.xml.namespace.QName");
@@ -273,11 +244,93 @@ public class RemoteImplServiceWriter extends JavaClassWriter {
         Service service = finder.findService(servKey);
         importsAdd(service.getImplProject() + "." + service.getName());
 
-        indentPrintln("QName qname = new QName(" + constantsFile + ".NAMESPACE, " + constantsFile + ".SERVICE_NAME_LOCAL_PART);");
-        indentPrintln("Service factory = Service.create(wsdlURL, qname);");
-        indentPrintln(service.getName() + " port = factory.getPort(" + service.getName() + ".class);");
-        indentPrintln("this.setNextDecorator(port);");
-        closeBrace();
+        indentPrintln("private String hostUrl = null;");
+        indentPrintln("private String servicesUrlFragment = \"/services/\";");
+        indentPrintln("private String serviceNameLocalPart = " + initUpperServKey + "ServiceConstants.SERVICE_NAME_LOCAL_PART;");
+        indentPrintln("private String namespace = " + initUpperServKey + "ServiceConstants.NAMESPACE;");
+        indentPrintln("private URL wsdlUrl = null;");
+        println("");
+        indentPrintln("public String getHostUrl() {");
+        indentPrintln("    // check if explicitly configured, manually for testing or via spring");
+        indentPrintln("    if (this.hostUrl != null) {");
+        indentPrintln("        return hostUrl;");
+        indentPrintln("    }");
+        indentPrintln("    // check for a specific url for this service (not all services may be hosted from the same place)");
+        indentPrintln("    Properties config = ConfigContext.getCurrentContextConfig().getProperties();");
+        indentPrintln("    this.hostUrl = config.getProperty(\"remote.service.host.url." + servKey.toLowerCase() + "\");");
+        indentPrintln("    if (this.hostUrl != null) {");
+        indentPrintln("        return this.hostUrl;");
+        indentPrintln("    }");
+        indentPrintln("    // check for the default for all remote services");
+        indentPrintln("    this.hostUrl = config.getProperty(\"remote.service.host.url\");");
+        indentPrintln("    if (this.hostUrl != null) {");
+        indentPrintln("        return this.hostUrl;");
+        indentPrintln("    }");
+        indentPrintln("    throw new IllegalArgumentException(\"No host url configured\");");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public void setHostUrl(String hostUrl) {");
+        indentPrintln("    this.hostUrl = hostUrl;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public URL getWsdlUrl() {");
+        indentPrintln("    if (this.wsdlUrl == null) {");
+        indentPrintln("        String urlString = this.getHostUrl() + this.getServicesUrlFragment() + this.getServiceNameLocalPart() + \"?wsdl\";");
+        indentPrintln("        try {");
+        indentPrintln("            this.wsdlUrl = new URL(urlString);");
+        indentPrintln("        } catch (MalformedURLException ex) {");
+        indentPrintln("            throw new IllegalArgumentException(urlString, ex);");
+        indentPrintln("        }");
+        indentPrintln("    }");
+        indentPrintln("    return wsdlUrl;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public void setWsdlUrl(URL wsdlUrl) {");
+        indentPrintln("    this.wsdlUrl = wsdlUrl;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public String getServiceNameLocalPart() {");
+        indentPrintln("    return serviceNameLocalPart;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public void setServiceNameLocalPart(String serviceNameLocalPart) {");
+        indentPrintln("    this.serviceNameLocalPart = serviceNameLocalPart;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public String getServicesUrlFragment() {");
+        indentPrintln("    return servicesUrlFragment;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public void setServicesUrlFragment(String servicesUrlFragment) {");
+        indentPrintln("    this.servicesUrlFragment = servicesUrlFragment;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public String getNamespace() {");
+        indentPrintln("    return namespace;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public void setNamespace(String namespace) {");
+        indentPrintln("    this.namespace = namespace;");
+        indentPrintln("}");
+        println("");
+        indentPrintln("public void init() {");
+        indentPrintln("    QName qname = new QName(this.getNamespace(), this.getServiceNameLocalPart());");
+        indentPrintln("    Service factory = Service.create(this.getWsdlUrl(), qname);");
+        indentPrintln("    " + initUpperServKey + "Service port = factory.getPort(" + initUpperServKey + "Service.class);");
+        indentPrintln("    this.setNextDecorator(port);");
+        indentPrintln("}");
+        println("");
+        indentPrintln("private boolean hasBeenIntialized = false;");
+        println("");
+        indentPrintln("@Override");
+        indentPrintln("public " + initUpperServKey + "Service getNextDecorator() throws OperationFailedException {");
+        indentPrintln("    if (!this.hasBeenIntialized) {");
+        indentPrintln("        this.hasBeenIntialized = true;");
+        indentPrintln("        this.init();");
+        indentPrintln("    }");
+        indentPrintln("    return super.getNextDecorator();");
+        indentPrintln("}");
+        println("");
 
     }
 }
