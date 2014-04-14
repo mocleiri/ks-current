@@ -1428,16 +1428,8 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
   @co_list.each do |co|
     test_co = make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => co.course
     test_co.manage_and_init
-    if test_co.activity_offering_cluster_list.any? and test_co.course != @co_list[1]
-      on ManageCourseOfferings do |page|
-        begin
-          page.wait_until { page.growl_message_warning_div.exists? }
-          page.growl_warning_text.should match /#{test_co.course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-        rescue
-          puts "growl warning message for the EO did not appear"
-        end
-        page.view_exam_offerings
-      end
+    if test_co.activity_offering_cluster_list.any? and test_co.course != @co_list[1].course
+      on(ManageCourseOfferings).view_exam_offerings
       test_co.activity_offering_cluster_list[0].ao_list.each do |ao|
         ao_rsi_list = ao.requested_scheduling_information_list
         if !ao_rsi_list.empty?
@@ -1463,25 +1455,14 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
         end
       end
     else
+      on(ManageCourseOfferings).view_exam_offerings
       if test_co.course == @co_list[0].course
-        on ManageCourseOfferings do |page|
-          begin
-            page.wait_until { page.growl_warning_text.exists? }
-            page.growl_warning_text.should match /#{test_co.course}.*#{Regexp.escape("No match found on the Exam Matrix.")}/
-          rescue
-            puts "growl warning message for the EO did not appear"
-          end
-          page.view_exam_offerings
-        end
         on ViewExamOfferings do |page|
           page.get_eo_by_co_days_text.should == ""
           page.get_eo_by_co_st_time_text.should == ""
           page.get_eo_by_co_end_time_text.should == ""
         end
       else
-        on ManageCourseOfferings do |page|
-          page.view_exam_offerings
-        end
         on ViewExamOfferings do |page|
           page.get_eo_by_co_days_text.should match /#{@matrix_list[1].rules[0].rsi_days}/
           page.get_eo_by_co_st_time_text.should match /#{@matrix_list[1].rules[0].start_time}/i
