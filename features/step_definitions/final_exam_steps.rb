@@ -987,15 +987,6 @@ end
 
 Then /^the Exam Offerings for each Activity Offering in the EO for AO table should be in a ([^"]*) state$/ do |exp_state|
   on ViewExamOfferings do |page|
-    @course_offering.activity_offering_cluster_list.each do |cluster|
-      cluster.ao_list.each do |ao|
-        page.get_eo_by_ao_status_text(ao.code).should match /#{exp_state}/ if ao.activity_type == page.get_eo_by_ao_type_text(ao.code, cluster.private_name)
-      end
-    end
-  end
-
-
-  on ViewExamOfferings do |page|
     page.table_header_text.should match /for Activity Offering/
     @course_offering.activity_offering_cluster_list.each do |cluster|
       cluster.ao_list.each do |ao|

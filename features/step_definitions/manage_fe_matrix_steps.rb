@@ -450,10 +450,10 @@ Given /^I encure that the AO's Requested Scheduling Information exists on the Fi
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data$/ do
-  @original_co = make CourseOffering, :term => "201301", :course => "HIST110"
+  @original_co = make CourseOffering, :term => "201301", :course => "HIST111"
 
   matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 01:00 PM")
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 11:00 AM")
 end
 
 Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do
