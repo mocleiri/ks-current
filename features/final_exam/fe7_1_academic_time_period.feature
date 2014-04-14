@@ -27,6 +27,7 @@ Feature: CO.FE7-1 Academic Time Period
     Then there should be no final exam period for any term in the copy
 
   #FE7.1.EB5 (KSENROLL-8830)
+  @bug @KSENROLL-12247
   Scenario: Test whether the exam period is blank when copying from an existing calendar
     When I copy an existing academic calendar that has a defined final exam period
     Then there should be no final exam period for any term in the copy
