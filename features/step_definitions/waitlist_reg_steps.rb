@@ -52,7 +52,6 @@ Given /^I register for an? full (\w+) course offering that (has|does not have) a
     And I register for the course
     And I view my schedule
     Then the course is present in my schedule
-    When I log out
     And I am logged in as a Student
     And I add an #{subj} course offering to my registration cart
     And I register for the course
@@ -66,7 +65,6 @@ When /^I register for an? full (\w+) course offering and add myself to a waitlis
     And I register for the course
     And I view my schedule
     Then the course is present in my schedule
-    When I log out
     And I am logged in as a Student
     And I add an #{subj} course offering to my registration cart
     And I register for the course
@@ -76,9 +74,9 @@ end
 
 Then /^there is an option to edit the waitlisted course$/ do
   on StudentSchedule do |page|
-    page.toggle_course_details(@reg_request.course_code,@reg_request.reg_group_code,"waitlisted")
+    page.show_course_details(@reg_request.course_code,@reg_request.reg_group_code,"waitlisted")
     page.edit_waitlist_item_button(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
-    page.toggle_course_details(@reg_request.course_code,@reg_request.reg_group_code,"waitlisted")
+    page.hide_course_details(@reg_request.course_code,@reg_request.reg_group_code,"waitlisted")
   end
 end
 

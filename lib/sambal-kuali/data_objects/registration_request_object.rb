@@ -198,7 +198,7 @@ class RegistrationRequest
     on StudentSchedule do |page|
       page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
       sleep 1
-      page.toggle_course_details(@course_code,@reg_group_code,"waitlisted") unless page.edit_waitlist_item_button(@course_code,@reg_group_code).visible?
+      page.show_course_details(@course_code,@reg_group_code,"waitlisted")
       page.edit_waitlist_item_button(@course_code,@reg_group_code).wait_until_present
       page.edit_waitlisted_course_options @course_code,@reg_group_code
       sleep 1

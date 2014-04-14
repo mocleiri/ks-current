@@ -47,7 +47,7 @@ class StudentSchedule < RegisterForCourseBase
   element(:confirm_remove_waitlist_button) { |b| b.button(id: "removeWaitlist") }
   element(:cancel_remove_waitlist_button) { |b| b.button(id: "removeWaitlistCancel") }
 
-  def toggle_course_details(course_code, reg_group_code, course_status)
+  def toggle_course_details(course_code, reg_group_code, course_status="registered")
     case course_status
       when "registered"
         course_code(course_code,reg_group_code).wait_until_present
@@ -83,10 +83,25 @@ class StudentSchedule < RegisterForCourseBase
     end
   end
 
-  # def toggle_waitlist_course_details(course_code, reg_group_code)
-  #   waitlisted_course_code(course_code,reg_group_code).wait_until_present
-  #   waitlisted_course_code(course_code,reg_group_code).click
-  # end
+  def show_course_details(course_code, reg_group_code, course_status="registered")
+    sleep 1
+    case course_status
+      when "registered"
+        toggle_course_details(course_code, reg_group_code, course_status) unless edit_course_options_button(course_code, reg_group_code).visible?
+      when "waitlisted"
+        toggle_course_details(course_code, reg_group_code, course_status) unless edit_waitlist_item_button(course_code, reg_group_code).visible?
+    end
+  end
+
+  def hide_course_details(course_code, reg_group_code, course_status="registered")
+    sleep 1
+    case course_status
+      when "registered"
+        toggle_course_details(course_code, reg_group_code, course_status) if edit_course_options_button(course_code, reg_group_code).visible?
+      when "waitlisted"
+        toggle_course_details(course_code, reg_group_code, course_status) if edit_waitlist_item_button(course_code, reg_group_code).visible?
+    end
+  end
 
   def select_waitlist_credits(course_code, reg_group_code, credits)
     waitlist_credits_selection(course_code, reg_group_code).select(credits)
