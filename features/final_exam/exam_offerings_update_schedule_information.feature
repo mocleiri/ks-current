@@ -56,7 +56,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12377
-  @pending
   Scenario: FE4.11.3 When the Exam is updated from Alternate Exam to a Standard AO-Driven exam while the AO has no RSI and ASI then the EO slotting  data should not be populated
     Given I create a Course Offering from catalog with an Alternate Exam that has an AO with no RSI or ASI data
     And I create an Activity Offering that has no ASIs or RSIs
@@ -65,7 +64,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12377
-  @pending
   Scenario: FE4.11.4 When the Exam is updated from No Exam to a Standard AO-Driven exam while the AO has no RSI and ASI then the EO slotting  data should not be populated
     Given I create a Course Offering from catalog with No Exam that has an AO with no RSI or ASI data
     And I create an Activity Offering that has no ASIs or RSIs
