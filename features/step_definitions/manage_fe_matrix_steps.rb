@@ -410,6 +410,15 @@ Given /^that the Course Offering has a CO-driven final exam that is marked to us
   @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
 end
 
+Given /^I manage a course offering with a CO-driven exam offering RSI generated from the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
+
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
+
+  @course_offering.create
+end
+
 Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
   on ViewExamOfferings do |page|
     page.get_eo_by_co_days_text.should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/
@@ -454,6 +463,15 @@ Given /^that the Course Offering has an AO-driven exam that is marked to use the
 
   matrix = make FinalExamMatrix, :term_type => "Spring Term"
   @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 11:00 AM")
+end
+
+Given /^I manage a course offering with an AO-driven exam offering RSI generated from the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 01:00 PM")
+
+  @course_offering.create
 end
 
 Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do

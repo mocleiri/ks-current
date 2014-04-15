@@ -648,7 +648,7 @@ When /^I cancel all Activity Offerings for a CO with a standard final exam drive
   end
 end
 
-When /^I can update all fields on the eo rsi$/ do
+When /^update all fields on the exam offering RSI$/ do
   eo_rsi = make EoRsiObject, :day => @matrix.rules[0].rsi_days,
                 :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
                 :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
@@ -658,7 +658,7 @@ When /^I can update all fields on the eo rsi$/ do
   eo_rsi.edit :do_navigation => false, :day => 'Day 5'
 end
 
-When /^I view the Exam Offerings for the Course Offering$/ do
+When /^I (?:view|manage) the Exam Offerings for the Course Offering$/ do
   on(ManageCourseOfferings).view_exam_offerings
 end
 
@@ -1345,8 +1345,12 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
   @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
                       :final_exam_driver => "Final Exam Per Course Offering")
 
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS161",
-                      :final_exam_driver => "Final Exam Per Course Offering")
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS161",
+                      :final_exam_driver => "Final Exam Per Course Offering"
+  course_offering.delivery_format_list[0].format = "Lecture/Discussion"
+  course_offering.delivery_format_list[0].grade_format = "Lecture"
+  course_offering.delivery_format_list[0].final_exam_activity = ""
+  @co_list << course_offering.create
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion", :activity_type => "Lecture")
   @co_list[1].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,

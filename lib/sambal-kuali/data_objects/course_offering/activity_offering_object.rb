@@ -155,6 +155,14 @@ class ActivityOfferingObject
       #if page.codes_list.length == 0
       #sleep 2
       page.add_activity
+      #ordering of compound format type (eg Lecture/Discussion) is flexible
+      #if the selectlist doesn't include the option, then try reordering
+      if !@format.index('/').nil?
+        if !page.format.include?(@format)
+          formats = @format.split('/')
+          @format = "#{formats[1]}/#{formats[0]}"
+        end
+      end
       page.format.select @format unless @format.nil?
       page.loading.wait_while_present
       page.activity_type.wait_until_present
