@@ -41,19 +41,18 @@ class CmCourseLogistics < BasePage
   action(:credit_value_min) {|outcome_level, b| b.text_field(id:"MinRangeCreditVale_line#{outcome_level}_control") }
   action(:credit_value_max) {|outcome_level, b| b.text_field(id: "MaxRangeCreditVale_line#{outcome_level}_control") }
   action(:credit_value_multiple_entry) { |outcome_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_add_control") }
-  action(:credit_value_multiple) { |outcome_level,multiple_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_line#{multiple_level-1}_control") }
-  #TODO remove temp definiton after KSCM-1909 is resolved.
-  #action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
-  action(:outcome_add_multiple_btn) {|b| b.button(text:"Add").click; b.loading_wait }
+  action(:credit_value_multiple) { |outcome_level,multiple_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_line#{multiple_level-2}_control") }
+  action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
+
 
 #COURSE FORMAT(S)
   action(:add_additional_format) { |b| b.button(id: /CourseFormats-Widgets_add$/).click; b.adding_line_wait }
-  action(:add_activity) { |b| b.button(text: 'Activity').click; b.loading_wait }
-  action(:activity_type) { |b| b.select_list(name: "newCollectionLines['document.newMaintainableObject.dataObject.courseInfo.formats_0_.activities'].typeKey") }
+  action(:add_activity) { |b| b.button(id: 'activity-addline_line0').click; b.loading_wait }
+  action(:activity_type) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[0].typeKey') }
   element(:activity_contacted_hours) { |b| b.text_field(name: /contactHours.unitQuantity$/) }
   element(:activity_frequency) { |b| b.select_list(name: /contactHours.unitTypeKey$/) }
-  action(:activity_duration_type) { |b| b.select_list(name: "newCollectionLines['document.newMaintainableObject.dataObject.courseInfo.formats_0_.activities'].duration.atpDurationTypeKey") }
-  action(:activity_duration_count) { |b| b.text_field(name: "newCollectionLines['document.newMaintainableObject.dataObject.courseInfo.formats_0_.activities'].duration.timeQuantity") }
+  action(:activity_duration_type) { |b| b.select_list(name: /duration.atpDurationTypeKey/) }
+  action(:activity_duration_count) { |b| b.text_field(name: /timeQuantity$/) }
   action(:activity_class_size) { |b| b.text_field(name: /defaultEnrollmentEstimate$/) }
 
   #ADDED COURSE FORMATS

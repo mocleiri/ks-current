@@ -508,12 +508,12 @@ class CmCourseProposalObject < DataObject
       sleep 2 #until 1909 is resolved
       #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
       page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_1
-      page.outcome_add_multiple_btn
+      page.outcome_add_multiple_btn(outcome_level-1)
       page.loading_wait
       sleep 2 #until 1909 is resolved
       #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
-      page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_2
-      page.outcome_add_multiple_btn
+      page.credit_value_multiple(outcome_level-1,2).set @credit_value_multiple_2
+      page.outcome_add_multiple_btn(outcome_level-1)
     end
   end
 
