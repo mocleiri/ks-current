@@ -1,4 +1,4 @@
-@nightly
+@wip
 Feature: BT.Add note to planner
 
   Background:
