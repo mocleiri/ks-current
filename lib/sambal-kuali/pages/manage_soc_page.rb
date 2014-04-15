@@ -19,19 +19,19 @@ class ManageSocPage < BasePage
   action(:send_to_scheduler_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-SendToSchedulerButton").click; b.loading.wait_while_present }
   action(:publish_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-PublishButton").click; b.loading.wait_while_present }
 
-  element(:lock_popup_div) { |b| b.div(id: "lockConfirmDialog") }
+  element(:lock_popup_div) { |b| b.section(id: "lockConfirmDialog") }
   action(:lock_confirm_action) { |b| b.lock_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:lock_cancel_action) { |b| b.lock_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
-  element(:schedule_popup_div) { |b| b.div(id: "massScheduleConfirmDialog") }
+  element(:schedule_popup_div) { |b| b.section(id: "massScheduleConfirmDialog") }
   action(:schedule_confirm_action) { |b| b.schedule_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:schedule_cancel_action) { |b| b.schedule_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
-  element(:final_edit_popup_div) { |b| b.div(id: "finalEditConfirmDialog") }
+  element(:final_edit_popup_div) { |b| b.section(id: "finalEditConfirmDialog") }
   action(:final_edit_confirm_action) { |b| b.final_edit_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:final_edit_cancel_action) { |b| b.final_edit_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
-  element(:publish_popup_div) { |b| b.div(id: "massPublishConfirmDialog") }
+  element(:publish_popup_div) { |b| b.section(id: "massPublishConfirmDialog") }
   action(:publish_confirm_action) { |b| b.publish_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:publish_cancel_action) { |b| b.publish_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
