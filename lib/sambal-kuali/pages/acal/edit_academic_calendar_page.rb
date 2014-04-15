@@ -6,7 +6,7 @@ class EditAcademicCalendar < BasePage
 
   expected_element :header_calendar_name
 
-  element(:header_calendar_name) { |b| b.frm.div(class: "ks-unified-header ks-unified-header").h1.span}
+  element(:header_calendar_name) { |b| b.frm.header(class: /ks-unified-header ks-unified-header/).h1.span}
 
   element(:page_validation_list_exists) { |b| b.frm.ul(id: "pageValidationList").exists?}
   element(:page_error_message_exists) { |b| b.frm.ul(id: "pageValidationList").li(class: "uif-errorMessageItem").exists?}
