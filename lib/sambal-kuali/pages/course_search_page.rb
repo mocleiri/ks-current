@@ -30,7 +30,7 @@ class CourseSearch < BasePage
   action(:course_code_result_link) { |ccode,b| b.tr(id: "#{ccode}").a(class: "ksap-text-ellipsis") }
   action (:course_code_result_link_click) {|b| b.course_code_result_link.click }
   action(:course_description) { |co_code,b| b.div(id: "#{co_code}_description").span(class: "uif-message").text }
-  element(:back_to_search_results) { |b| b.link(text: "Back to Previous Page") }
+  element(:back_to_search_results) { |b| b.link(text: "Return to search results") }
   element(:course_search_results_info) { |b| b.div(id: "course_search_results_info") }
   element(:course_search_results_select) { |b| b.frm.select(name: "course_search_results_length") }
   element(:course_search_facet_divisions) { |b| b.div(id: "facet_curriculum_disclosureContent").div(class: "facets").ul.lis}
