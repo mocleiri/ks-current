@@ -13,7 +13,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Given I am logged in as admin
 
   #KSENROLL-12381
-  @pending
   Scenario: FE5.2.1 When I send the edited RSI to the scheduler to update the ASI then the EO data should be updated
     Given that the Course Offering has an AO-driven exam that is marked to use the matrix and Actual Scheduling Information for the exam does exist
     When I update the Actual Scheduling Information for the Activity Offering
@@ -21,7 +20,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the EO's Scheduling Information should change to reflect the updates made to the AO's Actual Scheduling Info
 
   #KSENROLL-12381
-  @pending
   Scenario: FE5.2.2 When I send the edited AO RSI to the scheduler to update the AO ASI with data not on the Matrix then the EO scheduling info should be blank
     Given that the Course Offering has an AO-driven exam that is marked to use the matrix and Actual Scheduling Information for the exam does exist
     When I update the Actual Scheduling Information for the Activity Offering which does not match the Exam Matrix
