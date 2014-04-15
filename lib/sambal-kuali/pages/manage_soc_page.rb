@@ -62,14 +62,14 @@ class ManageSocPage < BasePage
     last_completed_state
   end
 
-  element(:soc_scheduling_status) { |b| b.span(id: "socSchedulingStatus_control").text }
-  element(:soc_publishing_status) { |b| b.span(id: "socPublishingStatus_control").text }
-  element(:schedule_initiated_date) { |b| b.span(id: "schedule_initiated_date_control").text }
-  element(:schedule_completed_date) { |b| b.span(id: "schedule_completed_date_control").text }
-  element(:schedule_duration) { |b| b.span(id: "schedule_duration_control").text }
-  element(:publish_initiated_date) { |b| b.span(id: "publish_initiated_date_control").text }
-  element(:publish_completed_date) { |b| b.span(id: "publish_completed_date_control").text }
-  element(:publish_duration) { |b| b.span(id: "publish_duration_control").text }
+  element(:soc_scheduling_status) { |b| b.div(id: "socSchedulingStatus").text }
+  element(:soc_publishing_status) { |b| b.div(id: "socPublishingStatus").text }
+  element(:schedule_initiated_date) { |b| b.div(id: "schedule_initiated_date").text }
+  element(:schedule_completed_date) { |b| b.div(id: "schedule_completed_date").text }
+  element(:schedule_duration) { |b| b.div(id: "schedule_duration").text }
+  element(:publish_initiated_date) { |b| b.div(id: "publish_initiated_date").text }
+  element(:publish_completed_date) { |b| b.div(id: "publish_completed_date").text }
+  element(:publish_duration) { |b| b.div(id: "publish_duration").text }
 
 
   element(:status_table) { |b| b.div(id: "ManageSOCView-StatusHistory-SubSection2").table }
