@@ -56,11 +56,13 @@ class FinalExamMatrix < DataObject
     rule_found = false
     manage
     on FEMatrixView do |page|
-      page.standard_final_exam_table.rows.each do |row|
-        if row.text =~ /^#{requirements}.*$/m
-          row.i(class: "ks-fontello-icon-pencil").click
-          rule_found = true
-          break
+      if page.standard_final_exam_table.exists?
+        page.standard_final_exam_table.rows.each do |row|
+          if row.text =~ /^#{requirements}.*$/m
+            row.i(class: "ks-fontello-icon-pencil").click
+            rule_found = true
+            break
+          end
         end
       end
     end
@@ -79,6 +81,9 @@ class FinalExamMatrix < DataObject
         page.cancel_rule
       end
     else
+      if requirements =~ /^([MTWHFSU]+) at .+$/
+        requirements = $1
+      end
       statement = []
       statement << (make ExamMatrixStatementObject, :days => requirements, :start_time => "04:00",:st_time_ampm => "pm")
       rule = make ExamMatrixRuleObject, :rsi_days => "Day 3", :start_time => "05:00",
@@ -92,11 +97,13 @@ class FinalExamMatrix < DataObject
     rule_found = false
     manage
     on FEMatrixView do |page|
-      page.common_final_exam_table.rows.each do |row|
-        if row.text =~ /#{requirements}/m
-          row.i(class: "ks-fontello-icon-pencil").click
-          rule_found = true
-          break
+      if page.common_final_exam_table.exists?
+        page.common_final_exam_table.rows.each do |row|
+          if row.text =~ /#{requirements}/m
+            row.i(class: "ks-fontello-icon-pencil").click
+            rule_found = true
+            break
+          end
         end
       end
     end
@@ -107,7 +114,7 @@ class FinalExamMatrix < DataObject
         statement = []
         statement << (make ExamMatrixStatementObject, :statement_option => page.get_statement_rule_text,
                          :courses => requirements)
-        rule = make ExamMatrixRuleObject, :rsi_days => page.get_rsi_days_text,
+        rule = make ExamMatrixRuleObject, :exam_type => "Common", :rsi_days => page.get_rsi_days_text,
                     :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text,
                     :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text,
                     :statements => statement
@@ -118,7 +125,7 @@ class FinalExamMatrix < DataObject
       statement = []
       statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
                        :courses => requirements)
-      rule = make ExamMatrixRuleObject, :rsi_days => "Day 5", :start_time => "09:30",
+      rule = make ExamMatrixRuleObject, :exam_type => "Common", :rsi_days => "Day 5", :start_time => "09:30",
                   :st_time_ampm => "am",  :end_time => "11:30",:end_time_ampm => "am", :statements => statement
       self.rules << rule
     end
@@ -182,7 +189,7 @@ class ExamMatrixRuleObject
     else
       on(FEMatrixView).add_common_fe_rule
     end
-
+    sleep 10
     @statements.each do |statement|
       statement.parent_rule = self
       statement.create

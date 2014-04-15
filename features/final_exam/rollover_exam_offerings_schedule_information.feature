@@ -3,6 +3,9 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
   FE 4.1 As a Central Administrator I want to have on matrix exam offerings populated with requested scheduling
   information when created in bulk so that exam offering scheduling requests are consistent with the established exam matrix
 
+  FE 5.3: As a Central Administrator I want EO requested scheduling information to be updated dynamically when AO ASIs
+  are initially populated so that scheduling information remains in line with those of the AO driving the exam and matrix slotting
+
   Background:
     Given I am logged in as admin
 
@@ -14,9 +17,12 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
     Then the Exam Offerings Slotting info should be populated or left blank depending on whether the AO RSI was found on the Exam Matrix
 
   #KSENROLL-12376
-  @draft
-  Scenario: FE5.3.1 Rollover to new term so that the Mass Scheduling Event can be triggered which should then create the EOs for the COs
-    Given I initiate a rollover to create a term in open state EC
-#    And I create Course Offerings that have approved Activity Offerings
-#    And I Lock the SOC
-##    When
+  @pending
+  Scenario: FE5.3.1 Trigger the Mass Scheduling Event for a set of COs which then creates the EOs for the COs
+    Given I create an Academic Calendar and add an official term
+    And I create multiple Course Offerings in the term
+    And I initiate a rollover to create a term in open state
+    And I approve the "ENGL" subject code for scheduling in the target term
+    And I create Exam Matrix rules from which the Exam Offering Slotting info is populated
+    When I advance the SOC state from open to scheduler complete state
+    Then the Exam Offerings Slotting info should be populated after the Mass Scheduling Event has been triggered

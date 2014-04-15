@@ -1590,10 +1590,42 @@ Given /^I create a Course Offering from catalog with an Alternate Exam that has 
                                                      :end_time => end_time, :end_time_ampm => @matrix.rules[0].statements[0].st_time_ampm)
 end
 
-Given /^I initiate a rollover to create a term in open state$/ do
-  @calendar_target = create AcademicCalendar
+When /^I create multiple Course Offerings in the term$/ do
+  @matrix_list = []
+  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "ENGL313"))
+  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "MTH"))
+  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "WHF"))
+  th_end_time = (DateTime.strptime("#{@matrix_list[1].rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  f_end_time = (DateTime.strptime("#{@matrix_list[2].rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
 
-  term_target = make AcademicTermObject, :parent_calendar => @calendar_target, :term => "Spring"
+  @co_list = []
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
+                                      :final_exam_driver => "Final Exam Per Course Offering")
+
+  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject)
+
+  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL362",
+                      :final_exam_driver => "Final Exam Per Activity Offering")
+
+  @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @co_list[1].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+                                                :days  => @matrix_list[1].rules[0].statements[0].days,
+                                                :start_time  => @matrix_list[1].rules[0].statements[0].start_time,
+                                                :start_time_ampm  => @matrix_list[1].rules[0].statements[0].st_time_ampm,
+                                                :end_time  => th_end_time, :end_time_ampm  => @matrix_list[1].rules[0].statements[0].st_time_ampm)
+
+  @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
+  @co_list[1].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
+                                                :days  => @matrix_list[2].rules[0].statements[0].days,
+                                                :start_time  => @matrix_list[2].rules[0].statements[0].start_time,
+                                                :start_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm,
+                                                :end_time  => f_end_time, :end_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm)
+end
+
+When /^I initiate a rollover to create a term in open state$/ do
+  @calendar_target = create AcademicCalendar, :year => @calendar.year.to_i + 1
+
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target
   @calendar_target.add_term term_target
 
   exam_period = make ExamPeriodObject, :parent_term => term_target
@@ -1605,7 +1637,50 @@ Given /^I initiate a rollover to create a term in open state$/ do
   @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
   @manage_soc.set_up_soc
 
-  @rollover = make Rollover, :source_term => Rollover::SOC_STATES_SOURCE_TERM, :target_term => @calendar_target.terms[0].term_code
+  @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
+                   :source_term => @calendar.terms[0].term_code,
+                   :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
+  @rollover.release_to_depts
+end
+
+When /^I create Exam Matrix rules from which the Exam Offering Slotting info is populated$/ do
+  @matrix_list = []
+  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "ENGL313"))
+  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "MTH"))
+  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "WHF"))
+
+
+  @matrix_list.each do |matrix_obj|
+    matrix = make FinalExamMatrix
+    matrix.add_rule :rule_obj => matrix_obj.rules[0]
+  end
+end
+
+Then /^the Exam Offerings Slotting info should be populated after the Mass Scheduling Event has been triggered$/ do
+  @co_list.each do |co|
+    test_co = make CourseOffering, :term => @calendar_target.terms[0].term_code, :course => co.course
+    test_co.manage_and_init
+    on(ManageCourseOfferings).view_exam_offerings
+    if test_co.course != @co_list[0].course
+      on ViewExamOfferings do |page|
+        ao = test_co.activity_offering_cluster_list[0].ao_list[0]
+        page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix_list[1].rules[0].rsi_days}/
+        page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix_list[1].rules[0].start_time}/i
+        page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix_list[1].rules[0].end_time}/i
+
+        ao = test_co.activity_offering_cluster_list[0].ao_list[1]
+        page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix_list[2].rules[0].rsi_days}/
+        page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix_list[2].rules[0].start_time}/i
+        page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix_list[2].rules[0].end_time}/i
+      end
+    else
+      on ViewExamOfferings do |page|
+        page.get_eo_by_co_days_text.should match /#{@matrix_list[0].rules[0].rsi_days}/
+        page.get_eo_by_co_st_time_text.should match /#{@matrix_list[0].rules[0].start_time}/i
+        page.get_eo_by_co_end_time_text.should match /#{@matrix_list[0].rules[0].end_time}/i
+      end
+    end
+  end
 end
