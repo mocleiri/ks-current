@@ -28,7 +28,7 @@ class CourseOffering
   #array - generally set using options hash
   attr_accessor :activity_offering_cluster_list,
                 :affiliated_person_list,
-                :affiliated_org_list
+                :admin_org_list
   #string - generally set using options hash
   attr_accessor :grade_format,
                 :delivery_format_list,
@@ -68,7 +68,7 @@ class CourseOffering
         :delivery_format_list => collection('DeliveryFormat') << (make DeliveryFormatObject),
         :honors_flag => false,
         :affiliated_person_list => {},
-        :affiliated_org_list => {},
+        :admin_org_list => collection('AffiliatedOrg') << (make AffiliatedOrgObject),
         :grade_options => "Letter",
         :reg_options => "Pass/Fail Grading",
         :pass_fail_flag => true,
@@ -336,25 +336,6 @@ class CourseOffering
         end
       end
       @affiliated_person_list = options[:affiliated_person_list] if options[:exp_success]
-    end
-
-    if options[:affiliated_org_list] != nil
-      options[:affiliated_org_list].values.each do |org|
-
-        on CourseOfferingCreateEdit do |page|
-          page.add_org
-        end
-
-        on CourseOfferingCreateEdit do |page|
-          page.lookup_org_new
-        end
-
-        on OrgLookupPopUp do |page|
-          page.long_name.set org.org_name
-          page.search
-          page.return_value(org.org_id)
-        end
-      end
     end
 
     if options[:cross_listed] != nil
@@ -633,6 +614,22 @@ class CourseOffering
    delivery_format_obj.parent_co = self
    @delivery_format_list <<  delivery_format_obj
    save unless options[:defer_save]
+ end
+
+  def add_admin_org opts
+    defaults = {
+        :config_only => false,
+        :defer_save => false,
+        :start_edit => true
+    }
+    options = defaults.merge(opts)
+
+    admin_org_obj = options[:admin_org]
+    edit :defer_save => true  if options[:start_edit]
+    admin_org_obj.create unless options[:config_only]
+    admin_org_obj.parent_co = self
+    @admin_org_list <<  admin_org_obj
+    save unless options[:defer_save]
   end
 
 # TEMPORARY - This will eventually be replaced by a call to course_offering.delivery_format_list,
