@@ -15,7 +15,7 @@ class EditAcademicTerms < BasePage
 
   action(:acal_term_add) { |b| b.frm.button(id: "acal-term_add").click; b.loading.wait_while_present }
 
-  element(:acal_term_list_div) { |b| b.frm.div(id: "acal-term")  }
+  element(:acal_term_list_div) { |b| b.frm.section(id: "acal-term")  }
 
   action(:get_term_index) { |term_name, b| b.acal_term_list_div.text_field(value: "#{term_name}").name[/\d+/]}
 
@@ -27,14 +27,14 @@ class EditAcademicTerms < BasePage
   end
 
   def term_section_div_list
-    acal_term_list_div.divs(id: /^term_section_line\d+$/, data_parent: 'acal-term')
+    acal_term_list_div.sections(id: /^term_section_line\d+$/, data_parent: 'acal-term')
   end
 
   def open_term_section(term_type)
     term_section_div_list.each do |term_div|
       toggle_link = term_div.link(id: /^term_section_line\d+_toggle$/)
       if toggle_link.text == term_type
-        toggle_link.click if toggle_link.image(alt: "collapse").visible?
+        toggle_link.click if !term_div.text_field(id: /term_name_line\d+_control/).present?
         return
       end
     end
@@ -250,7 +250,7 @@ class EditAcademicTerms < BasePage
   #Final Exam
   def final_exam_section( term_type)
     term_index = term_index_by_term_type( term_type)
-    section = acal_term_list_div.div( id: "acal-term-examdates_line#{term_index}")
+    section = acal_term_list_div.section( id: "acal-term-examdates_line#{term_index}")
     return section
   end
 

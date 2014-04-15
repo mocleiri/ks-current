@@ -173,7 +173,7 @@ end
 
 module CalendarStickyFooter
 
-  PageFactory.element(:acal_sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") } # persistent id not possible
+  PageFactory.element(:acal_sticky_footer_div) { |b| b.frm.div(class: /uif-stickyButtonFooter/) } # persistent id not possible
 
   def save(opts = {})
     defaults = {
