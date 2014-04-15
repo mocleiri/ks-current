@@ -19,7 +19,7 @@ Feature: CO.Edit Course Offerings
   Scenario: Edit an existing course offering's grading option
     When I edit a course offering with multiple grading options
     And I change the grading options
-    Then the grading option is changed
+    Then the grading options are changed
 
 #KSENROLL-1503.1
   Scenario: Edit an existing course offering to update the grade roster level

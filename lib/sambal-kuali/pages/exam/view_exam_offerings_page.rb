@@ -15,6 +15,9 @@ class ViewExamOfferings < BasePage
 
   element(:cluster_list_div)  { |b| b.frm.eo_table_section.div(class: "uif-stackedCollectionLayout") }
 
+  element(:cancel_link) { |b| b.frm.a( text: "Cancel")}
+  action(:cancel) { |b| b.cancel_link.click; b.loading.wait_while_present}
+
   def co_eo_table
     return eo_table_section.table unless !eo_table_section.table.exists? #TODO: should fail here if not found
   end

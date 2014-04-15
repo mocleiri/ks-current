@@ -404,15 +404,19 @@ Then /^I should have a choice of terms from which to associate the Final Exam Ma
 end
 
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM241"
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
 
-  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  statement = []
-  statement << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION,
-                     :courses => @course_offering.course)
-  rule = make ExamMatrixRuleObject, :exam_type => 'Common', :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
-              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
-  @matrix.add_rule :rule_obj => rule
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
+end
+
+Given /^I manage a course offering with a CO-driven exam offering RSI generated from the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
+
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
+
+  @course_offering.create
 end
 
 Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
@@ -455,16 +459,19 @@ Given /^I encure that the AO's Requested Scheduling Information exists on the Fi
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
-  @activity_offering = @course_offering.activity_offering_cluster_list[0].ao_list[0]
-      # make ActivityOfferingObject, :code => "A", :parent_course_offering => @course_offering
+  @original_co = make CourseOffering, :term => "201301", :course => "HIST111"
 
-  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  statement = []
-  statement << (make ExamMatrixStatementObject, :days => "MW", :start_time => "01:00", :st_time_ampm => "pm")
-  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "02:00", :st_time_ampm => "pm",
-              :end_time => "03:00", :end_time_ampm => "pm", :statements => statement
-  @matrix.add_rule :rule_obj => rule
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 11:00 AM")
+end
+
+Given /^I manage a course offering with an AO-driven exam offering RSI generated from the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 01:00 PM")
+
+  @course_offering.create
 end
 
 Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do
@@ -496,7 +503,23 @@ Then /^the (?:Requested|Actual) Scheduling Information for the Exam Offering of 
   end
 end
 
+Then /^the EO's Scheduling Information should change to reflect the updates made to the AO's Actual Scheduling Info$/ do
+  on ViewExamOfferings do |page|
+    page.get_eo_by_ao_days_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].rsi_days)}/i
+    page.get_eo_by_ao_st_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].start_time)}/i
+    page.get_eo_by_ao_end_time_text(@activity_offering.code).should match /#{Regexp.escape(@matrix.rules[0].end_time)}/i
+  end
+end
+
 Then /^the (?:Requested|Actual) Scheduling Information for the Exam Offering of the AO should not be populated$/ do
+  on ViewExamOfferings do |page|
+    page.get_eo_by_ao_days_text(@activity_offering.code).should == ""
+    page.get_eo_by_ao_st_time_text(@activity_offering.code).should == ""
+    page.get_eo_by_ao_end_time_text(@activity_offering.code).should == ""
+  end
+end
+
+Then /^the EO's Scheduling Information for the Exam Offering of the AO should be updated to blank to reflect it was not found on the matrix$/ do
   on ViewExamOfferings do |page|
     page.get_eo_by_ao_days_text(@activity_offering.code).should == ""
     page.get_eo_by_ao_st_time_text(@activity_offering.code).should == ""
@@ -507,25 +530,17 @@ end
 Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix$/ do
   @original_co = make CourseOffering, :term => "201301", :course => "ENGL313"
 
-  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  statement = []
-  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "03:30", :st_time_ampm => "pm")
-  rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "10:30", :st_time_ampm => "am",
-              :end_time => "12:30", :end_time_ampm => "pm", :statements => statement
-  @matrix.add_rule :rule_obj => rule
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH at 03:30 PM")
 end
 
 Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix$/ do
   @original_co = make CourseOffering, :term => "201301", :course => "ENGL611"
 end
 
-Given /^I create from catalog a Course Offering with an AO\-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
-  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  statement = []
-  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "04:00", :st_time_ampm => "pm")
-  rule = make ExamMatrixRuleObject, :rsi_days => "Day 6", :start_time => "05:00", :st_time_ampm => "pm",
-              :end_time => "05:50", :end_time_ampm => "pm", :statements => statement
-  @matrix.add_rule :rule_obj => rule
+Given /^I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
+  matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH at 09:30 AM")
 
   @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361",
                             :final_exam_driver => "Final Exam Per Activity Offering"
@@ -534,16 +549,11 @@ Given /^I create from catalog a Course Offering with an AO\-driven exam that use
   @course_offering.delivery_format_list[0].grade_format = "Lecture"
   @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
   @course_offering.create
-
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Actual Scheduling Information for the exam does exist$/ do
-  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  statement = []
-  statement << (make ExamMatrixStatementObject, :days => "TH", :start_time => "02:00", :st_time_ampm => "pm")
-  rule = make ExamMatrixRuleObject, :rsi_days => "Day 4", :start_time => "10:30", :st_time_ampm => "am",
-              :end_time => "12:30", :end_time_ampm => "pm", :statements => statement
-  @matrix.rules << rule
+  matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH at 02:00 PM")
 
   @course_offering = create CourseOffering, :term => "201208",
                             :create_from_existing => ( make CourseOffering, :term => "201208", :course => "ENGL304")
@@ -555,8 +565,10 @@ end
 
 When /^I update the Actual Scheduling Information for the Activity Offering$/ do
   @activity_offering.edit :send_to_scheduler => true, :defer_save => true
-  @activity_offering.requested_scheduling_information_list[0].edit :start_time => "02:00", :start_time_ampm => "pm",
-                                                       :end_time => "03:00", :end_time_ampm => "pm"
+  end_time = (DateTime.strptime("#{@matrix.rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  @activity_offering.requested_scheduling_information_list[0].edit :start_time  => @matrix.rules[0].statements[0].start_time,
+                                                                   :start_time_ampm  => @matrix.rules[0].statements[0].st_time_ampm,
+                                                                   :end_time  => end_time, :end_time_ampm => @matrix.rules[0].statements[0].st_time_ampm
   @activity_offering.save
 end
 

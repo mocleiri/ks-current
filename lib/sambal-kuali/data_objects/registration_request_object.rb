@@ -174,12 +174,37 @@ class RegistrationRequest
 
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code
+      page.toggle_course_details @course_code,@reg_group_code,"registered"
+      page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
       page.edit_course_options @course_code,@reg_group_code
 
       page.select_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
       page.select_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
       page.save_edits @course_code,@reg_group_code
+    end
+
+    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
+  end
+
+  def edit_course_options_in_waitlist opts = {}
+    if @course_options.nil?
+      return nil
+    end
+
+    defaults = {
+    }
+    options = defaults.merge(opts)
+
+    on StudentSchedule do |page|
+      page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
+      sleep 1
+      page.show_course_details(@course_code,@reg_group_code,"waitlisted")
+      page.edit_waitlist_item_button(@course_code,@reg_group_code).wait_until_present
+      page.edit_waitlisted_course_options @course_code,@reg_group_code
+      sleep 1
+      page.select_waitlist_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
+      page.select_waitlist_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
+      page.save_waitlist_edits @course_code,@reg_group_code
     end
 
     #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
@@ -203,7 +228,7 @@ class RegistrationRequest
   def remove_from_schedule
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code
+      page.toggle_course_details @course_code,@reg_group_code,"registered"
       page.remove_course_from_schedule @course_code,@reg_group_code
     end
   end
@@ -211,8 +236,16 @@ class RegistrationRequest
   def remove_from_schedule_and_cancel
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code
+      page.toggle_course_details @course_code,@reg_group_code,"registered"
       page.cancel_drop_course @course_code,@reg_group_code
+    end
+  end
+
+  def remove_from_waitlist
+    on StudentSchedule do |page|
+      page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
+      page.toggle_course_details @course_code,@reg_group_code,"waitlisted"
+      page.remove_course_from_waitlist @course_code,@reg_group_code
     end
   end
 end
