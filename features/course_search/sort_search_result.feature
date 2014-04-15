@@ -5,7 +5,7 @@ Feature: BT.Search_result_sort
          Given I am logged in as a Student
 
 
-  Scenario Outline: CS 14.1.1 Successfully sorting the course Title in both ascending and descending order.
+  Scenario Outline: CS 14.1.1 Successfully sorting the course code in both ascending and descending order.
     When I search for a course on course search
     When I sort the table by course code
     Then the course code listed should be sorted in "<Order>"
@@ -28,7 +28,7 @@ Feature: BT.Search_result_sort
 
 
 
-  @pending
+
   Scenario Outline: CS 14.2.1
    ***************************************************************************************************************************************************
    KSAP- 1000
