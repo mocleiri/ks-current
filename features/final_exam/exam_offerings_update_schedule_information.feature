@@ -74,7 +74,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should not be populated
 
   #KSENROLL-12379
-  @pending
   Scenario: FE4.11.5 When the Exam is updated from No Exam to a Standard AO-Driven exam while the ASI of the AO is on the matrix then the EO data should be populated
     Given I create a Course Offering from catalog with No Exam that has an AO with ASI data found on the matrix in a term with a defined final exam period
     When I edit the Course Offering to use a Standard Exam that is AO-Driven
@@ -82,7 +81,6 @@ Feature: CO.Exam Offerings change when Modifying Schedule Information
     Then the Requested Scheduling Information for the Exam Offering of the AO should be populated
 
   #KSENROLL-12379
-  @pending
   Scenario: FE4.11.6 When the Exam is updated from Alternate Exam to a Standard AO-Driven exam while the ASI of the AO is not on the matrix then the EO data should not be populated
     Given I create a Course Offering from catalog with an Alternate Exam that has an AO with ASI data not found on the matrix in a term with a defined final exam period
     When I edit the Course Offering to use a Standard Exam that is AO-Driven

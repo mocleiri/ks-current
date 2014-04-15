@@ -1589,3 +1589,23 @@ Given /^I create a Course Offering from catalog with an Alternate Exam that has 
                                                      :start_time_ampm => @matrix.rules[0].statements[0].st_time_ampm,
                                                      :end_time => end_time, :end_time_ampm => @matrix.rules[0].statements[0].st_time_ampm)
 end
+
+Given /^I initiate a rollover to create a term in open state$/ do
+  @calendar_target = create AcademicCalendar
+
+  term_target = make AcademicTermObject, :parent_calendar => @calendar_target, :term => "Spring"
+  @calendar_target.add_term term_target
+
+  exam_period = make ExamPeriodObject, :parent_term => term_target
+  @calendar_target.terms[0].add_exam_period exam_period
+  @calendar_target.terms[0].save
+
+  @calendar_target.terms[0].make_official
+
+  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
+  @manage_soc.set_up_soc
+
+  @rollover = make Rollover, :source_term => Rollover::SOC_STATES_SOURCE_TERM, :target_term => @calendar_target.terms[0].term_code
+  @rollover.perform_rollover
+  @rollover.wait_for_rollover_to_complete
+end
