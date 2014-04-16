@@ -264,13 +264,13 @@ class ManageCourseOfferings < BasePage
     codes
   end
 
-  element(:cluster_list_div)  { |b| b.frm.div(id: "KS-CourseOfferingManagement-AOClustersCollection").div(class: "uif-stackedCollectionLayout") }
+  element(:cluster_list_div)  { |b| b.frm.div(id: "KS-CourseOfferingManagement-AOClustersCollection")}
   element(:cluster_warning_list)  { |b| b.frm.ul(id: "pageValidationList") }
 
   def cluster_div_list
     div_list = []
     if cluster_list_div.exists?
-      div_list = cluster_list_div.divs(class: "uif-collectionItem uif-boxCollectionItem")
+      div_list = cluster_list_div.divs(class: "uif-collectionItem uif-boxCollectionItem clearfix")
     end
     #puts "div list #{div_list.length}"
     div_list
