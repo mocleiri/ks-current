@@ -13,6 +13,7 @@ import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.HoldsValidator;
 import org.kuali.student.r2.common.infc.ValidationResult;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
 import java.util.List;
@@ -21,17 +22,9 @@ public class AcademicPlanServiceValidationDecorator extends
 		AcademicPlanServiceDecorator implements HoldsValidator {
 
 
-    private PlanItemDao planItemDao;
-
-    public PlanItemDao getPlanItemDao() {
-        return planItemDao;
-    }
-
-    public void setPlanItemDao(PlanItemDao planItemDao) {
-        this.planItemDao = planItemDao;
-    }
-
 	private DataDictionaryValidator validator;
+
+    private PlanItemDao planItemDao;
 
 	@Override
 	public DataDictionaryValidator getValidator() {
@@ -43,7 +36,15 @@ public class AcademicPlanServiceValidationDecorator extends
 		this.validator = validator;
 	}
 
-	@Override
+    public PlanItemDao getPlanItemDao() {
+        return planItemDao;
+    }
+
+    public void setPlanItemDao(PlanItemDao planItemDao) {
+        this.planItemDao = planItemDao;
+    }
+
+    @Override
 	public LearningPlanInfo getLearningPlan(String learningPlanId,
 			ContextInfo context) throws DoesNotExistException,
 			InvalidParameterException, MissingParameterException,
@@ -164,6 +165,12 @@ public class AcademicPlanServiceValidationDecorator extends
         List<ValidationResultInfo> validationResultInfos = validateInfo(validator, validationType,
             planItemInfo, context);
 
+        //Validate learningPlanId is not null
+        if (planItemInfo.getLearningPlanId()==null) {
+            validationResultInfos.add(makeValidationResultInfo(
+                    String.format("PlanId is null on planItem with ID [%s].", planItemInfo.getId()),
+                    "id", ValidationResult.ErrorLevel.ERROR));
+        }
 		/*
 		 * Validate that the course exists.
 		 */
@@ -218,7 +225,9 @@ public class AcademicPlanServiceValidationDecorator extends
 		 * validations are performed on "update" operations. The duplicate check
 		 * throw an AlreadyExistsException on updates.
 		 */
-        checkPlanItemDuplicate(planItemInfo);
+        if (planItemInfo.getLearningPlanId()!=null) {
+            checkPlanItemDuplicate(planItemInfo,context);
+        }
 
         try {
             List<ValidationResultInfo> nextDecoratorErrors = getNextDecorator()
@@ -244,6 +253,17 @@ public class AcademicPlanServiceValidationDecorator extends
 		if (learningPlanInfo == null) {
 			throw new MissingParameterException("learningPlanInfo was null.");
 		}
+
+        TypeInfo type = null;
+        try {
+            type = KsapFrameworkServiceLocator.getTypeService().getType(learningPlanInfo.getTypeKey(), context);
+        } catch (DoesNotExistException e) {
+            throw new InvalidParameterException(String.format("Unknown type [%s].", learningPlanInfo.getTypeKey()));
+        } catch (PermissionDeniedException e) {
+            throw new OperationFailedException(
+                    "Error validating learning plan type.", e);
+        }
+
 
         List<ValidationResultInfo> errors = null;
 		try {
@@ -294,6 +314,9 @@ public class AcademicPlanServiceValidationDecorator extends
             throws DataValidationErrorException, InvalidParameterException,
             MissingParameterException, OperationFailedException,
             PermissionDeniedException, DoesNotExistException, VersionMismatchException {
+        if (!learningPlanId.equals(learningPlan.getId())) {
+            throw new InvalidParameterException(learningPlanId + " does not match the id on the object " + learningPlan.getId());
+        }
         fullValidation(learningPlan, context);
 		return getNextDecorator().updateLearningPlan(learningPlanId,
 				learningPlan, context);
@@ -304,8 +327,10 @@ public class AcademicPlanServiceValidationDecorator extends
 			PlanItemInfo planItem, ContextInfo context)
     throws DataValidationErrorException, InvalidParameterException, MissingParameterException,
     OperationFailedException, PermissionDeniedException, DoesNotExistException, VersionMismatchException {
-
-		// Since this is an update we can ignore AlreadyExistsExceptions. That
+        if (!planItemId.equals(planItem.getId())) {
+            throw new InvalidParameterException(planItemId + " does not match the id on the object " + planItem.getId());
+        }
+        // Since this is an update we can ignore AlreadyExistsExceptions. That
 		// is the last validation which is performed.
 		try {
 			fullValidation(planItem, context);
@@ -335,7 +360,7 @@ public class AcademicPlanServiceValidationDecorator extends
      * @throws AlreadyExistsException
      *             If the plan item is a duplicate.
      */
-    private void checkPlanItemDuplicate(PlanItemInfo planItem) throws AlreadyExistsException {
+    private void checkPlanItemDuplicate(PlanItemInfo planItem, ContextInfo context) throws AlreadyExistsException {
 
         String planItemId = planItem.getLearningPlanId();
         String courseId = planItem.getRefObjectId();
@@ -346,8 +371,13 @@ public class AcademicPlanServiceValidationDecorator extends
          * then only the course id has to match to make it a duplicate. If the
          * type is planned course then the ATP must match as well.
          */
-        List<PlanItemEntity> planItems = this.planItemDao.getLearningPlanItemsByCategory(planItemId, category);
-        for (PlanItemEntity p : planItems) {
+        List<PlanItemInfo> planItems = null;
+        try {
+            planItems = this.getPlanItemsInPlanByCategory(planItemId, category, context);
+        } catch (Exception e) {
+            new RuntimeException("unexpected exception: "+e.getMessage(),e);
+        }
+        for (PlanItemInfo p : planItems) {
             if (p.getRefObjectId().equals(courseId)) {
                 if (category.equals(AcademicPlanServiceConstants.ItemCategory.PLANNED)
                         || category.equals(AcademicPlanServiceConstants.ItemCategory.BACKUP)
@@ -355,14 +385,14 @@ public class AcademicPlanServiceValidationDecorator extends
                     for (String atpId : planItem.getPlanTermIds()) {
                         if (p.getPlanTermIds().contains(atpId)) {
                             throw new AlreadyExistsException(String.format(
-                                    "A plan item for plan [%s], course id [%s], and term [%s] already exists.", p
-                                    .getLearningPlan().getId(), courseId, atpId));
+                                    "A plan item for plan [%s], course id [%s], and term [%s] already exists.",
+                                    p.getLearningPlanId(), courseId, atpId));
                         }
                     }
                 } else {
                     throw new AlreadyExistsException(String.format(
                             "A plan item for plan [%s] and course id [%s] already exists.",
-                            p.getLearningPlan().getId(), courseId));
+                            p.getLearningPlanId(), courseId));
                 }
             }
         }

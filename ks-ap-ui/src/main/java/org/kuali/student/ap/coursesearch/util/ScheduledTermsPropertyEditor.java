@@ -46,11 +46,11 @@ public class ScheduledTermsPropertyEditor extends PropertyEditorSupport {
             for (String termId : scheduledTerms) {
 
                 if (counter > 0) {
-                    formattedText.append(", ");
+                    formattedText.append(" ");
                 }
 
                 YearTerm yt = th.getYearTerm(termId);
-				String text = yt.getShortName();
+				String text = yt.getAbbrivation();
 				formattedText.append(String.format("<%s class=\"%s\">%s</%s>", "span", text.replaceAll("\\d*$", "").trim(), text, "span"));
 
                 counter++;
