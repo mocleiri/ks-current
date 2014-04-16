@@ -76,7 +76,7 @@ class EditAcademicCalendar < BasePage
   action(:make_official) { |b| b.make_official_link.click; b.loading.wait_while_present }
 
   ###### confirm make official dialog
-  element(:make_official_dialog_div) { |b| b.frm.div(id: "KS-AcademicCalendar-ConfirmCalendarOfficial-Dialog") }
+  element(:make_official_dialog_div) { |b| b.frm.section(id: "KS-AcademicCalendar-ConfirmCalendarOfficial-Dialog") }
   action(:make_offical_confirm) { |b| b.make_official_dialog_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:make_offical_cancel) { |b| b.make_official_dialog_div.radio(index: 1).click ; b.loading.wait_while_present}
   ########

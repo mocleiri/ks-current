@@ -66,6 +66,7 @@ class AcademicCalendar < DataObject
       page.academic_calendar_name.set @name
       page.calendar_start_date.set @start_date
       page.calendar_end_date.set @end_date
+      page.loading.wait_while_present
 
       page.save unless opts[:defer_save]
     end
