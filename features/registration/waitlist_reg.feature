@@ -30,6 +30,8 @@ Feature: REG.Wait List
     Then there is a message indicating that registration failed
     And I am given the option to add myself to a waitlist for the course
     When I add myself to a waitlist for the course
+    And I log out
+    Then I am logged in as a Schedule Coordinator
     And I add an ENGL4 course offering to my registration cart
     And I register for the course
     Then there is a message indicating that registration failed

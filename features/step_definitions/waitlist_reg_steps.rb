@@ -92,6 +92,7 @@ Then /^the course is present in my waitlist, with the updated options$/ do
     page.waitlist_course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     sleep 1
     page.waitlist_course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
+    # grading option badge is not displayed for Letter grade (the assumed default), only displayed for non-standard options e.g., Audit or Pass/Fail
     unless @reg_request.course_options.grading_option == "Letter"
       page.waitlist_grading_option_badge(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
       page.waitlist_grading_option(@reg_request.course_code,@reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"

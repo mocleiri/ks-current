@@ -244,7 +244,7 @@ class RegistrationRequest
   def remove_from_waitlist
     on StudentSchedule do |page|
       page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code,"waitlisted"
+      page.show_course_details @course_code,@reg_group_code,"waitlisted"
       page.remove_course_from_waitlist @course_code,@reg_group_code
     end
   end
