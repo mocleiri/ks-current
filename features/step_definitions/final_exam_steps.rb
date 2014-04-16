@@ -1332,13 +1332,13 @@ When /^I add new Requested Scheduling Information to the Activity Offering that 
 end
 
 When /^I create multiple Course Offerings each with different Exam Offerings and Requested Scheduling Information$/ do
-  @matrix_list = []
-  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "CHEM242"))
-  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "PHYS161"))
-  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "TH"))
-  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "F"))
-  th_end_time = (DateTime.strptime("#{@matrix_list[2].rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
-  f_end_time = (DateTime.strptime("#{@matrix_list[3].rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  @matrix = make FinalExamMatrix
+  @matrix.create_common_rule_matrix_object_for_rsi( "CHEM242")
+  @matrix.create_common_rule_matrix_object_for_rsi( "PHYS161")
+  @matrix.create_standard_rule_matrix_object_for_rsi( "TH")
+  @matrix.create_standard_rule_matrix_object_for_rsi( "F")
+  th_end_time = (DateTime.strptime("#{@matrix.rules[2].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  f_end_time = (DateTime.strptime("#{@matrix.rules[3].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
 
   @co_list = []
 
@@ -1349,53 +1349,60 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
                       :final_exam_driver => "Final Exam Per Course Offering"
   course_offering.delivery_format_list[0].format = "Lecture/Discussion"
   course_offering.delivery_format_list[0].grade_format = "Lecture"
-  course_offering.delivery_format_list[0].final_exam_activity = ""
-  @co_list << course_offering.create
+  @co_list << (course_offering.create)
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion", :activity_type => "Lecture")
   @co_list[1].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[2].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[2].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => th_end_time, :end_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[2].statements[0].days,
+                                                :start_time  => @matrix.rules[2].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm,
+                                                :end_time  => th_end_time, :end_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm)
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion", :activity_type => "Lecture")
   @co_list[1].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[3].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[3].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => f_end_time, :end_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[3].statements[0].days,
+                                                :start_time  => @matrix.rules[3].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm,
+                                                :end_time  => f_end_time, :end_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm)
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture/Discussion", :activity_type => "Discussion")
 
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL362",
-                      :final_exam_driver => "Final Exam Per Activity Offering")
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL362",
+                         :final_exam_driver => "Final Exam Per Activity Offering"
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @co_list << (course_offering.create)
 
   @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[2].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[2].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[2].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => th_end_time, :end_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[2].statements[0].days,
+                                                :start_time  => @matrix.rules[2].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm,
+                                                :end_time  => th_end_time, :end_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm)
 
   @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[2].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[3].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[3].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => f_end_time, :end_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[3].statements[0].days,
+                                                :start_time  => @matrix.rules[3].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm,
+                                                :end_time  => f_end_time, :end_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm)
 
   @co_list[2].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS171",
-                      :final_exam_driver => "Final Exam Per Activity Offering")
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "PHYS171",
+                         :final_exam_driver => "Final Exam Per Activity Offering"
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @co_list << (course_offering.create)
 
   @co_list[3].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[3].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[3].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[3].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => f_end_time, :end_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[3].statements[0].days,
+                                                :start_time  => @matrix.rules[3].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm,
+                                                :end_time  => f_end_time, :end_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm)
 
   course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
       :final_exam_driver => "Final Exam Per Activity Offering"
@@ -1406,20 +1413,20 @@ When /^I create multiple Course Offerings each with different Exam Offerings and
 
   @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[4].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[2].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[2].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => th_end_time, :end_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[2].statements[0].days,
+                                                :start_time  => @matrix.rules[2].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm,
+                                                :end_time  => th_end_time, :end_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm)
 
   @co_list[4].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[4].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[3].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[3].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => f_end_time, :end_time_ampm  => @matrix_list[3].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[3].statements[0].days,
+                                                :start_time  => @matrix.rules[3].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm,
+                                                :end_time  => f_end_time, :end_time_ampm  => @matrix.rules[3].statements[0].st_time_ampm)
 
   course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "CHEM242",
-      :final_exam_driver => "Final Exam Per Activity Offering"
+                    :final_exam_driver => "Final Exam Per Activity Offering"
   course_offering.delivery_format_list[0].format = "Lab/Lecture"
   course_offering.delivery_format_list[0].grade_format = "Lecture"
   course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
@@ -1445,9 +1452,9 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
             end
           else
             on ViewExamOfferings do |page|
-              page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix_list[2].rules[0].rsi_days}/
-              page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix_list[2].rules[0].start_time}/i
-              page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix_list[2].rules[0].end_time}/i
+              page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix.rules[2].rsi_days}/
+              page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix.rules[2].start_time}/i
+              page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix.rules[2].end_time}/i
             end
           end
         else
@@ -1468,9 +1475,9 @@ Then /^the Exam Offerings Slotting info should be populated or left blank depend
         end
       else
         on ViewExamOfferings do |page|
-          page.get_eo_by_co_days_text.should match /#{@matrix_list[1].rules[0].rsi_days}/
-          page.get_eo_by_co_st_time_text.should match /#{@matrix_list[1].rules[0].start_time}/i
-          page.get_eo_by_co_end_time_text.should match /#{@matrix_list[1].rules[0].end_time}/i
+          page.get_eo_by_co_days_text.should match /#{@matrix.rules[1].rsi_days}/
+          page.get_eo_by_co_st_time_text.should match /#{@matrix.rules[1].start_time}/i
+          page.get_eo_by_co_end_time_text.should match /#{@matrix.rules[1].end_time}/i
         end
       end
     end
@@ -1484,8 +1491,8 @@ end
 Given /^I create a Course Offering from catalog with No Exam that is found on the matrix in a term with a defined final exam period$/ do
   @course_offering = make CourseOffering, :term=> "201208", :course => "ENGL403", :final_exam_type => "NONE"
 
-  matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
+  @matrix = make FinalExamMatrix
+  @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
 
   @course_offering.create
 end
@@ -1500,8 +1507,8 @@ Given /^I create a Course Offering from catalog with No Exam that has an AO with
   @course_offering.delivery_format_list[0].format = "Lecture"
   @course_offering.delivery_format_list[0].grade_format = "Lecture"
 
-  matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MWF")
+  @matrix = make FinalExamMatrix
+  @matrix.create_standard_rule_matrix_object_for_rsi( "MWF")
 
   @course_offering.create
 
@@ -1520,8 +1527,8 @@ When /^I edit the Course Offering to use a Standard Exam that is AO-Driven$/ do
 end
 
 Given /^I create a Course Offering from catalog with an Alternate Exam that has an AO with RSI data not found on the matrix in a term with a defined final exam period$/ do
-  matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "F")
+  @matrix = make FinalExamMatrix
+  @matrix.create_standard_rule_matrix_object_for_rsi( "F")
 
   @course_offering = create CourseOffering, :term=> "201208", :course => "CHEM242", :final_exam_type => "ALTERNATE"
 
@@ -1561,8 +1568,8 @@ Given /^I create a Course Offering from catalog with No Exam that has an AO with
   @course_offering.delivery_format_list[0].format = "Lecture"
   @course_offering.delivery_format_list[0].grade_format = "Lecture"
 
-  matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH")
+  @matrix = make FinalExamMatrix
+  @matrix.create_standard_rule_matrix_object_for_rsi( "TH")
 
   @course_offering.create
 
@@ -1578,8 +1585,8 @@ Given /^I create a Course Offering from catalog with No Exam that has an AO with
 end
 
 Given /^I create a Course Offering from catalog with an Alternate Exam that has an AO with ASI data not found on the matrix in a term with a defined final exam period$/ do
-  matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "F")
+  @matrix = make FinalExamMatrix
+  @matrix.create_standard_rule_matrix_object_for_rsi( "F")
 
   @course_offering = create CourseOffering, :term=> "201208", :course => "CHEM242", :final_exam_type => "ALTERNATE"
 
@@ -1595,35 +1602,42 @@ Given /^I create a Course Offering from catalog with an Alternate Exam that has 
 end
 
 When /^I create multiple Course Offerings in the term$/ do
-  @matrix_list = []
-  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "ENGL313"))
-  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "MTH"))
-  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "WHF"))
-  th_end_time = (DateTime.strptime("#{@matrix_list[1].rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
-  f_end_time = (DateTime.strptime("#{@matrix_list[2].rules[0].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  @matrix = make FinalExamMatrix
+  @matrix.create_common_rule_matrix_object_for_rsi( "ENGL313")
+  @matrix.create_standard_rule_matrix_object_for_rsi( "MTH")
+  @matrix.create_standard_rule_matrix_object_for_rsi( "WHF")
+  th_end_time = (DateTime.strptime("#{@matrix.rules[1].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
+  f_end_time = (DateTime.strptime("#{@matrix.rules[2].statements[0].start_time}", '%I:%M') + ("50".to_f/1440)).strftime( '%I:%M')
 
   @co_list = []
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
-                                      :final_exam_driver => "Final Exam Per Course Offering")
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL313",
+                         :final_exam_driver => "Final Exam Per Course Offering"
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  @co_list << (course_offering.create)
 
-  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject)
+  @co_list[0].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
 
-  @co_list << (create CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL362",
-                      :final_exam_driver => "Final Exam Per Activity Offering")
+  course_offering = make CourseOffering, :term => @calendar.terms[0].term_code, :course => "ENGL362",
+                         :final_exam_driver => "Final Exam Per Activity Offering"
+  course_offering.delivery_format_list[0].format = "Lecture"
+  course_offering.delivery_format_list[0].grade_format = "Course Offering"
+  course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @co_list << (course_offering.create)
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[1].activity_offering_cluster_list[0].ao_list[0].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[1].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[1].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[1].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => th_end_time, :end_time_ampm  => @matrix_list[1].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[1].statements[0].days,
+                                                :start_time  => @matrix.rules[1].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[1].statements[0].st_time_ampm,
+                                                :end_time  => th_end_time, :end_time_ampm  => @matrix.rules[1].statements[0].st_time_ampm)
 
   @co_list[1].create_ao :ao_obj => (make ActivityOfferingObject, :format => "Lecture Only")
   @co_list[1].activity_offering_cluster_list[0].ao_list[1].add_req_sched_info :rsi_obj => (make SchedulingInformationObject,
-                                                :days  => @matrix_list[2].rules[0].statements[0].days,
-                                                :start_time  => @matrix_list[2].rules[0].statements[0].start_time,
-                                                :start_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm,
-                                                :end_time  => f_end_time, :end_time_ampm  => @matrix_list[2].rules[0].statements[0].st_time_ampm)
+                                                :days  => @matrix.rules[2].statements[0].days,
+                                                :start_time  => @matrix.rules[2].statements[0].start_time,
+                                                :start_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm,
+                                                :end_time  => f_end_time, :end_time_ampm  => @matrix.rules[2].statements[0].st_time_ampm)
 end
 
 When /^I initiate a rollover to create a term in open state$/ do
@@ -1650,15 +1664,9 @@ When /^I initiate a rollover to create a term in open state$/ do
 end
 
 When /^I create Exam Matrix rules from which the Exam Offering Slotting info is populated$/ do
-  @matrix_list = []
-  @matrix_list << ((make FinalExamMatrix).create_common_rule_matrix_object_for_rsi( "ENGL313"))
-  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "MTH"))
-  @matrix_list << ((make FinalExamMatrix).create_standard_rule_matrix_object_for_rsi( "WHF"))
-
-
-  @matrix_list.each do |matrix_obj|
-    matrix = make FinalExamMatrix
-    matrix.add_rule :rule_obj => matrix_obj.rules[0]
+  @matrix.rules.each do |rule|
+    rule.parent_exam_matrix = @matrix
+    rule.create
   end
 end
 
@@ -1670,20 +1678,20 @@ Then /^the Exam Offerings Slotting info should be populated after the Mass Sched
     if test_co.course != @co_list[0].course
       on ViewExamOfferings do |page|
         ao = test_co.activity_offering_cluster_list[0].ao_list[0]
-        page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix_list[1].rules[0].rsi_days}/
-        page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix_list[1].rules[0].start_time}/i
-        page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix_list[1].rules[0].end_time}/i
+        page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix.rules[1].rsi_days}/
+        page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix.rules[1].start_time}/i
+        page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix.rules[1].end_time}/i
 
         ao = test_co.activity_offering_cluster_list[0].ao_list[1]
-        page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix_list[2].rules[0].rsi_days}/
-        page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix_list[2].rules[0].start_time}/i
-        page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix_list[2].rules[0].end_time}/i
+        page.get_eo_by_ao_days_text(ao.code).should match /#{@matrix.rules[2].rsi_days}/
+        page.get_eo_by_ao_st_time_text(ao.code).should match /#{@matrix.rules[2].start_time}/i
+        page.get_eo_by_ao_end_time_text(ao.code).should match /#{@matrix.rules[2].end_time}/i
       end
     else
       on ViewExamOfferings do |page|
-        page.get_eo_by_co_days_text.should match /#{@matrix_list[0].rules[0].rsi_days}/
-        page.get_eo_by_co_st_time_text.should match /#{@matrix_list[0].rules[0].start_time}/i
-        page.get_eo_by_co_end_time_text.should match /#{@matrix_list[0].rules[0].end_time}/i
+        page.get_eo_by_co_days_text.should match /#{@matrix.rules[0].rsi_days}/
+        page.get_eo_by_co_st_time_text.should match /#{@matrix.rules[0].start_time}/i
+        page.get_eo_by_co_end_time_text.should match /#{@matrix.rules[0].end_time}/i
       end
     end
   end

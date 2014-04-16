@@ -72,10 +72,10 @@ class FinalExamMatrix < DataObject
         page.edit
         statement = []
         statement << (make ExamMatrixStatementObject, :days => page.get_statement_days_text, :start_time => page.get_statement_starttime_text,
-                         :st_time_ampm => page.get_statement_starttime_ampm_text)
+                         :st_time_ampm => page.get_statement_starttime_ampm_text.downcase)
         rule = make ExamMatrixRuleObject, :rsi_days => page.get_rsi_days_text,
-                    :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text,
-                    :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text,
+                    :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text.downcase,
+                    :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text.downcase,
                     :statements => statement
         self.rules << rule
         page.cancel_rule
@@ -90,7 +90,6 @@ class FinalExamMatrix < DataObject
                   :st_time_ampm => "am", :end_time => "07:00",:end_time_ampm => "am", :statements => statement
       self.rules << rule
     end
-    return self
   end
 
   def create_common_rule_matrix_object_for_rsi( requirements)
@@ -115,8 +114,8 @@ class FinalExamMatrix < DataObject
         statement << (make ExamMatrixStatementObject, :statement_option => page.get_statement_rule_text,
                          :courses => requirements)
         rule = make ExamMatrixRuleObject, :exam_type => "Common", :rsi_days => page.get_rsi_days_text,
-                    :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text,
-                    :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text,
+                    :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text.downcase,
+                    :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text.downcase,
                     :statements => statement
         self.rules << rule
         page.cancel_rule
@@ -129,7 +128,6 @@ class FinalExamMatrix < DataObject
                   :st_time_ampm => "am",  :end_time => "11:30",:end_time_ampm => "am", :statements => statement
       self.rules << rule
     end
-    return self
   end
 end
 
@@ -189,7 +187,7 @@ class ExamMatrixRuleObject
     else
       on(FEMatrixView).add_common_fe_rule
     end
-    sleep 10
+
     @statements.each do |statement|
       statement.parent_rule = self
       statement.create
@@ -247,7 +245,7 @@ class ExamMatrixRuleObject
       end
 
       if options[:st_time_ampm] != nil
-        page.rsi_starttime_ampm.select options[:st_time_ampm]
+        page.rsi_starttime_ampm.select options[:st_time_ampm].downcase
       end
 
       if options[:end_time] != nil
@@ -255,7 +253,7 @@ class ExamMatrixRuleObject
       end
 
       if options[:end_time_ampm] != nil
-        page.rsi_endtime_ampm.select options[:end_time_ampm]
+        page.rsi_endtime_ampm.select options[:end_time_ampm].downcase
       end
 
       if @exam_type == "Common"
@@ -525,7 +523,7 @@ class ExamMatrixStatementObject
       page.loading.wait_while_present
       page.rule_days.set @days
       page.rule_starttime.set @start_time
-      page.rule_starttime_ampm.select @st_time_ampm
+      page.rule_starttime_ampm.select @st_time_ampm.downcase
     end
   end
 

@@ -406,15 +406,15 @@ end
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
 
-  matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
 end
 
 Given /^I manage a course offering with a CO-driven exam offering RSI generated from the exam matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
 
-  matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
 
   @course_offering.create
 end
@@ -461,15 +461,15 @@ end
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix, Requested Scheduling Information for the exam exists on the Final Exam Matrix, and the parent AO of the exam offering has RSI data$/ do
   @original_co = make CourseOffering, :term => "201301", :course => "HIST111"
 
-  matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 11:00 AM")
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_standard_rule_matrix_object_for_rsi( "MW at 11:00 AM")
 end
 
 Given /^I manage a course offering with an AO-driven exam offering RSI generated from the exam matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
 
-  matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "MW at 01:00 PM")
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_standard_rule_matrix_object_for_rsi( "MW at 01:00 PM")
 
   @course_offering.create
 end
@@ -530,8 +530,8 @@ end
 Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that exists on the Final Exam Matrix$/ do
   @original_co = make CourseOffering, :term => "201301", :course => "ENGL313"
 
-  matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH at 03:30 PM")
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_standard_rule_matrix_object_for_rsi( "TH at 03:30 PM")
 end
 
 Given /^that the Course Offering has one Activity Offering with Requested Scheduling Information that does not exist on the Final Exam Matrix$/ do
@@ -539,8 +539,8 @@ Given /^that the Course Offering has one Activity Offering with Requested Schedu
 end
 
 Given /^I create from catalog a Course Offering with an AO-driven exam that uses the exam matrix in a term with a defined final exam period$/ do
-  matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH at 09:30 AM")
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_standard_rule_matrix_object_for_rsi( "TH at 09:30 AM")
 
   @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361",
                             :final_exam_driver => "Final Exam Per Activity Offering"
@@ -552,8 +552,8 @@ Given /^I create from catalog a Course Offering with an AO-driven exam that uses
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Actual Scheduling Information for the exam does exist$/ do
-  matrix = make FinalExamMatrix, :term_type => "Fall Term"
-  @matrix = matrix.create_standard_rule_matrix_object_for_rsi( "TH at 02:00 PM")
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  @matrix.create_standard_rule_matrix_object_for_rsi( "TH at 02:00 PM")
 
   @course_offering = create CourseOffering, :term => "201208",
                             :create_from_existing => ( make CourseOffering, :term => "201208", :course => "ENGL304")
