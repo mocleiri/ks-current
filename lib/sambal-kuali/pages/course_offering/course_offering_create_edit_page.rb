@@ -108,12 +108,12 @@ class CourseOfferingCreateEdit < BasePage
   ACTIONS_COLUMN = 4
 
   #work for the newest row, ie when adding
-  element(:new_format_select) {|b| b.delivery_formats_table.rows[-2].cells[FORMAT_COLUMN].select }
-  element(:new_grade_roster_level_select) {|b| b.delivery_formats_table.rows[-2].cells[GRADE_ROSTER_LEVEL_COLUMN].select }
-  value(:new_final_exam_driver_value) { |b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_DRIVER_COLUMN].text}
-  element(:new_final_exam_activity_select)  {|b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_ACTIVITY_COLUMN].select }
+  element(:new_format_select) {|b| b.delivery_formats_table.rows[-1].cells[FORMAT_COLUMN].select }
+  element(:new_grade_roster_level_select) {|b| b.delivery_formats_table.rows[-1].cells[GRADE_ROSTER_LEVEL_COLUMN].select }
+  value(:new_final_exam_driver_value) { |b| b.delivery_formats_table.rows[-1].cells[FINAL_EXAM_DRIVER_COLUMN].text}
+  element(:new_final_exam_activity_select)  {|b| b.delivery_formats_table.rows[-1].cells[FINAL_EXAM_ACTIVITY_COLUMN].select }
   value(:new_final_exam_activity_value) { |b| b.new_final_exam_activity_select.selected_options[0].text}
-  element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-2].cells[ACTIONS_COLUMN].i(class: "ks-fontello-icon-cancel") }
+  element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-1].cells[ACTIONS_COLUMN].i(class: "ks-fontello-icon-cancel") }
 
   element(:add_format_btn) { |b| b.frm.button(id: "KS-CourseOffering-FormatOfferingSubSection_add")}
   action(:add_format) { |b| b.add_format_btn.click; b.loading.wait_while_present }
