@@ -21,7 +21,7 @@ class CreateCOFromExisting < BasePage
   action(:select_exclude_instructor) { |b| b.exclude_instructor.wait_until_present; b.exclude_instructor.click }
 
   element(:course_offering_existing_table) { |b| b.frm.section(id: "KS-ExistingOffering-ListCOs").table() }
-  element(:next_page) { |b| b.frm.div(id: "KS-ExistingOffering-ListCOs").link(id: /next/) }
+  element(:next_page) { |b| b.frm.section(id: "KS-ExistingOffering-ListCOs").link(id: /next/) }
   #TODO just selects the first row - needs to be deprecated
   element(:course_offering_copy_element) {|b| b.frm.course_offering_existing_table.rows[1].cells[ACTIONS_COLUMN_CO].radio.click  }
   action(:course_offering_copy) {|b| b.course_offering_copy_element.click }
