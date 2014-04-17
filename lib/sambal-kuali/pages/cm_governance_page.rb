@@ -26,7 +26,7 @@ class CmGovernance < BasePage
 
  # GOVERNANCE REVIEW FIELDS
   action(:edit_governance) { |b| b.a(id: "Governance-Review-Edit-link").click }
-  value(:campus_locations_review) { |b| b.div(id: 'Governance-Review-section').div(data_label: 'Campus Locations').input(class: "uif-textControl").value }
-  value(:curriculum_oversight_review) { |b| b.div(id: 'Governance-Review-section').div(data_label: 'Curriculum Oversight').input(class: "uif-textControl").value }
+  value(:campus_locations_review) { |b| b.textarea(id: 'governanceSection_campusLocations_control').text }
+  value(:curriculum_oversight_review) { |b| b.textarea(id: 'governanceSection_curriculumOversightAsString_control').text }
 
 end

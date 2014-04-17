@@ -51,8 +51,8 @@ class CmCourseLogistics < BasePage
   action(:activity_type) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.formats[0].activities[0].typeKey') }
   element(:activity_contacted_hours) { |b| b.text_field(name: /contactHours.unitQuantity$/) }
   element(:activity_frequency) { |b| b.select_list(name: /contactHours.unitTypeKey$/) }
-  action(:activity_duration_type) { |b| b.select_list(name: /duration.atpDurationTypeKey/) }
-  action(:activity_duration_count) { |b| b.text_field(name: /timeQuantity$/) }
+  action(:activity_duration_type) { |b| b.select_list(id: "KS-Logistics-Format-DurationTypeDropDown_line0_line0_control") }
+  action(:activity_duration_count) { |b| b.text_field(id: "KS-Logistics-Format-DurationTimeQuantity-Field_line0_line0_control") }
   action(:activity_class_size) { |b| b.text_field(name: /defaultEnrollmentEstimate$/) }
 
   #ADDED COURSE FORMATS

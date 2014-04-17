@@ -120,19 +120,18 @@ class CmCourseProposalObject < DataObject
           #FINAL EXAM
         final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
         final_exam_rationale:       random_alphanums(10,'test final exam rationale '),
-          #OUTCOMES
-        outcome_type_fixed: true,
-        outcome_level_fixed: 1,
-        credit_value: (1..5).to_a.sample,
-          #TODO: ADD OTHER OUTCOMES AFTER KSCM-1782 IS RESOVLED
-        :outcome_type_range => true,
-        :outcome_level_range => 2,
-        :credit_value_min => (1..3).to_a.sample,
-        :credit_value_max =>  (4..8).to_a.sample,
-        :outcome_type_multiple => true,
-        :outcome_level_multiple => 3,
-        :credit_value_multiple_1 => (1..4).to_a.sample,
-        :credit_value_multiple_2 => (5..8).to_a.sample,
+          #OUTCOMES-TODO Disabling adding outcomes until KSCM-1949 is resolved
+        #outcome_type_fixed: true,
+        #outcome_level_fixed: 1,
+        #credit_value: (1..5).to_a.sample,
+        #:outcome_type_range => true,
+        #:outcome_level_range => 2,
+        #:credit_value_min => (1..3).to_a.sample,
+        #:credit_value_max =>  (4..8).to_a.sample,
+        #:outcome_type_multiple => true,
+        #:outcome_level_multiple => 3,
+        #:credit_value_multiple_1 => (1..4).to_a.sample,
+        #:credit_value_multiple_2 => (5..8).to_a.sample,
           #FORMATS
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
@@ -475,7 +474,6 @@ class CmCourseProposalObject < DataObject
       page.activity_duration_type.pick! @activity_duration_type
       page.activity_duration_count.fit @activity_duration_count
       page.activity_class_size.fit @activity_class_size
-      page.add_activity
     end
   end
 
