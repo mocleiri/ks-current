@@ -15,7 +15,7 @@ class ViewAcademicTerms < BasePage
   value(:acal_start_date) { |b| b.acal_overview_div.div(data_label: "Start Date").span(index: 1).text }
   value(:acal_end_date) { |b| b.acal_overview_div.div(data_label: "End Date").span(index: 1).text }
 
-  element(:acal_term_list_div) { |b| b.frm.div(id: "acal-term") }
+  element(:acal_term_list_div) { |b| b.frm.section(id: "acal-term") }
 
   def terms_div_list
     term_info_div.div(class: "uif-stackedCollectionLayout").divs(class: "uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem")
@@ -74,7 +74,7 @@ class ViewAcademicTerms < BasePage
 
   def term_status(term_type)
     index = term_index_by_term_type(term_type)
-    acal_term_list_div.span(data_aft_id: /Lozenge/, index: index.to_i).text
+    acal_term_list_div.p(data_aft_id: /Lozenge/, index: index.to_i).text
   end
 
   def term_status_by_term_code(term_code)
