@@ -377,7 +377,7 @@ class ManageCourseOfferings < BasePage
   private :get_cluster_div_ao_row
 
   def get_cluster_div_ao_rows(cluster_div)
-    return cluster_div.table.rows[1..-2] unless !cluster_div.table.exists?
+    return cluster_div.table.rows[1..-1] unless !cluster_div.table.exists?
     return []
   end
 
