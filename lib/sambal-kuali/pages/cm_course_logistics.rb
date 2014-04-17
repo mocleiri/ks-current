@@ -48,7 +48,7 @@ class CmCourseLogistics < BasePage
 #COURSE FORMAT(S)
   action(:add_additional_format) { |b| b.button(id: /CourseFormats-Widgets_add$/).click; b.adding_line_wait }
   action(:add_activity) { |b| b.button(id: 'activity-addline_line0').click; b.loading_wait }
-  action(:activity_type) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[0].typeKey') }
+  action(:activity_type) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.formats[0].activities[0].typeKey') }
   element(:activity_contacted_hours) { |b| b.text_field(name: /contactHours.unitQuantity$/) }
   element(:activity_frequency) { |b| b.select_list(name: /contactHours.unitTypeKey$/) }
   action(:activity_duration_type) { |b| b.select_list(name: /duration.atpDurationTypeKey/) }
@@ -56,12 +56,12 @@ class CmCourseLogistics < BasePage
   action(:activity_class_size) { |b| b.text_field(name: /defaultEnrollmentEstimate$/) }
 
   #ADDED COURSE FORMATS
-  action(:activity_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].typeKey") }
-  element(:activity_contacted_hours_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].contactHours.unitQuantity").value }
-  element(:activity_frequency_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].contactHours.unitTypeKey") }
-  action(:activity_duration_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].duration.atpDurationTypeKey") }
-  action(:activity_duration_count_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].duration.timeQuantity").value }
-  action(:activity_class_size_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.courseInfo.formats[0].activities[#{format_count-1}].defaultEnrollmentEstimate").value }
+  action(:activity_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].typeKey") }
+  element(:activity_contacted_hours_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].contactHours.unitQuantity").value }
+  element(:activity_frequency_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].contactHours.unitTypeKey") }
+  action(:activity_duration_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].duration.atpDurationTypeKey") }
+  action(:activity_duration_count_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].duration.timeQuantity").value }
+  action(:activity_class_size_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].defaultEnrollmentEstimate").value }
 
 
 # LOGISTICS REVIEW FIELDS
