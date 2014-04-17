@@ -269,6 +269,8 @@ class RegisterForCourseBase < BasePage
   element(:search) { |b| b.cr_header_div.link(id: "goToSearch")}
   element(:schedule_link) { |b| b.cr_header_div.link(id: "goToSchedule") }
   element(:cart_link) { |b| b.cr_header_div.link(id: "goToCart") }
+  element(:logout_button) { |b| b.cr_header_div.button(id: "logout") }
+  action(:logout) { |b| b.logout_button.click }
 
   def select_term(term)
     term_select.select(term)

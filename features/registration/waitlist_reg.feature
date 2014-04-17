@@ -24,13 +24,12 @@ Feature: REG.Wait List
     And there is a message indicating that no waitlist is offered
 
 #KSENROLL-12347
-  @wip
   Scenario: CR 8.3 As an administrator I want to enforce any waitlist capacity restrictions for a specific registration group so that students are not able to add themselves to that waitlist if there is not space available
     When I register for a full ENGL4 course offering that has a waitlist
     Then there is a message indicating that registration failed
     And I am given the option to add myself to a waitlist for the course
     When I add myself to a waitlist for the course
-    And I log out
+    Then I log out from student registration
     Then I am logged in as a Schedule Coordinator
     And I add an ENGL4 course offering to my registration cart
     And I register for the course

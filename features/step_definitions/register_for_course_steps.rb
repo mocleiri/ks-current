@@ -328,3 +328,11 @@ Then /^the number of courses and credits I am registered for is correctly update
     page.reg_credit_count.match('(.*) credits')[1].to_f.should == expected_count
   end
 end
+
+Then /^I log out from student registration$/ do
+  on RegisterForCourseBase do |page|
+    page.menu
+    page.logout_button.wait_until_present
+    page.logout
+  end
+end
