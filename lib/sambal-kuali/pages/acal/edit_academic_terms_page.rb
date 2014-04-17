@@ -79,9 +79,9 @@ class EditAcademicTerms < BasePage
 
   ###### confirm make official dialog
   element(:parent_make_official_div) { |b| b.frm.div(class: "fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened") }
-  element(:make_official_calendar_dialog_secion) { |b| b.frm.parent_make_official_div.section(id: /KS-AcademicCalendar-Confirm.*Official-Dialog/) }
-  action(:make_offical_confirm) { |b| b.make_official_calendar_dialog_secion.radio(index: 0).click; b.loading.wait_while_present }
-  action(:make_offical_cancel) { |b| b.make_official_calendar_dialog_secion.radio(index: 1).click ; b.loading.wait_while_present}
+  element(:make_official_calendar_dialog_section) { |b| b.frm.parent_make_official_div.section(id: /KS-AcademicCalendar-Confirm.*Official-Dialog/) }
+  action(:make_offical_confirm) { |b| b.make_official_calendar_dialog_section.radio(index: 0).click; b.loading.wait_while_present }
+  action(:make_offical_cancel) { |b| b.make_official_calendar_dialog_section.radio(index: 1).click ; b.loading.wait_while_present}
   ########
 
   def key_date_group_list_parent(term_type)
