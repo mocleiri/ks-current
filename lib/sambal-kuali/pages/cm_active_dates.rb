@@ -12,5 +12,5 @@ class CmActiveDates < BasePage
 
   # ACTIVE DATES REVIEW FIELDS
   action(:edit_course_logistics) { |b| b.a(id: 'ActiveDates-Review-Edit-link').click }
-  value(:start_term_review) { |b| b.div(id: 'ActiveDates-Review-section').div(data_label: 'Start Term').input(class: "uif-textControl").value }
+  value(:start_term_review) { |b| b.div(id: 'ActiveDates-Review-section').div(data_label: 'Start Term').textarea(class: "uif-largeTextControl").value }
 end
