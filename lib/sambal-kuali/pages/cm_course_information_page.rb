@@ -55,12 +55,13 @@ class CmCourseInformation < BasePage
 # COURSE INFORMATION REVIEW FIELDS
   action(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil").click }
   action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
-  value(:proposal_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Title").text_field(name: /proposalInfo/).value }
-  value(:course_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Title").text_field(name: /courseTitle/).value }
-  value(:subject_code_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Subject Code").text_field(name: /subjectArea/).value }
-  value(:course_number_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Number").text_field(name: /courseNumberSuffix/).value }
-  value(:description_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Description").text_field(name: /descr/).value }
-  value(:proposal_rationale_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Rationale").text_field(name: /rationale/).value}
+
+  value(:proposal_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Title").textarea(class: "uif-largeTextControl").value }
+  value(:course_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Title").textarea(class: "uif-largeTextControl").value }
+  value(:subject_code_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Subject Code").textarea(class: "uif-largeTextControl").value }
+  value(:course_number_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Number").textarea(class: "uif-largeTextControl").value }
+  value(:description_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Description").textarea(class: "uif-largeTextControl").value }
+  value(:proposal_rationale_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Rationale").textarea(class: "uif-largeTextControl").value}
 
   # table results
   # b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table.row.cells[1].text
