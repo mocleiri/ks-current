@@ -2,8 +2,8 @@ class StudentSchedule < RegisterForCourseBase
 
   element(:reg_credit_count) { |b| b.span(id: "reg_credit_count").text }
 
-  element(:waitlist_user_message_div) { |b| b.div(id: "waitlist_user_message") }
-  element(:waitlist_user_message) { |b| b.waitlist_user_message_div.span(index: 0).text }
+  element(:waitlist_user_message_div) { |b| b.div(id: "waitlist_course_status_message") }
+  element(:waitlist_user_message) { |b| b.waitlist_user_message_div.div(index: 0).text }
 
   element(:remove_course_button) { |course_code,reg_group_code,b| b.button(id: "remove_#{course_code}_#{reg_group_code}") }
   element(:course_code) { |course_code,reg_group_code,b| b.span(id: "course_code_#{course_code}_#{reg_group_code}") }

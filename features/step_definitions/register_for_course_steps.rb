@@ -115,13 +115,9 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
       sleep 2
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
-      begin
-        sleep 1
-        page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
-        page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
-      rescue Watir::Exception::UnknownObjectException
-        # the course is not there: good
-      end
+      sleep 1
+      page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
 end
@@ -170,11 +166,7 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
       page.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
-      begin
-        page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
-      rescue Watir::Exception::UnknownObjectException
-        # the course is not there: good
-      end
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
 end
@@ -334,5 +326,12 @@ Then /^I log out from student registration$/ do
     page.menu
     page.logout_button.wait_until_present
     page.logout
+  end
+end
+
+Then /^the number of credits I am registered for and waitlisted for are correctly updated in my schedule$/ do
+  on StudentSchedule do |page|
+    page.reg_credit_count.match('(.*) credits')[1].to_f.should == 3
+    #page.
   end
 end

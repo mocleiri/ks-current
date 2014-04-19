@@ -108,12 +108,8 @@ end
 
 Then /^I can verify I am not on the waitlist$/ do
   on StudentSchedule do |page|
-    begin
-      sleep 1
-      page.waitlist_user_message.should include "Removed from waitlist for #{@reg_request.course_code} (#{@reg_request.reg_group_code})"
-      page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
-    rescue Watir::Exception::UnknownObjectException
-      # the course is not there: good
-    end
+    sleep 1
+    page.waitlist_user_message.should include "Removed from waitlist for #{@reg_request.course_code} (#{@reg_request.reg_group_code})"
+    page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
   end
 end
