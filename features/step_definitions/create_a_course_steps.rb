@@ -165,7 +165,6 @@ And /^I should see data in required for save fields on the Review Proposal page$
   on CmCourseInformation do |page|
     page.review_proposal
     page.loading_wait
-    page.growl_text.should == "Document was successfully saved."
     #puts "Original Proposal Title is #{page.proposal_title_review}"
     #puts "Original Course Title is #{page.course_title_review}"
     page.proposal_title_review.should == @course_proposal.proposal_title
