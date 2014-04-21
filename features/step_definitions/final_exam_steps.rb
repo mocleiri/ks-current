@@ -648,18 +648,164 @@ When /^I cancel all Activity Offerings for a CO with a standard final exam drive
   end
 end
 
-When /^update all fields on the exam offering RSI$/ do
-  eo_rsi = make EoRsiObject, :day => @matrix.rules[0].rsi_days,
-                :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
-                :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
-                :facility_short =>@matrix.rules[0].facility,
-                :room => @matrix.rules[0].room
+When /^I? ?update all fields on the exam offering RSI$/ do
+  @eo_rsi.edit :do_navigation => false,
+               :day => 'Day 5',
+               :start_time => '4:00 PM',
+               :end_time => '4:50 PM'
+end
 
-  eo_rsi.edit :do_navigation => false, :day => 'Day 5'
+When /^I select matrix override and update the day and time fields on the exam offering RSI$/ do
+  @eo_rsi.edit :do_navigation => false,
+               :day => 'Day 2',
+               :start_time => '6:00 PM',
+               :end_time => '7:00 PM',
+               :exam_override => true
+end
+
+When /^I update the requested scheduling information for the related activity offering$/ do
+  @course_offering.manage
+  @activity_offering.edit :defer_save => true
+  @activity_offering.requested_scheduling_information_list[0].edit :days => "SU",
+                                                                   :start_time => "10:00", :start_time_ampm => "am",
+                                                                   :end_time => "10:50", :end_time_ampm => "am"
+  @activity_offering.save
+end
+
+When /^delete the contents of the exam offering RSI facility and room number fields$/ do
+  @eo_rsi.edit :do_navigation => false, :facility => '', :room => '', :override_matrix => true
+end
+
+When /^blank the exam offering RSI Day field$/ do
+  @eo_rsi.edit :do_navigation => false, :day => '', :override_matrix => true, :exp_success=> false
+end
+
+When /^enter a blank time in the exam offering RSI end time field$/ do
+  @eo_rsi.edit :do_navigation => false, :end_time => '', :override_matrix => true, :exp_success=> false
+end
+
+When /^enter an invalid room code in the exam offering RSI room field$/ do
+  @eo_rsi.edit :do_navigation => false, :room => '98989', :override_matrix => true, :exp_success=> false
+end
+
+When /^enter an invalid facility code in the exam offering RSI facility field$/ do
+  @eo_rsi.edit :do_navigation => false, :facility => 'NX2', :override_matrix => true, :exp_success=> false
+end
+
+When /^enter an invalid time in the exam offering RSI start time field$/ do
+  @eo_rsi.edit :do_navigation => false, :start_time => '13:00 AM', :override_matrix => true, :exp_success=> false
+end
+
+When /^the error displayed for AO-driven exam offerings RSI day field is: (.*?)$/ do |expected_errMsg|
+  on ViewExamOfferings do |page|
+    row = page.eo_by_ao_target_row(@activity_offering.code)
+    page.rsi_day(row).click
+    popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{page.rsi_day(row).id}").table.text
+    popup_text.should match /#{expected_errMsg}/
+    page.cancel
+  end
+end
+
+When /^the error displayed for CO-driven exam offerings RSI start time is: (.*?)$/ do |expected_errMsg|
+  on ViewExamOfferings do |page|
+    row = page.co_target_row
+    element = page.rsi_start_time(row)
+    element.click
+    popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
+    popup_text.should match /#{expected_errMsg}/
+    page.cancel
+  end
+end
+
+When /^the error displayed for AO-driven exam offerings RSI end time is: (.*?)$/ do |expected_errMsg|
+  on ViewExamOfferings do |page|
+    row = page.eo_by_ao_target_row(@activity_offering.code)
+    element = page.rsi_end_time(row)
+    element.click
+    popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
+    popup_text.should match /#{expected_errMsg}/
+    page.cancel
+  end
+end
+
+When /^the error displayed for AO-driven exam offerings RSI facility is: (.*?)$/ do |expected_errMsg|
+  on ViewExamOfferings do |page|
+    row = page.eo_by_ao_target_row(@activity_offering.code)
+    element = page.rsi_facility(row)
+    element.click
+    popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
+    popup_text.should match /#{expected_errMsg}/
+    page.cancel
+  end
+end
+
+When /^the error displayed for AO-driven exam offerings RSI room is: (.*?)$/ do |expected_errMsg|
+  on ViewExamOfferings do |page|
+    row = page.eo_by_ao_target_row(@activity_offering.code)
+    element = page.rsi_room(row)
+    element.click
+    popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
+    popup_text.should match /#{expected_errMsg}/
+    page.cancel
+  end
 end
 
 When /^I (?:view|manage) the Exam Offerings for the Course Offering$/ do
   on(ManageCourseOfferings).view_exam_offerings
+end
+
+When /^the CO-driven exam offering RSI is successfully updated$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  on ViewExamOfferings do |page|
+    page.co_target_row.exists?.should be_true
+    page.get_eo_by_co_days_text.should match /#{@eo_rsi.day}/
+    page.get_eo_by_co_st_time_text.should == @eo_rsi.start_time
+    page.get_eo_by_co_end_time_text.should == @eo_rsi.end_time
+    #page.get_eo_by_co_bldg_text.should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_co_room_text.should == @eo_rsi.room
+  end
+end
+
+When /^the AO-driven exam offering RSI is not updated$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  code = @activity_offering.code
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_target_row(code).exists?.should be_true
+    page.get_eo_by_ao_days_text(code).should match /#{@eo_rsi.day}/
+    page.get_eo_by_ao_st_time_text(code).should == @eo_rsi.start_time
+    page.get_eo_by_ao_end_time_text(code).should == @eo_rsi.end_time
+    #page.get_eo_by_ao_bldg_text(code).should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_ao_room_text(code).should == @eo_rsi.room
+  end
+end
+
+When /^the CO-driven exam offering RSI is not updated$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  on ViewExamOfferings do |page|
+    page.co_target_row.exists?.should be_true
+    page.get_eo_by_co_days_text.should match /#{@eo_rsi.day}/
+    page.get_eo_by_co_st_time_text.should == @eo_rsi.start_time
+    page.get_eo_by_co_end_time_text.should == @eo_rsi.end_time
+    #page.get_eo_by_co_bldg_text.should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_co_room_text.should == @eo_rsi.room
+  end
+end
+
+When /^the AO-driven exam offering RSI is successfully updated$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  ao_code = @eo_rsi.ao_code
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_target_row(ao_code).exists?.should be_true
+    page.get_eo_by_ao_days_text(ao_code).should match /#{@eo_rsi.day}/
+    page.get_eo_by_ao_st_time_text(ao_code).should == @eo_rsi.start_time
+    page.get_eo_by_ao_end_time_text(ao_code).should == @eo_rsi.end_time
+    #page.get_eo_by_ao_bldg_text(ao_code).should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_ao_room_text(ao_code).should == @eo_rsi.room
+  end
 end
 
 When /^I suspend an Activity Offering for a CO with a standard final exam driven by Course Offering$/ do
@@ -1696,3 +1842,4 @@ Then /^the Exam Offerings Slotting info should be populated after the Mass Sched
     end
   end
 end
+

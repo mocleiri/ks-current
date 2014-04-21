@@ -28,12 +28,14 @@ class EoRsiObject
         :day => 'Day 1',
         :start_time => '11:00 AM',
         :end_time => '12:00 PM',
-        :facility_short => 'MTH', #TODO: use object
+        :facility => 'MTH', #TODO: use object
         :facility_long =>  'Mathematics Bldg.',
         :room => '0304'
     }
 
     set_options(defaults.merge(opts))
+    @start_time.upcase!
+    @end_time.upcase!
   end
 
   #created automatically by CO configured use exam matrix
@@ -54,7 +56,7 @@ class EoRsiObject
     end
 
     if @ao_driven
-      edit_row =  on(ViewExamOfferings).eo_by_ao_target_row(@parent_ao.code) #TODO: AO Cluster
+      edit_row =  on(ViewExamOfferings).eo_by_ao_target_row(@ao_code) #TODO: AO Cluster
     else
       edit_row = on(ViewExamOfferings).co_target_row
     end
@@ -91,7 +93,7 @@ class EoRsiObject
 
     on(ViewExamOfferings).save_edit(edit_row) unless options[:defer_save]
 
-    update_options(opts) unless !options[:exp_success]
+    update_options(opts) if options[:exp_success]
   end
 
 end

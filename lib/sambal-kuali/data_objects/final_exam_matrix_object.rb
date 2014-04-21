@@ -116,6 +116,7 @@ class FinalExamMatrix < DataObject
         rule = make ExamMatrixRuleObject, :exam_type => "Common", :rsi_days => page.get_rsi_days_text,
                     :start_time => page.get_rsi_starttime_text, :st_time_ampm => page.get_rsi_starttime_ampm_text.downcase,
                     :end_time => page.get_rsi_endtime_text, :end_time_ampm => page.get_rsi_endtime_ampm_text.downcase,
+                    :facility => page.get_rsi_facility_text, :room => page.get_rsi_room_text,
                     :statements => statement
         self.rules << rule
         page.cancel_rule
@@ -174,6 +175,7 @@ class ExamMatrixRuleObject
         @statements << (make ExamMatrixStatementObject, :statement_option => ExamMatrixStatementObject::COURSE_OPTION)
       end
     else
+      #TODO: make sure options[:statements] is loaded into collection properly
       @statements << options[:statements]
       @statements = @statements.flatten
     end

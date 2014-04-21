@@ -410,13 +410,21 @@ Given /^that the Course Offering has a CO-driven final exam that is marked to us
   @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
 end
 
-Given /^I manage a course offering with a CO-driven exam offering RSI generated from the exam matrix$/ do
+Given /^I manage a CO-driven exam offering with RSI generated from the exam matrix$/ do
   @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
 
   @course_offering.create
+
+  @eo_rsi = make EoRsiObject, :day => @matrix.rules[0].rsi_days,
+                :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
+                :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
+                :facility =>@matrix.rules[0].facility,
+                :room => @matrix.rules[0].room
+
+  on(ManageCourseOfferings).view_exam_offerings
 end
 
 Then /^the Requested Scheduling Information for the Exam Offering should be populated$/ do
@@ -465,13 +473,29 @@ Given /^that the Course Offering has an AO-driven exam that is marked to use the
   @matrix.create_standard_rule_matrix_object_for_rsi( "MW at 11:00 AM")
 end
 
-Given /^I manage a course offering with an AO-driven exam offering RSI generated from the exam matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110"
+Given /^I manage an AO-driven exam offering with RSI generated from the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
+  @course_offering.delivery_format_list[0].format = 'Lecture'
+  @course_offering.delivery_format_list[0].grade_format = 'Lecture'
+  @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
-  @matrix.create_standard_rule_matrix_object_for_rsi( "MW at 01:00 PM")
+  @matrix.create_standard_rule_matrix_object_for_rsi( "MWF at 03:00 PM")
 
   @course_offering.create
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
+  si_obj =  make SchedulingInformationObject, :use_std_ts => true,
+                 :days => "MWF", :start_time => "03:00", :start_time_ampm => "pm", :end_time => "03:50", :end_time_ampm => "pm"
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj
+
+  @eo_rsi = make EoRsiObject, :ao_driven => true, :ao_code => @activity_offering.code,
+                 :day => @matrix.rules[0].rsi_days,
+                 :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
+                 :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
+                 :facility =>si_obj.facility, #use AO location is checked on matrix page
+                 :room => si_obj.room         #use AO location is checked on matrix page
+
+  on(ManageCourseOfferings).view_exam_offerings
 end
 
 Given /^that I copy a Course Offering that has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam exists on the Final Exam Matrix$/ do
@@ -576,4 +600,42 @@ When /^I update the Actual Scheduling Information for the Activity Offering whic
   @activity_offering.edit :send_to_scheduler => true, :defer_save => true
   @activity_offering.requested_scheduling_information_list[0].edit :days => "F"
   @activity_offering.save
+end
+
+Given /^I manage CO-driven exam offerings for a course offering configured not to use the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131", :use_final_exam_matrix => false
+  @course_offering.create
+  on(ManageCourseOfferings).view_exam_offerings
+end
+
+Given /^I manage AO-driven exam offerings for a course offering configured not to use the exam matrix$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110",
+                          :final_exam_driver => "Final Exam Per Activity Offering",
+                          :use_final_exam_matrix => false
+  @course_offering.delivery_format_list[0].format = 'Lecture'
+  @course_offering.delivery_format_list[0].grade_format = 'Lecture'
+  @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
+
+  @course_offering.create
+
+  @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
+  si_obj =  make SchedulingInformationObject, :use_std_ts => true,
+                 :days => "MWF", :start_time => "03:00", :start_time_ampm => "pm", :end_time => "03:50", :end_time_ampm => "pm"
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj
+
+  @eo_rsi = make EoRsiObject, :ao_driven => true, :ao_code => @activity_offering.code,
+                 :day => '',
+                 :start_time => '',
+                 :end_time => '',
+                 :facility =>si_obj.facility, #use AO location is checked on matrix page
+                 :room => si_obj.room         #use AO location is checked on matrix page
+
+  on(ManageCourseOfferings).view_exam_offerings
+end
+
+When /^the Override Matrix field should not be present$/ do
+  on ViewExamOfferings do |page|
+    row = page.co_target_row
+    page.override_checkbox(row).exists?.should be_false
+  end
 end

@@ -198,23 +198,23 @@ class ViewExamOfferings < BasePage
   end
 
   def override_checkbox(row)
-    row.checkbox(id: /eoOverrideMatrix_line\d+_control/)
+    row.checkbox(id: /eoOverrideMatrix_line\d+_/)
   end
 
   def rsi_day(row)
-    row.select(id: /eoRsiDayInExamPeriod_line\d+_control/)
+    row.select(id: /eoRsiDayInExamPeriod_line\d+_/)
   end
 
   def rsi_start_time(row)
-    row.text_field(id: /eoRsiStartTime_line\d+_control/)
+    row.text_field(id: /eoRsiStartTime_line\d+_/)
   end
 
   def rsi_end_time(row)
-    row.text_field(id: /eoRsiEndTime_line\d+_control/)
+    row.text_field(id: /eoRsiEndTime_line\d+_/)
   end
 
   def rsi_facility(row)
-    row.text_field(id: /eoRsiBuilding_line\d+_control/)
+    row.text_field(id: /eoRsiBuilding_line\d+_/)
   end
 
   def rsi_facility_lookup(row)
@@ -222,7 +222,7 @@ class ViewExamOfferings < BasePage
   end
 
   def rsi_room(row)
-    row.text_field(id: /eoRsiRoom_line\d+_control/)
+    row.text_field(id: /eoRsiRoom_line\d+_/)
   end
 
   def rsi_room_lookup(row)
@@ -230,7 +230,7 @@ class ViewExamOfferings < BasePage
   end
 
   def save_edit(row)
-    row.link(id: /EO-toggleUpdateButton_line/).click
+    row.link(id: /EO-toggleUpdateButton_line/, index: 0).click
   end
 
   def cancel_edit(row)
