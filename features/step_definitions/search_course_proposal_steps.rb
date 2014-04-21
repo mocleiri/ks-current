@@ -87,8 +87,8 @@ And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
   if proposal_to_review == "Curriculum Specialist"
     @course_proposal_cs.review_proposal_action
     on CmCourseInformation do |page|
-        page.proposal_title_review.should == @course_proposal_cs.proposal_title
-        page.course_title_review.should == @course_proposal_cs.course_title
+        page.proposal_title_review_read_only.should == @course_proposal_cs.proposal_title
+        page.course_title_review_read_only.should == @course_proposal_cs.course_title
         page.page_header_text.should == "#{@course_proposal_cs.proposal_title} (Admin Proposal)"
     end
   else
