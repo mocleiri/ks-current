@@ -151,6 +151,20 @@ When /^I? ?remove the course from my schedule and cancel the drop$/ do
   @reg_request.remove_from_schedule_and_cancel
 end
 
+When /^I drop a course I am registered for that has a waitlist$/ do
+  course_options = (make CourseOptions, :credit_option => "3.0")
+
+  @reg_request = make RegistrationRequest, :student_id=>"student",
+                      :term_code=> term_code,
+                      :term_descr=> term_descr,
+                      :course_code=>course_code,
+                      :reg_group_code=>reg_group_code,
+                      :course_options => course_options,
+                      :course_has_options=> false
+
+  @reg_request.remove_from_schedule
+end
+
 When /^I view my schedule$/ do
   on RegistrationCart do |page|
     page.menu

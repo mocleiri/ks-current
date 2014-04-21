@@ -53,3 +53,14 @@ Feature: REG.Wait List
     Then there is an option to edit the waitlisted course
     When I edit the waitlisted course
     Then the course is present in my waitlist, with the updated options
+
+  #KSENROLL-12531 KSENROLL-12533
+  @wip
+  Scenario: CR 11.1 - As an administrator I want the next waitlisted student to be automatically registered when a student drops a RG so no administrative or student action is needed to fill open seats
+            CR 11.2 - As a student, I want my student schedule to be updated after I have been registered for a RG from the waitlist so I can verify my registration
+    Given I am logged in as student1
+    When I drop a course I am registered for that has a waitlist
+    And I log in as student2
+    Then I can verify I am not on the waitlist
+    And the course is present in my schedule
+    And the number of courses and credits I am registered for is correctly updated in my schedule
