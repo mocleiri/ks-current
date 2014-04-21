@@ -24,8 +24,8 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
   if subj=="WMST" || subj=="BSCI2"
     visit RegistrationCart do |page|
       sleep 1
-      @orig_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
-      @orig_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
+      @orig_cart_course_count = page.credit_count_title.text.downcase.match('(\d*) course')[1].to_i
+      @orig_cart_credit_count = page.credit_count_title.text.downcase.match('\((.*) credit')[1].to_f
     end
   end
 
@@ -304,22 +304,21 @@ end
 Then /^I can view the number of courses and credits I am registered for in my registration cart$/ do
   on RegistrationCart do |page|
     sleep 1
-    @updated_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
+    @updated_cart_course_count = page.credit_count_title.text.downcase.match('(\d*) course')[1].to_i
     @updated_cart_course_count.should == (@orig_cart_course_count + 1)
-    @updated_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
-    p @reg_request
+    @updated_cart_credit_count = page.credit_count_title.text.downcase.match('\((.*) credit')[1].to_f
     @updated_cart_credit_count.should == (@orig_cart_credit_count + @reg_request.course_options.credit_option.to_f)
     
     cart_schedule_counts = page.schedule_counts.text
-    @cart_reg_course_count = cart_schedule_counts.match('for (\d*) course')[1].to_i
-    @cart_reg_credit_count = cart_schedule_counts.match('\((.*) credit')[1].to_f
+    @cart_reg_course_count = cart_schedule_counts.downcase.match('for (\d*) course')[1].to_i
+    @cart_reg_credit_count = cart_schedule_counts.downcase.match('\((.*) credit')[1].to_f
   end
 end
 
 Then /^the number of courses and credits I am registered for is correctly updated in my registration cart$/ do
   on RegistrationCart do |page|
-    page.schedule_counts.text.match('for (\d*) course')[1].to_i.should == (@cart_reg_course_count + @updated_cart_course_count)
-    page.schedule_counts.text.match('\((.*) credit')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
+    page.schedule_counts.text.downcase.match('for (\d*) course')[1].to_i.should == (@cart_reg_course_count + @updated_cart_course_count)
+    page.schedule_counts.text.downcase.match('\((.*) credit')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
   end
 end
 
@@ -331,7 +330,7 @@ Then /^the number of courses and credits I am registered for is correctly update
       expected_count -= credits_to_drop.to_f
     end
     sleep 1
-    page.reg_credit_count.match('(.*) credits')[1].to_f.should == expected_count
+    page.reg_credit_count.downcase.match("(.*) credits")[1].to_f.should == expected_count
   end
 end
 
@@ -345,7 +344,19 @@ end
 
 Then /^the number of credits I am registered for and waitlisted for are correctly updated in my schedule$/ do
   on StudentSchedule do |page|
-    page.reg_credit_count.match('(.*) credits')[1].to_f.should == 3
+    page.reg_credit_count.downcase.match('(.*) credits')[1].to_f.should == 3
     #page.
+  end
+end
+
+Given /^I am logged in to student registration as (\w+)$/  do |user|
+  puts "I am logged in to student registration as #{user}"
+  case user
+    when "admin"
+      visit RestAdminLogin
+    when "student"
+      visit RestStudentLogin
+    when "martha"
+      visit RestMarthaLogin
   end
 end
