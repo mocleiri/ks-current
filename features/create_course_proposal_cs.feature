@@ -21,7 +21,7 @@ And I should see data in required for save fields on the Review Proposal page
 And I edit the required for save fields and save
 Then I should see the updated data on the Review proposal page
 
-@draft
+
 Scenario: CC4.1 Create a course admin proposal with required fields and review
 When I complete the required fields on the course admin proposal
 Then I should see data in required fields for the admin proposal

@@ -1,4 +1,4 @@
-@draft
+@nightly
 Feature: GT.Create a Course Proposal as Faculty
 
   Background:
