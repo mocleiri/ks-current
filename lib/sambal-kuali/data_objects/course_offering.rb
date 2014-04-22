@@ -30,6 +30,14 @@ class CourseOffering
     set_options(options)
   end
 
+
+  def navigate_course_detail_page
+    on CourseSearch  do |page|
+      #page.course_code_result_link_click(@course_code)
+      page.course_code_result_link(@course_code).click
+    end
+  end
+
   def remove_code_from_term
     # navigate_to_course_planner_home
     on CoursePlannerPage do |page|
