@@ -9,7 +9,7 @@ class ViewAcademicCalendar < BasePage
   action(:go_to_terms_tab) { |b| b.frm.a(id: "ui-id-2").click; b.loading.wait_while_present}
 
   element(:acal_overview_div) { |b| b.frm.div(id: "KS-AcademicCalendar-AcalOverview") }
-  value(:acal_name) { |b| b.frm.div(id: "AcalHeaderViewId").span(index: 0).text }
+  value(:acal_name) { |b| b.frm.header(id: "AcalHeaderViewId").span.text }
   value(:acal_start_date) { |b| b.frm.div(id: "academicCalendarStartDate").text }
   value(:acal_end_date) { |b| b.frm.div(id: "academicCalendarEndDate").text }
 
