@@ -82,9 +82,9 @@ Feature: BT.Course Search
     But Pagination controls will not be visible if there is only 1 page
   Examples:
     | multi_text       | per_page  | header_text                                      | pages | total_per_page |
-    | english history  |  20       | Showing 1-20 of 141 results for english history  | 5     |  20            |
-    | english history  |  50       | Showing 1-50 of 141 results for english history  | 3     |  50            |
-    | english history  | 100       | Showing 1-100 of 141 results for english history | 2     | 100            |
+    | english history  |  20       | Showing 1-20 of 200 results for english history  | 5     |  20            |
+    | english history  |  50       | Showing 1-50 of 200 results for english history  | 4     |  50            |
+    | english history  | 100       | Showing 1-100 of 200 results for english history | 2     | 100            |
     | greek mythology  |  20       | Showing 1-7 of 7 results for greek mythology     | 1     |   7            |
 
 #************************* KSAP-818, US- 620**********************************************************************************
