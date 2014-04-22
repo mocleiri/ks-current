@@ -45,3 +45,15 @@ class RestAdminLogin < PageFactory
   page_url "#{$test_site}/services/DevelopmentLoginClientService/login?userId=admin&password=admin"
 
 end
+
+class RestEILEENBLogin < PageFactory
+
+  page_url "#{$test_site}/services/DevelopmentLoginClientService/login?userId=B.EILEENB&password=B.EILEENB"
+
+end
+
+class RestEILEENLLogin < PageFactory
+
+  page_url "#{$test_site}/services/DevelopmentLoginClientService/login?userId=B.EILEENL&password=B.EILEENL"
+
+end

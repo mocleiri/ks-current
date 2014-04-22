@@ -58,9 +58,9 @@ Feature: REG.Wait List
   @wip
   Scenario: CR 11.1 - As an administrator I want the next waitlisted student to be automatically registered when a student drops a RG so no administrative or student action is needed to fill open seats
             CR 11.2 - As a student, I want my student schedule to be updated after I have been registered for a RG from the waitlist so I can verify my registration
-    Given I log in to student registration as student1
+    Given I log in to student registration as EILEENB
     When I drop a course I am registered for that has a waitlist
-    And I log in to student registration as student2
+    And I log in to student registration as EILEENL
     Then I can verify I am not on the waitlist
     And the course is present in my schedule
-    And the number of courses and credits I am registered for is correctly updated in my schedule
+#    And the number of courses and credits I am registered for is correctly updated in my schedule

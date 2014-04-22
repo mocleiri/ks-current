@@ -154,11 +154,11 @@ end
 When /^I drop a course I am registered for that has a waitlist$/ do
   course_options = (make CourseOptions, :credit_option => "3.0")
 
-  @reg_request = make RegistrationRequest, :student_id=>"student",
-                      :term_code=> term_code,
-                      :term_descr=> term_descr,
-                      :course_code=>course_code,
-                      :reg_group_code=>reg_group_code,
+  @reg_request = make RegistrationRequest, :student_id=>"EILEENB",
+                      :term_code=> 201208,
+                      :term_descr=> "Fall 2012",
+                      :course_code=> "ENGL101",
+                      :reg_group_code=> "1010",
                       :course_options => course_options,
                       :course_has_options=> false
 
@@ -177,8 +177,8 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
   sleep 1
   on StudentSchedule do |page|
     if presence == "present"
-      page.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
-      page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).text.should_not be_nil
     else
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
@@ -368,5 +368,9 @@ Given /^I log in to student registration as (\w+)$/  do |user|
       visit RestStudent4Login
     when "student5"
       visit RestStudent5Login
+    when "EILEENB"
+      visit RestEILEENBLogin
+    when "EILEENL"
+      visit RestEILEENLLogin
   end
 end
