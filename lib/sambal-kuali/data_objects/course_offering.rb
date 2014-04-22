@@ -33,8 +33,7 @@ class CourseOffering
 
   def navigate_course_detail_page
     on CourseSearch  do |page|
-      #page.course_code_result_link_click(@course_code)
-      page.course_code_result_link(@course_code).click
+       page.course_code_result_link(@course_code).click
     end
   end
 
@@ -401,7 +400,9 @@ class CourseOffering
       if textArray_length > 0
         #check for courseCode in Text Array
         for index in 1..no_of_rows do
+          puts "Index is #{index}"
           course_code = page.results_table.rows[index].cells[COURSE_CODE].text
+          puts course_code
           sleep(1)
           course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
           if course_code.include? "#{textArray[0]}"

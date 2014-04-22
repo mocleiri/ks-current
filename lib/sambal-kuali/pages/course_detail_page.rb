@@ -10,12 +10,12 @@ class CourseDetailPage < BasePage
   element(:course_detail_header) { |b| b.div(id: "course_details_back_link").span(:data_parent=>"course_details_back_link") }
 
   #20-course description page data
-  action(:course_description) { |ccode,b| b.div(id: "#{ccode}_description") }
-  action(:course_requisites) { |ccode,b| b.div(id: "#{ccode}_courseRequisites") }
-  action(:scheduled_terms) { |ccode,b| b.div(id: "#{ccode}_scheduledTerms") }
-  action(:projected_terms) { |ccode,b| b.div(id: "#{ccode}_projectedTerms") }
-  action(:gened_requirements) { |ccode,b| b.div(id: "#{ccode}_courseGenEdRequirements") }
-  action(:subject){ |ccode,b| b.div(id: "#{ccode}_courseSubject") }
+  action(:course_description) { |course_code,b| b.div(id: "#{course_code}_description") }
+  action(:course_requisites) { |course_code,b| b.div(id: "#{course_code}_courseRequisites") }
+  action(:scheduled_terms) { |course_code,b| b.div(id: "#{course_code}_scheduledTerms") }
+  action(:projected_terms) { |course_code,b| b.div(id: "#{course_code}_projectedTerms") }
+  action(:gened_requirements) { |course_code,b| b.div(id: "#{course_code}_courseGenEdRequirements") }
+  action(:subject){ |course_code,b| b.div(id: "#{course_code}_courseSubject") }
 
 
 
