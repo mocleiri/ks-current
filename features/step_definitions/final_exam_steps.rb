@@ -1384,8 +1384,9 @@ end
 
 And /^I have created an Activity Offering that only has Requested Scheduling Information$/ do
   @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
-  si_obj =  make SchedulingInformationObject, :use_std_ts => true,
-                    :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
+  si_obj =  make SchedulingInformationObject, :days => "MWF",
+                 :start_time => "01:00", :start_time_ampm => "pm",
+                 :end_time => "01:50", :end_time_ampm => "pm"
   @activity_offering.add_req_sched_info :rsi_obj => si_obj
 end
 

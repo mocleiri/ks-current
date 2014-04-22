@@ -109,13 +109,16 @@ end
 When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
   # add new RSI row
   if tsType=="standard"
-    si_obj = make SchedulingInformationObject, :use_std_ts => true,
-                    :days => "MWF", :start_time => "01:00", :start_time_ampm => "pm", :end_time => "01:50", :end_time_ampm => "pm"
+    si_obj = make SchedulingInformationObject, :days => "MWF",
+                  :start_time => "01:00", :start_time_ampm => "pm",
+                  :end_time => "01:50", :end_time_ampm => "pm"
     @activity_offering.add_req_sched_info :rsi_obj => si_obj
   elsif tsType=="non-standard"
-    si_obj = make SchedulingInformationObject, :use_std_ts => false, :days => "TH",
-                    :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
-    @activity_offering.add_req_sched_info :rsi_obj => si_obj
+    @activity_offering.edit :allow_non_std_timeslots => true, :defer_save => true
+    si_obj = make SchedulingInformationObject, :days => "TH",
+                    :start_time => "08:21", :start_time_ampm => "pm",
+                    :end_time => "09:04", :end_time_ampm => "pm"
+    @activity_offering.add_req_sched_info :rsi_obj => si_obj, :edit_already_started => true
   end
 end
 
@@ -174,8 +177,9 @@ Then /^there is a validation error on the EndTime field$/  do
 end
 
 And /^I attempt to add non-standard RSIs for an AO$/ do
-  @si_obj = make SchedulingInformationObject, :use_std_ts => false, :days => "TH",
-                 :start_time => "08:21", :start_time_ampm => "pm", :end_time => "09:04", :end_time_ampm => "pm"
+  @si_obj = make SchedulingInformationObject, :days => "TH",
+                 :start_time => "08:21", :start_time_ampm => "pm",
+                 :end_time => "09:04", :end_time_ampm => "pm"
 end
 
 

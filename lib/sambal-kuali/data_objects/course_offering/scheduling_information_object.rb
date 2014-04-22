@@ -34,7 +34,6 @@ class SchedulingInformationObject
   #object
   attr_accessor :parent_ao
 
-
   alias_method :tba?, :tba
   alias_method :process?, :process
 
@@ -68,8 +67,7 @@ class SchedulingInformationObject
         :facility  => "PHYS",
         :facility_long_name  => "PHYS",
         :room  => "4102",
-        :features_list  => [],
-        :use_std_ts => false
+        :features_list  => []
         #     :process => true
     }
     options = defaults.merge(opts)
@@ -112,8 +110,8 @@ class SchedulingInformationObject
         end
 
         if @end_time != nil then
-          #approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.checked?
-          if @use_std_ts
+          approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.checked?
+          if !approved_for_nonStandard_timeslots
             formatted_end_time = DateTime.strptime("#{@end_time} #{@end_time_ampm}", '%I:%M %p').strftime( '%I:%M %p' )
             page.end_time_select_populate_list
             if page.end_time_select.present?
@@ -308,9 +306,6 @@ class SchedulingInformationObject
       raise "error: cannot edit Actual Scheduling Information"
     end
   end
-
-  #def add(opts)
-  #end
 
   def si_key
     "#{@days}#{@start_time}#{@start_time_ampm}"

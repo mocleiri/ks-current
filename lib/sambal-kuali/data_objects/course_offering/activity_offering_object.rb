@@ -42,7 +42,8 @@ class ActivityOfferingObject
                 :honors_course,
                 :create_by_copy,
                 :colocated,
-                :colocate_shared_enrollment
+                :colocate_shared_enrollment,
+                :allow_non_std_timeslots
   #type ActivityOffering object - generally set using options hash
   attr_accessor :parent_course_offering
   #type Waitlist object - generally set using options hash
@@ -67,6 +68,7 @@ class ActivityOfferingObject
         :max_enrollment => 0,
         :actual_scheduling_information_list => collection('SchedulingInformation'),
         :requested_scheduling_information_list => collection('SchedulingInformation'),
+        :allow_non_std_timeslots => false,
         :personnel_list => collection('Personnel'),
         :seat_pool_list => collection('SeatPool'),
         :course_url => "",
