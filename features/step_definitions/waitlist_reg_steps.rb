@@ -51,7 +51,7 @@ Given /^I register for an? full (\w+) course offering that (has|does not have) a
     When I add an #{subj} course offering to my registration cart
     And I register for the course
     Then I log out from student registration
-    And I log in to student registration as student
+    And I log in to student registration as student1
     And I add an #{subj} course offering to my registration cart
     And I register for the course
   }
@@ -65,7 +65,7 @@ When /^I register for an? full (\w+) course offering and add myself to a waitlis
     And I view my schedule
     Then the course is present in my schedule
     Then I log out from student registration
-    And I log in to student registration as student
+    And I log in to student registration as student1
     And I add an #{subj} course offering to my registration cart
     And I register for the course
     And I add myself to a waitlist for the course

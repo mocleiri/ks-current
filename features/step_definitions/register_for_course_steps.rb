@@ -354,9 +354,19 @@ Given /^I log in to student registration as (\w+)$/  do |user|
   case user
     when "admin"
       visit RestAdminLogin
-    when "student"
-      visit RestStudentLogin
     when "martha"
       visit RestMarthaLogin
+    when "student"
+      visit RestStudentLogin
+    when "student1"
+      visit RestStudent1Login
+    when "student2"
+      visit RestStudent2Login
+    when "student3"
+      visit RestStudent3Login
+    when "student4"
+      visit RestStudent4Login
+    when "student5"
+      visit RestStudent5Login
   end
 end

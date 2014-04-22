@@ -4,7 +4,7 @@ Feature: REG.Wait List
   As a student I want to add or remove myself from a courses wait list.
 
   Background:
-    Given I log in to student registration as admin
+    Given I log in to student registration as student
 
   #KSENROLL-12345
   Scenario: CR 8.1 I want to add myself to the waitlist for a full registration group after I submit my cart so I can establish priority for a space when it becomes available
@@ -30,7 +30,7 @@ Feature: REG.Wait List
     And I am given the option to add myself to a waitlist for the course
     When I add myself to a waitlist for the course
     Then I log out from student registration
-    Then I log in to student registration as martha
+    Then I log in to student registration as student2
     And I add an ENGL4 course offering to my registration cart
     And I register for the course
     Then there is a message indicating that registration failed
@@ -58,9 +58,9 @@ Feature: REG.Wait List
   @wip
   Scenario: CR 11.1 - As an administrator I want the next waitlisted student to be automatically registered when a student drops a RG so no administrative or student action is needed to fill open seats
             CR 11.2 - As a student, I want my student schedule to be updated after I have been registered for a RG from the waitlist so I can verify my registration
-    Given I am logged in as student1
+    Given I log in to student registration as student1
     When I drop a course I am registered for that has a waitlist
-    And I log in as student2
+    And I log in to student registration as student2
     Then I can verify I am not on the waitlist
     And the course is present in my schedule
     And the number of courses and credits I am registered for is correctly updated in my schedule
