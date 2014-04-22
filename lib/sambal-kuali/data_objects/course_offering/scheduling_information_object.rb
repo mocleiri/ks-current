@@ -257,7 +257,12 @@ class SchedulingInformationObject
     return true
   end
 
-  def edit(opts)
+  def edit opts={}
+  defaults = {
+      :send_to_scheduler => false
+  }
+  options = defaults.merge(opts)
+
     if isRSI then
       on ActivityOfferingMaintenance do |page|
         page.view_requested_scheduling_information
@@ -265,43 +270,45 @@ class SchedulingInformationObject
         page.edit_rsi_row(target_row)
         sleep 2
 
-        if opts[:tba]
+        if options[:tba]
           page.add_tba.set
         else
           page.add_tba.clear
         end
 
-        if opts[:days] != nil then
-          page.add_days.set opts[:days]
+        if options[:days] != nil then
+          page.add_days.set options[:days]
         end
 
-        if opts[:start_time] != nil then
+        if options[:start_time] != nil then
           page.add_start_time.click
           page.loading.wait_while_present
-          page.add_start_time.set opts[:start_time] + " " + opts[:start_time_ampm].upcase
+          page.add_start_time.set options[:start_time] + " " + options[:start_time_ampm].upcase
           sleep(1)
         end
 
-        if opts[:end_time] != nil then
+        if options[:end_time] != nil then
           page.add_end_time.click
           page.loading.wait_while_present
-          page.add_end_time.set opts[:end_time] + " " + opts[:end_time_ampm].upcase
+          page.add_end_time.set options[:end_time] + " " + options[:end_time_ampm].upcase
         end
 
-        if opts[:facility] != nil then
-          page.add_facility.set opts[:facility]
+        if options[:facility] != nil then
+          page.add_facility.set options[:facility]
         end
 
-        if opts[:room] != nil then
-          page.add_room.set opts[:room]
+        if options[:room] != nil then
+          page.add_room.set options[:room]
         end
 
-        #opts["features_list"] TODO if implemented
+        #options["features_list"] TODO if implemented
         page.add_new_scheduling_information
       end
-      set_options(opts)
+      set_options(options)
       @end_time_ampm.upcase!
       @start_time_ampm.upcase!
+
+      on(ActivityOfferingMaintenance).send_to_scheduler if options[:send_to_scheduler]
     else
       raise "error: cannot edit Actual Scheduling Information"
     end

@@ -11,11 +11,11 @@ class EoRsiObject
                 :ao_code,
                 :status,
                 :day,
-                :start_time,
-                :end_time,
                 :room,
                 :facility,
                 :override_matrix
+  attr_writer   :start_time,
+                :end_time
 
   def initialize(browser, opts={})
     @browser = browser
@@ -37,6 +37,15 @@ class EoRsiObject
     @start_time.upcase!
     @end_time.upcase!
   end
+
+  def start_time
+    @start_time.rjust(8,'0')
+  end
+
+  def end_time
+    @end_time.rjust(8,'0')
+  end
+  # ...
 
   #created automatically by CO configured use exam matrix
   #def create

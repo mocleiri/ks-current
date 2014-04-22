@@ -263,12 +263,12 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false,
+        :start_edit => true,
         :send_to_scheduler => false
     }
     options = defaults.merge(opts)
 
-    on(ManageCourseOfferings).edit @code unless options[:edit_already_started]
+    on(ManageCourseOfferings).edit @code if options[:start_edit]
 
     edit_code options
     edit_subterm options
@@ -448,10 +448,10 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
-    edit :defer_save => true unless options[:edit_already_started]
+    edit :defer_save => true if options[:start_edit]
 
     rsi_obj = options[:rsi_obj]
     rsi_obj.parent_ao = self
@@ -478,11 +478,11 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
 
-    edit :defer_save => true unless options[:edit_already_started]
+    edit :defer_save => true if options[:start_edit]
 
     options[:seat_pool_obj].parent_ao = self
     options[:seat_pool_obj].create seatpool_populations_used
@@ -494,14 +494,14 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
 
-    edit unless options[:edit_already_started]
+    edit if options[:start_edit]
 
     options[:seat_pool_list].each do |seatpool|
-      add_seat_pool :seat_pool_obj => seatpool, :defer_save => true, :edit_already_started => true
+      add_seat_pool :seat_pool_obj => seatpool, :defer_save => true, :start_edit => false
     end
 
     on(ActivityOfferingMaintenance).save unless options[:defer_save]
@@ -712,11 +712,11 @@ class Waitlist
   def edit opts={}
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
 
-    on(ManageCourseOfferings).edit @parent_ao.code unless options[:edit_already_started]
+    on(ManageCourseOfferings).edit @parent_ao.code if options[:start_edit]
 
     if !opts[:enabled].nil?
       on ActivityOfferingMaintenance do |page|

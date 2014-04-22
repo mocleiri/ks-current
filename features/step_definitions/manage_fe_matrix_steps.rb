@@ -499,8 +499,8 @@ Given /^I manage an AO-driven exam offering with RSI generated from the exam mat
   on(ManageCourseOfferings).view_exam_offerings
 end
 
-Given /^I manage an AO-driven exam offering with RSI generated from the exam matrix in a term in "Final Edits" SOC state$/ do
-  @course_offering = make CourseOffering, :term => Rollover::FINAL_EDITS_SOC_TERM, :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
+Given /^I manage an AO-driven exam offering with RSI generated from the exam matrix in a term in "Published" SOC state$/ do
+  @course_offering = make CourseOffering, :term => '201208', :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
   @course_offering.delivery_format_list[0].format = 'Lecture'
   @course_offering.delivery_format_list[0].grade_format = 'Lecture'
   @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
@@ -510,10 +510,11 @@ Given /^I manage an AO-driven exam offering with RSI generated from the exam mat
 
   @course_offering.create
   @activity_offering = @course_offering.create_ao :ao_obj => (make ActivityOfferingObject)
+  @activity_offering.edit :allow_non_std_timeslots => true, :defer_save => true
   si_obj =  make SchedulingInformationObject, :days => "MWF",
                  :start_time => "01:00", :start_time_ampm => "pm",
                  :end_time => "01:50", :end_time_ampm => "pm"
-  @activity_offering.add_req_sched_info :rsi_obj => si_obj
+  @activity_offering.add_req_sched_info :rsi_obj => si_obj, :start_edit => false
 
   @eo_rsi = make EoRsiObject, :ao_driven => true, :ao_code => @activity_offering.code,
                  :day => @matrix.rules[0].rsi_days,

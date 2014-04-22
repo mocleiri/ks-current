@@ -580,7 +580,7 @@ Given /^I add requested scheduling information to the activity offering$/ do
 end
 
 Given /^I am able to send the activity offering to the scheduler$/ do
-  @activity_offering.edit :send_to_scheduler => true, :edit_already_started => true
+  @activity_offering.edit :send_to_scheduler => true, :start_edit => false
 end
 
 And /^actual scheduling information for the activity offering are still shown$/ do

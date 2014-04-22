@@ -76,18 +76,16 @@ Feature: CO.Exam Offering RSI Inline Edit
     Then the AO-driven exam offering RSI is not updated
 
   Scenario: FE 6.7.2 AO-driven verify that when the matrix override option is selected then updates to the AO ASI do not change the EO RSI
-    Given I am working on a term in "Final Edits" SOC state
-    And I manage a course offering in offered an state with an AO-driven exam offering with RSI generated from the exam matrix
-    And I manage the exam offerings for the course offering
+    Given I manage an AO-driven exam offering with RSI generated from the exam matrix in a term in "Published" SOC state
     And I select matrix override and update the day and time fields on the exam offering RSI
     When I update the scheduling information for the related activity offering and send to the scheduler
-    Then the exam offering RSI is not changed
+    Then the AO-driven exam offering RSI is not updated
 
   Scenario: FE 6.7.3 AO-driven verify that when the matrix override option is NOT selected then updates to the activity offering RSI change the EO RSI
     Given I manage an AO-driven exam offering with RSI generated from the exam matrix
     And I update the day and time fields on the exam offering RSI
-    When I update the requested scheduling information for the related activity offering
-    Then the exam offering RSI is updated according to the new AO RSI information
+    When I update the requested scheduling information for the related activity offering so there is no match on the exam matrix
+    Then the exam offering RSI is blank according to the new AO RSI information
 
 #this needs to go in AZ feature file
   Scenario: FE 6.4.2 DSC (Carol) will be configured to have read-only permission on EO management screen

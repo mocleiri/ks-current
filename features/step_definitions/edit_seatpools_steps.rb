@@ -1,5 +1,5 @@
 When /^I change the seat pool count and expiration milestone$/ do
-  @activity_offering.seat_pool_list[0].edit :edit_already_started => true,
+  @activity_offering.seat_pool_list[0].edit :start_edit => false,
                                             :seats => 20,
                                             :expiration_milestone => "Last Day of Registration",
                                             :defer_save => true
@@ -28,7 +28,7 @@ When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
   @activity_offering.edit :max_enrollment => 100, :defer_save => true
 
   @activity_offering.add_seat_pool_list :seat_pool_list => pool_list,
-                                   :edit_already_started => true,
+                                        :start_edit => false,
                                    :defer_save => false
 
   @activity_offering.parent_course_offering.manage
@@ -36,13 +36,13 @@ When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
 end
 
 When /^I switch the priorities for 2 seat pools$/ do
-  @activity_offering.seat_pool_list[0].edit :priority => 2, :priority_after_reseq => 2, :edit_already_started => true, :defer_save => true
-  @activity_offering.seat_pool_list[1].edit :priority => 1, :priority_after_reseq => 1, :edit_already_started => true, :defer_save => true
+  @activity_offering.seat_pool_list[0].edit :priority => 2, :priority_after_reseq => 2, :start_edit => false, :defer_save => true
+  @activity_offering.seat_pool_list[1].edit :priority => 1, :priority_after_reseq => 1, :start_edit => false, :defer_save => true
 end
 
 
 And /^I increase the overall max enrollment$/ do
-  @activity_offering.edit :max_enrollment => @activity_offering.max_enrollment.to_i + 20, :edit_already_started => true, :defer_save => true
+  @activity_offering.edit :max_enrollment => @activity_offering.max_enrollment.to_i + 20, :start_edit => false, :defer_save => true
 end
 
 And /^the updated seat pool priorities are saved$/ do

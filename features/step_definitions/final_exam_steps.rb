@@ -660,15 +660,33 @@ When /^I select matrix override and update the day and time fields on the exam o
                :day => 'Day 2',
                :start_time => '6:00 PM',
                :end_time => '7:00 PM',
-               :exam_override => true
+               :override_matrix => true
 end
 
-When /^I update the requested scheduling information for the related activity offering$/ do
+When /^I update the day and time fields on the exam offering RSI$/ do
+  @eo_rsi.edit :do_navigation => false,
+               :day => 'Day 2',
+               :start_time => '6:00 PM',
+               :end_time => '7:00 PM',
+               :override_matrix => false
+end
+
+When /^I update the requested scheduling information for the related activity offering so there is no match on the exam matrix$/ do
   @course_offering.manage
   @activity_offering.edit :defer_save => true
   @activity_offering.requested_scheduling_information_list[0].edit :days => "SU",
                                                                    :start_time => "10:00", :start_time_ampm => "am",
                                                                    :end_time => "10:50", :end_time_ampm => "am"
+  @activity_offering.save
+end
+
+When /^I update the scheduling information for the related activity offering and send to the scheduler$/ do
+  @course_offering.manage
+  @activity_offering.edit :defer_save => true
+  @activity_offering.requested_scheduling_information_list[0].edit :days => "SU",
+                                                                   :start_time => "10:00", :start_time_ampm => "am",
+                                                                   :end_time => "10:50", :end_time_ampm => "am",
+                                                                   :send_to_scheduler => true
   @activity_offering.save
 end
 
@@ -778,6 +796,20 @@ When /^the AO-driven exam offering RSI is not updated$/ do
     page.get_eo_by_ao_end_time_text(code).should == @eo_rsi.end_time
     #page.get_eo_by_ao_bldg_text(code).should == @eo_rsi.facility TODO: issue with short vs full facility name
     page.get_eo_by_ao_room_text(code).should == @eo_rsi.room
+  end
+end
+
+When /^the exam offering RSI is blank according to the new AO RSI information$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  code = @activity_offering.code
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_target_row(code).exists?.should be_true
+    page.get_eo_by_ao_days_text(code).should == ''
+    page.get_eo_by_ao_st_time_text(code).should == ''
+    page.get_eo_by_ao_end_time_text(code).should == ''
+    page.get_eo_by_ao_bldg_text(code).should == ''
+    page.get_eo_by_ao_room_text(code).should == ''
   end
 end
 

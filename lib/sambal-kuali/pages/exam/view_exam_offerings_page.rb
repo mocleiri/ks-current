@@ -230,11 +230,13 @@ class ViewExamOfferings < BasePage
   end
 
   def save_edit(row)
-    row.link(id: /EO-toggleUpdateButton_line/, index: 0).click
+    row.link(id: /EO-toggleUpdateButton_line/).click
+    row.link(id: /EO-toggleEditButton_line/).wait_until_present
   end
 
   def cancel_edit(row)
-    row.link(id: /EO-toggleUpdateButton_line/,index: 1).click
+    row.link(id: /EO-toggleCancelButton_line/).click
+    row.link(id: /EO-toggleEditButton_line/).wait_until_present
   end
 
 
