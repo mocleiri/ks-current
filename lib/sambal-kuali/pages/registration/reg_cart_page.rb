@@ -15,6 +15,8 @@ class RegistrationCart < RegisterForCourseBase
 
   element(:course_code_input) { |b| b.text_field(id: "courseCode") }
   element(:reg_group_code_input) { |b| b.text_field(id: "regCode") }
+  element(:add_to_cart_toggle) { |b| b.div(id: "add_to_cart") }
+  action(:toggle_add_dialog) { |b| b.add_to_cart_toggle.click }
   element(:submit_button) { |b| b.button(id: "submit") }
   action(:add_to_cart) { |b| b.submit_button.click }
 

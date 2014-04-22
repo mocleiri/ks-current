@@ -59,6 +59,8 @@ class RegistrationRequest
       page.wait_until {page.term_select.include? @term_descr }
       page.select_term @term_descr
       page.menu
+      page.toggle_add_dialog
+      page.course_code_input.wait_until_present
       page.course_code_input.set @course_code
       page.reg_group_code_input.set @reg_group_code
       page.submit_button.wait_until_present
