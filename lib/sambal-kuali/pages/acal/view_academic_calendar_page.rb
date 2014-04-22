@@ -32,7 +32,7 @@ class ViewAcademicCalendar < BasePage
   value(:hcal_end_date) { |b| b.frm.span(id: "endDate_line0_control").text }
 
   def open_events_section()
-    if acal_event_list_link.image(alt: "collapse").visible? then # collapse means collapsed
+    if !calendar_events_table.present? then # collapse means collapsed
       acal_event_list_link.click
       sleep 1
     end
