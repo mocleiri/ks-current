@@ -59,6 +59,7 @@ Feature: REG.Wait List
             CR 11.2 - As a student, I want my student schedule to be updated after I have been registered for a RG from the waitlist so I can verify my registration
     Given I log in to student registration as EILEENB
     When I drop a course I am registered for that has a waitlist
+    Then I log out from student registration
     And I log in to student registration as EILEENL
     Then I can go to My Schedule and verify I am not on the waitlist
     And the course is present in my schedule

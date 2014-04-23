@@ -251,6 +251,23 @@ class RegistrationRequest
       page.remove_course_from_waitlist @course_code,@reg_group_code
     end
   end
+
+  def change_term_and_return(current_term, to_term)
+    visit StudentSchedule do |page|
+      page.menu_button.wait_until_present
+      page.menu
+      page.wait_until {page.term_select.include? to_term }
+      page.select_term to_term
+      page.menu
+      sleep 5
+      page.menu_button.wait_until_present
+      page.menu
+      page.wait_until {page.term_select.include? current_term }
+      page.select_term current_term
+      page.menu
+    end
+  end
+
 end
 
 class CourseOptions
