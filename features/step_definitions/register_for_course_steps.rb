@@ -162,6 +162,7 @@ When /^I drop a course I am registered for that has a waitlist$/ do
                       :course_options => course_options,
                       :course_has_options=> false
 
+  visit StudentSchedule
   @reg_request.remove_from_schedule
 end
 

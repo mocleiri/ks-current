@@ -1,5 +1,7 @@
 class StudentSchedule < RegisterForCourseBase
 
+  page_url "#{$test_site}/registration/index.jsp#/mySchedule"
+
   element(:reg_credit_count) { |b| b.span(id: "reg_credit_count").text }
 
   element(:waitlist_user_message_div) { |b| b.div(id: "waitlist_course_status_message") }
