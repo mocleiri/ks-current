@@ -59,7 +59,7 @@ class EditAcademicTerms < BasePage
 
   def delete_term(term_type)
     term_index = term_index_by_term_type(term_type)
-    acal_term_list_div.div(id: "term_section_line#{term_index}").link(text: "Delete").click
+    acal_term_list_div.section(id: "term_section_line#{term_index}").link(text: "Delete").click
     loading.wait_while_present
     delete_confirm
   end

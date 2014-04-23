@@ -33,7 +33,7 @@ class ViewAcademicTerms < BasePage
 
   def open_term_section(term_type)
     link =  acal_term_list_div.link(text: "#{term_type}")
-    if link.image(alt: "collapse").visible? then # collapse means collapsed
+    if !link.span(id: /term_section_line\d+_toggle_exp/).visible?
       link.click
     end
   end
@@ -49,27 +49,27 @@ class ViewAcademicTerms < BasePage
 
   def term_name(term_type)
     index = term_index_by_term_type(term_type)
-    acal_term_list_div.span(id: "term_name_line#{index}_control").text
+    acal_term_list_div.div(id: "term_name_line#{index}").text[/(?<=\n).*/]
   end
 
   def term_code(term_type)
     index = term_index_by_term_type(term_type)
-    acal_term_list_div.span(id: "term_code_line#{index}_control").text
+    acal_term_list_div.div(id: "term_code_line#{index}").text[/(?<=\n).*/]
   end
 
   def term_start_date(term_type)
     index = term_index_by_term_type(term_type)
-    acal_term_list_div.span(id: "term_start_date_line#{index}_control").text
+    acal_term_list_div.div(id: "term_start_date_line#{index}").text[/(?<=\n).*/]
   end
 
   def term_end_date(term_type)
     index = term_index_by_term_type(term_type)
-    acal_term_list_div.span(id: "term_end_date_line#{index}_control").text
+    acal_term_list_div.div(id: "term_end_date_line#{index}").text[/(?<=\n).*/]
   end
 
   def term_instructional_days(term_type)
     index = term_index_by_term_type(term_type)
-    acal_term_list_div.span(id: "term_instructional_days_line#{index}_control").text
+    acal_term_list_div.div(id: "term_instructional_days_line#{index}").text[/(?<=\n).*/]
   end
 
   def term_status(term_type)
