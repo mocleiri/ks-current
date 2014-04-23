@@ -44,7 +44,6 @@ Feature: CO.Academic Calendar CRED
     When I remove the events from the Academic Calendar
     Then the event list is updated when I view the Academic Calendar
 
-    @bug
   Scenario: Add a Holiday Calendar to an Academic Calendar
     When I add a Holiday Calendar to the Academic Calendar
     Then the Holiday Calendar is listed when I view the Academic Calendar
