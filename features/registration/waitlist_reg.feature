@@ -60,5 +60,5 @@ Feature: REG.Wait List
     Given I log in to student registration as EILEENB
     When I drop a course I am registered for that has a waitlist
     And I log in to student registration as EILEENL
-    Then I can verify I am not on the waitlist
+    Then I can go to My Schedule and verify I am not on the waitlist
     And the course is present in my schedule
