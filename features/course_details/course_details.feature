@@ -1,4 +1,4 @@
-@wip
+@nightly
 
 Feature: BT.Course Detail Page
 

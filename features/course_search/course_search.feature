@@ -104,6 +104,7 @@ Feature: BT.Course Search
     | Engl 2XX Hist 2XX       |                                 | Engl200,Hist200,Engl,Hist,2XX                       |
     | "Engl 2XX" "Hist 3XX"   |                                 | Engl200,Hist300,Engl 2XX,Hist 3XX                   |
     | Engl 2XX Hist 3XX       |                                 | Engl200,Engl300,Hist200,Hist300,Engl,Hist,2XX,3XX   |
+    | English                 |                                 | Engl,English                                        |
 
 #*************************  KSAP-851, US-  837*********************************************************************************************************
 # Hard-coding expected result. As the CO data from  enrollment is yet to be implemented in KSAP course details page.
