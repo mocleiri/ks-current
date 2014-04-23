@@ -10,7 +10,7 @@ class CourseOffering
   COURSE_ARRAY = 0
   COURSE_CODE = 0
   COURSE_NAME = 1
-  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text
+  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text, :description, :requisite,:scheduled_terms,:projected_terms,:gened_requirements,:subject
 
   def initialize(browser, opts={})
     @browser = browser
@@ -24,7 +24,14 @@ class CourseOffering
         :term_select=>nil,
         :course_desc =>nil,
         :course_name =>nil,
-        :search_text =>nil
+        :search_text =>nil,
+        :description=>"history",
+        :requisite=>"None",
+        :scheduled_terms=>"SP 14",
+        :projected_terms=>"Check",
+        :gened_requirements=>"General",
+        :subject=>"English"
+
     }
     options = defaults.merge(opts)
     set_options(options)
