@@ -213,17 +213,16 @@ end
 
 And /^I? ?can view the details of my selection in my schedule$/ do
   on StudentSchedule do |page|
-    page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code, "registered")
+    page.show_course_details(@reg_request.course_code, @reg_request.reg_group_code, "registered")
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
-    page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "The Medieval World"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} cr"
     unless @reg_request.course_options.grading_option == "Letter"
       page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
-    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "LEC"
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "Lecture"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /TuTh 14:00 - 14:50(\s+)KEY 0106/i
-    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "DIS"
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "Discussion"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /Th 11:00 - 11:50(\s+)LEF 1222/
   end
 end
@@ -309,7 +308,7 @@ Then /^I can view the number of courses and credits I am registered for in my re
     @updated_cart_course_count.should == (@orig_cart_course_count + 1)
     @updated_cart_credit_count = page.credit_count_title.text.downcase.match('\((.*) credit')[1].to_f
     @updated_cart_credit_count.should == (@orig_cart_credit_count + @reg_request.course_options.credit_option.to_f)
-    
+
     cart_schedule_counts = page.schedule_counts.text
     @cart_reg_course_count = cart_schedule_counts.downcase.match('for (\d*) course')[1].to_i
     @cart_reg_credit_count = cart_schedule_counts.downcase.match('\((.*) credit')[1].to_f

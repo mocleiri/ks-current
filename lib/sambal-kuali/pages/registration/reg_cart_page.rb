@@ -63,6 +63,14 @@ class RegistrationCart < RegisterForCourseBase
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
+  def show_add_dialog
+    toggle_add_dialog unless submit_button.visible?
+  end
+
+  def hide_add_dialog
+    toggle_add_dialog if submit_button.visible?
+  end
+
   def remove_course_from_cart(course_code, reg_group_code)
     remove_course_button(course_code,reg_group_code).click
   end
