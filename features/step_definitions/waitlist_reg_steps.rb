@@ -111,3 +111,11 @@ Then /^I can verify I am not on the waitlist$/ do
     page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
   end
 end
+
+Then /^I can go to My Schedule and verify I am not on the waitlist$/ do
+  visit StudentSchedule
+  on StudentSchedule do |page|
+    sleep 1
+    page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
+  end
+end
