@@ -32,6 +32,7 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.lum.clu.CLUConstants;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -91,9 +92,10 @@ public class AcademicPlanServiceImplTest extends TestAcademicPlanServiceImplConf
 	}
 
 	@Test(expected = DoesNotExistException.class)
-	public void getUnknownLearningPlan() throws InvalidParameterException,
-			MissingParameterException, DoesNotExistException,
-			OperationFailedException {
+	public void getUnknownLearningPlan()
+            throws InvalidParameterException,
+                   MissingParameterException, DoesNotExistException,
+                   OperationFailedException, PermissionDeniedException {
 		KsapFrameworkServiceLocator.getAcademicPlanService().getLearningPlan("unknown_plan",
 				KsapFrameworkServiceLocator.getContext().getContextInfo());
 	}
@@ -119,8 +121,8 @@ public class AcademicPlanServiceImplTest extends TestAcademicPlanServiceImplConf
     @Override
 	@Test
 	public void test_getPlanItemsInPlanByRefObjectIdByRefObjectType()
-			throws InvalidParameterException, MissingParameterException,
-			DoesNotExistException, OperationFailedException {
+            throws InvalidParameterException, MissingParameterException,
+                   DoesNotExistException, OperationFailedException, PermissionDeniedException {
 
 		String planId = "lp1";
 		String refObjectId = "006476b5-18d8-4830-bbb6-2bb9e79600fb";
@@ -336,9 +338,10 @@ public class AcademicPlanServiceImplTest extends TestAcademicPlanServiceImplConf
     }
 
 	@Test
-	public void validatePlanItemForCourse() throws InvalidParameterException,
-			MissingParameterException, AlreadyExistsException,
-			DoesNotExistException, OperationFailedException {
+	public void validatePlanItemForCourse()
+            throws InvalidParameterException,
+                   MissingParameterException, AlreadyExistsException,
+                   DoesNotExistException, OperationFailedException, PermissionDeniedException {
 
         String planId = "lp1";
 
@@ -394,9 +397,9 @@ public class AcademicPlanServiceImplTest extends TestAcademicPlanServiceImplConf
 
 	@Test
 	public void validatePlanItemForBackupPlanItem()
-			throws InvalidParameterException, MissingParameterException,
-			AlreadyExistsException, DoesNotExistException,
-			OperationFailedException {
+            throws InvalidParameterException, MissingParameterException,
+                   AlreadyExistsException, DoesNotExistException,
+                   OperationFailedException, PermissionDeniedException {
 		PlanItemInfo planItemInfo = new PlanItemInfo();
         planItemInfo.setLearningPlanId("lp1");
         planItemInfo.setRefObjectId("XX");

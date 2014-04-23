@@ -569,8 +569,9 @@ public abstract class TestAcademicPlanServiceImplConformanceBaseCrud {
 
 	/* Method Name: getPlanItemsInPlanByRefObjectIdByRefObjectType */
 	@Test
-	public abstract void test_getPlanItemsInPlanByRefObjectIdByRefObjectType() 
-	throws 	DoesNotExistException	,InvalidParameterException	,MissingParameterException	,OperationFailedException	;
+	public abstract void test_getPlanItemsInPlanByRefObjectIdByRefObjectType()
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException,
+                   OperationFailedException, PermissionDeniedException;
 	
 	/* Method Name: validateLearningPlan */
 	@Test

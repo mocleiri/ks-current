@@ -680,7 +680,7 @@ public class CourseSearchStrategyImpl implements CourseSearchStrategy {
         AcademicPlanService academicPlanService = KsapFrameworkServiceLocator
                 .getAcademicPlanService();
 
-        ContextInfo context = new ContextInfo();
+        ContextInfo context = KsapFrameworkServiceLocator.getContext().getContextInfo();
 
         String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 
@@ -701,6 +701,8 @@ public class CourseSearchStrategyImpl implements CourseSearchStrategy {
             throw new IllegalArgumentException("LP lookup error", e);
         } catch (OperationFailedException e) {
             throw new IllegalStateException("LP lookup error", e);
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException("LP lookup permission error", e);
         }
 
         // Process list of learning plan's entries
@@ -716,6 +718,8 @@ public class CourseSearchStrategyImpl implements CourseSearchStrategy {
                 throw new IllegalArgumentException("LP lookup error", e);
             } catch (OperationFailedException e) {
                 throw new IllegalStateException("LP lookup error", e);
+            } catch (PermissionDeniedException e) {
+                throw new IllegalStateException("LP lookup permission error", e);
             }
 
             // Process plan items in learning plan

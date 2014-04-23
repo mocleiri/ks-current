@@ -420,8 +420,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 			throw new IllegalStateException("LP lookup failure ", e);
 		} catch (OperationFailedException e) {
 			throw new IllegalStateException("LP lookup failure ", e);
-		}
-		return planItemsByTerm;
+		} catch (PermissionDeniedException e) {
+            throw new IllegalStateException("LP lookup oermission failure ", e);
+        }
+        return planItemsByTerm;
 	}
 
 	/**

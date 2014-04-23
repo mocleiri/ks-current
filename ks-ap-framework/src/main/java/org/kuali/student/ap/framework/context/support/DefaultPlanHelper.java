@@ -175,6 +175,8 @@ public class DefaultPlanHelper implements PlanHelper {
             throw new IllegalStateException("LP lookup failure ", e);
         } catch (OperationFailedException e) {
             throw new IllegalStateException("LP lookup failure ", e);
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException("LP lookup permission failure ", e);
         }
     }
 }

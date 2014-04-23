@@ -370,9 +370,11 @@ public class DefaultPlannerForm extends AbstractPlanItemForm implements
 				throw new IllegalArgumentException("LP lookup failure", e);
 			} catch (OperationFailedException e) {
 				throw new IllegalStateException("LP lookup failure", e);
-			}
+			} catch (PermissionDeniedException e) {
+                throw new IllegalStateException("LP lookup permission failure", e);
+            }
 
-			List<String> courseIds = new ArrayList<String>(
+            List<String> courseIds = new ArrayList<String>(
 					completedRecords.size() + planItems.size());
 			SortedSet<String> termIds = new TreeSet<String>();
 
