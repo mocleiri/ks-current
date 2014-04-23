@@ -17,7 +17,6 @@ Feature: CO.Perform Simple Rollover for Exam Offering Scheduling Information
     Then the Exam Offerings Slotting info should be populated or left blank depending on whether the AO RSI was found on the Exam Matrix
 
   #KSENROLL-12376
-  @pending
   Scenario: FE5.3.1 Trigger the Mass Scheduling Event for a set of COs which then creates the EOs for the COs
     Given I create an Academic Calendar and add an official term
     And I create multiple Course Offerings in the term
