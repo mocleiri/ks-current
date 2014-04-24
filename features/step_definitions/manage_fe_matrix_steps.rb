@@ -499,6 +499,13 @@ Given /^I manage an AO-driven exam offering with RSI generated from the exam mat
   on(ManageCourseOfferings).view_exam_offerings
 end
 
+Given /^I manage an AO-driven exam offering for a course offering in my admin org$/ do
+  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL201"
+  @course_offering.manage
+
+  on(ManageCourseOfferings).view_exam_offerings
+end
+
 Given /^I manage an AO-driven exam offering with RSI generated from the exam matrix in a term in "Published" SOC state$/ do
   @course_offering = make CourseOffering, :term => '201208', :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
   @course_offering.delivery_format_list[0].format = 'Lecture'
@@ -668,4 +675,21 @@ When /^the Override Matrix field should not be present$/ do
     row = page.co_target_row
     page.override_checkbox(row).exists?.should be_false
   end
+end
+
+Then /^I am not able to edit the AO-driven exam offering RSI$/ do
+  on ViewExamOfferings do |page|
+    row = page.eo_by_ao_target_row('A')
+    page.edit_rsi_element(row).present?.should be_false
+  end
+end
+
+Given /^I manage a course offering with a CO-driven exam offering with RSI generated from the exam matrix where facility and room info are blank$/ do
+  @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :term => "201301", :course => "CHEM135")
+
+  @eo_rsi = make EoRsiObject, :day => '',
+                 :start_time => '',
+                 :end_time => '',
+                 :facility => '',
+                 :room => ''
 end

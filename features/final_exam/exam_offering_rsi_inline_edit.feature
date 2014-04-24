@@ -72,7 +72,7 @@ Feature: CO.Exam Offering RSI Inline Edit
   Scenario: FE 6.7.1 AO-driven verify that when the matrix override option is selected then updates to the activity offering RSI do not change the EO RSI
     Given I manage an AO-driven exam offering with RSI generated from the exam matrix
     When I select matrix override and update the day and time fields on the exam offering RSI
-    And I update the requested scheduling information for the related activity offering
+    And I update the requested scheduling information for the related activity offering so there is no match on the exam matrix
     Then the AO-driven exam offering RSI is not updated
 
   Scenario: FE 6.7.2 AO-driven verify that when the matrix override option is selected then updates to the AO ASI do not change the EO RSI
@@ -87,15 +87,20 @@ Feature: CO.Exam Offering RSI Inline Edit
     When I update the requested scheduling information for the related activity offering so there is no match on the exam matrix
     Then the exam offering RSI is blank according to the new AO RSI information
 
+  Scenario: FE 6.7.4 Verify that when the matrix override option removed then the EO RSI updates to the exam matrix value
+    Given I manage a CO-driven exam offering with RSI generated from the exam matrix
+    And I select matrix override and update the day and time fields on the exam offering RSI
+    When I subsequently remove matrix override from the exam offering RSI
+    Then the CO-driven exam offering RSI is updated according to the exam matrix
+
 #this needs to go in AZ feature file
   Scenario: FE 6.4.2 DSC (Carol) will be configured to have read-only permission on EO management screen
     Given I am logged in as a Department Schedule Coordinator
-    And I manage a course offering with an AO-driven exam in my admin org
-    When I manage exam offerings for the course offering
-    Then I am not able to edit the exam offering RSI
+    And I manage an AO-driven exam offering for a course offering in my admin org
+    Then I am not able to edit the AO-driven exam offering RSI
 
   Scenario: FE 6.8.1 Successfully add facility and room information to a CO-driven Exam Offering RSI when exam matrix facility and room info is blank
     Given I manage a course offering with a CO-driven exam offering with RSI generated from the exam matrix where facility and room info are blank
-    When I manage the exam offerings for the course offering
+    When I manage the Exam Offerings for the Course Offering
     And add facility and room information to the exam offering RSI
-    Then the exam offering RSI is successfully updated
+    Then the CO-driven exam offering RSI is successfully updated

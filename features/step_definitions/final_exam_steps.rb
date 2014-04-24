@@ -663,6 +663,10 @@ When /^I select matrix override and update the day and time fields on the exam o
                :override_matrix => true
 end
 
+When /^I subsequently remove matrix override from the exam offering RSI$/ do
+  @eo_rsi.edit :override_matrix => true, :do_navigation => false
+end
+
 When /^I update the day and time fields on the exam offering RSI$/ do
   @eo_rsi.edit :do_navigation => false,
                :day => 'Day 2',
@@ -782,6 +786,19 @@ When /^the CO-driven exam offering RSI is successfully updated$/ do
     page.get_eo_by_co_end_time_text.should == @eo_rsi.end_time
     #page.get_eo_by_co_bldg_text.should == @eo_rsi.facility TODO: issue with short vs full facility name
     page.get_eo_by_co_room_text.should == @eo_rsi.room
+  end
+end
+
+When /^the CO-driven exam offering RSI is updated according to the exam matrix$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  on ViewExamOfferings do |page|
+    page.co_target_row.exists?.should be_true
+    page.get_eo_by_co_days_text.should match @matrix.rules[0].rsi_days
+    page.get_eo_by_co_st_time_text.should == "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}"
+    page.get_eo_by_co_end_time_text.should == "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}"
+    #page.get_eo_by_co_bldg_text.should == @matrix.rules[0].facility TODO: issue with short vs full facility name
+    page.get_eo_by_co_room_text.should == @matrix.rules[0].room
   end
 end
 
@@ -1876,3 +1893,11 @@ Then /^the Exam Offerings Slotting info should be populated after the Mass Sched
   end
 end
 
+When /^I? ?add facility and room information to the exam offering RSI$/ do
+  @eo_rsi.edit :do_navigation => false,
+               :day => 'Day 5',
+               :start_time => '12:00 PM',
+               :end_time => '1:50 PM',
+               :facility => 'VMH',
+               :room => '1212'
+end

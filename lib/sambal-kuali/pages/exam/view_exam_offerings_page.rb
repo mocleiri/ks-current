@@ -193,8 +193,12 @@ class ViewExamOfferings < BasePage
   end
 
 #edit fields methods
+  def edit_rsi_element(row)
+    row.link(id: /EO-toggleEditButton_line/)
+  end
+
   def edit_rsi(row)
-    row.link(id: /EO-toggleEditButton_line/).click
+    edit_rsi_element(row).click
   end
 
   def override_checkbox(row)
@@ -231,13 +235,11 @@ class ViewExamOfferings < BasePage
 
   def save_edit(row)
     row.link(id: /EO-toggleUpdateButton_line/).click
-    row.link(id: /EO-toggleEditButton_line/).wait_until_present
+    edit_rsi_element(row).wait_until_present
   end
 
   def cancel_edit(row)
     row.link(id: /EO-toggleCancelButton_line/).click
-    row.link(id: /EO-toggleEditButton_line/).wait_until_present
+    edit_rsi_element(row)
   end
-
-
 end
