@@ -15,7 +15,7 @@ World Workflows
 client = Selenium::WebDriver::Remote::Http::Default.new
 #client.timeout = 15 # seconds default is 60
 
-Selenium::WebDriver::Firefox.path = ENV['FIREFOX_PATH'] unless ENV['FIREFOX_PATH'].nil?
+Selenium::WebDriver::Firefox::Binary.path = ENV['FIREFOX_PATH'] unless ENV['FIREFOX_PATH'].nil?
 
 browser = nil
 headless = nil
