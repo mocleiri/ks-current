@@ -6,6 +6,7 @@ class CourseSearch < BasePage
 
   wrapper_elements
   frame_element
+  expected_element :search_for_course
 
   element(:search_for_course) { |b| b.frm.text_field(id: "text_searchQuery_control") }
   element(:search_term_select) { |b| b.frm.select(name:"searchTerm") }

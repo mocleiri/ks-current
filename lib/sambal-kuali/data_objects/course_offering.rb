@@ -132,7 +132,6 @@ class CourseOffering
   def course_search (text=@course_code, term_select=@term_select)
     navigate_to_maintenance_portal
     navigate_to_course_search_home
-    sleep 5
     on CourseSearch do |page|
       page.search_for_course.set text
       if @term_select != nil
@@ -163,7 +162,6 @@ class CourseOffering
   def course_search_with_search_text(text=@search_text, term_select=@term_select)
     navigate_to_maintenance_portal
     navigate_to_course_search_home
-    sleep 5
     on CourseSearch do |page|
       page.search_for_course.set text
       if @term_select != nil
