@@ -1,4 +1,4 @@
-@nightly @test
+@nightly
 Feature: BT.Course Detail Page
 
   Background:
