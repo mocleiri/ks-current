@@ -165,7 +165,7 @@ class EditAcademicTerms < BasePage
   def key_date_target_row_by_index(term_index, key_date_group_index, key_date_type)
     key_date_table = key_date_table(term_index, key_date_group_index)
     if key_date_table.exists?
-      key_date_table.rows[1..-2].each do | row |
+      key_date_table.rows[1..-1].each do | row |
         if row.cells[0].text == key_date_type
           return row
         end

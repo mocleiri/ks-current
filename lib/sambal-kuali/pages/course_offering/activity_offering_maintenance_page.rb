@@ -210,7 +210,7 @@ class ActivityOfferingMaintenance < BasePage
 
   def target_person_row(id)
     row = nil
-    personnel_table.rows[1..-2].each do |row|
+    personnel_table.rows[1..-1].each do |row|
       row_key = row.text_field(id: /personnel_id_line/).value
       return row if row_key == id
     end
