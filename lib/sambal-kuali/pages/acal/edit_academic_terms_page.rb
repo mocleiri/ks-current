@@ -47,7 +47,7 @@ class EditAcademicTerms < BasePage
 
   def open_term_section_by_index(term_index)
     link =  link(id: "term_section_line#{term_index}_toggle")
-    if link.image(alt: "collapse").visible? then # collapse means collapsed
+    if !link.span(id: /term_section_line\d+_toggle_exp/).visible? then # collapse means collapsed
       link.click
     end
   end
@@ -84,33 +84,32 @@ class EditAcademicTerms < BasePage
   action(:make_offical_cancel) { |b| b.make_official_calendar_dialog_section.radio(index: 1).click ; b.loading.wait_while_present}
   ########
 
-  def key_date_group_list_parent(term_type)
+  def key_date_section_list_parent(term_type)
     term_index = term_index_by_term_type(term_type)
-    acal_term_list_div.div(id: "acal-term-keydatesgroup_line#{term_index}").div(class: "uif-stackedCollectionLayout")
+    acal_term_list_div.section(id: "acal-term-keydatesgroup_line#{term_index}")
   end
 
   def key_date_validation_messages(term_type)
-    term_index = term_index_by_term_type(term_type)
-    acal_term_list_div.div(id: "acal-term-keydatesgroup_line#{term_index}").ul(class: "uif-validationMessagesList").lis
+    key_date_section_list_parent.ul(class: "uif-validationMessagesList").lis
   end
 
-  def key_date_group_div_list(term_type)
-    key_date_group_list_parent(term_type).divs(class: "uif-collectionItem uif-boxCollectionItem")
+  def key_date_group_section_list(term_type)
+    key_date_section_list_parent(term_type).sections(id: /^key_date_grp_section_line\d+_line\d+$/)
   end
 
   def key_date_group_div(term_type, key_date_group_type)
-    key_date_group_div_list(term_type).each do | div |
-      if div.span(text: /#{key_date_group_type} Key Dates/ ).exists?
-        return div
+    key_date_group_section_list(term_type).each do | section |
+      if section.header.h5.span(text: /#{key_date_group_type} Key Dates/ ).exists?
+        return section
       end
     end
     return nil
   end
 
   def key_date_group_index(term_type, key_date_group_type)
-    key_date_group_div_list(term_type).each do | div |
-      if div.span(text: /#{key_date_group_type} Key Dates/ ).exists?
-        return div.id[/\d+$/]
+    key_date_group_section_list(term_type).each do | section |
+      if section.span(text: /#{key_date_group_type} Key Dates/ ).exists?
+        return section.id[/\d+$/]
       end
     end
     return nil
@@ -146,7 +145,7 @@ class EditAcademicTerms < BasePage
     if !key_date_group_div(term_type, key_date_group_type).nil? &&
       key_date_group_div(term_type, key_date_group_type).exists? &&
       key_date_group_div(term_type, key_date_group_type).table.exists?
-      key_date_group_div(term_type, key_date_group_type).table.rows[1..-2].each do | row |
+      key_date_group_div(term_type, key_date_group_type).table.rows[1..-1].each do | row |
         if row.cells[0].text == key_date_type
           return true
         end
