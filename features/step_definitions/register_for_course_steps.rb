@@ -24,8 +24,8 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
   if subj=="WMST" || subj=="BSCI2"
     visit RegistrationCart do |page|
       sleep 1
-      @orig_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
-      @orig_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
+      @orig_cart_course_count = page.credit_count_title.text.downcase.match('(\d*) course')[1].to_i
+      @orig_cart_credit_count = page.credit_count_title.text.downcase.match('\((.*) credit')[1].to_f
     end
   end
 
@@ -115,13 +115,9 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
       sleep 2
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
-      begin
-        sleep 1
-        page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
-        page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
-      rescue Watir::Exception::UnknownObjectException
-        # the course is not there: good
-      end
+      sleep 1
+      page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
 end
@@ -155,6 +151,21 @@ When /^I? ?remove the course from my schedule and cancel the drop$/ do
   @reg_request.remove_from_schedule_and_cancel
 end
 
+When /^I drop a course I am registered for that has a waitlist$/ do
+  course_options = (make CourseOptions, :credit_option => "3.0")
+
+  @reg_request = make RegistrationRequest, :student_id=>"EILEENB",
+                      :term_code=> 201208,
+                      :term_descr=> "Fall 2012",
+                      :course_code=> "ENGL101",
+                      :reg_group_code=> "1010",
+                      :course_options => course_options,
+                      :course_has_options=> false
+
+  visit StudentSchedule
+  @reg_request.remove_from_schedule
+end
+
 When /^I view my schedule$/ do
   on RegistrationCart do |page|
     page.menu
@@ -167,14 +178,10 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
   sleep 1
   on StudentSchedule do |page|
     if presence == "present"
-      page.course_title_div(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
-      page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).text.should_not be_nil
     else
-      begin
-        page.course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
-      rescue Watir::Exception::UnknownObjectException
-        # the course is not there: good
-      end
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
 end
@@ -192,7 +199,7 @@ And /^I? ?can view the details of my selection in the registration cart$/ do
     page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code)
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
     page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry I"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} cr"
     unless @reg_request.course_options.grading_option == "Letter"
       page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
@@ -206,17 +213,16 @@ end
 
 And /^I? ?can view the details of my selection in my schedule$/ do
   on StudentSchedule do |page|
-    page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code, "registered")
+    page.show_course_details(@reg_request.course_code, @reg_request.reg_group_code, "registered")
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
-    page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "The Medieval World"
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} cr"
     unless @reg_request.course_options.grading_option == "Letter"
       page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
-    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "LEC"
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "Lecture"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /TuTh 14:00 - 14:50(\s+)KEY 0106/i
-    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "DIS"
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "Discussion"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /Th 11:00 - 11:50(\s+)LEF 1222/
   end
 end
@@ -268,7 +274,7 @@ Then /^the course is present in my schedule, with the updated options$/ do
   on StudentSchedule do |page|
     page.course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     sleep 1
-    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
+    page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} cr"
     unless @reg_request.course_options.grading_option == "Letter"
       page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
@@ -298,22 +304,21 @@ end
 Then /^I can view the number of courses and credits I am registered for in my registration cart$/ do
   on RegistrationCart do |page|
     sleep 1
-    @updated_cart_course_count = page.credit_count_title.text.match('(\d*) course')[1].to_i
+    @updated_cart_course_count = page.credit_count_title.text.downcase.match('(\d*) course')[1].to_i
     @updated_cart_course_count.should == (@orig_cart_course_count + 1)
-    @updated_cart_credit_count = page.credit_count_title.text.match('\((.*) credit')[1].to_f
-    p @reg_request
+    @updated_cart_credit_count = page.credit_count_title.text.downcase.match('\((.*) credit')[1].to_f
     @updated_cart_credit_count.should == (@orig_cart_credit_count + @reg_request.course_options.credit_option.to_f)
-    
+
     cart_schedule_counts = page.schedule_counts.text
-    @cart_reg_course_count = cart_schedule_counts.match('for (\d*) course')[1].to_i
-    @cart_reg_credit_count = cart_schedule_counts.match('\((.*) credit')[1].to_f
+    @cart_reg_course_count = cart_schedule_counts.downcase.match('for (\d*) course')[1].to_i
+    @cart_reg_credit_count = cart_schedule_counts.downcase.match('\((.*) credit')[1].to_f
   end
 end
 
 Then /^the number of courses and credits I am registered for is correctly updated in my registration cart$/ do
   on RegistrationCart do |page|
-    page.schedule_counts.text.match('for (\d*) course')[1].to_i.should == (@cart_reg_course_count + @updated_cart_course_count)
-    page.schedule_counts.text.match('\((.*) credit')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
+    page.schedule_counts.text.downcase.match('for (\d*) course')[1].to_i.should == (@cart_reg_course_count + @updated_cart_course_count)
+    page.schedule_counts.text.downcase.match('\((.*) credit')[1].to_f.should == (@cart_reg_credit_count + @updated_cart_credit_count)
   end
 end
 
@@ -325,6 +330,47 @@ Then /^the number of courses and credits I am registered for is correctly update
       expected_count -= credits_to_drop.to_f
     end
     sleep 1
-    page.reg_credit_count.match('(.*) credits')[1].to_f.should == expected_count
+    page.reg_credit_count.downcase.match("(.*) credits")[1].to_f.should == expected_count
+  end
+end
+
+Then /^I log out from student registration$/ do
+  on RegisterForCourseBase do |page|
+    page.menu
+    page.logout_button.wait_until_present
+    page.logout
+  end
+end
+
+Then /^the number of credits I am registered for and waitlisted for are correctly updated in my schedule$/ do
+  on StudentSchedule do |page|
+    page.reg_credit_count.downcase.match('(.*) credits')[1].to_f.should == 3
+    #page.
+  end
+end
+
+Given /^I log in to student registration as (\w+)$/  do |user|
+  puts "I am logged in to student registration as #{user}"
+  case user
+    when "admin"
+      visit RestAdminLogin
+    when "martha"
+      visit RestMarthaLogin
+    when "student"
+      visit RestStudentLogin
+    when "student1"
+      visit RestStudent1Login
+    when "student2"
+      visit RestStudent2Login
+    when "student3"
+      visit RestStudent3Login
+    when "student4"
+      visit RestStudent4Login
+    when "student5"
+      visit RestStudent5Login
+    when "EILEENB"
+      visit RestEILEENBLogin
+    when "EILEENL"
+      visit RestEILEENLLogin
   end
 end

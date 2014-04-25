@@ -4,7 +4,7 @@ When /^I create a seat pool for an activity offering by completing all fields$/ 
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering
   @activity_offering.edit :max_enrollment => 100, :defer_save => true
   @activity_offering.add_seat_pool :seat_pool_obj => (make SeatPoolObject),
-                                   :edit_already_started => true,
+                                   :start_edit => false,
                                    :defer_save => true
 end
 
@@ -18,7 +18,7 @@ end
 
 When /^seats is set higher than max enrollment$/ do
   @activity_offering.seat_pool_list[0].edit :seats => (@activity_offering.max_enrollment.to_i + 1).to_s,
-                                   :edit_already_started => true,
+                                            :start_edit => false,
                                    :defer_save => true
 
 end
@@ -43,7 +43,7 @@ When /^I create seat pools for an activity offering and priorities are duplicate
   seatpools[2] = make SeatPoolObject, :population_name => "Fraternity/Sorority", :seats => 12, :priority => 4, :priority_after_reseq => 3
 
   @activity_offering.add_seat_pool_list :seat_pool_list => seatpools,
-                                   :edit_already_started => true,
+                                        :start_edit => false,
                                    :defer_save => true
 
 end
@@ -66,7 +66,7 @@ When /^I add a seat pool using a population that is already used for that activi
   seatpools[1] = make SeatPoolObject, :population_name => "Core", :seats => 11, :priority => 2, :exp_add_succeed => false
 
   @activity_offering.add_seat_pool_list :seat_pool_list => seatpools,
-                                        :edit_already_started => true,
+                                        :start_edit => false,
                                         :defer_save => false
 end
 
@@ -90,7 +90,7 @@ When /^I add a seat pool without specifying a population$/ do
   @activity_offering.edit :max_enrollment => 100, :defer_save => true
   seatpool1 = make SeatPoolObject, :population_name => "", :seats => 10, :priority => 2, :exp_add_succeed => false
   @activity_offering.add_seat_pool :seat_pool_obj => (seatpool1),
-                                   :edit_already_started => true,
+                                   :start_edit => false,
                                    :defer_save => false
 end
 

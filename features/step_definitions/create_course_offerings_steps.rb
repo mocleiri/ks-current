@@ -97,12 +97,12 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lab Only", :activity_type => "Lab"
   @activity_offering.edit :subterm => @calendar.terms[0].subterms[0].subterm_type, :defer_save => true
-  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT"), :edit_already_started => true
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT"), :start_edit => false
 
   @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering,
                                :format => "Lab Only", :activity_type => "Lab"
   @activity_offering2.edit :subterm => @calendar.terms[0].subterms[1].subterm_type, :defer_save => true
-  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF"), :edit_already_started => true
+  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF"), :start_edit => false
 end
 
 And /^I create a Course Offering with an Activity Offerings assigned to subterms$/ do
@@ -120,12 +120,12 @@ And /^I create a Course Offering from catalog with Activity Offerings assigned t
   @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
                               :format => "Lecture Only", :activity_type => "Lecture"
   @activity_offering.edit :subterm => @calendar.terms[0].subterms[0].subterm_type, :defer_save => true
-  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT"), :edit_already_started => true
+  @activity_offering.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "MT"), :start_edit => false
 
   @activity_offering2 = create ActivityOfferingObject,  :parent_course_offering => @course_offering,
                                :format => "Lecture Only", :activity_type => "Lecture"
   @activity_offering2.edit :subterm => @calendar.terms[0].subterms[1].subterm_type, :defer_save => true
-  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF"), :edit_already_started => true
+  @activity_offering2.add_req_sched_info :rsi_obj => (make SchedulingInformationObject, :days => "WF"), :start_edit => false
 end
 
 And /^I create a Course Offering from catalog with Activity Offerings$/ do

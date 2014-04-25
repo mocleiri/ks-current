@@ -50,9 +50,8 @@ Given /^I register for an? full (\w+) course offering that (has|does not have) a
   steps %{
     When I add an #{subj} course offering to my registration cart
     And I register for the course
-    And I view my schedule
-    Then the course is present in my schedule
-    And I am logged in as a Student
+    Then I log out from student registration
+    And I log in to student registration as student1
     And I add an #{subj} course offering to my registration cart
     And I register for the course
   }
@@ -65,7 +64,8 @@ When /^I register for an? full (\w+) course offering and add myself to a waitlis
     And I register for the course
     And I view my schedule
     Then the course is present in my schedule
-    And I am logged in as a Student
+    Then I log out from student registration
+    And I log in to student registration as student1
     And I add an #{subj} course offering to my registration cart
     And I register for the course
     And I add myself to a waitlist for the course
@@ -91,7 +91,8 @@ Then /^the course is present in my waitlist, with the updated options$/ do
   on StudentSchedule do |page|
     page.waitlist_course_info_div(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     sleep 1
-    page.waitlist_course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option} credits"
+    page.waitlist_course_info(@reg_request.course_code, @reg_request.reg_group_code).downcase.should include "#{@reg_request.course_options.credit_option} cr"
+    # grading option badge is not displayed for Letter grade (the assumed default), only displayed for non-standard options e.g., Audit or Pass/Fail
     unless @reg_request.course_options.grading_option == "Letter"
       page.waitlist_grading_option_badge(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
       page.waitlist_grading_option(@reg_request.course_code,@reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
@@ -105,12 +106,17 @@ end
 
 Then /^I can verify I am not on the waitlist$/ do
   on StudentSchedule do |page|
-    begin
-      sleep 1
-      page.waitlist_user_message.should include "Removed from waitlist for #{@reg_request.course_code} (#{@reg_request.reg_group_code})"
-      page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).present?.should be_false
-    rescue Watir::Exception::UnknownObjectException
-      # the course is not there: good
-    end
+    sleep 1
+    page.waitlist_user_message.should include "Removed from waitlist for #{@reg_request.course_code} (#{@reg_request.reg_group_code})"
+    page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
+  end
+end
+
+Then /^I can go to My Schedule and verify I am not on the waitlist$/ do
+  visit StudentSchedule
+  on StudentSchedule do |page|
+    #this is a wait, until dev gets in a notification that processing is finished
+    @reg_request.change_term_and_return(@reg_request.term_descr, "Spring 2012")
+    page.waitlisted_course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
   end
 end

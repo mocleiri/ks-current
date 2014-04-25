@@ -117,11 +117,11 @@ class SeatPoolObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false,
+        :start_edit => true,
     }
     options = defaults.merge(opts)
 
-    @parent_ao.edit unless options[:edit_already_started]
+    @parent_ao.edit if options[:start_edit]
 
     if !options[:seats].nil?
       on ActivityOfferingMaintenance do |page|

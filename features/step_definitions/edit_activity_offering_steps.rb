@@ -8,7 +8,7 @@ When /^I edit an activity offering code/ do
 end
 
 When /^I revert the change to the activity code/ do
-  @activity_offering.edit :code => @orig_code, :edit_already_started => true, :defer_save => true
+  @activity_offering.edit :code => @orig_code, :start_edit => false, :defer_save => true
 end
 
 Then /^the activity offering code change is persisted/ do
@@ -177,7 +177,7 @@ When /^I change Miscellaneous Activity Offering attributes$/ do
     page.course_url.value.should == 'null'
   end
 
-  @activity_offering.edit :edit_already_started => true,
+  @activity_offering.edit :start_edit => false,
                           :requires_evaluation => true,
                           :honors_course => true,
                           :course_url => "www.kuali.org",
@@ -220,7 +220,7 @@ Given /^I edit an Activity Offering that has available subterms$/ do
 end
 
 Then /^I set a subterm for the activity offering$/ do
-  @activity_offering.edit :edit_already_started => true, :subterm => @calendar.terms[0].subterms[0].subterm_type
+  @activity_offering.edit :start_edit => false, :subterm => @calendar.terms[0].subterms[0].subterm_type
 end
 
 Then /^I update the subterm for the activity offering$/ do

@@ -42,7 +42,8 @@ class ActivityOfferingObject
                 :honors_course,
                 :create_by_copy,
                 :colocated,
-                :colocate_shared_enrollment
+                :colocate_shared_enrollment,
+                :allow_non_std_timeslots
   #type ActivityOffering object - generally set using options hash
   attr_accessor :parent_course_offering
   #type Waitlist object - generally set using options hash
@@ -67,6 +68,7 @@ class ActivityOfferingObject
         :max_enrollment => 0,
         :actual_scheduling_information_list => collection('SchedulingInformation'),
         :requested_scheduling_information_list => collection('SchedulingInformation'),
+        :allow_non_std_timeslots => false,
         :personnel_list => collection('Personnel'),
         :seat_pool_list => collection('SeatPool'),
         :course_url => "",
@@ -157,14 +159,19 @@ class ActivityOfferingObject
       page.add_activity
       #ordering of compound format type (eg Lecture/Discussion) is flexible
       #if the selectlist doesn't include the option, then try reordering
-      if !@format.index('/').nil?
-        if !page.format.include?(@format)
-          formats = @format.split('/')
-          @format = "#{formats[1]}/#{formats[0]}"
+      if @format.nil? #nil format means use default format
+        @format = page.format.selected_options[0].text
+        @activity_type =  page.activity_type.selected_options[0].text
+      else
+        if !@format.index('/').nil?
+          if !page.format.include?(@format)
+            formats = @format.split('/')
+            @format = "#{formats[1]}/#{formats[0]}"
+          end
         end
+        page.format.select @format
+        page.loading.wait_while_present
       end
-      page.format.select @format unless @format.nil?
-      page.loading.wait_while_present
       page.activity_type.wait_until_present
       page.activity_type.select @activity_type unless @format.nil?
       page.quantity.set "1"
@@ -212,14 +219,14 @@ class ActivityOfferingObject
     end_times = ao_table_row.cells[ManageCourseOfferings::AO_END_TIME].text.split("\n")
     fac_names = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].text.split("\n")
     fac_long_names = []
-    #fac_long_names_tooltip = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].hidden.value
-    #if fac_long_names_tooltip[/(?<=, ')\S*/] == "<span"
-    #  #createTooltip('u432_line0_line10', '<span class=&quot;uif-scheduled-dl&quot; >Tawes Fine Arts Bldg.</span><br><span class=&quot;uif-scheduled-dl&quot; >Mathematics Bldg.</span>', {always
-    #  fac_long_names = fac_long_names_tooltip.scan(/(?<=;uif-scheduled-dl&quot; \>).*?(?=\<\/span)/)
-    #else
-    #  #createTooltip('u432_line0_line2', 'Tawes Fine Arts Bldg.', {always...
-    #  fac_long_names << fac_long_names_tooltip[/(?<=, ').*?(?=',)/]
-    #end
+    fac_long_names_tooltip = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].hidden.value
+    if fac_long_names_tooltip[/(?<=, ')\S*/] == "<span"
+      #createTooltip('u432_line0_line10', '<span class=&quot;uif-scheduled-dl&quot; >Tawes Fine Arts Bldg.</span><br><span class=&quot;uif-scheduled-dl&quot; >Mathematics Bldg.</span>', {always
+      fac_long_names = fac_long_names_tooltip.scan(/(?<=;uif-scheduled-dl&quot; \>).*?(?=\<\/span)/)
+    else
+      #createTooltip('u432_line0_line2', 'Tawes Fine Arts Bldg.', {always...
+      fac_long_names << fac_long_names_tooltip[/(?<=, ').*?(?=',)/]
+    end
     rooms = ao_table_row.cells[ManageCourseOfferings::AO_ROOM].text.split("\n")
 
     i=0
@@ -256,12 +263,12 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false,
+        :start_edit => true,
         :send_to_scheduler => false
     }
     options = defaults.merge(opts)
 
-    on(ManageCourseOfferings).edit @code unless options[:edit_already_started]
+    on(ManageCourseOfferings).edit @code if options[:start_edit]
 
     edit_code options
     edit_subterm options
@@ -441,10 +448,10 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
-    edit :defer_save => true unless options[:edit_already_started]
+    edit :defer_save => true if options[:start_edit]
 
     rsi_obj = options[:rsi_obj]
     rsi_obj.parent_ao = self
@@ -471,11 +478,11 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
 
-    edit :defer_save => true unless options[:edit_already_started]
+    edit :defer_save => true if options[:start_edit]
 
     options[:seat_pool_obj].parent_ao = self
     options[:seat_pool_obj].create seatpool_populations_used
@@ -487,14 +494,14 @@ class ActivityOfferingObject
 
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
 
-    edit unless options[:edit_already_started]
+    edit if options[:start_edit]
 
     options[:seat_pool_list].each do |seatpool|
-      add_seat_pool :seat_pool_obj => seatpool, :defer_save => true, :edit_already_started => true
+      add_seat_pool :seat_pool_obj => seatpool, :defer_save => true, :start_edit => false
     end
 
     on(ActivityOfferingMaintenance).save unless options[:defer_save]
@@ -705,11 +712,11 @@ class Waitlist
   def edit opts={}
     defaults = {
         :defer_save => false,
-        :edit_already_started => false
+        :start_edit => true
     }
     options = defaults.merge(opts)
 
-    on(ManageCourseOfferings).edit @parent_ao.code unless options[:edit_already_started]
+    on(ManageCourseOfferings).edit @parent_ao.code if options[:start_edit]
 
     if !opts[:enabled].nil?
       on ActivityOfferingMaintenance do |page|

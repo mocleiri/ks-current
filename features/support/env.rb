@@ -15,7 +15,7 @@ World Workflows
 client = Selenium::WebDriver::Remote::Http::Default.new
 #client.timeout = 15 # seconds default is 60
 
-Selenium::WebDriver::Firefox.path = ENV['FIREFOX_PATH'] unless ENV['FIREFOX_PATH'].nil?
+Selenium::WebDriver::Firefox::Binary.path = ENV['FIREFOX_PATH'] unless ENV['FIREFOX_PATH'].nil?
 
 browser = nil
 headless = nil
@@ -40,6 +40,8 @@ if ENV['HEADLESS']
       browser.goto("#{$test_site}/login.jsp")
       sleep 2
       raise "connect failed" unless  browser.text_field(id: "j_username").exists?
+      #browser.goto('https://www.whatismybrowser.com/')
+      #puts browser.div(class: 'simple-browser-string').text
       browser.close
       puts "debug env.rb - success: browser connection attempt #{retry_ctr}"
     rescue
