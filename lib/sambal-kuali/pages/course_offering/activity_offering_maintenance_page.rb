@@ -6,7 +6,7 @@ class ActivityOfferingMaintenance < BasePage
 
   expected_element :mainpage_section
 
-  element(:ao_header_text) { |b| b.frm.div(class: "uif-viewHeader-contentWrapper uif-sticky").h1.span.text }
+  element(:ao_header_text) { |b| b.frm.header(class: /uif-sticky/).h1.span.text }
 
   action(:prev_ao) { |b| b.frm.link(id: "edit_ao_prev").click; b.loading.wait_while_present }
   element(:prev_ao_text) { |b| b.frm.link(id: "edit_ao_prev").text }
