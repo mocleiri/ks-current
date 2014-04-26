@@ -66,10 +66,11 @@ function process_args {
   PROFILE2=$3
 }
 
-ME=$(basename $0)
-
 usage() { echo "Usage: $ME [-h] [--help] [--firefox=14/22/27] [--threads=2] [--parallel=false] [--distributed=false] url profile1 profile2" 1>&2; exit 1; }
 
+ME=$(basename $0)
+
+# process all of our command line arguments
 process_args "$@"
 
 # make sure we have what we need to proceed
