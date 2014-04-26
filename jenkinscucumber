@@ -20,50 +20,50 @@ function check_args {
 }
 
 function process_args {
-FIREFOX=14
-THREADS=2
-PARALLEL=false
-DISTRIBUTED=false
+  FIREFOX=14
+  THREADS=2
+  PARALLEL=false
+  DISTRIBUTED=false
 
-ARGS=$(getopt --options h --longoptions "help,firefox:,threads:,parallel:,distributed:" --name "$ME" -- "$@");
-if [ $? -ne 0 ]; then usage; fi
-eval set -- "$ARGS";
-while true; do
-  case "$1" in
-    -h|--help)
-      usage;
-      shift;
-      ;;
-    --firefox)
-      shift;
-      FIREFOX=$1;
-      shift;
-      ;;
-    --threads)
-      shift;
-      THREADS=$1;
-      shift;
-      ;;
-    --parallel)
-      shift;
-      PARALLEL=$1;
-      shift;
-      ;;
-    --distributed)
-      shift;
-      DISTRIBUTED=$1;
-      shift;
-      ;;
-    --)
-      shift;
-      break;
-      ;;
-  esac
-done
+  ARGS=$(getopt --options h --longoptions "help,firefox:,threads:,parallel:,distributed:" --name "$ME" -- "$@");
+  if [ $? -ne 0 ]; then usage; fi
+  eval set -- "$ARGS";
+  while true; do
+    case "$1" in
+      -h|--help)
+        usage;
+        shift;
+        ;;
+      --firefox)
+        shift;
+        FIREFOX=$1;
+        shift;
+        ;;
+      --threads)
+        shift;
+        THREADS=$1;
+        shift;
+        ;;
+      --parallel)
+        shift;
+        PARALLEL=$1;
+        shift;
+        ;;
+      --distributed)
+        shift;
+        DISTRIBUTED=$1;
+        shift;
+        ;;
+      --)
+        shift;
+        break;
+        ;;
+      esac
+  done
 
-URL=$1
-PROFILE1=$2
-PROFILE2=$3
+  URL=$1
+  PROFILE1=$2
+  PROFILE2=$3
 }
 
 ME=$(basename $0)
