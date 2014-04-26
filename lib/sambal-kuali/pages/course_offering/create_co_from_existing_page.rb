@@ -8,7 +8,7 @@ class CreateCOFromExisting < BasePage
 
   action(:create) { |b| b.frm.button(id: "createFromCopy_btn").click; b.loading.wait_while_present(120) }
   #element(:sticky_footer_div) { |b| b.frm.div(id: "u8") } #static id required
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") }
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
   action(:cancel) { |b| b.sticky_footer_div.link(text: "Cancel").click; b.loading.wait_while_present }
 
   element(:exclude_cancelled_aos) { |b| b.frm.label(text: /Exclude cancelled Activity Offerings/) }

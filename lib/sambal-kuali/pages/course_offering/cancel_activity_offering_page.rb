@@ -10,7 +10,7 @@ class CancelActivityOffering < BasePage
 
   element(:warning_message_div) { |b| b.frm.div(id: "KS-SelectedAoCancelConfirmation-WarningMessage") }
 
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") }
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
 
   element(:cancel_activity_button) { |b| b.frm.button(id: "AoCancelConfirmationCancelButton") }
   action(:cancel_activity) { |b| b.cancel_activity_button.click; b.loading.wait_while_present(120) }
