@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 TEST_SITE=$1
 PROFILE1=$2
