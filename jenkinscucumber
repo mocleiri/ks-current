@@ -70,7 +70,7 @@ ME=$(basename $0)
 
 usage() { echo "Usage: $ME [-h] [--help] [--firefox=14/22/27] [--threads=2] [--parallel=false] [--distributed=false] url profile1 profile2" 1>&2; exit 1; }
 
-process_args
+process_args "$@"
 
 # make sure we have what we need to proceed
 check_args
