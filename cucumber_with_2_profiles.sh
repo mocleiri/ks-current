@@ -1,9 +1,10 @@
 #!/bin/bash
 
-FIREFOX_VERSION=$1
+TEST_SITE=$1
 PROFILE1=$2
 PROFILE2=$3
-DISTRIBUTED=$4
+DISTRIBUTED=${4-true}
+FIREFOX_VERSION=${5-firefox14}
 
 # show the bundler version, invoke bundler to install Gems as dictated by Gemfile.lock
 bundle --version; bundle install
