@@ -17,6 +17,7 @@ function check_args {
   check_not_blank THREADS $THREADS
   check_not_blank PARALLEL $PARALLEL
   check_not_blank DISTRIBUTED $DISTRIBUTED
+  check_not_blank WORKSPACE $WORKSPACE
 }
 
 function process_args {
