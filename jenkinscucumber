@@ -72,7 +72,7 @@ PROFILE2=$3
 check_args
 
 # point cucumber at the correct version of firefox
-FIREFOX_PATH=/usr/bin/$FIREFOX; $FIREFOX_PATH -version
+FIREFOX_PATH=/usr/bin/firefox$FIREFOX; $FIREFOX_PATH -version
 
 # args common to both profiles
 ARGS="TEST_SITE=$URL FIREFOX_PATH=$FIREFOX_PATH DISTRIBUTED_ENV=$DISTRIBUTED --format pretty --format json"
