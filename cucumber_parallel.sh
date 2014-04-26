@@ -23,7 +23,7 @@ ARGS="TEST_SITE=$TEST_SITE FIREFOX_PATH=$FIREFOX_PATH DISTRIBUTED_ENV=$DISTRIBUT
 cucumber $ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json
 
 # setup args for the parallel_test call
-TEST_OPTIONS="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber.json"
+TEST_OPTIONS="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber2.json"
 
 # Invoke cucumber via parallel_test to execute the 2nd profile
 parallel_test -n $THREADS -t cucumber --test-options "$TEST_OPTIONS"  $WORKSPACE/features
