@@ -7,10 +7,10 @@ DISTRIBUTED=${4-true}
 FIREFOX_VERSION=${5-firefox14}
 THREADS=${6-2}
 
-# show the bundler version, invoke bundler to install Gems as dictated by Gemfile.lock
+# show the bundler version and invoke it to guarantee gems are installed as dictated by Gemfile.lock
 bundle --version; bundle install
 
-# Point cucumber at the correct Firefox  version and show the firefox version
+# Point cucumber at the correct Firefox version and show the firefox version
 FIREFOX_PATH=/usr/bin/$FIREFOX_VERSION; $FIREFOX_PATH -version
 
 # Cleanup test processes
