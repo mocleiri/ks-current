@@ -20,7 +20,7 @@ $WORKSPACE/cleanup_test_processes.sh
 ARGS="TEST_SITE=$TEST_SITE FIREFOX_PATH=$FIREFOX_PATH DISTRIBUTED_ENV=$DISTRIBUTED --format pretty --format json"
 
 # Invoke Cucumber to run tests for the first profile
-cucumber $ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json || true
+cucumber $ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json
 
 # setup args for the parallel_test call
 TEST_OPTIONS="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber2.json"
