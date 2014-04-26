@@ -1072,7 +1072,7 @@ Then /^I should not be able to update the status of the final exam period$/ do
     page.final_exam_option_div.radio(value: "STANDARD").present?.should == false
     page.final_exam_option_div.radio(value: "ALTERNATE").present?.should == false
     page.final_exam_option_div.radio(value: "NONE").present?.should == false
-    page.span( id: "finalExamType_control").text.should == "Standard Final Exam"
+    page.final_exam_option_div.text.should == "Exam Type\nStandard Final Exam"
     page.cancel
   end
 end
@@ -1087,7 +1087,7 @@ Then /^I do not have access to the final exam status for the course offering fro
     page.final_exam_option_div.radio(value: "STANDARD").present?.should == false
     page.final_exam_option_div.radio(value: "ALTERNATE").present?.should == false
     page.final_exam_option_div.radio(value: "NONE").present?.should == false
-    page.span( id: "finalExamType_control").text.should == "Standard Final Exam"
+    page.final_exam_option_div.text.should == "Exam Type\nStandard Final Exam"
   end
 end
 
