@@ -1,10 +1,15 @@
 #!/bin/bash
 
+FIREFOX_VERSION=$1
+PROFILE1=$2
+PROFILE2=$3
+DISTRIBUTED=$4
+
 # show the bundler version, invoke bundler to install Gems as dictated by Gemfile.lock
 bundle --version; bundle install
 
 # Point cucumber at the correct Firefox  version.  Show the firefox version
-FIREFOX_PATH=/usr/bin/firefox$FIREFOX_VERSION; $FIREFOX_PATH -version
+FIREFOX_PATH=/usr/bin/$FIREFOX_VERSION; $FIREFOX_PATH -version
 
 # Cleanup test processes
 $WORKSPACE/cleanup_test_processes.sh
