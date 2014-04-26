@@ -1,5 +1,20 @@
 #!/bin/bash -xe
 
+#
+# Required arguments:
+#
+# URL        the url for Cucumber to contact
+# PROFILE1   the 1st profile Cucumber will run (usually used to setup data)
+# PROFILE2   the 2nd profile Cucumber will run
+#
+# Optional arguments:
+#
+# --distributed=true adds the Cucumber CLI argument DISTRIBUTED_ENV=true 
+# --parallel=true    invokes Cucumber via parallel_test
+# --threads=2        changes the number of threads passed to parallel_test
+# --firefox=14       changes the version of firefox Cucumber uses (valid values are 14,22,27)
+#
+
 # check that a variable is set and is not the empty string
 function check_not_blank {
   if [ ! -n "$2" ]; then 
