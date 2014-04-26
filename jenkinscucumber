@@ -1,0 +1,99 @@
+#!/bin/bash -xe
+
+# check that a variable is set and is not the empty string
+function check_not_blank {
+  if [ ! -n "$2" ]; then 
+    echo $1 cannot be blank; 
+    usage; 
+  fi
+}
+
+# make sure we have all the arguments we need to proceed
+function check_args {
+  check_not_blank URL $URL
+  check_not_blank PROFILE1 $PROFILE1
+  check_not_blank PROFILE2 $PROFILE2
+  check_not_blank FIREFOX $FIREFOX
+  check_not_blank THREADS $THREADS
+  check_not_blank PARALLEL $PARALLEL
+  check_not_blank DISTRIBUTED $DISTRIBUTED
+}
+
+ME=$(basename $0)
+
+usage() { echo "Usage: $ME [-h] [--help] [--firefox=14/22/27] [--threads=2] [--parallel=false] [--distributed=false] url profile1 profile2" 1>&2; exit 1; }
+
+FIREFOX=14
+THREADS=2
+PARALLEL=false
+DISTRIBUTED=false
+
+ARGS=$(getopt --options h --longoptions "help,firefox:,threads:,parallel:,distributed:" --name "$ME" -- "$@");
+if [ $? -ne 0 ]; then usage; fi
+eval set -- "$ARGS";
+while true; do
+  case "$1" in
+    -h|--help)
+      usage;
+      shift;
+      ;;
+    --firefox)
+      shift;
+      FIREFOX=$1;
+      shift;
+      ;;
+    --threads)
+      shift;
+      THREADS=$1;
+      shift;
+      ;;
+    --parallel)
+      shift;
+      PARALLEL=$1;
+      shift;
+      ;;
+    --distributed)
+      shift;
+      DISTRIBUTED=$1;
+      shift;
+      ;;
+    --)
+      shift;
+      break;
+      ;;
+  esac
+done
+
+URL=$1
+PROFILE1=$2
+PROFILE2=$3
+
+# make sure we have what we need to proceed
+check_args
+
+# point cucumber at the correct version of firefox
+FIREFOX_PATH=/usr/bin/$FIREFOX_VERSION; $FIREFOX_PATH -version
+
+# args common to both profiles
+ARGS="TEST_SITE=$URL FIREFOX_PATH=$FIREFOX_PATH DISTRIBUTED_ENV=$DISTRIBUTED --format pretty --format json"
+
+# profile specific args
+ARGS1="$ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json"
+ARGS2="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber2.json"
+
+# cleanup test processes
+$WORKSPACE/cleanup_test_processes.sh
+
+# use ruby's bundler gem to install gems as dictated by Gemfile.lock
+bundle --version; bundle install
+
+# invoke cucumber to run scenarios for the first profile
+cucumber $ARGS1
+
+if [ "$PARALLEL" == "true" ]; then
+  # invoke cucumber via parallel_test for the 2nd profile
+  parallel_test -n $THREADS -t cucumber --test-options "$ARGS2" $WORKSPACE/features
+else
+  # otherwise, invoke cucumber directly for the 2nd profile
+  cucumber $ARGS2
+fi
