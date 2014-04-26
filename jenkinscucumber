@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 # check that a variable is set and is not the empty string
 function check_not_blank {
