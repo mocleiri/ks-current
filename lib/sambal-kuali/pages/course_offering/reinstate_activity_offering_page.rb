@@ -18,7 +18,7 @@ class ReinstateActivityOffering < BasePage
   action(:cancel) { |b| b.cancel_button.click; b.loading.wait_while_present(120) }
 
   def warning_msg_present(message)
-    return warning_message_div.span(text: /#{Regexp.escape(message)}/).exists?
+    return warning_message_div.p(text: /#{Regexp.escape(message)}/).exists?
   end
 
 end
