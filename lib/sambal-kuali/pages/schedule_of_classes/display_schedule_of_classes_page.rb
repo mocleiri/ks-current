@@ -40,7 +40,7 @@ class DisplayScheduleOfClasses < BasePage
   AO_CLUSTER_RENDERING = "CLUSTER"
   REG_GROUP_RENDERING = "REG_GROUP"
 
-  element(:course_not_found_info_message_div) { |b| b.frm.div(class: /uif-validationMessages.*uif-pageValidationMessages-error/) }
+  element(:course_not_found_info_message_div) { |b| b.frm.div(class: 'alert-danger') }
 
   action(:show) { |b| b.frm.button(id: "show_button").click; b.loading.wait_while_present(60)}
 
