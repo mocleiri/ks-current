@@ -9,9 +9,9 @@ class ActivityOfferingInquiry < BasePage
 
   action(:close) { |b| b.frm.button(text: "Close").click; b.loading.wait_while_present }
 
-  value(:subterm) { |b| b.frm.span(id: "subterm_name_control").text }
-  value(:subterm_start_date) { |b| b.frm.span(id: "start_end_date_control").text[/.*(?=-)/].strip }
-  value(:subterm_end_date) { |b| b.frm.span(id: "start_end_date_control").text[/(?<=-).*/].strip }
+  value(:subterm) { |b| b.frm.div(id: "subterm_name").text }
+  value(:subterm_start_date) { |b| b.frm.div(id: "start_end_date").text[/.*(?=-)/].strip }
+  value(:subterm_end_date) { |b| b.frm.div(id: "start_end_date").text[/(?<=-).*/].strip }
   value(:course_offering_code) { |b| b.frm.span(id: "u14").text } # Persistent ID needed!
   value(:activity_code) { |b| b.frm.div(id: "activityCode").text }
   value(:course_offering_title) { |b| b.frm.span(id: "u32").text } # Persistent ID needed!
@@ -24,10 +24,10 @@ class ActivityOfferingInquiry < BasePage
   element(:actual_scheduling_information_days) { |b| b.frm.div(id: "adlDays_line0") }
   element(:requested_scheduling_information) { |b| b.frm.section(id: "ActivityOffering-Inquiry-DeliveryLogistic-Requested") }
   element(:requested_scheduling_information_days) { |b| b.frm.div(id: "rdlDays_line0") }
-  value(:waitlists_active?) { |b| b.frm.div(data_label: "Waitlist Active").span(text: "Yes").exists? }
-  value(:waitlists_processing) { |b| b.frm.div(data_label: "Waitlist Processing").span(index: 2).text }
-  value(:waitlists_max_size) { |b| b.frm.div(data_label: "Waitlist Max Size").span(index: 2).text }
-  value(:waitlists_allow_holds?) { |b| b.frm.div(data_label: "Allow Holds in Waitlist").span(text: "Yes").exists? }
+  value(:waitlists_active?) { |b| b.frm.div(data_label: "Waitlist Active").p(text: "Yes").exists? }
+  value(:waitlists_processing) { |b| b.frm.div(data_label: "Waitlist Processing").p.text }
+  value(:waitlists_max_size) { |b| b.frm.div(data_label: "Waitlist Max Size").p.text }
+  value(:waitlists_allow_holds?) { |b| b.frm.div(data_label: "Allow Holds in Waitlist").p(text: "Yes").exists? }
 
   value(:state) { |b| b.frm.span(id: "u77").text } # Persistent ID needed!
   value(:requires_evaluation) { |b| b.frm.span(id: "u86").text } # Persistent ID needed!
