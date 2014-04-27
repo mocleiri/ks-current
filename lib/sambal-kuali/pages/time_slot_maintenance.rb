@@ -26,7 +26,7 @@ class TimeSlotMaintenance < BasePage
   element(:add_time_slot_popup_field_endTime_am_pm) { |b| b.add_time_slot_form.div(id: "addOrEditEndTimeAmPm") }
   action(:save_add_time_slot) { |b| b.add_time_slot_form.button(id: "addOrEdit_action").click; b.loading.wait_while_present }
 
-  element(:edit_time_slot_form) { |b| b.frm.div(id: "KS-TimeSlot-EditTimeSlotPopupForm") }
+  element(:edit_time_slot_form) { |b| b.frm.section(id: "KS-TimeSlot-EditTimeSlotPopupForm") }
 
   element(:edit_time_slot_popup_field_termType) { |b| b.edit_time_slot_form.div(id: "addOrEditTermKey").select_list }
   element(:edit_time_slot_popup_field_days) { |b| b.edit_time_slot_form.div(id: "addOrEditDays").text_field }
