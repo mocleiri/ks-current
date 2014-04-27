@@ -38,7 +38,7 @@ class TimeSlotMaintenance < BasePage
   action(:save_edit_time_slot) { |b| b.edit_time_slot_form.button(id: "addOrEdit_action").click; b.loading.wait_while_present }
 
   action(:initiate_delete) { |b| b.time_slot_toolbar_div.button(id: "TimeSlot-ToolBar-Delete-TimeSlot").click }
-  element(:delete_confirmation_dialog) { |b| b.frm.div(id: "deleteTimeSlotsConfirmationDialog-lightbox") }
+  element(:delete_confirmation_dialog) { |b| b.frm.section(id: "deleteTimeSlotsConfirmationDialog-lightbox") }
   action(:confirm_delete) { |b| b.delete_confirmation_dialog.button(id: "timeslot_delete_confirm").click; b.loading.wait_while_present }
 
   element(:time_slot_search_results_table) { |b| b.frm.div(id: "TimeSlotSearchResultsDisplayTable").table() }
