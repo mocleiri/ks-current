@@ -74,7 +74,7 @@ class CourseOfferingCreateEdit < BasePage
   action(:final_exam_option_none) { |b| b.final_exam_option_none_element.set; b.loading.wait_while_present }
   element(:final_exam_option_none_element) { |b| b.final_exam_option_div.radio(value: "NONE") }
 
-  element(:cross_listed_as_label) { |b| b.frm.span(text:/Crosslisted as:/)}
+  element(:cross_listed_as_label) { |b| b.frm.label(id: 'KS-COEditListed-Checkbox-Group_label')}
   element(:cross_listed_co_check_boxes) { |b| b.frm.div(id:"KS-COEditListed-Checkbox-Group")}
   element(:cross_listed_co_check_box) { |b| b.checkbox(id: "KS-COEditListed-Checkbox-Group_control_0") }
   action(:cross_listed_co_set) {|b| b.cross_listed_co_check_box.set; b.loading.wait_while_present   }

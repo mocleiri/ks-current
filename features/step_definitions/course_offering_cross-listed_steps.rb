@@ -89,11 +89,9 @@ Then /^the alias is indicated as cross-listed with the owner CO$/ do
 Then /^the edit page (should|should not) indicate a cross-listing$/ do |condition|
   on CourseOfferingCreateEdit do |page|
     if(condition == 'should not')
-      puts 'Testing for crosslisting label not present'
-      page.cross_listed_as_label.should_not be_present
+      page.cross_listed_as_label.visible?.should_not be_true
     else
-      puts 'Testing for crosslisting label present'
-      page.cross_listed_as_label.should be_present
+      page.cross_listed_as_label.visible?.should be_true
     end
   end
 end
