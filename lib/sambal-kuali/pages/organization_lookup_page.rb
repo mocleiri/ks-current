@@ -10,7 +10,7 @@ class OrgLookupPopUp < BasePage
   element(:results_table) { |b| b.frm.div(id: "uLookupResults").table(index: 0) }
 
   def frm
-    self.frame(class: "fancybox-iframe") # Persistent ID needed!
+    self.iframe(class: "fancybox-iframe") # Persistent ID needed!
   end
 
   def return_value(id)

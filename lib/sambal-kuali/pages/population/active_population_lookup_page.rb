@@ -3,7 +3,7 @@ class ActivePopulationLookup < PopulationsBase
   expected_element :keyword
 
   def frm
-    self.frame(class: "fancybox-iframe")
+    self.iframe(class: "fancybox-iframe")
   end
 
   include PopulationsSearch

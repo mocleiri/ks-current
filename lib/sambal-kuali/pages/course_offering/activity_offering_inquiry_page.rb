@@ -4,7 +4,7 @@ class ActivityOfferingInquiry < BasePage
   expected_element :term_element
 
   def frm
-    self.frame(class: "fancybox-iframe")
+    self.iframe(class: "fancybox-iframe")
   end
 
   action(:close) { |b| b.frm.button(text: "Close").click; b.loading.wait_while_present }
