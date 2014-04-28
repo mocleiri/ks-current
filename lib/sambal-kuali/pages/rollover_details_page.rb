@@ -11,13 +11,13 @@ class RolloverDetails < BasePage
   action(:go) { |b| b.go_button.click; b.loading.wait_while_present(300) }
 
   element(:rollover_results_div) { |b| b.frm.div(id: "KS-RolloverResultsInfoSection") }
-  value(:status) { |b| b.frm.div(id: "rollover-status").span(index: 0).text } #status shows after rollover initiated
+  value(:status) { |b| b.frm.div(id: "rollover-status").text } #status shows after rollover initiated
 
   element(:completed_status_element) { |b| b.rollover_results_div.table.rows[1].table } #status shows after rollover initiated
   value(:completed_status) { |b| b.completed_status_element.row.cells[1].text } #status shows after rollover initiated
 
 
-  value(:status_detail_msg) { |b| b.frm.span(id: "KS-RolloverResultsInfoSectionMsg1_span").text }
+  value(:status_detail_msg) { |b| b.frm.p(id: "KS-RolloverResultsInfoSectionMsg1").text }
   element(:release_to_departments_button) { |b| b.frm.button(text: "Release Courses") }
   action(:release_to_departments) { |b| b.release_to_departments_button.click; b.loading.wait_while_present }
 
@@ -34,14 +34,14 @@ class RolloverDetails < BasePage
   action(:re_do_rollover_link) { |b| b.frm.link(text: "Re-do Rollover").click; b.loading.wait_while_present }
   action(:re_do_rollover) { |b| b.re_do_rollover_link.click; b.loading.wait_while_present }
 
-  value(:source_term) { |b| b.frm.div(data_label: "Source Term").span().text }
-  value(:date_initiated) { |b| b.frm.div(data_label: "Date Initiated").span().text }
-  value(:date_completed) { |b| b.frm.div(data_label: "Date Completed").span().text }
-  value(:rollover_duration) { |b| b.frm.div(data_label: "Rollover Duration").span().text }
-  value(:course_offerings_transitioned) { |b| b.frm.div(data_label: "Course Offerings").span().text[/^(\d+)/] }
-  value(:course_offerings_exceptions) { |b| b.frm.div(data_label: "Course Offerings").span().text[/\d+(?=.exception)/] }
-  value(:activity_offerings_transitioned) { |b| b.frm.div(data_label: "Activity Offerings").span().text[/^(\d+)/] }
-  value(:activity_offerings_exceptions) { |b| b.frm.div(data_label: "Activity Offerings").span().text[/\d+(?=.exception)/] }
+  value(:source_term) { |b| b.frm.div(data_label: "Source Term").text }
+  value(:date_initiated) { |b| b.frm.div(data_label: "Date Initiated").text }
+  value(:date_completed) { |b| b.frm.div(data_label: "Date Completed").text }
+  value(:rollover_duration) { |b| b.frm.div(data_label: "Rollover Duration").text }
+  value(:course_offerings_transitioned) { |b| b.frm.div(data_label: "Course Offerings").text[/^(\d+)/] }
+  value(:course_offerings_exceptions) { |b| b.frm.div(data_label: "Course Offerings").text[/\d+(?=.exception)/] }
+  value(:activity_offerings_transitioned) { |b| b.frm.div(data_label: "Activity Offerings").text[/^(\d+)/] }
+  value(:activity_offerings_exceptions) { |b| b.frm.div(data_label: "Activity Offerings").text[/\d+(?=.exception)/] }
 
   element(:exceptions_div) { |b| b.frm.div(id: "rollover_exceptions_section")}
   element(:exceptions_table_search) { |b| b.exceptions_div.div(class: "dataTables_filter").text_field() }

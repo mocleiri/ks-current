@@ -5,7 +5,7 @@ class PersonnelLookup < BasePage
   expected_element :principal_name
 
   def frm
-    self.frame(class: "fancybox-iframe")
+    self.iframe(class: "fancybox-iframe")
   end
 
   element(:principal_name) { |b| b.frm.div(data_label: "Name").text_field }

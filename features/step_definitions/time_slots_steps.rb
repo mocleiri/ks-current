@@ -73,7 +73,7 @@ end
 
 Then /^only time slots of that term type appear$/ do
   on TimeSlotMaintenance do |page|
-    page.time_slot_search_results_table.rows[1..-2].each do |row|
+    page.time_slot_search_results_table.rows[1..-1].each do |row|
       row.cells[TimeSlotMaintenance::TIME_SLOT_RESULTS_TERM_TYPE].text.should == @time_slots.term_types[0].to_s
     end
   end

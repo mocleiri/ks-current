@@ -6,7 +6,7 @@ class CourseOfferingInquiry < BasePage
   expected_element :close_button_element
 
   def frm
-    self.frame(class: "fancybox-iframe")
+    self.iframe(class: "fancybox-iframe")
   end
 
   value(:course_code) { |b| b.frm.div(data_label: "Course Offering Code").span(index: 0).text }
@@ -19,7 +19,7 @@ class CourseOfferingInquiry < BasePage
   value(:final_exam_type) { |b| b.frm.div(data_label: "Final Exam Type").span(index: 0).text }
   value(:waitlist_state) { |b| b.frm.div(data_label: "Waitlists").span(index: 0).text == "Active" }
   value(:honors_flag) { |b| b.frm.div(data_label: "Honors Flag").span(index: 0).text == "YES" }
-  element(:close_button_element) { |b| b.frm.button(text: "Close")}
+  element(:close_button_element) { |b| b.frm.div(id: 'KS-CourseOfferingEditWrapper-InquiryView').button(text: "Close")}
   action(:close) { |b| b.close_button_element.click;b.loading.wait_while_present}
   element(:delivery_formats_table) { |b| b.frm.div(id: "KS-CourseOfferingEditWrapper-InquiryView").table(index:1) }
 

@@ -173,14 +173,14 @@ end
 
 module CalendarStickyFooter
 
-  PageFactory.element(:acal_sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") } # persistent id not possible
+  PageFactory.element(:acal_sticky_footer_div) { |b| b.frm.div(class: /uif-stickyButtonFooter/) } # persistent id not possible
 
   def save(opts = {})
     defaults = {
         :exp_success => true
     }
     options = defaults.merge(opts)
-
+    acal_sticky_footer_div.button(text: "Save").wait_until_present
     acal_sticky_footer_div.button(text: "Save").click
     loading.wait_while_present(60)
     if options[:exp_success] then

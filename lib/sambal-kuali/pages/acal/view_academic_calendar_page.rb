@@ -9,7 +9,7 @@ class ViewAcademicCalendar < BasePage
   action(:go_to_terms_tab) { |b| b.frm.a(id: "ui-id-2").click; b.loading.wait_while_present}
 
   element(:acal_overview_div) { |b| b.frm.div(id: "KS-AcademicCalendar-AcalOverview") }
-  value(:acal_name) { |b| b.frm.div(id: "AcalHeaderViewId").span(index: 0).text }
+  value(:acal_name) { |b| b.frm.header(id: "AcalHeaderViewId").span.text }
   value(:acal_start_date) { |b| b.frm.div(id: "academicCalendarStartDate").text }
   value(:acal_end_date) { |b| b.frm.div(id: "academicCalendarEndDate").text }
 
@@ -25,14 +25,14 @@ class ViewAcademicCalendar < BasePage
   element(:acal_event_list_link) { |b| b.link(id: "acal-info-event_toggle") }
   #element(:calendar_events_table) { |b| b.acal_event_list_div.table }
   element(:calendar_events_table) { |b| b.frm.table(id: "acal-events-table") }
-  element(:acal_holiday_div) { |b| b.frm.div(id: "acal-holidays") }
+  element(:acal_holiday_div) { |b| b.frm.section(id: "acal-holidays") }
   element(:hcal_name_div) { |b| b.acal_holiday_div.div(data_label: "Holiday Calendar Name") }
-  value(:hcal_name_text) { |b| b.hcal_name_div.span(index: 2).text }
-  value(:hcal_start_date) { |b| b.frm.span(id: "startDate_line0_control").text }
-  value(:hcal_end_date) { |b| b.frm.span(id: "endDate_line0_control").text }
+  value(:hcal_name_text) { |b| b.hcal_name_div.text[/(?<=\n).*/] }
+  value(:hcal_start_date) { |b| b.frm.div(id: "startDate_line0").text[/(?<=\n).*/] }
+  value(:hcal_end_date) { |b| b.frm.div(id: "endDate_line0").text[/(?<=\n).*/] }
 
   def open_events_section()
-    if acal_event_list_link.image(alt: "collapse").visible? then # collapse means collapsed
+    if !calendar_events_table.present? then # collapse means collapsed
       acal_event_list_link.click
       sleep 1
     end

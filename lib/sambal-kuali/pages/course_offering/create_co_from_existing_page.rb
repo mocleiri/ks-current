@@ -8,7 +8,7 @@ class CreateCOFromExisting < BasePage
 
   action(:create) { |b| b.frm.button(id: "createFromCopy_btn").click; b.loading.wait_while_present(120) }
   #element(:sticky_footer_div) { |b| b.frm.div(id: "u8") } #static id required
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") }
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
   action(:cancel) { |b| b.sticky_footer_div.link(text: "Cancel").click; b.loading.wait_while_present }
 
   element(:exclude_cancelled_aos) { |b| b.frm.label(text: /Exclude cancelled Activity Offerings/) }
@@ -20,8 +20,8 @@ class CreateCOFromExisting < BasePage
   element(:exclude_instructor) { |b| b.frm.label(text: /Exclude instructor information/) }
   action(:select_exclude_instructor) { |b| b.exclude_instructor.wait_until_present; b.exclude_instructor.click }
 
-  element(:course_offering_existing_table) { |b| b.frm.div(id: "KS-ExistingOffering-ListCOs").table() }
-  element(:next_page) { |b| b.frm.div(id: "KS-ExistingOffering-ListCOs").link(id: /next/) }
+  element(:course_offering_existing_table) { |b| b.frm.section(id: "KS-ExistingOffering-ListCOs").table() }
+  element(:next_page) { |b| b.frm.section(id: "KS-ExistingOffering-ListCOs").link(id: /next/) }
   #TODO just selects the first row - needs to be deprecated
   element(:course_offering_copy_element) {|b| b.frm.course_offering_existing_table.rows[1].cells[ACTIONS_COLUMN_CO].radio.click  }
   action(:course_offering_copy) {|b| b.course_offering_copy_element.click }

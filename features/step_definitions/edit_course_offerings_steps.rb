@@ -125,7 +125,6 @@ Then /^after I update the course offering exam options and delivery format are u
   on ManageCourseOfferings do |page|
     page.growl_text.should include "#{@course_offering.course} was successfully updated"
   end
-
   @course_offering.view_course_details
 
   on CourseOfferingInquiry do  |page|

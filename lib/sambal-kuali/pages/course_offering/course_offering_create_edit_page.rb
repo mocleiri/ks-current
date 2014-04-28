@@ -10,7 +10,7 @@ class CourseOfferingCreateEdit < BasePage
   action(:save_progress) { |b| b.frm.button(text: "Save Progress").click; b.loading.wait_while_present }
   #action(:cancel) { |b| b.frm.link(id: "COEdit_CancelLink").click; b.loading.wait_while_present }
 
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter", index: 1) }
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
   action(:create_offering) { |b| b.frm.button(id: "createUpdateFromCatalog_btn").click; b.loading.wait_while_present }
   action(:cancel) { |b| b.sticky_footer_div.link(text: "Cancel").click; b.loading.wait_while_present }
 
@@ -74,7 +74,7 @@ class CourseOfferingCreateEdit < BasePage
   action(:final_exam_option_none) { |b| b.final_exam_option_none_element.set; b.loading.wait_while_present }
   element(:final_exam_option_none_element) { |b| b.final_exam_option_div.radio(value: "NONE") }
 
-  element(:cross_listed_as_label) { |b| b.frm.span(text:/Crosslisted as:/)}
+  element(:cross_listed_as_label) { |b| b.frm.label(id: 'KS-COEditListed-Checkbox-Group_label')}
   element(:cross_listed_co_check_boxes) { |b| b.frm.div(id:"KS-COEditListed-Checkbox-Group")}
   element(:cross_listed_co_check_box) { |b| b.checkbox(id: "KS-COEditListed-Checkbox-Group_control_0") }
   action(:cross_listed_co_set) {|b| b.cross_listed_co_check_box.set; b.loading.wait_while_present   }
@@ -108,12 +108,12 @@ class CourseOfferingCreateEdit < BasePage
   ACTIONS_COLUMN = 4
 
   #work for the newest row, ie when adding
-  element(:new_format_select) {|b| b.delivery_formats_table.rows[-2].cells[FORMAT_COLUMN].select }
-  element(:new_grade_roster_level_select) {|b| b.delivery_formats_table.rows[-2].cells[GRADE_ROSTER_LEVEL_COLUMN].select }
-  value(:new_final_exam_driver_value) { |b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_DRIVER_COLUMN].text}
-  element(:new_final_exam_activity_select)  {|b| b.delivery_formats_table.rows[-2].cells[FINAL_EXAM_ACTIVITY_COLUMN].select }
+  element(:new_format_select) {|b| b.delivery_formats_table.rows[-1].cells[FORMAT_COLUMN].select }
+  element(:new_grade_roster_level_select) {|b| b.delivery_formats_table.rows[-1].cells[GRADE_ROSTER_LEVEL_COLUMN].select }
+  value(:new_final_exam_driver_value) { |b| b.delivery_formats_table.rows[-1].cells[FINAL_EXAM_DRIVER_COLUMN].text}
+  element(:new_final_exam_activity_select)  {|b| b.delivery_formats_table.rows[-1].cells[FINAL_EXAM_ACTIVITY_COLUMN].select }
   value(:new_final_exam_activity_value) { |b| b.new_final_exam_activity_select.selected_options[0].text}
-  element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-2].cells[ACTIONS_COLUMN].i(class: "ks-fontello-icon-cancel") }
+  element(:new_delivery_format_delete)  {|b| b.delivery_formats_table.rows[-1].cells[ACTIONS_COLUMN].i(class: "ks-fontello-icon-cancel") }
 
   element(:add_format_btn) { |b| b.frm.button(id: "KS-CourseOffering-FormatOfferingSubSection_add")}
   action(:add_format) { |b| b.add_format_btn.click; b.loading.wait_while_present }

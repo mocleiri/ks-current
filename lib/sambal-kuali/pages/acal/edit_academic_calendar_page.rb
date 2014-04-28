@@ -6,7 +6,7 @@ class EditAcademicCalendar < BasePage
 
   expected_element :header_calendar_name
 
-  element(:header_calendar_name) { |b| b.frm.div(class: "ks-unified-header ks-unified-header").h1.span}
+  element(:header_calendar_name) { |b| b.frm.header(class: /ks-unified-header ks-unified-header/).h1.span}
 
   element(:page_validation_list_exists) { |b| b.frm.ul(id: "pageValidationList").exists?}
   element(:page_error_message_exists) { |b| b.frm.ul(id: "pageValidationList").li(class: "uif-errorMessageItem").exists?}
@@ -22,31 +22,31 @@ class EditAcademicCalendar < BasePage
   element(:event_toggle_link) { |b| b.frm.link(id: "acal-info-event_toggle") }
 
   def open_events_section()
-    if event_toggle_link.image(alt: "collapse").visible? then # collapse means collapsed
+    if !add_event_button.present? then # collapse means collapsed
       event_toggle_link.click
       sleep 1
     end
   end
 
   element(:add_event_button) { |b| b.frm.button(id: "event-addline") }
-  element(:add_event_type) { |b| b.calendar_events_table.rows[-2].select(id: /event_type_line/) }
+  element(:add_event_type) { |b| b.calendar_events_table.rows[-1].select(id: /event_type_line/) }
 
-  element(:add_event_start_date) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_start_date_line/) }
-  element(:add_event_start_time) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_start_time_line/) }
-  element(:add_event_start_am) { |b| b.calendar_events_table.rows[-2].radio(id: /event_start_time_ampm_line/, value: "AM") }
-  element(:add_event_start_pm) { |b| b.calendar_events_table.rows[-2].radio(id: /event_start_time_ampm_line/, value: "PM") }
+  element(:add_event_start_date) { |b| b.calendar_events_table.rows[-1].text_field(id: /event_start_date_line/) }
+  element(:add_event_start_time) { |b| b.calendar_events_table.rows[-1].text_field(id: /event_start_time_line/) }
+  element(:add_event_start_am) { |b| b.calendar_events_table.rows[-1].radio(id: /event_start_time_ampm_line/, value: "AM") }
+  element(:add_event_start_pm) { |b| b.calendar_events_table.rows[-1].radio(id: /event_start_time_ampm_line/, value: "PM") }
   action(:add_event_start_am_set) { |b| b.add_event_start_am.set; b.loading.wait_while_present}
   action(:add_event_start_pm_set) { |b| b.add_event_start_pm.set; b.loading.wait_while_present}
 
-  element(:add_event_end_date) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_end_date_line/) }
-  element(:add_event_end_time) { |b| b.calendar_events_table.rows[-2].text_field(id: /event_end_time_line/) }
-  element(:add_event_end_am) { |b| b.calendar_events_table.rows[-2].radio.(id: /event_end_time_ampm_line/, value: "AM") }
-  element(:add_event_end_pm) { |b| b.calendar_events_table.rows[-2].radio(id: /event_end_time_ampm_line/, value: "PM") }
+  element(:add_event_end_date) { |b| b.calendar_events_table.rows[-1].text_field(id: /event_end_date_line/) }
+  element(:add_event_end_time) { |b| b.calendar_events_table.rows[-1].text_field(id: /event_end_time_line/) }
+  element(:add_event_end_am) { |b| b.calendar_events_table.rows[-1].radio.(id: /event_end_time_ampm_line/, value: "AM") }
+  element(:add_event_end_pm) { |b| b.calendar_events_table.rows[-1].radio(id: /event_end_time_ampm_line/, value: "PM") }
   action(:add_event_end_am_set) { |b| b.add_event_end_am.set; b.loading.wait_while_present}
   action(:add_event_end_pm_set) { |b| b.add_event_end_pm.set; b.loading.wait_while_present}
 
   def target_event_row event_type
-    calendar_events_table.rows[1..-2].each do |row|
+    calendar_events_table.rows[1..-1].each do |row|
       if event_type(row).selected_options[0].text == event_type
         return row
       end
@@ -76,7 +76,7 @@ class EditAcademicCalendar < BasePage
   action(:make_official) { |b| b.make_official_link.click; b.loading.wait_while_present }
 
   ###### confirm make official dialog
-  element(:make_official_dialog_div) { |b| b.frm.div(id: "KS-AcademicCalendar-ConfirmCalendarOfficial-Dialog") }
+  element(:make_official_dialog_div) { |b| b.frm.section(id: "KS-AcademicCalendar-ConfirmCalendarOfficial-Dialog") }
   action(:make_offical_confirm) { |b| b.make_official_dialog_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:make_offical_cancel) { |b| b.make_official_dialog_div.radio(index: 1).click ; b.loading.wait_while_present}
   ########
