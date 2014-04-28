@@ -6,7 +6,7 @@ class TimeSlotMaintenance < BasePage
 
   expected_element :time_slot_type_selector_list
 
-  element(:time_slot_error_message) { |b| b.frm.div(id: "timeSlotPage").li(class: "uif-errorMessageItem") }
+  element(:time_slot_error_message) { |b| b.frm.main(id: "timeSlotPage").li(class: "uif-errorMessageItem") }
 
   element(:time_slot_type_selector_div) { |b| b.frm.div(id: "TimeSlotTypeSelect-Section") }
   element(:time_slot_type_selector_list) { |b| b.time_slot_type_selector_div.select_list }
