@@ -6,7 +6,7 @@ class ActivityOfferingMaintenance < BasePage
 
   expected_element :mainpage_section
 
-  element(:ao_header_text) { |b| b.frm.div(class: "uif-viewHeader-contentWrapper uif-sticky").h1.span.text }
+  element(:ao_header_text) { |b| b.frm.header(class: /uif-sticky/).h1.span.text }
 
   action(:prev_ao) { |b| b.frm.link(id: "edit_ao_prev").click; b.loading.wait_while_present }
   element(:prev_ao_text) { |b| b.frm.link(id: "edit_ao_prev").text }
@@ -19,7 +19,6 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   #sticky footer
-  element(:sticky_footer) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") }
   element(:save_cancel_div) { |b| b.frm.div(id: "ActivityOfferingEdit_SubmitCancel") }
   element(:save_button) { |b| b.save_cancel_div.button(text: "Save Progress") }
   action(:save) { |b| sleep 2; b.loading.wait_while_present; sleep 2; b.save_button.click; b.loading.wait_while_present(120) }
@@ -30,7 +29,7 @@ class ActivityOfferingMaintenance < BasePage
   element(:submit_button) { |b| b.save_cancel_div.button(text: "Update") }
   action(:submit) { |b| sleep 2; b.loading.wait_while_present; sleep 2; b.submit_button.click; b.loading.wait_while_present(120) }
   action(:cancel) { |b| b.save_cancel_div.link(text: "Cancel").click; b.loading.wait_while_present }
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter", index: 1) }
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
   element(:send_revised_scheduling_information_checkbox) { |b| b.sticky_footer_div.checkbox(name: "document.newMaintainableObject.dataObject.sendRDLsToSchedulerAfterMSE") }
   action(:send_revised_scheduling_information) { |b| b.send_revised_scheduling_information_checkbox.click }
   #end sticky footer
@@ -210,7 +209,7 @@ class ActivityOfferingMaintenance < BasePage
 
   def target_person_row(id)
     row = nil
-    personnel_table.rows[1..-2].each do |row|
+    personnel_table.rows[1..-1].each do |row|
       row_key = row.text_field(id: /personnel_id_line/).value
       return row if row_key == id
     end

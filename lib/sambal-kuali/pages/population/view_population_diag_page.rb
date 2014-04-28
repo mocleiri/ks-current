@@ -3,7 +3,7 @@ class ViewPopulationDiag < PopulationsBase
   expected_element :close_button_element
 
   def frm
-    self.frame(class: "fancybox-iframe")
+    self.iframe(class: "fancybox-iframe")
   end
 
   include PopulationsSearch

@@ -22,7 +22,7 @@ And /^the cross-listing is indicated for the alias Course Offering$/ do
 
   #  Validate the crosslisting messaging is present.
   on ManageCourseOfferings do |page|
-    page.cross_listed_message_span.wait_until_present
+    page.cross_listed_message_element.wait_until_present
     page.cross_listed_message.include? "crosslisted alias for: " << cross_listed_infoText_targetValue
   end
 end
@@ -55,12 +55,7 @@ And /^I manage the (owner|alias) Course Offering$/ do |cluType|
   end
   #@input_code_value << "#{@suffix_with_cl}"
 
-  @cross_listed_co.go_to_manage_course_offerings
-  on ManageCourseOfferings do |page|
-    page.term.set @cross_listed_co.term
-    page.input_code.set @input_code_value
-    page.show
-  end
+  @cross_listed_co.manage
 end
 
 Then /^the alias Course Offering does not exist$/ do
@@ -83,7 +78,7 @@ end
 
 
 Then /^the alias is indicated as cross-listed with the owner CO$/ do
-  expect_result = "#{@cross_listed_co.cross_listed_codes[0]} is a crosslisted alias for: #{@cross_listed_co.course}"
+  expect_result = "Crosslisted as\n#{@cross_listed_co.cross_listed_codes[0]}"
   #expect_result = "#{@cross_listed_co.cross_listed_codes[0]}#{@suffix_with_cl} is a crosslisted alias for #{@cross_listed_co.course}#{@suffix_with_cl} (Owner)"
   on ManageCourseOfferings do |page|
     page.cross_listed_message.should include expect_result
@@ -94,11 +89,9 @@ Then /^the alias is indicated as cross-listed with the owner CO$/ do
 Then /^the edit page (should|should not) indicate a cross-listing$/ do |condition|
   on CourseOfferingCreateEdit do |page|
     if(condition == 'should not')
-      puts 'Testing for crosslisting label not present'
-      page.cross_listed_as_label.should_not be_present
+      page.cross_listed_as_label.visible?.should_not be_true
     else
-      puts 'Testing for crosslisting label present'
-      page.cross_listed_as_label.should be_present
+      page.cross_listed_as_label.visible?.should be_true
     end
   end
 end

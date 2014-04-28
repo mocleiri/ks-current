@@ -525,7 +525,7 @@ class ExamMatrixStatementObject
       page.loading.wait_while_present
       page.rule_days.set @days
       page.rule_starttime.set @start_time
-      page.rule_starttime_ampm.select @st_time_ampm.downcase
+      page.rule_starttime_ampm.select @st_time_ampm
     end
   end
 

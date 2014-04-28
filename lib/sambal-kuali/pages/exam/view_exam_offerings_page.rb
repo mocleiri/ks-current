@@ -4,7 +4,7 @@ class ViewExamOfferings < BasePage
   frame_element
   expected_element :exam_offerings_page_section
 
-  element(:exam_offerings_page_section) { |b| b.frm.div(id: "viewExamOfferingsPage")}
+  element(:exam_offerings_page_section) { |b| b.frm.main(id: "viewExamOfferingsPage")}
 
   element(:canceled_table_header_text) { |b| b.exam_offerings_page_section.span( class: "uif-headerText-span").text}
   element(:canceled_eo_table) { |b| b.frm.div( class: "uif-tableCollectionSection").table}

@@ -19,19 +19,19 @@ class ManageSocPage < BasePage
   action(:send_to_scheduler_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-SendToSchedulerButton").click; b.loading.wait_while_present }
   action(:publish_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-PublishButton").click; b.loading.wait_while_present }
 
-  element(:lock_popup_div) { |b| b.div(id: "lockConfirmDialog") }
+  element(:lock_popup_div) { |b| b.section(id: "lockConfirmDialog") }
   action(:lock_confirm_action) { |b| b.lock_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:lock_cancel_action) { |b| b.lock_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
-  element(:schedule_popup_div) { |b| b.div(id: "massScheduleConfirmDialog") }
+  element(:schedule_popup_div) { |b| b.section(id: "massScheduleConfirmDialog") }
   action(:schedule_confirm_action) { |b| b.schedule_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:schedule_cancel_action) { |b| b.schedule_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
-  element(:final_edit_popup_div) { |b| b.div(id: "finalEditConfirmDialog") }
+  element(:final_edit_popup_div) { |b| b.section(id: "finalEditConfirmDialog") }
   action(:final_edit_confirm_action) { |b| b.final_edit_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:final_edit_cancel_action) { |b| b.final_edit_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
-  element(:publish_popup_div) { |b| b.div(id: "massPublishConfirmDialog") }
+  element(:publish_popup_div) { |b| b.section(id: "massPublishConfirmDialog") }
   action(:publish_confirm_action) { |b| b.publish_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:publish_cancel_action) { |b| b.publish_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
@@ -62,14 +62,14 @@ class ManageSocPage < BasePage
     last_completed_state
   end
 
-  element(:soc_scheduling_status) { |b| b.span(id: "socSchedulingStatus_control").text }
-  element(:soc_publishing_status) { |b| b.span(id: "socPublishingStatus_control").text }
-  element(:schedule_initiated_date) { |b| b.span(id: "schedule_initiated_date_control").text }
-  element(:schedule_completed_date) { |b| b.span(id: "schedule_completed_date_control").text }
-  element(:schedule_duration) { |b| b.span(id: "schedule_duration_control").text }
-  element(:publish_initiated_date) { |b| b.span(id: "publish_initiated_date_control").text }
-  element(:publish_completed_date) { |b| b.span(id: "publish_completed_date_control").text }
-  element(:publish_duration) { |b| b.span(id: "publish_duration_control").text }
+  element(:soc_scheduling_status) { |b| b.div(id: "socSchedulingStatus").text }
+  element(:soc_publishing_status) { |b| b.div(id: "socPublishingStatus").text }
+  element(:schedule_initiated_date) { |b| b.div(id: "schedule_initiated_date").text }
+  element(:schedule_completed_date) { |b| b.div(id: "schedule_completed_date").text }
+  element(:schedule_duration) { |b| b.div(id: "schedule_duration").text }
+  element(:publish_initiated_date) { |b| b.div(id: "publish_initiated_date").text }
+  element(:publish_completed_date) { |b| b.div(id: "publish_completed_date").text }
+  element(:publish_duration) { |b| b.div(id: "publish_duration").text }
 
 
   element(:status_table) { |b| b.div(id: "ManageSOCView-StatusHistory-SubSection2").table }

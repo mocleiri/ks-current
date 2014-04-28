@@ -5,7 +5,7 @@ class DepartmentLookup < BasePage
   expected_element :short_name
 
   def frm
-    self.frame(class: "fancybox-iframe")
+    self.iframe(class: "fancybox-iframe")
   end
 
   element(:short_name) { |b| b.frm.div(data_label: "Abbreviation").text_field }

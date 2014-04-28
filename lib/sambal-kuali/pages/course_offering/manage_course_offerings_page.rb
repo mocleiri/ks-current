@@ -36,8 +36,8 @@ class ManageCourseOfferings < BasePage
   element(:view_exam_offerings_link) { |b| b.manage_offering_links_div.link(:text => /Manage Exam Offerings/) }
   action(:view_exam_offerings) { |b| b.view_exam_offerings_link.click; b.loading.wait_while_present }
 
-  element(:cross_listed_message_span) { |b| b.frm.span(id: "KS-CourseOfferingManagement-AliasMessage_span") }
-  value(:cross_listed_message) { |b| b.cross_listed_message_span.text }
+  element(:cross_listed_message_element) { |b| b.frm.div(id: "KS-CourseOfferingManagement-TitleAndCrossListInfoSection").div(data_label: 'Crosslisted as') }
+  value(:cross_listed_message) { |b| b.cross_listed_message_element.text }
 
   #NB - CO Toolbar is not on this page - this one element is listed here to allow nagivation to single CO when a CO List is
   # not expected (ie search for ENGL206, returns ENGL206 and ENG206A)
@@ -264,13 +264,13 @@ class ManageCourseOfferings < BasePage
     codes
   end
 
-  element(:cluster_list_div)  { |b| b.frm.div(id: "KS-CourseOfferingManagement-AOClustersCollection").div(class: "uif-stackedCollectionLayout") }
+  element(:cluster_list_div)  { |b| b.frm.div(id: "KS-CourseOfferingManagement-AOClustersCollection")}
   element(:cluster_warning_list)  { |b| b.frm.ul(id: "pageValidationList") }
 
   def cluster_div_list
     div_list = []
     if cluster_list_div.exists?
-      div_list = cluster_list_div.divs(class: "uif-collectionItem uif-boxCollectionItem")
+      div_list = cluster_list_div.divs(class: "uif-collectionItem uif-boxCollectionItem clearfix")
     end
     #puts "div list #{div_list.length}"
     div_list
@@ -377,7 +377,7 @@ class ManageCourseOfferings < BasePage
   private :get_cluster_div_ao_row
 
   def get_cluster_div_ao_rows(cluster_div)
-    return cluster_div.table.rows[1..-2] unless !cluster_div.table.exists?
+    return cluster_div.table.rows[1..-1] unless !cluster_div.table.exists?
     return []
   end
 

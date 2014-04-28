@@ -6,7 +6,7 @@ class TimeSlotMaintenance < BasePage
 
   expected_element :time_slot_type_selector_list
 
-  element(:time_slot_error_message) { |b| b.frm.div(id: "timeSlotPage").li(class: "uif-errorMessageItem") }
+  element(:time_slot_error_message) { |b| b.frm.main(id: "timeSlotPage").li(class: "uif-errorMessageItem") }
 
   element(:time_slot_type_selector_div) { |b| b.frm.div(id: "TimeSlotTypeSelect-Section") }
   element(:time_slot_type_selector_list) { |b| b.time_slot_type_selector_div.select_list }
@@ -26,7 +26,7 @@ class TimeSlotMaintenance < BasePage
   element(:add_time_slot_popup_field_endTime_am_pm) { |b| b.add_time_slot_form.div(id: "addOrEditEndTimeAmPm") }
   action(:save_add_time_slot) { |b| b.add_time_slot_form.button(id: "addOrEdit_action").click; b.loading.wait_while_present }
 
-  element(:edit_time_slot_form) { |b| b.frm.div(id: "KS-TimeSlot-EditTimeSlotPopupForm") }
+  element(:edit_time_slot_form) { |b| b.frm.section(id: "KS-TimeSlot-EditTimeSlotPopupForm") }
 
   element(:edit_time_slot_popup_field_termType) { |b| b.edit_time_slot_form.div(id: "addOrEditTermKey").select_list }
   element(:edit_time_slot_popup_field_days) { |b| b.edit_time_slot_form.div(id: "addOrEditDays").text_field }
@@ -38,7 +38,7 @@ class TimeSlotMaintenance < BasePage
   action(:save_edit_time_slot) { |b| b.edit_time_slot_form.button(id: "addOrEdit_action").click; b.loading.wait_while_present }
 
   action(:initiate_delete) { |b| b.time_slot_toolbar_div.button(id: "TimeSlot-ToolBar-Delete-TimeSlot").click }
-  element(:delete_confirmation_dialog) { |b| b.frm.div(id: "deleteTimeSlotsConfirmationDialog-lightbox") }
+  element(:delete_confirmation_dialog) { |b| b.frm.section(id: "deleteTimeSlotsConfirmationDialog-lightbox") }
   action(:confirm_delete) { |b| b.delete_confirmation_dialog.button(id: "timeslot_delete_confirm").click; b.loading.wait_while_present }
 
   element(:time_slot_search_results_table) { |b| b.frm.div(id: "TimeSlotSearchResultsDisplayTable").table() }

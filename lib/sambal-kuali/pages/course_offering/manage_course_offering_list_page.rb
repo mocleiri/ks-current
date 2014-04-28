@@ -5,7 +5,7 @@ class ManageCourseOfferingList < BasePage
 
   expected_element :subject_code
 
-  element(:subject_code) { |b| b.frm.div(class: "uif-viewHeader-contentWrapper uif-sticky").h1.span(index: 1) }
+  element(:subject_code) { |b| b.frm.div(id: 'courseOfferingManagementView').header(class: /uif-viewHeader/).h1.span }
 
   element(:co_results_div) { |b| b.frm.div(id: "Uif-ViewContentWrapper") }
 

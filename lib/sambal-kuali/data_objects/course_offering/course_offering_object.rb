@@ -258,6 +258,14 @@ class CourseOffering
       @use_final_exam_matrix = options[:use_final_exam_matrix] if options[:exp_success]
     end
 
+    if options[:delivery_format_list] != nil
+      options[:delivery_format_list].each do |delivery_obj|
+        @delivery_format_list.each do |existing_si|
+          existing_si.update_delivery_format(delivery_obj) if existing_si.format == delivery_obj.format
+        end
+      end
+    end
+
     if options[:grade_format] != nil
       on CourseOfferingCreateEdit do |page|
         page.select_grade_roster_level(options[:grade_format])
@@ -338,6 +346,25 @@ class CourseOffering
       @affiliated_person_list = options[:affiliated_person_list] if options[:exp_success]
     end
 
+    if options[:affiliated_org_list] != nil
+      options[:affiliated_org_list].values.each do |org|
+
+        on CourseOfferingCreateEdit do |page|
+          page.add_org
+        end
+
+        on CourseOfferingCreateEdit do |page|
+          page.lookup_org_new
+        end
+
+        on OrgLookupPopUp do |page|
+          page.long_name.set org.org_name
+          page.search
+          page.return_value(org.org_id)
+        end
+      end
+    end
+
     if options[:cross_listed] != nil
       on CourseOfferingCreateEdit do |page|
         options[:cross_listed] ? page.cross_listed_co_set : page.cross_listed_co_clear
@@ -414,6 +441,7 @@ class CourseOffering
 
         @activity_offering_cluster_list.push(temp_aoc)
       end
+      #show_debug_details
     end
 
   end
@@ -424,6 +452,15 @@ class CourseOffering
     #       SUFFIX of the cross-listed course
     search_by_subjectcode
     @cross_listed_codes = on(ManageCourseOfferingList).crosslisted_codes(course)
+  end
+
+  def show_debug_details
+    @activity_offering_cluster_list.each do |cluster|
+      puts "cluster name: #{cluster.private_name}"
+      cluster.ao_list.each do |ao|
+        puts "Assigned AO: #{ao.code}, #{ao.activity_type}, #{ao.max_enrollment} "
+      end
+    end
   end
 
   def search_by_subjectcode
@@ -1130,3 +1167,105 @@ class CourseOffering
 
 end
 
+class AffiliatedOrg
+
+  include Foundry
+  include DataFactory
+  include DateFactory
+  include StringFactory
+  include Workflows
+
+  attr_accessor :org_id,
+                :org_name
+
+  def initialize(browser, opts={})
+    @browser = browser
+
+    defaults = {
+        :org_id => "ORGID-BIOL",
+        :org_name => "Biology"
+    }
+    options = defaults.merge(opts)
+    set_options(options)
+  end
+
+end
+
+class DeliveryFormat
+  include Foundry
+  include DataFactory
+  include DateFactory
+  include StringFactory
+  include Workflows
+
+  attr_accessor :format,
+                :grade_format,
+                :final_exam_activity,
+                :final_exam_driver
+
+  def initialize(browser, opts={})
+    @browser = browser
+
+    defaults = {
+        :format => "random",
+        :grade_format => "Course Offering",
+        :final_exam_activity => "Lecture",
+        :final_exam_driver => ""
+    }
+    options = defaults.merge(opts)
+    set_options(options)
+  end
+
+  def create
+    on CourseOfferingCreateEdit do |page|
+      if ! page.new_format_select.present?
+        page.add_format
+      end
+    end
+
+    if @format == "random" then
+      set_random_delivery_formats
+    else
+      on CourseOfferingCreateEdit do |page|
+        page.new_format_select.select(@format)
+        page.new_grade_roster_level_select.wait_until_present
+        page.new_grade_roster_level_select.select(@grade_format)
+        page.new_final_exam_activity_select.select(@final_exam_activity) if page.new_final_exam_activity_select.present?
+      end
+    end
+    standardize_format_values
+  end
+
+  def set_random_delivery_formats
+    on CourseOfferingCreateEdit do  |page|
+      @format = page.select_random_option(page.new_format_select)
+      page.new_grade_roster_level_select.wait_until_present
+      @grade_format = page.select_random_option(page.new_grade_roster_level_select)
+      @final_exam_activity = page.select_random_option(page.new_final_exam_activity_select) if page.new_final_exam_activity_select.present?
+    end
+    standardize_format_values
+  end
+
+  def standardize_format_values
+    if @format == "Lab"
+      @format = "Lab Only"
+    elsif @format == "Lecture"
+      @format = "Lecture Only"
+    end
+    if @grade_format == "Course"
+      @grade_format = "Course Offering"
+    else
+    end
+  end
+  private  :standardize_format_values
+
+  def update_delivery_format(delivery_format_obj)
+    on CourseOfferingCreateEdit do |page|
+      page.edit_grade_roster_level(@format,delivery_format_obj.grade_format)
+      @grade_format = delivery_format_obj.grade_format
+      page.edit_final_exam_activity(@format,delivery_format_obj.final_exam_activity)
+      @final_exam_activity = delivery_format_obj.final_exam_activity
+    end
+  end
+
+end

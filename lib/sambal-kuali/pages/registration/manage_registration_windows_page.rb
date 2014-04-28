@@ -73,7 +73,7 @@ class RegistrationWindowsCreate < RegistrationWindowsBase
   element(:max_appointments_per_slot) { |b| b.frm.text_field(name: "newCollectionLines['appointmentWindows'].appointmentWindowInfo.maxAppointmentsPerSlot") }
   element(:page_validation_header) { |b| b.h3(id: "pageValidationHeader") }
   #element(:date_ranges) { |b| b.div(id: "KS-RegistrationWindows-PeriodSection") }
-  element(:date_ranges) { |b| b.frm.span(id: "periodDetails_span") }
+  element(:date_ranges) { |b| b.frm.div(id: "periodDetails") }
   #value(:date_ranges) { |b| b.div(id: "KS-RegistrationWindows-PeriodSection").span().text }
   element(:add_button_element) { |b| b.frm.button(text: "add") }
   action(:add) { |b| b.frm.button(text: "add").click; b.adding.wait_while_present }

@@ -10,7 +10,7 @@ class ReinstateActivityOffering < BasePage
 
   element(:warning_message_div) { |b| b.frm.div(id: "KS-SelectedAoReinstateConfirmation-WarningMessage") }
 
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer uif-stickyFooter uif-stickyButtonFooter") }
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
 
   element(:reinstate_activity_button) { |b| b.frm.button(id: "AoReinstateConfirmationCancelButton") }
   action(:reinstate_activity) { |b| b.reinstate_activity_button.click; b.loading.wait_while_present(120) }
@@ -18,7 +18,7 @@ class ReinstateActivityOffering < BasePage
   action(:cancel) { |b| b.cancel_button.click; b.loading.wait_while_present(120) }
 
   def warning_msg_present(message)
-    return warning_message_div.span(text: /#{Regexp.escape(message)}/).exists?
+    return warning_message_div.p(text: /#{Regexp.escape(message)}/).exists?
   end
 
 end
