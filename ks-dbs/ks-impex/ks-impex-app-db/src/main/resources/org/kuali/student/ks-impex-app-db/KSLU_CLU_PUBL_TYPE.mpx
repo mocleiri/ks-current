@@ -1,4 +1,4 @@
 TYPE_KEY,TYPE_DESC,EFF_DT,EXPIR_DT,NAME,OBJ_ID,VER_NBR
-"kuali.lu.publication.Catalog","Catalog","2000-01-01T00:00:00.000+0000","${mpx.null}","Catalog","${mpx.null}","0"
-"kuali.lu.publication.GradCatalog","Graduate Catalog","2000-01-01T00:00:00.000+0000","${mpx.null}","Grad Catalog","${mpx.null}","0"
-"kuali.lu.publication.UndergradCatalog","Undergraduate Catalog","2000-01-01T00:00:00.000+0000","${mpx.null}","Undergrad Catalog","${mpx.null}","0"
+"kuali.lu.publication.Catalog","Catalog","2000-01-01T00:00:00.000-0500","${mpx.null}","Catalog","${mpx.null}","0"
+"kuali.lu.publication.GradCatalog","Graduate Catalog","2000-01-01T00:00:00.000-0500","${mpx.null}","Grad Catalog","${mpx.null}","0"
+"kuali.lu.publication.UndergradCatalog","Undergraduate Catalog","2000-01-01T00:00:00.000-0500","${mpx.null}","Undergrad Catalog","${mpx.null}","0"

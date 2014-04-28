@@ -1,3 +1,3 @@
 ID,DESCR,EFF_DT,EXPIR_DT,NAME,TYPE_KEY,OBJ_ID,VER_NBR,TYPE_DESC
-"kuali.lo.type.governed","LO governed by an organization external to department, e.g., the college at large, or a state or accrediting organization","2008-01-01T00:00:00.000+0000","${mpx.null}","Governed","${mpx.null}","602171427CC94F7FB0A55829AED3F082","0","${mpx.null}"
-"kuali.lo.type.singleUse","LO created in support of programs or courses, e.g., faculty-inspired additional LO for a course","2008-01-01T00:00:00.000+0000","${mpx.null}","Single use","${mpx.null}","77E6218ADA8A4C049F8D0A1F1DC94F99","0","${mpx.null}"
+"kuali.lo.type.governed","LO governed by an organization external to department, e.g., the college at large, or a state or accrediting organization","2008-01-01T00:00:00.000-0500","${mpx.null}","Governed","${mpx.null}","602171427CC94F7FB0A55829AED3F082","0","${mpx.null}"
+"kuali.lo.type.singleUse","LO created in support of programs or courses, e.g., faculty-inspired additional LO for a course","2008-01-01T00:00:00.000-0500","${mpx.null}","Single use","${mpx.null}","77E6218ADA8A4C049F8D0A1F1DC94F99","0","${mpx.null}"
