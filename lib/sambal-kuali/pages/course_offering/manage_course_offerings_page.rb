@@ -36,8 +36,8 @@ class ManageCourseOfferings < BasePage
   element(:view_exam_offerings_link) { |b| b.manage_offering_links_div.link(:text => /Manage Exam Offerings/) }
   action(:view_exam_offerings) { |b| b.view_exam_offerings_link.click; b.loading.wait_while_present }
 
-  element(:cross_listed_message_span) { |b| b.frm.span(id: "KS-CourseOfferingManagement-AliasMessage_span") }
-  value(:cross_listed_message) { |b| b.cross_listed_message_span.text }
+  element(:cross_listed_message_element) { |b| b.frm.div(id: "KS-CourseOfferingManagement-TitleAndCrossListInfoSection").div(data_label: 'Crosslisted as') }
+  value(:cross_listed_message) { |b| b.cross_listed_message_element.text }
 
   #NB - CO Toolbar is not on this page - this one element is listed here to allow nagivation to single CO when a CO List is
   # not expected (ie search for ENGL206, returns ENGL206 and ENG206A)
