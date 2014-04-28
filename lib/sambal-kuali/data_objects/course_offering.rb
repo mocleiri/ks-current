@@ -392,17 +392,17 @@ class CourseOffering
 
 
 
-  def check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+  def check_logical_order_display_of_elements_in_allpages(course_code_count,course_code_list,course_number_list,output)
     on CourseSearch do |page|
       no_of_rows = page.results_table.rows.length-1
-      cloned_textArray= textArray.clone
-      cloned_numArray= numArray.clone
-      numArray_length = numArray.size
+      cloned_textArray= course_code_list.clone
+      cloned_numArray= course_number_list.clone
+      numArray_length = course_number_list.size
       cloned_textArray_length = cloned_textArray.size
       cloned_numArray_length = cloned_numArray.size
 
       # have to implement for other pages
-      if textArray_length > 0
+      if course_code_count > 0
         #check for courseCode in Text Array
         for index in 1..no_of_rows do
           puts "Index is #{index}"
@@ -410,26 +410,26 @@ class CourseOffering
           puts course_code
           sleep(1)
           course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
-          if course_code.include? "#{textArray[0]}"
+          if course_code.include? "#{course_code_list[0]}"
 
           else
 
-            if textArray_length > 1
-              textArray.delete_at(0)
+            if course_code_count > 1
+              course_code_list.delete_at(0)
               #text_array_element=text_array_element+1
-              if course_code.include? "#{textArray[0]}"
+              if course_code.include? "#{course_code_list[0]}"
               else
-                textArray.delete_at(0)
-                if course_code.include? "#{numArray[0]}"
+                course_code_list.delete_at(0)
+                if course_code.include? "#{course_number_list[0]}"
                 else
                   if numArray_length > 1
-                    numArray.delete_at(0)
-                    if course_code.include? "#{numArray[0]}"
+                    course_number_list.delete_at(0)
+                    if course_code.include? "#{course_number_list[0]}"
 
                     else
                     end
                   else
-                    numArray.delete_at(0)
+                    course_number_list.delete_at(0)
                     if ((course_name.include? "#{cloned_textArray[0]}".downcase) ||(course_description_text.include? "#{cloned_textArray[0]}".downcase))
                     else
                       if cloned_textArray_length > 1
@@ -465,11 +465,11 @@ class CourseOffering
           course_code = page.results_table.rows[index].cells[COURSE_CODE].text
           sleep(1)
           course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
-          if course_code. include? "#{numArray[0]}"
+          if course_code. include? "#{course_number_list[0]}"
           else
-            if numArray > 1
-              numArray.delete_at(0)
-              if course_code. include? "#{numArray[0]}"
+            if course_number_list > 1
+              course_number_list.delete_at(0)
+              if course_code. include? "#{course_number_list[0]}"
               else
               end
             end
@@ -480,7 +480,7 @@ class CourseOffering
   end
 
 
-  def check_logical_order_display_of_elements_in_firstpage(textArray_length,numArray_length,textArray,numArray,output)
+  def check_logical_order_display_of_elements_in_firstpage(course_code_count,numArray_length,course_code_list,course_number_list,output)
     on CourseSearch do |page|
       no_of_rows = page.results_table.rows.length-1
       concat_array_length=  output.size
@@ -490,22 +490,22 @@ class CourseOffering
         sleep(1)
         course_name = page.results_table.rows[index].cells[COURSE_NAME].text.downcase
         if index > concat_array_length
-          #for k in 0 ..textArray_length
-          if course_code.include? "#{textArray[0]}"
+          #for k in 0 ..course_code_count
+          if course_code.include? "#{course_code_list[0]}"
           else
-            if textArray_length > 1
-              textArray.delete_at(0)
+            if course_code_count > 1
+              course_code_list.delete_at(0)
               #text_array_element=text_array_element+1
-              if course_code. include? "#{textArray[0]}"
+              if course_code. include? "#{course_code_list[0]}"
               else
               end
             else
-              textArray.delete_at(0)
-              if course_code.include? "#{numArray[0]}"
+              course_code_list.delete_at(0)
+              if course_code.include? "#{course_number_list[0]}"
               else
                 if numArray_length > 1
-                  numArray.delete_at(0)
-                  if course_code.include? "#{numArray[0]}"
+                  course_number_list.delete_at(0)
+                  if course_code.include? "#{course_number_list[0]}"
                   else
                   end
                 end
@@ -528,28 +528,26 @@ class CourseOffering
 
   def logical_order_sort(text)
     output=[]
-    arr = text.split( " " )
-    numArray = Array.new
+    search_text_array = text.split( " " )
+    course_number_list = Array.new
     numberArray = Array.new
-    textArray = Array.new
+    course_code_list = Array.new
     textstringArray = Array.new
-    for index in 0 ... arr.size
-      arrValue = "#{arr[index]}"
+    for index in 0 ... search_text_array.size
+      arrValue = "#{search_text_array[index]}"
       if (arrValue.match(/^\d+$/))
         numberArray.push arrValue
       else
         textstringArray.push arrValue
       end
     end
-    numArray=  numberArray.sort
-    textArray =  textstringArray.sort
-    numArray_length=numArray.size
-    textArray_length=textArray.size
-    puts numArray_length
-    puts textArray_length
-    for j in 0...textArray_length do
-      for i in 0...numArray_length do
-        output<< textArray[j] + numArray[i].to_s
+    course_number_list=  numberArray.sort
+    course_code_list =  textstringArray.sort
+    course_number_count=course_number_list.size
+    course_code_count=course_code_list.size
+    for j in 0...course_code_count do
+      for i in 0...course_number_count do
+        output<< course_code_list[j] + course_number_list[i].to_s
       end
     end
     on CourseSearch do |page|
@@ -561,16 +559,16 @@ class CourseOffering
           puts "------ page no = #{pgno}"
           if pgno == 1
             puts "inside pageno = 1 "
-            result = check_logical_order_display_of_elements_in_firstpage(textArray_length,numArray_length,textArray,numArray,output)
+            result = check_logical_order_display_of_elements_in_firstpage(course_code_count,course_number_count,course_code_list,course_number_list,output)
             if result == false
               return false
             end
           else
             puts "<<<<<<<<<<<<<<<<<<<<<<<  page no = #{pgno}   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            puts   " text Array Size = #{textArray.size}"
-            puts   " Num Array Size = #{numArray.size}"
+            puts   " text Array Size = #{course_code_list.size}"
+            puts   " Num Array Size = #{course_number_list.size}"
 
-            check_logical_order_display_of_elements_in_allpages(textArray_length,textArray,numArray,output)
+            check_logical_order_display_of_elements_in_allpages(course_code_count,course_code_list,course_number_list,output)
 
           end
           page.results_list_next_enabled.wait_until_present
@@ -580,7 +578,7 @@ class CourseOffering
         end
       else
         if pgno == 1
-          result = check_logical_order_display_of_elements_in_firstpage(textArray_length,numArray_length,textArray,numArray, output)
+          result = check_logical_order_display_of_elements_in_firstpage(course_code_count,course_number_count,course_code_list,course_number_list, output)
           if result == false
             return false
           end
