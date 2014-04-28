@@ -16,19 +16,20 @@
 package org.kuali.student.lum.lu.ui.krms.service.impl;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.krad.uif.component.Component;
 import org.kuali.rice.krad.uif.container.CollectionGroup;
 import org.kuali.rice.krad.uif.container.Group;
 import org.kuali.rice.krad.uif.element.Action;
 import org.kuali.rice.krad.uif.field.Field;
-import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.lifecycle.ViewLifecycleUtils;
+import org.kuali.rice.krad.uif.util.LifecycleElement;
+import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
 import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.uif.view.ViewModel;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.ObjectUtils;
 import org.kuali.rice.krms.api.repository.LogicalOperator;
-import org.kuali.rice.krms.api.repository.type.KrmsTypeDefinition;
 import org.kuali.rice.krms.api.repository.proposition.PropositionType;
+import org.kuali.rice.krms.api.repository.type.KrmsTypeDefinition;
 import org.kuali.rice.krms.dto.PropositionEditor;
 import org.kuali.rice.krms.dto.RuleEditor;
 import org.kuali.rice.krms.dto.TermEditor;
@@ -43,12 +44,13 @@ import org.kuali.student.core.krms.dto.KSPropositionEditor;
 import org.kuali.student.core.krms.tree.KSRuleEditTreeBuilder;
 import org.kuali.student.core.krms.tree.KSRulePreviewTreeBuilder;
 import org.kuali.student.core.krms.tree.KSRuleViewTreeBuilder;
-import org.kuali.student.lum.lu.ui.krms.dto.LUPropositionEditor;
-import org.kuali.student.lum.lu.ui.krms.dto.KrmsSuggestDisplay;
-import org.kuali.student.lum.lu.ui.krms.tree.LURulePreviewTreeBuilder;
-import org.kuali.student.lum.lu.ui.krms.tree.LURuleViewTreeBuilder;
 import org.kuali.student.lum.lu.ui.krms.dto.CluInformation;
 import org.kuali.student.lum.lu.ui.krms.dto.CluSetInformation;
+import org.kuali.student.lum.lu.ui.krms.dto.KrmsSuggestDisplay;
+import org.kuali.student.lum.lu.ui.krms.dto.LUPropositionEditor;
+import org.kuali.student.lum.lu.ui.krms.tree.LURuleEditTreeBuilder;
+import org.kuali.student.lum.lu.ui.krms.tree.LURulePreviewTreeBuilder;
+import org.kuali.student.lum.lu.ui.krms.tree.LURuleViewTreeBuilder;
 import org.kuali.student.lum.lu.ui.krms.util.CluInformationHelper;
 import org.kuali.student.lum.lu.ui.krms.util.CluSearchUtil;
 import org.kuali.student.lum.lu.ui.krms.util.LUKRMSConstants;
@@ -72,6 +74,7 @@ import org.kuali.student.r2.lum.util.constants.LrcServiceConstants;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -99,11 +102,11 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
     }
 
     @Override
-    public void applyAuthorizationAndPresentationLogic(View view, Component component, ViewModel model) {
-        super.applyAuthorizationAndPresentationLogic(view, component, model);
+    public void performCustomApplyModel(LifecycleElement element, Object model) {
+        super.performCustomApplyModel(element, model);
 
-        if(component instanceof Group) {
-            Group group = (Group) component;
+        if(element instanceof Group) {
+            Group group = (Group) element;
 
             if(group.isReadOnly()) {
                 processGroupItems(group);
@@ -112,12 +115,12 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
     }
 
     protected void processGroupItems(Group group) {
-        List<Field> fields = ComponentUtils.getComponentsOfType(group.getItems(), Field.class);
+        List<Field> fields = ViewLifecycleUtils.getElementsOfTypeDeep(group.getItems(), Field.class);
         for(Field field : fields) {
             field.setReadOnly(true);
         }
 
-        List<Action> actions = ComponentUtils.getComponentsOfTypeDeep(group.getItems(), Action.class);
+        List<Action> actions = ViewLifecycleUtils.getElementsOfTypeDeep(group.getItems(), Action.class);
         for(Action action : actions) {
             action.setRender(false);
         }
@@ -163,13 +166,13 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
     protected void nullifyCluSetInfo(LUPropositionEditor propositionEditor) {
 
         //Set cluSetInfo recursively to null to force builder to create new cluset.
-        if(propositionEditor.getCluSet()!=null){
-            propositionEditor.getCluSet().setCluSetInfo(null);
+        if(propositionEditor.getCourseSet()!=null){
+            propositionEditor.getCourseSet().setCluSetInfo(null);
         } else if(propositionEditor.getPropositionTypeCode().equals(PropositionType.COMPOUND.getCode())) {
             for(int i = 0; i < propositionEditor.getCompoundEditors().size(); i++) {
                 LUPropositionEditor prop = (LUPropositionEditor) propositionEditor.getCompoundEditors().get(i);
-                if(prop.getCluSet() != null) {
-                    prop.getCluSet().setCluSetInfo(null);
+                if(prop.getCourseSet() != null) {
+                    prop.getCourseSet().setCluSetInfo(null);
                 } else if(prop.getPropositionTypeCode().equals(PropositionType.COMPOUND.getCode())) {
                     nullifyCluSetInfo(prop);
                 }
@@ -196,7 +199,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
     @Override
     public Boolean compareProposition(PropositionEditor original, PropositionEditor compare) {
         //If proposition contains cluset or programCluset, skip super compare method else use super compare method for all simple propositions
-        if(((LUPropositionEditor) original).getCluSet() == null && ((LUPropositionEditor) original).getProgCluSet() == null) {
+        if(((LUPropositionEditor) original).getCourseSet() == null && ((LUPropositionEditor) original).getProgramSet() == null) {
             if(!super.compareProposition(original, compare)) {
                 return false;
             }
@@ -208,48 +211,48 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
             LUPropositionEditor enrolOriginal = (LUPropositionEditor) original;
 
             //Populate compare proposition cluSetInformation for comparison
-            if(enrolOriginal.getCluSet() != null) {
-                if(enrolOriginal.getCluSet().getParent() == null) {
+            if(enrolOriginal.getCourseSet() != null) {
+                if(enrolOriginal.getCourseSetParent() == null) {
                     TermEditor term = new TermEditor(PropositionTreeUtil.getTermParameter(compare.getParameters()).getTermValue());
                     for(TermParameterEditor termParameterEditor : term.getEditorParameters()) {
                         if(termParameterEditor.getName().equals(KSKRMSServiceConstants.TERM_PARAMETER_TYPE_COURSE_CLUSET_KEY)) {
-                            enrolOriginal.getCluSet().setParent(this.getCluInfoHelper().getCluSetInformation(termParameterEditor.getValue()));
+                            enrolOriginal.setCourseSetParent(this.getCluInfoHelper().getCluSetInformation(termParameterEditor.getValue()));
                             break;
                         }
                     }
                 }
                 //If compare and original propositions are not null compare CluSetInformation
-                if(enrolOriginal.getCluSet() != null && enrolOriginal.getCluSet().getParent() != null) {
+                if(enrolOriginal.getCourseSetParent() != null) {
                     //Compare propositions CluSetInformation clu's
-                    if(!enrolOriginal.getCluSet().getCluDelimitedString().equals(enrolOriginal.getCluSet().getParent().getCluDelimitedString())) {
+                    if(!enrolOriginal.getCourseSet().getCluDelimitedString().equals(enrolOriginal.getCourseSetParent().getCluDelimitedString())) {
                         return false;
                     }
                     //Compare propositions CluSetInformation cluSets
-                    if(!enrolOriginal.getCluSet().getCluSetDelimitedString().equals(enrolOriginal.getCluSet().getParent().getCluSetDelimitedString())) {
+                    if(!enrolOriginal.getCourseSet().getCluSetDelimitedString().equals(enrolOriginal.getCourseSetParent().getCluSetDelimitedString())) {
                         return false;
                     }
                 }
             }
 
             //Populate compare proposition Program CluSetInformation for comparison
-            if(enrolOriginal.getProgCluSet() != null) {
-                if(enrolOriginal.getProgCluSet().getParent() == null) {
+            if(enrolOriginal.getProgramSet() != null) {
+                if(enrolOriginal.getProgramSetParent() == null) {
                     TermEditor term = new TermEditor(PropositionTreeUtil.getTermParameter(compare.getParameters()).getTermValue());
                     for(TermParameterEditor termParameterEditor : term.getEditorParameters()) {
                         if(termParameterEditor.getName().equals(KSKRMSServiceConstants.TERM_PARAMETER_TYPE_COURSE_CLUSET_KEY)) {
-                            enrolOriginal.getProgCluSet().setParent(this.getCluInfoHelper().getCluSetInformation(termParameterEditor.getValue()));
+                            enrolOriginal.setProgramSetParent(this.getCluInfoHelper().getCluSetInformation(termParameterEditor.getValue()));
                             break;
                         }
                     }
                 }
                 //If compare and original propositions are not null compare ProgramCluSetInformation
-                if(enrolOriginal.getProgCluSet() != null && enrolOriginal.getProgCluSet().getParent() != null) {
+                if(enrolOriginal.getProgramSetParent() != null) {
                     //Compare propositions ProgramCluSetInformation clu's
-                    if(!enrolOriginal.getProgCluSet().getCluDelimitedString().equals(enrolOriginal.getProgCluSet().getParent().getCluDelimitedString())) {
+                    if(!enrolOriginal.getProgramSet().getCluDelimitedString().equals(enrolOriginal.getProgramSetParent().getCluDelimitedString())) {
                         return false;
                     }
                     //Compare propositions ProgramCluSetInformation cluSets
-                    if(!enrolOriginal.getProgCluSet().getCluSetDelimitedString().equals(enrolOriginal.getProgCluSet().getParent().getCluSetDelimitedString())) {
+                    if(!enrolOriginal.getProgramSet().getCluSetDelimitedString().equals(enrolOriginal.getProgramSetParent().getCluSetDelimitedString())) {
                         return false;
                     }
                 }
@@ -259,13 +262,15 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
         return true;
     }
 
-    protected boolean performAddLineValidation(View view, CollectionGroup collectionGroup, Object model,
-                                               Object addLine) {
+    @Override
+    protected boolean performAddLineValidation(ViewModel viewModel, Object newLine, String collectionId,
+                                               String collectionPath) {
+        /*CollectionGroup collectionGroup = ObjectPropertyUtils.getPropertyValue(viewModel, collectionPath);
         if(LUKRMSConstants.KSKRMS_PROPERTY_NAME_CLUS.equals(collectionGroup.getPropertyName())){
             //Check if this is a valid clu.
-            CluInformation clu = (CluInformation) addLine;
+            CluInformation clu = (CluInformation) newLine;
             if((clu.getCode()==null)||(clu.getCode().isEmpty())){
-                collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                collectionGroup.initializeNewCollectionLine(viewModel.getView(), viewModel, collectionGroup, true);
                 GlobalVariables.getMessageMap().putErrorForSectionId(collectionGroup.getId(), LUKRMSConstants.KSKRMS_MSG_ERROR_APPROVED_COURSE_REQUIRED);
                 return false;
             } else {
@@ -275,7 +280,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
 
             CluInformation searchClu = this.getCluInfoHelper().getCluInfoForCodeAndType(clu.getCode(), CluSearchUtil.getCluTypesForCourse());
             if(searchClu==null){
-                collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                collectionGroup.initializeNewCollectionLine(viewModel.getView(), viewModel, collectionGroup, true);
                 GlobalVariables.getMessageMap().putErrorForSectionId(collectionGroup.getId(), LUKRMSConstants.KSKRMS_MSG_ERROR_APPROVED_COURSE_CODE_INVALID);
                 return false;
             } else {
@@ -286,17 +291,17 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
             }
 
             //Check if this clu is not already in the collection
-            RuleEditor ruleEditor = this.getRuleEditor(model);
+            RuleEditor ruleEditor = this.getRuleEditor(viewModel);
             LUPropositionEditor propEditor = (LUPropositionEditor)PropositionTreeUtil.getProposition(ruleEditor);
-            for(CluInformation cluInformation : propEditor.getCluSet().getClus()){
+            for(CluInformation cluInformation : propEditor.getCourseSet().getClus()){
                 if(cluInformation.getCluId().equals(clu.getCluId())){
-                    collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                    collectionGroup.initializeNewCollectionLine(null, viewModel, collectionGroup, true);
                     return false;
                 }
             }
         } else if (LUKRMSConstants.KSKRMS_PROPERTY_NAME_CLUSETS.equals(collectionGroup.getPropertyName())){
             //Check if this is a valid clu.
-            CluSetInformation cluSet = (CluSetInformation) addLine;
+            CluSetInformation cluSet = (CluSetInformation) newLine;
             if((cluSet.getCluSetInfo().getId() == null)||(cluSet.getCluSetInfo().getId().isEmpty())){
                 GlobalVariables.getMessageMap().putErrorForSectionId(collectionGroup.getId(), LUKRMSConstants.KSKRMS_MSG_ERROR_COURSESETS_REQUIRED);
                 return false;
@@ -304,7 +309,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
 
             CluSetInfo searchCluSet = this.getCluInfoHelper().getCluSetForId(cluSet.getCluSetInfo().getId());
             if(searchCluSet==null){
-                collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                collectionGroup.initializeNewCollectionLine(viewModel.getView(), viewModel, collectionGroup, true);
                 GlobalVariables.getMessageMap().putErrorForSectionId(collectionGroup.getId(), LUKRMSConstants.KSKRMS_MSG_ERROR_APPROVED_COURSE_CODE_INVALID);
                 return false;
             } else {
@@ -312,9 +317,9 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
             }
 
             //Check if this clu is not already in the collection
-            RuleEditor ruleEditor = this.getRuleEditor(model);
+            RuleEditor ruleEditor = this.getRuleEditor(viewModel);
             LUPropositionEditor propEditor = (LUPropositionEditor)PropositionTreeUtil.getProposition(ruleEditor);
-            for(CluSetInformation cluSetInfo : propEditor.getCluSet().getCluSets()){
+            for(CluSetInformation cluSetInfo : propEditor.getCourseSet().getCluSets()){
                 if(cluSetInfo.getCluSetInfo().getId().equals(cluSet.getCluSetInfo().getId())){
                     return false;
                 }
@@ -322,9 +327,9 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
         }
         else if(LUKRMSConstants.KSKRMS_PROPERTY_NAME_PROG_CLUS.equals(collectionGroup.getPropertyName())){
             //Check if this is a valid clu.
-            CluInformation clu = (CluInformation) addLine;
+            CluInformation clu = (CluInformation) newLine;
             if((clu.getCode()==null)||(clu.getCode().isEmpty())){
-                collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                collectionGroup.initializeNewCollectionLine(viewModel.getView(), viewModel, collectionGroup, true);
                 GlobalVariables.getMessageMap().putErrorForSectionId(collectionGroup.getId(), LUKRMSConstants.KSKRMS_MSG_ERROR_APPROVED_PROGRAM_REQUIRED);
                 return false;
             } else {
@@ -334,7 +339,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
 
             CluInformation searchClu = this.getCluInfoHelper().getCluInfoForCodeAndType(clu.getCode(), CluSearchUtil.getCluTypesForProgram());
             if(searchClu==null){
-                collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                collectionGroup.initializeNewCollectionLine(viewModel.getView(), viewModel, collectionGroup, true);
                 GlobalVariables.getMessageMap().putErrorForSectionId(collectionGroup.getId(), LUKRMSConstants.KSKRMS_MSG_ERROR_APPROVED_PROGRAM_CODE_INVALID);
                 return false;
             } else {
@@ -345,43 +350,44 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
             }
 
             //Check if this clu is not already in the collection
-            RuleEditor ruleEditor = this.getRuleEditor(model);
+            RuleEditor ruleEditor = this.getRuleEditor(viewModel);
             LUPropositionEditor propEditor = (LUPropositionEditor)PropositionTreeUtil.getProposition(ruleEditor);
-            for(CluInformation cluInformation : propEditor.getProgCluSet().getClus()){
+            for(CluInformation cluInformation : propEditor.getProgramSet().getClus()){
                 if(cluInformation.getCluId().equals(clu.getCluId())){
-                    collectionGroup.initializeNewCollectionLine(view, model, collectionGroup, true);
+                    collectionGroup.initializeNewCollectionLine(viewModel.getView(), viewModel, collectionGroup, true);
                     return false;
                 }
             }
-        }
+        }*/
 
         return true;
     }
 
-    protected void processAfterAddLine(View view, CollectionGroup collectionGroup, Object model, Object addLine,
-                                       boolean isValidLine) {
-
+    @Override
+    public void processAfterAddLine(ViewModel model, Object lineObject, String collectionId, String collectionPath,
+                                    boolean isValidLine) {
+        /*CollectionGroup collectionGroup = ObjectPropertyUtils.getPropertyValue(model, collectionPath);
         if(LUKRMSConstants.KSKRMS_PROPERTY_NAME_CLUS.equals(collectionGroup.getPropertyName())){
             //Sort the clus.
             RuleEditor ruleEditor = this.getRuleEditor(model);
             LUPropositionEditor propEditor = (LUPropositionEditor)PropositionTreeUtil.getProposition(ruleEditor);
 
-            CluInformation clu = (CluInformation) addLine;
+            CluInformation clu = (CluInformation) lineObject;
             if(clu.getCluId() != null){
             clu.setCredits(this.getCluInfoHelper().getCreditInfo(clu.getCluId()));
-            Collections.sort(propEditor.getCluSet().getClus());
+            Collections.sort(propEditor.getCourseSet().getClus());
 
             }
         } else if (LUKRMSConstants.KSKRMS_PROPERTY_NAME_CLUSETS.equals(collectionGroup.getPropertyName())){
             //Set the clus on the wrapper object.
-            CluSetInformation cluSet = (CluSetInformation) addLine;
+            CluSetInformation cluSet = (CluSetInformation) lineObject;
             if(cluSet.getCluSetInfo().getId() != null) {
                 completeCluSetInformation(cluSet);
 
                 //Sort the clus.
                 RuleEditor ruleEditor = this.getRuleEditor(model);
                     LUPropositionEditor propEditor = (LUPropositionEditor)PropositionTreeUtil.getProposition(ruleEditor);
-                Collections.sort(propEditor.getCluSet().getCluSets(), new Comparator<CluSetInformation>(){
+                Collections.sort(propEditor.getCourseSet().getCluSets(), new Comparator<CluSetInformation>(){
 
                 @Override
                 public int compare(CluSetInformation o1, CluSetInformation o2) {
@@ -395,12 +401,12 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
             RuleEditor ruleEditor = this.getRuleEditor(model);
             LUPropositionEditor propEditor = (LUPropositionEditor)PropositionTreeUtil.getProposition(ruleEditor);
 
-            CluInformation clu = (CluInformation) addLine;
+            CluInformation clu = (CluInformation) lineObject;
             if(clu.getCluId() != null){
                 clu.setCredits(this.getCluInfoHelper().getCreditInfo(clu.getCluId()));
-                Collections.sort(propEditor.getProgCluSet().getClus());
+                Collections.sort(propEditor.getProgramSet().getClus());
             }
-        }
+        }*/
     }
 
     private void completeCluSetInformation(CluSetInformation cluSet) {
@@ -511,7 +517,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
     @Override
     protected RuleEditTreeBuilder getEditTreeBuilder() {
         if (editTreeBuilder == null) {
-            editTreeBuilder = new KSRuleEditTreeBuilder();
+            editTreeBuilder = new LURuleEditTreeBuilder();
             editTreeBuilder.setNlHelper(this.getNaturalLanguageHelper());
         }
         return editTreeBuilder;

@@ -27,6 +27,7 @@ import org.kuali.rice.kim.api.identity.entity.EntityDefaultQueryResults;
 import org.kuali.rice.kim.api.identity.principal.Principal;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.krad.document.Document;
+import org.kuali.rice.krad.lookup.LookupForm;
 import org.kuali.rice.krad.maintenance.MaintenanceDocumentBase;
 import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
 import org.kuali.rice.krad.uif.UifConstants;
@@ -35,7 +36,6 @@ import org.kuali.rice.krad.uif.element.Action;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krad.util.UrlFactory;
-import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.cm.common.util.CurriculumManagementConstants;
 import org.kuali.student.cm.common.util.ProposalLinkBuilder;
 import org.kuali.student.cm.course.form.CourseInfoWrapper;
@@ -76,7 +76,7 @@ public class ProposalLookupableImpl extends KSLookupableImpl {
     protected final String CAN_OPEN_PROPOSAL_KEY = "canOpenProposal";
 
     @Override
-    protected List<?> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
+    public List<?> performSearch(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
         List<SearchParamInfo> searchParams = new ArrayList<SearchParamInfo>();
 
@@ -107,14 +107,13 @@ public class ProposalLookupableImpl extends KSLookupableImpl {
         return proposalInfos;
     }
 
-    public List<ProposalInfo> resolveProposalSearchResultSet(SearchResultInfo searchResult) {
+    protected List<ProposalInfo> resolveProposalSearchResultSet(SearchResultInfo searchResult) throws Exception {
         List<ProposalInfo> proposals = new ArrayList<ProposalInfo>();
         List<SearchResultRowInfo> rows = searchResult.getRows();
         List<String> proposalIds = new ArrayList<String>();
 
         for (SearchResultRowInfo row : rows) {
             List<SearchResultCellInfo> cells = row.getCells();
-            ProposalInfo proposalInfo = new ProposalInfo();
             for (SearchResultCellInfo cell : cells) {
                 if (cell.getKey().equals(PROPOSAL_ID_KEY)) {
                     proposalIds.add(cell.getValue());
@@ -123,13 +122,9 @@ public class ProposalLookupableImpl extends KSLookupableImpl {
         }
 
         if (!proposalIds.isEmpty()){
-            try {
-                proposals = getProposalService().getProposalsByIds(proposalIds,ContextUtils.getContextInfo());
-                populateProposalCreatorName(proposals);
-                populateProposalAllowedActions(proposals);
-            } catch (Exception e) {
-                throw new RuntimeException("Error searching for proposal",e);
-            }
+            proposals = getProposalService().getProposalsByIds(proposalIds,ContextUtils.getContextInfo());
+            populateProposalCreatorName(proposals);
+            populateProposalAllowedActions(proposals);
         }
 
         return Collections.unmodifiableList(proposals);
@@ -263,7 +258,8 @@ public class ProposalLookupableImpl extends KSLookupableImpl {
 
         actionLink.setActionScript("window.open('" + href + "', '_self');");
 
-        lookupForm.setAtLeastOneRowHasActions(true);
+        // rice 2.4 upgrade - commented out
+//        lookupForm.setAtLeastOneRowHasActions(true);
     }
 
     protected ProposalService getProposalService() {

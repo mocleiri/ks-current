@@ -32,7 +32,7 @@ import org.kuali.rice.krad.maintenance.MaintenanceDocument;
 import org.kuali.rice.krad.uif.container.CollectionGroup;
 import org.kuali.rice.krad.uif.container.Container;
 import org.kuali.rice.krad.uif.element.Action;
-import org.kuali.rice.krad.uif.view.View;
+import org.kuali.rice.krad.uif.view.ViewModel;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
 import org.kuali.rice.krms.api.repository.agenda.AgendaDefinition;
 import org.kuali.rice.krms.api.repository.agenda.AgendaItemDefinition;
@@ -505,12 +505,13 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
     }
 
     @Override
-    protected boolean performAddLineValidation(View view, CollectionGroup collectionGroup, Object model, Object addLine) {
-        if (addLine instanceof CluInstructorInfoWrapper) {
-            CluInstructorInfoWrapper instructorWrapper = (CluInstructorInfoWrapper) addLine;
+    protected boolean performAddLineValidation(ViewModel viewModel, Object newLine, String collectionId,
+                                               String collectionPath) {
+        if (newLine instanceof CluInstructorInfoWrapper) {
+            CluInstructorInfoWrapper instructorWrapper = (CluInstructorInfoWrapper) newLine;
 
-            if (model instanceof MaintenanceDocumentForm) {
-                MaintenanceDocumentForm modelForm = (MaintenanceDocumentForm) model;
+            if (viewModel instanceof MaintenanceDocumentForm) {
+                MaintenanceDocumentForm modelForm = (MaintenanceDocumentForm) viewModel;
                 CourseInfoWrapper courseInfoWrapper = (CourseInfoWrapper) modelForm.getDocument().getNewMaintainableObject().getDataObject();
                 CourseInfoMaintainable courseInfoMaintainable = (CourseInfoMaintainable) modelForm.getDocument().getNewMaintainableObject();
                 for (CluInstructorInfoWrapper instructor : courseInfoWrapper.getInstructorWrappers()) {
@@ -521,11 +522,11 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
             }
             return StringUtils.isNotEmpty(instructorWrapper.getDisplayName()) ? true : false;
         }
-        if (addLine instanceof CollaboratorWrapper) {
-            CollaboratorWrapper collaboratorWrapper = (CollaboratorWrapper) addLine;
+        if (newLine instanceof CollaboratorWrapper) {
+            CollaboratorWrapper collaboratorWrapper = (CollaboratorWrapper) newLine;
 
-            if (model instanceof MaintenanceDocumentForm) {
-                MaintenanceDocumentForm modelForm = (MaintenanceDocumentForm) model;
+            if (viewModel instanceof MaintenanceDocumentForm) {
+                MaintenanceDocumentForm modelForm = (MaintenanceDocumentForm) viewModel;
                 CourseInfoWrapper courseInfoWrapper = (CourseInfoWrapper) modelForm.getDocument().getNewMaintainableObject().getDataObject();
                 CourseInfoMaintainable courseInfoMaintainable = (CourseInfoMaintainable) modelForm.getDocument().getNewMaintainableObject();
                 for (CollaboratorWrapper collaboratorAuthor : courseInfoWrapper.getCollaboratorWrappers()) {
@@ -535,8 +536,8 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
                 }
             }
             return StringUtils.isNotEmpty(collaboratorWrapper.getDisplayName()) ? true : false;
-        } else if (addLine instanceof CourseCreateUnitsContentOwner) {
-            MaintenanceDocumentForm modelForm = (MaintenanceDocumentForm) model;
+        } else if (newLine instanceof CourseCreateUnitsContentOwner) {
+            MaintenanceDocumentForm modelForm = (MaintenanceDocumentForm) viewModel;
             CourseInfoWrapper courseInfoWrapper = (CourseInfoWrapper) modelForm.getDocument().getNewMaintainableObject().getDataObject();
 
             for (CourseCreateUnitsContentOwner unitsContentOwner : courseInfoWrapper.getUnitsContentOwner()) {
@@ -545,19 +546,19 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
                 }
             }
         }
-        return ((CourseRuleViewHelperServiceImpl) getRuleViewHelperService()).performAddLineValidation(view, collectionGroup, model, addLine);
+        return ((CourseRuleViewHelperServiceImpl) getRuleViewHelperService()).performAddLineValidation(viewModel, newLine, collectionId, collectionPath);
     }
 
     @Override
-    protected void processAfterAddLine(View view, CollectionGroup collectionGroup, Object model, Object addLine,
-                                       boolean isValidLine) {
-        ((CourseRuleViewHelperServiceImpl) getRuleViewHelperService()).processAfterAddLine(view, collectionGroup, model, addLine, isValidLine);
+    public void processAfterAddLine(ViewModel model, Object lineObject, String collectionId, String collectionPath,
+                                    boolean isValidLine) {
+        ((CourseRuleViewHelperServiceImpl) getRuleViewHelperService()).processAfterAddLine(model, lineObject, collectionId, collectionPath, isValidLine);
     }
 
 
     @Override
-    protected void addCustomContainerComponents(View view, Object model, Container container) {
-        ((CourseRuleViewHelperServiceImpl) getRuleViewHelperService()).addCustomContainerComponents(view, model, container);
+    public void addCustomContainerComponents(ViewModel model, Container container) {
+        ((CourseRuleViewHelperServiceImpl) getRuleViewHelperService()).addCustomContainerComponents(model, container);
     }
 
     @Override
@@ -873,7 +874,7 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
         if (courseInfoWrapper.getCollaboratorWrappers().isEmpty()) {
             courseInfoWrapper.getCollaboratorWrappers().add(new CollaboratorWrapper());
         }
-        // Initialize CrossListings
+        /* // Initialize CrossListings
         if (courseInfoWrapper.getCourseInfo().getCrossListings().isEmpty()) {
             courseInfoWrapper.getCourseInfo().getCrossListings().add(new CourseCrossListingInfo());
         }
@@ -886,7 +887,7 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
             courseInfoWrapper.getCourseJointWrappers().add(new CourseJointInfoWrapper());
         }
 
-
+        */
         if (requestParameters.get(CourseController.URL_PARAM_USE_CURRICULUM_REVIEW) != null &&
                 requestParameters.get(CourseController.URL_PARAM_USE_CURRICULUM_REVIEW).length != 0) {
             Boolean isUseReviewProcess = BooleanUtils.toBoolean(requestParameters.get(CourseController.URL_PARAM_USE_CURRICULUM_REVIEW)[0]);
@@ -920,7 +921,7 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
 
 
     @Override
-    public void processCollectionAddBlankLine(View view, Object model, String collectionPath) {
+    public void processCollectionAddBlankLine(ViewModel model, String collectionId, String collectionPath) {
 
         MaintenanceDocumentForm maintenanceForm = (MaintenanceDocumentForm) model;
         MaintenanceDocument document = maintenanceForm.getDocument();
@@ -948,8 +949,7 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
             }
 
             return;
-        }
-        if (StringUtils.endsWith(collectionPath, "formats")) {
+        } else if (StringUtils.endsWith(collectionPath, "courseInfo.formats")) {
             FormatInfo format = new FormatInfo();
             ActivityInfo activity = new ActivityInfo();
             format.getActivities().add(activity);
@@ -957,7 +957,7 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
             return;
         }
 
-        super.processCollectionAddBlankLine(view, model, collectionPath);
+        super.processCollectionAddBlankLine(model, collectionId, collectionPath);
     }
 
     protected String populateOrgName(String subjectArea, CourseCreateUnitsContentOwner unitsContentOwner) {
@@ -1003,7 +1003,8 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
     }
 
     @Override
-    protected void processAfterDeleteLine(View view, CollectionGroup collectionGroup, Object model, int lineIndex) {
+    public void processAfterDeleteLine(ViewModel model, String collectionId, String collectionPath, int lineIndex) {
+        CollectionGroup collectionGroup = model.getView().getViewIndex().getCollectionGroupByPath(collectionPath);
         if (StringUtils.endsWith(collectionGroup.getPropertyName(), "unitsContentOwner")) {
             MaintenanceDocumentForm maintenanceForm = (MaintenanceDocumentForm) model;
             MaintenanceDocument document = maintenanceForm.getDocument();
@@ -1016,7 +1017,7 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
 
         }
 
-        super.processAfterDeleteLine(view, collectionGroup, model, lineIndex);
+        super.processAfterDeleteLine(model, collectionId, collectionPath, lineIndex);
     }
 
     public void updateReview() {
@@ -1040,7 +1041,9 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
         reviewData.getCourseSection().setTranscriptTitle(savedCourseInfo.getTranscriptTitle());
         reviewData.getCourseSection().setSubjectArea(savedCourseInfo.getSubjectArea());
         reviewData.getCourseSection().setCourseNumberSuffix(savedCourseInfo.getCourseNumberSuffix());
-        reviewData.getCourseSection().setDescription(savedCourseInfo.getDescr().getPlain());
+        if (savedCourseInfo.getDescr() != null) {
+            reviewData.getCourseSection().setDescription(savedCourseInfo.getDescr().getPlain());
+        }
         if (proposalInfo.getRationale() != null) {
             reviewData.getCourseSection().setRationale(proposalInfo.getRationale().getPlain());
         }
@@ -1181,7 +1184,6 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
 
                 }
 
-
                 ActivityInfoWrapper activityInfoWrapper = new ActivityInfoWrapper(anticipatedClassSize, activityType, durationCount, contactHours);
                 activityInfoWrapperList.add(activityInfoWrapper);
             }
@@ -1198,7 +1200,9 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
         reviewData.getActiveDatesSection().setEndTerm(getTermDesc(courseInfoWrapper.getCourseInfo().getEndTerm()));
         reviewData.getActiveDatesSection().setPilotCourse(BooleanUtils.toStringYesNo(courseInfoWrapper.getCourseInfo().isPilotCourse()));
 
-        reviewData.getFinancialsSection().setJustificationOfFees(savedCourseInfo.getFeeJustification().getPlain());
+        if (savedCourseInfo.getFeeJustification() != null) {
+            reviewData.getFinancialsSection().setJustificationOfFees(savedCourseInfo.getFeeJustification().getPlain());
+        }
 
         // update learning Objectives Section;
         // update  course Requisites Section;
@@ -1710,6 +1714,9 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
      * @return The user name of the instructor.
      */
     protected String getInstructorSearchString(String displayName) {
+        if (displayName == null) {
+            return StringUtils.EMPTY;
+        }
         String searchString = "";
         if (displayName.contains("(") && displayName.contains(")")) {
             searchString = displayName.substring(displayName.lastIndexOf('(') + 1, displayName.lastIndexOf(')'));
@@ -1773,7 +1780,6 @@ public class CourseInfoMaintainableImpl extends RuleEditorMaintainableImpl imple
             }
 
             for (CluInstructorInfo instructorInfo : course.getInstructors()) {
-                CluInstructorInfoWrapper instructorInfoWrapper = new CluInstructorInfoWrapper();
                 dataObject.getInstructorWrappers().addAll(getInstructorsById(instructorInfo.getPersonId()));
             }
 

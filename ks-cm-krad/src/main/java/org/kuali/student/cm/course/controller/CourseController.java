@@ -37,6 +37,7 @@ import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.util.ErrorMessage;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
+import org.kuali.rice.krad.web.controller.MethodAccessible;
 import org.kuali.rice.krad.web.form.DocumentFormBase;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -85,7 +86,6 @@ import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.AutoPopulatingList;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -139,9 +139,9 @@ public class CourseController extends CourseRuleEditorController {
         // only do the manually setup of the MaintenanceDocumentForm fields if the URL_PARAM_USE_CURRICULUM_REVIEW param was passed in from initial view
         if (StringUtils.isNotBlank(useReviewProcessParam)) {
             Boolean isUseReviewProcess = new Boolean(useReviewProcessParam);
-            // throw an exception if the user is not a CS use but attempts to disable Curriculum Review for a proposal
+            // throw an exception if the user is not a CS user but attempts to disable Curriculum Review for a proposal
             if (!isUseReviewProcess && !CourseProposalUtil.isUserCurriculumSpecialist()) {
-                throw new RuntimeException("A user " + GlobalVariables.getUserSession().getPerson().getPrincipalName() + " who is not allowed to disable Curriculum Review (Workflow Approval) has attempted to.");
+                throw new RuntimeException("A user (" + GlobalVariables.getUserSession().getPerson().getPrincipalName() + ") who is not allowed to disable Curriculum Review (Workflow Approval) has attempted to.");
             }
             // set the doc type name based on the whether the user is CS and if they have chosen to use curriculum review
             form.setDocTypeName((!isUseReviewProcess) ? CurriculumManagementConstants.DocumentTypeNames.CourseProposal.COURSE_CREATE_ADMIN : CurriculumManagementConstants.DocumentTypeNames.CourseProposal.COURSE_CREATE);
@@ -244,8 +244,8 @@ public class CourseController extends CourseRuleEditorController {
     public ModelAndView route(@ModelAttribute("KualiForm") DocumentFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
         // manually call the view validation service as this validation cannot be run client-side in current setup
 //        KRADServiceLocatorWeb.getViewValidationService().validateView(form.getPostedView(), form, KewApiConstants.ROUTE_HEADER_ENROUTE_CD);
-        KSViewAttributeValueReader reader = new KSViewAttributeValueReader(form.getPostedView(), form);
-        KRADServiceLocatorWeb.getDictionaryValidationService().validate(reader, true, KewApiConstants.ROUTE_HEADER_ENROUTE_CD, form.getPostedView().getStateMapping());
+        KSViewAttributeValueReader reader = new KSViewAttributeValueReader(form);
+        KRADServiceLocatorWeb.getDictionaryValidationService().validate(reader, true, KewApiConstants.ROUTE_HEADER_ENROUTE_CD, form.getView().getStateMapping());
         if (!GlobalVariables.getMessageMap().hasErrors()) {
             return super.route(form, result, request, response);    //To change body of overridden methods use File | Settings | File Templates.
         }
@@ -255,6 +255,7 @@ public class CourseController extends CourseRuleEditorController {
     /**
      * load the course proposal review page
      */
+    @MethodAccessible
     @RequestMapping(params = "methodToCall=reviewCourseProposal")
     public ModelAndView reviewCourseProposal(@ModelAttribute("KualiForm") DocumentFormBase form, BindingResult result,
                                              HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -262,7 +263,7 @@ public class CourseController extends CourseRuleEditorController {
         ((CourseInfoMaintainable) ((MaintenanceDocumentForm) form).getDocument().getNewMaintainableObject()).updateReview();
 
         //  Validate
-        KRADServiceLocatorWeb.getViewValidationService().validateViewAgainstNextState(form.getPostedView(), form);
+        KRADServiceLocatorWeb.getViewValidationService().validateViewAgainstNextState(form);
         if (GlobalVariables.getMessageMap().hasErrors()) {
             CourseInfoWrapper wrapper = getCourseInfoWrapper(form);
             wrapper.setMissingRequiredFields(true);
@@ -353,12 +354,12 @@ public class CourseController extends CourseRuleEditorController {
 
         CourseInfoWrapper courseInfoWrapper = getCourseInfoWrapper(form);
 
-        String selectedCollectionPath = form.getActionParamaterValue(UifParameters.SELLECTED_COLLECTION_PATH);
+        String selectedCollectionPath = form.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH);
         if (StringUtils.isBlank(selectedCollectionPath)) {
             throw new RuntimeException("Selected collection was not set for delete line action, cannot delete line");
         }
 
-        View view = form.getPostedView();
+        View view = form.getView();
 
         CollectionGroup collectionGroup = view.getViewIndex().getCollectionGroupByPath(selectedCollectionPath);
         if (collectionGroup == null) {
@@ -460,7 +461,7 @@ public class CourseController extends CourseRuleEditorController {
         CourseInfoWrapper courseInfoWrapper = getCourseInfoWrapper(form);
         // final ModelAndView retval = super.deleteLine(form, result, request, response);
 
-        final String selectedCollectionPath = form.getActionParamaterValue(UifParameters.SELLECTED_COLLECTION_PATH);
+        final String selectedCollectionPath = form.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH);
         if (StringUtils.isBlank(selectedCollectionPath)) {
             GlobalVariables.getMessageMap().putErrorForSectionId(CourseViewSections.SUPPORTING_DOCUMENTS.getSectionId(), CurriculumManagementConstants.MessageKeys.UNABLE_TO_ADD_LINE);
             return getUIFModelAndView(form);
@@ -544,7 +545,7 @@ public class CourseController extends CourseRuleEditorController {
     protected void performWorkflowAction(DocumentFormBase form, UifConstants.WorkflowAction action, boolean checkSensitiveData) {
         CourseControllerTransactionHelper helper = GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "courseControllerTransactionHelper", CourseControllerTransactionHelper.class.getSimpleName()));
         helper.performWorkflowActionSuper(form, action, checkSensitiveData, this);
-        AutoPopulatingList<ErrorMessage> infoMessages = GlobalVariables.getMessageMap().getInfoMessagesForProperty(KRADConstants.GLOBAL_MESSAGES);
+        List<ErrorMessage> infoMessages = GlobalVariables.getMessageMap().getInfoMessagesForProperty(KRADConstants.GLOBAL_MESSAGES);
         if (infoMessages != null) {
             for (ErrorMessage message : infoMessages) {
                 KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, message.getErrorKey(), message.getMessageParameters());

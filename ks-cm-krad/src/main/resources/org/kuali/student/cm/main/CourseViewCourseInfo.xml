@@ -121,9 +121,10 @@
                                         </property>
                                     </bean>
                                 </property>
-                                <property name="fieldLabel.requiredMessage">
+                                <!-- Rice 2.4 upgrade : removing fieldLabel.requiredMessage TODO: KSCM-2000 Required Message Changes -->
+                                <!--property name="fieldLabel.requiredMessage">
                                     <bean parent="CM-StateAware-RequiredMessage" />
-                                </property>
+                                </property-->
                             </bean>
 
                             <bean id="KS-ProposalRationale" parent="KS-Uif-InputField-LabelTop"
@@ -139,9 +140,10 @@
                                         </property>
                                     </bean>
                                 </property>
-                                <property name="fieldLabel.requiredMessage">
-                                    <bean parent="CM-StateAware-RequiredMessage" />
-                                </property>
+                                <!-- Rice 2.4 upgrade : removing fieldLabel.requiredMessage TODO: KSCM-2000 Required Message Changes -->
+                                <!--<property name="fieldLabel.requiredMessage">-->
+                                    <!--<bean parent="CM-StateAware-RequiredMessage" />-->
+                                <!--</property>-->
                             </bean>
                         </list>
                     </property>
@@ -206,9 +208,10 @@
                             <bean  id="KS-SubjectArea-Field" parent="KS-Uif-InputField-LabelTop"
                                 p:label="Subject Code" p:propertyName="courseInfo.subjectArea" >
 
-                                <property name="fieldLabel.requiredMessage">
+                                <!-- Rice 2.4 upgrade : removing fieldLabel.requiredMessage -->
+                                <!--property name="fieldLabel.requiredMessage">
                                     <bean parent="CM-StateAware-RequiredMessage" />
-                                </property>
+                                </property-->
 
                                 <property name="constraintText" value="Must be a 4 letter code"/>
                                 <property name="control">
@@ -227,16 +230,17 @@
                                 </property>
                             </bean>
 
-                            <bean id="KS-CourseNumberSuffix-Field" parent="Uif-KS-IconInputField-LabelTop"
+                            <bean id="KS-CourseNumberSuffix-Field" parent="Uif-KS-IconInputField"
                                   p:label="Course Number" p:propertyName="courseInfo.courseNumberSuffix"
                                   p:minLength="3">
                                 <property name="constraintText" value="Must be a 3 digit number"/>
                                 <property name="control">
                                     <bean parent="KS-Uif-TextControl" p:size="3" p:watermarkText="111"/>
                                 </property>
-                                <property name="fieldLabel.requiredMessage">
-                                    <bean parent="CM-StateAware-RequiredMessage" />
-                                </property>
+                                <!-- Rice 2.4 upgrade : removing fieldLabel.requiredMessage -->
+                                <!--<property name="fieldLabel.requiredMessage">-->
+                                    <!--<bean parent="CM-StateAware-RequiredMessage" />-->
+                                <!--</property>-->
 
                                 <property name="fieldLabel.richLabelMessage.iconToolTipText"
                                           value="The department will determine the course number based on: course format, restrictions, available numbers, and other factors."/>
@@ -380,7 +384,7 @@
                                     </bean>
                                 </property>
                                 <property name="quickfinder">
-                                    <bean parent="Uif-QuickFinder" p:lightBoxLookup.lookupReturnByScript="true">
+                                    <bean parent="Uif-QuickFinder" p:returnByScript="true">
                                         <property name="dataObjectClassName" value="org.kuali.student.cm.course.form.CourseJointInfoWrapper"/>
                                         <property name="fieldConversions">
                                             <map>
