@@ -1,7 +1,6 @@
-class I18N_POC
+class I18N_POC < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
