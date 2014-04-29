@@ -204,10 +204,10 @@ And /^I? ?can view the details of my selection in the registration cart$/ do
       page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
-    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "DIS"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /M 3:00 pm - 3:50 pm(\s+)CHM/i
-    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "LEC"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /TuTh 11:00 am - 12:15 pm(\s+)EGR/i
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "Discussion"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /M 3:00-3:50pm(\s+)CHM 0124/i
+    page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "Lecture"
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /TuTh 11:00-12:15pm(\s+)EGR 1202/i
   end
 end
 
@@ -221,9 +221,9 @@ And /^I? ?can view the details of my selection in my schedule$/ do
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "Lecture"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /TuTh 14:00 - 14:50(\s+)KEY 0106/i
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /TuTh 2:00-2:50pm(\s+)KEY 0106/i
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "Discussion"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /Th 11:00 - 11:50(\s+)LEF 1222/
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /Th 11:00-11:50am(\s+)LEF 1222/
   end
 end
 
