@@ -1,4 +1,4 @@
-class CmCourseProposalObject < DataObject
+class CmCourseProposalObject < DataFactory
 
   include DateFactory
   include StringFactory
