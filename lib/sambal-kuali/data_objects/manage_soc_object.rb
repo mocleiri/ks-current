@@ -95,12 +95,14 @@ class ManageSoc < DataFactory
         when 'Lock'
           page.lock_action
           page.lock_confirm_action
+          page.message_element.wait_until_present
           raise "'Set of Courses has been Locked.' not displayed after Lock" unless page.message == 'Set of Courses has been Locked.'
         when 'Schedule'
           schedule_soc page
         when 'FinalEdit'
           page.final_edit_action
           page.final_edit_confirm_action
+          page.message_element.wait_until_present
           raise "Info message text at the top doesnt match" unless page.message == 'Set of Courses has been opened for Final Edits.'
         when 'Publish'
           publish_soc page
@@ -118,6 +120,7 @@ class ManageSoc < DataFactory
   def schedule_soc(page)
     page.send_to_scheduler_action
     page.schedule_confirm_action
+    page.message_element.wait_until_present
     tries = 0
     raise "Schedule Initiated Date is blank" unless page.schedule_initiated_date != nil
     raise "Once schedule started, schedule completed date should say 'Scheduling in progress'" unless page.schedule_completed_date == 'Scheduling in progress'
