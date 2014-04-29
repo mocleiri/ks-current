@@ -21,7 +21,7 @@ And /^The ASIs are Successfully copied to RSIs in the new AOs of the newly creat
 
   on ActivityOfferingMaintenance do |page|
     page.actual_sched_info_div.exists?.should == false  #should not be any ASIs
-    page.requested_sched_info_table.rows.size.should be > 2 #should be more than header/footer rows
+    page.requested_sched_info_table.rows.size.should be > 1 # should be more than just header row
     page.requested_sched_info_table.rows[1..-1].each do |row|
       page.view_requested_scheduling_information
       days = page.get_requested_sched_info_days(row).delete(' ')

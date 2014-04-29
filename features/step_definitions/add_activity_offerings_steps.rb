@@ -53,7 +53,7 @@ Then /^the "(ASI|RSI)s" are successfully copied as RSIs in the new AO$/ do |sour
 
   on ActivityOfferingMaintenance do |page|
     page.view_requested_scheduling_information
-    page.requested_sched_info_table.rows.size.should be > 2 #should be more than header/footer rows
+    page.requested_sched_info_table.rows.size.should be > 1 #should be more than just header row
     row = page.requested_sched_info_table.rows[1]
     page.get_requested_sched_info_days(row).delete(' ').should == source_scheduling_information.days
     page.get_requested_sched_info_start_time(row).delete(' ').should == "#{source_scheduling_information.start_time}#{source_scheduling_information.start_time_ampm}"
