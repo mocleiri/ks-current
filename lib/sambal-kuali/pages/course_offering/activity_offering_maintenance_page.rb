@@ -95,7 +95,7 @@ class ActivityOfferingMaintenance < BasePage
   FEATURES_COLUMN = 6
   SCHED_INFO_ACTION_COLUMN = 7
 
-  element(:add_sched_info_div) { |b| b.frm.div(id: "ActivityOffering-DeliveryLogistic-New") }
+  element(:add_sched_info_div) { |b| b.frm.section(id: "ActivityOffering-DeliveryLogistic-New") }
   element(:non_std_ts_control) { |b| b.span(id: "isApprovedForNonStandardTimeSlots_control") }
   element(:non_std_ts_checkbox) { |b| b.checkbox(id: "isApprovedForNonStandardTimeSlots_control") }
   element(:non_std_ts_checkbox_text) { |b| b.span(id: "isApprovedForNonStandardTimeSlots_control").text }
