@@ -1,7 +1,6 @@
-class PerformanceTest
+class PerformanceTest < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

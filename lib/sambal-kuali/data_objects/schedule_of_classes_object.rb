@@ -7,10 +7,9 @@
 # @schedule_of_classes.display
 #
 # Note the use of the ruby options hash pattern re: setting attribute values
-class ScheduleOfClasses
+class ScheduleOfClasses < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

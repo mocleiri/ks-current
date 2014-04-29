@@ -2,10 +2,9 @@
 #
 #
 # Note the use of the ruby options hash pattern re: setting attribute values
-class RegistrationRequest
+class RegistrationRequest < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -270,10 +269,9 @@ class RegistrationRequest
 
 end
 
-class CourseOptions
+class CourseOptions < DataFactory
 
     include Foundry
-    include DataFactory
     include DateFactory
     include StringFactory
     include Workflows

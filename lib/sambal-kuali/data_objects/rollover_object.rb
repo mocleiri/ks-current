@@ -9,10 +9,9 @@
 #  will automatically select next valid target_term
 #
 # Note the use of the ruby options hash pattern re: setting attribute values
-class Rollover
+class Rollover < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

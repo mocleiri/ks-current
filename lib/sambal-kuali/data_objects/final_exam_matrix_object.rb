@@ -1,7 +1,6 @@
-class FinalExamMatrix < DataObject
+class FinalExamMatrix < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -132,10 +131,9 @@ class FinalExamMatrix < DataObject
   end
 end
 
-class ExamMatrixRuleObject
+class ExamMatrixRuleObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -326,10 +324,9 @@ class ExamMatrixRuleCollection < CollectionsFactory
 
 end
 
-class ExamMatrixStatementObject
+class ExamMatrixStatementObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

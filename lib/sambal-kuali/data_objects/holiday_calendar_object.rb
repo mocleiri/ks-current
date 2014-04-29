@@ -8,10 +8,9 @@
 # OR alternatively 2 steps together as
 #  @calendar = create HolidayCalendar, :name=>"acal_name1", :start_date=>"12/12/2012", :end_date=>"12/12/2013"
 # Note the use of the ruby options hash pattern re: setting attribute values
-class HolidayCalendar
+class HolidayCalendar < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -257,10 +256,9 @@ class HolidayCalendar
   end
 end
 
-class Holiday
+class Holiday < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

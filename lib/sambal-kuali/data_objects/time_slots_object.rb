@@ -16,12 +16,11 @@
 #       @time_slots.add_new_time_slot( time_slot_to_add )
 #
 # Note the use of the ruby options hash pattern re: setting attribute values
-class TimeSlots
+class TimeSlots < DataFactory
 
   require 'date'
 
   include Foundry
-  include DataFactory
   include Workflows
 
   attr_accessor :term_types
@@ -177,9 +176,7 @@ class TimeSlots
   # For examples, see comment at the top of the file
   #
   # Note the use of the ruby options hash pattern re: setting attribute values
-  class TimeSlot
-
-    include DataFactory
+  class TimeSlot < DataFactory
 
     # type: string generally set using options hash
     attr_accessor :code,

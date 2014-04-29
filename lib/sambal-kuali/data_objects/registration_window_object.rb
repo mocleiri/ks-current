@@ -8,10 +8,9 @@
 # OR alternatively 2 steps together as
 #   @registration_window = create RegistrationWindow, [:start_date => RegistrationWindowsConstants::DATE_BEFORE]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class RegistrationWindow
+class RegistrationWindow < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

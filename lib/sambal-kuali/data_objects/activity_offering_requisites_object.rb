@@ -40,9 +40,8 @@
 #
 # Note the use of the ruby options hash pattern re: setting attribute values
 
-class AORequisitesData
+class AORequisitesData < DataFactory
   include Foundry
-  include DataFactory
 
   attr_accessor :submit_btn,
                 :section,
@@ -585,7 +584,6 @@ end
 
 class AOAntirequisiteRule < AORequisitesData
   include Foundry
-  include DataFactory
 
   attr_accessor :submit_btn,
                 :section
@@ -862,7 +860,6 @@ end
 
 class AOCorequisiteRule < AORequisitesData
   include Foundry
-  include DataFactory
 
   attr_accessor :submit_btn,
                 :section
@@ -1841,7 +1838,6 @@ end
 
 class AORepeatCreditRule < AORequisitesData
   include Foundry
-  include DataFactory
 
   attr_accessor :submit_btn,
                 :section
@@ -2079,7 +2075,6 @@ end
 
 class AORestrictCreditRule < AORequisitesData
   include Foundry
-  include DataFactory
 
   attr_accessor :submit_btn,
                 :section

@@ -8,10 +8,9 @@
 # OR alternatively 2 steps together as
 #  @calendar = create AcademicCalendar, :name=>"acal_name1", :start_date=>"12/12/2012", :end_date=>"12/12/2013"
 # Note the use of the ruby options hash pattern re: setting attribute values
-class AcademicCalendar < DataObject
+class AcademicCalendar < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -249,10 +248,9 @@ class AcademicCalendar < DataObject
   end
 end
 
-class AcademicTermObject
+class AcademicTermObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -492,10 +490,9 @@ class AcademicTermCollection < CollectionsFactory
   end
 end
 
-class KeyDateGroupObject
+class KeyDateGroupObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -573,10 +570,9 @@ class KeyDateGroupCollection < CollectionsFactory
   contains KeyDateGroupObject
 end
 
-class KeyDateObject
+class KeyDateObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -697,10 +693,9 @@ class KeyDateCollection < CollectionsFactory
   contains KeyDateObject
 end
 
-class CalendarEventObject
+class CalendarEventObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -812,10 +807,9 @@ class CalendarEventCollection < CollectionsFactory
   contains CalendarEventObject
 end
 
-class ExamPeriodObject
+class ExamPeriodObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

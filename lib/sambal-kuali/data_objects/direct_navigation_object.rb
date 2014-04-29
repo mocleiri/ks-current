@@ -1,9 +1,8 @@
 # Stores constants for direct navigation URL's
 # class attributes are initialized with the constants to act as a repository for direct links
 # Current Usage: Navigation to pages that cannot be navigated to by hyperlink for Authorization Tests
-class DirectNavigation
+class DirectNavigation < DataFactory
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

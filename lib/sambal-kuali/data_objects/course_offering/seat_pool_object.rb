@@ -11,10 +11,9 @@
 #
 #create generally called from ActivityOffering class
 # Note the use of the ruby options hash pattern re: setting attribute values
-class SeatPoolObject
+class SeatPoolObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

@@ -1,7 +1,6 @@
-class EoRsiObject
+class EoRsiObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

@@ -12,10 +12,9 @@
 #
 #create generally called from ActivityOffering/CourseOffering class
 # Note the use of the ruby options hash pattern re: setting attribute values
-class PersonnelObject
+class PersonnelObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

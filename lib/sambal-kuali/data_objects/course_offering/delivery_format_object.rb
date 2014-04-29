@@ -1,6 +1,5 @@
-class DeliveryFormatObject
+class DeliveryFormatObject < DataFactory
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

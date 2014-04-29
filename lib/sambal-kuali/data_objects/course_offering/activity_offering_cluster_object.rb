@@ -12,10 +12,9 @@
 # OR alternatively 2 steps together as
 #  @cluster = create ActivityOfferingClusterObject, [:is_constrained=>true,:private_name=>"test1_pri",:published_name=>"test1_pub"...]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class ActivityOfferingClusterObject
+class ActivityOfferingClusterObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

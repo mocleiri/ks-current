@@ -12,9 +12,8 @@
 # OR alternatively 2 steps together as
 #  @activity_offering = create ActivityOfferingObject, [:seat_pool_list => {},...]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class ActivityOfferingObject
+class ActivityOfferingObject < DataFactory
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
@@ -672,9 +671,8 @@ end
 #
 #create generally called from ActivityOffering/CourseOffering class
 # Note the use of the ruby options hash pattern re: setting attribute values
-class Waitlist
+class Waitlist < DataFactory
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

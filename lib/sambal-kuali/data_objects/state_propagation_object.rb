@@ -1,7 +1,6 @@
-class StatePropagation
+class StatePropagation < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

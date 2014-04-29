@@ -1,7 +1,6 @@
-class AffiliatedOrgObject
+class AffiliatedOrgObject < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows

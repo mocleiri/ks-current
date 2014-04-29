@@ -8,10 +8,9 @@
 # OR alternatively 2 steps together as
 #  @population = create Population, [:name=>"example_name", :description=>"example_desc", :type=>"union-based" ...]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class Population
+class Population < DataFactory
 
   include Foundry
-  include DataFactory
   include DateFactory
   include StringFactory
   include Workflows
