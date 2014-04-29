@@ -16,12 +16,12 @@ class CmCourseInformation < BasePage
 
 #CROSS LIST SECTION
   element(:course_listing_section_collapsed) { |b| b.img(id: /^KS-CrossListingEtcDisclosure-Section/, alt: 'collapse') }
-  action(:expand_course_listing_section) { |b| b.img(id: 'KS-CrossListingEtcDisclosure-Section_toggle_col').click; b.add_a_version_code_button.wait_until_present }
-  element(:collapse_course_listing_section) { |b| b.img(id: 'KS-CrossListingEtcDisclosure-Section_toggle_exp') }
+  action(:expand_course_listing_section) { |b| b.span(id: 'KS-CrossListingEtcDisclosure-Section_toggle_col').click; b.add_a_version_code_button.wait_until_present }
+  element(:collapse_course_listing_section) { |b| b.div(id: 'KS-CrossListingEtcDisclosure-Section_disclosureContent') }
 
-  element(:add_another_course_listing_button) { |b| b.button(id: 'KS-CrossListed-Section_add') }
-  element(:add_another_course_button) { |b| b.button(id: 'KS-JointlyOffered-Section_add') }
-  element(:add_a_version_code_button) { |b| b.button(id: 'KS-VersionCodes-Section_add') }
+  element(:add_another_course_listing_button) { |b| b.button(id: 'addCrosslistedCourse') }
+  element(:add_another_course_button) { |b| b.button(id: 'addJointlyOfferedCourse') }
+  element(:add_a_version_code_button) { |b| b.button(id: 'addVersionCode') }
 
   action(:add_another_course_listing) { |b| b.add_another_course_listing_button.click; b.adding_line_wait }
   action(:add_another_course) { |b| b.add_another_course_button.click; b.loading_wait }
