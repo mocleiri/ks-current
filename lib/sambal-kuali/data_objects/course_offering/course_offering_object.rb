@@ -10,7 +10,7 @@
 # OR alternatively 2 steps together as
 #  @course_offering = create CourseOffering, [:course => "CHEM317",...]
 # Note the use of the ruby options hash pattern re: setting attribute values
-class CourseOffering > DataFactory
+class CourseOffering < DataFactory
 
   include Foundry
   include DateFactory
