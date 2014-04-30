@@ -159,9 +159,7 @@ class CourseSearch < BasePage
 
 
   def results_list_validation(split_text,search_FullText)
-    #added by sanuj
-    puts split_text
-    puts search_FullText
+
     sleep(2)
     no_of_rows = results_table.rows.length-1
     #puts "No of Rows = #{no_of_rows}"
