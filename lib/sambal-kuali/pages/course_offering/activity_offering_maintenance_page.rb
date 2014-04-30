@@ -232,7 +232,7 @@ class ActivityOfferingMaintenance < BasePage
   element(:waitlist_confirmation_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.Confirmation') }
   element(:waitlist_automatic_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.automatic') }
   element(:waitlist_manual_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.manual') }
-  element(:waitlist_limit_checkbox) { |b| b.waitlist_section.div(data_label: "Limit Waitlist Size").checkbox }
+  element(:waitlist_limit_checkbox) { |b| b.waitlist_section.checkbox(name: /limitWaitlistSize/) }
   element(:waitlist_limit) { |b| b.waitlist_section.text_field(id: "limit_waitlist_size_text_control") }
   element(:waitlist_allow_hold_checkbox) { |b| b.waitlist_section.checkbox(id: 'allow-hold-list-checkbox_control') }
 
