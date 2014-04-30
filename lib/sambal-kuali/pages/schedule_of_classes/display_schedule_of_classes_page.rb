@@ -17,7 +17,7 @@ class DisplayScheduleOfClasses < BasePage
   action(:instructor_search_lookup) { |b| b.frm.link(id: "KS-Personnel-LookupView").click; b.loading.wait_while_present }
 
   element(:department_search_parm) { |b| b.frm.text_field(id: "department_search_text_control") }
-  action(:department_search_lookup) { |b| b.frm.link(id: "lookup_searchDepartment").click; b.loading.wait_while_present }
+  action(:department_search_lookup) { |b| b.frm.link(id: "department_search_text_quickfinder_act").click; b.loading.wait_while_present }
 
   element(:title_description_search_parm) { |b| b.frm.text_field(id: "title_description_search_text_control") }
   #element(:title_description_search_lookup) { |b| b.frm.link(id: "lookup_searchTitleDesc") }

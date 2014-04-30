@@ -10,7 +10,7 @@ class DepartmentLookup < BasePage
 
   element(:short_name) { |b| b.frm.div(data_label: "Abbreviation").text_field }
   element(:long_name) { |b| b.frm.div(data_label: "Name").text_field }
-  element(:results_table) { |b| b.frm.div(id: "uLookupResults").table(index: 0) }
+  element(:results_table) { |b| b.frm.table(id: "uLookupResults_layout") }
 
   element(:paginate_links_span) { |b| b.frm.div(class: "dataTables_paginate paging_full_numbers").span() }
 
