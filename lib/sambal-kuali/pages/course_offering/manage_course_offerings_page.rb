@@ -20,7 +20,7 @@ class ManageCourseOfferings < BasePage
 
   value(:course_title) { |b| b.h1(class: 'uif-headerText').text }
 
-  element(:delete_cluster_div) { |b| b.frm.div(id: "ClusterDeleteConfirmationPage") }
+  element(:delete_cluster_div) { |b| b.frm.main(id: "ClusterDeleteConfirmationPage") }
   action(:confirm_delete_cluster) {|b| b.delete_cluster_div.button(text: "Delete Cluster").click; b.loading.wait_while_present }
 
   element(:manage_offering_links_div) { |b| b.frm.div(id: "KS-CourseOfferingManagement-TheCourseOfferingLinks")}
