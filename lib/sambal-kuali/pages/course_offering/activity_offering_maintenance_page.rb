@@ -226,7 +226,7 @@ class ActivityOfferingMaintenance < BasePage
   action(:update_person_inst_effort) { |id,effort,b| b.target_person_row(id).text_field(id: /personnel_allocation_line/).set effort }
   #END Personnel section
 
-  value(:no_waitlists_msg) { |b| b.frm.div(id: "ActivityOfferingEdit-NoWaitlist").span(text: /Waitlists are deactivated/).text }
+  value(:no_waitlists_msg) { |b| b.frm.section(id: "ActivityOfferingEdit-NoWaitlist").p(text: /Waitlists are deactivated/).text }
   element(:waitlist_section) { |b| b.frm.div(id: "ActivityOfferingEdit-WailtList-Info-Section") }
   element(:waitlist_checkbox) { |b| b.frm.checkbox(id: "ActivityOfferingEdit-HasWaitlist_control") }
   element(:waitlist_confirmation_radio) { |b| b.div(id: 'wait_list_type').radio(value: 'kuali.waitlist.type.Confirmation') }

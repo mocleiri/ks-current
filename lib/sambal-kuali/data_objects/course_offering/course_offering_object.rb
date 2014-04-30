@@ -155,7 +155,7 @@ class CourseOffering < DataFactory
         else
           page.waitlist_on
         end
-
+        page.create_offering_button.wait_until_present
         page.create_offering unless @defer_save
       end
     end
