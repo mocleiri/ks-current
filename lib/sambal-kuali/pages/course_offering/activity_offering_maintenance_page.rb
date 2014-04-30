@@ -272,12 +272,12 @@ class ActivityOfferingMaintenance < BasePage
   element(:seatpool_info_list) { |b| b.frm.ul(class: "uif-validationMessagesList") }
   value(:seatpool_first_msg) { |b| b.seatpool_info_list.li.text }
 
-  element(:add_pool_priority) { |b| b.seat_pools_table.rows[-2].cells[PRIORITY_COLUMN].text_field() }
-  element(:add_pool_seats) { |b| b.seat_pools_table.rows[-2].cells[SEATS_COLUMN].text_field() }
-  value(:add_pool_name)  { |b| b.seat_pools_table.rows[-2].cells[POP_NAME_COLUMN].text_field().value }
+  element(:add_pool_priority) { |b| b.seat_pools_table.rows[-1].cells[PRIORITY_COLUMN].text_field() }
+  element(:add_pool_seats) { |b| b.seat_pools_table.rows[-1].cells[SEATS_COLUMN].text_field() }
+  value(:add_pool_name)  { |b| b.seat_pools_table.rows[-1].cells[POP_NAME_COLUMN].text_field().value }
   
-  action(:add_lookup_population_name) { |b| b.seat_pools_table.rows[-2].button(title: "Search Field").click; b.loading.wait_while_present }
-  element(:add_pool_expiration_milestone) { |b| b.seat_pools_table.rows[-2].cells[EXP_MILESTONE_COLUMN].select() }
+  action(:add_lookup_population_name) { |b| b.seat_pools_table.rows[-1].link(id: /ao-seatpoolgroup-population-name_line\d+_quickfinder_act/).click; b.loading.wait_while_present }
+  element(:add_pool_expiration_milestone) { |b| b.seat_pools_table.rows[-1].cells[EXP_MILESTONE_COLUMN].select() }
 
   element(:add_pool_element) { |b| b.frm.button(id: "ao-seatpoolgroupZ_add")}
   action(:add_seat_pool) { |b| b.add_pool_element.click; b.loading.wait_while_present }
