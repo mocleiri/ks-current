@@ -99,8 +99,8 @@ FIREFOX_PATH=/usr/bin/firefox$FIREFOX; $FIREFOX_PATH -version
 ARGS="TEST_SITE=$URL FIREFOX_PATH=$FIREFOX_PATH DISTRIBUTED_ENV=$DISTRIBUTED --format pretty --format json"
 
 # profile specific args
-ARGS1="$ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json"
-ARGS2="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber2.json"
+ARGS1="$ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json --format junit --out ."
+ARGS2="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber2.json --format junit --out ."
 
 # cleanup test processes
 $WORKSPACE/cleanup_test_processes.sh
