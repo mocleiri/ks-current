@@ -26,7 +26,7 @@ class FEMatrixView < BasePage
   STANDARD_EXAM_ACTIONS = 3
   COMMON_EXAM_ACTIONS = 5
 
-  element(:standard_final_exam_section) { |b| b.frm.div( id: "ruledefinitions_agenda0")}
+  element(:standard_final_exam_section) { |b| b.frm.section( id: "ruledefinitions_agenda0")}
   element(:standard_final_exam_table) { |b| b.standard_final_exam_section.table}
   action(:add_standard_fe_rule) { |b| b.standard_final_exam_section.a( text: "Add").click; b.loading.wait_while_present}
   element(:set_standard_exam_location) { |b| b.frm.checkbox( id: "KSFE_location_agenda0_control")}
