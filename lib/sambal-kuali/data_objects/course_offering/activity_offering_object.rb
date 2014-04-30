@@ -218,7 +218,7 @@ class ActivityOfferingObject < DataFactory
     end_times = ao_table_row.cells[ManageCourseOfferings::AO_END_TIME].text.split("\n")
     fac_names = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].text.split("\n")
     fac_long_names = []
-    #fac tooltip changed after rice upgrade
+    #fac tooltip changed after rice upgrade KSENROLL-12718
     #fac_long_names_tooltip = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].hidden.value
     #if fac_long_names_tooltip[/(?<=, ')\S*/] == "<span"
     #  #createTooltip('u432_line0_line10', '<span class=&quot;uif-scheduled-dl&quot; >Tawes Fine Arts Bldg.</span><br><span class=&quot;uif-scheduled-dl&quot; >Mathematics Bldg.</span>', {always
