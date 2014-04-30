@@ -30,7 +30,7 @@ class CourseSearch < BasePage
   element(:results_list_next_disabled) { |b| b.a(class: "next paginate_button paginate_button_disabled",id:"course_search_results_next") }
   action(:course_code_result_link) { |ccode,b| b.tr(id: "#{ccode}").a(class: "ksap-text-ellipsis") }
   action (:course_code_result_link_click) {|b| b.course_code_result_link.click }
-  action(:course_description) { |co_code,b| b.div(id: "#{co_code}_description").span(class: "uif-message").text }
+  action(:course_description) { |co_code,b| b.div(id: "#{co_code}_description").p(class: "uif-message").text }
   element(:back_to_search_results) { |b| b.link(text: "Return to search results") }
   element(:course_search_results_info) { |b| b.div(id: "course_search_results_info") }
   element(:course_search_results_select) { |b| b.frm.select(name: "course_search_results_length") }
@@ -159,6 +159,9 @@ class CourseSearch < BasePage
 
 
   def results_list_validation(split_text,search_FullText)
+    #added by sanuj
+    puts split_text
+    puts search_FullText
     sleep(2)
     no_of_rows = results_table.rows.length-1
     #puts "No of Rows = #{no_of_rows}"
@@ -175,6 +178,8 @@ class CourseSearch < BasePage
         course_code_result_link(course_code).click
         back_to_search_results.wait_until_present
         course_description_text = course_description(course_code).downcase
+
+
         back_to_search_results.click
         sleep(2)
 
