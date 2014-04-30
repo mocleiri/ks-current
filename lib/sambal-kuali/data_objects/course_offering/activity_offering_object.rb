@@ -212,7 +212,7 @@ class ActivityOfferingObject < DataFactory
 
   def get_existing_scheduling_information(ao_table_row)
     si_list = []
-    is_rsi = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
+    is_rsi = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 0).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 0).attribute_value("class") == "uif-scheduled-dl"
     si_days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text.split("\n")
     st_times = ao_table_row.cells[ManageCourseOfferings::AO_ST_TIME].text.split("\n")
     end_times = ao_table_row.cells[ManageCourseOfferings::AO_END_TIME].text.split("\n")

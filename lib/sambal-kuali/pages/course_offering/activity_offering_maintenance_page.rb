@@ -135,11 +135,11 @@ class ActivityOfferingMaintenance < BasePage
   element(:add_new_scheduling_information_button) { |b| b.button(id: "add_rdl_button") }
   action(:add_new_scheduling_information) { |b| b.add_new_scheduling_information_button.click; b.adding.wait_while_present }
 
-  element(:view_requested_scheduling_information_toggle_open) { |b| b.frm.image(id: "ActivityOffering-ManageSchedulingInformationSection_toggle_exp") }
+  element(:view_requested_scheduling_information_toggle_collapsed) { |b| b.frm.span(id: "ActivityOffering-ManageSchedulingInformationSection_toggle_col") }
   element(:view_requested_scheduling_information_link) { |b| b.frm.link(id: "ActivityOffering-ManageSchedulingInformationSection_toggle") }
 
   def view_requested_scheduling_information
-    if view_requested_scheduling_information_link.present? && !view_requested_scheduling_information_toggle_open.present?
+    if view_requested_scheduling_information_link.present? && view_requested_scheduling_information_toggle_collapsed.visible?
       view_requested_scheduling_information_link.click
       loading.wait_while_present
     end
