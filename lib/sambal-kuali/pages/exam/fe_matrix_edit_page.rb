@@ -6,7 +6,7 @@ class FEMatrixEdit < BasePage
   expected_element :cancel_rule_btn
 
   element(:fe_agenda_view_page) { |b| b.frm.div( id: "KSFE-AgendaManagement-View")}
-  element(:fe_rule_maintenance_page) { |b| b.fe_agenda_view_page.div( id: "KSFE-RuleMaintenance-Page")}
+  element(:fe_rule_maintenance_page) { |b| b.fe_agenda_view_page.main( id: "KSFE-RuleMaintenance-Page")}
 
   element(:fe_rules_manage_section) { |b| b.frm.div( id: "KSFE-Rules-ManageSection")}
   element(:toolbar_section) { |b| b.frm.div( id: "KSFE-EditRule-ToolbarSection")}
