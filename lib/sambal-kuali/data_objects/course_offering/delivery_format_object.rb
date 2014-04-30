@@ -52,10 +52,10 @@ class DeliveryFormatObject < DataFactory
 
   def set_random_delivery_formats
     on CourseOfferingCreateEdit do  |page|
-      @format = page.select_random_option(page.new_format_select)
+      self.format = page.select_random_option(page.new_format_select)
       page.new_grade_roster_level_select.wait_until_present
-      @grade_format = page.select_random_option(page.new_grade_roster_level_select)
-      @final_exam_activity = page.select_random_option(page.new_final_exam_activity_select) if page.new_final_exam_activity_select.present?
+      self.grade_format = page.select_random_option(page.new_grade_roster_level_select)
+      self.final_exam_activity = page.select_random_option(page.new_final_exam_activity_select) if page.new_final_exam_activity_select.present?
     end
     standardize_format_values
   end
