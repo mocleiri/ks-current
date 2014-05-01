@@ -13,23 +13,23 @@ class StatePropagationTest < BasePage
   action(:perform_test) { |b| b.perform_test_button.click; b.loading.wait_while_present(900)}
 
   #element(:results_table_div) { |b| b.frm.div(id: "KS-TestStatePropagationTable") }
-  element(:ao_results_table_div) { |b| b.frm.div(id: "aoTestResultsSection") }
+  element(:ao_results_table_div) { |b| b.frm.section(id: "aoTestResultsSection") }
   element(:ao_results_table_header) { |b| b.ao_results_table_div.span(class: "uif-headerText-span") }
   element(:ao_results_table) { |b| b.ao_results_table_div.table }
 
-  element(:fo_results_table_div) { |b| b.frm.div(id: "foTestResultsSection") }
+  element(:fo_results_table_div) { |b| b.frm.section(id: "foTestResultsSection") }
   element(:fo_results_table_header) { |b| b.fo_results_table_div.span(class: "uif-headerText-span") }
   element(:fo_results_table) { |b| b.fo_results_table_div.table }
 
-  element(:co_results_table_div) { |b| b.frm.div(id: "coTestResultsSection") }
+  element(:co_results_table_div) { |b| b.frm.section(id: "coTestResultsSection") }
   element(:co_results_table_header) { |b| b.co_results_table_div.span(class: "uif-headerText-span") }
   element(:co_results_table) { |b| b.co_results_table_div.table }
 
-  element(:rg_ao_results_table_div) { |b| b.frm.div(id: "rgAoListTestResultsSection") }
+  element(:rg_ao_results_table_div) { |b| b.frm.section(id: "rgAoListTestResultsSection") }
   element(:rg_ao_results_table_header) { |b| b.rg_ao_results_table_div.span(class: "uif-headerText-span") }
   element(:rg_ao_results_table) { |b| b.rg_ao_results_table_div.table }
 
-  element(:rg_invalid_results_table_div) { |b| b.frm.div(id: "rgInvalidTestResultsSection") }
+  element(:rg_invalid_results_table_div) { |b| b.frm.section(id: "rgInvalidTestResultsSection") }
   element(:rg_invalid_results_table_header) { |b| b.rg_invalid_results_table_div.span(class: "uif-headerText-span") }
   element(:rg_invalid_results_table) { |b| b.rg_invalid_results_table_div.table }
 
