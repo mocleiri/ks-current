@@ -116,9 +116,10 @@ class SchedulingInformationObject < DataFactory
             if page.end_time_select.present?
               page.end_time_select.select(formatted_end_time)
             else
-              page.add_end_time.set @end_time.to_s[0]
-              page.loading.wait_while_present
-              page.select_end_time(formatted_end_time)
+              page.add_end_time.set formatted_end_time
+              #page.add_end_time.set @end_time.to_s[0]  #TODO: workaround for KSENROLL-12690
+              #page.loading.wait_while_present
+              #page.select_end_time(formatted_end_time)
             end
           else
             page.end_time_select_populate_list
