@@ -67,7 +67,7 @@ class FinalExamMatrix < DataFactory
     end
     if rule_found
       on FEMatrixEdit do |page|
-        page.rule_tree_section.span(:text => /#{requirements}/).when_present.click
+        page.rule_tree_section.link(:text => /#{requirements}/).when_present.click
         page.edit
         statement = []
         statement << (make ExamMatrixStatementObject, :days => page.get_statement_days_text, :start_time => page.get_statement_starttime_text,
