@@ -277,7 +277,7 @@ class CORequisitesData < DataFactory
 
   def edit_existing_node(node, field, code)
     on ManageCORequisites do |page|
-      page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+      page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
       page.edit_btn
       if field == "course"
         advanced_search("course code", code)

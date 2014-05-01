@@ -69,7 +69,7 @@ class ManageCORequisites < BasePage
   element(:lookup_population) { |b| b.frm_popup.text_field(name: "lookupCriteria[keyword]")}
   element(:lookup_abrev_org) { |b| b.frm_popup.text_field(name: "lookupCriteria[shortName]")}
   action(:lookup_search_button) { |b| b.frm_popup.button(text: "Search").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  element(:lookup_results_table) { |b| b.frm_popup.div(id: "uLookupResults").table() }
+  element(:lookup_results_table) { |b| b.frm_popup.section(id: "uLookupResults").table }
 
   element(:info_message) { |b| b.rule_maintenance_section.li(class: "uif-infoMessageItem")}
   element(:edit_loading) { |b| b.rule_maintenance_section.image(alt: "Loading...") }
