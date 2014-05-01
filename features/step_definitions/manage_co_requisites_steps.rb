@@ -206,7 +206,7 @@ end
 
 When /^I delete the tree$/ do
   on ManageCORequisites do |page|
-    page.edit_tree_section.span(:id => /u\d+_node_0_parent_root_span/).when_present.click
+    page.edit_tree_section.div(:id => "editWithObjectTree_tree").link.when_present.click
     page.del_btn
   end
 end

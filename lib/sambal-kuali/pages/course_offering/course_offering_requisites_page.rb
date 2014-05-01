@@ -5,7 +5,7 @@ class CourseOfferingRequisites < BasePage
   wrapper_elements
   krms_frame_elements
 
-  element(:agenda_management_section) { |b| b.frm.div(id: "KSCO-AgendaMaintenance-Page")}
+  element(:agenda_management_section) { |b| b.frm.main(id: "KSCO-AgendaMaintenance-Page")}
   element(:preview_tree) { |b| b.frm.div(id: "KRMS-PreviewTree-Group")}
 
   element(:antirequisite_section) { |b| b.frm.a(id: "KSCO-AgendaManage-RulePrototype_ruleD_toggle") }
