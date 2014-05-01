@@ -259,11 +259,11 @@ class ActivityOfferingMaintenance < BasePage
   EXP_MILESTONE_COLUMN = 4
   SEATS_ACTION_COLUMN = 5
 
-  value(:seat_pool_count) { |b| b.frm.div(id: 'seatpoolCount').span(data_parent: 'seatpoolCount').text }
-  value(:seats_remaining_span) { |b| b.frm.div(id: "seatsRemaining").span(data_parent: "seatsRemaining") }
-  value(:seats_remaining) { |b| b.seats_remaining_span.text }
-  value(:percent_seats_remaining) { |b| b.seats_remaining_span.text[/\d+(?=%)/] }
-  value(:seat_count_remaining) { |b| b.seats_remaining_span.text[/\d+(?=.S)/] }
+  value(:seat_pool_count) { |b| b.frm.div(id: 'seatpoolCount').p.text }
+  value(:seats_remaining_paragraph) { |b| b.frm.div(id: "seatsRemaining").p }
+  value(:seats_remaining) { |b| b.seats_remaining_paragraph.text }
+  value(:percent_seats_remaining) { |b| b.seats_remaining_paragraph.text[/\d+(?=%)/] }
+  value(:seat_count_remaining) { |b| b.seats_remaining_paragraph.text[/\d+(?=.S)/] }
   value(:max_enrollment_count) { |b| b.frm.div(id: "seatsRemaining").text[/\d+(?=\))/] }
   value(:seatpoolname){|b| b.frm.div(id: "ao-seatpoolgroup").table.rows[1].cells[3].text_field.value}
 

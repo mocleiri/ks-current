@@ -7,7 +7,7 @@ end
 
 Then /^the seats remaining is updated$/ do
   on ActivityOfferingMaintenance do |page|
-    page.seats_remaining_span.wait_until_present
+    page.seats_remaining_paragraph.wait_until_present
     page.seat_count_remaining.should == @activity_offering.seats_remaining.to_s
   end
 end
