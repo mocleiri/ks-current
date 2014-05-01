@@ -84,9 +84,9 @@ class ViewAcademicTerms < BasePage
   #date_group_type - instructional, registration
   def key_date_group_div(term_type, date_group_type)
     index = term_index_by_term_type(term_type)
-    group_divs = acal_term_list_div.div(id: "acal-term-keydatesgroup_line#{index}").div(class: "uif-stackedCollectionLayout").divs(class: "uif-collectionItem uif-boxCollectionItem")
+    group_divs = acal_term_list_div.div(id: "acal-term-keydatesgroup_line#{index}").sections(data_parent: "acal-term-keydatesgroup_line#{index}")
     group_divs.each do |group_div |
-      if (group_div.span(class: "uif-headerText-span").text.upcase ==  "#{date_group_type.upcase} KEY DATES") then
+      if (group_div.header.h5.span.text.upcase ==  "#{date_group_type.upcase} KEY DATES") then
         return group_div
       end
     end
