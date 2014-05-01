@@ -62,7 +62,6 @@ class DeliveryFormatObject < DataFactory
       self.grade_format = page.select_random_option(page.new_grade_roster_level_select)
       page.loading.wait_while_present
       sleep 2
-      page.new_final_exam_activity_select.wait_until_present
       self.final_exam_activity = page.select_random_option(page.new_final_exam_activity_select) if page.new_final_exam_activity_select.present?
     end
     standardize_format_values
