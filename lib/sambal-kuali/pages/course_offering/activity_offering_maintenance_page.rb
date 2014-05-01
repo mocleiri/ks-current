@@ -46,7 +46,7 @@ class ActivityOfferingMaintenance < BasePage
 
   element(:activity_code) { |b| b.frm.text_field(name: "document.newMaintainableObject.dataObject.aoInfo.activityCode") }
 
-  value(:subterm) { |b| b.frm.div(id: "subterm_name").span.text }
+  value(:subterm) { |b| b.frm.div(id: "subterm_name").text }
   element(:change_subterm_element) { |b| b.frm.link(id: "change_link") }
   element(:change_subterm_popup) { |b| b.frm.div(id: "KS-ActivityOfferingEdit-SubtermsPopupForm") }
 
