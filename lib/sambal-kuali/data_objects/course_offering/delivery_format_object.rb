@@ -42,9 +42,11 @@ class DeliveryFormatObject < DataFactory
         end
         page.new_format_select.select(@format)
         page.loading.wait_while_present
+        sleep 2
         page.new_grade_roster_level_select.wait_until_present
         page.new_grade_roster_level_select.select(@grade_format)
         page.loading.wait_while_present
+        sleep 2
         page.new_final_exam_activity_select.wait_until_present
         page.new_final_exam_activity_select.select(@final_exam_activity) if page.new_final_exam_activity_select.present?
       end
@@ -56,9 +58,11 @@ class DeliveryFormatObject < DataFactory
     on CourseOfferingCreateEdit do  |page|
       self.format = page.select_random_option(page.new_format_select)
       page.loading.wait_while_present
+      sleep 2
       page.new_grade_roster_level_select.wait_until_present
       self.grade_format = page.select_random_option(page.new_grade_roster_level_select)
       page.loading.wait_while_present
+      sleep 2
       page.new_final_exam_activity_select.wait_until_present
       self.final_exam_activity = page.select_random_option(page.new_final_exam_activity_select) if page.new_final_exam_activity_select.present?
     end
