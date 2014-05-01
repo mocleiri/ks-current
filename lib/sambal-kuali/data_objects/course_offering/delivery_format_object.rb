@@ -47,7 +47,6 @@ class DeliveryFormatObject < DataFactory
         page.new_grade_roster_level_select.select(@grade_format)
         page.loading.wait_while_present
         sleep 2
-        page.new_final_exam_activity_select.wait_until_present
         page.new_final_exam_activity_select.select(@final_exam_activity) if page.new_final_exam_activity_select.present?
       end
     end
