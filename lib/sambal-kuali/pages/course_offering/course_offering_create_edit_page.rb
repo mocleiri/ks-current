@@ -21,7 +21,7 @@ class CourseOfferingCreateEdit < BasePage
   element(:edit_next_co_link) { |b| b.frm.link(id: "edit_co_next") }
   action(:edit_next_co) { |b| b.edit_next_co_link.click; b.loading.wait_while_present }
   action(:edit_arbitrary_co){ |b| b.edit_relatedCos_dropdown_list.options[10].select; b.loading.wait_while_present }
-  element(:navigation_confirmation_dialog) { |b| b.div(class: "fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened").div(id: "CourseOfferingEdit-NavigationConfirmation") }
+  element(:navigation_confirmation_dialog) { |b| b.div(class: "fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened").section(id: "CourseOfferingEdit-NavigationConfirmation") }
 
   element(:nav_save_and_continue_element) { |b| b.navigation_confirmation_dialog.button(id: "edit_co_save_and_continue") }
   action(:navigation_save_and_continue) { |b| b.nav_save_and_continue_element.wait_until_present; b.nav_save_and_continue_element.click; b.loading.wait_while_present }

@@ -144,7 +144,7 @@ Then /^after I update the new delivery format offering is present$/ do
     page.growl_text.should include "#{@course_offering.course} was successfully updated"
   end
 
-  @course_offering.view_course_details
+  @course_offering.view_course_details :nav_from_manage_co => true
 
   on CourseOfferingInquiry do  |page|
     @course_offering.delivery_format_list.each do |del_format|
@@ -174,7 +174,6 @@ Then /^after I update the grade roster level reflects the changes$/ do
 end
 
 Then /^after I update the added delivery format offering is not present$/ do
-  @course_offering.search_by_subjectcode
   @course_offering.view_course_details
   on CourseOfferingInquiry do  |page|
     page.delivery_format_row("Discussion/Lecture").should == nil

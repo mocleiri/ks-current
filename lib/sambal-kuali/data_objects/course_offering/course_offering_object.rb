@@ -461,7 +461,17 @@ class CourseOffering < DataFactory
     end
   end
 
-  def view_course_details
+  def view_course_details opts={}
+    defaults = {
+        :nav_from_manage_co => false
+    }
+    options = defaults.merge(opts)
+    if options[:nav_from_manage_co]
+      on(ManageCourseOfferings).view_co_details_link.click
+      on(ManageCourseOfferings).loading.wait_while_present
+      return
+    end
+
     search_by_subjectcode
     on ManageCourseOfferingList do |page|
       page.view_course_offering @course.upcase
