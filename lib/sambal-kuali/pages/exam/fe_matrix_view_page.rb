@@ -31,7 +31,7 @@ class FEMatrixView < BasePage
   action(:add_standard_fe_rule) { |b| b.standard_final_exam_section.a( text: "Add").click; b.loading.wait_while_present}
   element(:set_standard_exam_location) { |b| b.frm.checkbox( id: "KSFE_location_agenda0_control")}
 
-  element(:common_final_exam_section) { |b| b.frm.div( id: "ruledefinitions_agenda1")}
+  element(:common_final_exam_section) { |b| b.frm.section( id: "ruledefinitions_agenda1")}
   element(:common_final_exam_table) { |b| b.common_final_exam_section.table}
   action(:add_common_fe_rule) { |b| b.common_final_exam_section.a( text: "Add").click; b.loading.wait_while_present}
 
