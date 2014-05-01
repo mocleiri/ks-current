@@ -11,7 +11,7 @@ class PersonnelLookup < BasePage
   element(:principal_name) { |b| b.frm.div(data_label: "Name").text_field }
   element(:id_field) { |b| b.frm.div(data_label: "ID").text_field }
   element(:last_name) { |b| b.frm.div(data_label: "Last Name").text_field }
-  element(:results_table) { |b| b.frm.div(id: "uLookupResults").table(index: 0) }
+  element(:results_table) { |b| b.frm.table(id: 'uLookupResults_layout') }
 
   element(:paginate_links_span) { |b| b.frm.div(class: "dataTables_paginate paging_full_numbers").span() }
 

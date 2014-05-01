@@ -188,7 +188,7 @@ class CourseOfferingCreateEdit < BasePage
   element(:personnel_name) { |b| b.personnel_div.text_field(name: "document.newMaintainableObject.dataObject.instructors[0].offeringInstructorInfo.personName") }
   element(:personnel_affiliation) { |b| b.personnel_table.rows[1].cells[AFFILIATION_COLUMN].select() }
   #action(:lookup_person) { |b| b.personnel_table.rows[1].cells[ID_COLUMN].image().click; b.loading.wait_while_present } # Need persistent ID!
-  action(:lookup_person) { |b| b.personnel_table.rows[1].cells[ID_COLUMN].input(title: "Search Field").click; b.loading.wait_while_present }
+  action(:lookup_person) { |b| b.personnel_table.rows[1].cells[ID_COLUMN].link(id: /personnelPriority_line\d+_quickfinder_act/).click; b.loading.wait_while_present }
   element(:add_affiliation) { |b| b.personnel_table.rows[1].cells[AFFILIATION_COLUMN].select() }
   element(:add_personnel_button_element) { |b| b.personnel_div.button(text: "Add Personnel") }
   action(:add_personnel) { |b| b.add_personnel_button_element.click; b.adding.wait_while_present } # Needs persistent ID value
