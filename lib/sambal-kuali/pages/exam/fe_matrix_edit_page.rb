@@ -57,7 +57,7 @@ class FEMatrixEdit < BasePage
   element(:cancel_rule_btn) { |b| b.fe_rule_maintenance_page.link( id: "KSFE-CancelRule-Button")}
   action(:cancel_rule) { |b| b.cancel_rule_btn.click; ; b.loading.wait_while_present}
 
-  element(:lookup_results_section) { |b| b.frm_popup.div( id: "uLookupResults")}
+  element(:lookup_results_section) { |b| b.frm_popup.section( id: "uLookupResults")}
   element(:lookup_course_code) { |b| b.frm_popup.text_field( name: "lookupCriteria[code]")}
   element(:lookup_results_table) { |b| b.lookup_results_section.table}
 
