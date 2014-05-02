@@ -43,7 +43,7 @@ class RolloverDetails < BasePage
   value(:activity_offerings_transitioned) { |b| b.frm.div(data_label: "Activity Offerings").text[/^(\d+)/] }
   value(:activity_offerings_exceptions) { |b| b.frm.div(data_label: "Activity Offerings").text[/\d+(?=.exception)/] }
 
-  element(:exceptions_div) { |b| b.frm.div(id: "rollover_exceptions_section")}
+  element(:exceptions_div) { |b| b.frm.section(id: "rollover_exceptions_section")}
   element(:exceptions_table_search) { |b| b.exceptions_div.div(class: "dataTables_filter").text_field() }
   element(:exceptions_table) { |b| b.exceptions_div.table() }
 
