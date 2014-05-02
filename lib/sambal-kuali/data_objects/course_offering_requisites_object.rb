@@ -135,7 +135,7 @@ class CORequisitesData < DataFactory
         click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
         page.lookup_course_code.when_present.set code
       elsif field == "courses code"
-        click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
+        click_search_link( Regexp.new(".*editTree.+proposition\.courseSet\.clus"))
         page.lookup_course_code.when_present.set code
       elsif field == "course title"
         click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))

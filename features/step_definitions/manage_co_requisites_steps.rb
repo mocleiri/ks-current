@@ -213,7 +213,7 @@ end
 
 When /^I delete node "(.)" in the tree$/ do |node|
   on ManageCORequisites do |page|
-    page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+    page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
     page.del_btn
   end
 end
@@ -383,7 +383,7 @@ end
 Then /^node "(.*)" should be a "(.*)" node in the tree$/ do |node, level|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
-    page.edit_tree_section.span(:text => /.*#{node}\..*/).id.should match @courseOR.test_node_level(level)
+    page.edit_tree_section.link(:text => /.*#{node}\..*/).id.should match @courseOR.test_node_level(level)
     page.update_rule_btn
   end
 end
