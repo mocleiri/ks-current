@@ -10,12 +10,12 @@ class FEMatrixView < BasePage
 
   element(:term_type_select) { |b| b.frm.select( name: "document.newMaintainableObject.dataObject.termToUse")}
 
-  element(:submit_btn) { |b| b.main( id: "KSFE-RuleMaintenance-Page").div(class: /uif-stickyFooter/).button( text: /Update Rule/)}
+  element(:submit_btn) { |b| b.main( id: "KSFE-AgendaMaintenance-Page").div(class: /uif-stickyFooter/).button( text: /Save/)}
   action(:submit) { |b| b.submit_btn.click}
-  element(:cancel_link) { |b| b.main( id: "KSFE-RuleMaintenance-Page").div(class: /uif-stickyFooter/).a( text: /Cancel/)}
+  element(:cancel_link) { |b| b.main( id: "KSFE-AgendaMaintenance-Page").div(class: /uif-stickyFooter/).a( text: /Cancel/)}
   action(:cancel) { |b| b.cancel_link.click; b.loading.wait_while_present}
 
-  element(:info_validation_message) { |b| b.frm.div(class: /uif-validationMessages.*uif-pageValidationMessages-info/)}
+  element(:info_validation_message) { |b| b.frm.div(id: 'KSFE-AgendaMaintenance-Page_messages') }
   value(:info_validation_message_text) { |b| b.info_validation_message.text}
 
   COURSE_REQUIREMENTS = 0
