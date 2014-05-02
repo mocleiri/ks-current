@@ -62,6 +62,7 @@ class PersonnelObject < DataFactory
       page.add_personnel_id.set @id
       page.add_personnel_name.set @name
       page.add_personnel_affiliation.select(@affiliation)
+      page.loading.wait_while_present
       page.add_personnel_inst_effort.set @inst_effort
     end
   end

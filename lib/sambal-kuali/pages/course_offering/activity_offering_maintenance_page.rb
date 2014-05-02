@@ -195,11 +195,11 @@ class ActivityOfferingMaintenance < BasePage
   INST_EFFORT_COLUMN = 3
   PERS_ACTION_COLUMN = 4
 
-  element(:add_personnel_id) { |b| b.personnel_table.rows[-2].text_field(id: /personnel_id_line/) }
-  action(:add_lookup_person) { |b| b.personnel_table.rows[-2].div(id: /personnel_id_line/).button().click; b.loading.wait_while_present }
-  element(:add_personnel_name) { |b| b.personnel_table.rows[-2].text_field(id: /personnel_name_line/) }
-  element(:add_personnel_affiliation) { |b| b.personnel_table.rows[-2].select(id: /personnel_affiliation_line/) }
-  element(:add_personnel_inst_effort) { |b| b.personnel_table.rows[-2].text_field(id: /personnel_allocation_line/) }
+  element(:add_personnel_id) { |b| b.personnel_table.rows[-1].text_field(id: /personnel_id_line/) }
+  action(:add_lookup_person) { |b| b.personnel_table.rows[-1].div(id: /personnel_id_line/).button().click; b.loading.wait_while_present }
+  element(:add_personnel_name) { |b| b.personnel_table.rows[-1].text_field(id: /personnel_name_line/) }
+  element(:add_personnel_affiliation) { |b| b.personnel_table.rows[-1].select(id: /personnel_affiliation_line/) }
+  element(:add_personnel_inst_effort) { |b| b.personnel_table.rows[-1].text_field(id: /personnel_allocation_line\d+_control/) }
 
   element(:add_personnel_element) { |b| b.frm.button(id: "ao-personnelgroup-addline") }
   action(:add_personnel) { |b| b.add_personnel_element.click; b.loading.wait_while_present }
