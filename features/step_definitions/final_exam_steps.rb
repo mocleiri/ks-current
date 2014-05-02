@@ -998,7 +998,7 @@ end
 Then /^the Final Exam Driver Activity field should appear if Activity Offering is selected as the exam driver$/ do
   on CourseOfferingCreateEdit do |page|
     exam_driver_activity_label = page.delivery_formats_table.rows[0].cells[3].text
-    exam_driver_activity_label.should match /\* Final Exam Driver Activity/
+    exam_driver_activity_label.should match /Final Exam Driver Activity \*/
     page.final_exam_driver_select "Final Exam Per Activity Offering"
     page.new_final_exam_driver_value.should == "Activity Offering"
     page.cancel
