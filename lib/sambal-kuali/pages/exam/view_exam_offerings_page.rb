@@ -9,17 +9,17 @@ class ViewExamOfferings < BasePage
   element(:canceled_table_header_text) { |b| b.exam_offerings_page_section.span( class: "uif-headerText-span").text}
   element(:canceled_eo_table) { |b| b.frm.div( class: "uif-tableCollectionSection").table}
 
-  element(:eo_table_section) { |b| b.frm.div(class: /uif-boxSection uif-boxLayoutVerticalItem clearfix/)}
-  element(:table_header) { |b| b.eo_table_section.span(class: "uif-headerText-span")}
+  element(:eo_table_section) { |b| b.exam_offerings_page_section.div(data_parent: 'viewExamOfferingsPage') }
+  element(:table_header) { |b| b.eo_table_section.header }
   value(:table_header_text) { |b| b.table_header.text}
 
-  element(:cluster_list_div)  { |b| b.frm.eo_table_section.div(class: "uif-collectionItem uif-boxCollectionItem clearfix") }
+  element(:cluster_list_div)  { |b| b.frm.section(id: 'KS-CourseOfferingManagement-ExamOfferingByAOClustersSection') }
 
   element(:cancel_link) { |b| b.frm.a( text: "Cancel")}
   action(:cancel) { |b| b.cancel_link.click; b.loading.wait_while_present}
 
   def co_eo_table
-    return eo_table_section.table unless !eo_table_section.table.exists? #TODO: should fail here if not found
+    return eo_table_section.table unless !eo_table_section.table.exists? #TODO: why unless?
   end
 
   VIEW_STATUS = 0
@@ -169,7 +169,7 @@ class ViewExamOfferings < BasePage
   def cluster_div_list
     div_list = []
     if cluster_list_div.exists?
-      div_list = cluster_list_div.divs(class: "uif-tableCollectionSection")
+      div_list = cluster_list_div.divs(id: /line\d+/, data_parent: 'KS-CourseOfferingManagement-ExamOfferingByAOClustersSection')
     end
     div_list
   end
@@ -177,7 +177,7 @@ class ViewExamOfferings < BasePage
   def target_cluster(private_name)
     div_list = cluster_div_list
     return div_list[0] if private_name == :default_cluster
-    cluster_div_list.each do |div_element|
+    div_list.each do |div_element|
       if cluster_div_private_name(div_element) == private_name then
         return div_element
       end
