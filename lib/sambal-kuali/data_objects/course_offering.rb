@@ -550,7 +550,9 @@ class CourseOffering < DataFactory
       end
     end
     on CourseSearch do |page|
+
       no_of_rows = page.results_table.rows.length-1
+
       puts "no of rows = #{no_of_rows}"
       pgno = 1
       if page.results_list_next_enabled.exists?
@@ -570,11 +572,15 @@ class CourseOffering < DataFactory
             check_logical_order_display_of_elements_in_allpages(course_code_count,course_code_list,course_number_list,output)
 
           end
-          page.results_list_next_enabled.wait_until_present
+
+          #Need to refactor this in future.As workaround sleep added
+          sleep(5)
+          page.results_list_next_enabled.wait_until_present(50)
           page.results_list_next_click
+          sleep(5)
           pgno = pgno+1
-          page.results_list_next_enabled.wait_until_present
-        end
+          page.results_list_next_enabled.wait_until_present(50)
+          end
       else
         if pgno == 1
           result = check_logical_order_display_of_elements_in_firstpage(course_code_count,course_number_count,course_code_list,course_number_list, output)
