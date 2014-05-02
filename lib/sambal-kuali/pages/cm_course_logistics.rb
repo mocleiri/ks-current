@@ -66,9 +66,9 @@ class CmCourseLogistics < BasePage
 
 # LOGISTICS REVIEW FIELDS
   action(:edit_course_logistics) { |b| b.a(id: "CourseLogistics-Review-Edit-link").click }
-  value(:assessment_scale_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Assessment Scale").textarea(class: "uif-largeTextControl").value }
-  value(:final_exam_status_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Final Exam Status").textarea(class: "uif-largeTextControl").value }
-  value(:final_exam_rationale_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Final Exam Rationale").textarea(class: "uif-largeTextControl").value }
+  value(:assessment_scale_review) { |b| b.textarea(id: "courseLogisticsSection_gradingOptions_control").text }
+  value(:final_exam_status_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatus_control").text }
+  value(:final_exam_rationale_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatusRationale_control").text }
 
   value(:outcome_type_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Type").input(class: "uif-textControl").value }
   value(:outcome_credit_value_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Credit Value").input(class: "uif-readOnlyContent").text }

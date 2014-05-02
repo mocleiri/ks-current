@@ -14,7 +14,7 @@ class CmGovernance < BasePage
   action(:add_organization) {|b| b.button(id: "KS-Course-CurriculumOversight-input-field").click; b.loading_wait }
   element(:add_oversight_button) { |b| b.button(id: 'addCurriculumOversight')}
   action(:add_oversight) { |b| b.add_oversight_button.click; b.loading_wait }
-  action(:curriculum_oversight_when_added) {|added_org, b| b.span(text: added_org) }
+  action(:curriculum_oversight_when_added) {|added_org, b| b.div(text: added_org) }
 
 #ADMINISTERING ORGANIZATION
   element(:administering_organization) {|b| b.text_field(name: 'newCollectionLines[\'document.newMaintainableObject.administeringOrganizations\'].organizationName') }

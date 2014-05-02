@@ -55,16 +55,16 @@ class CmCourseInformation < BasePage
 # COURSE INFORMATION REVIEW FIELDS
   action(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil").click }
   action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
-  value(:proposal_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Title").text_field(name: /proposalInfo/).value }
-  value(:course_title_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Title").text_field(name: /courseTitle/).value }
-  value(:subject_code_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Subject Code").text_field(name: /subjectArea/).value }
-  value(:course_number_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Course Number").text_field(name: /courseNumberSuffix/).value }
-  value(:description_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Description").text_field(name: /descr/).value }
-  value(:proposal_rationale_review) { |b| b.div(id: "CourseInfo-Review-section").div(data_label: "Proposal Rationale").text_field(name: /rationale/).value}
+  value(:proposal_title_review) { |b| b.textarea(id: "proposalInfo_name_control").text }
+  value(:course_title_review) { |b| b.textarea(id: "courseInfo_courseTitle_control").text }
+  value(:subject_code_review) { |b| b.textarea(id:"courseInfo_subjectArea_control").text }
+  value(:course_number_review) { |b| b.textarea(id: "courseInfo_courseNumberSuffix_control").text }
+  value(:description_review) { |b| b.textarea(id: "courseInfo_descr_control").text }
+  value(:proposal_rationale_review) { |b| b.textarea(id: "proposalInfo_rationale_control").text }
 
 # COURSE INFORMATION READ-ONLY REVIEW FIELDS
-  value(:proposal_title_review_read_only) { |b| b.span(id: "proposalInfo_name_control").text }
-  value(:course_title_review_read_only) { |b| b.span(id: "courseInfo_courseTitle_control").text }
+  value(:proposal_title_review_read_only) { |b| b.div(id: "proposalInfo_name").text }
+  value(:course_title_review_read_only) { |b| b.div(id: "courseInfo_courseTitle").text }
 
 
 
