@@ -35,7 +35,7 @@ class ActivityOfferingMaintenance < BasePage
   #end sticky footer
 
   #unsaved changes dialog - appears when navigating between AOs
-  element(:save_continue_alert_div) { |b| b.frm.div(id: "ActivityOfferingEdit-NavigationConfirmation") }
+  element(:save_continue_alert_div) { |b| b.frm.section(id: "ActivityOfferingEdit-NavigationConfirmation") }
   element(:cancel_save_link) { |b| b.save_continue_alert_div.link(text: "Cancel") }
   action(:cancel_save) { |b| b.cancel_save_link.click }
   element(:save_and_continue_button) { |b| b.frm.button(id: "edit_ao_save_and_continue") }
