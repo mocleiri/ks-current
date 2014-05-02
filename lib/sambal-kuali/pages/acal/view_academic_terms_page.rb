@@ -123,7 +123,7 @@ class ViewAcademicTerms < BasePage
   #Final Exam
   def final_exam_section( term_type)
     term_index = term_index_by_term_type( term_type)
-    acal_term_list_div.div( id: "acal-term-examdates_line#{term_index}")
+    acal_term_list_div.section( id: "acal-term-examdates_line#{term_index}")
   end
 
   def exam_target_row( term_type)

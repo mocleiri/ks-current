@@ -257,8 +257,8 @@ class EditAcademicTerms < BasePage
   def exam_end_date( term_type); final_exam_section( term_type).text_field( name: "termWrapperList[#{term_index_by_term_type( term_type)}].examdates[0].endDate"); end
   def exam_delete_link( term_type); final_exam_section( term_type).a( id: "exam_period_delete_link_line#{term_index_by_term_type( term_type)}_line#{term_index_by_term_type( term_type)}"); end
   def add_exam_period_btn( term_type); final_exam_section( term_type).button( id: "acal-term-examdates-add_line#{term_index_by_term_type( term_type)}"); end
-  def exam_error_message( term_type); final_exam_section( term_type).div( class: "uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages-error"); end
-  def exam_warning_message( term_type); final_exam_section( term_type).div( class: "uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages-warning"); end
+  def exam_error_message( term_type); final_exam_section( term_type).div( id: /acal-term-examdates_line\d+_messages/).li(class: 'uif-errorMessageItem'); end
+  def exam_warning_message( term_type); final_exam_section( term_type).div( id: /acal-term-examdates_line\d+_messages/).li(class: 'uif-warningMessageItem'); end
   def exclude_saturday_toggle( term_type); final_exam_section( term_type).checkbox( id: "exclude_Saturday_line#{term_index_by_term_type( term_type)}_line0_control"); end
   def exclude_sunday_toggle( term_type); final_exam_section( term_type).checkbox( id: "exclude_Sunday_line#{term_index_by_term_type( term_type)}_line0_control"); end
 
