@@ -180,6 +180,7 @@ module CalendarStickyFooter
         :exp_success => true
     }
     options = defaults.merge(opts)
+    loading.wait_while_present #solves general sync issues
     acal_sticky_footer_div.button(text: "Save").wait_until_present
     acal_sticky_footer_div.button(text: "Save").click
     loading.wait_while_present(60)
