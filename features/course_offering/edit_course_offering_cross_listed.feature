@@ -25,11 +25,6 @@ Feature: CO.Create and remove cross-listings
   #   2) Remove cross-listing, check that alias CO does not exist
   #   -----------------------------------------------------------
   Scenario: Remove cross-listing confirm alias
-      STEPS TO MANUALLY REPRODUCE:
-          1) Create a cross-listed CO and set the cross-listed checkbox, then clear the cross-listed checkbox.
-          2) Manage and edit the alias course offering
-          3) Should get a "Cannot find any course offering" message
-
     When I create a cross-listed Course Offering
     And I remove a cross-listed Course Offering
     And I manage the alias Course Offering

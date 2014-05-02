@@ -41,7 +41,6 @@ end
 
 And /^I remove a cross-listed Course Offering$/ do
   @cross_listed_co.manage
-  #on(ManageCourseOfferings).edit_course_offering
   @cross_listed_co.edit :cross_listed => false
 end
 
@@ -49,24 +48,16 @@ end
 And /^I manage the (owner|alias) Course Offering$/ do |cluType|
 
   if cluType == 'alias'
-    @input_code_value = "#{@cross_listed_co.cross_listed_codes[0]}"
+    alias_offering = make CourseOffering, :term => @cross_listed_co.term, :course => @cross_listed_co.cross_listed_codes[0]
+    alias_offering.manage
   else
-    @input_code_value = "#{@cross_listed_co.course}"
-  end
-  #@input_code_value << "#{@suffix_with_cl}"
-
-  go_to_manage_course_offerings
-  on ManageCourseOfferings do |page|
-    page.term.set @cross_listed_co.term
-    page.input_code.set @input_code_value
-    page.show
+    @cross_listed_co.manage
   end
 end
 
 Then /^the alias Course Offering does not exist$/ do
   expected_errMsg = "Cannot find any course offering"
   on ManageCourseOfferings do |page|
-    puts "page.first_msg = #{page.first_msg}"
     page.first_msg.should match /.*#{Regexp.escape(expected_errMsg)}.*/
   end
 end
@@ -83,7 +74,7 @@ end
 
 
 Then /^the alias is indicated as cross-listed with the owner CO$/ do
-  expect_result = "Crosslisted as\n#{@cross_listed_co.cross_listed_codes[0]}"
+  expect_result = "Crosslisted as\n#{@cross_listed_co.course}"
   #expect_result = "#{@cross_listed_co.cross_listed_codes[0]}#{@suffix_with_cl} is a crosslisted alias for #{@cross_listed_co.course}#{@suffix_with_cl} (Owner)"
   on ManageCourseOfferings do |page|
     page.cross_listed_message.should include expect_result
@@ -104,11 +95,6 @@ end
 
 When /^I create a cross-listed Course Offering$/ do
   @cross_listed_co = create CourseOffering, :create_by_copy => (make CourseOffering, :course => "ENGL250", :term => Rollover::MAIN_TEST_TERM_SOURCE)
-  #@suffix_with_cl = "AFT#{random_alphanums(2)}".upcase
-  #@cross_listed_co = create CourseOffering, :create_by_copy => (make CourseOffering, :course => "ENGL250", :suffix => @suffix_with_cl, :term => Rollover::MAIN_TEST_TERM_SOURCE)
-  #@cross_listed_co = make CourseOffering, :course => "ENGL250D", :term => Rollover::MAIN_TEST_TERM_SOURCE
-  @cross_listed_co.manage
-#  @cross_listed_co.edit :cross_listed => true
   @cross_listed_co.capture_crosslist_aliases
 end
 
