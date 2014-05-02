@@ -1346,7 +1346,7 @@ Then /^the Exclude Saturday or Exclude Sunday fields should be deselected when v
 end
 
 Then /^the Exam Offering listed in the EO for CO table should be in a ([^"]*) state$/ do |exp_msg|
-  on(ViewExamOfferings).canceled_eo_table.rows[1].cells[0].text.should == exp_msg
+  on(ViewExamOfferings).get_eo_by_co_status_text.should == exp_msg
 end
 
 Then /^the Exam Offering table should be in a Canceled state$/ do
@@ -1378,7 +1378,7 @@ Then /^there should be no Exam Offering for Activity Offering table present$/ do
 end
 
 Then /^the Exam Offering table for the canceled AO should also be in the same state$/ do
-  on(ViewExamOfferings).canceled_eo_table.rows[1].text.should match /Canceled.*#{@activity_offering.code}/m
+  on(ViewExamOfferings).get_eo_by_ao_status_text('A').should == 'Canceled'
 end
 
 Given /^that a CO allows for multiple Format Offerings and has one existing format offering and a standard exam driven by Course Offering$/ do

@@ -6,9 +6,6 @@ class ViewExamOfferings < BasePage
 
   element(:exam_offerings_page_section) { |b| b.frm.main(id: "viewExamOfferingsPage")}
 
-  element(:canceled_table_header_text) { |b| b.exam_offerings_page_section.span( class: "uif-headerText-span").text}
-  element(:canceled_eo_table) { |b| b.frm.div( class: "uif-tableCollectionSection").table}
-
   element(:eo_table_section) { |b| b.exam_offerings_page_section.div(data_parent: 'viewExamOfferingsPage') }
   element(:table_header) { |b| b.eo_table_section.header }
   value(:table_header_text) { |b| b.table_header.text}
