@@ -96,4 +96,26 @@ class CourseOfferingRequisites < BasePage
   action(:submit) { |b| b.submit_btn.click; b.loading.wait_while_present }
   element(:cancel_btn) { |b| b.frm.a(:text => /Cancel/)}
   action(:cancel) { |b| b.cancel_btn.click; b.loading.wait_while_present }
+
+  def show_disclosure (disclosure_section)
+    case disclosure_section
+      when "prereq" then  eligibility_prereq unless (eligibility_prereq_edit_links.present? || eligibility_prereq_add_links.present? )
+      when "coreq" then  corequisite unless (corequisite_edit_links.present? || corequisite_add_links.present? )
+      when "recprep" then  recommended_prep unless (recommended_prep_edit_links.present? || recommended_prep_add_links.present? )
+      when "antireq" then  antirequisite unless (antirequisite_edit_links.present? || antirequisite_add_links.present? )
+      when "repcred" then  repeatable_credit unless (repeatable_credit_edit_links.present? || repeatable_credit_add_links.present? )
+      when "restcred" then  restricted_credit unless (restricted_credit_edit_links.present? || restricted_credit_add_links.present? )
+    end
+  end
+
+  def hide_disclosure (disclosure_section)
+    case disclosure_section
+      when "prereq" then  eligibility_prereq if (eligibility_prereq_edit_links.present? || eligibility_prereq_add_links.present? )
+      when "coreq" then  corequisite if (corequisite_edit_links.present? || corequisite_add_links.present? )
+      when "recprep" then  recommended_prep if (recommended_prep_edit_links.present? || recommended_prep_add_links.present? )
+      when "antireq" then  antirequisite if (antirequisite_edit_links.present? || antirequisite_add_links.present? )
+      when "repcred" then  repeatable_credit if (repeatable_credit_edit_links.present? || repeatable_credit_add_links.present? )
+      when "restcred" then  restricted_credit if (restricted_credit_edit_links.present? || restricted_credit_add_links.present? )
+    end
+  end
 end

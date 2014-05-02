@@ -132,27 +132,35 @@ class CORequisitesData < DataFactory
     on ManageCORequisites do |page|
       page.edit_loading.wait_while_present
       if field == "course code"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
         page.lookup_course_code.when_present.set code
       elsif field == "courses code"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.courseSet\.clus"))
         page.lookup_course_code.when_present.set code
       elsif field == "course title"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
         page.lookup_course_title.when_present.set code
       elsif field == "course set"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.cluSets"))
         page.lookup_set_name.when_present.set code
       elsif field == "program code"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.progCluSet\.clus"))
         page.lookup_course_code.when_present.set code
       elsif field == "class standing"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.classStanding"))
         page.lookup_class_standing.when_present.set code
       elsif field == "org"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.orgInfo\.id"))
         page.lookup_abrev_org.when_present.set code
       elsif field == "population"
+        page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.orgInfo\.population\.id"))
         page.lookup_population.when_present.set code
       end
@@ -564,6 +572,7 @@ class AntirequisiteRule < CORequisitesData
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
+      page.show_disclosure("antireq")
       if page.antireq_edit_link.exists?
         page.antireq_edit
       else
@@ -725,6 +734,7 @@ class CorequisiteRule < CORequisitesData
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
+      page.show_disclosure("coreq")
       if page.coreq_edit_link.exists?
         page.coreq_edit
       else
@@ -895,6 +905,7 @@ class PreparationPrerequisiteRule < CORequisitesData
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
+      page.show_disclosure("prereq")
       if page.prereq_edit_link.exists?
         page.prereq_edit
       else
@@ -911,6 +922,7 @@ class PreparationPrerequisiteRule < CORequisitesData
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
+      page.show_disclosure("recprep")
       if page.prep_edit_link.exists?
         page.prep_edit
       else
@@ -1278,6 +1290,7 @@ class RepeatCreditRule < CORequisitesData
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
+      page.show_disclosure("repcred")
       if page.repeat_edit_link.exists?
         page.repeat_edit
       else
@@ -1411,6 +1424,7 @@ class RestrictCreditRule < CORequisitesData
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
+      page.show_disclosure("restcred")
       if page.restrict_edit_link.exists?
         page.restrict_edit
       else
