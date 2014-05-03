@@ -5,7 +5,7 @@ class ManageCORequisites < BasePage
   wrapper_elements
   krms_frame_elements
 
-  element(:rule_maintenance_section) { |b| b.frm.div(id: "KSCO-RuleMaintenance-Page")}
+  element(:rule_maintenance_section) { |b| b.frm.main(id: "KSCO-RuleMaintenance-Page")}
   element(:tab_section) { |b| b.frm.div(id: "KSCO-RuleEdit-TabSection")}
   element(:edit_tree_section) { |b| b.frm.div(id: "KRMS-RuleEditor-TreeGroup")}
   element(:logic_tab_section) { |b| b.frm.div(id: "KSCO-EditWithLogic-EditGroup")}

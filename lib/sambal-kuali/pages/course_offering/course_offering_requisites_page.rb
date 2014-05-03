@@ -87,7 +87,7 @@ class CourseOfferingRequisites < BasePage
   element(:restrict_add_link) { |b| b.resctricted_credit_add_links.a(:text => /Add Rule/)}
   action(:restrict_add) { |b| b.restrict_add_link.click; b.loading.wait_while_present }
 
-  element(:compare_section) { |b| b.frm.div(id: "compareCluAndCoRuleLightBox")}
+  element(:compare_section) { |b| b.frm.section(id: "compareCluAndCoRuleLightBox")}
   element(:compare_tree) { |b| b.compare_section.div( id: "KRMS-CompareTree-Section")}
   element(:compare_cancel_link) { |b| b.compare_section.a(:text => /Cancel/)}
   action(:compare_cancel) { |b| b.compare_cancel_link.click; b.loading.wait_while_present}
