@@ -745,6 +745,7 @@ class Waitlist < DataFactory
       on ActivityOfferingMaintenance do |page|
         if options[:limit_size] > 0
           page.waitlist_limit_checkbox.set
+          page.loading.wait_while_present
           page.waitlist_limit.set options[:limit_size]
         else
           page.waitlist_limit_checkbox.clear
