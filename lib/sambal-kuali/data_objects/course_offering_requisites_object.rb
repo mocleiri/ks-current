@@ -107,6 +107,7 @@ class CORequisitesData < DataFactory
     end
   end
 
+  #TODO: this is a page objects method, needs to be moved - also, time consuming to open all sections
   def open_agenda_section
     sections = {"Student Eligibility & Prerequisite"=>:eligibility_prereq_section,
                 "Antirequisite"=>:antirequisite_section, "Corequisite"=>:corequisite_section,
@@ -121,6 +122,7 @@ class CORequisitesData < DataFactory
     end
   end
 
+  #TODO: this is a page objects method, needs to be moved
   def advanced_search(field, code)
     on ManageCORequisites do |page|
       page.edit_loading.wait_while_present
@@ -130,7 +132,8 @@ class CORequisitesData < DataFactory
         page.lookup_course_code.when_present.set code
       elsif field == "courses code"
         page.loading.wait_while_present
-        click_search_link( Regexp.new(".*editTree.+proposition\.courseSet\.clus"))
+        page.search_link
+        #click_search_link( Regexp.new(".*editTree.+proposition\.courseSet\.clus"))
         page.lookup_course_code.when_present.set code
       elsif field == "course title"
         page.loading.wait_while_present
@@ -138,7 +141,8 @@ class CORequisitesData < DataFactory
         page.lookup_course_title.when_present.set code
       elsif field == "course set"
         page.loading.wait_while_present
-        click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.cluSets"))
+        page.search_link
+        #click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.cluSets"))
         page.lookup_set_name.when_present.set code
       elsif field == "program code"
         page.loading.wait_while_present
@@ -164,6 +168,8 @@ class CORequisitesData < DataFactory
     end
   end
 
+  #TODO: not sure why this code method is required? 'page.search_link' is much simpler and seems to work
+  #TODO: this is a page objects method, needs to be moved
   def click_search_link( regex)
     on ManageCORequisites do |page|
       elements = page.edit_tree_section.elements( :tag_name, 'a')
@@ -173,6 +179,7 @@ class CORequisitesData < DataFactory
           break
         end
       end
+      raise "click_search_link: link not found for: #{regex}"
     end
   end
 
