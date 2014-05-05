@@ -1,4 +1,4 @@
-@nightly
+@wip
 Feature: BT.i18n
 
   Scenario Outline: View page in appropriate locale
