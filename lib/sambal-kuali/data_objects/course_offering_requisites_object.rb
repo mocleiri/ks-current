@@ -128,7 +128,8 @@ class CORequisitesData < DataFactory
       page.edit_loading.wait_while_present
       if field == "course code"
         page.loading.wait_while_present
-        click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
+        page.search_link
+        #click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
         page.lookup_course_code.when_present.set code
       elsif field == "courses code"
         page.loading.wait_while_present
