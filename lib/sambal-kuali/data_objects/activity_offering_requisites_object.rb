@@ -329,7 +329,7 @@ class AORequisitesData < DataFactory
   def switch_tabs
     on ManageAORequisites do |page|
       page.edit_loading.wait_while_present(60)
-      tab = page.tab_section.li(:class => /ui-state-active/).text
+      tab = page.tab_section.li(:class => /active/).text
       if tab == "Edit Rule"
         page.logic_tab.when_present.click
       else
