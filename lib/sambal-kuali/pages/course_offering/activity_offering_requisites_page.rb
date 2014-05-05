@@ -164,7 +164,7 @@ class ActivityOfferingRequisites < BasePage
   action(:restrict_suppress) { |b| b.restrict_suppress_link.click; b.loading.wait_while_present }
   element(:restrict_message_section) { |b| b.frm.div( id: "KSAO-AgendaManage-RulePrototype_ruleF_disclosureContent")}
 
-  element(:compare_section) { |b| b.frm.div(id: "compareCluCoAndAoRuleLightBox")}
+  element(:compare_section) { |b| b.frm.section(id: "compareCluCoAndAoRuleLightBox")}
   element(:compare_tree) { |b| b.compare_section.div( id: "KRMS-AoCompareTree-Section")}
   element(:compare_cancel_link) { |b| b.compare_section.button(:text => /Close/)}
   action(:compare_cancel) { |b| b.compare_cancel_link.click; b.loading.wait_while_present}

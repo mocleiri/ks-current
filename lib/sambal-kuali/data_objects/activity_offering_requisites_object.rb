@@ -118,28 +118,44 @@ class AORequisitesData < DataFactory
     on ManageAORequisites do |page|
       page.edit_loading.wait_while_present
       if field == "course code"
-        click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_course_code.when_present.set code
       elsif field == "courses code"
-        click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_course_code.when_present.set code
       elsif field == "course title"
-        click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_course_title.when_present.set code
       elsif field == "course set"
-        click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.cluSets"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.cluSets"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_set_name.when_present.set code
       elsif field == "program code"
-        click_search_link( Regexp.new(".*editTree.+proposition\.progCluSet\.clus"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.progCluSet\.clus"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_course_code.when_present.set code
       elsif field == "class standing"
-        click_search_link( Regexp.new(".*editTree.+proposition\.classStanding"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.classStanding"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_class_standing.when_present.set code
       elsif field == "org"
-        click_search_link( Regexp.new(".*editTree.+proposition\.orgInfo\.id"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.orgInfo\.id"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_abrev_org.when_present.set code
       elsif field == "population"
-        click_search_link( Regexp.new(".*editTree.+proposition\.orgInfo\.population\.id"))
+        #click_search_link( Regexp.new(".*editTree.+proposition\.orgInfo\.population\.id"))
+        page.search_link_element.wait_until_present
+        page.search_link
         page.lookup_population.when_present.set code
       end
       page.lookup_search_button
@@ -166,6 +182,7 @@ class AORequisitesData < DataFactory
           break
         end
       end
+      raise "click_search_link: link not found for: #{regex}"
     end
   end
 

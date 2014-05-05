@@ -43,7 +43,7 @@ class ManageAORequisites < BasePage
   action(:paste_btn) { |b| b.frm.button(:text => /Paste/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   #action(:del_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-DeleteButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:del_btn) { |b| b.frm.button(:text => /Delete/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  action(:add_line_btn) { |b| b.frm.button(:id=>"KRMS-ApprovedCourseStackedCollectionGroup_add").when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
+  action(:add_line_btn) { |b| b.frm.button(:id=>/KRMS-ApprovedCourseStackedCollectionGroup_.*add/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:delete_line_btn) { |b| b.frm.button(:text => /delete/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:update_rule_btn) { |b| b.frm.button(text: "Update Rule").when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present(60)}
 
@@ -51,7 +51,8 @@ class ManageAORequisites < BasePage
   element(:right_btn_element) { |b| b.frm.button(:text => /Move In/) }
   element(:cancel_update_link) { |b| b.frm.a(id: "KSAO-CancelRule-Button")}
 
-  action(:search_link) { |b| b.edit_tree_section.a(:text => /Advanced Search/).click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
+  element(:search_link_element) { |b| b.edit_tree_section.a(:text => /Advanced Search/)}
+  action(:search_link) { |b| b.search_link_element.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
 
   element(:rule_dropdown) { |b| b.edit_tree_section.select(:name => /.*editTree.*proposition.typeId/)}
   element(:multi_course_dropdown) { |b| b.edit_tree_section.select(:name => /.*editTree.*proposition.multipleCourseType/)}
@@ -74,7 +75,7 @@ class ManageAORequisites < BasePage
   action(:grade) { |b| b.grade_section.radio(:id => /KRMS-GradeScale-Field.*_control_4/).when_present.click}
 
   element(:lookup_section) { |b| b.frm_popup.div(id: "CourseLookupView")}
-  element(:lookup_results) { |b| b.frm_popup.div(id: "uLookupResults")}
+  element(:lookup_results) { |b| b.frm_popup.section(id: "uLookupResults")}
   element(:lookup_course_title) { |b| b.frm_popup.text_field(name: "lookupCriteria[title]")}
   element(:lookup_course_code) { |b| b.frm_popup.text_field(name: "lookupCriteria[code]")}
   element(:lookup_description) { |b| b.frm_popup.text_field(name: "lookupCriteria[description]")}
@@ -82,7 +83,7 @@ class ManageAORequisites < BasePage
   element(:lookup_population) { |b| b.frm_popup.text_field(name: "lookupCriteria[keyword]")}
   element(:lookup_abrev_org) { |b| b.frm_popup.text_field(name: "lookupCriteria[shortName]")}
   action(:lookup_search_button) { |b| b.frm_popup.button(id: "button_search").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  element(:lookup_results_table) { |b| b.frm_popup.div(id: "uLookupResults").table() }
+  element(:lookup_results_table) { |b| b.frm_popup.section(id: "uLookupResults").table() }
 
   element(:info_message) { |b| b.rule_maintenance_section.li(class: "uif-infoMessageItem")}
   element(:edit_loading) { |b| b.rule_maintenance_section.image(alt: "Loading...") }
