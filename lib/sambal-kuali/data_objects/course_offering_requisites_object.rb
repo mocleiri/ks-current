@@ -113,17 +113,10 @@ class CORequisitesData < DataFactory
                 "Recommended Preparation"=>:recommended_prep_section,
                 "Repeatable for Credit"=>:repeatable_credit_section,
                 "Course that Restricts Credits"=>:restricted_credit_section}
-    begin
-      on CourseOfferingRequisites do |page|
-        page.loading.wait_while_present(60)
-        if page.send(sections[@section]).img(id: /KSCO-AgendaManage-RulePrototype_rule[A-F]_toggle_col/).present?
-          page.send(sections[@section]).when_present.click
-        end
-      end
-    rescue Watir::Wait::TimeoutError
-      #Means agenda section is already open
-      on CourseOfferingRequisites do |page|
-        page.alert.ok
+    on CourseOfferingRequisites do |page|
+      page.loading.wait_while_present(60)
+      if !page.send(sections[@section]).span(id: /KSCO-AgendaManage-RulePrototype_rule[A-Z]_toggle_exp/).visible?
+        page.send(sections[@section]).when_present.click
       end
     end
   end
