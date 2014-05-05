@@ -173,7 +173,7 @@ end
 
 module CalendarStickyFooter
 
-  PageFactory.element(:acal_sticky_footer_div) { |b| b.frm.div(class: /uif-stickyButtonFooter/) } # persistent id not possible
+  PageFactory.element(:acal_sticky_footer_div) { |b| b.frm.div(class: /uif-stickyButtonFooter/,data_parent: 'academicCalendarEditPage') } # persistent id not possible
 
   def save(opts = {})
     defaults = {
@@ -181,8 +181,10 @@ module CalendarStickyFooter
     }
     options = defaults.merge(opts)
     loading.wait_while_present #solves general sync issues
-    acal_sticky_footer_div.button(text: "Save").wait_until_present
-    acal_sticky_footer_div.button(text: "Save").click
+    save_button = acal_sticky_footer_div.button(text: "Save")
+    save_button.wait_until_present
+    save_button.click
+    loading.wait_until_present(60) #UI just hangs here when saving large ACAL
     loading.wait_while_present(60)
     if options[:exp_success] then
       growl_msg_txt = growl_text
