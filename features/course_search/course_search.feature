@@ -97,7 +97,6 @@ Feature: BT.Course Search
     | Engl Hist               |                                 | Engl,Hist                                           |
     | Engl201 Hist360         | Engl201,Hist360                 | none                                                |
     | Engl 201 Hist 360       | Engl201,Engl360,Hist201,Hist360 | Engl,Hist,201,360                                   |
-    | "Engl 201" "Hist 360"   | Engl201,Hist360                 | none                                                |
     | Engl Hist 201           | Engl201,Hist201                 | Engl,Hist,201                                       |
     | Engl2XX Hist3XX         |                                 | Engl200,Hist300,Engl2XX,Hist3XX                     |
     | Engl Hist 2XX           |                                 | Engl200,Hist200,Engl,Hist,2XX                       |
@@ -105,6 +104,16 @@ Feature: BT.Course Search
     | "Engl 2XX" "Hist 3XX"   |                                 | Engl200,Hist300,Engl 2XX,Hist 3XX                   |
     | Engl 2XX Hist 3XX       |                                 | Engl200,Engl300,Hist200,Hist300,Engl,Hist,2XX,3XX   |
     | English                 |                                 | Engl,English                                        |
+
+
+
+  Scenario Outline: 8.1.1 Verify searches for multiple compound searches return the correct results.
+    When I search for "<text>"
+    Then "<expected_courses>" and courses matching at least one "<expected_component>" are returned
+  Examples:
+    | text                    |expected_courses                 | expected_component                                  |
+    | "Engl 201" "Hist 360"   | Engl201,Hist360                 | none                                                |
+
 
 #*************************  KSAP-851, US-  837*********************************************************************************************************
 # Hard-coding expected result. As the CO data from  enrollment is yet to be implemented in KSAP course details page.
