@@ -101,7 +101,7 @@ ARGS="TEST_SITE=$URL FIREFOX_PATH=$FIREFOX_PATH DISTRIBUTED_ENV=$DISTRIBUTED --f
 # profile specific args
 ARGS1="$ARGS --profile $PROFILE1 --out $WORKSPACE/cucumber1.json --format junit --out ."
 ARGS2="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber2.json --format junit --out ."
-ARGS2_PARALLEL="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber_parallel_${TEST_ENV_NUMBER}.json --format junit --out ."
+ARGS2_PARALLEL="$ARGS --profile $PROFILE2 --out $WORKSPACE/cucumber_parallel_\${TEST_ENV_NUMBER}.json --format junit --out ."
 
 # cleanup test processes
 $WORKSPACE/cleanup_test_processes.sh
