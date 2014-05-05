@@ -99,23 +99,17 @@ class AORequisitesData < DataFactory
     end
   end
 
+  #TODO: this is a page objects method, needs to be moved - also, time consuming to open all sections
   def open_agenda_section
     sections = {"Student Eligibility & Prerequisite"=>:eligibility_prereq_section_link,
                 "Antirequisite"=>:antirequisite_section_link, "Corequisite"=>:corequisite_section_link,
                 "Recommended Preparation"=>:recommended_prep_section_link,
                 "Repeatable for Credit"=>:repeatable_credit_section_link,
                 "Course that Restricts Credits"=>:restricted_credit_section_link}
-    begin
-      on ActivityOfferingRequisites do |page|
-        page.loading.wait_while_present(60)
-        if page.send(sections[@section]).img(id: /KSAO-AgendaManage-RulePrototype_rule[A-F]_toggle_col/).present?
-          page.send(sections[@section]).when_present.click
-        end
-      end
-    rescue Watir::Wait::TimeoutError
-      #Means agenda section is already open
-      on ActivityOfferingRequisites do |page|
-        page.alert.ok
+    on ActivityOfferingRequisites do |page|
+      page.loading.wait_while_present(60)
+      if !page.send(sections[@section]).span(id: /KSAO-AgendaManage-RulePrototype_rule[A-Z]_toggle_exp/).visible?
+        page.send(sections[@section]).when_present.click
       end
     end
   end
