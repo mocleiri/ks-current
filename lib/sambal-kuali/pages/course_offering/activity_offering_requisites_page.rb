@@ -8,12 +8,12 @@ class ActivityOfferingRequisites < BasePage
   element(:agenda_management_section) { |b| b.frm.main(id: "KSAO-AgendaMaintenance-Page")}
   element(:preview_tree) { |b| b.frm.div(id: "KRMS-PreviewTree-Group")}
 
-  element(:eligibility_prereq_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleA") }
-  element(:corequisite_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleB") }
-  element(:recommended_prep_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleC") }
-  element(:antirequisite_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleD") }
-  element(:repeatable_credit_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleE") }
-  element(:restricted_credit_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleF") }
+  element(:eligibility_prereq_section) { |b| b.frm.section(id: "KSAO-AgendaManage-RulePrototype_ruleA") }
+  element(:corequisite_section) { |b| b.frm.section(id: "KSAO-AgendaManage-RulePrototype_ruleB") }
+  element(:recommended_prep_section) { |b| b.frm.section(id: "KSAO-AgendaManage-RulePrototype_ruleC") }
+  element(:antirequisite_section) { |b| b.frm.section(id: "KSAO-AgendaManage-RulePrototype_ruleD") }
+  element(:repeatable_credit_section) { |b| b.frm.section(id: "KSAO-AgendaManage-RulePrototype_ruleE") }
+  element(:restricted_credit_section) { |b| b.frm.section(id: "KSAO-AgendaManage-RulePrototype_ruleF") }
 
   element(:eligibility_prereq_section_link) { |b| b.frm.a(id: "KSAO-AgendaManage-RulePrototype_ruleA_toggle") }
   action(:eligibility_prereq) { |b| b.eligibility_prereq_section_link.click; b.loading.wait_while_present }
