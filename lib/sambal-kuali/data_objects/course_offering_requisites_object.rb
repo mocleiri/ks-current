@@ -305,10 +305,10 @@ class CORequisitesData < DataFactory
   def add_new_node( group, node)
     on ManageCORequisites do |page|
       page.loading.wait_while_present
-      node_to_edit = page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/)
+      node_to_edit = page.edit_tree_section.a(:text => /.*#{Regexp.escape(node)}\..*/)
       if node != "" && node != nil && node_to_edit.exists?
-        if node_to_edit.parent.parent.attribute_value('class') !~ /ruleBlockSelected/
-          page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+        if node_to_edit.parent.attribute_value('class') !~ /ruleBlockSelected/
+          node_to_edit.when_present.click
         end
       end
       sleep 2

@@ -1,5 +1,6 @@
 #$test_site = "http://localhost:8081/ks-with-rice-bundled-dev" #Local Env
-$test_site = "http://env2.ks.kuali.org"
+# $test_site = "http://env2.ks.kuali.org"
+$test_site = "http://env3.ks.kuali.org"
 $test_site = ENV['TEST_SITE'] unless ENV['TEST_SITE'] == nil
 
 $: << File.dirname(__FILE__)+'/../../lib'
@@ -21,9 +22,9 @@ browser = nil
 headless = nil
 
 #Profile Proxy Configuration
-#profile = Selenium::WebDriver::Firefox::Profile.new
-#profile.proxy = Selenium::WebDriver::Proxy.new :http => 'localhost:8001'
-#, :profile => profile
+profile = Selenium::WebDriver::Firefox::Profile.new
+#profile.proxy = Selenium::WebDriver::Proxy.new :http => 'localhost:8081'
+profile.proxy = Selenium::WebDriver::Proxy.new :http => 'cache4.p.nwu.ac.za:80'
 
 if ENV['HEADLESS']
   require 'headless'
@@ -58,7 +59,7 @@ end
 Before do
   if browser == nil
     puts "debug  env.rb - creating new browser"
-    browser = Watir::Browser.new :firefox, :http_client => client
+    browser = Watir::Browser.new :firefox, :http_client => client, :profile => profile
     puts "debug  env.rb - browser.nil? #{browser.nil?}"
   end
   @browser = browser
