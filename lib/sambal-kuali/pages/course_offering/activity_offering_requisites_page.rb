@@ -169,7 +169,7 @@ class ActivityOfferingRequisites < BasePage
   element(:compare_cancel_link) { |b| b.compare_section.button(:text => /Close/)}
   action(:compare_cancel) { |b| b.compare_cancel_link.click; b.loading.wait_while_present}
 
-  element(:view_section) { |b| b.frm.div(id: "viewCluAndCoRuleLightBox")}
+  element(:view_section) { |b| b.frm.section(id: "viewCluAndCoRuleLightBox")}
   element(:view_tree) { |b| b.view_section.div( id: "KRMS-CompareTree-Section")}
   element(:view_cancel_link) { |b| b.view_section.button(:text => /Close/)}
   action(:view_cancel) { |b| b.view_cancel_link.click; b.loading.wait_while_present}
