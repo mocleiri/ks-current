@@ -172,7 +172,7 @@ And /^I? ?edit the second Time Slot to duplicate the first Time Slot$/ do
   @time_slots.show_time_slots
   ts0 = @time_slots.new_time_slots[0]
   ts1 = @time_slots.new_time_slots[1]
-  @time_slots.edit_time_slot(:code => ts1.code, :days => ts0.days, :start_time => ts0.start_time, :start_time_ampm => ts0.start_time_am_pm, :end_time => ts0.end_time, :end_time_ampm => ts0.end_time_am_pm)
+  @time_slots.edit_time_slot(:code => ts1.code, :days => ts0.days, :start_time => ts0.start_time, :start_time_am_pm => ts0.start_time_am_pm, :end_time => ts0.end_time, :end_time_am_pm => ts0.end_time_am_pm)
 end
 
 And /^I edit the Time Slot added above to use the other chosen Term Type$/ do
