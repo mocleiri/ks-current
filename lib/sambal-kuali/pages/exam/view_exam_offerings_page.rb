@@ -10,7 +10,7 @@ class ViewExamOfferings < BasePage
   element(:table_header) { |b| b.eo_table_section.header }
   value(:table_header_text) { |b| b.table_header.text}
 
-  element(:cluster_list_div)  { |b| b.frm.section(id: 'KS-CourseOfferingManagement-ExamOfferingByAOClustersSection') }
+  #element(:cluster_list_div)  { |b| b.frm.section(id: 'KS-CourseOfferingManagement-ExamOfferingByAOClustersSection') }
 
   element(:cancel_link) { |b| b.frm.a( text: "Cancel")}
   action(:cancel) { |b| b.cancel_link.click; b.loading.wait_while_present}
@@ -165,8 +165,8 @@ class ViewExamOfferings < BasePage
 
   def cluster_div_list
     div_list = []
-    if cluster_list_div.exists?
-      div_list = cluster_list_div.divs(id: /line\d+/, data_parent: 'KS-CourseOfferingManagement-ExamOfferingByAOClustersSection')
+    if eo_table_section.exists?
+      div_list = eo_table_section.divs(id: /line\d+_disclosureContent/)
     end
     div_list
   end
