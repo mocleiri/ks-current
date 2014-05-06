@@ -5,7 +5,7 @@ class ActivityOfferingRequisites < BasePage
   wrapper_elements
   krms_frame_elements
 
-  element(:agenda_management_section) { |b| b.frm.div(id: "KSAO-AgendaMaintenance-Page")}
+  element(:agenda_management_section) { |b| b.frm.main(id: "KSAO-AgendaMaintenance-Page")}
   element(:preview_tree) { |b| b.frm.div(id: "KRMS-PreviewTree-Group")}
 
   element(:eligibility_prereq_section) { |b| b.frm.div(id: "KSAO-AgendaManage-RulePrototype_ruleA") }
