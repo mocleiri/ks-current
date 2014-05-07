@@ -7,7 +7,7 @@ class OrgLookupPopUp < BasePage
 
   element(:short_name) { |b| b.frm.text_field(name: "lookupCriteria[shortName]") }
   element(:long_name) { |b| b.frm.text_field(name: "lookupCriteria[longName]") }
-  element(:results_table) { |b| b.frm.div(id: "uLookupResults").table(index: 0) }
+  element(:results_table) { |b| b.frm.table(id: 'uLookupResults_layout')}
 
   def frm
     self.iframe(class: "fancybox-iframe") # Persistent ID needed!

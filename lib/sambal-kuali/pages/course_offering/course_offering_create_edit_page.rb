@@ -217,13 +217,14 @@ class CourseOfferingCreateEdit < BasePage
   element(:admin_orgs_table)  { |b| b.frm.section(id: "KS-CourseOfferingEdit-OrganizationSection").table() }
 
   element(:add_org_id) { |b| b.admin_orgs_table.rows[1].cells[ORG_ID_COLUMN].text_field() }
-  action(:lookup_org) { |b| b.admin_orgs_table.rows[1].cells[ORG_ID_COLUMN].button().click; b.loading.wait_while_present }
+  action(:lookup_org) { |b| b.admin_orgs_table.rows[1].cells[ORG_ID_COLUMN].link.click; b.loading.wait_while_present }
 
   element(:add_org_id_new) { |b| b.admin_orgs_table.rows[-1].cells[ORG_ID_COLUMN].text_field() }
-  action(:lookup_org_new) { |b| b.admin_orgs_table.rows[-1].cells[ORG_ID_COLUMN].button().click; b.loading.wait_while_present }
+  action(:lookup_org_new_element) { |b| b.admin_orgs_table.rows[-1].cells[ORG_ID_COLUMN].link }
+  action(:lookup_org_new) { |b| b.lookup_org_new_element.click; b.loading.wait_while_present }
 
   element(:add_org_button) { |b| b.button(id: "KS-CourseOfferingEdit-OrganizationSection_add") }
-  action(:add_org) { |b| b.add_org_button.click; b.adding.wait_while_present() }
+  action(:add_org) { |b| b.add_org_button.click; b.loading.wait_while_present() }
 
   def get_org_name(id)
     target_orgs_row(id).cells[NAME_COLUMN].text  #cell is hard-coded, getting this value was very problematic
