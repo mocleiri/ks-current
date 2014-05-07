@@ -96,10 +96,8 @@ class ActivityOfferingMaintenance < BasePage
   SCHED_INFO_ACTION_COLUMN = 7
 
   element(:add_sched_info_div) { |b| b.frm.section(id: "ActivityOffering-DeliveryLogistic-New") }
-  element(:non_std_ts_control) { |b| b.span(id: "isApprovedForNonStandardTimeSlots_control") }
   element(:non_std_ts_checkbox) { |b| b.checkbox(id: "isApprovedForNonStandardTimeSlots_control") }
-  element(:non_std_ts_checkbox_text) { |b| b.span(id: "isApprovedForNonStandardTimeSlots_control").text }
-  element(:non_std_ts_text) { |b| b.label(id: "isApprovedForNonStandardTimeSlots_label").text }
+  element(:non_std_ts_text) { |b| b.div(id: "isApprovedForNonStandardTimeSlots").text }
   action(:approve_non_std_ts) { |b| b.non_std_ts_checkbox.set }
   action(:disallow_non_std_ts) { |b| b.non_std_ts_checkbox.clear }
   element(:add_tba){ |b|b.add_sched_info_div.checkbox(id: 'rdl_tba_control')}

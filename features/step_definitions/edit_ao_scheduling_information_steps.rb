@@ -114,11 +114,11 @@ When /^I add (standard|non-standard) RSIs for an AO$/ do |tsType|
                   :end_time => "01:50", :end_time_ampm => "pm"
     @activity_offering.add_req_sched_info :rsi_obj => si_obj
   elsif tsType=="non-standard"
-    @activity_offering.edit :allow_non_std_timeslots => true, :defer_save => true
+    #@activity_offering.edit :allow_non_std_timeslots => true, :defer_save => true
     si_obj = make SchedulingInformationObject, :days => "TH",
                     :start_time => "08:21", :start_time_ampm => "pm",
                     :end_time => "09:04", :end_time_ampm => "pm"
-    @activity_offering.add_req_sched_info :rsi_obj => si_obj, :start_edit => false
+    @activity_offering.add_req_sched_info :rsi_obj => si_obj, :start_edit => true
   end
 end
 

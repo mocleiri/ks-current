@@ -108,8 +108,13 @@ class SchedulingInformationObject < DataFactory
           page.loading.wait_while_present
         end
 
-        if @end_time != nil then
-          approved_for_nonStandard_timeslots = false #workaround after rice upgrade page.non_std_ts_checkbox.checked?
+        if @end_time != nil #end time format depends on user privs and admin setting re: approved for non-standard timeslots
+          approved_for_nonStandard_timeslots = false
+          if page.non_std_ts_checkbox.present?
+            approved_for_nonStandard_timeslots = page.non_std_ts_checkbox.set?
+          else
+            approved_for_nonStandard_timeslots = (page.non_std_ts_text == ' Approved for non-standard time slots')
+          end
           if !approved_for_nonStandard_timeslots
             formatted_end_time = DateTime.strptime("#{@end_time} #{@end_time_ampm}", '%I:%M %p').strftime( '%I:%M %p' )
             page.end_time_select_populate_list
