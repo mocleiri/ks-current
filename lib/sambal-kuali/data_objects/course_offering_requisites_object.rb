@@ -80,7 +80,7 @@ class CORequisitesData < DataFactory
   end
 
   def commit_changes( return_to_edit_page = false )
-    begin
+    begin  #TODO: very slow, need to pass in arg to explicit instruct whether it needs to be pressed or not
       on ManageCORequisites do |page|
         page.loading.wait_while_present
         page.update_rule_btn

@@ -172,7 +172,7 @@ Then /^the tree in the Student Eligibility & Prerequisite section should be empt
   @prereq.open_agenda_section
   on CourseOfferingRequisites do |page|
     page.loading.wait_while_present
-    page.agenda_management_section.text.should =~ /.*Student Eligibility & Prerequisite.*Rule.*\.\nCorequisite.*/m
+    page.agenda_management_section.text.should =~ /.*Student Eligibility & Prerequisite.*Rule.*\.\nCorequisite.*/m  #TODO: can this .should statement be simplied?
   end
 end
 
