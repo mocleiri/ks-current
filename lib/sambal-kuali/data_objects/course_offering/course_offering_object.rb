@@ -787,7 +787,7 @@ class CourseOffering < DataFactory
   def ao_has_checkbox_by_status(ao_status, cluster_private_name = :default_cluster)
     on ManageCourseOfferings do |page|
       row = page.row_by_status(ao_status, cluster_private_name)
-      return row.cells[0].checkbox.exists?
+      return row.cells[0].checkbox.visible?
     end
   end
 
