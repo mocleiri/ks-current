@@ -456,10 +456,10 @@ class CORequisitesData < DataFactory
       if page.edit_tree_section.html =~ /li.+class.+ruleBlockSelected/
         selection = page.edit_tree_section.li(:class => /ruleBlockSelected/).text
         if selection !~ /.*#{Regexp.escape(node)}\..*/
-          page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+          page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
         end
       else
-        page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+        page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
       end
       if direction == "down"
         page.down_btn
