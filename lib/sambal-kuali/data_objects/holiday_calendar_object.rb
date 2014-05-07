@@ -299,7 +299,9 @@ class Holiday < DataFactory
         page.holiday_type.select @type
       end
       page.holiday_start_date.set @start_date
+      page.holiday_start_date.click
       page.holiday_end_date.set @end_date
+      page.holiday_end_date.click
       #page.start_time
       if !@instructional then
         page.instructional.clear
