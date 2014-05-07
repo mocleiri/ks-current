@@ -441,11 +441,11 @@ class CORequisitesData < DataFactory
   def test_node_level( level)
     on ManageCORequisites do |page|
       if level == "primary"
-        test = /u\d+_node_\d_parent_node_0_parent_root_span/
+        test = /u\w+_node_\d_parent_node_0_parent_root/
       elsif level == "secondary"
-        test = /u\d+_node_\d_parent_node_\d_parent_node_0_parent_root_span/
+        test = /u\w+_node_\d_parent_node_\d_parent_node_0_parent_root/
       elsif level == "tertiary"
-        test = /u\d+_node_\d_parent_node_\d_parent_node_\d_parent_node_0_parent_root_span/
+        test = /u\w+_node_\d_parent_node_\d_parent_node_\d_parent_node_0_parent_root/
       end
       return Regexp.new(test)
     end

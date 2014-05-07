@@ -383,7 +383,7 @@ end
 Then /^node "(.*)" should be a "(.*)" node in the tree$/ do |node, level|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
-    page.edit_tree_section.link(:text => /.*#{node}\..*/).id.should match @courseOR.test_node_level(level)
+    page.edit_tree_section.link(:text => /.*#{node}\..*/).div.id.should match @courseOR.test_node_level(level)
     page.update_rule_btn
   end
 end
