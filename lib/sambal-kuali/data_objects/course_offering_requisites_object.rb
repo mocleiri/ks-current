@@ -180,7 +180,7 @@ class CORequisitesData < DataFactory
           break
         end
       end
-      raise "click_search_link: link not found for: #{regex}"
+      raise "co requisites click_search_link: link not found for: #{regex}"
     end
   end
 
@@ -482,17 +482,13 @@ class CORequisitesData < DataFactory
 
   def copy_cut_paste( node, node_after, action)
     on ManageCORequisites do |page|
-      if node != "" && node != nil && page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).exists?
-        page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
-      end
+      page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
       if action == "copy"
         page.copy_btn
       elsif action == "cut"
         page.cut_btn
       end
-      if node_after != "" && node_after != nil && page.edit_tree_section.span(:text => /.*#{Regexp.escape(node_after)}\..*/).exists?
-        page.edit_tree_section.span(:text => /.*#{Regexp.escape(node_after)}\..*/).when_present.click
-      end
+      page.edit_tree_section.link(:text => /.*#{Regexp.escape(node_after)}\..*/).when_present.click
       page.paste_btn
     end
   end
