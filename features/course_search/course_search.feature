@@ -112,7 +112,8 @@ Feature: BT.Course Search
     Then "<expected_courses>" and courses matching at least one "<expected_component>" are returned
   Examples:
     | text                    |expected_courses                 | expected_component                                  |
-    | "Engl 201" "Hist 360"   | Engl201,Hist360                 | none                                                |
+    | "Hist 360"  "Engl 201"  |Hist360,Engl 201                 |none                                                 |
+
 
 
 #*************************  KSAP-851, US-  837*********************************************************************************************************
