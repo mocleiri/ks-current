@@ -19,35 +19,22 @@ class ManageAORequisites < BasePage
   element(:object_tab) { |b| b.tab_section.a(:text => /Edit Rule/)}
   element(:logic_text) { |b| b.tab_section.text_field(name: "document.newMaintainableObject.dataObject.logicArea")}
 
-  #action(:add_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-AddButton-Enabled").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:add_btn) { |b| b.frm.button(:text => /Add Statement/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:edit_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-EditButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:edit_btn) { |b| b.frm.button(:text => /Edit/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:group_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-GroupButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:group_btn) { |b| b.frm.button(:text => /Create Group/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:down_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-DownButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:down_btn) { |b| b.frm.button(:text => /Move Down/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:up_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-UpButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:up_btn) { |b| b.frm.button(:text => /Move Up/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:left_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-LeftButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:left_btn) { |b| b.frm.button(:text => /Move Out/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:right_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-RightButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:right_btn) { |b| b.frm.button(:text => /Move In/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:preview_btn) { |b| b.frm.button(:id => /update-button.+/).click; b.edit_loading.wait_while_present; b.loading.wait_while_present(60)}
   action(:preview_btn) { |b| b.frm.button(:text => /Preview Change/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present(60)}
-  #action(:copy_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-CopyButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:copy_btn) { |b| b.frm.button(:text => /Copy/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:cut_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-CutButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:cut_btn) { |b| b.frm.button(:text => /Cut/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:paste_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-PasteButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:paste_btn) { |b| b.frm.button(:text => /Paste/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
-  #action(:del_btn) { |b| b.frm.button(id: "KRMS-RuleEditorView-DeleteButton").click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:del_btn) { |b| b.frm.button(:text => /Delete/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:add_line_btn) { |b| b.frm.button(:id=>/KRMS-ApprovedCourseStackedCollectionGroup_.*add/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:delete_line_btn) { |b| b.frm.button(:text => /delete/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:update_rule_btn) { |b| b.frm.button(text: "Update Rule").when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present(60)}
 
-  #element(:right_btn_element) { |b| b.frm.button(id: "KRMS-RuleEditorView-RightButton") }
   element(:right_btn_element) { |b| b.frm.button(:text => /Move In/) }
   element(:cancel_update_link) { |b| b.frm.a(id: "KSAO-CancelRule-Button")}
 
@@ -57,7 +44,7 @@ class ManageAORequisites < BasePage
   element(:rule_dropdown) { |b| b.edit_tree_section.select(:name => /.*editTree.*proposition.typeId/)}
   element(:multi_course_dropdown) { |b| b.edit_tree_section.select(:name => /.*editTree.*proposition.multipleCourseType/)}
   element(:course_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.courseInfo\.code/)}
-  element(:free_text_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.termParameter/)}
+  element(:free_text_field) { |b| b.frm.textarea(:name => /.*editTree.*proposition\.termParameter/)}
   element(:courses_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.cluSet\.clus\'\]\.code/)}
   element(:integer_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.parameters\[1\]\.value/)}
   element(:grade_dropdown) { |b| b.frm.select(:name => /.*editTree.*proposition\.termParameter/)}
