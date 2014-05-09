@@ -434,7 +434,9 @@ Then /^I have access to edit the delivery format type$/ do
       page.new_delivery_format_delete.click
       page.add_format_btn.wait_until_present
       page.add_format
+      page.loading.wait_while_present
       page.new_format_select.select "Lecture"
+      page.loading.wait_while_present
       page.new_grade_roster_level_select.enabled?.should be_true
       page.new_final_exam_activity_select.enabled?.should be_true
     end
