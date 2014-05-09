@@ -294,7 +294,7 @@ class AORequisitesData < DataFactory
 
   def edit_existing_node(node, field, code)
     on ManageAORequisites do |page|
-      page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+      page.edit_tree_section.li.div(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
       page.edit_btn
       if field == "course"
         advanced_search("course code", code)
@@ -482,14 +482,14 @@ class AORequisitesData < DataFactory
 
   def select_node( node)
     on ManageAORequisites do |page|
-      if node != "" && node != nil && page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).exists?
+      if node != "" && node != nil && page.edit_tree_section.div(:text => /.*#{Regexp.escape(node)}\..*/).exists?
         if page.edit_tree_section.html =~ /li.+class.+ruleBlockSelected/
           selection = page.edit_tree_section.li(:class => /ruleBlockSelected/).text
           if selection !~ /.*#{Regexp.escape(node)}\..*/
-            page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+            page.edit_tree_section.li.div(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
           end
         else
-          page.edit_tree_section.span(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
+          page.edit_tree_section.li.div(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
         end
       end
     end
@@ -546,8 +546,8 @@ class AORequisitesData < DataFactory
       elsif action == "cut"
         page.cut_btn
       end
-      if node_after != "" && node_after != nil && page.edit_tree_section.span(:text => /.*#{Regexp.escape(node_after)}\..*/).exists?
-        page.edit_tree_section.span(:text => /.*#{Regexp.escape(node_after)}\..*/).when_present.click
+      if node_after != "" && node_after != nil && page.edit_tree_section.div(:text => /.*#{Regexp.escape(node_after)}\..*/).exists?
+        page.edit_tree_section.li.div(:text => /.*#{Regexp.escape(node_after)}\..*/).when_present.click
       end
       page.paste_btn
     end
