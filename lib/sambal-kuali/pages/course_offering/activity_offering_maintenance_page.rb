@@ -242,10 +242,10 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   #for some users/soc states waitlists are read-only
-  value(:waitlists_active?) { |b| b.frm.div(id: 'waitlist_active_ro').span(text: "Yes").exists? }
-  value(:waitlists_processing) { |b| b.frm.div(id: 'waitlist_proc_ro').span(data_parent: 'waitlist_proc_ro').text }
-  value(:waitlists_max_size) { |b| b.frm.div(id: 'waitlist_max_size_ro').span(data_parent: 'waitlist_max_size_ro').text }
-  value(:waitlists_allow_holds?) { |b| b.frm.div(id: 'waitlist_holds_ro').span(data_parent: 'waitlist_holds_ro').exists? }
+  value(:waitlists_active?) { |b| b.frm.div(id: 'waitlist_active_ro').p(text: "Yes").exists? }
+  value(:waitlists_processing) { |b| b.frm.div(id: 'waitlist_proc_ro').p.text }
+  value(:waitlists_max_size) { |b| b.frm.div(id: 'waitlist_max_size_ro').p.text }
+  value(:waitlists_allow_holds?) { |b| b.frm.div(id: 'waitlist_holds_ro').p(text: 'Yes').exists? }
 
   element(:seat_pools_div) { |b| b.frm.div(id: "ao-seatpoolgroup") }
   element(:seat_pools_table) { |b| b.frm.table(id: "ao-seatpoolgroup-table") }
