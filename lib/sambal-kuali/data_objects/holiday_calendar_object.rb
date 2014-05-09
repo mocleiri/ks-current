@@ -298,10 +298,11 @@ class Holiday < DataFactory
       else
         page.holiday_type.select @type
       end
-      page.holiday_start_date.set @start_date
       page.holiday_start_date.click
-      page.holiday_end_date.set @end_date
+      page.holiday_start_date.set @start_date
+      sleep(2) # to allow dirty error to catch up
       page.holiday_end_date.click
+      page.holiday_end_date.set @end_date
       #page.start_time
       if !@instructional then
         page.instructional.clear
