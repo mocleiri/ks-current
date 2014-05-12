@@ -32,8 +32,8 @@ Feature: CO.AZ Dept Schedule Coordinator SOC state Published
     Given there is an "Offered" course offering in my admin org
     When I manage course offerings for a subject code in my admin org
     Then I have access to view course offering details
+    And I have access to approve course offerings for scheduling
     But I do not have access to add course offerings
-    And I do not have access to select course offerings for approve
     #delete covered in separate tests
     And I do not have access to edit the listed course offering
     And I do not have access to copy the listed course offering
