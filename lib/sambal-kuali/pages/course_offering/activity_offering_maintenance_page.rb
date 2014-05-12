@@ -138,7 +138,7 @@ class ActivityOfferingMaintenance < BasePage
   def view_requested_scheduling_information
     if view_requested_scheduling_information_link.present? && view_requested_scheduling_information_toggle_collapsed.visible?
       view_requested_scheduling_information_link.click
-      loading.wait_while_present
+      add_days.wait_until_present
     end
   end
 
