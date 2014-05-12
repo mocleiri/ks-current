@@ -327,7 +327,9 @@ end
 Then /^I should be able to use all the function buttons on the Edit Rule tab$/ do
   on ManageAORequisites do |page|
     @activityOR.move_around( "A", "out")
-    page.edit_tree_section.span(:text => /.*A\..*/).id.should match @activityOR.test_node_level( "primary")
+    node_html_id = page.edit_tree_section.link(:text => /.*A\..*/).div.id
+    @activityOR.test_node_level("primary", node_html_id).should be_true
+#    page.edit_tree_section.span(:text => /.*A\..*/).id.should match @activityOR.test_node_level( "primary")
 
     @activityOR.move_around( "B", "up")
     page.edit_tree_section.text.should match /.*B\..+A\..*/m
@@ -357,7 +359,9 @@ Then /^I should be able to use all the function buttons on the Edit Rule tab$/ d
     page.rule_dropdown.when_present.select /Free Form Text/
     page.free_text_field.when_present.set "new group can be created"
     page.preview_btn
-    page.edit_tree_section.span(:text => /.*H\..*/).id.should match @activityOR.test_node_level( "secondary")
+    node_html_id = page.edit_tree_section.link(:text => /.*H\..*/).div.id
+    @activityOR.test_node_level("secondary", node_html_id).should be_true
+    #page.edit_tree_section.span(:text => /.*H\..*/).id.should match @activityOR.test_node_level( "secondary")
 
     @activityOR.edit_existing_node("D", "text", "existing statement can be edited")
     page.edit_tree_section.text.should match /existing statement can be edited/
@@ -377,7 +381,8 @@ Then /^I should be able to use the functionality of the Edit Rule Logic tab$/ do
     @activityOR.switch_tabs
     page.edit_loading.wait_while_present
     page.edit_tree_section.text.should match /.*A\..+C\..+E\..+B\..+D\..*/m
-    page.edit_tree_section.span(:text => /.*B\..*/).id.should match @activityOR.test_node_level( "secondary")
+    node_html_id = page.edit_tree_section.link(:text => /.*B\..*/).div.id
+    @activityOR.test_node_level("secondary", node_html_id).should be_true
 
     page.update_rule_btn
   end

@@ -469,15 +469,16 @@ class AORequisitesData < DataFactory
     end
   end
 
-  def test_node_level( level)
+  #TODO: is checking the html id really a valid test???
+  def test_node_level(level, node_html_id)
     if level == "primary"
-      test = /u\d+_node_\d_parent_node_0_parent_root_span/
+      return node_html_id.scan('_node_').length == 2
     elsif level == "secondary"
-      test = /u\d+_node_\d_parent_node_\d_parent_node_0_parent_root_span/
+      return node_html_id.scan('_node_').length == 3
     elsif level == "tertiary"
-      test = /u\d+_node_\d_parent_node_\d_parent_node_\d_parent_node_0_parent_root_span/
+      return node_html_id.scan('_node_').length == 4
     end
-    return Regexp.new(test)
+    return false
   end
 
   def select_node( node)
