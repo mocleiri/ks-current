@@ -10,7 +10,5 @@ class CmActiveDates < BasePage
   element(:end_term) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.endTerm') }
 
 
-  # ACTIVE DATES REVIEW FIELDS
-  action(:edit_course_logistics) { |b| b.a(id: 'ActiveDates-Review-Edit-link').click }
-  value(:start_term_review) { |b| b.textarea(id: "activeDatesSection_startTerm_control").text }
+
 end

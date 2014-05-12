@@ -64,15 +64,6 @@ class CmCourseLogistics < BasePage
   action(:activity_class_size_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].defaultEnrollmentEstimate").value }
 
 
-# LOGISTICS REVIEW FIELDS
-  action(:edit_course_logistics) { |b| b.a(id: "CourseLogistics-Review-Edit-link").click }
-  value(:assessment_scale_review) { |b| b.textarea(id: "courseLogisticsSection_gradingOptions_control").text }
-  value(:final_exam_status_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatus_control").text }
-  value(:final_exam_rationale_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatusRationale_control").text }
-
-  value(:outcome_type_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Type").input(class: "uif-textControl").value }
-  value(:outcome_credit_value_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Credit Value").input(class: "uif-readOnlyContent").text }
-  value(:outcome_level_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(class: "uif-header").span(class:"uif-headerText-span").text }
 
   #TODO fix definitions after in flight styling changes are completed KSCM-1647
 

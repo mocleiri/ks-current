@@ -24,9 +24,5 @@ class CmGovernance < BasePage
   action(:added_administering_organization) {|org_added='0', b| b.text_field(name: /#{org_added}\]\.organizationName$/) }
   action(:adv_search_admin_org) {|b| b.link(text: 'Advanced Search').click; b.adv_search_button.wait_until_present }
 
- # GOVERNANCE REVIEW FIELDS
-  action(:edit_governance) { |b| b.a(id: "Governance-Review-Edit-link").click }
-  value(:campus_locations_review) { |b| b.textarea(id: 'governanceSection_campusLocations_control').text }
-  value(:curriculum_oversight_review) { |b| b.textarea(id: 'governanceSection_curriculumOversightAsString_control').text }
 
 end

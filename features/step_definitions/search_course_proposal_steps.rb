@@ -86,14 +86,14 @@ And /^I can review the proposal created by (.*?)$/ do |proposal_to_review|
 
   if proposal_to_review == "Curriculum Specialist"
     @course_proposal_cs.review_proposal_action
-    on CmCourseInformation do |page|
+    on CmReviewProposal do |page|
         page.proposal_title_review_read_only.should == @course_proposal_cs.proposal_title
         page.course_title_review_read_only.should == @course_proposal_cs.course_title
         page.page_header_text.should == "#{@course_proposal_cs.proposal_title} (Admin Proposal)"
     end
   else
     @course_proposal_faculty.review_proposal_action
-    on CmCourseInformation do |page|
+    on CmReviewProposal do |page|
       page.proposal_title_review.should == @course_proposal_faculty.proposal_title
       page.course_title_review.should == @course_proposal_faculty.course_title
       page.page_header_text.should == "#{@course_proposal_faculty.proposal_title} (Proposal)"
@@ -103,7 +103,7 @@ end
 
 And /^I can review the course (.*?)$/ do |proposal_type|
   @course_proposal.review_proposal_action
-  on CmCourseInformation do |page|
+  on CmReviewProposal do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
     if proposal_type == "proposal"
@@ -118,7 +118,7 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
   @course_proposal.review_proposal_action
 
   #COURSE INFORMATION SECTION
-  on CmCourseInformation do |page|
+  on CmReviewProposal do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
     page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)" if proposal_type == "admin proposal"
@@ -127,20 +127,20 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
     page.course_number_review.should == @course_proposal.course_number
     page.description_review.should == @course_proposal.description_rationale
     page.proposal_rationale_review.should == @course_proposal.proposal_rationale
-  end
+
 
   #GOVERNANCE SECTION
-  on CmGovernance do |page|
+
     page.campus_locations_review.should == "North" if @course_proposal.location_north == :set
     page.campus_locations_review.should == "South" if @course_proposal.location_south == :set
     page.campus_locations_review.should == "Extended" if @course_proposal.location_extended == :set
     page.campus_locations_review.should == "All" if @course_proposal.location_all == :set
     page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
-  end
+
 
 
   #LOGISTICS SECTION
-  on CmCourseLogistics do |page|
+
 
     #ASSESSMENT SCALE
     page.assessment_scale_review.should == "A-F with Plus/Minus Grading" if @course_proposal.assessment_a_f == :set
@@ -163,15 +163,15 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
     #page.outcome_type_fixed_review.should == "Fixed" unless @course_proposal.outcome_type_fixed.nil?
     #page.outcome_credit_value_review.should == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
 
-  end
+
 
 
   #ACTIVE DATES SECTION
-  on CmActiveDates do |page|
-    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
-  end
+   page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+
 
 
 end
 
 
+end

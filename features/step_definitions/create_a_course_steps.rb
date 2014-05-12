@@ -165,11 +165,14 @@ And /^I should see data in required for save fields on the Review Proposal page$
   on CmCourseInformation do |page|
     page.review_proposal
     page.loading_wait
+
+  end
+ 
+  on CmReviewProposal do |page|
     #puts "Original Proposal Title is #{page.proposal_title_review}"
     #puts "Original Course Title is #{page.course_title_review}"
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
-
   end
 end
 
@@ -195,9 +198,9 @@ And /^I should see the updated data on the Review proposal page$/ do
   on CmCourseInformation do |page|
     page.review_proposal
     page.loading_wait
-    #page.growl_text.should == "Document was successfully saved."
-    #puts "Updated Proposal Title is #{page.proposal_title_review}"
-    #puts "Updated Course Title is #{page.course_title_review}"
+  end
+
+  on CmReviewProposal do |page|
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
   end
@@ -208,6 +211,9 @@ And /^I should see the updated data on the Review proposal page for course (.*?)
     on CmCourseInformation do |page|
       page.review_proposal
       page.loading_wait
+    end
+
+    on CmReviewProposal do |page|
       page.growl_text.should == "Document was successfully saved."
       page.proposal_title_review.should == @course_proposal_faculty.proposal_title
       page.course_title_review.should == @course_proposal_faculty.course_title
@@ -217,6 +223,8 @@ And /^I should see the updated data on the Review proposal page for course (.*?)
       page.review_proposal
       page.loading_wait
       page.growl_text.should == "Document was successfully saved."
+    end
+    on CmReviewProposal do |page|
       page.proposal_title_review.should == @course_proposal_cs.proposal_title
       page.course_title_review.should == @course_proposal_cs.course_title
     end
