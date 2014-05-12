@@ -903,7 +903,7 @@ Then /^I am unable submit the activity offering to the scheduler$/ do
   @activity_offering.edit :defer_save => true
 
   on ActivityOfferingMaintenance do |page|
-    page.send_RSIs_to_scheduler_msg.should match /Scheduling information cannot be sent to the scheduler/
+    page.cannot_send_to_scheduler_msg_exists.should be_true
     page.cancel
   end
 end
