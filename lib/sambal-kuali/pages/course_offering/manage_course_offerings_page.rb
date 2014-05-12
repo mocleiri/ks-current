@@ -427,6 +427,7 @@ class ManageCourseOfferings < BasePage
 
   def view_cluster_reg_groups(private_name = :default_cluster)
     view_cluster_reg_groups_link(private_name).click
+    view_reg_groups_table.rows[1].wait_until_present
   end
 
   def view_reg_groups_table(private_name = :default_cluster)
