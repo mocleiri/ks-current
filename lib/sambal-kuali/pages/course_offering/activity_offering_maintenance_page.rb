@@ -19,19 +19,18 @@ class ActivityOfferingMaintenance < BasePage
   end
 
   #sticky footer
+  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
+  action(:send_to_scheduler_checkbox) { |b| b.frm.checkbox(id: "send_RDLs_to_scheduler_control") }
+  action(:send_to_scheduler) { |b| b.send_to_scheduler_checkbox.set }
+  value(:send_RSIs_to_scheduler_msg) { |b| b.label(id: "send_RDLs_to_scheduler_label").text }
+  value(:cannot_send_to_scheduler_msg_exists) { |b| b.sticky_footer_div.p(text: 'Scheduling information cannot be sent to the scheduler for this activity offering because it is canceled.').exists? }
+
   element(:save_cancel_div) { |b| b.frm.div(id: "ActivityOfferingEdit_SubmitCancel") }
   element(:save_button) { |b| b.save_cancel_div.button(text: "Save Progress") }
   action(:save) { |b| sleep 2; b.loading.wait_while_present; sleep 2; b.save_button.click; b.loading.wait_while_present(120) }
-  action(:send_to_scheduler_checkbox) { |b| b.frm.checkbox(id: "send_RDLs_to_scheduler_control") }
-  value(:send_RSIs_to_scheduler_msg) { |b| b.label(id: "send_RDLs_to_scheduler_label").text }
-  action(:send_to_scheduler) { |b| b.send_to_scheduler_checkbox.set }
-
   element(:submit_button) { |b| b.save_cancel_div.button(text: "Update") }
   action(:submit) { |b| sleep 2; b.loading.wait_while_present; sleep 2; b.submit_button.click; b.loading.wait_while_present(120) }
   action(:cancel) { |b| b.save_cancel_div.link(text: "Cancel").click; b.loading.wait_while_present }
-  element(:sticky_footer_div) { |b| b.frm.div(class: "ks-uif-footer clearfix uif-stickyFooter uif-stickyButtonFooter") }
-  element(:send_revised_scheduling_information_checkbox) { |b| b.sticky_footer_div.checkbox(name: "document.newMaintainableObject.dataObject.sendRDLsToSchedulerAfterMSE") }
-  action(:send_revised_scheduling_information) { |b| b.send_revised_scheduling_information_checkbox.click }
   #end sticky footer
 
   #unsaved changes dialog - appears when navigating between AOs
