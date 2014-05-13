@@ -1,24 +1,4 @@
 When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
-  # Set course code and credits
-  course_code = case
-                  when subj=="BSCI1" then "BSCI106"
-                  when subj=="BSCI2" then "BSCI201"
-                  when subj=="BSCI3" then "BSCI120"
-                  when subj=="CHEM" then "CHEM231"
-                  when subj=="CHEM3" then "CHEM399A"
-                  when subj=="ENGL1" then "ENGL211"
-                  when subj=="ENGL2" then "ENGL101"
-                  when subj=="ENGL3" then "ENGL101"
-                  when subj=="ENGL4" then "ENGL101"
-                  when subj=="HIST" then "HIST111"
-                  when subj=="PHYS" then "PHYS102"
-                  when subj=="WMST" then "WMST360"
-                  else ""
-                end
-  credit_option = case
-                    when subj.match("BSCI") then "4.0"
-                    else "3.0"
-                  end
 
   # Get original counts before adding course to cart
   if subj=="WMST" || subj=="BSCI2"
@@ -29,36 +9,97 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
     end
   end
 
+  # Assign values for course attributes
   case subj
+    when "BSCI1" then
+      course_code = "BSCI106"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "4.0"
+      course_has_options = true
+    when "BSCI2" then
+      course_code = "BSCI201"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "4.0"
+      course_has_options = true
     when "BSCI3" then
+      course_code = "BSCI120"
       reg_group_code = "1001"
       term_code = "201208"
       term_descr = "Fall 2012"
+      credit_option = "4.0"
+      course_has_options = true
+    when "CHEM" then
+      course_code = "CHEM231"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "3.0"
       course_has_options = true
     when "CHEM3" then
+      course_code = "CHEM399A"
       reg_group_code = "1001"
       term_code = "201208"
       term_descr = "Fall 2012"
+      credit_option = "3.0"
+      course_has_options = true
+    when "ENGL1" then
+      course_code = "ENGL211"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "3.0"
       course_has_options = true
     when "ENGL2" then
+      course_code = "ENGL101"
       reg_group_code = "1001"
       term_code = "201208"
       term_descr = "Fall 2012"
+      credit_option = "3.0"
       course_has_options = false
     when "ENGL3" then
+      course_code = "ENGL101"
       reg_group_code = "1009"
       term_code = "201208"
       term_descr = "Fall 2012"
+      credit_option = "3.0"
       course_has_options = false
     when "ENGL4" then
+      course_code = "ENGL101"
       reg_group_code = "1003"
       term_code = "201208"
       term_descr = "Fall 2012"
+      credit_option = "3.0"
       course_has_options = false
+    when "HIST" then
+      course_code = "HIST111"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "3.0"
+      course_has_options = true
+    when "PHYS" then
+      course_code = "PHYS102"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "3.0"
+      course_has_options = true
+    when "WMST" then
+      course_code = "WMST360"
+      reg_group_code = "1001"
+      term_code = "201201"
+      term_descr = "Spring 2012"
+      credit_option = "3.0"
+      course_has_options = true
     else
       reg_group_code = "1001"
       term_code = "201201"
       term_descr = "Spring 2012"
+      credit_option = "3.0"
       course_has_options = true
   end
 
@@ -184,14 +225,6 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
-end
-
-Then /^the modified course is present in my cart$/  do
-  #pending
-end
-
-And /^A successfully removed message appears$/ do
-  #pending ?? for CR 1.4
 end
 
 And /^I? ?can view the details of my selection in the registration cart$/ do
