@@ -34,14 +34,11 @@ class CmCourseLogistics < BasePage
   element(:final_exam_rationale) { |b| b.text_field(name: 'document.newMaintainableObject.dataObject.finalExamRationale') }
 
 #OUTCOME
-  action(:add_outcome) {|b| b.button(id: 'KS-CourseView-CourseLogisticsPage-Outcome-Widgets_add').click; b.adding_line_wait }
-  #action(:outcome_type) { |outcome_level='0', b| b.select_list(name: /#{outcome_level}\]\.typeKey$/) }
-  action(:outcome_type) { |outcome_level, b| b.select_list(name: "document.newMaintainableObject.dataObject.creditOptionWrappers[#{outcome_level}].typeKey" ) }
-  action(:credit_value_fixed) {|outcome_level, b| b.text_field(id: "fixedCreditVale_line#{outcome_level}_control") }
-  action(:credit_value_min) {|outcome_level, b| b.text_field(id:"MinRangeCreditVale_line#{outcome_level}_control") }
-  action(:credit_value_max) {|outcome_level, b| b.text_field(id: "MaxRangeCreditVale_line#{outcome_level}_control") }
-  action(:credit_value_multiple_entry) { |outcome_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_add_control") }
-  action(:credit_value_multiple) { |outcome_level,multiple_level,b| b.text_field(id: "outcome-multiple-credit_line#{outcome_level}_line#{multiple_level-2}_control") }
+  action(:add_outcome) {|b| b.button(id: 'outcome-addline').click; b.loading_wait }
+  action(:outcome_type) { |outcome_level, b| b.select_list(id: "typeKey_line#{outcome_level}_control" ) }
+  action(:credit_value_fixed) {|outcome_level, b| b.text_field(id: "creditValue_line#{outcome_level}_control") }
+  action(:credit_value_range) {|outcome_level, b| b.text_field(id:"creditValue_line#{outcome_level}_control") }
+  action(:credit_value_multiple) { |outcome_level,b| b.text_field(id: "creditValue_line#{outcome_level}_control") }
   action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
 
 
@@ -64,18 +61,6 @@ class CmCourseLogistics < BasePage
   action(:activity_class_size_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].defaultEnrollmentEstimate").value }
 
 
-
-  #TODO fix definitions after in flight styling changes are completed KSCM-1647
-
-  #value(:outcome_type_range_review)
-  #value(:outcome_credit_min_review)
-  #value(:outcome_credit_min_review)
-  #value(:outcome_level_range_review)
-
-  #value(:outcome_type_multiple_review)
-  #value(:outcome_credit_value_multiple1_review)
-  #value(:outcome_credit_value_multiple2_review)
-  #value(:outcome_level_multiple_review)
 
 
 end

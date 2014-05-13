@@ -157,17 +157,32 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
     page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
 
 
-    #TODO Fix after in flight styling changes are completed KSCM-1647
     #FIXED OUTCOME
-    #page.outcome_level_fixed_review.should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
-    #page.outcome_type_fixed_review.should == "Fixed" unless @course_proposal.outcome_type_fixed.nil?
-    #page.outcome_credit_value_review.should == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
+    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_fixed.nil?
+    page.outcome_credit_review(1) == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
 
+    #RANGE OUTCOME
+    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_level_range}" unless @course_proposal.outcome_type_range.nil?
+    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_type_range.nil?
+    page.outcome_credit_review(2) == "#{@course_proposal.credit_value_min}-#{@course_proposal.credit_value_max}" unless @course_proposal.outcome_type_range.nil?
 
+    #MULTIPLE OUTCOME
+    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_level_multiple}" unless @course_proposal.outcome_type_multiple.nil?
+    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_type_multiple.nil?
+    page.outcome_credit_review(3) == "#{@course_proposal.credit_value_multiple_1},#{@course_proposal.credit_value_multiple_2}" unless @course_proposal.outcome_type_multiple.nil?
 
+    #ACTIVITY FORMAT
+    page.activity_level_review(1).should == "Format 1"
+    page.activity_type_review(1).should include "#{@course_proposal.activity_type}".gsub(/\s+/, "")
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.activity_contacted_hours}"
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.activity_frequency}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.activity_duration_type}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.activity_duration_count}"
+    page.activity_class_size_review(1).should == "#{@course_proposal.activity_class_size}"
 
-  #ACTIVE DATES SECTION
-   page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+    #ACTIVE DATES SECTION
+    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
 
 
 

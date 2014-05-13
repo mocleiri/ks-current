@@ -115,24 +115,24 @@ class CmCourseProposalObject < DataFactory
         campus_location: [:location_all, :location_extended, :location_north, :location_south],
         curriculum_oversight:       '::random::',
         #COURSE LOGISTICS
-          #ASSESSMENT SCALE
+        #ASSESSMENT SCALE
         assessment_scale:           [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
-          #FINAL EXAM
+        #FINAL EXAM
         final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
         final_exam_rationale:       random_alphanums(10,'test final exam rationale '),
-          #OUTCOMES-TODO Disabling adding outcomes until KSCM-1949 is resolved
-        #outcome_type_fixed: true,
-        #outcome_level_fixed: 1,
-        #credit_value: (1..5).to_a.sample,
-        #:outcome_type_range => true,
-        #:outcome_level_range => 2,
-        #:credit_value_min => (1..3).to_a.sample,
-        #:credit_value_max =>  (4..8).to_a.sample,
-        #:outcome_type_multiple => true,
-        #:outcome_level_multiple => 3,
-        #:credit_value_multiple_1 => (1..4).to_a.sample,
-        #:credit_value_multiple_2 => (5..8).to_a.sample,
-          #FORMATS
+        #OUTCOMES
+        outcome_type_fixed: true,
+        outcome_level_fixed: 1,
+        credit_value: (1..5).to_a.sample,
+        outcome_type_range: true,
+        outcome_level_range: 2,
+        credit_value_min: (1..4).to_a.sample,
+        credit_value_max: (5..9).to_a.sample,
+        outcome_type_multiple: true,
+        outcome_level_multiple: 3,
+        credit_value_multiple_1: (1..4).to_a.sample,
+        credit_value_multiple_2: (5..9).to_a.sample,
+        #FORMATS
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
         activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
@@ -286,9 +286,9 @@ class CmCourseProposalObject < DataFactory
     end
 
   end # required proposal
-
   def course_proposal_nonrequired
     on CmCourseInformation do |page|
+
       page.course_information unless page.current_page('Course Information').exists?
       page.loading_wait
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
@@ -504,39 +504,29 @@ class CmCourseProposalObject < DataFactory
 
   def set_outcome_fixed(outcome_level)
     on CmCourseLogistics do |page|
-      page.add_outcome
       page.outcome_type(outcome_level-1).pick! "Fixed"
       page.loading_wait
       page.credit_value_fixed(outcome_level-1).set @credit_value
+      page.add_outcome
     end
   end
 
 
   def set_outcome_range(outcome_level)
     on CmCourseLogistics do |page|
-      page.add_outcome
       page.outcome_type(outcome_level-1).pick! "Range"
       page.loading_wait
-      page.credit_value_min(outcome_level-1).set @credit_value_min
-      page.credit_value_max(outcome_level-1).set @credit_value_max
+      page.credit_value_range(outcome_level-1).set "#{@credit_value_min}-#{@credit_value_max}"
+      page.add_outcome
     end
   end
 
   def set_outcome_multiple(outcome_level)
-    multiple_value_count = 0
     on CmCourseLogistics do |page|
-      page.add_outcome
       page.outcome_type(outcome_level-1).pick! "Multiple"
       page.loading_wait
-      sleep 2 #until 1909 is resolved
       #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
-      page.credit_value_multiple_entry(outcome_level-1).set @credit_value_multiple_1
-      page.outcome_add_multiple_btn(outcome_level-1)
-      page.loading_wait
-      sleep 2 #until 1909 is resolved
-      #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
-      page.credit_value_multiple(outcome_level-1,2).set @credit_value_multiple_2
-      page.outcome_add_multiple_btn(outcome_level-1)
+      page.credit_value_multiple(outcome_level-1).set "#{@credit_value_multiple_1},#{@credit_value_multiple_2}"
     end
   end
 

@@ -34,12 +34,20 @@ class CmReviewProposal < BasePage
   value(:final_exam_status_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatus_control").text }
   value(:final_exam_rationale_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatusRationale_control").text }
 
-  value(:outcome_type_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Type").input(class: "uif-textControl").value }
-  value(:outcome_credit_value_review) { |b| b.div(id: "CourseLogistics-Review-section").div(data_label: "Credit Value").input(class: "uif-readOnlyContent").text }
-  value(:outcome_level_fixed_review) { |b| b.div(id: "CourseLogistics-Review-section").div(class: "uif-header").span(class:"uif-headerText-span").text }
+  value(:outcome_level_review) { |outcome_level,b| b.div(id: "course_review_outcome_details").header(id: /line#{outcome_level-1}/).span(class: "uif-headerText-span").text }
+  value(:outcome_type_review) { |outcome_level,b| b.div(id: "course_review_outcome_details").div(id: /line#{outcome_level-1}/, data_label: "Type").text }
+  value(:outcome_credit_review) { |outcome_level,b| b.div(id: "course_review_outcome_details").div(id: /line#{outcome_level-1}/, data_label: "Credit Value").text }
+
+  #ACTIVITY FORMATS
+  value(:activity_level_review) { |activity_level, b| b.div(id: "course_review_format_details").header(id: /line#{activity_level-1}/).span(class: "uif-headerText-span").text }
+  value(:activity_type_review)  { |activity_level, b| b.div(id: "course_review_activity_details_line#{activity_level-1}").header(id: /line#{activity_level-1}_line#{activity_level-1}/).span(class: "uif-headerText-span").text }
+  value(:activity_contact_hours_frequency_review) { |activity_level, b| b.div(id: "course_review_activity_details_line#{activity_level-1}").div(data_label: "Contact Hours").text }
+  value(:activity_duration_type_count_review) { |activity_level, b| b.div(id: "course_review_activity_details_line#{activity_level-1}").div(data_label: "Duration").text }
+  value(:activity_class_size_review) { |activity_level, b| b.div(id: "course_review_activity_details_line#{activity_level-1}").div(data_label: "Anticipated Class Size").text }
 
   # ACTIVE DATES REVIEW FIELDS
   action(:edit_active_dates) { |b| b.a(id: 'ActiveDates-Review-Edit-link').click }
   value(:start_term_review) { |b| b.textarea(id: "activeDatesSection_startTerm_control").text }
+
 
 end
