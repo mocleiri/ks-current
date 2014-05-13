@@ -159,6 +159,8 @@ class CourseOffering < DataFactory
         page.create_offering unless @defer_save
       end
     end
+    ensure_in_single_co_view
+
     return self
   end
 
@@ -379,6 +381,10 @@ class CourseOffering < DataFactory
       page.show
 
     end
+    ensure_in_single_co_view
+  end
+
+  def ensure_in_single_co_view
     #check to see if course code returns multiple rows
     begin
       on ManageCourseOfferings do |page|
@@ -392,6 +398,7 @@ class CourseOffering < DataFactory
       #means was single CO returned (or nothing returned), AO list is already displayed
     end
   end
+  private :ensure_in_single_co_view
 
 
   def manage_and_init
