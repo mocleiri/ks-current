@@ -1,0 +1,105 @@
+<html>
+<head>
+    <script type="application/javascript">
+        function toggle() {
+            if (document.getElementById("mycart").style.display === "none" || document.getElementById("mycart").style.display === "") {
+                document.getElementById("mycart").style.display = "block";
+                document.getElementById("schedule").style.display = "none";
+            } else {
+                document.getElementById("mycart").style.display = "none";
+                document.getElementById("schedule").style.display = "block";
+            }
+        }
+
+        window.onresize = function (event) {
+            if (window.innerWidth > 660) {
+                document.getElementById("mycart").style.display = "";
+                document.getElementById("schedule").style.display = "";
+                console.log("resizing ", window.innerWidth);
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        div {
+            padding: 2px;
+            margin: 2px;
+            border: 1px solid grey;
+        }
+
+        .header {
+            background-color: #000;
+            color: #FFF;
+        }
+
+        .maincontent {
+            display: flex;
+        }
+
+        .schedule {
+            flex: 1;
+            display: flex;
+            background-color: #FBF;
+        }
+
+        .registered {
+            flex: 1;
+            background-color: #BFF;
+
+        }
+
+        .waitlisted {
+            flex: 1;
+            background-color: #BBF;
+        }
+
+        .mycart {
+            background-color: #BFB;
+            width: 320px;
+        }
+
+        .navigation {
+            flex: 1;
+            background-color: #FBB;
+            display: none;
+        }
+
+        @media screen and (max-width: 660px) {
+            .mycart {
+                display: none;
+                width: 100%;
+            }
+
+            .navigation {
+                display: block;
+            }
+
+            .schedule {
+                display: block;
+            }
+        }
+
+        @media screen and (max-width: 500px), screen and (min-width: 660) and (max-width: 1019) {
+            .expanded {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">Header</div>
+<div class="navigation"><a href="#" onclick="toggle()">CLICK</a></div>
+<div class="maincontent">
+    <div id="schedule" class="schedule">
+        <div class="registered">Registered
+            <div class="expanded">Expanded Info</div>
+        </div>
+        <div class="waitlisted">Waitlisted
+            <div class="expanded">Expanded Info</div>
+        </div>
+    </div>
+    <div id="mycart" class="mycart">My Cart</div>
+</div>
+</body>
+</html>
