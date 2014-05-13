@@ -19,6 +19,7 @@ end
 
 Then /^there is a message indicating that registration failed$/  do
   on RegistrationCart do |page|
+    page.course_code(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
     page.course_code(@reg_request.course_code,@reg_request.reg_group_code).text.should match /failed/i
   end
 end
@@ -46,7 +47,7 @@ And /^I can verify I am on the waitlist$/  do
 end
 
 Given /^I register for an? full (\w+) course offering that (has|does not have) a waitlist$/ do |subj,waitlist|
-  #course has 1 remaining seat, so first fill it as admin, then try to register as student
+  #course has 1 remaining seat, so first fill it as student, then try to register as student1
   steps %{
     When I add an #{subj} course offering to my registration cart
     And I register for the course
