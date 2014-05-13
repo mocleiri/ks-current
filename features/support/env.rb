@@ -27,8 +27,9 @@ headless = nil
 
 if ENV['HEADLESS']
   require 'headless'
-  headless = Headless.new :destroy_at_exit => false
-  headless.start
+  #if using parallel processes, start new headless instance for each process
+  headless_display = 100 + ENV['TEST_ENV_NUMBER'].to_i
+  Headless.new(:reuse => false, :destroy_at_exit => true, :display => headless_display).start
 
   #to avoid nil browser error, retry initial browser connect in headless env
   retry_ctr = 0
@@ -75,8 +76,12 @@ if ENV['HEADLESS']
   #re-start browser after each failed scenario
   After do | scenario |
     if scenario.failed?
-      screenshot_img = @browser.driver.save_screenshot("./failure#{ENV['TEST_ENV_NUMBER']}.png")
-      embed(screenshot_img, 'data:image/png')
+      begin
+        screenshot_img = @browser.driver.save_screenshot("./failure#{ENV['TEST_ENV_NUMBER']}.png")
+        embed(screenshot_img, 'data:image/png')
+      rescue
+        puts "TEST ENV: ''#{ENV['TEST_ENV_NUMBER']}' - screenshot failed"
+      end
       @browser.close unless @browser == nil
       browser = nil
     end
