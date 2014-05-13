@@ -17,7 +17,7 @@ class ManageCORequisites < BasePage
   element(:background_div) { |b| b.frm.li(:id => /^u\d+_node_0_parent_root$/)}
   element(:logic_tab) { |b| b.tab_section.a(:text => /Edit Rule Logic/)}
   element(:object_tab) { |b| b.tab_section.a(:text => /Edit Rule/)}
-  element(:logic_text) { |b| b.tab_section.text_field(name: "document.newMaintainableObject.dataObject.logicArea")}
+  element(:logic_text) { |b| b.tab_section.textarea(name: "document.newMaintainableObject.dataObject.logicArea")}
 
   action(:add_btn) { |b| b.frm.button(:text => /Add Statement/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
   action(:edit_btn) { |b| b.frm.button(:text => /Edit/).when_present.click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
