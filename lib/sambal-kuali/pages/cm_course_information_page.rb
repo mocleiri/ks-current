@@ -53,9 +53,6 @@ class CmCourseInformation < BasePage
   action(:error_message) { |error_number='2', b| b.h3(text: "This page has #{error_number} errors") }
 
 
-  action(:edit_find_course_proposal) { |b| b.i(class: "ks-fontello-icon-pencil").click }
-  action(:edit_course_information) { |b| b.a(id: "CourseInfo-Review-Edit-link").click }
-
 
   # table results
   # b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table.row.cells[1].text

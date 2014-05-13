@@ -181,16 +181,16 @@ And /^I edit the required for save fields and save$/ do
 end
 
 And /^I edit the course proposal$/ do
-  @course_proposal.edit_find_course_proposal :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+  @course_proposal.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
 end
 
 And /^I edit the course proposal for Faculty$/ do
-  @course_proposal_faculty.edit_find_course_proposal :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+  @course_proposal_faculty.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
 end
 
 Then /^I should not see the edit option in the search results for the Course Admin Proposal$/ do
   on FindProposalPage do |page|
-    page.edit_find_course_proposal.exists?.should == false
+    page.edit_proposal_element(@course_proposal.proposal_title).exists?.should == false
   end
 end
 

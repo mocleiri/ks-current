@@ -209,27 +209,18 @@ class CmCourseProposalObject < DataFactory
 
 
   def edit (opts={})
+    determine_edit_action
 
     on CmCourseInformation do |page|
-      page.edit_course_information
       page.proposal_title.fit opts[:proposal_title]
       page.course_title.fit opts[:course_title]
-      page.save_progress
     end
 
-    set_options(opts)
-
-  end
-
-  def edit_find_course_proposal (opts={})
-    on CmCourseInformation do |page|
-      page.edit_find_course_proposal
-      page.proposal_title.fit opts[:proposal_title]
-      page.course_title.fit opts[:course_title]
-      page.save_progress
-    end
+    determine_save_action
     set_options(opts)
   end
+
+
 
   def create_course_proposal_required
     on CmCourseInformation do |page|
@@ -437,6 +428,7 @@ class CmCourseProposalObject < DataFactory
   def search(search_text)
     navigate_to_find_course_proposal
        on FindProposalPage do |page|
+          page.name.wait_until_present
           page.name.set search_text
           page.find_a_proposal
        end
@@ -448,6 +440,39 @@ class CmCourseProposalObject < DataFactory
     on FindProposalPage do |page|
       page.review_proposal_action_link(@proposal_title)
     end
+  end
+
+  def edit_proposal_action
+    on FindProposalPage do |page|
+      page.edit_proposal_action(@proposal_title)
+    end
+  end
+
+  def edit_course_information
+    on CmReviewProposal do |page|
+      page.edit_course_information
+    end
+  end
+
+  def determine_edit_action
+    #if current page is find a proposal click the pencil icon
+
+
+    on CmReviewProposal do |page|
+      if page.proposal_title_element.exists?
+        edit_course_information
+      end
+    end
+
+    #if current page is review proposal click the course information edit icon
+
+    on FindProposalPage do |page|
+      if page.name.exist?
+        edit_proposal_action
+      end
+
+    end
+
   end
 
 
