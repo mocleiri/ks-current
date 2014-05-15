@@ -190,8 +190,8 @@ class DisplayScheduleOfClasses < BasePage
       i += 1
       break if ao_code == letter
     end
-    id = ao_code_row.span(text: /\b#{ao_code}\b/).id
-    if id =~ /^.+line(\d+)_span$/ or id =~ /^.+line(\d+)_control$/
+    id = ao_code_row.div(text: /\b#{ao_code}\b/).id
+    if id =~ /^.+line(\d+)$/ #or id =~ /^.+line(\d+)_control$/
       ao_index = $1
     end
     index = ao_index.to_i + i
