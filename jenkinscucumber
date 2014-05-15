@@ -109,8 +109,15 @@ $WORKSPACE/cleanup_test_processes.sh
 # use ruby's bundler gem to install gems as dictated by Gemfile.lock
 bundle --version; bundle install
 
-# invoke cucumber to run scenarios for the first profile
-cucumber $ARGS1
+# invoke cucumber to run scenarios for the first profile (unless it is set to "NONE")
+if [ ! "$PROFILE1" == "NONE" ]; then
+  cucumber $ARGS1
+fi
+
+# If the second profile is set to NONE we are done
+if [ "$PROFILE2" == "NONE" ]; then
+  exit 0
+fi
 
 if [ "$PARALLEL" == "true" ]; then
   # invoke cucumber via parallel_test for the 2nd profile
