@@ -336,7 +336,7 @@ Then /^the text area should be populated with "(.*)"$/ do |text|
   on ManageCORequisites do |page|
     page.edit_loading.wait_while_present
     page.logic_text.text.should == text
-    page.update_rule_btn
+    page.cancel_update_link
   end
 end
 
@@ -368,7 +368,7 @@ Then /^node "(.*)" should be after node "(.*)"$/ do |second,first|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.text.should match /.*#{Regexp.escape(first)}\..+#{Regexp.escape(second)}\..*/m
-    page.update_rule_btn
+    page.cancel_update_link
   end
 end
 
@@ -376,7 +376,7 @@ Then /^the first node should match "(.*)"$/ do |text|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.text.should match /^Click on rule statement to move or modify\n[\s\t]*#{Regexp.escape(text)}.*/
-    page.update_rule_btn
+    page.cancel_update_link
   end
 end
 
@@ -384,7 +384,7 @@ Then /^node "(.*)" should be a "(.*)" node in the tree$/ do |node, level|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.link(:text => /.*#{node}\..*/).div.id.should match @courseOR.test_node_level(level)
-    page.update_rule_btn
+    page.cancel_update_link
   end
 end
 
@@ -399,7 +399,7 @@ Then /^node "(.*)" should be preceded by an "(.*)" operator$/ do |drop, node|
   on ManageCORequisites do |page|
     page.edit_loading.wait_while_present
     page.edit_tree_section.text.should match /.*#{Regexp.escape(drop)}.*#{Regexp.escape(node)}.*/m
-    page.update_rule_btn
+    page.cancel_update_link
   end
 end
 
@@ -407,7 +407,7 @@ Then /^the Move In button should be disabled$/ do
   on ManageCORequisites do |page|
     if page.right_btn_element.attribute_value('disabled')
       page.right_btn_element.attribute_value('disabled').should == "true"
-      page.update_rule_btn
+      page.cancel_update_link
     end
   end
 end
