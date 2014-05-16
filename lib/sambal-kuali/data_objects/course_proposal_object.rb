@@ -516,6 +516,7 @@ class CmCourseProposalObject < DataFactory
     on CmCourseLogistics do |page|
       page.outcome_type(outcome_level-1).pick! "Range"
       page.loading_wait
+      page.credit_value_range(outcome_level-1).wait_until_present
       page.credit_value_range(outcome_level-1).set "#{@credit_value_min}-#{@credit_value_max}"
       page.add_outcome
     end
