@@ -9,7 +9,7 @@ class CourseOffering < DataFactory
   COURSE_ARRAY = 0
   COURSE_CODE = 0
   COURSE_NAME = 1
-  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text, :description, :requisite,:scheduled_terms,:projected_terms,:gened_requirements,:subject
+  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text, :description, :requisite,:scheduled_terms,:projected_terms,:gened_requirements,:subject,:gened_code,:gened_course
 
   def initialize(browser, opts={})
     @browser = browser
@@ -29,14 +29,21 @@ class CourseOffering < DataFactory
         :scheduled_terms=>"SP 14",
         :projected_terms=>"Check",
         :gened_requirements=>"General",
-        :subject=>"English"
+        :subject=>"English",
+        :gened_code=>"DSHU",
+        :gened_course=>"General Education: Humanities"
+
 
     }
     options = defaults.merge(opts)
     set_options(options)
   end
 
-
+ def select_facet
+   on CourseSearch do |page|
+     page.gened_checkbox_click(@gened_course)
+   end
+ end
   def navigate_course_detail_page
     on CourseSearch  do |page|
        page.course_code_result_link(@course_code).click

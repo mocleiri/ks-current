@@ -36,6 +36,8 @@ class CourseSearch < BasePage
   element(:course_search_results_select) { |b| b.frm.select(name: "course_search_results_length") }
   element(:course_search_facet_divisions) { |b| b.div(id: "facet_curriculum_disclosureContent").div(class: "facets").ul.lis}
   element(:course_search_facet_level) { |b| b.div(id: "facet_level_disclosureContent").div(class: "facets").ul.lis}
+  action(:gened_code) { |course_code,b| b.div(id: "course_search_results_wrapper").table(id:"course_search_results").tr(id:"#{course_code}").td(id:"#{course_code}_gened")}
+  action(:gened_checkbox_click){ |gened_course,b| b.div(id:"facet_genedureq_disclosureContent").div(class:"facets").ul.li(title:"#{gened_course}").click}
 
 
 
@@ -61,7 +63,7 @@ class CourseSearch < BasePage
 
   COURSE_CODE = 0
   COURSE_NAME = 1
-
+  COURSE_GEN_ED=6
 
   def results_list
 
@@ -75,6 +77,37 @@ class CourseSearch < BasePage
     list
   end
 
+
+  def results_list_gened
+
+    list = []
+    no_of_rows = get_results_table_rows_no(0) - 1
+    for index in 0..no_of_rows do
+      list << get_table_row_gened(index,6)
+    end
+    list.delete_if { |item| item == "Gen Ed" }
+    list.delete_if {|item| item == "" }
+    list
+  end
+
+  # Get code from data table row safely
+  def get_table_row_gened(index,rescues)
+    begin
+
+      code = results_table.rows[index].cells[COURSE_GEN_ED].text
+      return code
+    rescue => e
+      rescues = rescues+1
+      puts "Retrieve code for row #{index} rescue from #{e.message}: #{rescues}"
+      if rescues<5
+        sleep(1)
+        get_table_row_code(index,rescues)
+      else
+        puts "Failed to retrieve code for row #{index}"
+        return ""
+      end
+    end
+  end
   # Get code from data table row safely
   def get_table_row_code(index,rescues)
     begin
@@ -129,6 +162,7 @@ class CourseSearch < BasePage
     end
   end
 
+
   def results_list_title
     title_list = []
     results_table.rows.each do |row|
@@ -143,6 +177,7 @@ class CourseSearch < BasePage
     title_list.sort!
     puts "#{title_list}"
   end
+
 
   def results_list_courses (expected)
     trimmed_array_list= Array.new
