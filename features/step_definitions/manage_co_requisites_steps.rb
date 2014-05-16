@@ -322,6 +322,7 @@ end
 Then /^the CO and CLU should differ with text "(.*?)"/ do |text|
   on CourseOfferingRequisites do |page|
     page.compare_tree.text.should_not match @courseOR.test_compare_text( text)
+    page.submit
   end
 end
 
