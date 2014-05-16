@@ -405,5 +405,9 @@ Given /^I log in to student registration as (\w+)$/  do |user|
       visit RestEILEENBLogin
     when "EILEENL"
       visit RestEILEENLLogin
+    when "DMITRYL"
+      visit RestDMITRYLLogin
+    when "ELEANORB"
+      visit RestELEANORBLogin
   end
 end
