@@ -132,6 +132,7 @@ Then /^there should be no rule in the Student Eligibility & Prerequisite section
   on ActivityOfferingRequisites do |page|
     page.loading.wait_while_present
     page.agenda_management_section.text.should match /.*Student Eligibility & Prerequisite.*Rule.*\.\nCorequisite.*/m
+    page.cancel
   end
 end
 
@@ -141,6 +142,7 @@ Then /^the created rule should be shown in the Student Eligibility & Prerequisit
     page.loading.wait_while_present
     @prereq.show_all_courses( "agenda")
     page.agenda_management_section.text.should match @prereq.test_text("agenda", "ENGL101,ENGL478,HIST416,BSCI202,BSCI361,HIST110,Text to copy,free form text input value")
+    page.submit
   end
 end
 
@@ -158,6 +160,7 @@ Then /^both rules for the Student Eligibility & Prerequisite section should be t
   on ActivityOfferingRequisites do |page|
     page.loading.wait_while_present
     page.view_tree.text.should match @prereq.test_compare_text("at least one in literature,ARHU-English required")
+    page.submit
   end
 end
 
@@ -170,6 +173,7 @@ Then /^the AO rule should differ from the CO and CLU rules in the Student Eligib
     end
     page.loading.wait_while_present
     page.compare_tree.text.should_not match @prereq.test_ao_compare_text("at least one in literature,ARHU-English required")
+    page.submit
   end
 end
 
@@ -186,6 +190,7 @@ Then /^a (?:error|info) in the Student Eligibility & Prerequisite section is dis
   on ActivityOfferingRequisites do |page|
     page.loading.wait_while_present
     page.prereq_message_section_info.text.should match /.*#{exp_msg}.*/
+    page.cancel
   end
 end
 
@@ -194,6 +199,7 @@ Then /^no (?:error|warning) in the Student Eligibility & Prerequisite section is
   on ActivityOfferingRequisites do |page|
     page.loading.wait_while_present
     page.prereq_message_section_warning.text.should_not match /.*#{exp_msg}.*/
+    page.cancel
   end
 end
 
