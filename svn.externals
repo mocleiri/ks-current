@@ -1,6 +1,6 @@
-ks-api ^/student/sandbox/ks-enr-1.0-jcaddel/ks-api/branches/2.0.0-Mx
-ks-core ^/student/sandbox/ks-enr-1.0-jcaddel/ks-core/trunk
-ks-lum ^/student/sandbox/ks-enr-1.0-jcaddel/ks-lum/trunk
-ks-enroll ^/student/sandbox/ks-enr-1.0-jcaddel/ks-enroll/trunk
-ks-ap ^/student/sandbox/ks-enr-1.0-jcaddel/ks-ap/trunk
-ks-deployments ^/student/sandbox/ks-enr-1.0-jcaddel/ks-deployments/trunk
+^/sandbox/ks-enr-1.0-jcaddel/ks-api/branches/2.0.0-Mx ks-api
+^/sandbox/ks-enr-1.0-jcaddel/ks-core/trunk ks-core
+^/sandbox/ks-enr-1.0-jcaddel/ks-lum/trunk ks-lum
+^/sandbox/ks-enr-1.0-jcaddel/ks-enroll/trunk ks-enroll
+^/sandbox/ks-enr-1.0-jcaddel/ks-ap/trunk ks-ap
+^/sandbox/ks-enr-1.0-jcaddel/ks-deployments/trunk ks-deployments
