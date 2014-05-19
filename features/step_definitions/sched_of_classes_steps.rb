@@ -221,6 +221,7 @@ end
 
 Then /^the suppressed rule should be visible for any unchanged activity that shares a Reg Group with the changed activity$/ do
   on DisplayScheduleOfClasses do |page|
+    sleep 3
     page.details_table.rows[(page.get_rule_text_for_ao("A")+1)].text.should match /Prerequisite.*1 course from PHYS161 or PHYS171.*And BSCI399/mi
     page.details_table.rows[page.get_rule_text_for_ao("B")].text.should_not match /Prerequisite.*1 course from PHYS161 or PHYS171.*And BSCI399/mi
   end
@@ -289,7 +290,7 @@ Then /^the unedited course offering rule should be displayed with any un-affecte
       raise "activities table not found"
     else
       ao_code_row = page.details_table.row(text: /\bA\b/)
-      index = ao_code_row.span(text: /\bA\b/).id[/\d+_control/].to_i + 1
+      index = ao_code_row.div(text: /\bA\b/).id[/\d+_control/].to_i + 1
       page.details_table.rows[(page.get_rule_text_for_ao("A")+1)].text.should match /Corequisite: ENGL101 and HIST106/mi
       page.details_table.rows[(page.get_rule_text_for_ao("A")+1)].text.should_not match /Changed the Corequisite on AO B only/mi
     end
