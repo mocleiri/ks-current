@@ -13,9 +13,15 @@ usage () {
 		echo "ERROR: $MSG"
 	fi
 
-	echo "USAGE: <aggregate name> <commit message> "
-	echo "<aggregate name>: in branches mode this is the name of the branch for each module.  i.e. ks-enroll/brances/aggregate_name"
-	echo "<commit message>: commit message to use"
+    cat <<EOT
+
+USAGE: <aggregate name> <commit message>
+
+    <aggregate name>: in branches mode this is the name of the branch for each module.
+        i.e. ks-enroll/branches/aggregate_name
+    <commit message>: commit message to use
+EOT
+
 	exit 1
 
 }
