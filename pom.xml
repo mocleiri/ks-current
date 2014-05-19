@@ -286,9 +286,9 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/trunk</connection>
-        <developerConnection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/trunk</developerConnection>
-        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/trunk</url>
+        <connection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/rice-2.4-mx-upgrade</connection>
+        <developerConnection>scm:${project.scm.vendor}:https://svn.kuali.org/repos/student/enrollment/aggregate/branches/rice-2.4-mx-upgrade</developerConnection>
+        <url>https://svn.kuali.org/repos/student/enrollment/aggregate/branches/rice-2.4-mx-upgrade</url>
     </scm>
     <prerequisites>
         <maven>${maven.min.version}</maven>
