@@ -1,6 +1,6 @@
-ks-api https://svn.kuali.org/repos/student/sandbox/ks-enr-1.0-jcaddel/ks-api/branches/2.0.0-Mx
-ks-core https://svn.kuali.org/repos/student/sandbox/ks-enr-1.0-jcaddel/ks-core/trunk
-ks-lum https://svn.kuali.org/repos/student/sandbox/ks-enr-1.0-jcaddel/ks-lum/trunk
-ks-enroll https://svn.kuali.org/repos/student/sandbox/ks-enr-1.0-jcaddel/ks-enroll/trunk
-ks-ap https://svn.kuali.org/repos/student/sandbox/ks-enr-1.0-jcaddel/ks-ap/trunk
-ks-deployments https://svn.kuali.org/repos/student/sandbox/ks-enr-1.0-jcaddel/ks-deployments/trunk
+ks-api ^/student/sandbox/ks-enr-1.0-jcaddel/ks-api/branches/2.0.0-Mx
+ks-core ^/student/sandbox/ks-enr-1.0-jcaddel/ks-core/trunk
+ks-lum ^/student/sandbox/ks-enr-1.0-jcaddel/ks-lum/trunk
+ks-enroll ^/student/sandbox/ks-enr-1.0-jcaddel/ks-enroll/trunk
+ks-ap ^/student/sandbox/ks-enr-1.0-jcaddel/ks-ap/trunk
+ks-deployments ^/student/sandbox/ks-enr-1.0-jcaddel/ks-deployments/trunk
