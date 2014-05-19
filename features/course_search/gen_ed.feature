@@ -1,4 +1,4 @@
-@wip
+@wiptt
 Feature: BT.General Education Requirement
   Background:
     Given I am logged in as a Student
