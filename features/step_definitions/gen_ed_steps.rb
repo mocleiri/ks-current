@@ -25,3 +25,10 @@ Then(/^I should be able to view the courses meeting the General Education Requir
       page.results_list_gened.each { |e| e.should match /#{@course_offering.gened_code}/ }
   end
 end
+
+When(/^I search for  courses in the Course Search Page$/) do
+  @course_offering = make CourseOffering, :course_code => "ENGL" ,:description=>"historical",:requisite=>"None",:scheduled_terms=>"SP 14",:projected_terms=>"Check",:gened_requirements=>"General",:subject=>"English",:gened_code=>"DSHU"
+  @course_offering.course_search
+end
+
+
