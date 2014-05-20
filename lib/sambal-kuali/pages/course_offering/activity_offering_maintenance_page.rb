@@ -130,7 +130,7 @@ class ActivityOfferingMaintenance < BasePage
   action(:lookup_room) { |b| b.add_sched_info_div.div(id: 'rdl_room').button().click; b.loading.wait_while_present }
 
   element(:add_new_scheduling_information_button) { |b| b.button(id: "add_rdl_button") }
-  action(:add_new_scheduling_information) { |b| b.add_new_scheduling_information_button.click; b.adding.wait_while_present }
+  action(:add_new_scheduling_information) { |b| b.add_new_scheduling_information_button.click; b.loading.wait_while_present }
 
   element(:view_requested_scheduling_information_toggle_collapsed) { |b| b.frm.span(id: "ActivityOffering-ManageSchedulingInformationSection_toggle_col") }
   element(:view_requested_scheduling_information_toggle_expanded) { |b| b.frm.span(id: "ActivityOffering-ManageSchedulingInformationSection_toggle_exp") }
