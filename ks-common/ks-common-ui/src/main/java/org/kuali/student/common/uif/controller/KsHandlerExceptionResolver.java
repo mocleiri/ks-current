@@ -121,7 +121,7 @@ public class KsHandlerExceptionResolver extends UifHandlerExceptionResolver {
 
         ModelAndView modelAndView = UifControllerHelper.getUIFModelAndView(incidentReportForm, "page2");
         try {
-            UifControllerHelper.postControllerHandle(request, response, handler, modelAndView);
+            UifControllerHelper.prepareView(request, modelAndView);
         } catch (Exception e) {
             LOG.error("An error stopped the incident form from loading", e);
         }
