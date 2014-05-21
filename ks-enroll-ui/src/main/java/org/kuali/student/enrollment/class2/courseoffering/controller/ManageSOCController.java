@@ -74,35 +74,25 @@ public class ManageSOCController extends UifControllerBase {
 
         LOG.debug("Locking SOC");
 
-        String dialogName = ManageSocConstants.ConfirmDialogs.LOCK;
-
-        if (!hasDialogBeenAnswered(dialogName, socForm)) {
-            return showDialog(dialogName, socForm, request, response);
+        String dialogId = ManageSocConstants.ConfirmDialogs.LOCK;
+        // returns null if no response OR if response was negative
+        if (socForm.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, socForm);
         }
 
-        boolean dialogAnswer = getBooleanDialogResponse(dialogName, socForm, request, response);
-        socForm.getDialogManager().resetDialogStatus(dialogName);
+        if (socForm.getSocInfo() == null) {
+            throw new RuntimeException("SocInfo not exists in the form. Please enter the term code and click on GO button");
+        }
 
-        if (dialogAnswer) {
-
-            if (socForm.getSocInfo() == null) {
-                throw new RuntimeException("SocInfo not exists in the form. Please enter the term code and click on GO button");
-            }
-
-            if (!StringUtils.equals(CourseOfferingSetServiceConstants.OPEN_SOC_STATE_KEY, socForm.getSocInfo().getStateKey())) {
-                GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS, ManageSocConstants.MessageKeys.ERROR_INVALID_STATUS_FOR_LOCK);
-                return getUIFModelAndView(socForm);
-            }
-
-            ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
-            viewHelper.lockSOC(socForm);
-
-            return buildModel(socForm, result, request, response);
-
-        } else {
+        if (!StringUtils.equals(CourseOfferingSetServiceConstants.OPEN_SOC_STATE_KEY, socForm.getSocInfo().getStateKey())) {
+            GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS, ManageSocConstants.MessageKeys.ERROR_INVALID_STATUS_FOR_LOCK);
             return getUIFModelAndView(socForm);
         }
 
+        ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
+        viewHelper.lockSOC(socForm);
+
+        return buildModel(socForm, result, request, response);
     }
 
     @RequestMapping(params = "methodToCall=sendApprovedActivitiesToScheduler")
@@ -114,23 +104,16 @@ public class ManageSOCController extends UifControllerBase {
             return getUIFModelAndView(socForm);
         }
 
-        String dialogName = ManageSocConstants.ConfirmDialogs.MASS_SCHEDULING;
-
-        if (!hasDialogBeenAnswered(dialogName, socForm)) {
-            return showDialog(dialogName, socForm, request, response);
+        String dialogId = ManageSocConstants.ConfirmDialogs.MASS_SCHEDULING;
+        // returns null if no response OR if response was negative
+        if (socForm.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, socForm);
         }
 
-        boolean dialogAnswer = getBooleanDialogResponse(dialogName, socForm, request, response);
-        socForm.getDialogManager().resetDialogStatus(dialogName);
-
-        if (dialogAnswer) {
-            // start send approved activities to scheduler
-            ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
-            viewHelper.startMassScheduling(socForm);
-            return buildModel(socForm, result, request, response);
-        } else {
-            return getUIFModelAndView(socForm);
-        }
+        // start send approved activities to scheduler
+        ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
+        viewHelper.startMassScheduling(socForm);
+        return buildModel(socForm, result, request, response);
     }
 
     /**
@@ -169,25 +152,16 @@ public class ManageSOCController extends UifControllerBase {
             return getUIFModelAndView(socForm);
         }
 
-        String dialogName = ManageSocConstants.ConfirmDialogs.FINAL_EDITS;
-
-        if (!hasDialogBeenAnswered(dialogName, socForm)) {
-            return showDialog(dialogName, socForm, request, response);
+        String dialogId = ManageSocConstants.ConfirmDialogs.FINAL_EDITS;
+        // returns null if no response OR if response was negative
+        if (socForm.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, socForm);
         }
 
-        boolean dialogAnswer = getBooleanDialogResponse(dialogName, socForm, request, response);
-        socForm.getDialogManager().resetDialogStatus(dialogName);
+        ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
+        viewHelper.allowSOCFinalEdit(socForm);
 
-        if (dialogAnswer) {
-
-            ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
-            viewHelper.allowSOCFinalEdit(socForm);
-
-            return buildModel(socForm, result, request, response);
-
-        } else {
-            return getUIFModelAndView(socForm);
-        }
+        return buildModel(socForm, result, request, response);
     }
 
     @RequestMapping(params = "methodToCall=publishSOC")
@@ -203,22 +177,14 @@ public class ManageSOCController extends UifControllerBase {
             return getUIFModelAndView(socForm);
         }
 
-        String dialogName = ManageSocConstants.ConfirmDialogs.MASS_PUBLISHLING;
-
-        if (!hasDialogBeenAnswered(dialogName, socForm)) {
-            return showDialog(dialogName, socForm, request, response);
+        String dialogId = ManageSocConstants.ConfirmDialogs.MASS_PUBLISHLING;
+        // returns null if no response OR if response was negative
+        if (socForm.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, socForm);
         }
-
-        boolean dialogAnswer = getBooleanDialogResponse(dialogName, socForm, request, response);
-        socForm.getDialogManager().resetDialogStatus(dialogName);
-
-        if (dialogAnswer) {
-            ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
-            viewHelper.publishSOC(socForm);
-            return buildModel(socForm, result, request, response);
-        } else {
-            return getUIFModelAndView(socForm);
-        }
+        ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
+        viewHelper.publishSOC(socForm);
+        return buildModel(socForm, result, request, response);
     }
 
     @RequestMapping(params = "methodToCall=closeSOC")
@@ -233,23 +199,15 @@ public class ManageSOCController extends UifControllerBase {
             return getUIFModelAndView(socForm);
         }
 
-        String dialogName = ManageSocConstants.ConfirmDialogs.CLOSE_SET;
-
-        if (!hasDialogBeenAnswered(dialogName, socForm)) {
-            return showDialog(dialogName, socForm, request, response);
+        String dialogId = ManageSocConstants.ConfirmDialogs.CLOSE_SET;
+        // returns null if no response OR if response was negative
+        if (socForm.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, socForm);
         }
+        ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
+        viewHelper.closeSOC(socForm);
 
-        boolean dialogAnswer = getBooleanDialogResponse(dialogName, socForm, request, response);
-        socForm.getDialogManager().resetDialogStatus(dialogName);
-
-        if (dialogAnswer) {
-            ManageSOCViewHelperService viewHelper = (ManageSOCViewHelperService) KSControllerHelper.getViewHelperService(socForm);
-            viewHelper.closeSOC(socForm);
-
-            return buildModel(socForm, result, request, response);
-        } else {
-            return getUIFModelAndView(socForm);
-        }
+        return buildModel(socForm, result, request, response);
     }
 
     @RequestMapping(params = "methodToCall=createEOBulkScheduler")

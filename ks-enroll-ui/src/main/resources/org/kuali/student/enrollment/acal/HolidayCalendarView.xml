@@ -126,8 +126,8 @@
                   value="Are you sure you want to delete the Holiday Calendar?"/>
         <property name="availableResponses">
             <list>
-                <bean parent="Uif-KeyLabelPair" p:key="yes" p:value="Delete"/>
-                <bean parent="Uif-KeyLabelPair" p:key="no" p:value="Cancel"/>
+                <bean parent="Uif-DialogConfirmButton" p:actionLabel="Delete"/>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
             </list>
         </property>
     </bean>

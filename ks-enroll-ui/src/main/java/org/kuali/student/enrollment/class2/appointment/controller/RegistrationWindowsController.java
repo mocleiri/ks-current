@@ -182,25 +182,14 @@ public class RegistrationWindowsController extends UifControllerBase {
         urlParameters.put("termYear", uifForm.getTermYear());
         String controllerPath = AppointmentConstants.REGISTRATION_WINDOWS_CONTROLLER_PATH;
 
-        try {
-            String dialog = AppointmentConstants.Registration_Windows_ConfirmBreak_Dialog;
-            if (!hasDialogBeenDisplayed(dialog, uifForm)) {
-                AppointmentWindowWrapper window = _getSelectedWindow(uifForm, "Break Appointments");
-                uifForm.setSelectedAppointmentWindow(window);
-
-                //redirect back to client to display lightbox
-                return showDialog(dialog, uifForm, request, response);
-            }
-
-            boolean confirmDelete = getBooleanDialogResponse(dialog, uifForm, request, response);
-            uifForm.getDialogManager().resetDialogStatus(dialog);
-            if (!confirmDelete) {
-                return super.performRedirect(uifForm, controllerPath, urlParameters);
-            }
-        } catch (Exception e) {
-            //TODO: log exception
-            return getUIFModelAndView(uifForm);
+        String dialogId = AppointmentConstants.Registration_Windows_ConfirmBreak_Dialog;
+        // returns null if no response OR if response was negative
+        if (uifForm.getDialogResponse(dialogId) == null) {
+            AppointmentWindowWrapper window = _getSelectedWindow(uifForm, "Break Appointments");
+            uifForm.setSelectedAppointmentWindow(window);
+            return showDialog(dialogId, true, uifForm);
         }
+
 
         AppointmentWindowWrapper window = uifForm.getSelectedAppointmentWindow();
         if (window != null) {

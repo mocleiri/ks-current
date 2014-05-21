@@ -25,7 +25,6 @@ import org.kuali.rice.krad.uif.component.Component;
 import org.kuali.rice.krad.uif.control.SelectControl;
 import org.kuali.rice.krad.uif.util.ComponentFactory;
 import org.kuali.rice.krad.uif.util.UifKeyValue;
-import org.kuali.rice.krad.uif.view.DialogManager;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krad.web.bind.RequestAccessible;
@@ -369,23 +368,10 @@ public class AcademicCalendarController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=delete")
     public ModelAndView delete(@ModelAttribute("KualiForm") AcademicCalendarForm acalForm, BindingResult result,
                                HttpServletRequest request, HttpServletResponse response) {
-        String dialog = CalendarConstants.ACADEMIC_DELETE_CONFIRMATION_DIALOG;
-        if (!hasDialogBeenDisplayed(dialog, acalForm)) {
-
-            //redirect back to client to display lightbox
-            return showDialog(dialog, acalForm, request, response);
-        }else{
-            if(hasDialogBeenAnswered(dialog,acalForm)){
-                boolean confirmDelete = getBooleanDialogResponse(dialog, acalForm, request, response);
-                acalForm.getDialogManager().resetDialogStatus(dialog);
-                if(!confirmDelete){
-                    return getUIFModelAndView(acalForm);
-                }
-            } else {
-
-                //redirect back to client to display lightbox
-                return showDialog(dialog, acalForm, request, response);
-            }
+        String dialogId = CalendarConstants.ACADEMIC_DELETE_CONFIRMATION_DIALOG;
+        // returns null if no response OR if response was negative
+        if (acalForm.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, acalForm);
         }
 
         StatusInfo statusInfo;
@@ -476,8 +462,8 @@ public class AcademicCalendarController extends UifControllerBase {
             dialog = CalendarConstants.ACADEMIC_TERM_AND_CALENDAR_OFFICIAL_CONFIRMATION_DIALOG;
         }
 
-        // Dialog confirmation to make terms official
-        if (!hasDialogBeenDisplayed(dialog, academicCalendarForm)) {
+        // returns null if no response OR if response was negative
+        if (academicCalendarForm.getDialogResponse(dialog) == null) {
             selectedLineIndex= KSControllerHelper.getSelectedCollectionLineIndex(academicCalendarForm);
             termWrapper= academicCalendarForm.getTermWrapperList().get(selectedLineIndex);
             academicCalendarForm.setSelectedCollectionPath(academicCalendarForm.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH));
@@ -494,36 +480,7 @@ public class AcademicCalendarController extends UifControllerBase {
                 }
             }
 
-            //redirect back to client to display lightbox
-            return showDialog(dialog, academicCalendarForm, request, response);
-        }else{
-            if(hasDialogBeenAnswered(dialog,academicCalendarForm)){
-                boolean confirm = getBooleanDialogResponse(dialog, academicCalendarForm, request, response);
-                academicCalendarForm.getDialogManager().resetDialogStatus(dialog);
-                if(!confirm){
-                    return getUIFModelAndView(academicCalendarForm);
-                }
-            } else {
-                selectedLineIndex= KSControllerHelper.getSelectedCollectionLineIndex(academicCalendarForm);
-                termWrapper= academicCalendarForm.getTermWrapperList().get(selectedLineIndex);
-                academicCalendarForm.setSelectedCollectionPath(academicCalendarForm.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH));
-                academicCalendarForm.setSelectedLineIndex(academicCalendarForm.getActionParamaterValue(UifParameters.SELECTED_LINE_INDEX));
-                academicCalendarForm.setMakeOfficialName(termWrapper.getName());
-                academicCalendarForm.setMakeOfficialIsSubterm(termWrapper.isSubTerm());
-                if(termWrapper.getParentTermInfo()!=null){
-                    academicCalendarForm.setMakeOfficialParentTermName(termWrapper.getParentTermInfo().getName());
-                    academicCalendarForm.setOfficialParentTerm(false);
-                    for(AcademicTermWrapper term : academicCalendarForm.getTermWrapperList()){
-                        if(term.getTermInfo().getId().equals(termWrapper.getParentTermInfo().getId())){
-                            academicCalendarForm.setOfficialParentTerm(term.isOfficial());
-                        }
-                    }
-                }
-
-
-                //redirect back to client to display lightbox
-                return showDialog(dialog, academicCalendarForm, request, response);
-            }
+            return showDialog(dialog, true, academicCalendarForm);
         }
 
         academicCalendarForm.getActionParameters().put(UifParameters.SELECTED_COLLECTION_PATH, academicCalendarForm.getSelectedCollectionPath());
@@ -606,22 +563,9 @@ public class AcademicCalendarController extends UifControllerBase {
         academicCalendarForm.setFieldsToSave(processDirtyFields(academicCalendarForm));
 
         String dialog = CalendarConstants.TERM_DELETE_CONFIRMATION_DIALOG;
-        if (!hasDialogBeenDisplayed(dialog, academicCalendarForm)) {
-            setDeleteTermMessageWithContext(academicCalendarForm);
-            //redirect back to client to display lightbox
-            return showDialog(dialog, academicCalendarForm, request, response);
-        }else{
-            if(hasDialogBeenAnswered(dialog,academicCalendarForm)){
-                boolean confirmDelete = getBooleanDialogResponse(dialog, academicCalendarForm, request, response);
-                academicCalendarForm.getDialogManager().resetDialogStatus(dialog);
-                if(!confirmDelete){
-                    return getUIFModelAndView(academicCalendarForm);
-                }
-            } else {
-                setDeleteTermMessageWithContext(academicCalendarForm);
-                //redirect back to client to display lightbox
-                return showDialog(dialog, academicCalendarForm, request, response);
-            }
+        // returns null if no response OR if response was negative
+        if (academicCalendarForm.getDialogResponse(dialog) == null) {
+            return showDialog(dialog, true, academicCalendarForm);
         }
 
         academicCalendarForm.getActionParameters().put(UifParameters.SELECTED_COLLECTION_PATH, academicCalendarForm.getSelectedCollectionPath());
@@ -816,22 +760,9 @@ public class AcademicCalendarController extends UifControllerBase {
                                          HttpServletRequest request, HttpServletResponse response) {
         // Dialog confirmation to make the calendar official
         String dialog = CalendarConstants.ACADEMIC_CALENDAR_OFFICIAL_CONFIRMATION_DIALOG;
-        if (!hasDialogBeenDisplayed(dialog, acalForm)) {
-            acalForm.setMakeOfficialName(acalForm.getAcademicCalendarInfo().getName());
-            //redirect back to client to display lightbox
-            return showDialog(dialog, acalForm, request, response);
-        }else{
-            if(hasDialogBeenAnswered(dialog,acalForm)){
-                boolean confirm = getBooleanDialogResponse(dialog, acalForm, request, response);
-                acalForm.getDialogManager().resetDialogStatus(dialog);
-                if(!confirm){
-                    return getUIFModelAndView(acalForm);
-                }
-            } else {
-
-                //redirect back to client to display lightbox
-                return showDialog(dialog, acalForm, request, response);
-            }
+        // returns null if no response OR if response was negative
+        if (acalForm.getDialogResponse(dialog) == null) {
+            return showDialog(dialog, true, acalForm);
         }
 
         makeAcalOfficial(acalForm);
@@ -1640,68 +1571,6 @@ public class AcademicCalendarController extends UifControllerBase {
         academicCalendarForm.setDirtyFields(completeDirtyFields.toString());
         return dirtyFields;
 
-    }
-
-    /**
-     * Override of the Krad lightbox return function to allow for returning to the controller without a redirect.
-     * Redirect causes a page refresh.
-     */
-    @Override
-    @RequestMapping(params = "methodToCall=returnFromLightbox")
-    public ModelAndView returnFromLightbox(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                                           HttpServletRequest request, HttpServletResponse response) {
-
-        String newMethodToCall;
-
-        // Save user responses from dialog
-        DialogManager dm = form.getDialogManager();
-        String dialogId = dm.getCurrentDialogId();
-        if (dialogId == null) {
-            newMethodToCall = "start";
-        } else {
-            dm.setDialogAnswer(dialogId, form.getDialogResponse());
-            dm.setDialogExplanation(dialogId, form.getDialogExplanation());
-            newMethodToCall = dm.getDialogReturnMethod(dialogId);
-            dm.setCurrentDialogId(null);
-        }
-
-        // KSENROLL Code Start
-        form.setMethodToCall(newMethodToCall);
-
-        // Attempt to return to the controller method directly using reflection (look for the matching methodToCall)
-        for (Method m : this.getClass().getMethods()) {
-            RequestMapping a = m.getAnnotation(RequestMapping.class);
-            if (a != null) {
-                String[] annotationsParams = a.params();
-                for (String param : annotationsParams) {
-                    if (param.contains("methodToCall=" + newMethodToCall)) {
-                        try {
-                            return (ModelAndView) m.invoke(this, form, result, request, response);
-                        } catch (IllegalAccessException iae) {
-                            LOG.error("Reflection Invocation failed", iae);
-                            throw new RuntimeException("Error using reflection in returnFromLightbox", iae);
-                        } catch (InvocationTargetException ite) {
-                            LOG.error("Reflection Invocation failed", ite);
-                            throw new RuntimeException("Error using reflection in returnFromLightbox", ite);
-                        } catch (IllegalArgumentException iae) {
-                            LOG.error("Reflection Invocation failed", iae);
-                            throw new RuntimeException("Error using reflection in returnFromLightbox", iae);
-                        }
-                    }
-                }
-
-            }
-        }
-        // KSENROLL Code End
-
-        // call intended controller method
-        Properties props = new Properties();
-        props.put(UifParameters.METHOD_TO_CALL, newMethodToCall);
-        props.put(UifParameters.VIEW_ID, form.getViewId());
-        props.put(UifParameters.FORM_KEY, form.getFormKey());
-        props.put(UifParameters.AJAX_REQUEST, "false");
-
-        return performRedirect(form, form.getFormPostUrl(), props);
     }
 
     /**

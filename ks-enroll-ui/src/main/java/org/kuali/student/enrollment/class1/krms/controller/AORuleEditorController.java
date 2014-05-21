@@ -172,7 +172,7 @@ public class AORuleEditorController extends EnrolRuleEditorController {
         ruleWrapper.setCompareLightBoxHeader(aoRuleEditor.getRuleTypeInfo().getDescription());
 
         // redirect back to client to display lightbox
-        return showDialog(EnrolKRMSConstants.KSKRMS_DIALOG_COMPARE_CLU_CO_AO, form, request, response);
+        return showDialog(EnrolKRMSConstants.KSKRMS_DIALOG_COMPARE_CLU_CO_AO, false, form);
     }
 
     /**
@@ -209,7 +209,7 @@ public class AORuleEditorController extends EnrolRuleEditorController {
         }
 
         // redirect back to client to display lightbox
-        return showDialog(EnrolKRMSConstants.KSKRMS_DIALOG_VIEW_CLU_CO, form, request, response);
+        return showDialog(EnrolKRMSConstants.KSKRMS_DIALOG_VIEW_CLU_CO, false, form);
     }
 
     /**

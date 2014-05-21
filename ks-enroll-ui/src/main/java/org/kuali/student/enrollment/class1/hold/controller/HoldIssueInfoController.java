@@ -240,14 +240,9 @@ public class HoldIssueInfoController extends UifControllerBase {
     public ModelAndView delete(@ModelAttribute("KualiForm") HoldIssueInfoForm form, BindingResult result,
                                HttpServletRequest request, HttpServletResponse response) throws Exception {
         String dialogId = "deleteConfirmationDialog";
-
-        if(!hasDialogBeenDisplayed(dialogId, form)) {
-            actionParameters = form.getActionParameters();
-            return showDialog(dialogId, form, request, response);
-        } else if (form.getActionParamaterValue("resetDialog").equals("true")){
-            form.getDialogManager().removeAllDialogs();
-            form.setLightboxScript("closeLightbox('" + dialogId + "');");
-            return getUIFModelAndView(form);
+        // returns null if no response OR if response was negative
+        if (form.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, form);
         }
 
         form.setActionParameters(actionParameters);
@@ -263,8 +258,6 @@ public class HoldIssueInfoController extends UifControllerBase {
             throw new RuntimeException("Error Performing Delete",e);
         }
 
-        form.setLightboxScript("closeLightbox('" + dialogId + "');");
-        form.getDialogManager().removeAllDialogs();
         return getUIFModelAndView(form);
     }
 

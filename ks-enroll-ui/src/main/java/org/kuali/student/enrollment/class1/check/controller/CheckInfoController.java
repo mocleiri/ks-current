@@ -211,17 +211,11 @@ public class CheckInfoController extends UifControllerBase {
         form.setDialogStateKey("");
 
         String dialogId = "deleteConfirmationDialog";
-
-        if(!hasDialogBeenDisplayed(dialogId, form)) {
-            actionParameters = form.getActionParameters();
-            return showDialog(dialogId, form, request, response);
-        } else if (form.getActionParamaterValue("resetDialog").equals("true")){
-            form.getDialogManager().removeAllDialogs();
-            form.setLightboxScript("closeLightbox('" + dialogId + "');");
-            return getUIFModelAndView(form);
+        // returns null if no response OR if response was negative
+        if (form.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, form);
         }
 
-        form.setActionParameters(actionParameters);
 /*        List<InstructionInfo> instructionInfos = new ArrayList<InstructionInfo>();
         List<InstructionInfo> activeInstructions = new ArrayList<InstructionInfo>();
         CheckInfo checkInfo = getSelectedCheckInfo(form, "delete");
@@ -254,8 +248,6 @@ public class CheckInfoController extends UifControllerBase {
             throw new RuntimeException("Unable to get process");
         }
 */
-        form.setLightboxScript("closeLightbox('" + dialogId + "');");
-        form.getDialogManager().removeAllDialogs();
         return getUIFModelAndView(form);
     }
 

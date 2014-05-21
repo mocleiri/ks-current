@@ -378,7 +378,6 @@ public class CourseOfferingRolloverController extends UifControllerBase {
     public ModelAndView performRollover(@ModelAttribute("KualiForm") CourseOfferingRolloverManagementForm form,
                                         @SuppressWarnings("unused") HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) throws Exception {
         if (!validateSourceTargetTerms(form)) {
-            form.getDialogManager().removeDialog(CourseOfferingSetServiceConstants.NO_EXAM_PERIOD_WARNING_DIALOG);
             return getUIFModelAndView(form);
         }
 
@@ -395,10 +394,8 @@ public class CourseOfferingRolloverController extends UifControllerBase {
         if (!helper.termHasExamPeriod(targetTermId)) {
             if (form.getActionParamaterValue("confirm") == null || form.getActionParamaterValue("confirm").equals("")) {
                 // redirect back to client to display lightbox
-                return showDialog(CourseOfferingSetServiceConstants.NO_EXAM_PERIOD_WARNING_DIALOG, form, request, response);
+                return showDialog(CourseOfferingSetServiceConstants.NO_EXAM_PERIOD_WARNING_DIALOG, false, form);
             } else if (form.getActionParamaterValue("confirm").equals("do")) {
-                form.getDialogManager().removeAllDialogs();
-                form.setLightboxScript("closeLightbox('" + CourseOfferingSetServiceConstants.NO_EXAM_PERIOD_WARNING_DIALOG + "');");
             }
         }
 
@@ -680,11 +677,9 @@ public class CourseOfferingRolloverController extends UifControllerBase {
         LOGGER.info("confirmReleaseToDepts ");
         if(form.getActionParamaterValue("confirm") == null || form.getActionParamaterValue("confirm").equals("")){
             // redirect back to client to display lightbox
-            return showDialog("releaseToDepts", form, request, response);
+            return showDialog("releaseToDepts", false, form);
         } else if (form.getActionParamaterValue("confirm").equals("do") ){
             form = releaseToDepts(form);
-            form.getDialogManager().removeAllDialogs();
-            form.setLightboxScript("closeLightbox('releaseToDepts');");
         }
         return getUIFModelAndView(form);
     }

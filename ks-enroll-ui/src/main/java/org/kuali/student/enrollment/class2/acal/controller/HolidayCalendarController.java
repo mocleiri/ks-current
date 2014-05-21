@@ -403,23 +403,12 @@ public class HolidayCalendarController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=delete")
     public ModelAndView delete(@ModelAttribute("KualiForm") HolidayCalendarForm hcForm, BindingResult result,
                                HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
         String dialog = CalendarConstants.HOLIDAY_DELETE_CONFIRMATION_DIALOG;
-        if (!hasDialogBeenDisplayed(dialog, hcForm)) {
-
-            //redirect back to client to display lightbox
-            return showDialog(dialog, hcForm, request, response);
-        }else{
-            if(hasDialogBeenAnswered(dialog,hcForm)){
-                boolean confirmDelete = getBooleanDialogResponse(dialog, hcForm, request, response);
-                hcForm.getDialogManager().resetDialogStatus(dialog);
-                if(!confirmDelete){
-                    return getUIFModelAndView(hcForm);
-                }
-            } else {
-
-                //redirect back to client to display lightbox
-                return showDialog(dialog, hcForm, request, response);
-            }
+        // returns null if no response OR if response was negative
+        if (hcForm.getDialogResponse(dialog) == null) {
+            return showDialog(dialog, true, hcForm);
         }
 
         getHolidayCalendarFormHelper(hcForm).deleteHolidayCalendar(hcForm.getHolidayCalendarInfo().getId());

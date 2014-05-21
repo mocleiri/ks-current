@@ -247,23 +247,16 @@ public class CourseOfferingCreateController extends CourseOfferingBaseController
         JointCourseWrapper joint = wrapper.getJointCourses().get(index);
 
         if (joint.isSelectedToJointlyOfferred()){
-            String dialogName = CourseOfferingConstants.JOINT_COURSE_FORMATS_DELETE_DIALOG;
-            
-            if (!hasDialogBeenAnswered(dialogName, form)) {
-                wrapper.setSelectedJointCourseCode(joint.getCourseCode());
-                wrapper.setDialogFormatOfferingWrapperList(joint.getFormatOfferingWrappers());
-                return showDialog(dialogName, form, request, response);
+            String dialogId = CourseOfferingConstants.JOINT_COURSE_FORMATS_DELETE_DIALOG;
+            // returns null if no response OR if response was negative
+            if (form.getDialogResponse(dialogId) == null) {
+                return showDialog(dialogId, true, form);
             }
 
-            boolean dialogAnswer = getBooleanDialogResponse(dialogName, form, request, response);
-            form.getDialogManager().resetDialogStatus(dialogName);
-
-            if (dialogAnswer) {
-                joint.setSelectedToJointlyOfferred(false);
-                String jointCodes = StringUtils.remove(wrapper.getJointCourseCodes(), ", " + joint.getCourseCode());
-                wrapper.setJointCourseCodes(jointCodes);
-                wrapper.getFormatOfferingWrappers().removeAll(joint.getFormatOfferingWrappers());
-            }
+            joint.setSelectedToJointlyOfferred(false);
+            String jointCodes = StringUtils.remove(wrapper.getJointCourseCodes(), ", " + joint.getCourseCode());
+            wrapper.setJointCourseCodes(jointCodes);
+            wrapper.getFormatOfferingWrappers().removeAll(joint.getFormatOfferingWrappers());
 
         } else {
             wrapper.setJointCourseCodes(wrapper.getJointCourseCodes() + ", " + joint.getCourseCode());

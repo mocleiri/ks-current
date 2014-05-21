@@ -157,7 +157,7 @@ public class EnrolRuleEditorController extends RuleEditorController {
             ruleWrapper.setClusInRange(proposition.getCourseSet().getCluSetRanges().get(Integer.valueOf(index)).getClusInRange());
         }
 
-        return showDialog(EnrolKRMSConstants.KSKRMS_DIALOG_COURSERANGE_LOOKUP, form, request, response);
+        return showDialog(EnrolKRMSConstants.KSKRMS_DIALOG_COURSERANGE_LOOKUP, false, form);
      }
 
     /**

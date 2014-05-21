@@ -207,8 +207,8 @@
                     <property name="headerText" value="Are you sure you want to delete Hold?"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-PrimaryActionButton" p:methodToCall="delete" p:actionLabel="Yes"/>
-                            <bean parent="Uif-PrimaryActionButton" p:methodToCall="delete" p:actionLabel="No" p:actionParameters="resetDialog:true"/>
+                            <bean parent="Uif-DialogConfirmButton" p:methodToCall="delete" p:actionLabel="Yes"/>
+                            <bean parent="Uif-DialogDismissButton" p:methodToCall="delete" p:actionLabel="No" p:actionParameters="resetDialog:true"/>
                         </list>
                     </property>
                 </bean>

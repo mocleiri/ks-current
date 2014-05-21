@@ -304,26 +304,14 @@ public class CalendarSearchController  extends UifControllerBase {
     @RequestMapping(params = "methodToCall=delete")
     public ModelAndView delete(@ModelAttribute("KualiForm") CalendarSearchForm searchForm, BindingResult result,
                                HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String dialog = CalendarConstants.SEARCH_DELETE_CONFIRMATION_DIALOG;
-        if (!hasDialogBeenDisplayed(dialog, searchForm)) {
+        String dialogId = CalendarConstants.SEARCH_DELETE_CONFIRMATION_DIALOG;
+        // returns null if no response OR if response was negative
+        if (searchForm.getDialogResponse(dialogId) == null) {
             searchForm.setSelectedCollectionPath(searchForm.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH));
             searchForm.setSelectedLineIndex(searchForm.getActionParamaterValue(UifParameters.SELECTED_LINE_INDEX));
-            //redirect back to client to display lightbox
-            return showDialog(dialog, searchForm, request, response);
-        }else{
-            if(hasDialogBeenAnswered(dialog,searchForm)){
-                boolean confirmDelete = getBooleanDialogResponse(dialog, searchForm, request, response);
-                searchForm.getDialogManager().resetDialogStatus(dialog);
-                if(!confirmDelete){
-                    return getUIFModelAndView(searchForm);
-                }
-            } else {
-                searchForm.setSelectedCollectionPath(searchForm.getActionParamaterValue(UifParameters.SELECTED_COLLECTION_PATH));
-                searchForm.setSelectedLineIndex(searchForm.getActionParamaterValue(UifParameters.SELECTED_LINE_INDEX));
-                //redirect back to client to display lightbox
-                return showDialog(dialog, searchForm, request, response);
-            }
+            return showDialog(dialogId, true, searchForm);
         }
+
         searchForm.getActionParameters().put(UifParameters.SELECTED_COLLECTION_PATH,searchForm.getSelectedCollectionPath());
         searchForm.getActionParameters().put(UifParameters.SELECTED_LINE_INDEX,searchForm.getSelectedLineIndex());
 
