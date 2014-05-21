@@ -28,12 +28,12 @@ class PopulationsBase < BasePage
 
     def population_view_elements
       element(:name_label) { |b| b.frm.div(data_label: "Name").label }
-      value(:name) { |b| b.frm.div(data_label: "Name").text.sub("Name\n", '') }
-      value(:description) { |b| b.frm.div(data_label: "Description").text.sub("Description\n", '') }
-      value(:state) { |b| b.frm.div(data_label: "State").text.sub("State\n", '') }
-      value(:rule) { |b| b.frm.div(data_label: "Rule").text.sub("Rule:\n", '') }
-      value(:operation) { |b| b.frm.div(data_label: "Operation").text.sub("Operation\n", '') }
-      value(:reference_population) { |b| b.frm.div(data_label: "Reference Population").text.sub("Reference Population\n", '') }
+      value(:name) { |b| b.frm.div(data_label: "Name").text[/(?<=\n).*/] }
+      value(:description) { |b| b.frm.div(data_label: "Description").text[/(?<=\n).*/] }
+      value(:state) { |b| b.frm.div(data_label: "State").text[/(?<=\n).*/] }
+      value(:rule) { |b| b.frm.div(data_label: "Rule").text[/(?<=\n).*/] }
+      value(:operation) { |b| b.frm.div(data_label: "Operation").text[/(?<=\n).*/] }
+      value(:reference_population) { |b| b.frm.div(data_label: "Reference Population").text[/(?<=\n).*/] }
     end
 
   end
