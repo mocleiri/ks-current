@@ -1,6 +1,6 @@
-^/sandbox/ks-enr-1.0-jcaddel/ks-api/branches/2.0.0-Mx ks-api
-^/sandbox/ks-enr-1.0-jcaddel/ks-core/trunk ks-core
-^/sandbox/ks-enr-1.0-jcaddel/ks-lum/trunk ks-lum
-^/sandbox/ks-enr-1.0-jcaddel/ks-enroll/trunk ks-enroll
-^/sandbox/ks-enr-1.0-jcaddel/ks-ap/trunk ks-ap
-^/sandbox/ks-enr-1.0-jcaddel/ks-deployments/trunk ks-deployments
+^/sandbox/ks-enr-1.0-jcaddel/ks-ap/tags/ks-ap-0.8.0-FR2-M1 ks-ap
+^/sandbox/ks-enr-1.0-jcaddel/ks-api/tags/ks-api-2.1.1-FR2-M1 ks-api
+^/sandbox/ks-enr-1.0-jcaddel/ks-core/tags/ks-core-2.1.1-FR2-M1 ks-core
+^/sandbox/ks-enr-1.0-jcaddel/ks-deployments/tags/ks-deployments-2.1.1-FR2-M1 ks-deployments
+^/sandbox/ks-enr-1.0-jcaddel/ks-enroll/tags/ks-enroll-0.2.0-FR2-M1 ks-enroll
+^/sandbox/ks-enr-1.0-jcaddel/ks-lum/tags/ks-lum-2.1.1-FR2-M1 ks-lum
