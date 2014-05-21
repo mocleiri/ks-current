@@ -31,6 +31,7 @@ import org.kuali.rice.krad.uif.layout.CollectionLayoutUtils;
 import org.kuali.rice.krad.uif.layout.TableLayoutManagerBase;
 import org.kuali.rice.krad.uif.lifecycle.ViewLifecycle;
 import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.util.ContextUtils;
 import org.kuali.rice.krad.uif.view.ExpressionEvaluator;
 import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -137,7 +138,7 @@ public class SimpleTableLayoutManager extends TableLayoutManagerBase {
             Field selectField = ComponentUtils.copy(getSelectFieldPrototype(), idSuffix);
             CollectionLayoutUtils.prepareSelectFieldForLine(selectField, collectionGroup, bindingPath, currentLine);
 
-            ComponentUtils.updateContextForLine(selectField, collectionGroup, currentLine, lineIndex, idSuffix);
+            ContextUtils.updateContextForLine(selectField, collectionGroup, currentLine, lineIndex, idSuffix);
             setCellAttributes(selectField);
 
             this.getAllRowFields().add(selectField);

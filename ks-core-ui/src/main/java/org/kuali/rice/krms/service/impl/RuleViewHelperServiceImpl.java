@@ -24,6 +24,7 @@ import org.kuali.rice.krad.uif.container.Container;
 import org.kuali.rice.krad.uif.lifecycle.ViewLifecycle;
 import org.kuali.rice.krad.uif.util.ComponentFactory;
 import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.util.ContextUtils;
 import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.uif.view.ViewModel;
 import org.kuali.rice.krad.util.BeanPropertyComparator;
@@ -160,7 +161,7 @@ public class RuleViewHelperServiceImpl extends KSViewHelperServiceImpl implement
         Component component = ComponentFactory.getNewComponentInstance(componentId);
         if (objectPath != null) {
             String nodePath = objectPath + "." + bindingPath;
-            ComponentUtils.pushObjectToContext(component, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
+            ContextUtils.pushObjectToContextDeep(component, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
         }
         return component;
     }

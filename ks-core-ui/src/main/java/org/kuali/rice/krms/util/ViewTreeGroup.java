@@ -26,6 +26,7 @@ import org.kuali.rice.krad.uif.container.TreeGroup;
 import org.kuali.rice.krad.uif.element.Message;
 import org.kuali.rice.krad.uif.lifecycle.ViewLifecycleUtils;
 import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.util.ContextUtils;
 import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
 import org.kuali.rice.krad.uif.view.View;
 
@@ -84,19 +85,19 @@ public class ViewTreeGroup extends TreeGroup {
         NodePrototype prototype = this.getDefaultNodePrototype();
 
         Message message = ComponentUtils.copy(prototype.getLabelPrototype(), parentNode);
-        ComponentUtils.pushObjectToContext(message, UifConstants.ContextVariableNames.NODE, nodeData);
+        ContextUtils.pushObjectToContextDeep(message, UifConstants.ContextVariableNames.NODE, nodeData);
         message.setMessageText(nodeData.getNodeLabel());
         node.setNodeLabel(message);
 
         Group nodeGroup = ComponentUtils.copyComponent(prototype.getDataGroupPrototype(), bindingPrefix + ".data",
                 parentNode);
-        ComponentUtils.pushObjectToContext(nodeGroup, UifConstants.ContextVariableNames.NODE, nodeData);
+        ContextUtils.pushObjectToContextDeep(nodeGroup, UifConstants.ContextVariableNames.NODE, nodeData);
 
         String nodePath = bindingPrefix + ".data";
         if (StringUtils.isNotBlank(getBindingInfo().getBindingObjectPath())) {
             nodePath = getBindingInfo().getBindingObjectPath() + "." + nodePath;
         }
-        ComponentUtils.pushObjectToContext(nodeGroup, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
+        ContextUtils.pushObjectToContextDeep(nodeGroup, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
 
         /*Overridden section*/
         List<CollectionGroup> components = ViewLifecycleUtils.getElementsOfTypeShallow(nodeGroup, CollectionGroup.class);

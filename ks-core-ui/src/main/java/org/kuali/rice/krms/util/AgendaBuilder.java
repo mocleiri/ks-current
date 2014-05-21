@@ -24,6 +24,7 @@ import org.kuali.rice.krad.uif.element.Action;
 import org.kuali.rice.krad.uif.field.DataField;
 import org.kuali.rice.krad.uif.lifecycle.ViewLifecycleUtils;
 import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.util.ContextUtils;
 import org.kuali.rice.krms.dto.AgendaEditor;
 import org.kuali.rice.krms.dto.RuleEditor;
 import org.kuali.rice.krms.service.RuleViewHelperService;
@@ -81,7 +82,7 @@ public class AgendaBuilder {
             actionLink.getActionParameters().put("ruleType", rule.getRuleTypeInfo().getType());
         }
 
-        ComponentUtils.updateContextForLine(group, null, rule, 0, ruleSuffix);
+        ContextUtils.updateContextForLine(group, null, rule, 0, ruleSuffix);
 
         String bindingPath = bindingPrefix + "ruleEditors[" + rule.getKey() + "].";
         this.setPropertyBindingPaths(group, bindingPath);

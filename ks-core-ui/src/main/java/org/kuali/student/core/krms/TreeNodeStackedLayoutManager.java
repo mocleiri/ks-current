@@ -30,6 +30,7 @@ import org.kuali.rice.krad.uif.layout.StackedLayoutManager;
 import org.kuali.rice.krad.uif.layout.StackedLayoutManagerBase;
 import org.kuali.rice.krad.uif.lifecycle.ViewLifecycleUtils;
 import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.util.ContextUtils;
 import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
 import org.kuali.rice.krad.uif.view.ViewModel;
 import org.kuali.rice.krad.util.KRADUtils;
@@ -53,7 +54,7 @@ public class TreeNodeStackedLayoutManager extends StackedLayoutManagerBase {
             if (nodePath != null) {
                 for (Group group : this.getStackedGroups()) {
                     //Set the nodepath on the add line group so that progressive rendering can use the #np
-                    ComponentUtils.pushObjectToContext(group, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
+                    ContextUtils.pushObjectToContextDeep(group, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
                 }
             }
         }
