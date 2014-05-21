@@ -436,8 +436,8 @@ public class CourseController extends CourseRuleEditorController {
         return retval;
     }
 
-    public void performWorkflowActionSuper(DocumentFormBase form, UifConstants.WorkflowAction action, boolean checkSensitiveData) {
-        super.performWorkflowAction(form, action, checkSensitiveData);
+    public void performWorkflowActionSuper(DocumentFormBase form, UifConstants.WorkflowAction action) {
+        super.performWorkflowAction(form, action);
     }
 
     /**
@@ -445,12 +445,11 @@ public class CourseController extends CourseRuleEditorController {
      *
      * @param form
      * @param action
-     * @param checkSensitiveData
      */
     @Override
-    protected void performWorkflowAction(DocumentFormBase form, UifConstants.WorkflowAction action, boolean checkSensitiveData) {
+    protected void performWorkflowAction(DocumentFormBase form, UifConstants.WorkflowAction action) {
         CourseControllerTransactionHelper helper = GlobalResourceLoader.getService(new QName(CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "courseControllerTransactionHelper", CourseControllerTransactionHelper.class.getSimpleName()));
-        helper.performWorkflowActionSuper(form, action, checkSensitiveData, this);
+        helper.performWorkflowActionSuper(form, action, this);
         List<ErrorMessage> infoMessages = GlobalVariables.getMessageMap().getInfoMessagesForProperty(KRADConstants.GLOBAL_MESSAGES);
         if (infoMessages != null) {
             for (ErrorMessage message : infoMessages) {
@@ -611,7 +610,7 @@ public class CourseController extends CourseRuleEditorController {
                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // redirect back to client to display lightbox
-        return showDialog("commentsLightBox", form, request, response);
+        return showDialog("commentsLightBox", false, form);
     }
 
     /**
@@ -668,9 +667,8 @@ public class CourseController extends CourseRuleEditorController {
             ittCommentInfo = newComment;
         }
         //form.getDialogManager().removeDialog("commentsLightBox");
-        /*return getUIFModelAndView(form);*/
-        form.getDialogManager().setDialogReturnMethod("commentsLightBox", UifConstants.MethodToCallNames.START);
-        return returnFromLightbox(form, result, request, response);
+        return getUIFModelAndView(form);
+
     }
 
     /**
@@ -726,14 +724,9 @@ public class CourseController extends CourseRuleEditorController {
     public ModelAndView showDecisions(@ModelAttribute("KualiForm") MaintenanceDocumentForm form, BindingResult result,
                                       HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        if (!hasDialogBeenAnswered(DECISIONS_DIALOG_KEY, form)) {
-//            redrawDecisionTable(form);
-            return showDialog(DECISIONS_DIALOG_KEY, form, request, response);
-        }
-
-        form.getDialogManager().removeDialog(DECISIONS_DIALOG_KEY);
-
-        return getUIFModelAndView(form);
+        String dialogId = DECISIONS_DIALOG_KEY;
+        // note this is not a confirmation dialog
+        return showDialog(dialogId, false, form);
     }
 
     /**
