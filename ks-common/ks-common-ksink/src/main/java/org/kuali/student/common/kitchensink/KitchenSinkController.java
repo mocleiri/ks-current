@@ -22,6 +22,7 @@ import org.kuali.rice.core.api.util.tree.Node;
 import org.kuali.rice.core.impl.config.property.ConfigLogger;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
+import org.kuali.rice.krad.web.form.DialogResponse;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.uif.util.GrowlIcon;
 import org.kuali.student.common.uif.util.KSUifUtils;
@@ -315,21 +316,22 @@ public class KitchenSinkController extends UifControllerBase {
             HttpServletRequest request, HttpServletResponse response) throws Exception {
         String dialogId = "messageBoxDialog";
 
-        if (!hasDialogBeenAnswered(dialogId, form)) {
-            return showDialog(dialogId, form, request, response);
+
+        DialogResponse dialogResponse = form.getDialogResponse(dialogId);
+        // dialog has been answered
+        if (dialogResponse == null) {
+            // DO NOT use this like a confirm dialog (2nd param=false) since we're growling for either case see
+            // HolidayCalendarController.java for an example that correctly uses the confirm dialog
+            return showDialog(dialogId, false, form);
         }
 
-        //boolean isDialogResponseTrue = getBooleanDialogResponse(dialogId, form, request, response);
-        String dialogResponse = getStringDialogResponse(dialogId, form, request, response);
-        if ("Y".equals(dialogResponse)) {
+        boolean dialogAnswer = dialogResponse.getResponseAsBoolean();
+        // response does not match TRUE_VALUES regex
+        if (dialogAnswer) {
             KSUifUtils.addGrowlMessageIcon(GrowlIcon.SUCCESS, "kitchensink.custom", "You clicked the button.");
-        }
-        else {
+        } else {
             KSUifUtils.addGrowlMessageIcon(GrowlIcon.ERROR, "kitchensink.custom", "Be more careful next time.");
         }
-
-        // clear dialog history so user can press the button again
-        form.getDialogManager().resetDialogStatus(dialogId);
 
         return getUIFModelAndView(form);
     }
@@ -340,12 +342,11 @@ public class KitchenSinkController extends UifControllerBase {
                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
         String dialogId = "lightboxDialog2";
 
-        if (!hasDialogBeenAnswered(dialogId, form)) {
-            return showDialog(dialogId, form, request, response);
+        // dialog has not been answered
+        if (form.getDialogResponse(dialogId) == null) {
+            return showDialog(dialogId, true, form);
         }
 
-        // clear dialog history so user can press the button again
-        form.getDialogManager().resetDialogStatus(dialogId);
         return getUIFModelAndView(form);
     }
 
@@ -374,7 +375,7 @@ public class KitchenSinkController extends UifControllerBase {
 
         KSUifUtils.addGrowlMessageIcon(GrowlIcon.INFORMATION, "kitchensink.custom", "Lightbox form saved.");
         // growl doesn't show because returnFromLightbox() executes performRedirect(), w/o growl params:
-        return returnFromLightbox(form, result, request, response); //also, hidden bean briefly shows
+        return getUIFModelAndView(form);
         //return getUIFModelAndView(form);//shows growl,lightbox remains,hidden bean displays
         //return refresh(form, result, request, response);//same as getUIFModelAndView
     }

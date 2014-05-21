@@ -21,6 +21,7 @@ import org.kuali.rice.krad.uif.UifParameters;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.MaintenanceDocumentController;
 import org.kuali.rice.krad.web.controller.MethodAccessible;
+import org.kuali.rice.krad.web.form.DialogResponse;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.rice.krms.api.repository.proposition.PropositionType;
@@ -865,16 +866,10 @@ public class RuleEditorController extends MaintenanceDocumentController {
                 return getUIFModelAndView(form);
             }
 
-            if (!GlobalVariables.getMessageMap().getWarningMessages().isEmpty()) {
-                if (!hasDialogBeenAnswered(KRMSConstants.KSKRMS_DIALOG_YESNO_WARNING, form)) {
-                    return showDialog(KRMSConstants.KSKRMS_DIALOG_YESNO_WARNING, form, request, response);
-                }
-
-                String dialogResponse = getStringDialogResponse(KRMSConstants.KSKRMS_DIALOG_YESNO_WARNING, form, request, response);
-                if ("N".equals(dialogResponse)) {
-                    form.getDialogManager().resetDialogStatus(KRMSConstants.KSKRMS_DIALOG_YESNO_WARNING);
-                    return getUIFModelAndView(form);
-                }
+            String dialog = KRMSConstants.KSKRMS_DIALOG_YESNO_WARNING;
+            // returns null if no response OR if response was negative
+            if (form.getDialogResponse(dialog) == null) {
+                return showDialog(dialog, true, form);
             }
 
             //Reset the description and natural language for the proposition.
@@ -897,8 +892,6 @@ public class RuleEditorController extends MaintenanceDocumentController {
             PropositionTreeUtil.resetNewProp(ruleEditor.getPropositionEditor());
         }
 
-        // clear dialog history so user can press the button again
-        form.getDialogManager().resetDialogStatus(KRMSConstants.KSKRMS_DIALOG_YESNO_WARNING);
 
         //Compare rule with parent rule.
         compareRulePropositions((MaintenanceDocumentForm) form, ruleEditor);
@@ -1192,7 +1185,7 @@ public class RuleEditorController extends MaintenanceDocumentController {
         doCompareRules(form);
 
         // redirect back to client to display lightbox
-        return showDialog(KRMSConstants.KSKRMS_DIALOG_COMPARE, form, request, response);
+        return showDialog(KRMSConstants.KSKRMS_DIALOG_COMPARE, true, form);
     }
 
     protected void doCompareRules(UifFormBase form) {
