@@ -23,6 +23,7 @@ import org.kuali.rice.krad.uif.container.Container;
 import org.kuali.rice.krad.uif.lifecycle.ViewLifecycle;
 import org.kuali.rice.krad.uif.util.ComponentFactory;
 import org.kuali.rice.krad.uif.util.ComponentUtils;
+import org.kuali.rice.krad.uif.util.ContextUtils;
 import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.uif.view.ViewModel;
 import org.kuali.rice.krad.web.form.MaintenanceDocumentForm;
@@ -157,7 +158,7 @@ public class CourseRuleViewHelperServiceImpl extends LURuleViewHelperServiceImpl
 //                view.assignComponentIds(component);
                 if(container.getId().equals(maintenanceDocumentForm.getUpdateComponentId())){
                     String nodePath = view.getDefaultBindingObjectPath() + "." + propEditor.getBindingPath();
-                    ComponentUtils.pushObjectToContext(component, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
+                    ContextUtils.pushObjectToContextDeep(component, UifConstants.ContextVariableNames.NODE_PATH, nodePath);
                     ComponentUtils.prefixBindingPathNested(component, propEditor.getBindingPath());
                 }
 
