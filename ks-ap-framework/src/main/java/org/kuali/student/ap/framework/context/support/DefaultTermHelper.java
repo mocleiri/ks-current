@@ -17,7 +17,6 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
-import org.kuali.student.common.util.security.ContextUtils;
 import org.kuali.student.r2.common.util.constants.CourseOfferingSetServiceConstants;
 import org.kuali.student.r2.core.acal.dto.AcademicCalendarInfo;
 import org.kuali.student.r2.core.acal.dto.KeyDateInfo;
@@ -721,7 +720,7 @@ public class DefaultTermHelper implements TermHelper {
         for (Term term : inputTerms){
             List<String> socIds;
             try {
-                socIds = KsapFrameworkServiceLocator.getCourseOfferingSetService().getSocIdsByTerm(term.getId(), ContextUtils.createDefaultContextInfo());
+                socIds = KsapFrameworkServiceLocator.getCourseOfferingSetService().getSocIdsByTerm(term.getId(), KsapFrameworkServiceLocator.getContext().getContextInfo());
             } catch (Exception e){
                 if (LOG.isDebugEnabled()){
                     LOG.debug("Getting SOCs for the term " + term.getCode() + " results in service error");
@@ -741,7 +740,7 @@ public class DefaultTermHelper implements TermHelper {
             SocInfo socInfo;
             int firstId = 0;
             try {
-                socInfo = KsapFrameworkServiceLocator.getCourseOfferingSetService().getSoc(socIds.get(firstId), ContextUtils.createDefaultContextInfo());
+                socInfo = KsapFrameworkServiceLocator.getCourseOfferingSetService().getSoc(socIds.get(firstId), KsapFrameworkServiceLocator.getContext().getContextInfo());
             } catch (Exception e){
                 if (LOG.isDebugEnabled()){
                     LOG.debug("Error getting the soc [id={}]", socIds.get(firstId));

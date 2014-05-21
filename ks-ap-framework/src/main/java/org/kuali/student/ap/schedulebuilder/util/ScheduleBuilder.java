@@ -221,8 +221,8 @@ public class ScheduleBuilder implements Serializable {
 									if (sao.isSelected() || sao.isLockedIn())
 										saol.add(sao);
 								if (saol.isEmpty()) {
-									LOG.warn("Course option is selected, but has no selected activities for {} {} {} {}",
-                                            ao.getRegistrationCode(), so.getActivityTypeDescription(), c.getCourseId(), c.getCourseCode());
+//									LOG.warn("Course option is selected, but has no selected activities for {} {} {} {}",
+//                                            ao.getRegistrationCode(), so.getActivityTypeDescription(), c.getCourseId(), c.getCourseCode());
 									empty = true;
 									break course;
 								}

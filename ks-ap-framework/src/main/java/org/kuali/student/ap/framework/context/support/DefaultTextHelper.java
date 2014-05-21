@@ -61,7 +61,7 @@ public class DefaultTextHelper implements TextHelper, Serializable {
         try {
             ResourceBundle bundle = getBundle();
             validateLocaleMatch(getLocale(), bundle.getLocale(), "getText(" + messageCode + ")");
-            LOG.debug("getText({}) - bundle with locale: '{}' when looking for '{}'", messageCode, bundle.getLocale(), getLocale());
+//            LOG.debug("getText({}) - bundle with locale: '{}' when looking for '{}'", messageCode, bundle.getLocale(), getLocale());
             value = bundle.getString(messageCode);
         } catch (MissingResourceException mre) {
             LOG.error("Error getting text value: {}", mre.getLocalizedMessage());

@@ -72,7 +72,7 @@ public class DBResourceBundleControlImpl extends ResourceBundle.Control {
 
         for (MessageInfo mi : messages) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("{}-{}->{}", LocaleUtil.localeInfo2Locale(mi.getLocale()), mi.getMessageKey(), mi.getValue());
+//                LOG.debug("{}-{}->{}", LocaleUtil.localeInfo2Locale(mi.getLocale()), mi.getMessageKey(), mi.getValue());
             }
             p.setProperty(mi.getMessageKey(), mi.getValue());
         }
@@ -83,7 +83,7 @@ public class DBResourceBundleControlImpl extends ResourceBundle.Control {
     @Override
     public long getTimeToLive(String baseName, Locale locale) {
         String ttl = ConfigContext.getCurrentContextConfig().getProperty(CONFIG_RESOURCE_BUNDLE_DB_TTL);
-        LOG.debug("Get the TTL for {} and '{}': {}", baseName, locale, ttl);
+//        LOG.debug("Get the TTL for {} and '{}': {}", baseName, locale, ttl);
         return Long.parseLong(ttl);
     }
 

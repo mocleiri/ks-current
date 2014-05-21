@@ -59,10 +59,6 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManagerBase {
 				rowCss.add(r2css.toString());
 				rowCss.add(r2css.toString());
 			}
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("AO luiId {} lineIndex = {} css(1) {} css(2,3) {}",
-                        aoi.getLuiId(), lineIndex, r1css, r2css);
-            }
 		}
 	}
 

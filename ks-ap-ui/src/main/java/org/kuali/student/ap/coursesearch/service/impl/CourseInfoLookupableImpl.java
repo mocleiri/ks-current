@@ -1,25 +1,30 @@
 package org.kuali.student.ap.coursesearch.service.impl;
 
-import org.apache.commons.lang.StringUtils;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.core.api.util.RiceKeyConstants;
-import org.kuali.rice.krad.lookup.LookupableImpl;
-import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.rice.krad.util.KRADConstants;
-import org.kuali.rice.krad.lookup.LookupForm;
-import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.common.util.security.ContextUtils;
-import org.kuali.student.r2.core.search.dto.*;
-import org.kuali.student.r2.lum.clu.service.CluService;
-import org.kuali.student.r2.lum.course.dto.CourseInfo;
-import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import javax.xml.namespace.QName;
+
+import org.apache.commons.lang.StringUtils;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.core.api.util.RiceKeyConstants;
+import org.kuali.rice.krad.lookup.LookupForm;
+import org.kuali.rice.krad.lookup.LookupableImpl;
+import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.rice.krad.util.KRADConstants;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.core.search.dto.SearchParamInfo;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultCellInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultRowInfo;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 
 public class CourseInfoLookupableImpl extends LookupableImpl {
 	private static final long serialVersionUID = 1L;	
@@ -100,7 +105,7 @@ public class CourseInfoLookupableImpl extends LookupableImpl {
         searchRequest.setSearchKey("lu.search.mostCurrent.union");
 
         try {
-            SearchResultInfo searchResult = getCluService().search(searchRequest, ContextUtils.getContextInfo());
+            SearchResultInfo searchResult = getCluService().search(searchRequest, KsapFrameworkServiceLocator.getContext().getContextInfo());
 
             if (searchResult.getRows().size() > 0) {
                 for(SearchResultRowInfo srrow : searchResult.getRows()){

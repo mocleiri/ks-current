@@ -114,10 +114,10 @@ public class MergedPropertiesResourceBundleImpl extends ResourceBundle {
         String bundle_locale = bundle.getLocale().toString();
         if (!expected.equals(bundle_locale) && !bundle_locale.equals("")) {
             //throw new RuntimeException("Mismatched locales.  Expected '" + the_locale + "' but got '" + bundle_locale + "' from " + bundle);
-            LOG.warn("Mismatched locales.  Expected '{}' but got '{}' from {}", expected, bundle_locale, bundle);
+//            LOG.warn("Mismatched locales.  Expected '{}' but got '{}' from {}", expected, bundle_locale, bundle);
         }
         else {
-            LOG.debug("Expected '{}' and got '{}' from {}", expected, bundle_locale, bundle);
+//            LOG.debug("Expected '{}' and got '{}' from {}", expected, bundle_locale, bundle);
         }
     }
 }

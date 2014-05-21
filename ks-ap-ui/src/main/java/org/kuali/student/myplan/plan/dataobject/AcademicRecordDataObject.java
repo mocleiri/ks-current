@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.dataobject;
 
-import org.kuali.student.common.util.UUIDHelper;
+import java.util.UUID;
+
 import org.kuali.student.ap.coursesearch.dataobject.ActivityOfferingItem;
 
 /**
@@ -25,7 +26,7 @@ public class AcademicRecordDataObject {
     private transient ActivityOfferingItem activityOfferingItem;
 
     public AcademicRecordDataObject() {
-        uuid = UUIDHelper.genStringUUID();
+        uuid = UUID.randomUUID().toString();
     }
 
     public String getUuid() {

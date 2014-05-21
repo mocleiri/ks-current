@@ -235,8 +235,6 @@ public class CommentController extends UifControllerBase {
 		if (StringUtils.isNotEmpty(toAddress)) {
 			try {
 				sendMessage(fromAddress, toAddress, subject, body);
-				logger.info("Sent comment email ({}) to: {} From: {}",
-                        messageText, toAddress, fromAddress);
 			} catch (Exception e) {
 				logger.error(String.format(
 						"Could not send e-mail from [%s] to [%s].",
@@ -370,9 +368,6 @@ public class CommentController extends UifControllerBase {
 		if (StringUtils.isNotEmpty(toAddress)) {
 			try {
 				sendMessage(fromAddress, toAddress, subject, body);
-				logger.info("Sent message email ({}) to student: {} from adviser: {}",
-                        messageText, studentName, adviserName);
-
 			} catch (Exception e) {
 				logger.error(String.format(
 						"Could not send e-mail from [%s] to [%s].",
