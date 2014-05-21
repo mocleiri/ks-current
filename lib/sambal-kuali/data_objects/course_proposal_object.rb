@@ -22,9 +22,10 @@ class CmCourseProposalObject < DataFactory
         :assessment_scale,:final_exam_type, :final_exam_rationale,
         :exam_standard, :exam_alternate, :exam_none,
         #
-        :outcome_type_fixed, :outcome_level_fixed, :credit_value,
-        :outcome_type_range, :outcome_level_range, :credit_value_max, :credit_value_min,
-        :outcome_type_multiple,:outcome_level_multiple, :credit_value_multiple_1,:credit_value_multiple_2,
+        :outcome_type_1, :outcome_level_1, :credit_value_1, :delete_outcome_1, :edit_outcome_1,
+        :outcome_type_2, :outcome_level_2, :credit_value_2, :delete_outcome_2, :edit_outcome_2,
+        :outcome_type_3, :outcome_level_3, :credit_value_3, :delete_outcome_3, :edit_outcome_3,
+        :outcome_type_4, :outcome_level_4, :credit_value_4, :delete_outcome_4, :edit_outcome_4,
         #
         :course_format_activity_type, :duration_type, :duration_count,
         :activity_type, :activity_duration_type, :activity_frequency,
@@ -121,18 +122,10 @@ class CmCourseProposalObject < DataFactory
         final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
         final_exam_rationale:       random_alphanums(10,'test final exam rationale '),
         #OUTCOMES
-        outcome_type_fixed: true,
-        outcome_level_fixed: 1,
-        credit_value: (1..5).to_a.sample,
-        outcome_type_range: true,
-        outcome_level_range: 2,
-        credit_value_min: (1..4).to_a.sample,
-        credit_value_max: (5..9).to_a.sample,
-        outcome_type_multiple: true,
-        outcome_level_multiple: 3,
-        credit_value_multiple_1: (1..4).to_a.sample,
-        credit_value_multiple_2: (5..9).to_a.sample,
-        #FORMATS
+        outcome_type_1: "Fixed", outcome_level_1: 1, credit_value_1: (1..5).to_a.sample, delete_outcome_1: false, edit_outcome_1: false,
+        outcome_type_2: "Range", outcome_level_2: 2, credit_value_2: "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}", delete_outcome_2: false, edit_ouctome_2: false,
+        outcome_type_3: "Multiple", outcome_level_3: 3, credit_value_3:  "#{(1..4).to_a.sample},#{(5..9).to_a.sample}", delete_outcome_3: false, edit_ouctome_3: false,
+        ##FORMATS
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
         activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
@@ -212,11 +205,71 @@ class CmCourseProposalObject < DataFactory
     determine_edit_action
 
     on CmCourseInformation do |page|
+      page.course_information unless page.current_page('Course Information').exists?
       page.proposal_title.fit opts[:proposal_title]
       page.course_title.fit opts[:course_title]
+      page.subject_code.fit opts[:subject_code]
+      page.description_rationale.fit opts[:description_rationale]
+      page.proposal_rationale.fit opts[:proposal_rationale]
     end
 
     determine_save_action
+
+    on CmGovernance do |page|
+      page.governance unless page.current_page('Governance').exists?
+      page.curriculum_oversight.pick! opts[:curriculum_oversight] unless opts[:curriculum_oversight].nil?
+    end
+
+    determine_save_action
+
+    on CmCourseLogistics do |page|
+      page.course_logistics unless page.current_page('Course Logistics').exists?
+      #Edit Assessment Scale
+        reset_checkbox(@assessment_scale)
+        fill_out page,  :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory
+
+      #Edit Final Exam Status
+        reset_radio(opts[@final_exam_type])
+        fill_out page, :exam_standard, :exam_alternate, :exam_none            
+        #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
+        #if that radio is selected
+        page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
+        page.final_exam_rationale.fit opts[:final_exam_rationale] unless page.exam_standard.set?
+
+
+
+      #Edit Outcomes
+      #Delete the first outcome
+      page.delete_outcome(0) if opts[:delete_outcome_1]
+      page.delete_outcome(1) if opts[:delete_outcome_2]
+      page.delete_outcome(2) if opts[:delete_outcome_3]
+
+      #Edit the second outcome
+      page.loading_wait
+      page.credit_value(0).fit opts[:credit_value_2] if opts[:edit_outcome_2]
+
+      #Add a third outcome
+      if opts[:outcome_type_4]
+        page.add_outcome
+        page.outcome_type(2).wait_until_present
+        page.outcome_type(2).pick! opts[:outcome_type_4]
+        page.loading_wait
+        page.credit_value(2).fit opts[:credit_value_4]
+
+      end
+
+
+    end
+    determine_save_action
+    
+    on CmActiveDates do |page|
+      #Active Dates
+      page.active_dates unless page.current_page('Active Dates').exists?
+      page.start_term.pick! opts[:start_term] unless opts[:start_term].nil?
+    end
+
+    determine_save_action
+
     set_options(opts)
   end
 
@@ -258,7 +311,10 @@ class CmCourseProposalObject < DataFactory
 
       sleep 1
       #set_outcome_type
-      set_outcome
+      set_outcomes(@outcome_type_1, @outcome_level_1, @credit_value_1) if @outcome_type_1 == "Fixed"
+      set_outcomes(@outcome_type_2, @outcome_level_2, @credit_value_2) if @outcome_type_2 == "Range"
+      set_outcomes(@outcome_type_3, @outcome_level_3, @credit_value_3) if @outcome_type_3 == "Multiple"
+
       set_additional_format
 
 
@@ -484,11 +540,6 @@ class CmCourseProposalObject < DataFactory
      { "Yes" => :set, "No" => :clear }
   end
 
-  def set_outcome
-    set_outcome_fixed(@outcome_level_fixed) unless @outcome_type_fixed == nil
-    set_outcome_range(@outcome_level_range) unless @outcome_type_range == nil
-    set_outcome_multiple(@outcome_level_multiple) unless @outcome_type_multiple == nil
-  end
 
   def set_additional_format
     on CmCourseLogistics do |page|
@@ -502,58 +553,41 @@ class CmCourseProposalObject < DataFactory
     end
   end
 
-  def set_outcome_fixed(outcome_level)
+  def set_outcomes(outcome_type,outcome_level,credit_value)
     on CmCourseLogistics do |page|
-      page.outcome_type(outcome_level-1).pick! "Fixed"
+      page.add_outcome unless page.outcome_type(outcome_level-1).exists?
+      page.outcome_type(outcome_level-1).wait_until_present
+      page.outcome_type(outcome_level-1).pick! outcome_type
       page.loading_wait
-      page.credit_value_fixed(outcome_level-1).set @credit_value
-      page.add_outcome
+      page.credit_value(outcome_level-1).wait_until_present
+      page.credit_value(outcome_level-1).set credit_value
     end
   end
 
-
-  def set_outcome_range(outcome_level)
-    on CmCourseLogistics do |page|
-      page.outcome_type(outcome_level-1).pick! "Range"
-      page.loading_wait
-      page.credit_value_range(outcome_level-1).wait_until_present
-      page.credit_value_range(outcome_level-1).set "#{@credit_value_min}-#{@credit_value_max}"
-      page.add_outcome
-    end
-  end
-
-  def set_outcome_multiple(outcome_level)
-    on CmCourseLogistics do |page|
-      page.outcome_type(outcome_level-1).pick! "Multiple"
-      page.loading_wait
-      #page.credit_value_multiple_entry(outcome_level-1).wait_until_present(2)
-      page.credit_value_multiple(outcome_level-1).set "#{@credit_value_multiple_1},#{@credit_value_multiple_2}"
-    end
-  end
-
-
-  #Used to fill out the outcome type by setting the @outcome_type adding multiple outcomes will require to pass in the outcome level for multiple fields
-  def set_outcome_type(outcome_level='0')
-    on CmCourseLogistics do |page|
-      page.credit_value(outcome_level).set @outcome_value if @outcome_type == 'Fixed'
-      page.credit_value_max(outcome_level).set @credit_value_max if @outcome_type == 'Range'
-      page.credit_value_min(outcome_level).set @credit_value_min if @outcome_type == 'Range'
-
-      #TODO:: Find a way to make type Multiple work with the outcome_level variable for multiple outcome types
-      if @outcome_type == 'Multiple'
-        page.credit_value_multiple.fit @outcome_multiple
-        page.outcome_add_multiple_btn
-        page.credit_value_multiple.fit @outcome_multiple2
-        page.outcome_add_multiple_btn
-      end
-    end
-  end
 
   #Used to select a random checkbox/radio button and then set to :set for fill_out method
   def random_checkbox(pass_in_an_array)
-    set(pass_in_an_array.sample, :set)  unless pass_in_an_array.nil?
+    @sample_checkbox = pass_in_an_array.sample unless pass_in_an_array.nil?
+    set(@sample_checkbox, :set)  unless pass_in_an_array.nil?
   end
-  alias_method :random_radio, :random_checkbox
+  #alias_method :random_radio, :random_checkbox
+  
+  def reset_checkbox(pass_in_an_array)
+    set(@sample_checkbox, :clear) unless pass_in_an_array.nil?
+    pass_in_an_array.delete(@sample_checkbox)
+    @sample_checkbox_new = pass_in_an_array.sample
+    set(@sample_checkbox_new, :set) unless pass_in_an_array.nil?
+  end
+
+  def random_radio(pass_in_an_array)
+    @sample_radio = pass_in_an_array.sample unless pass_in_an_array.nil?
+    set(@sample_radio, :set)  unless pass_in_an_array.nil?
+  end
+  
+  def reset_radio(pass_in_an_array)
+    @sample_checkbox_new = pass_in_an_array.sample unless pass_in_an_array.nil?
+    set(@sample_checkbox_new, :set)  unless pass_in_an_array.nil?
+  end
 
 #COURSE INFORMATION
   def add_joint_offering

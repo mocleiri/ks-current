@@ -104,11 +104,9 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
     page.final_exam_rationale.value.should == @course_proposal.final_exam_rationale unless page.exam_standard.set?
 
     #OUTCOMES
-    page.credit_value_fixed(@course_proposal.outcome_level_fixed-1).value.should == "#{@course_proposal.credit_value}" if @course_proposal.outcome_type_fixed == true
-    page.credit_value_range(@course_proposal.outcome_level_range-1).value.should include "#{@course_proposal.credit_value_min}" if @course_proposal.outcome_type_range == true
-    page.credit_value_range(@course_proposal.outcome_level_range-1).value.should include "#{@course_proposal.credit_value_max}" if @course_proposal.outcome_type_range == true
-    page.credit_value_multiple(@course_proposal.outcome_level_multiple-1).value.should include "#{ @course_proposal.credit_value_multiple_1}" if @course_proposal.outcome_type_multiple == true
-    page.credit_value_multiple(@course_proposal.outcome_level_multiple-1).value.should include "#{@course_proposal.credit_value_multiple_2}" if @course_proposal.outcome_type_multiple == true
+    page.credit_value(@course_proposal.outcome_level_1-1).value.should == "#{@course_proposal.credit_value_1}" if @course_proposal.outcome_type_1 == "Fixed"
+    page.credit_value(@course_proposal.outcome_level_2-1).value.should include "#{@course_proposal.credit_value_2}" if @course_proposal.outcome_type_2 == "Range"
+    page.credit_value(@course_proposal.outcome_level_3-1).value.should include "#{@course_proposal.credit_value_3}" if @course_proposal.outcome_type_3 == "Multiple"
 
 
     #FORMATS
@@ -177,11 +175,28 @@ And /^I should see data in required for save fields on the Review Proposal page$
 end
 
 And /^I edit the required for save fields and save$/ do
-   @course_proposal.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+   @course_proposal.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}",
+                         :course_title => "updated #{random_alphanums(10, 'test course title ')}",
+                         :outcome_type_1 => nil,
+                         :outcome_type_2 => nil,
+                         :outcome_type_3 => nil,
+                         :start_term => nil
 end
 
 And /^I edit the course proposal$/ do
-  @course_proposal.edit :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}", :course_title => "updated #{random_alphanums(10, 'test course title ')}"
+  @course_proposal.edit   :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}",
+                          :course_title => "updated #{random_alphanums(10, 'test course title ')}",
+                          :subject_code => "ENGL",
+                          :description_rationale => "updated #{random_alphanums(20, 'test description rationale ')}",
+                          :proposal_rationale => "updated #{random_alphanums(20, 'test proposal rationale ')}",
+                          :curriculum_oversight => '::random::',
+                          :assessment_scale => [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
+                          :final_exam_type => [:exam_standard, :exam_alternate, :exam_none],
+                          :final_exam_rationale => "updated #{random_alphanums(10,'test final exam rationale ')}",
+                          :delete_outcome_1 => true,
+                          :outcome_type_2 => "Range", :outcome_level_2 => 2, :credit_value_2 => "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}", :edit_outcome_2 => true,
+                          :outcome_type_4 => "Fixed", :outcome_level_4 => 4, :credit_value_4 => (1..5).to_a.sample,
+                          :start_term => '::random::'
 end
 
 And /^I edit the course proposal for Faculty$/ do
@@ -201,12 +216,146 @@ And /^I should see the updated data on the Review proposal page$/ do
   end
 
   on CmReviewProposal do |page|
+    #COURSE INFORMATION SECTION
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
+    page.subject_code_review.should == "#{@course_proposal.subject_code}"
+    page.description_review.should == "#{@course_proposal.description_rationale}"
+    page.proposal_rationale_review.should == "#{@course_proposal.proposal_rationale}"
+
+    #GOVERNANCE SECTION
+    page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
+
+    #COURSE LOGISTICS SECTION
+    #ASSESSMENT SCALE
+    page.assessment_scale_review.should == "A-F with Plus/Minus Grading" if @course_proposal.assessment_a_f == :set
+    page.assessment_scale_review.should == "Accepts a completed notation" if @course_proposal.assessment_notation == :set
+    page.assessment_scale_review.should == "Letter" if @course_proposal.assessment_letter == :set
+    page.assessment_scale_review.should == "Pass/Fail Grading" if @course_proposal.assessment_pass_fail == :set
+    page.assessment_scale_review.should == "Percentage Grading 0-100%" if @course_proposal.assessment_percentage == :set
+    page.assessment_scale_review.should == "Administrative Grade of Satisfactory" if @course_proposal.assessment_satisfactory == :set
+
+    #FINAL EXAM
+    page.final_exam_status_review.should == "Standard Final Exam" unless @course_proposal.exam_standard.nil?
+    page.final_exam_status_review.should == "Alternate Final Assessment" unless @course_proposal.exam_alternate.nil?
+    page.final_exam_status_review.should == "No Final Exam or Assessment" unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
+
+    #RANGE OUTCOME
+    page.outcome_type_review(1).should == "Range" unless @course_proposal.outcome_type_1.nil?
+    page.outcome_credit_review(1).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_1.nil?
+    page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_credit_review(2).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_type_review(3).should == "Fixed" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_credit_review(3).should == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
+
+
+    #ACTIVE DATES SECTION
+    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+
   end
+
 end
 
-And /^I should see the updated data on the Review proposal page for course (.*?)$/ do |proposal_type|
+And /^I should see updated data on Review proposal page$/ do
+  on CmCourseInformation do |page|
+    page.review_proposal
+    page.loading_wait
+  end
+
+  on CmReviewProposal do |page|
+    #COURSE INFORMATION SECTION
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+    page.subject_code_review.should == "#{@course_proposal.subject_code}"
+    page.description_review.should == "#{@course_proposal.description_rationale}"
+    page.proposal_rationale_review.should == "#{@course_proposal.proposal_rationale}"
+
+    #GOVERNANCE SECTION
+    page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
+
+    #COURSE LOGISTICS SECTION
+    #ASSESSMENT SCALE
+    page.assessment_scale_review.should == "A-F with Plus/Minus Grading" if @course_proposal.assessment_a_f == :set
+    page.assessment_scale_review.should == "Accepts a completed notation" if @course_proposal.assessment_notation == :set
+    page.assessment_scale_review.should == "Letter" if @course_proposal.assessment_letter == :set
+    page.assessment_scale_review.should == "Pass/Fail Grading" if @course_proposal.assessment_pass_fail == :set
+    page.assessment_scale_review.should == "Percentage Grading 0-100%" if @course_proposal.assessment_percentage == :set
+    page.assessment_scale_review.should == "Administrative Grade of Satisfactory" if @course_proposal.assessment_satisfactory == :set
+
+    #FINAL EXAM
+    page.final_exam_status_review.should == "Standard Final Exam" unless @course_proposal.exam_standard.nil?
+    page.final_exam_status_review.should == "Alternate Final Assessment" unless @course_proposal.exam_alternate.nil?
+    page.final_exam_status_review.should == "No Final Exam or Assessment" unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
+
+    #RANGE OUTCOME
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_4.nil?
+    page.outcome_credit_review(1).should == "#{@course_proposal.credit_value_4}" unless @course_proposal.outcome_type_4.nil?
+    page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_credit_review(2).should == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_type_review(3).should == "Range" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_credit_review(3).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
+
+
+    #ACTIVE DATES SECTION
+    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+
+  end
+
+
+end
+
+
+And /^I should see updated data on the Review proposal page$/ do
+
+
+  @course_proposal.review_proposal_action
+
+  on CmReviewProposal do |page|
+    #COURSE INFORMATION SECTION
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+    page.subject_code_review.should == "#{@course_proposal.subject_code}"
+    page.description_review.should == "#{@course_proposal.description_rationale}"
+    page.proposal_rationale_review.should == "#{@course_proposal.proposal_rationale}"
+
+    #GOVERNANCE SECTION
+    page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
+
+    #COURSE LOGISTICS SECTION
+    #ASSESSMENT SCALE
+    page.assessment_scale_review.should == "A-F with Plus/Minus Grading" if @course_proposal.assessment_a_f == :set
+    page.assessment_scale_review.should == "Accepts a completed notation" if @course_proposal.assessment_notation == :set
+    page.assessment_scale_review.should == "Letter" if @course_proposal.assessment_letter == :set
+    page.assessment_scale_review.should == "Pass/Fail Grading" if @course_proposal.assessment_pass_fail == :set
+    page.assessment_scale_review.should == "Percentage Grading 0-100%" if @course_proposal.assessment_percentage == :set
+    page.assessment_scale_review.should == "Administrative Grade of Satisfactory" if @course_proposal.assessment_satisfactory == :set
+
+    #FINAL EXAM
+    page.final_exam_status_review.should == "Standard Final Exam" unless @course_proposal.exam_standard.nil?
+    page.final_exam_status_review.should == "Alternate Final Assessment" unless @course_proposal.exam_alternate.nil?
+    page.final_exam_status_review.should == "No Final Exam or Assessment" unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
+
+    #RANGE OUTCOME
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_4.nil?
+    page.outcome_credit_review(1).should == "#{@course_proposal.credit_value_4}" unless @course_proposal.outcome_type_4.nil?
+    page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_credit_review(2).should == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_type_review(3).should == "Range" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_credit_review(3).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
+
+
+    #ACTIVE DATES SECTION
+    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+
+  end
+
+end
+
+
+And /^I should see updated data on the Review proposal page for course (.*?)$/ do |proposal_type|
   if proposal_type == "proposal"
     on CmCourseInformation do |page|
       page.review_proposal

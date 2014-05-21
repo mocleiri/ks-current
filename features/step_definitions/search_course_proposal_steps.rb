@@ -104,15 +104,55 @@ end
 And /^I can review the course (.*?)$/ do |proposal_type|
   @course_proposal.review_proposal_action
   on CmReviewProposal do |page|
+    #COURSE INFORMATION SECTION
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
-    if proposal_type == "proposal"
-      page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)"
-    else
-      page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)"
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)" if proposal_type == "proposal"
+    page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)" if proposal_type == "admin proposal"
+    page.subject_code_review.should == "#{@course_proposal.subject_code}"
+    page.description_review.should == "#{@course_proposal.description_rationale}"
+    page.proposal_rationale_review.should == "#{@course_proposal.proposal_rationale}"
+
+    #GOVERNANCE SECTION
+    page.curriculum_oversight_review.should == @course_proposal.curriculum_oversight unless @course_proposal.curriculum_oversight.nil?
+
+    #COURSE LOGISTICS SECTION
+    #ASSESSMENT SCALE
+    page.assessment_scale_review.should == "A-F with Plus/Minus Grading" if @course_proposal.assessment_a_f == :set
+    page.assessment_scale_review.should == "Accepts a completed notation" if @course_proposal.assessment_notation == :set
+    page.assessment_scale_review.should == "Letter" if @course_proposal.assessment_letter == :set
+    page.assessment_scale_review.should == "Pass/Fail Grading" if @course_proposal.assessment_pass_fail == :set
+    page.assessment_scale_review.should == "Percentage Grading 0-100%" if @course_proposal.assessment_percentage == :set
+    page.assessment_scale_review.should == "Administrative Grade of Satisfactory" if @course_proposal.assessment_satisfactory == :set
+
+    #FINAL EXAM
+    page.final_exam_status_review.should == "Standard Final Exam" unless @course_proposal.exam_standard.nil?
+    page.final_exam_status_review.should == "Alternate Final Assessment" unless @course_proposal.exam_alternate.nil?
+    page.final_exam_status_review.should == "No Final Exam or Assessment" unless @course_proposal.exam_none.nil?
+    page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
+
+    #FIXED OUTCOME
+    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_level_1}" unless @course_proposal.outcome_type_1.nil?
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_1.nil?
+    page.outcome_credit_review(1) == @course_proposal.credit_value_1 unless @course_proposal.outcome_type_1.nil?
+
+    #RANGE OUTCOME
+    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_level_2}" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_credit_review(2) == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
+
+    #MULTIPLE OUTCOME
+    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_level_3}" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_credit_review(3) == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
+
+
+    #ACTIVE DATES SECTION
+    page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
+
     end
+
   end
-end
 
 And /^I can review the required fields on the (.*?)$/ do |proposal_type|
   @course_proposal.review_proposal_action
@@ -158,19 +198,19 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
 
 
     #FIXED OUTCOME
-    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_level_fixed}" unless @course_proposal.outcome_type_fixed.nil?
-    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_fixed.nil?
-    page.outcome_credit_review(1) == @course_proposal.credit_value unless @course_proposal.outcome_type_fixed.nil?
+    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_level_1}" unless @course_proposal.outcome_type_1.nil?
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_1.nil?
+    page.outcome_credit_review(1) == @course_proposal.credit_value_1 unless @course_proposal.outcome_type_1.nil?
 
     #RANGE OUTCOME
-    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_level_range}" unless @course_proposal.outcome_type_range.nil?
-    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_type_range.nil?
-    page.outcome_credit_review(2) == "#{@course_proposal.credit_value_min}-#{@course_proposal.credit_value_max}" unless @course_proposal.outcome_type_range.nil?
+    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_level_2}" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_type_2.nil?
+    page.outcome_credit_review(2) == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
 
     #MULTIPLE OUTCOME
-    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_level_multiple}" unless @course_proposal.outcome_type_multiple.nil?
-    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_type_multiple.nil?
-    page.outcome_credit_review(3) == "#{@course_proposal.credit_value_multiple_1},#{@course_proposal.credit_value_multiple_2}" unless @course_proposal.outcome_type_multiple.nil?
+    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_level_3}" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_type_3.nil?
+    page.outcome_credit_review(3) == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
 
     #ACTIVITY FORMAT
     page.activity_level_review(1).should == "Format 1"
