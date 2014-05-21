@@ -438,6 +438,7 @@ Then /^I have access to edit the delivery format type$/ do
       page.new_format_select.select "Lecture"
       page.loading.wait_while_present
       page.new_grade_roster_level_select.enabled?.should be_true
+      page.loading.wait_while_present #make sure loading over activity select is gone too
       page.new_final_exam_activity_select.enabled?.should be_true
     end
 
