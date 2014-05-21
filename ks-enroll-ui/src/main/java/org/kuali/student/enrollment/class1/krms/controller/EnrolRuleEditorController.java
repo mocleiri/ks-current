@@ -100,7 +100,7 @@ public class EnrolRuleEditorController extends RuleEditorController {
                                HttpServletRequest request, HttpServletResponse response) {
 
         DocumentFormBase documentForm = (DocumentFormBase) form;
-        performWorkflowAction(documentForm, UifConstants.WorkflowAction.CANCEL, false);
+        performWorkflowAction(documentForm, UifConstants.WorkflowAction.CANCEL);
 
         return back(form,result,request,response);
     }

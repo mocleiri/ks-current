@@ -281,7 +281,7 @@ public class ActivityOfferingController extends MaintenanceDocumentController {
                                HttpServletRequest request, HttpServletResponse response) {
 
         DocumentFormBase documentForm = (DocumentFormBase) form;
-        performWorkflowAction(documentForm, UifConstants.WorkflowAction.CANCEL, false);
+        performWorkflowAction(documentForm, UifConstants.WorkflowAction.CANCEL);
 
         String loadNewAO = form.getActionParameters().get("aoId");
         String returnLocation = form.getReturnLocation();
