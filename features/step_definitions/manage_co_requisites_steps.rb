@@ -271,6 +271,7 @@ end
 Then /^the info message "(.*?)" should be present$/ do |mess|
   on ManageCORequisites do |page|
     page.info_message.text.should match /#{Regexp.escape(mess)}/
+    page.cancel_update_link.click
   end
 end
 
@@ -322,7 +323,7 @@ end
 Then /^the CO and CLU should differ with text "(.*?)"/ do |text|
   on CourseOfferingRequisites do |page|
     page.compare_tree.text.should_not match @courseOR.test_compare_text( text)
-    page.submit
+    page.cancel
   end
 end
 
@@ -337,7 +338,7 @@ Then /^the text area should be populated with "(.*)"$/ do |text|
   on ManageCORequisites do |page|
     page.edit_loading.wait_while_present
     page.logic_text.text.should == text
-    page.cancel_update_link
+    page.cancel_update_link.click
   end
 end
 
@@ -369,7 +370,7 @@ Then /^node "(.*)" should be after node "(.*)"$/ do |second,first|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.text.should match /.*#{Regexp.escape(first)}\..+#{Regexp.escape(second)}\..*/m
-    page.cancel_update_link
+    page.cancel_update_link.click
   end
 end
 
@@ -377,15 +378,16 @@ Then /^the first node should match "(.*)"$/ do |text|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.text.should match /^Click on rule statement to move or modify\n[\s\t]*#{Regexp.escape(text)}.*/
-    page.cancel_update_link
+    page.cancel_update_link.click
   end
+  on(CourseOfferingRequisites).cancel
 end
 
 Then /^node "(.*)" should be a "(.*)" node in the tree$/ do |node, level|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.link(:text => /.*#{node}\..*/).div.id.should match @courseOR.test_node_level(level)
-    page.cancel_update_link
+    page.cancel_update_link.click
   end
 end
 
@@ -400,7 +402,7 @@ Then /^node "(.*)" should be preceded by an "(.*)" operator$/ do |drop, node|
   on ManageCORequisites do |page|
     page.edit_loading.wait_while_present
     page.edit_tree_section.text.should match /.*#{Regexp.escape(drop)}.*#{Regexp.escape(node)}.*/m
-    page.cancel_update_link
+    page.cancel_update_link.click
   end
 end
 
@@ -408,7 +410,7 @@ Then /^the Move In button should be disabled$/ do
   on ManageCORequisites do |page|
     if page.right_btn_element.attribute_value('disabled')
       page.right_btn_element.attribute_value('disabled').should == "true"
-      page.cancel_update_link
+      page.cancel_update_link.click
     end
   end
 end

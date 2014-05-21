@@ -1,7 +1,7 @@
 #Student Eligibility & Prerequisite
 When /^I navigate to the agendas page and open the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
-  @prereq = make AOPreparationPrerequisiteRule
+  @prereq = make AOPreparationPrerequisiteRule, :course => "ENGL313"
   @prereq.navigate_to_ao_requisites
 end
 
@@ -45,7 +45,7 @@ end
 When /^I replace the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
   @prereq = make AOPreparationPrerequisiteRule
-  @prereq.sepr_replace_co_rule( true)
+  @prereq.sepr_replace_co_rule
 end
 
 When /^I edit and update the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
@@ -75,7 +75,7 @@ end
 
 When /^I view the catalog and course offering rule for the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
-  @prereq = make AOPreparationPrerequisiteRule
+  @prereq = make AOPreparationPrerequisiteRule, :course => "ENGL313"
   @prereq.sepr_view_catalog_co_rule
 end
 
@@ -136,6 +136,14 @@ Then /^there should be no rule in the Student Eligibility & Prerequisite section
   end
 end
 
+Then /^there should not be a rule in the Student Eligibility & Prerequisite section$/ do
+  @prereq.open_agenda_section
+  on ActivityOfferingRequisites do |page|
+    page.loading.wait_while_present
+    page.agenda_management_section.text.should match /.*Student Eligibility & Prerequisite.*Rule.*\.\nCorequisite.*/m
+  end
+end
+
 Then /^the created rule should be shown in the Student Eligibility & Prerequisite section$/ do
   @prereq.open_agenda_section
   on ActivityOfferingRequisites do |page|
@@ -191,6 +199,14 @@ Then /^a (?:error|info) in the Student Eligibility & Prerequisite section is dis
     page.loading.wait_while_present
     page.prereq_message_section_info.text.should match /.*#{exp_msg}.*/
     page.cancel
+  end
+end
+
+Then /^an (?:error|info) message in the Student Eligibility & Prerequisite section is displayed stating "([^"]*)"$/ do |exp_msg|
+  @prereq.open_agenda_section
+  on ActivityOfferingRequisites do |page|
+    page.loading.wait_while_present
+    page.prereq_message_section_info.text.should match /.*#{exp_msg}.*/
   end
 end
 
