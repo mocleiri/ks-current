@@ -12,6 +12,6 @@ import org.kuali.rice.krad.web.form.DocumentFormBase;
  */
 public interface CourseControllerTransactionHelper {
 
-    public void performWorkflowActionSuper(DocumentFormBase form, UifConstants.WorkflowAction action, boolean checkSensitiveData, CourseController courseController);
+    public void performWorkflowActionSuper(DocumentFormBase form, UifConstants.WorkflowAction action, CourseController courseController);
 
 }

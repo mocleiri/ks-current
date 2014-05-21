@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CourseControllerTransactionHelperImpl implements CourseControllerTransactionHelper {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void performWorkflowActionSuper(DocumentFormBase form, UifConstants.WorkflowAction action, boolean checkSensitiveData, CourseController courseController) {
-        courseController.performWorkflowActionSuper(form,action,checkSensitiveData);
+    public void performWorkflowActionSuper(DocumentFormBase form, UifConstants.WorkflowAction action, CourseController courseController) {
+        courseController.performWorkflowActionSuper(form,action);
     }
 }
