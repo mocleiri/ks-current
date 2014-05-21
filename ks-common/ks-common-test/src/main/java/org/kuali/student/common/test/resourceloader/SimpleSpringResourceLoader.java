@@ -82,7 +82,7 @@ public class SimpleSpringResourceLoader implements ServiceLocator {
             return kualiModuleService;
         } else if (KRADServiceLocatorWeb.DATA_DICTIONARY_SERVICE.equals(qualifiedServiceName)) {
             return dataDictionaryService;
-        } else if (KRADServiceLocator.KD_PROVIDER_REGISTRY.equals(qualifiedServiceName)) {
+        } else if (KRADServiceLocator.PROVIDER_REGISTRY.equals(qualifiedServiceName)) {
             return providerRegistry;
         } else if (KRADServiceLocatorWeb.UIF_DEFAULTING_SERVICE.equals(qualifiedServiceName)) {
             return uifDefaultingService;
