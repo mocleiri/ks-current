@@ -1,7 +1,7 @@
 class PopulationsBase < BasePage
 
   wrapper_elements
-  element(:child_populations_table) { |b| b.frm.div(id: "populations_table").table() }
+  element(:child_populations_table) { |b| b.frm.section(id: "populations_table").table() }
 
   class << self
 
@@ -21,19 +21,19 @@ class PopulationsBase < BasePage
       element(:child_population) { |b| b.frm.text_field(name: "newCollectionLines['document.newMaintainableObject.dataObject.childPopulations'].name") }
       element(:reference_population) { |b| b.frm.text_field(name: "document.newMaintainableObject.dataObject.referencePopulation.name") }
 
-      action(:lookup_population) { |b| b.frm.link(id: "lookup_searchPopulation_add").click; b.loading.wait_while_present }
-      action(:lookup_ref_population) { |b| b.frm.link(id: "lookup_searchRefPopulation").click; b.loading.wait_while_present }
+      action(:lookup_population) { |b| b.frm.div(data_parent: 'populations_table').link(text: 'Find a Name').click; b.loading.wait_while_present }
+      action(:lookup_ref_population) { |b| b.frm.div(data_label: 'Reference Population').link(text: 'Find a Population').click; b.loading.wait_while_present }
       action(:add) { |b| b.child_populations_table.button(text: "add").click; b.loading.wait_while_present; sleep 1.5 }
     end
 
     def population_view_elements
       element(:name_label) { |b| b.frm.div(data_label: "Name").label }
-      value(:name) { |b| b.frm.div(data_label: "Name").span(index: 1).text }
-      value(:description) { |b| b.frm.div(data_label: "Description").span(index: 1).text }
-      value(:state) { |b| b.frm.div(data_label: "State").span(index: 1).text }
-      value(:rule) { |b| b.frm.div(data_label: "Rule").span(index: 2).text }
-      value(:operation) { |b| b.frm.div(data_label: "Operation").span(index: 2).text }
-      value(:reference_population) { |b| b.frm.div(data_label: "Reference Population").span(index: 1).text }
+      value(:name) { |b| b.frm.div(data_label: "Name").text.sub("Name\n", '') }
+      value(:description) { |b| b.frm.div(data_label: "Description").text.sub("Description\n", '') }
+      value(:state) { |b| b.frm.div(data_label: "State").text.sub("State\n", '') }
+      value(:rule) { |b| b.frm.div(data_label: "Rule").text.sub("Rule:\n", '') }
+      value(:operation) { |b| b.frm.div(data_label: "Operation").text.sub("Operation\n", '') }
+      value(:reference_population) { |b| b.frm.div(data_label: "Reference Population").text.sub("Reference Population\n", '') }
     end
 
   end

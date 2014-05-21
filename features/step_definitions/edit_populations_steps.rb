@@ -42,7 +42,7 @@ Then /^a read-only view of the updated population is displayed$/ do
     page.rule.should == @population.rule unless @population.rule == nil
     page.state.downcase.should == @population.status
     page.operation.downcase.should == @population.operation unless @population.operation == nil
-    page.reference_population.should == @population.reference_population unless @reference_population == nil
+    page.reference_population.should == @population.reference_population unless @population.reference_population == nil
     page.child_populations.sort.should == @population.child_populations.sort unless @population.type == "rule-based"
   end
 end
