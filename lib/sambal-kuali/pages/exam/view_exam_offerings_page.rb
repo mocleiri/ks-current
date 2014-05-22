@@ -112,28 +112,24 @@ class ViewExamOfferings < BasePage
   end
 
   def get_eo_by_ao_days_text(code, cluster_private_name = :default_cluster)
-    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_DAYS].select(id: /eoRsiDayInExamPeriod/).option( selected: "selected").text
-    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_DAYS].text
+    eo_by_ao_target_row(code, cluster_private_name).div(id: /daysUI_id_line\d+/).text
   end
 
   def get_eo_by_ao_st_time_text(code, cluster_private_name = :default_cluster)
-    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_ST_TIME].text_field(id: /eoRsiStartTime/).value.to_s
-    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_ST_TIME].text
+    eo_by_ao_target_row(code, cluster_private_name).div(id: /startTimeUI_id_line\d+/).text
   end
 
   def get_eo_by_ao_end_time_text(code, cluster_private_name = :default_cluster)
-    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_END_TIME].text_field(id: /eoRsiEndTime/).value.to_s
-    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_END_TIME].text
+    eo_by_ao_target_row(code, cluster_private_name).div(id: /endTimeUI_id_line\d+/).text
   end
 
   def get_eo_by_ao_bldg_text(code, cluster_private_name = :default_cluster)
-    #eo_by_ao_target_row(code, cluster_private_name).cells[AO_BLDG].div(id: /eoRsiBuilding/).text
-    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_BLDG].text
+    eo_by_ao_target_row(code, cluster_private_name).div(id: /buildingName_id_line\d+/).text
   end
 
   def get_eo_by_ao_room_text(code, cluster_private_name = :default_cluster)
     #eo_by_ao_target_row(code, cluster_private_name).cells[AO_ROOM].div(id: /eoRsiRoom/).text
-    eo_by_ao_target_row(code, cluster_private_name).cells[VIEW_AO_ROOM].text
+    eo_by_ao_target_row(code, cluster_private_name).div(id: /roomCode_id_line\d+/).text
   end
 
   def view_eo_by_ao(code, cluster_private_name = :default_cluster)
@@ -232,7 +228,7 @@ class ViewExamOfferings < BasePage
 
   def save_edit(row)
     row.link(id: /EO-toggleUpdateButton_line/).click
-    edit_rsi_element(row).wait_until_present
+    #edit_rsi_element(row).wait_until_present
   end
 
   def cancel_edit(row)

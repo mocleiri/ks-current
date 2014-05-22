@@ -649,10 +649,20 @@ When /^I cancel all Activity Offerings for a CO with a standard final exam drive
 end
 
 When /^I? ?update all fields on the exam offering RSI$/ do
-  @eo_rsi.edit :do_navigation => false,
+  @eo_rsi.edit :override_matrix => true,
+               :do_navigation => false,
                :day => 'Day 5',
                :start_time => '4:00 PM',
                :end_time => '4:50 PM'
+end
+
+When /^I? ?update the available fields on the exam offering RSI$/ do
+  @eo_rsi.edit :do_navigation => false,
+               :day => 'Day 5',
+               :start_time => '4:00 PM',
+               :end_time => '4:50 PM',
+               :facility => 'PHYS',
+               :room => '4102'
 end
 
 When /^I select matrix override and update the day and time fields on the exam offering RSI$/ do
@@ -664,7 +674,7 @@ When /^I select matrix override and update the day and time fields on the exam o
 end
 
 When /^I subsequently remove matrix override from the exam offering RSI$/ do
-  @eo_rsi.edit :override_matrix => true, :do_navigation => false
+  @eo_rsi.edit :override_matrix => false, :do_navigation => false
 end
 
 When /^I update the day and time fields on the exam offering RSI$/ do
@@ -722,6 +732,7 @@ When /^the error displayed for AO-driven exam offerings RSI day field is: (.*?)$
   on ViewExamOfferings do |page|
     row = page.eo_by_ao_target_row(@activity_offering.code)
     page.rsi_day(row).click
+    sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{page.rsi_day(row).id}").table.text
     popup_text.should match /#{expected_errMsg}/
     page.cancel
@@ -733,6 +744,7 @@ When /^the error displayed for CO-driven exam offerings RSI start time is: (.*?)
     row = page.co_target_row
     element = page.rsi_start_time(row)
     element.click
+    sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /#{expected_errMsg}/
     page.cancel
@@ -744,6 +756,7 @@ When /^the error displayed for AO-driven exam offerings RSI end time is: (.*?)$/
     row = page.eo_by_ao_target_row(@activity_offering.code)
     element = page.rsi_end_time(row)
     element.click
+    sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /#{expected_errMsg}/
     page.cancel
@@ -755,6 +768,7 @@ When /^the error displayed for AO-driven exam offerings RSI facility is: (.*?)$/
     row = page.eo_by_ao_target_row(@activity_offering.code)
     element = page.rsi_facility(row)
     element.click
+    sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /#{expected_errMsg}/
     page.cancel
@@ -766,6 +780,7 @@ When /^the error displayed for AO-driven exam offerings RSI room is: (.*?)$/ do 
     row = page.eo_by_ao_target_row(@activity_offering.code)
     element = page.rsi_room(row)
     element.click
+    sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /#{expected_errMsg}/
     page.cancel
@@ -795,8 +810,8 @@ When /^the CO-driven exam offering RSI is updated according to the exam matrix$/
   on ViewExamOfferings do |page|
     page.co_target_row.exists?.should be_true
     page.get_eo_by_co_days_text.should match @matrix.rules[0].rsi_days
-    page.get_eo_by_co_st_time_text.should == "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}"
-    page.get_eo_by_co_end_time_text.should == "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}"
+    page.get_eo_by_co_st_time_text.should == "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}"
+    page.get_eo_by_co_end_time_text.should == "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}"
     #page.get_eo_by_co_bldg_text.should == @matrix.rules[0].facility TODO: issue with short vs full facility name
     page.get_eo_by_co_room_text.should == @matrix.rules[0].room
   end
@@ -1900,5 +1915,6 @@ When /^I? ?add facility and room information to the exam offering RSI$/ do
                :start_time => '12:00 PM',
                :end_time => '1:50 PM',
                :facility => 'VMH',
-               :room => '1212'
+               :room => '1212',
+               :override_matrix => true
 end

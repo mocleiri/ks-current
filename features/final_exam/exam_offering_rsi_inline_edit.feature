@@ -1,4 +1,4 @@
-@draft @yellow_team
+@nightly @yellow_team
 Feature: CO.Exam Offering RSI Inline Edit
 
   FE 6.3: As a Central Administrator I want to update the requested scheduling information for AO driven exam offerings with a
@@ -66,7 +66,7 @@ Feature: CO.Exam Offering RSI Inline Edit
 
   Scenario: FE 6.3.7 Verify successful Exam Offering RSI inline edit for an AO-driven Exam Offering not using the exam matrix
     Given I manage AO-driven exam offerings for a course offering configured not to use the exam matrix
-    And I update all fields on the exam offering RSI
+    And I update the available fields on the exam offering RSI
     Then the AO-driven exam offering RSI is successfully updated
 
   Scenario: FE 6.7.1 AO-driven verify that when the matrix override option is selected then updates to the activity offering RSI do not change the EO RSI
@@ -94,7 +94,7 @@ Feature: CO.Exam Offering RSI Inline Edit
     Then the CO-driven exam offering RSI is updated according to the exam matrix
 
 #this needs to go in AZ feature file
-  Scenario: FE 6.4.2 DSC (Carol) will be configured to have read-only permission on EO management screen
+  Scenario: FE 6.4.2 DSC (Carol) has read-only permission on Manage Exam Offerings page
     Given I am logged in as a Department Schedule Coordinator
     And I manage an AO-driven exam offering for a course offering in my admin org
     Then I am not able to edit the AO-driven exam offering RSI

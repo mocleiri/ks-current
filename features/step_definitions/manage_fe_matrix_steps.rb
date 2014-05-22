@@ -418,7 +418,8 @@ Given /^I manage a CO-driven exam offering with RSI generated from the exam matr
 
   @course_offering.create
 
-  @eo_rsi = make EoRsiObject, :day => @matrix.rules[0].rsi_days,
+  @eo_rsi = make EoRsiObject, :override_matrix => true,
+                 :day => @matrix.rules[0].rsi_days,
                 :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
                 :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
                 :facility =>@matrix.rules[0].facility,
