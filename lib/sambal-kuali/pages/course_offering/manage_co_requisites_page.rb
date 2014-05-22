@@ -7,7 +7,7 @@ class ManageCORequisites < BasePage
 
   element(:rule_maintenance_section) { |b| b.frm.main(id: "KSCO-RuleMaintenance-Page")}
   element(:tab_section) { |b| b.frm.div(id: "KSCO-RuleEdit-TabSection")}
-  element(:edit_tree_section) { |b| b.frm.div(id: "KSCO-RuleEditor-TreeGroup")}
+  element(:edit_tree_section) { |b| b.frm.div(id: "KRMS-RuleEditor-TreeGroup")}
   element(:logic_tab_section) { |b| b.frm.div(id: "KSCO-EditWithLogic-EditGroup")}
   element(:preview_tree_section) { |b| b.logic_tab_section.div(id: "KSCO-EditWithLogic-TreeGroup")}
   element(:compare_rule_section) { |b| b.frm.div(id: "compareRuleLightBox")}
