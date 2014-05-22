@@ -15,10 +15,9 @@
 # You must rerun the svn propset command (shown above) and commit after editing any of
 # the external paths for the changes to take effect.
 #
-
-ks-api https://svn.kuali.org/repos/student/enrollment/ks-api/branches/2.0.0-Mx
-ks-core https://svn.kuali.org/repos/student/enrollment/ks-core/trunk
-ks-lum https://svn.kuali.org/repos/student/enrollment/ks-lum/trunk
-ks-enroll https://svn.kuali.org/repos/student/enrollment/ks-enroll/trunk
-ks-ap https://svn.kuali.org/repos/student/enrollment/ks-ap/trunk
-ks-deployments https://svn.kuali.org/repos/student/enrollment/ks-deployments/trunk
+^/enrollment/ks-api/branches/KSENROLL-12937 ks-api
+^/enrollment/ks-core/branches/KSENROLL-12937 ks-core
+^/enrollment/ks-ap/branches/KSENROLL-12937 ks-ap
+^/enrollment/ks-enroll/branches/KSENROLL-12937 ks-enroll
+^/enrollment/ks-deployments/branches/KSENROLL-12937 ks-deployments
+^/enrollment/ks-lum/branches/KSENROLL-12937 ks-lum
