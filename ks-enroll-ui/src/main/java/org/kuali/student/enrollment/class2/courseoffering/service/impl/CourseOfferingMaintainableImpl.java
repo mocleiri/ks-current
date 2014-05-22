@@ -165,7 +165,7 @@ public abstract class CourseOfferingMaintainableImpl extends KSMaintainableImpl 
     @SuppressWarnings("unused")
     public void populateGradeRosterLevelTypes(InputField field, MaintenanceDocumentForm form){
 
-        if (field.isReadOnly()){
+        if (field.getReadOnly()){
             return;
         }
 
@@ -245,7 +245,7 @@ public abstract class CourseOfferingMaintainableImpl extends KSMaintainableImpl 
     @SuppressWarnings("unused")
     public void populateFinalExamDriverTypes(InputField field, MaintenanceDocumentForm form) throws Exception {
 
-        if (field.isReadOnly()) {
+        if (field.getReadOnly()) {
             return;
         }
 
