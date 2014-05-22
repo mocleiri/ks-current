@@ -112,7 +112,7 @@ public class SimpleTableLayoutManager extends TableLayoutManagerBase {
 
         String rowCss = "";
         boolean addLineInTable =
-                collectionGroup.isRenderAddLine() && !collectionGroup.isReadOnly() && !isSeparateAddLine();
+                collectionGroup.isRenderAddLine() && !collectionGroup.getReadOnly() && !isSeparateAddLine();
 
         if (collectionGroup.isHighlightNewItems() && ((UifFormBase) lineBuilderContext.getModel())
                 .isAddedCollectionItem(currentLine)) {
