@@ -15,9 +15,9 @@
 # You must rerun the svn propset command (shown above) and commit after editing any of
 # the external paths for the changes to take effect.
 #
-^/enrollment/ks-api/branches/KSENROLL-12937 ks-api
-^/enrollment/ks-core/branches/KSENROLL-12937 ks-core
-^/enrollment/ks-ap/branches/KSENROLL-12937 ks-ap
-^/enrollment/ks-enroll/branches/KSENROLL-12937 ks-enroll
-^/enrollment/ks-deployments/branches/KSENROLL-12937 ks-deployments
-^/enrollment/ks-lum/branches/KSENROLL-12937 ks-lum
+^/enrollment/ks-api/branches/inactive/KSENROLL-12937 ks-api
+^/enrollment/ks-core/branches/inactive/KSENROLL-12937 ks-core
+^/enrollment/ks-ap/branches/inactive/KSENROLL-12937 ks-ap
+^/enrollment/ks-enroll/branches/inactive/KSENROLL-12937 ks-enroll
+^/enrollment/ks-deployments/branches/inactive/KSENROLL-12937 ks-deployments
+^/enrollment/ks-lum/branches/inactive/KSENROLL-12937 ks-lum
