@@ -90,9 +90,9 @@ class StudentSchedule < RegisterForCourseBase
     sleep 1
     case course_status
       when "registered"
-        toggle_course_details(course_code, reg_group_code, course_status) unless edit_course_options_button(course_code, reg_group_code).visible?
+        toggle_course_details(course_code, reg_group_code, course_status) unless remove_course_button(course_code, reg_group_code).visible?
       when "waitlisted"
-        toggle_course_details(course_code, reg_group_code, course_status) unless edit_waitlist_item_button(course_code, reg_group_code).visible?
+        toggle_course_details(course_code, reg_group_code, course_status) unless remove_from_waitlist_button(course_code, reg_group_code).visible?
     end
   end
 
@@ -100,9 +100,9 @@ class StudentSchedule < RegisterForCourseBase
     sleep 1
     case course_status
       when "registered"
-        toggle_course_details(course_code, reg_group_code, course_status) if edit_course_options_button(course_code, reg_group_code).visible?
+        toggle_course_details(course_code, reg_group_code, course_status) if remove_course_button(course_code, reg_group_code).visible?
       when "waitlisted"
-        toggle_course_details(course_code, reg_group_code, course_status) if edit_waitlist_item_button(course_code, reg_group_code).visible?
+        toggle_course_details(course_code, reg_group_code, course_status) if remove_from_waitlist_button(course_code, reg_group_code).visible?
     end
   end
 

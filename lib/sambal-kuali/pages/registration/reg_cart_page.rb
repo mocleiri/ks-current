@@ -79,6 +79,14 @@ class RegistrationCart < RegisterForCourseBase
     course_code(course_code,reg_group_code).click
   end
 
+  def show_course_details(course_code, reg_group_code)
+    toggle_course_details(course_code,reg_group_code) unless remove_course_button(course_code,reg_group_code).visible?
+  end
+
+  def hide_course_details(course_code, reg_group_code)
+    toggle_course_details(course_code,reg_group_code) if remove_course_button(course_code,reg_group_code).visible?
+  end
+
   def select_credits_on_new_item(credits)
     new_item_credits_selection.select(credits)
   end

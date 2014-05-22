@@ -125,7 +125,7 @@ class RegistrationRequest < DataFactory
   def remove_from_cart
     on RegistrationCart do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code
+      page.show_course_details @course_code,@reg_group_code
       page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
@@ -153,7 +153,7 @@ class RegistrationRequest < DataFactory
 
     on RegistrationCart do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code
+      page.show_course_details @course_code,@reg_group_code
       page.edit_course_options @course_code,@reg_group_code
 
       page.select_credits_in_cart @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
@@ -176,7 +176,7 @@ class RegistrationRequest < DataFactory
 
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code,"registered"
+      page.show_course_details @course_code,@reg_group_code,"registered"
       page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
       page.edit_course_options @course_code,@reg_group_code
 
@@ -230,7 +230,7 @@ class RegistrationRequest < DataFactory
   def remove_from_schedule
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code,"registered"
+      page.show_course_details @course_code,@reg_group_code,"registered"
       page.remove_course_from_schedule @course_code,@reg_group_code
     end
   end
@@ -238,7 +238,7 @@ class RegistrationRequest < DataFactory
   def remove_from_schedule_and_cancel
     on StudentSchedule do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.toggle_course_details @course_code,@reg_group_code,"registered"
+      page.show_course_details @course_code,@reg_group_code,"registered"
       page.cancel_drop_course @course_code,@reg_group_code
     end
   end
