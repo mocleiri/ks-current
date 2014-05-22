@@ -64,7 +64,7 @@ public class KSRichTable extends RichTable {
         if (!isDisableTableSort()) {
             // if rendering add line, skip that row from col sorting
             if (collectionGroup.isRenderAddLine()
-                    && !collectionGroup.isReadOnly()
+                    && !collectionGroup.getReadOnly()
                     && !((layoutManager instanceof TableLayoutManager) && ((TableLayoutManager) layoutManager)
                             .isSeparateAddLine())) {
                 Map<String, String> oTemplateOptions = this.getTemplateOptions();
@@ -81,7 +81,7 @@ public class KSRichTable extends RichTable {
 
             int columnIndex = 0;
             int actionIndex = UifConstants.TableLayoutValues.ACTIONS_COLUMN_RIGHT_INDEX;
-            boolean actionFieldVisible = collectionGroup.isRenderLineActions() && !collectionGroup.isReadOnly();
+            boolean actionFieldVisible = collectionGroup.isRenderLineActions() && !collectionGroup.getReadOnly();
 
             if (layoutManager instanceof TableLayoutManager) {
                 actionIndex = ((TableLayoutManager) layoutManager).getActionColumnIndex();
@@ -332,7 +332,7 @@ public class KSRichTable extends RichTable {
     protected String getDataFieldColumnOptions(int target, CollectionGroup collectionGroup, DataField field) {
         String sortType = null;
 
-        if (!collectionGroup.isReadOnly()
+        if (!collectionGroup.getReadOnly()
                 && (field instanceof InputField)
                 && ((InputField) field).getControl() != null) {
             Control control = ((InputField) field).getControl();
