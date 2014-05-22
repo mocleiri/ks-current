@@ -108,7 +108,7 @@ public class LURuleViewHelperServiceImpl extends RuleViewHelperServiceImpl {
         if(element instanceof Group) {
             Group group = (Group) element;
 
-            if(group.isReadOnly()) {
+            if(group.getReadOnly()) {
                 processGroupItems(group);
             }
         }
