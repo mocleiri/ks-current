@@ -475,10 +475,14 @@ class CmCourseProposalObject < DataFactory
   end
 
   def add_outcome (opts)
+    defaults = {
+        :outcome_type => "Fixed"
+    }
     options = defaults.merge(opts)
     edit
-    options[:outcome].create options
+    options[:outcome].create
     @outcome_list << options[:outcome]
+    determine_save_action
   end
 
 

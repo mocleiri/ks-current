@@ -22,7 +22,7 @@ class CmOutcomeObject < DataFactory
 
   end
 
-  def create
+  def create (opts = {})
     on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
       page.add_outcome unless page.outcome_type(@outcome_level).exists?

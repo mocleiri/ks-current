@@ -209,6 +209,7 @@ And /^I edit the course proposal$/ do
   @course_proposal.outcome_list[0].delete
   @course_proposal.outcome_list[1].edit :credit_value=>"#{(1..4).to_a.sample},#{(5..9).to_a.sample}", :outcome_level => 1
 
+  @course_proposal.add_outcome :outcome => (make CmOutcomeObject,:outcome_type => "Fixed",:outcome_level => 2, :credit_value => 5)
 
 end
 
