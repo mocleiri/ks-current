@@ -18,7 +18,7 @@ package org.kuali.student.cm.maintenance;
 
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.krad.maintenance.MaintenanceDocumentBase;
-import org.kuali.rice.krad.rules.rule.event.KualiDocumentEvent;
+import org.kuali.rice.krad.rules.rule.event.DocumentEvent;
 import org.kuali.rice.krad.rules.rule.event.SaveEvent;
 
 import javax.persistence.Entity;
@@ -94,7 +94,7 @@ public class CMMaintenanceDocument extends MaintenanceDocumentBase {
     }
 
     @Override
-    public void prepareForSave(KualiDocumentEvent event) {
+    public void prepareForSave(DocumentEvent event) {
         super.prepareForSave(event);
 
         if (event instanceof SaveEvent){
