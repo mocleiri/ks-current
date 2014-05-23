@@ -20,6 +20,12 @@ Feature: CO.Exam Offering RSI Inline Edit
     When I update all fields on the exam offering RSI
     Then the CO-driven exam offering RSI is successfully updated
 
+  Scenario: FE 6.5.1 Verify can override Exam Offering RSI location for a CO-driven Exam Offering
+    Given I manage a CO-driven exam offering with RSI generated from the exam matrix
+    And I trigger the population of the EO RSI from the matrix
+    When I update the location fields on the exam offering RSI
+    Then the CO-driven exam offering RSI is successfully updated
+
   Scenario: FE 6.3.2 Verify successful Exam Offering RSI inline edit for an AO-driven Exam Offering
     Given I manage an AO-driven exam offering with RSI generated from the exam matrix
     And update all fields on the exam offering RSI

@@ -656,6 +656,25 @@ When /^I? ?update all fields on the exam offering RSI$/ do
                :end_time => '4:50 PM'
 end
 
+When /^I? ?update the location fields on the exam offering RSI$/ do
+  @eo_rsi.edit :override_matrix => true,
+               :do_navigation => false,
+               :facility => 'PHYS',
+               :room => '4102'
+end
+
+When /^I? ?I trigger the population of the EO RSI from the matrix$/ do
+  @eo_rsi.edit :do_navigation => false
+  on ViewExamOfferings do |page|
+    page.co_target_row.exists?.should be_true
+    page.get_eo_by_co_days_text.should match /#{@eo_rsi.day}/
+    page.get_eo_by_co_st_time_text.should == @eo_rsi.start_time
+    page.get_eo_by_co_end_time_text.should == @eo_rsi.end_time
+    #page.get_eo_by_co_bldg_text.should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_co_room_text.should == @eo_rsi.room
+  end
+end
+
 When /^I? ?update the available fields on the exam offering RSI$/ do
   @eo_rsi.edit :do_navigation => false,
                :day => 'Day 5',
