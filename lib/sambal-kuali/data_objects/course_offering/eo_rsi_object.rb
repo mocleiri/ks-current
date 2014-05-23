@@ -100,7 +100,12 @@ class EoRsiObject < DataFactory
     end
 
     on(ViewExamOfferings).save_edit(edit_row) unless options[:defer_save]
-    on(ViewExamOfferings).edit_rsi_element(edit_row).wait_until_present if options[:exp_success]
+    if options[:exp_success]
+      on(ViewExamOfferings).edit_rsi_element(edit_row).wait_until_present
+    else
+      sleep 1
+      on(ViewExamOfferings).save_edit_element(edit_row).wait_until_present
+    end
 
     update_options(opts) if options[:exp_success]
   end

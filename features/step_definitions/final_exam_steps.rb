@@ -728,37 +728,37 @@ When /^enter an invalid time in the exam offering RSI start time field$/ do
   @eo_rsi.edit :do_navigation => false, :start_time => '13:00 AM', :override_matrix => true, :exp_success=> false
 end
 
-When /^the error displayed for AO-driven exam offerings RSI day field is: (.*?)$/ do |expected_errMsg|
+When /^the error displayed for AO-driven exam offerings RSI day field is required$/ do
   on ViewExamOfferings do |page|
     row = page.eo_by_ao_target_row(@activity_offering.code)
     page.rsi_day(row).click
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{page.rsi_day(row).id}").table.text
-    popup_text.should match /#{expected_errMsg}/
+    popup_text.should match /Required|Days, start time and end time fields are required/
     page.cancel
   end
 end
 
-When /^the error displayed for CO-driven exam offerings RSI start time is: (.*?)$/ do |expected_errMsg|
+When /^the error displayed for CO-driven exam offerings RSI is that the start time is invalid$/ do
   on ViewExamOfferings do |page|
     row = page.co_target_row
     element = page.rsi_start_time(row)
     element.click
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
-    popup_text.should match /#{expected_errMsg}/
+    popup_text.should match /Valid time format hh:mm AM or hh:mm PM|Start Time is invalid/
     page.cancel
   end
 end
 
-When /^the error displayed for AO-driven exam offerings RSI end time is: (.*?)$/ do |expected_errMsg|
+When /^the error displayed for AO-driven exam offerings RSI end time is required$/ do
   on ViewExamOfferings do |page|
     row = page.eo_by_ao_target_row(@activity_offering.code)
     element = page.rsi_end_time(row)
     element.click
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
-    popup_text.should match /#{expected_errMsg}/
+    popup_text.should match /Required|Days, start time and end time fields are required/
     page.cancel
   end
 end

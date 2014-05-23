@@ -33,19 +33,19 @@ Feature: CO.Exam Offering RSI Inline Edit
   Scenario: FE 6.3.4 Verify Exam Offering RSI edit error message for invalid (blank) day
     Given I manage an AO-driven exam offering with RSI generated from the exam matrix
     And blank the exam offering RSI Day field
-    Then the error displayed for AO-driven exam offerings RSI day field is: Days, start time and end time fields are required
+    Then the error displayed for AO-driven exam offerings RSI day field is required
     And the AO-driven exam offering RSI is not updated
 
   Scenario: FE 6.3.5A Verify Exam Offering RSI edit error message for invalid start time
     Given I manage a CO-driven exam offering with RSI generated from the exam matrix
     And enter an invalid time in the exam offering RSI start time field
-    Then the error displayed for CO-driven exam offerings RSI start time is: Start Time is invalid
+    Then the error displayed for CO-driven exam offerings RSI is that the start time is invalid
     And the CO-driven exam offering RSI is not updated
 
   Scenario: FE 6.3.5B Verify Exam Offering RSI edit error message for invalid end time
     Given I manage an AO-driven exam offering with RSI generated from the exam matrix
     And enter a blank time in the exam offering RSI end time field
-    Then the error displayed for AO-driven exam offerings RSI end time is: Days, start time and end time fields are required
+    Then the error displayed for AO-driven exam offerings RSI end time is required
     And the AO-driven exam offering RSI is not updated
 
   Scenario: FE 6.3.5C Verify Exam Offering RSI edit error message for invalid facility

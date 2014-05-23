@@ -226,8 +226,13 @@ class ViewExamOfferings < BasePage
     row.div(id: /eoRsiRoom_line/).image
   end
 
+  def save_edit_element(row)
+    row.link(id: /EO-toggleUpdateButton_line/)
+    #edit_rsi_element(row).wait_until_present
+  end
+
   def save_edit(row)
-    row.link(id: /EO-toggleUpdateButton_line/).click
+    save_edit_element(row).click
     #edit_rsi_element(row).wait_until_present
   end
 
