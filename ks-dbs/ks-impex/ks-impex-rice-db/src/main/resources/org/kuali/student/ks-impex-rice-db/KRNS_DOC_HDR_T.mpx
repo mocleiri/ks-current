@@ -1,5 +1,5 @@
 DOC_HDR_ID,OBJ_ID,VER_NBR,FDOC_DESC,ORG_DOC_HDR_ID,TMPL_DOC_HDR_ID,EXPLANATION
-"3011","F9F0B0BD0D31438CE040440A9B9A2FB5","1","Intro to Biology","${mpx.null}","${mpx.null}","${mpx.null}"
-"3012","F9F0B0BD0D32438CE040440A9B9A2FB5","1","Writing for Teachers","${mpx.null}","${mpx.null}","${mpx.null}"
-"3013","F9F0B0BD0D33438CE040440A9B9A2FB5","1","Modify: Special Projects","${mpx.null}","${mpx.null}","${mpx.null}"
-"3014","F9F0B0BD0D34438CE040440A9B9A2FB5","1","Modify: Biology of Cancer","${mpx.null}","${mpx.null}","${mpx.null}"
+"3011","FA131E2F219BAB62E040440A9B9A4CE1","1","Intro to Biology","${mpx.null}","${mpx.null}","${mpx.null}"
+"3012","FA131E2F219CAB62E040440A9B9A4CE1","1","Writing for Teachers","${mpx.null}","${mpx.null}","${mpx.null}"
+"3013","FA131E2F219DAB62E040440A9B9A4CE1","1","Modify: Special Projects","${mpx.null}","${mpx.null}","${mpx.null}"
+"3014","FA131E2F219EAB62E040440A9B9A4CE1","1","Modify: Biology of Cancer","${mpx.null}","${mpx.null}","${mpx.null}"
