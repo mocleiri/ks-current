@@ -36,8 +36,7 @@ class CmCourseLogistics < BasePage
 #OUTCOME
   action(:add_outcome) {|b| b.button(id: 'outcome-addline').click; b.loading_wait }
   action(:outcome_type) { |outcome_level, b| b.select_list(id: "typeKey_line#{outcome_level}_control" ) }
-  action(:credit_value) {|outcome_level, b| b.text_field(id: "creditValue_line#{outcome_level}_control") }
-  action(:outcome_add_multiple_btn) { |outcome_level,b| b.button(id: "addBlankLine-outcome-multiple_line#{outcome_level}_add").click ; b.loading_wait }
+  action(:credit_value) { |outcome_level, b| b.text_field(id: "creditValue_line#{outcome_level}_control") }
   action(:delete_outcome) { |outcome_level,b| b.a(id: "delete_outcome_line#{outcome_level}").i(class: "ks-fontello-icon-cancel").click }
 
 

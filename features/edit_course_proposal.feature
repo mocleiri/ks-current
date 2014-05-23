@@ -5,8 +5,7 @@ Scenario: CC8.1 Edit the Course Proposal - CS
   Given I have a course admin proposal created as Curriculum Specialist
   When I perform a full search for the course proposal
   And I edit the course proposal
-  Then I perform a full search for the course proposal
-  And I should see updated data on the Review proposal page
+  Then I should see updated data on the Review proposal page
 
 
 Scenario: CC8.2 Edit the Course Proposal - Faculty

@@ -1,5 +1,6 @@
 class CmCourseProposalObject < DataFactory
 
+  include Foundry
   include DateFactory
   include StringFactory
   include Workflows
@@ -22,11 +23,7 @@ class CmCourseProposalObject < DataFactory
         :assessment_scale,:final_exam_type, :final_exam_rationale,
         :exam_standard, :exam_alternate, :exam_none,
         #
-        :outcome_type_1, :outcome_level_1, :credit_value_1, :delete_outcome_1, :edit_outcome_1,
-        :outcome_type_2, :outcome_level_2, :credit_value_2, :delete_outcome_2, :edit_outcome_2,
-        :outcome_type_3, :outcome_level_3, :credit_value_3, :delete_outcome_3, :edit_outcome_3,
-        :outcome_type_4, :outcome_level_4, :credit_value_4, :delete_outcome_4, :edit_outcome_4,
-        #
+        :outcome_list,
         :course_format_activity_type, :duration_type, :duration_count,
         :activity_type, :activity_duration_type, :activity_frequency,
         :activity_contacted_hours, :activity_duration_count, :activity_class_size,
@@ -122,9 +119,11 @@ class CmCourseProposalObject < DataFactory
         final_exam_type:            [:exam_standard, :exam_alternate, :exam_none],
         final_exam_rationale:       random_alphanums(10,'test final exam rationale '),
         #OUTCOMES
-        outcome_type_1: "Fixed", outcome_level_1: 1, credit_value_1: (1..5).to_a.sample, delete_outcome_1: false, edit_outcome_1: false,
-        outcome_type_2: "Range", outcome_level_2: 2, credit_value_2: "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}", delete_outcome_2: false, edit_ouctome_2: false,
-        outcome_type_3: "Multiple", outcome_level_3: 3, credit_value_3:  "#{(1..4).to_a.sample},#{(5..9).to_a.sample}", delete_outcome_3: false, edit_ouctome_3: false,
+        outcome_list: [
+            (make CmOutcomeObject, :outcome_type => "Fixed", :outcome_level => 0, :credit_value=>(1..5).to_a.sample),
+            (make CmOutcomeObject, :outcome_type => "Range", :outcome_level => 1, :credit_value => "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}"),
+            (make CmOutcomeObject, :outcome_type => "Multiple",:outcome_level => 2, :credit_value => "#{(1..4).to_a.sample},#{(5..9).to_a.sample}")
+        ],
         ##FORMATS
         activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
         activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
@@ -142,6 +141,7 @@ class CmCourseProposalObject < DataFactory
     set_options(defaults.merge(opts))
 
 
+
     # random_checkbox and random_radio is used to select a random checkbox/radio on a page.
     # That will then be set the instance variable to :set, so that it can be used in the fill_out method for later tests
     random_checkbox @scheduling_term
@@ -151,42 +151,6 @@ class CmCourseProposalObject < DataFactory
     random_radio(@final_exam_type)
   end
 
-=begin
-  def create
-    on CmRice do |create|
-      puts @assessment_a_f.inspect
-      create.curriculum_management
-    end
-
-    on(CmCurriculum).create_a_course
-    #on CmCourseInformation do |create|
-    #on(CmCreateCourseStart).continue
-    #create.course_information unless create.current_page('Course Information').exists?
-
-
-
-
-
-    #on CmCourseInformation do |create|
-    #  create.course unless create.current_page('Course').exists?
-    #
-    #  #BUG KSCM-1240
-    #  #create.expand_course_listing_section
-    #  #create.add_a_version_code unless @version_code_version_code.nil? and @version_code_title.nil?
-    #
-    #  create.subject_code.fit @subject_code
-    #  create.auto_lookup @subject_code unless @subject_code.nil?
-    #  fill_out create, :proposal_title, :course_title, :subject_code, :course_number
-
-      #BUG KSCM-1240
-      #fill_out create, :version_code_version_code, :version_code_title
-      #create.save_and_continue
-
-      #create_course_proposal_required
-      #course_proposal_nonrequired
-    #end
-  end  #create
-=end
 
   def create
     navigate_rice_to_cm_home
@@ -235,28 +199,6 @@ class CmCourseProposalObject < DataFactory
         #if that radio is selected
         page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
         page.final_exam_rationale.fit opts[:final_exam_rationale] unless page.exam_standard.set?
-
-
-
-      #Edit Outcomes
-      #Delete the first outcome
-      page.delete_outcome(0) if opts[:delete_outcome_1]
-      page.delete_outcome(1) if opts[:delete_outcome_2]
-      page.delete_outcome(2) if opts[:delete_outcome_3]
-
-      #Edit the second outcome
-      page.loading_wait
-      page.credit_value(0).fit opts[:credit_value_2] if opts[:edit_outcome_2]
-
-      #Add a third outcome
-      if opts[:outcome_type_4]
-        page.add_outcome
-        page.outcome_type(2).wait_until_present
-        page.outcome_type(2).pick! opts[:outcome_type_4]
-        page.loading_wait
-        page.credit_value(2).fit opts[:credit_value_4]
-
-      end
 
 
     end
@@ -311,9 +253,10 @@ class CmCourseProposalObject < DataFactory
 
       sleep 1
       #set_outcome_type
-      set_outcomes(@outcome_type_1, @outcome_level_1, @credit_value_1) if @outcome_type_1 == "Fixed"
-      set_outcomes(@outcome_type_2, @outcome_level_2, @credit_value_2) if @outcome_type_2 == "Range"
-      set_outcomes(@outcome_type_3, @outcome_level_3, @credit_value_3) if @outcome_type_3 == "Multiple"
+
+      @outcome_list.each do |outcome|
+        outcome.create
+      end
 
       set_additional_format
 
@@ -530,6 +473,14 @@ class CmCourseProposalObject < DataFactory
     end
 
   end
+
+  def add_outcome (opts)
+    options = defaults.merge(opts)
+    edit
+    options[:outcome].create options
+    @outcome_list << options[:outcome]
+  end
+
 
 
   #-----
