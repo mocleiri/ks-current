@@ -1,12 +1,12 @@
-# module = ks-api branch Path = enrollment/ks-api/branches/rice-2.4-mx-upgrade revision = 69620
-ks-api::enrollment_ks-api_branches_rice-2.4-mx-upgrade::1ea68583fdf1803569791989f86fce221151298b
-# module = ks-core branch Path = enrollment/ks-core/branches/rice-2.4-mx-upgrade revision = 69620
-ks-core::enrollment_ks-core_branches_rice-2.4-mx-upgrade::9a321cf1f7f98560a6fb7cd0d66f9f0ecde6ccbc
-# module = ks-lum branch Path = enrollment/ks-lum/branches/rice-2.4-mx-upgrade revision = 69620
-ks-lum::enrollment_ks-lum_branches_rice-2.4-mx-upgrade::6e6b69e79e051c6ec88e03472fbf29dbf5bba522
-# module = ks-enroll branch Path = enrollment/ks-enroll/branches/rice-2.4-mx-upgrade revision = 69620
-ks-enroll::enrollment_ks-enroll_branches_rice-2.4-mx-upgrade::5f8f70fecd84734a4bfe43d7df55297c1b7ff3d9
-# module = ks-ap branch Path = enrollment/ks-ap/branches/rice-2.4-mx-upgrade revision = 69620
-ks-ap::enrollment_ks-ap_branches_rice-2.4-mx-upgrade::32d7719d0de7d330a6998636275315a1945b27ad
-# module = ks-deployments branch Path = enrollment/ks-deployments/branches/rice-2.4-mx-upgrade revision = 69620
-ks-deployments::enrollment_ks-deployments_branches_rice-2.4-mx-upgrade::0c72c56a39176e038e0c989ecb7cd8d89579321b
+# module = ks-ap branch Path = enrollment/ks-ap/tags/builds/ks-ap-0.8/0.8.0-rice24upgrade/build-48 revision = 69838
+ks-ap::enrollment_ks-ap_tags_builds_ks-ap-0.8_0.8.0-rice24upgrade_build-48::e84333a6d18d0ac50549284382cec1df4c31d009
+# module = ks-api branch Path = enrollment/ks-api/tags/builds/ks-api-2.1/2.1.1-rice24upgrade/build-48 revision = 69838
+ks-api::enrollment_ks-api_tags_builds_ks-api-2.1_2.1.1-rice24upgrade_build-48::4d0826a4e0c7b8dabe5abe534276b26da5db78f4
+# module = ks-core branch Path = enrollment/ks-core/tags/builds/ks-core-2.1/2.1.1-rice24upgrade/build-48 revision = 69838
+ks-core::enrollment_ks-core_tags_builds_ks-core-2.1_2.1.1-rice24upgrade_build-48::ab29f47067b196a22e467472026f1ed3c79bb297
+# module = ks-deployments branch Path = enrollment/ks-deployments/tags/builds/ks-deployments-2.1/2.1.1-rice24upgrade/build-48 revision = 69838
+ks-deployments::enrollment_ks-deployments_tags_builds_ks-deployments-2.1_2.1.1-rice24upgrade_build-48::0f86879e2106519b6d66632adb59abc5f3d4b12e
+# module = ks-enroll branch Path = enrollment/ks-enroll/tags/builds/ks-enroll-0.2/0.2.0-rice24upgrade/build-48 revision = 69838
+ks-enroll::enrollment_ks-enroll_tags_builds_ks-enroll-0.2_0.2.0-rice24upgrade_build-48::69291b85c0dd2b6ee602197184b8325fb2cdb6f0
+# module = ks-lum branch Path = enrollment/ks-lum/tags/builds/ks-lum-2.1/2.1.1-rice24upgrade/build-48 revision = 69838
+ks-lum::enrollment_ks-lum_tags_builds_ks-lum-2.1_2.1.1-rice24upgrade_build-48::c5f468ee2f6aa7f10122fa3a9170d300db5ec3cb
