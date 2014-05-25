@@ -318,7 +318,7 @@
         </property>
         <property name="dialogs">
             <list>
-                <bean id="lightboxDialog1" parent="Uif-OK-Cancel-DialogGroup"/>
+                <bean id="lightboxDialog1" parent="Uif-DialogGroup-OkCancel"/>
             </list>
         </property>
     </bean>

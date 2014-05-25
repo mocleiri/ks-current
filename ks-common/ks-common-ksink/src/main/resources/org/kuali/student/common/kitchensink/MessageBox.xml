@@ -32,7 +32,7 @@
         </property>
     </bean>
 
-    <!--<bean id="KS-KitchenSink-MessageBox-DialogButtonConfirm-parent" parent="Uif-OK-Cancel-DialogGroup"/>-->
+    <!--<bean id="KS-KitchenSink-MessageBox-DialogButtonConfirm-parent" parent="Uif-DialogGroup-OkCancel"/>-->
     <bean id="KS-KitchenSink-MessageBox-DialogButtonConfirm-parent" parent="Uif-DialogGroup">
         <property name="header.render" value="false"/>
         <!--<property name="headerText" value="headerText (hidden)"/>-->
@@ -207,7 +207,7 @@
         </property>
         <property name="dialogs">
             <list>
-                <bean id="messageBoxDialog1" parent="Uif-OK-Cancel-DialogGroup"/>
+                <bean id="messageBoxDialog1" parent="Uif-DialogGroup-OkCancel"/>
             </list>
         </property>
     </bean>
