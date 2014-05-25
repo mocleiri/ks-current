@@ -277,7 +277,7 @@
         <property name="label" value="@{(document.newMaintainableObject.dataObject.activityCode eq null)? '' : 'Edit '}  @{document.newMaintainableObject.dataObject.typeName} @{document.newMaintainableObject.dataObject.activityCode}"/>
     </bean>
 
-    <bean id="deleteScheduleConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
+    <bean id="deleteScheduleConfirmDialog" parent="Uif-DialogGroup-OkCancel"
           p:promptText="Removing all scheduling information from this activity offering will cause it to become unscheduled." >
         <property name="headerText" value="Delete Schedule"/>
         <property name="availableResponses">

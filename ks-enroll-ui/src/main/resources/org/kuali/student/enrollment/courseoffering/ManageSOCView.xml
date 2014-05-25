@@ -90,7 +90,7 @@
         </property>
     </bean>
 
-    <bean id="lockConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
+    <bean id="lockConfirmDialog" parent="Uif-DialogGroup-OkCancel"
           p:promptText="When Set of Courses is in Locked state, Departmental users will be unable to make changes." >
         <property name="headerText" value="Lock Set of Courses"/>
         <property name="availableResponses">
@@ -101,7 +101,7 @@
         </property>
     </bean>
 
-    <bean id="finalEditConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
+    <bean id="finalEditConfirmDialog" parent="Uif-DialogGroup-OkCancel"
           p:promptText="Departmental Users will be able to view and edit Courses and Activities, and schedule activities independently." >
         <property name="headerText" value="Allow Final Edits"/>
         <property name="availableResponses">
@@ -112,7 +112,7 @@
         </property>
     </bean>
 
-    <bean id="closeConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
+    <bean id="closeConfirmDialog" parent="Uif-DialogGroup-OkCancel"
           p:promptText="Close Set" >
         <property name="headerText" value="Close Set"/>
         <property name="availableResponses">
@@ -123,7 +123,7 @@
         </property>
     </bean>
 
-    <bean id="massScheduleConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
+    <bean id="massScheduleConfirmDialog" parent="Uif-DialogGroup-OkCancel"
           p:promptText="Send all approved activities for scheduling to the external scheduler." >
         <property name="headerText" value="Send Activities to Scheduler"/>
         <property name="availableResponses">
@@ -134,7 +134,7 @@
         </property>
     </bean>
 
-    <bean id="massPublishConfirmDialog" parent="Uif-OK-Cancel-DialogGroup"
+    <bean id="massPublishConfirmDialog" parent="Uif-DialogGroup-OkCancel"
           p:promptText="When Set of Courses is in Published state, Scheduled courses and activity offerings will set to offered and will be consumable by the wider community.">
         <property name="headerText" value="Publish Set of Courses"/>
         <property name="availableResponses">
