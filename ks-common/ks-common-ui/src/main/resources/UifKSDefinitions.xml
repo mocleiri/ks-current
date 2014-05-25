@@ -55,7 +55,7 @@
     </bean>
 
     <!--TODO: KSENROLL-9721: Need to create a confirmation dialog in browser as opposed to make a server side round trip-->
-    <bean id="KS-Uif-Confirmation-Dialog" parent="Uif-Yes-No-DialogGroup">
+    <bean id="KS-Uif-Confirmation-Dialog" parent="Uif-DialogGroup-YesNo">
         <property name="onDialogResponseScript">
             <null/>
         </property>
