@@ -193,7 +193,7 @@ class CmCourseProposalObject < DataFactory
         fill_out page,  :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory
 
       #Edit Final Exam Status
-        reset_radio(opts[@final_exam_type])
+        random_radio(@final_exam_type)
         fill_out page, :exam_standard, :exam_alternate, :exam_none            
         #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
         #if that radio is selected
@@ -479,7 +479,6 @@ class CmCourseProposalObject < DataFactory
         :outcome_type => "Fixed"
     }
     options = defaults.merge(opts)
-    edit
     options[:outcome].create
     @outcome_list << options[:outcome]
     determine_save_action
@@ -525,7 +524,7 @@ class CmCourseProposalObject < DataFactory
     @sample_checkbox = pass_in_an_array.sample unless pass_in_an_array.nil?
     set(@sample_checkbox, :set)  unless pass_in_an_array.nil?
   end
-  #alias_method :random_radio, :random_checkbox
+
   
   def reset_checkbox(pass_in_an_array)
     set(@sample_checkbox, :clear) unless pass_in_an_array.nil?
@@ -540,8 +539,10 @@ class CmCourseProposalObject < DataFactory
   end
   
   def reset_radio(pass_in_an_array)
-    @sample_checkbox_new = pass_in_an_array.sample unless pass_in_an_array.nil?
-    set(@sample_checkbox_new, :set)  unless pass_in_an_array.nil?
+    set(@sample_radio, :nil) unless pass_in_an_array.nil?
+    pass_in_an_array.delete(@sample_radio)
+    @sample_radio_new = pass_in_an_array.sample unless pass_in_an_array.nil?
+    set(@sample_radio_new, :set)  unless pass_in_an_array.nil?
   end
 
 #COURSE INFORMATION
