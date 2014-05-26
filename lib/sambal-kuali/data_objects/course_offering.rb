@@ -9,7 +9,7 @@ class CourseOffering < DataFactory
   COURSE_ARRAY = 0
   COURSE_CODE = 0
   COURSE_NAME = 1
-  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text, :description, :requisite,:scheduled_terms,:projected_terms,:gened_requirements,:subject,:gened_code,:gened_course
+  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text, :description, :requisite,:scheduled_terms,:projected_terms,:gened_requirements,:subject,:gened_code,:gened_course,:course_level
 
   def initialize(browser, opts={})
     @browser = browser
@@ -30,8 +30,9 @@ class CourseOffering < DataFactory
         :projected_terms=>"Check",
         :gened_requirements=>"General",
         :subject=>"English",
-        :gened_code=>"DSHU",
-        :gened_course=>"General Education: Humanities"
+        :gened_code=>"DSSP",
+        :gened_course=>"General Education: Scholarship in Practice",
+        :course_level=> '3'
 
 
     }
@@ -39,10 +40,14 @@ class CourseOffering < DataFactory
     set_options(options)
   end
 
- def select_facet
+ def select_facet(facet_type)
    on CourseSearch do |page|
-     page.gened_checkbox_click(@gened_course)
-   end
+     page.gened_checkbox_click(@gened_course)          if facet_type=="gen_ed"
+     page.term_checkbox_click                         if facet_type=="term"
+     page.credits_checkbox_click                       if facet_type=="credit"
+     page.courselevel_checkbox_click                   if facet_type=="course_level"
+     page.courseprefix_chekbox_click                 if facet_type=="course_prefix"
+    end
  end
   def navigate_course_detail_page
     on CourseSearch  do |page|
@@ -374,6 +379,9 @@ class CourseOffering < DataFactory
     end
   end
 
+
+
+
   def check_title_descending_order_in_all_pages
     on CourseSearch do |page|
       pgno = 1
@@ -599,3 +607,5 @@ class CourseOffering < DataFactory
     end
   end
 end
+
+

@@ -8,6 +8,14 @@ class CourseSearch < BasePage
   frame_element
   expected_element :search_for_course
 
+
+  #Indexes for Course Search page results table elements
+  GEN_ED=5
+  SCHEDULED_TERMS=3
+  CREDIT=2
+  COURSE_PREFIX=0
+
+
   element(:search_for_course) { |b| b.frm.text_field(id: "text_searchQuery_control") }
   element(:search_term_select) { |b| b.frm.select(name:"searchTerm") }
   action(:search) { |b| b.frm.button(id:"searchForCourses").click; b.loading.wait_while_present }
@@ -37,7 +45,27 @@ class CourseSearch < BasePage
   element(:course_search_facet_divisions) { |b| b.div(id: "facet_curriculum_disclosureContent").div(class: "facets").ul.lis}
   element(:course_search_facet_level) { |b| b.div(id: "facet_level_disclosureContent").div(class: "facets").ul.lis}
   action(:gened_code) { |course_code,b| b.div(id: "course_search_results_wrapper").table(id:"course_search_results").tr(id:"#{course_code}").td(id:"#{course_code}_gened")}
+  value(:gened) { |row,b| row.cells[GEN_ED].text }
+  value(:scheduled_terms) { |row,b| row.cells[SCHEDULED_TERMS].text }
+  value(:credit) { |row,b| row.cells[CREDIT].text }
+  value(:courseprefix){ |row,b| row.cells[COURSE_PREFIX].text }
+  #Slicing the text so that it gives the didgit for the course level comparison eg ENGL200 would have 2 extracted and compared
+  value(:courselevel){ |row,b| row.cells[COURSE_PREFIX].text.slice(4,1) }
+  element(:clear_gened_facet) { |b| b.div(id:"facet_genedureq_disclosureContent").li(class:"all") }
+  element(:clear_term_facet) { |b| b.div(id:"facet_quarter_disclosureContent").li(class:"all") }
+  element(:clear_credit_facet) { |b| b.div(id:"facet_credits_disclosureContent").li(class:"all") }
+  element(:clear_level_facet) { |b| b.div(id:"facet_level_disclosureContent").li(class:"all") }
+  element(:clear_courseprefix_facet) { |b| b.div(id:"facet_curriculum_disclosureContent").li(class:"all") }
+
+
+  #facets
+  #JIRA KSAP-1349 raised to fix unique identifer issue for facets
   action(:gened_checkbox_click){ |gened_course,b| b.div(id:"facet_genedureq_disclosureContent").div(class:"facets").ul.li(title:"#{gened_course}").click}
+  action(:term_checkbox_click){ |b| b.div(id:"facet_quarter_disclosureContent").div(class:"facets").li(index:0).click}
+  value(:credits) { |b| b.div(id:"facet_credits_disclosureContent").div(class:"facets").li(index:0).text}
+  action(:credits_checkbox_click){ |b| b.div(id:"facet_credits_disclosureContent").div(class:"facets").li(index:0).click}
+  action(:courselevel_checkbox_click){ |b| b.div(id:"facet_level_disclosureContent").div(class:"facets").li(index:1).click}
+  action(:courseprefix_chekbox_click){ |b| b.div(id:"facet_curriculum_disclosureContent").div(class:"facets").li(index:0).click}
 
 
 
@@ -73,6 +101,26 @@ class CourseSearch < BasePage
       list << get_table_row_code(index,0)
     end
     list.delete_if { |item| item == "Code" }
+    list.delete_if {|item| item == "" }
+    list
+  end
+
+  def get_credit
+    credit=credits.split(".")[0]
+  end
+
+  def get_courseprefix
+    courseprefix=courseprefix.slice(4,1)
+  end
+
+
+  def results_list_bycolumn(columnname)
+    list = []
+    no_of_rows = get_results_table_rows_no(0) - 1
+    for index in 0..no_of_rows do
+      list << get_table_row_code(index,0)
+    end
+    list.delete_if { |item| item == columnname }
     list.delete_if {|item| item == "" }
     list
   end
