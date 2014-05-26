@@ -1,5 +1,5 @@
-@nightly @blue_team
-Feature: CO.ELIG8-18 View changes made to AO or CO Requisites on Schedule of Classes
+@nightly @blue_team_krms
+Feature: CO.View changes made to AO or CO Requisites on Schedule of Classes
   ELIG 8.18 : As a Central Administrator I want to have Rules display in the Schedule of Classes so that students are
   able to see whether or not they will qualify for enrolment in a course prior to trying to enrol
 
@@ -8,7 +8,7 @@ Feature: CO.ELIG8-18 View changes made to AO or CO Requisites on Schedule of Cla
 
   #KSENROLL-9795
   Scenario: ELIG8.18.1 Verify that the Schedule of Classes shows the ref data when no changes are made to the CO Requisites
-    Given I have made no chages to the CO Requisites of a course
+    Given I have made no changes to the CO Requisites of a course
     And I am using the schedule of classes page
     When I search for course offerings by course
     And I select a course that has existing course offering requisites

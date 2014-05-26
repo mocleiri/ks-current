@@ -1,5 +1,5 @@
-@nightly @blue_team
-Feature: CO.ELIG8-2 View the Catalog and Course Offering rule
+@nightly @blue_team_krms
+Feature: CO.View the Catalog and Course Offering rule on AO Requisites
 
   Background:
     Given I am logged in as admin
@@ -9,8 +9,8 @@ Feature: CO.ELIG8-2 View the Catalog and Course Offering rule
     When I navigate to the agendas page and open the Student Eligibility & Prerequisite section
     Then a info in the Student Eligibility & Prerequisite section is displayed stating "Course Offering rule exists and will be enforced on Activity Offering"
 
-  #KSENROLL-8707
-  Scenario: ELIG8.2.2 Test whether the user can view catalog and course offering rules
+  #KSENROLL-8707/KSENROLL-8710
+  Scenario: ELIG8.2.2/ELIG8.5.3 Test whether the user can view catalog and course offering rules
     When I view the catalog and course offering rule for the Student Eligibility & Prerequisite section
     Then both rules for the Student Eligibility & Prerequisite section should be the same
 

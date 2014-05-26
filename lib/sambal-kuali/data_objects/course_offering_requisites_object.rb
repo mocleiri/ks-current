@@ -60,11 +60,11 @@ class CORequisitesData < DataFactory
   def navigate_to_mco_requisites( only_view_ao_requisites = false)
     if only_view_ao_requisites
       @course_offering = make CourseOffering, {:course => @course, :term => @term}
+      @course_offering.manage
     else
       @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => @course)
     end
 
-    @course_offering.manage
     on ManageCourseOfferings do |page|
       page.loading.wait_while_present(200)
       begin
@@ -79,28 +79,14 @@ class CORequisitesData < DataFactory
     end
   end
 
-  def commit_changes( return_to_edit_page = false )
-    begin  #TODO: very slow, need to pass in arg to explicit instruct whether it needs to be pressed or not
-      on ManageCORequisites do |page|
-        page.loading.wait_while_present
-        page.update_rule_btn
-      end
-    rescue Watir::Wait::TimeoutError
-      #means Update Rule button already clicked
-    end
-    begin
-      on CourseOfferingRequisites do |page|
-        page.loading.wait_while_present
-        page.submit
-        page.loading.wait_while_present(200)
-      end
-    rescue Watir::Wait::TimeoutError
-      on ManageCourseOfferings do |page|
-        page.alert.ok
-      end
+  def commit_changes( return_to_edit_page = false)
+    on CourseOfferingRequisites do |page|
+      page.loading.wait_while_present
+      page.submit
+      page.loading.wait_while_present(200)
     end
 
-    if return_to_edit_page == true
+    if return_to_edit_page
       on ManageCourseOfferings do |page|
         page.manage_course_offering_requisites
       end
@@ -126,24 +112,13 @@ class CORequisitesData < DataFactory
   def advanced_search(field, code)
     on ManageCORequisites do |page|
       page.edit_loading.wait_while_present
-      if field == "course code"
-        page.loading.wait_while_present
-        page.search_link
-        #click_search_link( Regexp.new(".*editTree.+proposition\.courseInfo\.code"))
-        page.lookup_course_code.when_present.set code
-      elsif field == "courses code"
-        page.loading.wait_while_present
-        page.search_link
-        #click_search_link( Regexp.new(".*editTree.+proposition\.courseSet\.clus"))
-        page.lookup_course_code.when_present.set code
-      elsif field == "course title"
+      if field == "course title"
         page.loading.wait_while_present
         click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.clus"))
         page.lookup_course_title.when_present.set code
       elsif field == "course set"
         page.loading.wait_while_present
         page.search_link
-        #click_search_link( Regexp.new(".*editTree.+proposition\.cluSet\.cluSets"))
         page.lookup_set_name.when_present.set code
       elsif field == "program code"
         page.loading.wait_while_present
@@ -184,46 +159,18 @@ class CORequisitesData < DataFactory
     end
   end
 
-  def check_number_groups
-    on ManageCORequisites do |page|
-      groups = -1
-      page.edit_tree_section.lis.each do |list|
-        if list.text =~ /^[\s\t]*Must meet 1 of the following/ || list.text =~ /^[\s\t]*Must meet all of the following/
-          groups += 1
-        end
-      end
-      if groups == -1
-        groups = 0
-      end
-      return groups
-    end
-  end
-
-  def check_number_statements
-    on ManageCORequisites do |page|
-      statements = 0
-      page.edit_tree_section.lis.each do |list|
-        if list.text =~ /^[\s\t]*[A-Z]\./ && list.attribute_value('class') =~ /^ruleTreeNode simple/
-          statements += 1
-        end
-      end
-      return statements
-    end
-  end
-
   def add_courses( course, set, range)
     on ManageCORequisites do |page|
       courses = create_array( course)
       if courses != "" && courses != nil
         page.multi_course_dropdown.when_present.select /Approved Courses/
         if courses.length > 1
-          courses.each do |elem|
-            advanced_search("courses code", elem)
+          courses.each do |course|
+            page.courses_field.set course
             page.add_line_btn
             page.adding.wait_while_present
           end
-        else
-          advanced_search("courses code", course)
+          page.courses_field.set course
           page.add_line_btn
           page.adding.wait_while_present
         end
@@ -289,10 +236,10 @@ class CORequisitesData < DataFactory
       page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
       page.edit_btn
       if field == "course"
-        advanced_search("course code", code)
+        page.course_field.set code
       elsif field == "courses"
         page.multi_course_dropdown.when_present.select /Approved Courses/
-        advanced_search("courses code", code)
+        page.courses_field.set code
         page.add_line_btn
         page.adding.wait_while_present
       elsif field == "text"
@@ -563,7 +510,7 @@ class AntirequisiteRule < CORequisitesData
     end
   end
 
-  def ar_data_setup
+  def ar_data_setup( number_statements_to_add = 10)
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
@@ -574,69 +521,72 @@ class AntirequisiteRule < CORequisitesData
         page.antireq_add
       end
       page.loading.wait_while_present
-      if ar_create_rule_tree == true
+      if ar_create_rule_tree( number_statements_to_add) == true
         commit_changes( true)
       end
     end
   end
 
-  def ar_create_rule_tree
-    groups = check_number_groups
-    statements = check_number_statements
+  def ar_create_rule_tree( number_statements_to_add = 10)
+    groups = 0
+    statements = 0
     data_setup_needed = false
-    if statements == 0
+    if statements < number_statements_to_add.to_i
       ar_course_rule( "add", "", "ENGL101")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 1
+    if statements < number_statements_to_add.to_i
       ar_course_rule( "add", "A", "HIST639")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 2
+    if statements < number_statements_to_add.to_i
       ar_course_rule( "add", "B", "ENGL101")
       statements+=1
       data_setup_needed = true
     end
-    if groups == 0 && statements == 3
+    if groups == 0 and statements < number_statements_to_add.to_i
       ar_text_rule( "group", "A", "free form text input value")
       groups+=1
       ar_all_courses_rule( "add", "", "ENGL478,HIST416", "", "")
       statements+=1
       data_setup_needed = true
     else
-      if groups == 0
+      if groups == 0 and statements < number_statements_to_add.to_i
         ar_text_rule( "group", "A", "free form text input value")
         groups+=1
         data_setup_needed = true
       end
-      if statements == 3
+      if statements < number_statements_to_add.to_i
         ar_all_courses_rule( "add", "B", "ENGL478,HIST416", "", "")
         statements+=1
         data_setup_needed = true
       end
     end
-    if groups == 1
+    if groups == 1 and statements < number_statements_to_add.to_i
       ar_text_rule( "group", "D", "Text")
       groups += 1
       data_setup_needed = true
     end
-    if statements == 4
+    if statements < number_statements_to_add.to_i
       ar_grade_courses_rule( "add", "C", "HIST395,HIST210", "", "", "completed notation", "Completed")
       statements += 1
       data_setup_needed = true
     end
-    if groups >= 2
+    if groups == 1
       on ManageCORequisites do |page|
         page.loading.wait_while_present
         page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.update_rule_btn
       end
     end
+    if groups >= 2
+      on ManageCORequisites do |page|
+        page.edit_loading.wait_while_present
+        page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
+      end
+    end
+    on(ManageCORequisites).update_rule_btn
     return data_setup_needed
   end
 
@@ -644,7 +594,8 @@ class AntirequisiteRule < CORequisitesData
     add_new_node( group, node)
     on ManageCORequisites do |page|
       page.rule_dropdown.when_present.select /Must not have successfully completed <course>/
-      advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.preview_btn
     end
   end
@@ -725,7 +676,7 @@ class CorequisiteRule < CORequisitesData
     end
   end
 
-  def cr_data_setup
+  def cr_data_setup( number_statements_to_add = 10)
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
@@ -736,69 +687,72 @@ class CorequisiteRule < CORequisitesData
         page.coreq_add
       end
       page.loading.wait_while_present
-      if cr_create_rule_tree == true
-        commit_changes( true)
+      if cr_create_rule_tree( number_statements_to_add)
+        commit_changes( return_to_edit_page = true)
       end
     end
   end
 
-  def cr_create_rule_tree
-    groups = check_number_groups
-    statements = check_number_statements
+  def cr_create_rule_tree( number_statements_to_add = 10)
+    groups = 0
+    statements = 0
     data_setup_needed = false
-    if statements == 0
-      cr_course_rule( "add", "", "ENGL101")
+    if statements < number_statements_to_add.to_i
+      cr_number_courses_rule( "add", "", "1", "HIST395,HIST210", "", "")
+      statements += 1
+      data_setup_needed = true
+    end
+    if statements < number_statements_to_add.to_i
+      cr_text_rule( "add", "A", "free form text input value")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 1
-      cr_course_rule( "add", "A", "HIST639")
+    if statements < number_statements_to_add.to_i
+      cr_course_rule( "add", "B", "HIST639")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 2
-      cr_text_rule( "add", "B", "free form text input value")
-      statements+=1
-      data_setup_needed = true
-    end
-    if groups == 0 && statements == 3
+    if groups == 0 and statements < number_statements_to_add.to_i
       cr_all_courses_rule( "group", "A", "ENGL478,HIST416", "", "")
       groups+=1
       cr_text_rule( "add", "", "Text to copy")
       statements+=1
       data_setup_needed = true
     else
-      if groups == 0
+      if groups == 0 and statements < number_statements_to_add.to_i
         cr_all_courses_rule( "group", "A", "ENGL478,HIST416", "", "")
         groups+=1
         data_setup_needed = true
       end
-      if statements == 3
+      if statements < number_statements_to_add.to_i
         cr_text_rule( "add", "D", "Text to copy")
         statements+=1
         data_setup_needed = true
       end
     end
-    if groups == 1
+    if groups == 1 and statements < number_statements_to_add.to_i
       cr_text_rule( "group", "D", "Text")
       groups += 1
       data_setup_needed = true
     end
-    if statements == 4
-      cr_number_courses_rule( "add", "C", "1", "HIST395,HIST210", "", "")
-      statements += 1
+    if statements < number_statements_to_add.to_i
+      cr_course_rule( "add", "", "ENGL101")
+      statements+=1
       data_setup_needed = true
     end
-    if groups >= 2
+    if groups == 1
       on ManageCORequisites do |page|
         page.loading.wait_while_present
         page.edit_tree_section.select(:id => /prop_compoundOpCode_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.edit_tree_section.select(:id => /prop_compoundOpCode_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.update_rule_btn
       end
     end
+    if groups >= 2
+      on ManageCORequisites do |page|
+        page.edit_loading.wait_while_present
+        page.edit_tree_section.select(:id => /prop_compoundOpCode_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
+      end
+    end
+    on(ManageCORequisites).update_rule_btn
     return data_setup_needed
   end
 
@@ -806,7 +760,8 @@ class CorequisiteRule < CORequisitesData
     add_new_node( group, node)
     on ManageCORequisites do |page|
       page.rule_dropdown.when_present.select /Must be concurrently enrolled in <course>/
-      advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.preview_btn
     end
   end
@@ -896,7 +851,7 @@ class PreparationPrerequisiteRule < CORequisitesData
     end
   end
 
-  def sepr_data_setup
+  def sepr_data_setup( number_statements_to_add = 10)
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
@@ -907,13 +862,13 @@ class PreparationPrerequisiteRule < CORequisitesData
         page.prereq_add
       end
       page.loading.wait_while_present
-      if rp_sepr_create_rule_tree == true
-        commit_changes( true)
+      if rp_sepr_create_rule_tree( number_statements_to_add)
+        commit_changes( return_to_edit_page = true)
       end
     end
   end
 
-  def rp_data_setup
+  def rp_data_setup( number_statements_to_add = 10)
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
@@ -924,70 +879,73 @@ class PreparationPrerequisiteRule < CORequisitesData
         page.prep_add
       end
       page.loading.wait_while_present
-      if rp_sepr_create_rule_tree == true
-        commit_changes( true)
+      if rp_sepr_create_rule_tree( number_statements_to_add)
+        commit_changes( return_to_edit_page = true)
       end
     end
   end
 
-  def rp_sepr_create_rule_tree
-    groups = check_number_groups
-    statements = check_number_statements
+  def rp_sepr_create_rule_tree( number_statements_to_add = 10)
+    groups = 0
+    statements = 0
     data_setup_needed = false
-    if statements == 0
-      rp_sepr_course_rule( "add", "", "ENGL101")
+    if statements < number_statements_to_add.to_i
+      rp_sepr_number_courses_rule( "add", "", "1", "HIST395,HIST210", "", "")
+      statements += 1
+      data_setup_needed = true
+    end
+    if statements < number_statements_to_add.to_i
+      rp_sepr_text_rule( "add", "A", "free form text input value")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 1
-      rp_sepr_course_rule( "add", "A", "HIST639")
+    if statements < number_statements_to_add.to_i
+      rp_sepr_course_rule( "add", "B", "HIST639")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 2
-      rp_sepr_text_rule( "add", "B", "free form text input value")
-      statements+=1
-      data_setup_needed = true
-    end
-    if groups == 0 && statements == 3
+    if groups == 0 && statements < number_statements_to_add.to_i
       rp_sepr_all_courses_rule( "group", "A", "ENGL478,HIST416", "", "")
       groups+=1
       rp_sepr_text_rule( "add", "", "Text")
       statements+=1
       data_setup_needed = true
     else
-      if groups == 0
+      if groups == 0 and statements < number_statements_to_add.to_i
         rp_sepr_all_courses_rule( "group", "A", "ENGL478,HIST416", "", "")
         groups+=1
         data_setup_needed = true
       end
-      if statements == 3
+      if statements < number_statements_to_add.to_i
         rp_sepr_text_rule( "add", "D", "Text")
         statements+=1
         data_setup_needed = true
       end
     end
-    if groups == 1
+    if groups == 1 and statements < number_statements_to_add.to_i
       rp_sepr_text_rule( "group", "D", "Text to copy")
       groups += 1
       data_setup_needed = true
     end
-    if statements == 4
-      rp_sepr_number_courses_rule( "add", "C", "1", "HIST395,HIST210", "", "")
-      statements += 1
+    if statements < number_statements_to_add.to_i
+      rp_sepr_course_rule( "add", "", "ENGL101")
+      statements+=1
       data_setup_needed = true
     end
-    if groups >= 2
+    if groups == 1
       on ManageCORequisites do |page|
         page.loading.wait_while_present
         page.edit_tree_section.select(:id => /prop_compoundOpCode_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        #id="prop_compoundOpCode_node_1_parent_node_0_parent_node_0_parent_root_control"
         page.edit_loading.wait_while_present
-        page.edit_tree_section.select(:id => /prop_compoundOpCode_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.update_rule_btn
       end
     end
+    if groups >= 2
+      on ManageCORequisites do |page|
+        page.edit_tree_section.select(:id => /prop_compoundOpCode_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
+        page.edit_loading.wait_while_present
+      end
+    end
+    on(ManageCORequisites).update_rule_btn
     return data_setup_needed
   end
 
@@ -995,7 +953,8 @@ class PreparationPrerequisiteRule < CORequisitesData
     add_new_node( group, node)
     on ManageCORequisites do |page|
       page.rule_dropdown.when_present.select /Must have successfully completed <course>/
-      advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.preview_btn
     end
   end
@@ -1153,7 +1112,8 @@ class PreparationPrerequisiteRule < CORequisitesData
     add_new_node( group, node)
     on ManageCORequisites do |page|
       page.rule_dropdown.when_present.select /Must have successfully completed <course> #{Regexp.escape(prior_or_as)} <term>/
-      advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.term_field.set term
       page.preview_btn
     end
@@ -1163,7 +1123,8 @@ class PreparationPrerequisiteRule < CORequisitesData
     add_new_node( group, node)
     on ManageCORequisites do |page|
       page.rule_dropdown.when_present.select /Must have successfully completed <course> between <term1> and <term2>/
-      advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.term_field.set term1
       page.term_two_field.set term2
       page.preview_btn
@@ -1281,7 +1242,7 @@ class RepeatCreditRule < CORequisitesData
     end
   end
 
-  def rc_data_setup
+  def rc_data_setup( number_statements_to_add = 10)
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
@@ -1292,69 +1253,72 @@ class RepeatCreditRule < CORequisitesData
         page.repeat_add
       end
       page.loading.wait_while_present
-      if rc_create_rule_tree == true
-        commit_changes( true)
+      if rc_create_rule_tree( number_statements_to_add)
+        commit_changes( return_to_edit_page = true)
       end
     end
   end
 
-  def rc_create_rule_tree
-    groups = check_number_groups
-    statements = check_number_statements
+  def rc_create_rule_tree( number_statements_to_add = 10)
+    groups = 0
+    statements = 0
     data_setup_needed = false
-    if statements == 0
+    if statements < number_statements_to_add.to_i
       rc_repeated_credit_rule( "add", "", "8")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 1
+    if statements < number_statements_to_add.to_i
       rc_text_rule( "add", "A", "HIST639")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 2
+    if statements < number_statements_to_add.to_i
       rc_text_rule( "add", "B", "ENGL101")
       statements+=1
       data_setup_needed = true
     end
-    if groups == 0 && statements == 3
+    if groups == 0 and statements < number_statements_to_add.to_i
       rc_text_rule( "group", "A", "free form text input value")
       groups+=1
       rc_repeated_credit_rule( "add", "", "16")
       statements+=1
       data_setup_needed = true
     else
-      if groups == 0
+      if groups == 0 and statements < number_statements_to_add.to_i
         rc_text_rule( "group", "A", "free form text input value")
         groups+=1
         data_setup_needed = true
       end
-      if statements == 3
+      if statements < number_statements_to_add.to_i
         rc_text_rule( "add", "B", "ENGL478 and HIST416")
         statements+=1
         data_setup_needed = true
       end
     end
-    if groups == 1
+    if groups == 1 and statements < number_statements_to_add.to_i
       rc_text_rule( "group", "D", "Text")
       groups += 1
       data_setup_needed = true
     end
-    if statements == 4
+    if statements < number_statements_to_add.to_i
       rc_text_rule( "add", "C", "HIST395 and HIST210")
       statements += 1
       data_setup_needed = true
     end
-    if groups >= 2
+    if groups == 1
       on ManageCORequisites do |page|
         page.loading.wait_while_present
         page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.update_rule_btn
       end
     end
+    if groups >= 2
+      on ManageCORequisites do |page|
+        page.edit_loading.wait_while_present
+        page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
+      end
+    end
+    on(ManageCORequisites).update_rule_btn
     return data_setup_needed
   end
 
@@ -1415,7 +1379,7 @@ class RestrictCreditRule < CORequisitesData
     end
   end
 
-  def crc_data_setup
+  def crc_data_setup( number_statements_to_add = 10)
     navigate_to_mco_requisites
     on CourseOfferingRequisites do |page|
       page.loading.wait_while_present
@@ -1426,69 +1390,72 @@ class RestrictCreditRule < CORequisitesData
         page.restrict_add
       end
       page.loading.wait_while_present
-      if crc_create_rule_tree == true
-        commit_changes( true)
+      if crc_create_rule_tree( number_statements_to_add)
+        commit_changes( return_to_edit_page = true)
       end
     end
   end
 
-  def crc_create_rule_tree
-    groups = check_number_groups
-    statements = check_number_statements
+  def crc_create_rule_tree( number_statements_to_add = 10)
+    groups = 0
+    statements = 0
     data_setup_needed = false
-    if statements == 0
+    if statements < number_statements_to_add.to_i
       crc_course_rule( "add", "", "BSCI202")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 1
+    if statements < number_statements_to_add.to_i
       crc_course_rule( "add", "A", "HIST639")
       statements+=1
       data_setup_needed = true
     end
-    if statements == 2
+    if statements < number_statements_to_add.to_i
       crc_text_rule( "add", "B", "ENGL101")
       statements+=1
       data_setup_needed = true
     end
-    if groups == 0 && statements == 3
+    if groups == 0 and statements < number_statements_to_add.to_i
       crc_text_rule( "group", "A", "free form text input value")
       groups+=1
       crc_all_courses_rule( "add", "", "ENGL478,HIST416", "", "")
       statements+=1
       data_setup_needed = true
     else
-      if groups == 0
+      if groups == 0 and statements < number_statements_to_add.to_i
         crc_text_rule( "group", "A", "free form text input value")
         groups+=1
         data_setup_needed = true
       end
-      if statements == 3
+      if statements < number_statements_to_add.to_i
         crc_all_courses_rule( "add", "B", "ENGL478,HIST416", "", "")
         statements+=1
         data_setup_needed = true
       end
     end
-    if groups == 1
+    if groups == 1 and statements < number_statements_to_add.to_i
       crc_text_rule( "group", "D", "Text")
       groups += 1
       data_setup_needed = true
     end
-    if statements == 4
+    if statements < number_statements_to_add.to_i
       crc_all_courses_rule( "add", "C", "HIST395,HIST210", "", "")
       statements += 1
       data_setup_needed = true
     end
-    if groups >= 2
+    if group == 1
       on ManageCORequisites do |page|
         page.loading.wait_while_present
         page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
-        page.edit_loading.wait_while_present
-        page.update_rule_btn
       end
     end
+    if groups >= 2
+      on ManageCORequisites do |page|
+        page.edit_loading.wait_while_present
+        page.edit_tree_section.select(:id => /u\d+_node_\d+_parent_node_\d+_parent_node_0_parent_root_control/).when_present.select "OR"
+      end
+    end
+    on(ManageCORequisites).update_rule_btn
     return data_setup_needed
   end
 
@@ -1496,7 +1463,8 @@ class RestrictCreditRule < CORequisitesData
     add_new_node( group, node)
     on ManageCORequisites do |page|
       page.rule_dropdown.when_present.select /Must not have successfully completed <course>/
-      advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.preview_btn
     end
   end

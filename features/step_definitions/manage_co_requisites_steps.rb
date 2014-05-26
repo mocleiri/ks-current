@@ -32,11 +32,19 @@ When /^I add a new course offering rule to a course$/ do
   @antireq.navigate_to_mco_requisites( true)
   @antireq.ar_edit_add( "add")
   @antireq.ar_text_rule( "add", "", "Added Antirequisite on CO level")
+  on(ManageCORequisites).update_rule_btn
   @antireq.commit_changes
 end
 
 #############################
 #Corequisite
+
+When /^I add (\d+) statements? to the Corequisite section for course "(.*?)" in the future term$/ do |number_statements_to_add, course|
+  @courseOR = make CORequisitesData
+  @coreq = make CorequisiteRule, :term => "201301", :course => course
+  @coreq.cr_data_setup( number_statements_to_add)
+end
+
 When /^I (?:|setup|edit|have setup) the Corequisite section for course "(.*?)" in the future term$/ do |course|
   @courseOR = make CORequisitesData
   @coreq = make CorequisiteRule, :term => "201301", :course => course
@@ -89,13 +97,33 @@ When /^I (?:|navigate|have navigated) to the Recommended Preparation section for
   @prereq.navigate_to_mco_requisites
 end
 
-When /^I (?:|setup|edit|have setup) the Student Eligibility & Prerequisite section for course "(.*?)" in the historic term$/ do |course|
+When /^I add (\d+) statements? to the Student Eligibility & Prerequisite section for course "(.*?)" in the historic term$/ do |number_statements_to_add, course|
   @courseOR = make CORequisitesData
   @prereq = make PreparationPrerequisiteRule, :course => course
-  @prereq.sepr_data_setup
+  @prereq.sepr_data_setup( number_statements_to_add)
 end
 
-When /^I (?:|setup|edit|have setup) the Student Eligibility & Prerequisite section for course "(.*?)" in the future term$/ do |course|
+When /^I edit the Student Eligibility & Prerequisite section for course "(.*?)" in the historic term$/ do |course|
+  @courseOR = make CORequisitesData
+  @prereq = make PreparationPrerequisiteRule, :course => course
+  @prereq.navigate_to_mco_requisites
+  @prereq.sepr_edit_add( "edit")
+end
+
+When /^I edit the Student Eligibility & Prerequisite section for course "(.*?)" in the future term$/ do |course|
+  @courseOR = make CORequisitesData
+  @prereq = make PreparationPrerequisiteRule, :term => "201301", :course => course
+  @prereq.navigate_to_mco_requisites
+  @prereq.sepr_edit_add( "edit")
+end
+
+When /^I add (\d+) statements? to the Student Eligibility & Prerequisite section for course "(.*?)" in the future term$/ do |number_statements_to_add, course|
+  @courseOR = make CORequisitesData
+  @prereq = make PreparationPrerequisiteRule, :term => "201301", :course => course
+  @prereq.sepr_data_setup( number_statements_to_add)
+end
+
+When /^I (?:|setup|have setup) the Student Eligibility & Prerequisite section for course "(.*?)" in the future term$/ do |course|
   @courseOR = make CORequisitesData
   @prereq = make PreparationPrerequisiteRule, :term => "201301", :course => course
   @prereq.sepr_data_setup
@@ -140,15 +168,11 @@ When /^I want to edit the Student Eligibility & Prerequisite section$/ do
 end
 
 When /^I delete the tree in the Student Eligibility & Prerequisite section$/ do
-  on CourseOfferingRequisites do |page|
-    page.prereq_delete
-  end
+  on(CourseOfferingRequisites).prereq_delete
 end
 
 When /^I want to compare the CO to the CLU for the Student Eligibility & Prerequisite section$/ do
-  on CourseOfferingRequisites do |page|
-    page.prereq_compare
-  end
+  on(CourseOfferingRequisites).prereq_compare
 end
 
 When /^I add a new course offering requisite to a course$/ do
@@ -165,6 +189,7 @@ When /^I add a new course offering requisite to a course$/ do
   @prereq.navigate_to_mco_requisites( true)
   @prereq.rp_edit_add( "add")
   @prereq.rp_sepr_text_rule( "add", "", "Added Recommended Prep on CO level")
+  on(ManageCORequisites).update_rule_btn
   @prereq.commit_changes
 end
 
@@ -177,15 +202,23 @@ Then /^the tree in the Student Eligibility & Prerequisite section should be empt
 end
 
 Then /^the Compare to Catalog link should exist for the Student Eligibility & Prerequisite section$/ do
-  on CourseOfferingRequisites do |page|
-    page.prereq_compare_link.should exist
-  end
+  on(CourseOfferingRequisites).prereq_compare_link.should exist
 end
 
 #############################
 #Steps used by all rule types
+When /^I persist the changes and return to the proposition$/ do
+  on(ManageCORequisites).update_rule_btn
+  @courseOR.commit_changes( true)
+end
+
 When /^I commit and return to see the changes made to the proposition$/ do
-  @courseOR.commit_changes( true)  #:return_to_edit_page =>
+  @courseOR.commit_changes( true)
+end
+
+When /^I persist the changes made to the proposition$/ do
+  on(ManageCORequisites).update_rule_btn
+  @courseOR.commit_changes
 end
 
 When /^I commit changes made to the proposition$/ do
@@ -204,13 +237,6 @@ When /^I edit node "(.*?)" by changing text to "(.*?)"$/ do |node, change|
   @courseOR.edit_existing_node(node, "text", change)
 end
 
-When /^I delete the tree$/ do
-  on ManageCORequisites do |page|
-    page.edit_tree_section.div(:id => "editWithObjectTree_tree").link.when_present.click
-    page.del_btn
-  end
-end
-
 When /^I delete node "(.)" in the tree$/ do |node|
   on ManageCORequisites do |page|
     page.edit_tree_section.link(:text => /.*#{Regexp.escape(node)}\..*/).when_present.click
@@ -223,9 +249,7 @@ When /^I switch to the other tab on the page$/ do
 end
 
 When /^I update the manage course offering agendas page$/ do
-  on ManageCORequisites do |page|
-    page.update_rule_btn
-  end
+  on(ManageCORequisites).update_rule_btn
 end
 
 When /^I move node "(.)" down$/ do |node|
@@ -238,6 +262,10 @@ end
 
 When /^I move node "(.)" out of the group$/ do |node|
   @courseOR.move_around(node, "out")
+end
+
+When /^I move node "(.)" into the group$/ do |node|
+  @courseOR.move_around(node, "in")
 end
 
 When /^I move node "(.)" out of and into the group$/ do |node|
@@ -271,7 +299,7 @@ end
 Then /^the info message "(.*?)" should be present$/ do |mess|
   on ManageCORequisites do |page|
     page.info_message.text.should match /#{Regexp.escape(mess)}/
-    page.cancel_update_link.click
+    page.cancel
   end
 end
 
@@ -315,9 +343,7 @@ Then /^the logic tab's text should match "(.*)"$/ do |text|
 end
 
 Then /^the CO and CLU should both have text "(.*?)"/ do |text|
-  on CourseOfferingRequisites do |page|
-    page.compare_tree.text.should match @courseOR.test_compare_text( text)
-  end
+  on(CourseOfferingRequisites).compare_tree.text.should match @courseOR.test_compare_text( text)
 end
 
 Then /^the CO and CLU should differ with text "(.*?)"/ do |text|
@@ -338,7 +364,7 @@ Then /^the text area should be populated with "(.*)"$/ do |text|
   on ManageCORequisites do |page|
     page.edit_loading.wait_while_present
     page.logic_text.text.should == text
-    page.cancel_update_link.click
+    page.cancel
   end
 end
 
@@ -370,7 +396,6 @@ Then /^node "(.*)" should be after node "(.*)"$/ do |second,first|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.text.should match /.*#{Regexp.escape(first)}\..+#{Regexp.escape(second)}\..*/m
-    page.cancel_update_link.click
   end
 end
 
@@ -378,16 +403,21 @@ Then /^the first node should match "(.*)"$/ do |text|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
     page.edit_tree_section.text.should match /^Click on rule statement to move or modify\n[\s\t]*#{Regexp.escape(text)}.*/
-    page.cancel_update_link.click
   end
-  on(CourseOfferingRequisites).cancel
 end
 
-Then /^node "(.*)" should be a "(.*)" node in the tree$/ do |node, level|
+Then /^node "(.*)" should be a secondary node in the tree$/ do |node|
   on ManageCORequisites do |page|
     page.loading.wait_while_present
-    page.edit_tree_section.link(:text => /.*#{node}\..*/).div.id.should match @courseOR.test_node_level(level)
-    page.cancel_update_link.click
+    page.edit_tree_section.link(:text => /.*#{node}\..*/).div.id.should match @courseOR.test_node_level("secondary")
+    page.cancel
+  end
+end
+
+Then /^node "(.*)" should be a primary node in the tree$/ do |node|
+  on ManageCORequisites do |page|
+    page.loading.wait_while_present
+    page.edit_tree_section.link(:text => /.*#{node}\..*/).div.id.should match @courseOR.test_node_level("primary")
   end
 end
 
@@ -398,11 +428,10 @@ Then /^there should be a dropdown with value "(.*)" before node "(.*)"$/ do |dro
   end
 end
 
-Then /^node "(.*)" should be preceded by an "(.*)" operator$/ do |drop, node|
+Then /^node "(.*)" should be preceded by an "(.*)" operator$/ do |node, drop|
   on ManageCORequisites do |page|
     page.edit_loading.wait_while_present
     page.edit_tree_section.text.should match /.*#{Regexp.escape(drop)}.*#{Regexp.escape(node)}.*/m
-    page.cancel_update_link.click
   end
 end
 
@@ -410,7 +439,6 @@ Then /^the Move In button should be disabled$/ do
   on ManageCORequisites do |page|
     if page.right_btn_element.attribute_value('disabled')
       page.right_btn_element.attribute_value('disabled').should == "true"
-      page.cancel_update_link.click
     end
   end
 end

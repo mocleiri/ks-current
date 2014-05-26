@@ -63,11 +63,11 @@ class AORequisitesData < DataFactory
   def navigate_to_ao_requisites( only_view_ao_requisites = false)
     if only_view_ao_requisites
       @course_offering = make CourseOffering, {:course => @course, :term => @term}
+      @course_offering.manage
     else
       @course_offering = create CourseOffering, :create_by_copy=>(make CourseOffering, :term => @term, :course => @course)
     end
 
-    @course_offering.manage
     on ManageCourseOfferings do |page|
       page.loading.wait_while_present(200)
       page.ao_requisites(@activity)
@@ -79,14 +79,6 @@ class AORequisitesData < DataFactory
   end
 
   def commit_changes( return_to_edit_page = false )
-    begin
-      on ManageAORequisites do |page|
-        page.loading.wait_while_present
-        page.update_rule_btn
-      end
-    rescue Watir::Wait::TimeoutError
-      #Means update rule button already clicked
-    end
     on ActivityOfferingRequisites do |page|
       page.loading.wait_while_present
       page.submit
@@ -219,13 +211,15 @@ class AORequisitesData < DataFactory
       if courses != "" && courses != nil
         page.multi_course_dropdown.when_present.select /Approved Courses/
         if courses.length > 1
-          courses.each do |elem|
-            advanced_search("courses code", elem)
+          courses.each do |course|
+            # advanced_search("courses code", elem)
+            page.courses_field.set course
             page.add_line_btn
             page.adding.wait_while_present
           end
         else
-          advanced_search("courses code", course)
+          # advanced_search("courses code", elem)
+          page.courses_field.set course
           page.add_line_btn
           page.adding.wait_while_present
         end
@@ -578,6 +572,7 @@ class AORequisitesData < DataFactory
   def make_changes_to_multiple_ao_reqs( course)
     @prereq = make AOPreparationPrerequisiteRule, :course => course
     @prereq.sepr_copy_edit_co_rule_for_copy( true)
+    on(ManageAORequisites).update_rule_btn
     commit_changes
 
     @coreq = make AOCorequisiteRule, :course => course
@@ -586,10 +581,12 @@ class AORequisitesData < DataFactory
 
     @antireq = make AOAntirequisiteRule, :course => course, :activity => "D"
     @antireq.ar_add_ao_rule_for_copy( true)
+    on(ManageAORequisites).update_rule_btn
     commit_changes
 
     @coreq2 = make AOCorequisiteRule, :course => course, :activity => "D"
     @coreq2.cr_replace_co_rule_for_copy( true)
+    on(ManageAORequisites).update_rule_btn
     commit_changes
   end
 end
@@ -908,11 +905,9 @@ class AOCorequisiteRule < AORequisitesData
       if page.coreq_copy_edit_link.exists?
         page.loading.wait_while_present
         page.coreq_copy_edit
-        on ManageAORequisites do |inner_page|
-          inner_page.update_rule_btn
-        end
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def cr_revert_copy_co_rule     ( only_view_ao_requisites = false)
@@ -1159,9 +1154,11 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       if page.prereq_copy_edit_link.exists?
         page.loading.wait_while_present
         page.prereq_copy_edit
-        add_statements_to_rule
+        rp_sepr_text_rule( "add", "", "free form text input value")
+        rp_sepr_all_courses_rule( "add", "A", "HIST416,ENGL478", "", "")
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def rp_copy_edit_co_rule( only_view_ao_requisites = false)
@@ -1203,11 +1200,9 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       if page.prereq_copy_edit_link.exists?
         page.loading.wait_while_present
         page.prereq_copy_edit
-        on ManageAORequisites do |inner_page|
-          inner_page.update_rule_btn
-        end
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def rp_copy_co_rule( only_view_ao_requisites = false)
@@ -1216,11 +1211,9 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       if page.prep_copy_edit_link.exists?
         page.loading.wait_while_present
         page.prep_copy_edit
-        on ManageAORequisites do |inner_page|
-          inner_page.update_rule_btn
-        end
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def sepr_revert_copy_co_rule( only_view_ao_requisites = false)
@@ -1289,9 +1282,11 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       if page.prereq_add_link.exists?
         page.loading.wait_while_present
         page.prereq_add
-        add_statements_to_rule
+        rp_sepr_text_rule( "add", "", "Text to copy")
+        rp_sepr_number_courses_rule( "add", "A", "2", "BSCI202,BSCI361,HIST110", "", "")
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def rp_add_ao_rule  ( only_view_ao_requisites = false)
@@ -1311,9 +1306,10 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       if page.prereq_replace_link.exists?
         page.loading.wait_while_present
         page.prereq_replace
-        add_statements_to_rule
+        rp_sepr_number_courses_rule( "add", "", "2", "BSCI202,BSCI361,HIST110", "", "")
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def rp_replace_co_rule   ( only_view_ao_requisites = false)
@@ -1328,7 +1324,17 @@ class AOPreparationPrerequisiteRule < AORequisitesData
   end
 
   def sepr_edit_replaced_co_rule( only_view_ao_requisites = false)
-    sepr_replace_co_rule( only_view_ao_requisites)
+    navigate_to_ao_requisites( only_view_ao_requisites)
+    on ActivityOfferingRequisites do |page|
+      if page.prereq_replace_link.exists?
+        page.loading.wait_while_present
+        page.prereq_replace
+        rp_sepr_number_courses_rule( "add", "", "2", "BSCI202,BSCI361,HIST110", "", "")
+        rp_sepr_text_rule( "add", "", "free form text input value")
+        rp_sepr_all_courses_rule( "group", "A", "HIST416,ENGL478", "", "")
+      end
+    end
+    on(ManageAORequisites).update_rule_btn
     commit_changes( true) if !only_view_ao_requisites
     on ActivityOfferingRequisites do |page|
       if page.prereq_edit_link.exists?
@@ -1356,9 +1362,11 @@ class AOPreparationPrerequisiteRule < AORequisitesData
       if page.prereq_edit_link.exists?
         page.loading.wait_while_present
         page.prereq_edit
-        edit_statements_in_rule
+        delete_statement( "A")
+        rp_sepr_text_rule( "add", "", "Text added while editing")
       end
     end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def rp_edit_update_replaced_co_rule    ( only_view_ao_requisites = false)
@@ -1581,9 +1589,7 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     rp_sepr_all_courses_rule( "group", "A", "HIST416,ENGL478", "", "")
     rp_sepr_text_rule( "add", "", "Text to copy")
     rp_sepr_number_courses_rule( "group", "C", "2", "BSCI202,BSCI361,HIST110", "", "")
-    on ManageAORequisites do |page|
-      page.update_rule_btn
-    end
+    on(ManageAORequisites).update_rule_btn
   end
 
   def edit_statements_in_rule
@@ -1600,7 +1606,9 @@ class AOPreparationPrerequisiteRule < AORequisitesData
     add_new_node( group, node)
     on ManageAORequisites do |page|
       page.rule_dropdown.when_present.select /Must have successfully completed <course>/
-      advanced_search("course code", course)
+      # advanced_search("course code", course)
+      page.loading.wait_while_present
+      page.course_field.set course
       page.preview_btn
     end
   end

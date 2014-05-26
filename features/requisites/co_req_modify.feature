@@ -1,34 +1,34 @@
-@nightly @blue_team
-Feature: CO.ELIG7-1 Modify CO copied from CLU
+@nightly @blue_team_krms
+Feature: CO.Modify CO Requisites
 
   Background:
     Given I am logged in as admin
     And I have navigated to the Student Eligibility & Prerequisite section for course "BSCI361" in the historic term
 
-  #ELIG7.1.EB1 (KSENROLL-7245)
-  Scenario: Test whether editing existing statements persists to the database
+  #KSENROLL-7245
+  Scenario: ELIG7.1.1 Test whether editing existing statements persists to the database
     When I want to edit the Student Eligibility & Prerequisite section
     And I edit node "A" by changing course to "BSCI329"
-    And I commit and return to see the changes made to the proposition
+    And I persist the changes and return to the proposition
     Then the agenda page's text should match "Must have successfully completed BSCI329"
 
-  #ELIG7.1.EB2 (KSENROLL-7245)
-  Scenario: Test whether adding new statement to existing statements persists to the database
+  #KSENROLL-7245
+  Scenario: ELIG7.1.2 Test whether adding new statement to existing statements persists to the database
     When I want to edit the Student Eligibility & Prerequisite section
     And I add a courses statement after node "B" with courses "HIST110,ENGL313"
-    And I commit and return to see the changes made to the proposition
+    And I persist the changes and return to the proposition
     Then the agenda page's text should match "all courses from,ENGL313,HIST110"
 
-  #ELIG7.1.EB3 (KSENROLL-7245)
-  Scenario: Test whether editing newly added statements persists to the database
+  #KSENROLL-7245
+  Scenario: ELIG7.1.3 Test whether editing newly added statements persists to the database
     When I want to edit the Student Eligibility & Prerequisite section
     And I edit node "B" by adding course "BSCI103"
-    And I commit and return to see the changes made to the proposition
+    And I persist the changes and return to the proposition
     Then the agenda page's text should match "minimum of 1 course from,BSCI103,BSCI339,BSCI399"
 
-  #ELIG7.1.EB4 (KSENROLL-7245)
-  Scenario: Test whether deleting statements persists to the database
+  #KSENROLL-7245
+  Scenario: ELIG7.1.4 Test whether deleting statements persists to the database
     When I want to edit the Student Eligibility & Prerequisite section
     And I delete node "A" in the tree
-    And I commit and return to see the changes made to the proposition
+    And I persist the changes and return to the proposition
     Then the agenda page's text should not match "BSCI106"

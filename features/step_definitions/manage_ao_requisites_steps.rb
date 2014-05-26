@@ -48,6 +48,12 @@ When /^I replace the CO rule in the Student Eligibility & Prerequisite section$/
   @prereq.sepr_replace_co_rule
 end
 
+When /^I want to replace the CO rule in the Student Eligibility & Prerequisite section$/ do
+  @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite"
+  @prereq = make AOPreparationPrerequisiteRule
+  @prereq.sepr_replace_co_rule( true)
+end
+
 When /^I edit and update the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "B"
   @prereq = make AOPreparationPrerequisiteRule, :activity => "B"
@@ -57,7 +63,7 @@ end
 When /^I edit the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
   @activityOR = make AORequisitesData, :section => "Student Eligibility & Prerequisite", :activity => "D"
   @prereq = make AOPreparationPrerequisiteRule, :activity => "D"
-  @prereq.sepr_edit_replaced_co_rule( true)
+  @prereq.sepr_edit_replaced_co_rule(true)
 end
 
 When /^I commit the rule that replaced the CO rule in the Student Eligibility & Prerequisite section$/ do
@@ -107,6 +113,7 @@ When /^I edit a course offering requisite at the AO level by adding a new text s
       page.loading.wait_while_present
       page.prereq_copy_edit
       @prereq.rp_sepr_text_rule( "add", "B", "Changed the SE & Prerequisite on AO B only")
+      on(ManageAORequisites).update_rule_btn
       @prereq.commit_changes
     end
   end
@@ -149,8 +156,17 @@ Then /^the created rule should be shown in the Student Eligibility & Prerequisit
   on ActivityOfferingRequisites do |page|
     page.loading.wait_while_present
     @prereq.show_all_courses( "agenda")
-    page.agenda_management_section.text.should match @prereq.test_text("agenda", "ENGL101,ENGL478,HIST416,BSCI202,BSCI361,HIST110,Text to copy,free form text input value")
-    page.submit
+    page.agenda_management_section.text.should match @prereq.test_text("agenda", "BSCI202,BSCI361,HIST110")
+    page.cancel
+  end
+end
+
+Then /^the rule that was created should be shown in the Student Eligibility & Prerequisite section$/ do
+  @prereq.open_agenda_section
+  on ActivityOfferingRequisites do |page|
+    page.loading.wait_while_present
+    @prereq.show_all_courses( "agenda")
+    page.agenda_management_section.text.should match @prereq.test_text("agenda", "Text to copy,BSCI202,BSCI361,HIST110")
   end
 end
 
@@ -159,7 +175,8 @@ Then /^the edited rule should be shown in the Student Eligibility & Prerequisite
   on ActivityOfferingRequisites do |page|
     page.loading.wait_while_present
     @prereq.show_all_courses( "agenda")
-    page.agenda_management_section.text.should match @prereq.test_text("agenda", "ENGL313,Text added while editing,Text to copy")
+    page.agenda_management_section.text.should match @prereq.test_text("agenda", "Text added while editing")
+    page.cancel
   end
 end
 
@@ -180,7 +197,7 @@ Then /^the AO rule should differ from the CO and CLU rules in the Student Eligib
       page.prereq_compare
     end
     page.loading.wait_while_present
-    page.compare_tree.text.should_not match @prereq.test_ao_compare_text("at least one in literature,ARHU-English required")
+    page.compare_tree.text.should_not match @prereq.test_ao_compare_text("completed all courses from (ENGL478, HIST416),ARHU-English required")
     page.submit
   end
 end
@@ -245,6 +262,7 @@ When /^I add a text rule to the Antirequisite section$/ do
       page.loading.wait_while_present
       page.antireq_add
       @antireq.ar_text_rule( "add", "", "Add Antirequisite specific to AO A")
+      on(ManageAORequisites).update_rule_btn
       @antireq.commit_changes
     end
   end
@@ -281,6 +299,7 @@ When /^I edit a course offering rule at the AO level by adding a new text statem
       page.loading.wait_while_present
       page.coreq_copy_edit
       @coreq.cr_text_rule( "add", "", "Changed the Corequisite on AO B only")
+      on(ManageAORequisites).update_rule_btn
       @coreq.commit_changes
     end
   end
@@ -351,61 +370,55 @@ Then /^I should be able to use all the function buttons on the Edit Rule tab$/ d
     @activityOR.move_around( "A", "out")
     node_html_id = page.edit_tree_section.link(:text => /.*A\..*/).div.id
     @activityOR.test_node_level("primary", node_html_id).should be_true
-#    page.edit_tree_section.span(:text => /.*A\..*/).id.should match @activityOR.test_node_level( "primary")
 
     @activityOR.move_around( "B", "up")
     page.edit_tree_section.text.should match /.*B\..+A\..*/m
 
     @activityOR.move_around( "C", "down")
-    page.edit_tree_section.text.should match /.*E\..+C\..*/m
-
-    @activityOR.move_around( "B", "up in")
     page.edit_tree_section.text.should match /.*B\..+C\..*/m
 
     @activityOR.delete_statement( "C")
     page.edit_tree_section.text.should_not match /.*C\..*/
 
-    @activityOR.copy_cut_paste( "B", "D", "cut")
-    page.edit_tree_section.text.should match /.*D\..+B\..*/m
+    @activityOR.copy_cut_paste( "B", "A", "cut")
+    page.edit_tree_section.text.should match /.*A\..+B\..*/m
 
-    @activityOR.copy_cut_paste( "E", "B", "copy")
-    page.edit_tree_section.text.should match /.*E\..+B\..+F\..*/m
+    @activityOR.copy_cut_paste( "A", "B", "copy")
+    page.edit_tree_section.text.should match /.*A\..+B\..+D\..*/m
 
-    @activityOR.add_new_node( "add", "F")
+    @activityOR.add_new_node( "add", "D")
     page.rule_dropdown.when_present.select /Free Form Text/
     page.free_text_field.when_present.set "new statement can be added"
     page.preview_btn
-    page.edit_tree_section.text.should match /.*F\..+G\..*/m
+    page.edit_tree_section.text.should match /.*D\..+E\..*/m
 
     @activityOR.add_new_node( "group", "A")
     page.rule_dropdown.when_present.select /Free Form Text/
     page.free_text_field.when_present.set "new group can be created"
     page.preview_btn
-    node_html_id = page.edit_tree_section.link(:text => /.*H\..*/).div.id
+    node_html_id = page.edit_tree_section.link(:text => /.*F\..*/).div.id
     @activityOR.test_node_level("secondary", node_html_id).should be_true
-    #page.edit_tree_section.span(:text => /.*H\..*/).id.should match @activityOR.test_node_level( "secondary")
 
-    @activityOR.edit_existing_node("D", "text", "existing statement can be edited")
+    @activityOR.edit_existing_node("B", "text", "existing statement can be edited")
     page.edit_tree_section.text.should match /existing statement can be edited/
 
-    page.update_rule_btn
+    page.cancel
   end
+  on(ActivityOfferingRequisites).cancel
 end
 
 Then /^I should be able to use the functionality of the Edit Rule Logic tab$/ do
   on ManageAORequisites do |page|
-    @activityOR.switch_tabs
     page.edit_loading.wait_while_present
-    page.logic_text.set "A OR C OR (E AND B) OR D"
-    page.preview_btn
-    page.preview_tree_section.text.should match /Must meet 1 of the following.+Must meet all of the following/m
-
-    @activityOR.switch_tabs
-    page.edit_loading.wait_while_present
-    page.edit_tree_section.text.should match /.*A\..+C\..+E\..+B\..+D\..*/m
-    node_html_id = page.edit_tree_section.link(:text => /.*B\..*/).div.id
+    page.edit_tree_section.text.should match /.*A\./
+    node_html_id = page.edit_tree_section.link(:text => /.*A\..*/).div.id
     @activityOR.test_node_level("secondary", node_html_id).should be_true
 
-    page.update_rule_btn
+    @activityOR.switch_tabs
+    page.edit_loading.wait_while_present
+    page.preview_tree_section.text.should match /completed a minimum of 2 courses from.*BSCI202.*BSCI361.*HIST110/m
+
+    page.cancel
   end
+  on(ActivityOfferingRequisites).cancel
 end

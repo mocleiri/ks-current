@@ -37,6 +37,7 @@ class ManageCORequisites < BasePage
 
   element(:right_btn_element) { |b| b.frm.button(:text => /Move In/) }
   element(:cancel_update_link) { |b| b.frm.a(id: "KSCO-CancelRule-Button")}
+  action(:cancel) { |b| b.cancel_update_link.when_present.click}
 
   action(:search_link) { |b| b.edit_tree_section.a(:text => /Advanced Search/).click; b.edit_loading.wait_while_present; b.loading.wait_while_present}
 
@@ -44,7 +45,7 @@ class ManageCORequisites < BasePage
   element(:multi_course_dropdown) { |b| b.edit_tree_section.select(:name => /.*editTree.*proposition.multipleCourseType/)}
   element(:course_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.courseInfo\.code/)}
   element(:free_text_field) { |b| b.frm.textarea(:name => /.*editTree.*proposition\.termParameter/)}
-  element(:courses_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.cluSet\.clus\'\]\.code/)}
+  element(:courses_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.courseSet\.clus\'\]\.code/)}
   element(:integer_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.parameters\[1\]\.value/)}
   element(:grade_dropdown) { |b| b.frm.select(:name => /.*editTree.*proposition\.termParameter/)}
   element(:duration_field) { |b| b.frm.text_field(:name => /.*editTree.*proposition\.duration/)}

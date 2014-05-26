@@ -1,5 +1,5 @@
-@nightly @blue_team
-Feature: CO.ELIG8-10 Copy CO to new Term
+@nightly @blue_team_krms
+Feature: CO.Copy CO with AO Requisites to new CO
 
   Background:
     Given I am logged in as a Schedule Coordinator

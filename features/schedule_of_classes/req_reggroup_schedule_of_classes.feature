@@ -1,4 +1,4 @@
-@nightly @blue_team
+@nightly @blue_team_krms
 Feature: CO.ELIG8-23 Ensure that changes made to AO or CO Requisites displays differently on S0C Reg Group
   ELIG 8.23 : As a Central Administrator I want to have Rules display in the Schedule of Classes Registration Group
   View so that students are able to see whether or not they will qualify for enrolment in a course prior to trying

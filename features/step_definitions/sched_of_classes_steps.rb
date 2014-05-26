@@ -143,7 +143,7 @@ Then /^the course offering requisites should be displayed alongside the course d
   end
 end
 
-When /^I have made no chages to the CO Requisites of a course$/ do
+When /^I have made no changes to the CO Requisites of a course$/ do
   @course_offering = make CourseOffering, :term => "201208", :course => "PHYS272"
 end
 
