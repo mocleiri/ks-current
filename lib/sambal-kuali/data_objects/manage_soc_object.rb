@@ -95,15 +95,19 @@ class ManageSoc < DataFactory
         when 'Lock'
           page.lock_action
           page.lock_confirm_action
-          page.message_element.wait_until_present
-          raise "'Set of Courses has been Locked.' not displayed after Lock" unless page.message == 'Set of Courses has been Locked.'
+          page.go_action #work around for KSENROLL-12946
+          raise "SOC state table not updated to 'Locked'" unless page.soc_status == 'Locked'
+          #page.message_element.wait_until_present
+          #raise "'Set of Courses has been Locked.' not displayed after Lock" unless page.message == 'Set of Courses has been Locked.'
         when 'Schedule'
           schedule_soc page
         when 'FinalEdit'
           page.final_edit_action
           page.final_edit_confirm_action
-          page.message_element.wait_until_present
-          raise "Info message text at the top doesnt match" unless page.message == 'Set of Courses has been opened for Final Edits.'
+          page.go_action #work around for KSENROLL-12946
+          raise "SOC state table not updated to 'Final Edits'" unless page.soc_status == 'Final Edits'
+          #page.message_element.wait_until_present
+          #raise "Info message text at the top doesnt match" unless page.message == 'Set of Courses has been opened for Final Edits.'
         when 'Publish'
           publish_soc page
         else
