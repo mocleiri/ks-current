@@ -257,14 +257,20 @@ And /^I should see the updated data on the Review proposal page$/ do
     page.final_exam_status_review.should == no_exam unless @course_proposal.exam_none.nil?
     page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
 
-    #RANGE OUTCOME DISABLED TEMPORARILY UNTIL OUTCOME COLLECTION IS FIXED May 23, 2014 - AR
-    #page.outcome_type_review(1).should == "Range" unless @course_proposal.outcome_type_1.nil?
-    #page.outcome_credit_review(1).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_1.nil?
-    #page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_type_2.nil?
-    #page.outcome_credit_review(2).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
-    #page.outcome_type_review(3).should == "Fixed" unless @course_proposal.outcome_type_3.nil?
-    #page.outcome_credit_review(3).should == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
+    #FIXED OUTCOME
+    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_list[0].outcome_level.to_i+1}" unless @course_proposal.outcome_list[0].outcome_level.nil?
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_list[0].outcome_type.nil?
+    page.outcome_credit_review(1) == "#{@course_proposal.outcome_list[0].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
+    #RANGE OUTCOME
+    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_list[1].outcome_level.to_i+1 }" unless @course_proposal.outcome_list[1].outcome_level.nil?
+    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_list[1].outcome_type.nil?
+    page.outcome_credit_review(2) == "#{@course_proposal.outcome_list[1].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+
+    #MULTIPLE OUTCOME
+    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
+    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
+    page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #ACTIVE DATES SECTION
     page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
@@ -305,13 +311,20 @@ And /^I should see updated data on Review proposal page$/ do
     page.final_exam_status_review.should == no_exam unless @course_proposal.exam_none.nil?
     page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
 
-    #RANGE OUTCOME DISABLED TEMPORARILY UNTIL OUTCOME COLLECTION IS FIXED May 23, 2014 - AR
-    #page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_type_4.nil?
-    #page.outcome_credit_review(1).should == "#{@course_proposal.credit_value_4}" unless @course_proposal.outcome_type_4.nil?
-    #page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_type_3.nil?
-    #page.outcome_credit_review(2).should == "#{@course_proposal.credit_value_3}" unless @course_proposal.outcome_type_3.nil?
-    #page.outcome_type_review(3).should == "Range" unless @course_proposal.outcome_type_2.nil?
-    #page.outcome_credit_review(3).should == "#{@course_proposal.credit_value_2}" unless @course_proposal.outcome_type_2.nil?
+    #FIXED OUTCOME
+    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_list[0].outcome_level.to_i+1}" unless @course_proposal.outcome_list[0].outcome_level.nil?
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_list[0].outcome_type.nil?
+    page.outcome_credit_review(1) == "#{@course_proposal.outcome_list[0].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+
+    #RANGE OUTCOME
+    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_list[1].outcome_level.to_i+1 }" unless @course_proposal.outcome_list[1].outcome_level.nil?
+    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_list[1].outcome_type.nil?
+    page.outcome_credit_review(2) == "#{@course_proposal.outcome_list[1].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+
+    #MULTIPLE OUTCOME
+    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
+    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
+    page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
 
     #ACTIVE DATES SECTION
@@ -354,13 +367,20 @@ And /^I should see updated data on the Review proposal page$/ do
     page.final_exam_status_review.should == no_exam unless @course_proposal.exam_none.nil?
     page.final_exam_rationale_review.should == @course_proposal.final_exam_rationale unless @course_proposal.exam_standard == :set
 
-    #RANGE OUTCOME - DISABLED TEMPORARILY UNTIL OUTCOME COLLECTION IS FIXED May 23, 2014 - AR
-    #page.outcome_type_review(1).should == @course_proposal.outcome_list[0].outcome_type unless @course_proposal.outcome_list[1].outcome_type.nil?
-    #page.outcome_credit_review(1).should == @course_proposal.outcome_list[0].outcome_type unless @course_proposal.outcome_list[1].outcome_type.nil?
-    #page.outcome_type_review(2).should == @course_proposal.outcome_list[1].outcome_type unless @course_proposal.outcome_list[2].outcome_type.nil?
-    #page.outcome_credit_review(2).should == @course_proposal.outcome_list[1].outcome_type unless @course_proposal.outcome_list[2].outcome_type.nil?
-    #page.outcome_type_review(3).should == @course_proposal.outcome_list[2].outcome_type unless @course_proposal.outcome_list[0].outcome_type.nil?
-    #page.outcome_credit_review(3).should == @course_proposal.outcome_list[2].outcome_type unless @course_proposal.outcome_list[0].outcome_type.nil?
+    #FIXED OUTCOME
+    page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_list[0].outcome_level.to_i+1}" unless @course_proposal.outcome_list[0].outcome_level.nil?
+    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_list[0].outcome_type.nil?
+    page.outcome_credit_review(1) == "#{@course_proposal.outcome_list[0].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+
+    #RANGE OUTCOME
+    page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_list[1].outcome_level.to_i+1 }" unless @course_proposal.outcome_list[1].outcome_level.nil?
+    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_list[1].outcome_type.nil?
+    page.outcome_credit_review(2) == "#{@course_proposal.outcome_list[1].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+
+    #MULTIPLE OUTCOME
+    page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
+    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
+    page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
 
     #ACTIVE DATES SECTION
