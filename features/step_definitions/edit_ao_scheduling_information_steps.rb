@@ -62,7 +62,7 @@ Then /^the AO's scheduling information shows the new schedule$/ do
       page.get_requested_sched_info_days(row).delete(' ').should == del_sched_info.days
       page.get_requested_sched_info_start_time(row).delete(' ').should == "#{del_sched_info.start_time}#{del_sched_info.start_time_ampm}"
       page.get_requested_sched_info_end_time(row).delete(' ').should == "#{del_sched_info.end_time}#{del_sched_info.end_time_ampm}"
-#      page.get_requested_sched_info_facility(row).should == del_sched_info.facility_long_name   TODO: uncomment after KSENROLL-12718 resolved
+      page.get_requested_sched_info_facility(row).should == del_sched_info.facility_long_name
       page.get_requested_sched_info_room(row).should == exp_room
     end
     page.cancel

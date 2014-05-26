@@ -32,7 +32,7 @@ And /^The ASIs are Successfully copied to RSIs in the new AOs of the newly creat
       page.get_requested_sched_info_days(row).delete(' ').should == asi.days
       page.get_requested_sched_info_start_time(row).delete(' ').should == "#{asi.start_time}#{asi.start_time_ampm}"
       page.get_requested_sched_info_end_time(row).delete(' ').should == "#{asi.end_time}#{asi.end_time_ampm}"
-      #page.get_requested_sched_info_facility(row).should == asi.facility_long_name TODO: reading tooltip issue KSENROLL-12718
+      page.get_requested_sched_info_facility(row).should == asi.facility_long_name
       page.get_requested_sched_info_room(row).should == asi.room
     end
 

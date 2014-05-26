@@ -217,16 +217,14 @@ class ActivityOfferingObject < DataFactory
     st_times = ao_table_row.cells[ManageCourseOfferings::AO_ST_TIME].text.split("\n")
     end_times = ao_table_row.cells[ManageCourseOfferings::AO_END_TIME].text.split("\n")
     fac_names = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].text.split("\n")
+    #get facility long name from tool tip
+    div_id = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].div.id
+    ao_table_row.cells[ManageCourseOfferings::AO_BLDG].div.fire_event 'mouseover'
+    popup_text = on(ManageCourseOfferings).div(id: /jquerybubblepopup/, data_for: "#{div_id}").table.text
     fac_long_names = []
-    #fac tooltip changed after rice upgrade KSENROLL-12718
-    #fac_long_names_tooltip = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].hidden.value
-    #if fac_long_names_tooltip[/(?<=, ')\S*/] == "<span"
-    #  #createTooltip('u432_line0_line10', '<span class=&quot;uif-scheduled-dl&quot; >Tawes Fine Arts Bldg.</span><br><span class=&quot;uif-scheduled-dl&quot; >Mathematics Bldg.</span>', {always
-    #  fac_long_names = fac_long_names_tooltip.scan(/(?<=;uif-scheduled-dl&quot; \>).*?(?=\<\/span)/)
-    #else
-    #  #createTooltip('u432_line0_line2', 'Tawes Fine Arts Bldg.', {always...
-    #  fac_long_names << fac_long_names_tooltip[/(?<=, ').*?(?=',)/]
-    #end
+    if !popup_text.nil? && popup_text != ''
+      fac_long_names = popup_text.split("\n")
+    end
     rooms = ao_table_row.cells[ManageCourseOfferings::AO_ROOM].text.split("\n")
 
     i=0

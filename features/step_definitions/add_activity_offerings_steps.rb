@@ -58,7 +58,7 @@ Then /^the "(ASI|RSI)s" are successfully copied as RSIs in the new AO$/ do |sour
     page.get_requested_sched_info_days(row).delete(' ').should == source_scheduling_information.days
     page.get_requested_sched_info_start_time(row).delete(' ').should == "#{source_scheduling_information.start_time}#{source_scheduling_information.start_time_ampm}"
     page.get_requested_sched_info_end_time(row).delete(' ').should == "#{source_scheduling_information.end_time}#{source_scheduling_information.end_time_ampm}"
-#    page.get_requested_sched_info_facility(row).should == source_scheduling_information.facility_long_name TODO: reading tooltip issue KSENROLL-12718
+    page.get_requested_sched_info_facility(row).should == source_scheduling_information.facility_long_name
     page.get_requested_sched_info_room(row).should == source_scheduling_information.room
   end
 end
