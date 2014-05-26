@@ -1,4 +1,4 @@
-@nightly @blue_team_krms
+@nightly @blue_team
 Feature: CO.Replace or Add rules on AO Requisites whether CO Requisites exist or not
 
   Background:

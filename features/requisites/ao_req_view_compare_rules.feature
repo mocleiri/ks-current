@@ -1,4 +1,4 @@
-@nightly @blue_team_krms
+@nightly @blue_team
 Feature: CO.View the Catalog and Course Offering rule on AO Requisites
 
   Background:

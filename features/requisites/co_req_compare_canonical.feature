@@ -1,4 +1,4 @@
-@nightly @blue_team_krms
+@nightly @blue_team
 Feature: CO.ELIG7-4 Compare to Canonical
 
   Background:

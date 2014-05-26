@@ -1,4 +1,4 @@
-@nightly @blue_team_krms
+@nightly @blue_team
 Feature: CO.AZ Permissions for specific users should change depending on the CO
 
   Background:

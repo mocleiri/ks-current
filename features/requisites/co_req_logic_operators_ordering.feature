@@ -1,4 +1,4 @@
-@nightly @blue_team_krms
+@nightly @blue_team
 Feature: CO.Change Logical Operators and Order of statement for CO Requisites
 
   Background:

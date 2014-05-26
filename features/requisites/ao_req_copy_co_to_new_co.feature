@@ -1,4 +1,4 @@
-@nightly @blue_team_krms
+@nightly @blue_team
 Feature: CO.Copy CO with AO Requisites to new CO
 
   Background:
