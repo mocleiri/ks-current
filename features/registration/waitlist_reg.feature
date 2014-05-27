@@ -47,6 +47,7 @@ Feature: REG.Wait List
     Then I can verify I am not on the waitlist
 
   #KSENROLL-12351
+  @wip
   Scenario: CR 8.7 I want to edit the parameters of a waitlisted registration group so if I am registered for it I can take it with my preferred options
     When I register for a full CHEM3 course offering and add myself to a waitlist
     And I view my schedule

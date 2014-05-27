@@ -15,6 +15,7 @@ Feature: REG.Register for course
     And I can view the details of my selection in the registration cart
 
   #KSENROLL-11748
+  @wip
   Scenario: CR 1.2 I want to indicate course parameters at the time I enter course information so I can register with my preferred options
     When I add a course to my registration cart and specify course options
     Then the course is present in my cart, with the updated options
@@ -26,6 +27,7 @@ Feature: REG.Register for course
     Then the course is not present in my cart
 
   #KSENROLL-11810
+  @wip
   Scenario: CR 1.5 I want to change the course parameters for my selections so I can register with preferred options
     When I add a course offering having multiple credit options to my registration cart
     And I edit the course in my registration cart
@@ -60,6 +62,7 @@ Feature: REG.Register for course
     And the course is present in my cart
 
   #KSENROLL-12064
+  @wip
   Scenario: CR 5.1 I want to change the parameters for my registered courses so that I take the course with my preferred options.
     Given I have registered for a course having multiple credit options
     When I edit the course in my schedule
