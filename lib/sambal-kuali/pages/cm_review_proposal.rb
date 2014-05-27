@@ -11,6 +11,7 @@ class CmReviewProposal < BasePage
   # COURSE INFORMATION REVIEW FIELDS
   element(:proposal_title_element) { |b| b.textarea(id: "proposalInfo_name_control") }
   value(:proposal_title_review) { |b| b.proposal_title_element.text }
+  value(:transcript_course_title) { |b| b.textarea(name: /transcriptTitle/).text}
   value(:course_title_review) { |b| b.textarea(id: "courseInfo_courseTitle_control").text }
   value(:subject_code_review) { |b| b.textarea(id:"courseInfo_subjectArea_control").text }
   value(:course_number_review) { |b| b.textarea(id: "courseInfo_courseNumberSuffix_control").text }

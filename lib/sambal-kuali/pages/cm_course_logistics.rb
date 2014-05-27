@@ -10,8 +10,8 @@ class CmCourseLogistics < BasePage
   element(:term_summer) { |b| b.checkbox(value: 'kuali.atp.type.Summer') }
 
 #DURATION COUNT
-  element(:duration_type) { |b| b.select_list(name: /course.duration.atpDurationTypeKey$/) }
-  element(:duration_count) { |b| b.text_field(name: /course.duration.timeQuantity$/) }
+  element(:duration_count_type) { |b| b.select_list(name: /course.duration.atpDurationTypeKey$/) }
+  element(:duration_count_count) { |b| b.text_field(name: /course.duration.timeQuantity$/) }
 
 #GRADE ASSESMENTS
 
@@ -43,20 +43,20 @@ class CmCourseLogistics < BasePage
 #COURSE FORMAT(S)
   action(:add_additional_format) { |b| b.button(id: /CourseFormats-Widgets_add$/).click; b.adding_line_wait }
   action(:add_activity) { |b| b.button(id: 'activity-addline_line0').click; b.loading_wait }
-  action(:activity_type) { |b| b.select_list(name: 'document.newMaintainableObject.dataObject.formats[0].activities[0].typeKey') }
-  element(:activity_contacted_hours) { |b| b.text_field(name: /contactHours.unitQuantity$/) }
-  element(:activity_frequency) { |b| b.select_list(name: /contactHours.unitTypeKey$/) }
-  action(:activity_duration_type) { |b| b.select_list(id: "KS-Logistics-Format-DurationTypeDropDown_line0_line0_control") }
-  action(:activity_duration_count) { |b| b.text_field(id: "KS-Logistics-Format-DurationTimeQuantity-Field_line0_line0_control") }
-  action(:activity_class_size) { |b| b.text_field(name: /defaultEnrollmentEstimate$/) }
+  action(:type) { |format_level,activity_level,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].typeKey") }
+  element(:contacted_hours) { |format_level,activity_level,b| b.text_field(id: /line#{format_level-1}_line#{activity_level-1}_control/, name: /contactHours.unitQuantity$/) }
+  element(:contact_frequency) { |format_level,activity_level,b| b.select_list(id: /line#{format_level-1}_line#{activity_level-1}_control/, name: /contactHours.unitTypeKey$/) }
+  action(:duration_count) { |format_level,activity_level,b| b.text_field(id: "KS-Logistics-Format-DurationTimeQuantity-Field_line#{format_level-1}_line#{activity_level-1}_control") }
+  action(:duration_type) { |format_level,activity_level,b| b.select_list(id: "KS-Logistics-Format-DurationTypeDropDown_line#{format_level-1}_line#{activity_level-1}_control") }
+  action(:class_size) { |format_level,activity_level,b| b.text_field(id:/line#{format_level-1}_line#{activity_level-1}_control/, name: /defaultEnrollmentEstimate$/) }
 
   #ADDED COURSE FORMATS
-  action(:activity_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].typeKey") }
-  element(:activity_contacted_hours_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].contactHours.unitQuantity").value }
-  element(:activity_frequency_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].contactHours.unitTypeKey") }
-  action(:activity_duration_type_added) { |format_count,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].duration.atpDurationTypeKey") }
-  action(:activity_duration_count_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].duration.timeQuantity").value }
-  action(:activity_class_size_added) { |format_count,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[0].activities[#{format_count-1}].defaultEnrollmentEstimate").value }
+  action(:type_added) { |format_level,activity_level,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].typeKey") }
+  element(:contacted_hours_added) { |format_level,activity_level,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].contactHours.unitQuantity").value }
+  element(:frequency_added) { |format_level,activity_level,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].contactHours.unitTypeKey") }
+  action(:duration_type_added) { |format_level,activity_level,b| b.select_list(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].duration.atpDurationTypeKey") }
+  action(:duration_count_added) { |format_level,activity_level,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].duration.timeQuantity").value }
+  action(:class_size_added) { |format_level,activity_level,b| b.text_field(name: "document.newMaintainableObject.dataObject.formats[#{format_level-1}].activities[#{activity_level-1}].defaultEnrollmentEstimate").value }
 
 
 

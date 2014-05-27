@@ -45,6 +45,7 @@ class CmOutcomeObject < DataFactory
       page.credit_value(opts[:outcome_level]).fit opts[:credit_value]
     end
     determine_save_action
+    set_options(opts)
   end
 
 

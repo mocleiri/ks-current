@@ -20,7 +20,7 @@ Scenario: CC8.3 Edit the faculty proposal - CS
   When I am logged in as Curriculum Specialist
   Then I perform a search for the course proposal
   And I edit the course proposal
-  And I should see updated data on Review proposal page
+  And I should see updated data on the Review proposal page
 
 
 Scenario: CC8.4 Faculty cannot edit CS proposal

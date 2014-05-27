@@ -82,6 +82,7 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
     page.growl_text.should == "Document was successfully saved."
     page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)" if proposal_type == "admin proposal"
     page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)" if proposal_type == "course proposal"
+    page.transcript_course_title.should == "#{@course_proposal.transcript_course_title}"
     page.subject_code.value.should == @course_proposal.subject_code
     page.course_number.value.should == @course_proposal.course_number
     page.description_rationale.value.should == @course_proposal.description_rationale
@@ -121,12 +122,12 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
 
 
     #FORMATS
-    page.activity_type_added(1).selected?(@course_proposal.activity_type).should == true
-    page.activity_contacted_hours_added(1).should == "#{@course_proposal.activity_contacted_hours}"
-    page.activity_frequency_added(1).selected?(@course_proposal.activity_frequency).should == true
-    page.activity_duration_type_added(1).selected?(@course_proposal.activity_duration_type).should == true
-    page.activity_duration_count_added(1).should == "#{@course_proposal.activity_duration_count}"
-    page.activity_class_size_added(1).should == "#{@course_proposal.activity_class_size}"
+    page.type_added(1,1).selected?(@course_proposal.activity_type).should == true
+    page.contacted_hours_added(1,1).should == "#{@course_proposal.activity_contacted_hours}"
+    page.frequency_added(1,1).selected?(@course_proposal.activity_frequency).should == true
+    page.duration_type_added(1,1).selected?(@course_proposal.activity_duration_type).should == true
+    page.duration_count_added(1,1).should == "#{@course_proposal.activity_duration_count}"
+    page.class_size_added(1,1).should == "#{@course_proposal.activity_class_size}"
 
 
 
@@ -197,9 +198,12 @@ end
 And /^I edit the course proposal$/ do
   @course_proposal.edit   :proposal_title => "updated #{random_alphanums(10,'test proposal title ')}",
                           :course_title => "updated #{random_alphanums(10, 'test course title ')}",
+                          :transcript_course_title => "updated #{random_alphanums(1,'123')}",
                           :subject_code => "ENGL",
+                          :course_number => (100..999).to_a.sample,
                           :description_rationale => "updated #{random_alphanums(20, 'test description rationale ')}",
                           :proposal_rationale => "updated #{random_alphanums(20, 'test proposal rationale ')}",
+                          :campus_location => [:location_all, :location_extended, :location_north, :location_south],
                           :curriculum_oversight => '::random::',
                           :assessment_scale => [:assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory],
                           :final_exam_type => [:exam_standard, :exam_alternate, :exam_none],
@@ -207,9 +211,17 @@ And /^I edit the course proposal$/ do
                           :start_term => '::random::'
 
   @course_proposal.outcome_list[0].delete
-  @course_proposal.outcome_list[1].edit :credit_value=>"#{(1..4).to_a.sample},#{(5..9).to_a.sample}", :outcome_level => 1
-
+  @course_proposal.outcome_list[1].edit :credit_value=>"#{(1..4).to_a.sample},#{(5..9).to_a.sample}",
+                                        :outcome_level => 1
   @course_proposal.add_outcome :outcome => (make CmOutcomeObject,:outcome_type => "Fixed",:outcome_level => 2, :credit_value => 5)
+  @course_proposal.format_list[0].edit :format_level => 1,
+                                       :activity_level => 1,
+                                       :type => '::random::',
+                                       :contacted_hours => (1..9).to_a.sample,
+                                       :contact_frequency => '::random::',
+                                       :duration_count => (1..9).to_a.sample,
+                                       :duration_type => '::random::',
+                                       :class_size => (1..9).to_a.sample
 
 end
 
@@ -271,6 +283,15 @@ And /^I should see the updated data on the Review proposal page$/ do
     page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
     page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
     page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+    
+    #ACTIVITY FORMAT
+    page.activity_level_review(1).should == "Format 1"
+    page.activity_type_review(1).should include "#{@course_proposal.activity_type}".gsub(/\s+/, "")
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.activity_contacted_hours}"
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.activity_frequency}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.activity_duration_type}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.activity_duration_count}"
+    page.activity_class_size_review(1).should == "#{@course_proposal.activity_class_size}"
 
     #ACTIVE DATES SECTION
     page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?
@@ -289,7 +310,9 @@ And /^I should see updated data on Review proposal page$/ do
     #COURSE INFORMATION SECTION
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
+    page.transcript_course_title.should == @course_proposal.transcript_course_title
     page.subject_code_review.should == "#{@course_proposal.subject_code}"
+    page.course_number_review.should == "#{@course_proposal.course_number}"
     page.description_review.should == "#{@course_proposal.description_rationale}"
     page.proposal_rationale_review.should == "#{@course_proposal.proposal_rationale}"
 
@@ -345,7 +368,9 @@ And /^I should see updated data on the Review proposal page$/ do
     #COURSE INFORMATION SECTION
     page.proposal_title_review.should == @course_proposal.proposal_title
     page.course_title_review.should == @course_proposal.course_title
+    page.transcript_course_title.should == @course_proposal.transcript_course_title
     page.subject_code_review.should == "#{@course_proposal.subject_code}"
+    page.course_number_review.should == "#{@course_proposal.course_number}"
     page.description_review.should == "#{@course_proposal.description_rationale}"
     page.proposal_rationale_review.should == "#{@course_proposal.proposal_rationale}"
 
@@ -369,18 +394,28 @@ And /^I should see updated data on the Review proposal page$/ do
 
     #FIXED OUTCOME
     page.outcome_level_review(1).should == "Outcome #{@course_proposal.outcome_list[0].outcome_level.to_i+1}" unless @course_proposal.outcome_list[0].outcome_level.nil?
-    page.outcome_type_review(1).should == "Fixed" unless @course_proposal.outcome_list[0].outcome_type.nil?
+    page.outcome_type_review(1).should == "Range" unless @course_proposal.outcome_list[0].outcome_type.nil?
     page.outcome_credit_review(1) == "#{@course_proposal.outcome_list[0].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #RANGE OUTCOME
     page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_list[1].outcome_level.to_i+1 }" unless @course_proposal.outcome_list[1].outcome_level.nil?
-    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_list[1].outcome_type.nil?
+    page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_list[1].outcome_type.nil?
     page.outcome_credit_review(2) == "#{@course_proposal.outcome_list[1].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #MULTIPLE OUTCOME
     page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
-    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
+    page.outcome_type_review(3).should == "Fixed" unless @course_proposal.outcome_list[2].outcome_type.nil?
     page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
+
+
+    #ACTIVITY FORMAT
+    page.activity_level_review(1).should == "Format #{@course_proposal.format_list[0].format_level}"
+    page.activity_type_review(1).should include "#{@course_proposal.format_list[0].type}".gsub(/\s+/, "")
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.format_list[0].contacted_hours}"
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.format_list[0].contact_frequency}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.format_list[0].duration_type}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.format_list[0].duration_count}"
+    page.activity_class_size_review(1).should == "#{@course_proposal.format_list[0].class_size}"
 
 
     #ACTIVE DATES SECTION
@@ -701,11 +736,13 @@ Then /^I should see data in all non required fields for the course proposal$/ do
 
     #@course_proposal.verify_text_field(page, 'activity_contacted_hours', 'activity_duration_count', 'activity_class_size' )
 
-    page.activity_contacted_hours.value.should == @course_proposal.activity_contacted_hours
-    page.activity_duration_count.value.should == @course_proposal.activity_duration_count
-    page.activity_class_size.value.should == @course_proposal.activity_class_size
-    page.activity_frequency.selected?(@course_proposal.activity_frequency).should == true unless @course_proposal.activity_frequency.nil?
-    page.activity_duration_type.selected?(@course_proposal.activity_duration_type).should == true unless @course_proposal.activity_duration_type.nil?
+    page.contacted_hours.value.should == @course_proposal.activity_contacted_hours
+    page.frequency.selected?(@course_proposal.activity_frequency).should == true unless @course_proposal.activity_frequency.nil?
+    page.duration_count.value.should == @course_proposal.activity_duration_count
+    page.duration_type.selected?(@course_proposal.activity_duration_type).should == true unless @course_proposal.activity_duration_type.nil?
+    page.class_size.value.should == @course_proposal.activity_class_size
+
+
   end
   #on KradLearningObjectives do |page|
   #  page.learning_objectives
@@ -715,7 +752,6 @@ Then /^I should see data in all non required fields for the course proposal$/ do
     page.course_requisites
 
     page.course_requisite_added_rule(@course_proposal.student_eligibility_rule_with_value).should be_present unless @course_proposal.student_eligibility_rule.nil?
-
     page.course_requisite_added_rule(@course_proposal.corequisite_rule_with_value).should be_present unless @course_proposal.corequisite_rule.nil?
 
     #page.course_requisite_added_rule().should be_present unless @course_proposal.student_eligibility_prerequisite_rule.nil?

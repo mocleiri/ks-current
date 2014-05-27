@@ -24,9 +24,7 @@ class CmCourseProposalObject < DataFactory
         :exam_standard, :exam_alternate, :exam_none,
         #
         :outcome_list,
-        :course_format_activity_type, :duration_type, :duration_count,
-        :activity_type, :activity_duration_type, :activity_frequency,
-        :activity_contacted_hours, :activity_duration_count, :activity_class_size,
+        :format_list,
         :audit, :pass_fail_transcript_grade,
         :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory,
         #Course Requisites
@@ -106,7 +104,7 @@ class CmCourseProposalObject < DataFactory
         course_title:               random_alphanums(10, 'test course title '),
         subject_code:               "MATH",
         course_number:              "123",
-        transcript_course_title: random_alphanums(5,'test transcript'),
+        transcript_course_title:    random_alphanums(5,'test transcript'),
         description_rationale:      random_alphanums(20, 'test description rationale '),
         proposal_rationale:         random_alphanums(20, 'test proposal rationale '),
         #GOVERNANCE
@@ -124,13 +122,7 @@ class CmCourseProposalObject < DataFactory
             (make CmOutcomeObject, :outcome_type => "Range", :outcome_level => 1, :credit_value => "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}"),
             (make CmOutcomeObject, :outcome_type => "Multiple",:outcome_level => 2, :credit_value => "#{(1..4).to_a.sample},#{(5..9).to_a.sample}")
         ],
-        ##FORMATS
-        activity_duration_type: '::random::', #['Day', 'Four Years', 'Half Semester', 'Hours', 'Mini-mester', 'Minutes', 'Month', 'Period', 'Quarter', 'Semester', 'Session', 'TBD', 'Term', 'Two Years', 'Week', 'Year'].sample,
-        activity_type: '::random::', #['Directed', 'Discussion', 'Experiential Learning/Other', 'Homework', 'Lab', 'Lecture', 'Tutorial', 'Web Discuss', 'Web Lecture'].sample,
-        activity_frequency: '::random::', #['per day', 'per month', 'per week'].sample,
-        activity_contacted_hours: (1..9).to_a.sample,
-        activity_duration_count: (1..9).to_a.sample,
-        activity_class_size: (1..9).to_a.sample,
+        format_list: [(make CmFormatsObject)],
         start_term: '::random::',
         #FINANCIALS
         course_fees:                random_alphanums(10, 'test course fees '),
@@ -144,10 +136,10 @@ class CmCourseProposalObject < DataFactory
 
     # random_checkbox and random_radio is used to select a random checkbox/radio on a page.
     # That will then be set the instance variable to :set, so that it can be used in the fill_out method for later tests
-    random_checkbox @scheduling_term
+    random_checkbox(@scheduling_term,"Scheduling Term")
     random_radio(@final_exam_status)
-    random_checkbox(@campus_location)
-    random_checkbox(@assessment_scale)
+    random_checkbox(@campus_location,"Campus Location")
+    random_checkbox(@assessment_scale,"Assessment Scale")
     random_radio(@final_exam_type)
   end
 
@@ -172,7 +164,9 @@ class CmCourseProposalObject < DataFactory
       page.course_information unless page.current_page('Course Information').exists?
       page.proposal_title.fit opts[:proposal_title]
       page.course_title.fit opts[:course_title]
+      page.transcript_course_title.fit opts[:transcript_course_title]
       page.subject_code.fit opts[:subject_code]
+      page.course_number.fit opts[:course_number]
       page.description_rationale.fit opts[:description_rationale]
       page.proposal_rationale.fit opts[:proposal_rationale]
     end
@@ -181,6 +175,10 @@ class CmCourseProposalObject < DataFactory
 
     on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
+      if opts[:campus_location] != nil
+        reset_checkbox(@campus_location, "Campus Location") unless opts[:campus_location].nil?
+        fill_out page, :location_all, :location_extended, :location_north, :location_south unless opts[:campus_location].nil?
+      end
       page.curriculum_oversight.pick! opts[:curriculum_oversight] unless opts[:curriculum_oversight].nil?
     end
 
@@ -188,18 +186,20 @@ class CmCourseProposalObject < DataFactory
 
     on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
-      #Edit Assessment Scale
-        reset_checkbox(@assessment_scale)
+      #Edit Assessment Scale\
+      if opts[:assessment_scale] != nil
+        reset_checkbox(@assessment_scale, "Assessment Scale")
         fill_out page,  :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory
-
+      end
       #Edit Final Exam Status
-        random_radio(@final_exam_type)
-        fill_out page, :exam_standard, :exam_alternate, :exam_none            
+      if opts[:final_exam_type] != nil
+        random_radio(opts[@final_exam_type])
+        fill_out page, :exam_standard, :exam_alternate, :exam_none
         #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
         #if that radio is selected
         page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
         page.final_exam_rationale.fit opts[:final_exam_rationale] unless page.exam_standard.set?
-
+      end
 
     end
     determine_save_action
@@ -258,7 +258,9 @@ class CmCourseProposalObject < DataFactory
         outcome.create
       end
 
-      set_additional_format
+      @format_list.each do |format|
+        format.create
+      end
 
 
 
@@ -494,56 +496,39 @@ class CmCourseProposalObject < DataFactory
      { "Yes" => :set, "No" => :clear }
   end
 
-
-  def set_additional_format
-    on CmCourseLogistics do |page|
-      page.activity_type.pick! @activity_type
-      sleep 1 # to allow to drop down selection to catch up
-      page.activity_contacted_hours.fit @activity_contacted_hours
-      page.activity_frequency.pick! @activity_frequency
-      page.activity_duration_type.pick! @activity_duration_type
-      page.activity_duration_count.fit @activity_duration_count
-      page.activity_class_size.fit @activity_class_size
-    end
-  end
-
-  def set_outcomes(outcome_type,outcome_level,credit_value)
-    on CmCourseLogistics do |page|
-      page.add_outcome unless page.outcome_type(outcome_level-1).exists?
-      page.outcome_type(outcome_level-1).wait_until_present
-      page.outcome_type(outcome_level-1).pick! outcome_type
-      page.loading_wait
-      page.credit_value(outcome_level-1).wait_until_present
-      page.credit_value(outcome_level-1).set credit_value
-    end
-  end
-
-
   #Used to select a random checkbox/radio button and then set to :set for fill_out method
-  def random_checkbox(pass_in_an_array)
-    @sample_checkbox = pass_in_an_array.sample unless pass_in_an_array.nil?
-    set(@sample_checkbox, :set)  unless pass_in_an_array.nil?
+  def random_checkbox(pass_in_an_array, type)
+    if type == "Campus Location"
+      @sample_checkbox_location = pass_in_an_array.sample unless pass_in_an_array.nil?
+      set(@sample_checkbox_location, :set)  unless pass_in_an_array.nil?
+    end
+    if type == "Assessment Scale"
+      @sample_checkbox_assessment = pass_in_an_array.sample unless pass_in_an_array.nil?
+      set(@sample_checkbox_assessment, :set)  unless pass_in_an_array.nil?
+    end
   end
 
   
-  def reset_checkbox(pass_in_an_array)
-    set(@sample_checkbox, :clear) unless pass_in_an_array.nil?
-    pass_in_an_array.delete(@sample_checkbox)
-    @sample_checkbox_new = pass_in_an_array.sample
-    set(@sample_checkbox_new, :set) unless pass_in_an_array.nil?
+  def reset_checkbox(pass_in_an_array, type)
+    if type == "Campus Location"
+    set(@sample_checkbox_location, :clear) unless pass_in_an_array.nil?
+    pass_in_an_array.delete(@sample_checkbox_location)
+    @sample_checkbox_new_location = pass_in_an_array.sample
+    set(@sample_checkbox_new_location, :set) unless pass_in_an_array.nil?
+    end
+    if type == "Assessment Scale"
+      set(@sample_checkbox_assessment, :clear) unless pass_in_an_array.nil?
+      pass_in_an_array.delete(@sample_checkbox_assessment)
+      @sample_checkbox_new_assessment = pass_in_an_array.sample
+      set(@sample_checkbox_new_assessment, :set) unless pass_in_an_array.nil?
+    end
   end
 
   def random_radio(pass_in_an_array)
     @sample_radio = pass_in_an_array.sample unless pass_in_an_array.nil?
     set(@sample_radio, :set)  unless pass_in_an_array.nil?
   end
-  
-  def reset_radio(pass_in_an_array)
-    set(@sample_radio, :nil) unless pass_in_an_array.nil?
-    pass_in_an_array.delete(@sample_radio)
-    @sample_radio_new = pass_in_an_array.sample unless pass_in_an_array.nil?
-    set(@sample_radio_new, :set)  unless pass_in_an_array.nil?
-  end
+
 
 #COURSE INFORMATION
   def add_joint_offering
