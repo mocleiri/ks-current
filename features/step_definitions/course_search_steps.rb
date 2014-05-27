@@ -1,21 +1,21 @@
 When /^I search for a course$/ do
-  @course_offering = make CourseOffering
-  @course_offering.course_search
+  @course_search_result = make CourseSearchResults
+  @course_search_result.course_search
 end
 
 
 When /^I search for a course with "(.*?)" text option$/ do |text|
-  @course_offering = make CourseOffering
-  @course_offering.course_search(text)
+  @course_search_result = make CourseSearchResults
+  @course_search_result.course_search(text)
 end
 
 Then /^the course "(.*?)" appear in the search results$/ do |test_condition|
   on CourseSearch do |page|
     if test_condition == "should"
-      page.results_list.should include @course_offering.course_code
+      page.results_list.should include @course_search_result.course_code
     else
       begin
-        page.results_list.should_not include @course_offering.course_code
+        page.results_list.should_not include @course_search_result.course_code
       rescue Watir::Exception::UnknownObjectException
         # Implication here is that there were no search results at all.
       end
@@ -31,8 +31,8 @@ Then /^courses containing  "(.*?)" text option appears$/ do |expected|
 end
 
 When /^I search for a "(.*?)" "(.*?)" by "(.*?)"$/ do |course_status,course, term_selection|
-  @course_offering = make CourseOffering, :course_code => course, :term_select => term_selection
-  @course_offering.course_search
+  @course_search_result = make CourseSearchResults, :course_code => course, :term_select => term_selection
+  @course_search_result.course_search
 end
 
 
@@ -40,8 +40,8 @@ end
 #-------------------------------------------------------------------------------------------
 
 When /^I search for a course on the course search page$/ do
-  @course_offering = make CourseOffering, :course_code => "ENGL2"
-  @course_offering.course_search
+  @course_search_result = make CourseSearchResults, :course_code => "ENGL2"
+  @course_search_result.course_search
 end
 
 
@@ -65,23 +65,23 @@ end
 
 
 When /^I search for a course on the course search page with course title$/ do
-  @course_offering = make CourseOffering, :search_text => "eng"
-  @course_offering.course_search_with_search_text
+  @course_search_result = make CourseSearchResults, :search_text => "eng"
+  @course_search_result.course_search_with_search_text
 end
 
 
 When /^I search for a course with one word"(.*?)" text option$/ do |text|
-  @course_offering = make CourseOffering, :search_text => text
-  @course_offering.course_search_with_search_text
+  @course_search_result = make CourseSearchResults, :search_text => text
+  @course_search_result.course_search_with_search_text
 end
 
 Then /^course title or course description containing "(.*?)"text option "(.*?)" appear$/ do |text,condition|
-  @course_offering = make CourseOffering
+  @course_search_result = make CourseSearchResults
   if condition == "should"
-    @course_offering.multi_text_search(text).should be_true
+    @course_search_result.multi_text_search(text).should be_true
   else
     begin
-      @course_offering.multi_text_search(text).should_not be_true
+      @course_search_result.multi_text_search(text).should_not be_true
     rescue Watir::Exception::UnknownObjectException
       # Implication here is that there were no search results at all.
     end
@@ -89,19 +89,19 @@ Then /^course title or course description containing "(.*?)"text option "(.*?)" 
 end
 
 When /^I search for a course with multi word"(.*?)" text option$/ do |text|
-  @course_offering = make CourseOffering, :search_text => text
-  @course_offering.course_search_with_search_text
+  @course_search_result = make CourseSearchResults, :search_text => text
+  @course_search_result.course_search_with_search_text
 
 end
 
 
 Then(/^course code or course title or course description containing any word of "(.*?)"text option "(.*?)" appear$/) do |expected, condition|
-  @course_offering = make CourseOffering
+  @course_search_result = make CourseSearchResults
   if condition == "should"
-    @course_offering.multi_text_search(expected).should be_true
+    @course_search_result.multi_text_search(expected).should be_true
   else
     begin
-      @course_offering.multi_text_search(expected).should_not be_true
+      @course_search_result.multi_text_search(expected).should_not be_true
     rescue Watir::Exception::UnknownObjectException
       # Implication here is that there were no search results at all.
     end
@@ -111,18 +111,18 @@ end
 #------------------------------------------------------------------------------------------------------------------------------------
 
 When /^I search for a course with "(.*?)" level option$/ do |level|
-  @course_offering = make CourseOffering
-  @course_offering.course_search(level)
+  @course_search_result = make CourseSearchResults
+  @course_search_result.course_search(level)
 end
 
 Then /^only "(.*?)" level courses "(.*?)" be displayed$/ do |text, condition|
-  @course_offering = make CourseOffering
+  @course_search_result = make CourseSearchResults
   if condition == "should"
-    @course_offering.check_all_results_data_for_level(text).should be_true
+    @course_search_result.check_all_results_data_for_level(text).should be_true
     puts "Test is Passed True"
   else
     begin
-      @course_offering.check_all_results_data_for_level(text).should_not be_true
+      @course_search_result.check_all_results_data_for_level(text).should_not be_true
     rescue Watir::Exception::UnknownObjectException
     end
   end
@@ -167,13 +167,13 @@ end
 
 #------------------------------------------------------------------------------------------------------------------------------------
 When /^I search for "(.*?)"$/ do |text|
-  @course_offering = make CourseOffering, :search_text => text
-  @course_offering.course_search_with_search_text
+  @course_search_result = make CourseSearchResults, :search_text => text
+  @course_search_result.course_search_with_search_text
 end
 
 
 Then /^"(.*?)" and courses matching at least one "(.*?)" are returned$/ do |expected_courses, expected_component|
-  @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
+  @course_search_result.check_all_results_data(expected_courses,expected_component).should be_true
 end
 
 
@@ -181,8 +181,8 @@ end
 
 
 And /^I search for a course on course search$/ do
-  @course_offering = make CourseOffering, :course_code => "General"
-  @course_offering.course_search
+  @course_search_result = make CourseSearchResults, :course_code => "General"
+  @course_search_result.course_search
 end
 
 
@@ -198,13 +198,13 @@ Then /^the course code listed should be sorted in "(.*?)"$/ do  |text|
    on CourseSearch do |page|
      page.code_element.wait_until_present
    end
-    @course_offering.check_code_descending_order_in_all_pages.should be_true
+    @course_search_result.check_code_descending_order_in_all_pages.should be_true
     puts "Descending is Passed True"
   else
     on CourseSearch do |page|
       page.code_element.wait_until_present
     end
-    @course_offering.check_code_ascending_order_in_all_pages.should be_true
+    @course_search_result.check_code_ascending_order_in_all_pages.should be_true
     puts "Ascending is Passed True"
   end
 end
@@ -222,13 +222,13 @@ Then /^the course Title listed should be sorted in "(.*?)"$/ do |text|
     on CourseSearch do |page|
       page.title_element.wait_until_present
     end
-    @course_offering.check_title_ascending_order_in_all_pages.should be_true
+    @course_search_result.check_title_ascending_order_in_all_pages.should be_true
     puts"Ascending is Passed True"
   else
     on CourseSearch do |page|
       page.title_element.wait_until_present
     end
-    @course_offering.check_title_descending_order_in_all_pages.should be_true
+    @course_search_result.check_title_descending_order_in_all_pages.should be_true
     puts "Descending is Passed True"
   end
 end
@@ -236,17 +236,17 @@ end
 #-----------------------------------------------------------------------------------------------------------------------
 
 When /^I search for a course with "(.*?)" option$/ do |text|
-  @course_offering = make CourseOffering, :search_text => text
-  @course_offering.course_search_with_search_text
+  @course_search_result = make CourseSearchResults, :search_text => text
+  @course_search_result.course_search_with_search_text
 end
 
 Then /^the "(.*?)" and courses matching at least one "(.*?)" are returned$/ do |expected_courses, expected_component|
-  @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
+  @course_search_result.check_all_results_data(expected_courses,expected_component).should be_true
 end
 
 
 Then /^course code or course title or course description containing any text of "(.*?)" text option are returned$/ do |expected_courses, expected_component|
-    @course_offering.check_all_results_data(expected_courses,expected_component).should be_true
+    @course_search_result.check_all_results_data(expected_courses,expected_component).should be_true
 end
 
 
@@ -254,13 +254,13 @@ end
 
 
 When /^I search for a "(.*?)" having divisions and levels with space in the search text$/ do |text|
-  @course_offering = make CourseOffering, :search_text => text
-  @course_offering.course_search_with_search_text
+  @course_search_result = make CourseSearchResults, :search_text => text
+  @course_search_result.course_search_with_search_text
 end
 
 
 Then  /^the courses containing the "(.*?)" should be displayed in logical order$/ do |text|
-  @course_offering.logical_order_sort(text).should be_true
+  @course_search_result.logical_order_sort(text).should be_true
 end
 
 

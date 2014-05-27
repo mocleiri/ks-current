@@ -1,4 +1,4 @@
-@wipt
+@nightly
 Feature: BT.General Education Requirement
   Background:
     Given I am logged in as a Student
