@@ -1,5 +1,5 @@
 @nightly @blue_team
-Feature: CO.ELIG7-4 Compare to Canonical
+Feature: CO.Compare to Canonical for CO Requisites
 
   Background:
     Given I am logged in as admin
