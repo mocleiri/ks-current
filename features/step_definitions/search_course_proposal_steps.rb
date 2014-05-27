@@ -213,12 +213,12 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
 
     #ACTIVITY FORMAT
     page.activity_level_review(1).should == "Format 1"
-    page.activity_type_review(1).should include "#{@course_proposal.activity_type}".gsub(/\s+/, "")
-    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.activity_contacted_hours}"
-    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.activity_frequency}"
-    page.activity_duration_type_count_review(1).should include "#{@course_proposal.activity_duration_type}"
-    page.activity_duration_type_count_review(1).should include "#{@course_proposal.activity_duration_count}"
-    page.activity_class_size_review(1).should == "#{@course_proposal.activity_class_size}"
+    page.activity_type_review(1).should include "#{@course_proposal.format_list[0].type}".gsub(/\s+/, "")
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.format_list[0].contacted_hours}"
+    page.activity_contact_hours_frequency_review(1).should include "#{@course_proposal.format_list[0].contact_frequency}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.format_list[0].duration_type}"
+    page.activity_duration_type_count_review(1).should include "#{@course_proposal.format_list[0].duration_count}"
+    page.activity_class_size_review(1).should == "#{@course_proposal.format_list[0].class_size}"
 
     #ACTIVE DATES SECTION
     page.start_term_review.should == @course_proposal.start_term unless @course_proposal.start_term.nil?

@@ -82,7 +82,7 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
     page.growl_text.should == "Document was successfully saved."
     page.page_header_text.should == "#{@course_proposal.proposal_title} (Admin Proposal)" if proposal_type == "admin proposal"
     page.page_header_text.should == "#{@course_proposal.proposal_title} (Proposal)" if proposal_type == "course proposal"
-    page.transcript_course_title.should == "#{@course_proposal.transcript_course_title}"
+    page.transcript_course_title.value.should == @course_proposal.transcript_course_title
     page.subject_code.value.should == @course_proposal.subject_code
     page.course_number.value.should == @course_proposal.course_number
     page.description_rationale.value.should == @course_proposal.description_rationale
@@ -122,12 +122,12 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
 
 
     #FORMATS
-    page.type_added(1,1).selected?(@course_proposal.activity_type).should == true
-    page.contacted_hours_added(1,1).should == "#{@course_proposal.activity_contacted_hours}"
-    page.frequency_added(1,1).selected?(@course_proposal.activity_frequency).should == true
-    page.duration_type_added(1,1).selected?(@course_proposal.activity_duration_type).should == true
-    page.duration_count_added(1,1).should == "#{@course_proposal.activity_duration_count}"
-    page.class_size_added(1,1).should == "#{@course_proposal.activity_class_size}"
+    page.type_added(1,1).selected?(@course_proposal.format_list[0].type).should == true
+    page.contacted_hours_added(1,1).should == "#{@course_proposal.format_list[0].contacted_hours}"
+    page.frequency_added(1,1).selected?(@course_proposal.format_list[0].contact_frequency).should == true
+    page.duration_type_added(1,1).selected?(@course_proposal.format_list[0].duration_type).should == true
+    page.duration_count_added(1,1).should == "#{@course_proposal.format_list[0].duration_count}"
+    page.class_size_added(1,1).should == "#{@course_proposal.format_list[0].class_size}"
 
 
 
