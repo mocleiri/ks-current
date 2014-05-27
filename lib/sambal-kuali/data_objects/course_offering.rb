@@ -1,4 +1,4 @@
-class CourseOffering < DataFactory
+class CourseSearchResults < DataFactory
 
   include Foundry
   include DateFactory
@@ -151,6 +151,18 @@ class CourseOffering < DataFactory
       page.search
     end
   end
+
+  def clear_facets
+    on CourseSearch do |page|
+      page.clear_term_facet.click if page.clear_term_facet.text=="Clear"
+      page.clear_gened_facet.click if page.clear_gened_facet.text=="Clear"
+      page.clear_credit_facet.click if page.clear_credit_facet.text=="Clear"
+      page.clear_level_facet.click if page.clear_level_facet.text=="Clear"
+      page.clear_courseprefix_facet.click if page.clear_courseprefix_facet.text=="Clear"
+    end
+  end
+
+
 
   def select_add_to_plan
     on CourseSearch do |page|

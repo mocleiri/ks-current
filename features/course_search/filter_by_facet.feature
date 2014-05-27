@@ -18,7 +18,7 @@ Feature: BT.Filter by Facet Requirement
   Scenario:CS 17.3:Verify search results in the course search page using Course level
     When I search for courses in the Course Search Page
     And I narrow the search results by a specific course level
-    Then I should see  the courses with the specific course level
+    Then I should see the courses with the specific course level
 
 
   Scenario:CS 17.4:Verify search results in the course search page using Course prefix
