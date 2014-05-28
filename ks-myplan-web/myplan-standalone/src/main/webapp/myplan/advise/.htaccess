@@ -1,6 +1,0 @@
-#
-#  Pubcookie authentication.
-#
-AuthType SecurID
-PubcookieAppID MyPlanAdvisor
-require valid-user
