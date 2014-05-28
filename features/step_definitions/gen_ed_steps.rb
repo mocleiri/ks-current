@@ -10,7 +10,6 @@ When(/^I search for a course in the Course Search Page$/) do
                                :gened_code=>"DSHU",
                                :gened_course=>"General Education: Humanities"
  @course_search_results.course_search
- @course_search_results.clear_facets
 
 end
 
@@ -52,7 +51,7 @@ When(/^I search for  courses in the Course Search Page$/) do
                                :gened_code=>"DSSP",
                                :gened_course=>"General Education: Scholarship in Practice"
  @course_search_results.course_search
- @course_search_results.clear_facets
+
 
 end
 
