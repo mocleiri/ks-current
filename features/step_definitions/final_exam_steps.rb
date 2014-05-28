@@ -1373,9 +1373,9 @@ Then /^the Exclude Saturday or Exclude Sunday fields should be deselected when v
   on(CalendarSearch).view @calendar.terms[0].term_name
   on ViewAcademicTerms do |page|
     page.open_term_section(@calendar.terms[0].term_type)
-    sleep 30
-    page.get_exclude_saturday_value(@calendar.terms[0].term_type).should == "false"
-    page.get_exclude_sunday_value(@calendar.terms[0].term_type).should == "false"
+    sleep 5
+    page.get_exclude_saturday_value(@calendar.terms[0].term_type).should_not == "Yes"
+    page.get_exclude_sunday_value(@calendar.terms[0].term_type).should_not == "Yes"
   end
 end
 
