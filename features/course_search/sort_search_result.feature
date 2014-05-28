@@ -1,4 +1,4 @@
-@nightly
+@wip
 Feature: BT.Search_result_sort
 
   Background:

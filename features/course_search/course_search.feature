@@ -1,4 +1,4 @@
-@nightly
+@wip
 Feature: BT.Course Search
 
   Background:
