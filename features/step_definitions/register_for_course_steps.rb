@@ -359,6 +359,8 @@ Then /^the number of courses and credits I am registered for is correctly update
   on StudentSchedule do |page|
     expected_count = @cart_reg_credit_count + @updated_cart_credit_count
     if drop == "after the drop"
+      page.wait_until { page.course_user_message =~ /drop processing/i }
+      page.wait_until { page.course_user_message !~ /drop processing/i }
       credits_to_drop = @reg_request.course_options.credit_option
       expected_count -= credits_to_drop.to_f
     end
