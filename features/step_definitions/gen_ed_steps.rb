@@ -10,6 +10,8 @@ When(/^I search for a course in the Course Search Page$/) do
                                :gened_code=>"DSHU",
                                :gened_course=>"General Education: Humanities"
  @course_search_results.course_search
+ @course_search_result.clear_facets
+
 
 end
 
@@ -23,8 +25,8 @@ end
 
 And(/^I select a requirement in the General Education Requirement facet$/) do
   on CourseSearch do |page|
-    @course_search_results.select_facet("term")
-     page.clear_term_facet.wait_until_present
+    @course_search_results.select_facet("gen_ed")
+     page.clear_gened_facet.wait_until_present
      #cannot avoid sleep currently since have already tried to wait for element existence.Can research in future if there is a way
      sleep 1
   end
