@@ -12,7 +12,7 @@ class ViewExamOfferings < BasePage
 
   #element(:cluster_list_div)  { |b| b.frm.section(id: 'KS-CourseOfferingManagement-ExamOfferingByAOClustersSection') }
 
-  element(:cancel_link) { |b| b.frm.a( text: "Cancel")}
+  element(:cancel_link) { |b| b.frm.a( text: 'Return to Course Offering')}
   action(:cancel) { |b| b.cancel_link.click; b.loading.wait_while_present}
 
   def co_eo_table
