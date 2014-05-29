@@ -57,14 +57,14 @@ class RegistrationCart < RegisterForCourseBase
   # EDIT COURSE OPTIONS DISCLOSURE
   element(:credit_options_more) { |b| b.div(id: "credit_options_more") }
   action(:more_credit_options) { |b| b.credit_options_more.click }
-  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "modal_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "modal_cart_credits_#{course_code}_#{reg_group_code}_#{credits}") }
   action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).set }
-  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
-  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
-  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
-  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "modal_save_#{course_code}_#{reg_group_code}") }
+  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "modal_cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "modal_cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "modal_cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
+  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "modal_cart_save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
-  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "modal_cancel_#{course_code}_#{reg_group_code}") }
+  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "modal_cart_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
   def show_add_dialog
@@ -106,13 +106,13 @@ class RegistrationCart < RegisterForCourseBase
   def select_credits_in_cart(course_code, reg_group_code, credits)
 
     # Firefox workaround
-    toggle_course_details @course_code,@reg_group_code
+    toggle_course_details course_code,reg_group_code
     sleep 1
-    show_course_details @course_code,@reg_group_code
+    show_course_details course_code,reg_group_code
     sleep 1
 
     more_credit_options if credit_options_more.visible?
-    select_credits(course_code, reg_group_code, credits)
+    credits_selection(course_code, reg_group_code, credits).set
   end
 
   def select_grading_in_cart(course_code, reg_group_code, grading_option)
