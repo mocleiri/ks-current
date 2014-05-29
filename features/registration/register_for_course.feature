@@ -29,6 +29,7 @@ Feature: REG.Register for course
   #KSENROLL-11810
   @wip
   Scenario: CR 1.5 I want to change the course parameters for my selections so I can register with preferred options
+    Given I am using a mobile screen size
     When I add a course offering having multiple credit options to my registration cart
     And I edit the course in my registration cart
     Then the course is present in my cart, with the updated options

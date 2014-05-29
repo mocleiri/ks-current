@@ -66,11 +66,11 @@ class RegistrationRequest < DataFactory
       page.submit_button.wait_until_present
       page.add_to_cart
       if @course_has_options
-        page.new_item_cancel_button.wait_until_present
+        page.new_item_credits_selection_div(@course_code,@reg_group_code).wait_until_present
         if @modify_course_options
           edit_course_options_on_new_item
         end
-        page.save_new_item
+        page.save_new_item @course_code,@reg_group_code
       end
     end
   end
@@ -135,7 +135,7 @@ class RegistrationRequest < DataFactory
       return nil
     end
     on RegistrationCart do |page|
-      page.new_item_credits_selection.wait_until_present
+      page.new_item_credits_selection_div(@course_code,@reg_group_code).wait_until_present
       page.select_credits_on_new_item @course_options.credit_option
       page.select_grading_on_new_item @course_options.grading_option
     end

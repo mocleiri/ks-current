@@ -44,23 +44,27 @@ class RegistrationCart < RegisterForCourseBase
   element(:add_to_waitlist_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_#{course_code}_#{reg_group_code}") }
 
   # ADD NEW ITEM OPTIONS MODAL DIALOG
-  element(:new_item_credits_selection) { |b| b.select(id: "newItemCredits") }
+  element(:new_item_credits_selection_div) { |course_code,reg_group_code,b| b.div(id:"newItem_credits_#{course_code}_#{reg_group_code}") }
+  element(:new_item_credits_selection) { |course_code,reg_group_code,b| b.radio(id: "newItem_credits_#{course_code}_#{reg_group_code}").set }
   element(:new_item_grading_audit) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.audit") }
   element(:new_item_grading_letter) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.letter") }
   element(:new_item_grading_pass_fail) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.passFail") }
-  element(:new_item_save_button) { |b| b.button(id: "newItemSave") }
-  action(:save_new_item) { |b| b.new_item_save_button.click }
-  element(:new_item_cancel_button) { |b| b.button(id: "newItemCancel") }
-  action(:cancel_new_item) { |b| b.new_item_cancel_button.click }
+  element(:new_item_save_button) { |course_code,reg_group_code,b| b.button(id: "newItem_save_#{course_code}_#{reg_group_code}") }
+  action(:save_new_item) { |course_code,reg_group_code,b| b.new_item_save_button(course_code,reg_group_code).click }
+  element(:new_item_cancel_button) { |course_code,reg_group_code,b| b.button(id: "newItem_cancel_#{course_code}_#{reg_group_code}") }
+  action(:cancel_new_item) { |course_code,reg_group_code,b| b.new_item_cancel_button(course_code,reg_group_code).click }
 
   # EDIT COURSE OPTIONS DISCLOSURE
-  element(:credits_selection) { |course_code,reg_group_code,b| b.select(id: "credits_#{course_code}_#{reg_group_code}") }
+  element(:credit_options_more) { |b| b.div(id: "credit_options_more") }
+  action(:more_credit_options) { |b| b.credit_options_more.click }
+  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "modal_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).set }
   element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
   element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
   element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
-  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "save_#{course_code}_#{reg_group_code}") }
+  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "modal_save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
-  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cancel_#{course_code}_#{reg_group_code}") }
+  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "modal_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
   def show_add_dialog
@@ -100,7 +104,15 @@ class RegistrationCart < RegisterForCourseBase
   end
 
   def select_credits_in_cart(course_code, reg_group_code, credits)
-    credits_selection(course_code, reg_group_code).select(credits)
+
+    # Firefox workaround
+    toggle_course_details @course_code,@reg_group_code
+    sleep 1
+    show_course_details @course_code,@reg_group_code
+    sleep 1
+
+    more_credit_options if credit_options_more.visible?
+    select_credits(course_code, reg_group_code, credits)
   end
 
   def select_grading_in_cart(course_code, reg_group_code, grading_option)
