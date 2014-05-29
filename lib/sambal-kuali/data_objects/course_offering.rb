@@ -32,7 +32,8 @@ class CourseSearchResults < DataFactory
         :subject=>"English",
         :gened_code=>"DSSP",
         :gened_course=>"General Education: Scholarship in Practice",
-        :course_level=> '3'
+        :course_level=> '3',
+        :course_prefix=> 'ENGL'
 
 
     }
@@ -43,10 +44,10 @@ class CourseSearchResults < DataFactory
  def select_facet(facet_type)
    on CourseSearch do |page|
      page.gened_checkbox_click(@gened_course)          if facet_type=="gen_ed"
-     page.term_checkbox_click                         if facet_type=="term"
-     page.credits_checkbox_click                       if facet_type=="credit"
-     page.courselevel_checkbox_click                   if facet_type=="course_level"
-     page.courseprefix_chekbox_click                 if facet_type=="course_prefix"
+     page.term_checkbox_click(@scheduled_terms)                         if facet_type=="term"
+     page.credits_checkbox_click(@credit)                       if facet_type=="credit"
+     page.courselevel_checkbox_click(@course_level)                   if facet_type=="course_level"
+     page.courseprefix_chekbox_click(@course_prefix)                 if facet_type=="course_prefix"
     end
  end
   def navigate_course_detail_page
