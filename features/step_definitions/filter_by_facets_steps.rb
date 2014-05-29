@@ -1,15 +1,13 @@
 When(/^I search for courses in the Course Search Page$/) do
   @course_search_result = make CourseSearchResults,
                                :course_code => "ENGL" ,
-                               :description=>"historical",
-                               :requisite=>"None",
                                :scheduled_terms=>"SP 14",
-                               :projected_terms=>"Check",
                                :gened_requirements=>"General",
                                :subject=>"English",
                                :gened_code=>"DSHU",
-                               :credit=>"1",
-                               :course_level=> '3'
+                               :credit=>"1.0",
+                               :course_level=> '200',
+                               :course_prefix=>'ENGL'
 
   @course_search_result.course_search
   @course_search_result.clear_facets
@@ -61,7 +59,7 @@ Then(/^I should see the courses with the specific Credit$/) do
 
   on CourseSearch do |page|
     page.results_table.rows[1..-1].each do |row|
-      page.credit(row).should match /#{@course_search_result.credit}/
+      page.credit(row).should match /#{@course_search_result.credit.split('.')[0]}/
     end
   end
 
@@ -93,7 +91,7 @@ end
 Then(/^I should see the courses with the specific course level$/) do
   on CourseSearch do |page|
     page.results_table.rows[1..-1].each do |row|
-    page.courselevel(row).should match /#{@course_search_result.course_level}/
+    page.courselevel(row).should match /#{@course_search_result.course_level.slice(0,1)}/
     end
   end
  end
@@ -103,15 +101,13 @@ Then(/^I should see the courses with the specific course level$/) do
 When(/^I narrow the search results in the course search page using any facet$/) do
   @course_search_result = make CourseSearchResults,
                           :course_code => "ENGL" ,
-                          :description=>"historical",
-                          :requisite=>"None",
                           :scheduled_terms=>"SP 14",
-                          :projected_terms=>"Check",
                           :gened_requirements=>"General",
                           :subject=>"English",
                           :gened_code=>"DSHU",
                           :credit=>"1",
-                          :course_level=> '3'
+                          :course_level=> '3',
+                          :course_prefix=>'ENGL'
   @course_search_result.course_search
   @course_search_result.clear_facets
   sleep 1

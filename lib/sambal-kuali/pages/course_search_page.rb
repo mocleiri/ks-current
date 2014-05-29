@@ -61,11 +61,14 @@ class CourseSearch < BasePage
   #facets
   #JIRA KSAP-1349 raised to fix unique identifer issue for facets
   action(:gened_checkbox_click){ |gened_course,b| b.div(id:"facet_genedureq_disclosureContent").div(class:"facets").ul.li(title:"#{gened_course}").click}
-  action(:term_checkbox_click){ |b| b.div(id:"facet_quarter_disclosureContent").div(class:"facets").li(index:0).click}
-  value(:credits) { |b| b.div(id:"facet_credits_disclosureContent").div(class:"facets").li(index:0).text}
-  action(:credits_checkbox_click){ |b| b.div(id:"facet_credits_disclosureContent").div(class:"facets").li(index:0).click}
-  action(:courselevel_checkbox_click){ |b| b.div(id:"facet_level_disclosureContent").div(class:"facets").li(index:1).click}
-  action(:courseprefix_chekbox_click){ |b| b.div(id:"facet_curriculum_disclosureContent").div(class:"facets").li(index:0).click}
+  action(:term_checkbox_click){ |scheduled_terms,b| b.div(id:"facet_quarter_disclosureContent").div(class:"facets").li.a(text:"#{scheduled_terms}").click}
+  action(:credits_checkbox_click){ |credit,b| b.div(id:"facet_credits_disclosureContent").div(class:"facets").li.a(text:"#{credit}").click}
+  action(:courselevel_checkbox_click){ |course_level,b| b.div(id:"facet_level_disclosureContent").div(class:"facets").li.a(text:"#{course_level}").click}
+  action(:courseprefix_chekbox_click){ |course_prefix,b| b.div(id:"facet_curriculum_disclosureContent").div(class:"facets").li.a(text:"#{course_prefix}").click}
+
+
+
+
 
 
 
