@@ -66,7 +66,7 @@ class RegistrationRequest < DataFactory
       page.submit_button.wait_until_present
       page.add_to_cart
       if @course_has_options
-        page.new_item_credits_selection_div(@course_code,@reg_group_code).wait_until_present
+        page.new_item_save_button(@course_code,@reg_group_code).wait_until_present
         if @modify_course_options
           edit_course_options_on_new_item
         end

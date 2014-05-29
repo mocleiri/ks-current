@@ -264,7 +264,7 @@ class RegisterForCourseBase < BasePage
 
   expected_element :cr_header_div
 
-  element(:cr_header_div) { |b| b.div(class: "kscr-Header") }
+  element(:cr_header_div) { |b| b.div(class: "kscr-Header-container ng-scope") }
 
   element(:menu_button) { |b| b.cr_header_div.button(id: "reg_menu_button")}
   action(:menu) { |b| b.menu_button.click }
@@ -272,7 +272,7 @@ class RegisterForCourseBase < BasePage
   element(:search) { |b| b.cr_header_div.link(id: "goToSearch")}
   element(:schedule_link) { |b| b.cr_header_div.link(id: "goToSchedule") }
   element(:cart_link) { |b| b.cr_header_div.link(id: "goToCart") }
-  element(:logout_button) { |b| b.cr_header_div.button(id: "logout") }
+  element(:logout_button) { |b| b.cr_header_div.button(id: "header_logout") }
   action(:logout) { |b| b.logout_button.click }
 
   def select_term(term)
