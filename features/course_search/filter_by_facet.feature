@@ -1,4 +1,4 @@
-@wip
+@nightly
 
 Feature: BT.Filter by Facet Requirement
   Background:

@@ -9,7 +9,7 @@ class CourseSearch < BasePage
   expected_element :search_for_course
 
 
-  #Indexes for Course Search page results table elements
+  #Column indexes for Course Search page results table elements
   GEN_ED=5
   SCHEDULED_TERMS=3
   CREDIT=2

@@ -9,7 +9,24 @@ class CourseSearchResults < DataFactory
   COURSE_ARRAY = 0
   COURSE_CODE = 0
   COURSE_NAME = 1
-  attr_accessor :course_code,:credit,:notes, :planned_term, :term, :term_select, :course_desc, :course_name, :search_text, :description, :requisite,:scheduled_terms,:projected_terms,:gened_requirements,:subject,:gened_code,:gened_course,:course_level
+  attr_accessor :course_code,
+                :credit,
+                :notes,
+                :planned_term,
+                :term,
+                :term_select,
+                :course_desc,
+                :course_name,
+                :search_text,
+                :description,
+                :requisite,
+                :scheduled_terms,
+                :projected_terms,
+                :gened_requirements,
+                :subject,
+                :gened_code,
+                :gened_course,
+                :course_level
 
   def initialize(browser, opts={})
     @browser = browser
