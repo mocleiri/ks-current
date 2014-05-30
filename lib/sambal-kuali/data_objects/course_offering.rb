@@ -145,6 +145,7 @@ class CourseSearchResults < DataFactory
     navigate_to_maintenance_portal
     navigate_to_course_search_home
     on CourseSearch do |page|
+      sleep 2
       page.search_for_course.set text
       if @term_select != nil
         page.search_term_select.select term_select
@@ -187,6 +188,7 @@ class CourseSearchResults < DataFactory
     navigate_to_maintenance_portal
     navigate_to_course_search_home
     on CourseSearch do |page|
+      sleep 2
       page.search_for_course.set text
       if @term_select != nil
         page.search_term_select.select term_select
