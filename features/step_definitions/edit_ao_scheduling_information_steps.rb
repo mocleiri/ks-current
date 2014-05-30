@@ -169,6 +169,7 @@ Then /^there is a validation error on the EndTime field$/  do
 
     page.end_time_select_populate_list
     page.end_time_select.click
+    page.loading.wait_while_present
     page.add_new_scheduling_information
     page.end_time_select.attribute_value('class').should match /required error/
     #page.end_time_error_msg.should match /Required/
