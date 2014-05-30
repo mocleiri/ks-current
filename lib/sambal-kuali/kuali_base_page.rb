@@ -124,6 +124,11 @@ class BasePage < PageFactory
       #element(:search_results_table) {|b| b.frame(class: 'fancybox-iframe').div(class: 'dataTables_wrapper').table }
       value(:page_validation_header) { |b| b.div(id: "KS-CourseView-CoursePage_messages").h3(id: "pageValidationHeader").text }
 
+      element(:comments_link) {|b|b.a(id: "CourseView-LinkGroup-Comments")}
+      element(:decisions_link) {|b|b.a(id: "CourseView-LinkGroup-Decisions")}
+      action(:load_comments) { |b| b.comments_link.click }
+      action(:load_decisions) { |b| b.decisions_link.click }
+
     end
 
     def links(*links_text)

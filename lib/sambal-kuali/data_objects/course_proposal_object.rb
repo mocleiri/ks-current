@@ -128,6 +128,7 @@ class CmCourseProposalObject < DataFactory
         course_fees:                random_alphanums(10, 'test course fees '),
         curriculum_review_process:  nil,
         create_new_proposal:        true,
+        create_basic_propsal:       false,
         save_proposal:              true
     }
     set_options(defaults.merge(opts))
@@ -149,7 +150,11 @@ class CmCourseProposalObject < DataFactory
     navigate_to_create_course_proposal
     set_curriculum_review
 
-    if @create_new_proposal
+    if(@create_basic_propsal)
+      create_course_continue
+      create_course_proposal_required_for_save unless @proposal_title.nil?
+      determine_save_action
+    elsif @create_new_proposal
       create_course_continue
       create_course_proposal_required unless @proposal_title.nil?
       determine_save_action
@@ -215,6 +220,14 @@ class CmCourseProposalObject < DataFactory
     set_options(opts)
   end
 
+  def create_course_proposal_required_for_save
+    on CmCourseInformation do |page|
+      page.course_information unless page.current_page('Course Information').exists?
+
+      fill_out page, :proposal_title, :course_title
+      determine_save_action
+    end
+   end
 
 
   def create_course_proposal_required
@@ -434,6 +447,19 @@ class CmCourseProposalObject < DataFactory
           page.find_a_proposal
        end
 
+  end
+
+  def load_comments_action
+    on CmCourseInformation do |page|
+      page.load_comments
+    end
+  end
+
+
+  def load_decisions_action
+    on CmCourseInformation do |page|
+      page.load_decisions
+    end
   end
 
 
