@@ -124,7 +124,8 @@ class ManageSoc < DataFactory
   def schedule_soc(page)
     page.send_to_scheduler_action
     page.schedule_confirm_action
-    page.message_element.wait_until_present
+    page.go_action #work around for KSENROLL-12946
+    #page.message_element.wait_until_present
     tries = 0
     raise "Schedule Initiated Date is blank" unless page.schedule_initiated_date != nil
     raise "Once schedule started, schedule completed date should say 'Scheduling in progress'" unless page.schedule_completed_date == 'Scheduling in progress'
@@ -145,6 +146,7 @@ class ManageSoc < DataFactory
   def publish_soc(page)
     page.publish_action
     page.publish_confirm_action
+    page.go_action #work around for KSENROLL-12946
     raise "SOC status doesnt change to Publishing In Progress" unless page.soc_status == 'Publishing In Progress'
 #    raise "Close button not displayed" unless page.close_button.exists?
     raise "Publish Initiated Date is blank" unless page.schedule_initiated_date != nil
