@@ -4,6 +4,7 @@ Feature: REG.Wait List
   As a student I want to add or remove myself from a courses wait list.
 
   Background:
+    Given I am using a mobile screen size
     Given I log in to student registration as student
 
   #KSENROLL-12345

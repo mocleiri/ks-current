@@ -4,7 +4,7 @@ Given /^I am using a (mobile|tablet) screen size$/ do |deviceType|
   elsif deviceType=="tablet"
     @browser.window.resize_to(600, 1024)
   end
-  @browser.goto "#{$test_site}/kscr-poc/index.jsp"
+  #@browser.goto "#{$test_site}/kscr-poc/index.jsp"
 end
 
 Given /^I am using a tablet emulator website$/ do

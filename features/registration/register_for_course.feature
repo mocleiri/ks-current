@@ -6,6 +6,7 @@ Feature: REG.Register for course
   registration cart.
 
   Background:
+    Given I am using a mobile screen size
     Given I am logged in as a Student
 
   #CR 1.1 (KSENROLL-11747)  CR 1.3 (KSENROLL-11812)
