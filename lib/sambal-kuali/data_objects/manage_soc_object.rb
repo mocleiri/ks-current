@@ -124,6 +124,7 @@ class ManageSoc < DataFactory
   def schedule_soc(page)
     page.send_to_scheduler_action
     page.schedule_confirm_action
+    sleep 10
     page.go_action #work around for KSENROLL-12946
     #page.message_element.wait_until_present
     tries = 0
