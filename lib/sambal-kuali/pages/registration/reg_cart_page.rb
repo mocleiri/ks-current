@@ -43,6 +43,9 @@ class RegistrationCart < RegisterForCourseBase
   element(:waitlist_message) { |course_code,reg_group_code,b| b.div(id: "waitlisted_message_#{course_code}_#{reg_group_code}").text }
   element(:add_to_waitlist_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_#{course_code}_#{reg_group_code}") }
 
+  element(:results_div) { |b| b.div(id: "resultsSection") }
+  element(:course_code_message) { |course_code,reg_group_code,b| b.results_div.span(id: "course_code_#{course_code}_#{reg_group_code}") }
+
   # ADD NEW ITEM OPTIONS MODAL DIALOG
   element(:new_item_credits_selection_div) { |course_code,reg_group_code,b| b.div(id:"newItem_credits_#{course_code}_#{reg_group_code}") }
   element(:new_item_credits_selection) { |course_code,reg_group_code,b| b.radio(id: "newItem_credits_#{course_code}_#{reg_group_code}").set }

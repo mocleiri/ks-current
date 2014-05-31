@@ -180,7 +180,7 @@ end
 
 Then /^there is a message indicating successful registration$/ do
   on RegistrationCart do |page|
-    page.course_code(@reg_request.course_code,@reg_request.reg_group_code).text.should include "Success"
+    page.course_code_message(@reg_request.course_code,@reg_request.reg_group_code).text.should include "Success"
   end
 end
 
