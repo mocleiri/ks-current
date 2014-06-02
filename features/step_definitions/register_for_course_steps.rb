@@ -184,6 +184,12 @@ Then /^there is a message indicating successful registration$/ do
   end
 end
 
+Then /^there is a message indicating the course was dropped$/ do
+  on StudentSchedule do |page|
+    page.wait_until { page.course_user_message =~ /dropped successfully/i }
+  end
+end
+
 When /^I remove the ?(BSCI2)? course from my schedule$/ do |phys|
   @reg_request.remove_from_schedule
 end

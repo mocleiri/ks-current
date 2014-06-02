@@ -70,11 +70,12 @@ Feature: REG.Register for course
     When I edit the course in my schedule
     Then the course is present in my schedule, with the updated options
 
-  #KSENROLL-12065
+  #KSENROLL-12065 KSENROLL-13097
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.
     Given I have registered for an ENGL1 course
     When I remove the course from my schedule
-    Then the course is not present in my schedule
+    Then there is a message indicating the course was dropped
+    And the course is not present in my schedule
 
   #KSENROLL-12065
   Scenario: CR 6.1 I want to drop a registered course and cancel the drop so that I am still registered for it.
