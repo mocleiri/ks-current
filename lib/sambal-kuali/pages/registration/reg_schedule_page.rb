@@ -25,12 +25,12 @@ class StudentSchedule < RegisterForCourseBase
   element(:course_schedule) { |course_code,reg_group_code,ao_index,index,b| b.div(id: "schedule_long_#{course_code}_#{reg_group_code}_#{ao_index}_#{index}").text }
   element(:confirm_drop) { |course_code,reg_group_code,b| b.button(id: "dropRegGroup_#{course_code}_#{reg_group_code}") }
   element(:cancel_drop) { |b| b.button(id: "dropRegGroupCancel") }
-  element(:credits_selection_more) { |b| b.div(id: "credit_options_more") }
-  action(:show_more_credit_options) { |b| b.credits_selection_more.click }
-  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "modal_credits_#{course_code}_#{reg_group_code}_#{credits}") }
-  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "modal_grading_#{course_code}_#{reg_group_code}_Audit", value: "kuali.resultComponent.grade.audit") }
-  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "modal_grading_#{course_code}_#{reg_group_code}_Letter", value: "kuali.resultComponent.grade.letter") }
-  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "modal_grading_#{course_code}_#{reg_group_code}_Pass/Fail", value: "kuali.resultComponent.grade.passFail") }
+  element(:credits_selection_more) { |course_code,reg_group_code,b| b.div(id: "schedule_credits_#{course_code}_#{reg_group_code}_more") }
+  action(:show_more_credit_options) { |course_code,reg_group_code,b| b.credits_selection_more(course_code,reg_group_code).click }
+  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "schedule_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "schedule_grading_#{course_code}_#{reg_group_code}_Audit", value: "kuali.resultComponent.grade.audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "schedule_grading_#{course_code}_#{reg_group_code}_Letter", value: "kuali.resultComponent.grade.letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "schedule_grading_#{course_code}_#{reg_group_code}_Pass/Fail", value: "kuali.resultComponent.grade.passFail") }
   element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
   element(:edit_cancel_button) { |course_code,reg_group_code,b| b.button(id: "cancel_#{course_code}_#{reg_group_code}") }

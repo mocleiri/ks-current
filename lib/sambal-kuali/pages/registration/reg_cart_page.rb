@@ -58,16 +58,16 @@ class RegistrationCart < RegisterForCourseBase
   action(:cancel_new_item) { |course_code,reg_group_code,b| b.new_item_cancel_button(course_code,reg_group_code).click }
 
   # EDIT COURSE OPTIONS DISCLOSURE
-  element(:credit_options_more) { |b| b.div(id: "credit_options_more") }
-  action(:more_credit_options) { |b| b.credit_options_more.click }
-  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "modal_cart_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  element(:credit_options_more) { |course_code,reg_group_code,b| b.div(id: "cart_credits_#{course_code}_#{reg_group_code}_more") }
+  action(:more_credit_options) { |course_code,reg_group_code,b| b.credit_options_more(course_code,reg_group_code).click }
+  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "cart_credits_#{course_code}_#{reg_group_code}_#{credits}") }
   action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).set }
-  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "modal_cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
-  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "modal_cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
-  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "modal_cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
-  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "modal_cart_save_#{course_code}_#{reg_group_code}") }
+  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "cart_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
+  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "cart_save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
-  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "modal_cart_cancel_#{course_code}_#{reg_group_code}") }
+  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cart_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
   def show_add_dialog
@@ -114,8 +114,8 @@ class RegistrationCart < RegisterForCourseBase
     show_course_details course_code,reg_group_code
     sleep 1
 
-    more_credit_options if credit_options_more.visible?
-    credits_selection(course_code, reg_group_code, credits).set
+    more_credit_options(course_code, reg_group_code) if credit_options_more(course_code, reg_group_code).visible?
+    select_credits course_code,reg_group_code,credits
   end
 
   def select_grading_in_cart(course_code, reg_group_code, grading_option)
