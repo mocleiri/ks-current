@@ -32,7 +32,7 @@ class CmFormatsObject < DataFactory
     set_options(defaults.merge(opts))
   end
 
-  def create (opts = {})
+  def create
     on CmCourseLogistics do |page|
       page.type(@format_level,@activity_level).pick! @type
       page.course_logistics unless page.current_page('Course Logistics').exists?

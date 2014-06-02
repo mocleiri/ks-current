@@ -8,7 +8,9 @@ class CmCourseProposalObject < DataFactory
 
   # Course Information, Governance, Course Logistics, Active Dates completed
   attr_accessor :proposal_title, :course_title, :transcript_course_title, :subject_code, :course_number,
-        :course_listing_subject, :course_listing_number, :joint_offering_number, :version_code_version_code, :version_code_title,
+        :cross_listed_course_list,
+        :jointly_offered_course_list,
+        :version_code_list,
         :instructor, :instructor_first_name, :instructor_last_name, :instructor_username, :instructor_display_name,
         :description_rationale, :proposal_rationale,
         :instructor_adding_method, :joint_offering_adding_data, :joint_offering_name,
@@ -235,12 +237,29 @@ class CmCourseProposalObject < DataFactory
       page.course_information unless page.current_page('Course Information').exists?
 
       fill_out page, :proposal_title, :course_title, :transcript_course_title
-
-      page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
-      page.subject_code.fit @subject_code
+      #page.subject_code.fit @subject_code
       page.auto_lookup @subject_code unless @subject_code.nil?
+      fill_out page, :course_number
 
-      fill_out page, :course_number, :description_rationale, :proposal_rationale
+      if @cross_listed_course_list != nil
+        @cross_listed_course_list.each do |cross_listed_course|
+          cross_listed_course.create
+        end
+      end
+
+      if @jointly_offered_course_list != nil
+        @jointly_offered_course_list.each do |jointly_offered_course|
+          jointly_offered_course.create
+        end
+      end
+
+      if @version_code_list != nil
+        @version_code_list.each do |version_code|
+          version_code.create
+        end
+      end
+
+      fill_out page, :description_rationale, :proposal_rationale
       determine_save_action
     end
 
@@ -266,28 +285,34 @@ class CmCourseProposalObject < DataFactory
 
       sleep 1
       #set_outcome_type
-
-      @outcome_list.each do |outcome|
-        outcome.create
+      if @outcome_list != nil
+        @outcome_list.each do |outcome|
+          outcome.create
+        end
       end
 
-      @format_list.each do |format|
-        format.create
+      if @format_list != nil
+        @format_list.each do |format|
+          format.create
+        end
       end
 
 
 
-      fill_out page, :exam_standard, :exam_alternate, :exam_none
-      #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
-      #if that radio is selected
-      page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
-      page.final_exam_rationale.fit @final_exam_rationale unless page.exam_standard.set?
+
+      if @final_exam_type != nil
+        fill_out page, :exam_standard, :exam_alternate, :exam_none
+        #This 'UNLESS' is required for 'Standard Exam' which, does not have rationale and should skip filling in final_exam_rationale
+        #if that radio is selected
+        page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
+        page.final_exam_rationale.fit @final_exam_rationale unless page.exam_standard.set?
+      end
       determine_save_action
     end
 
     on CmActiveDates do |page|
       page.active_dates unless page.current_page('Active Dates').exists?
-      page.start_term.pick! @start_term
+      page.start_term.pick! @start_term unless start_term.nil?
 
       #page.pilot_course.fit @pilot_course
       #page.loading_wait

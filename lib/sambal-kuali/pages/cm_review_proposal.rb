@@ -15,8 +15,13 @@ class CmReviewProposal < BasePage
   value(:course_title_review) { |b| b.textarea(id: "courseInfo_courseTitle_control").text }
   value(:subject_code_review) { |b| b.textarea(id:"courseInfo_subjectArea_control").text }
   value(:course_number_review) { |b| b.textarea(id: "courseInfo_courseNumberSuffix_control").text }
+  value(:cross_listed_courses_review) { |b| b.textarea(id: "courseSection_crossListings_control").text }
+  value(:jointly_offered_courses_review) { |b| b.textarea(id: "courseSection_jointly_offered_courses_control").text }
+  value(:version_codes_review) { |b| b.textarea(id: "courseSection_Version_Codes_control" ).text}
   value(:description_review) { |b| b.textarea(id: "courseInfo_descr_control").text }
   value(:proposal_rationale_review) { |b| b.textarea(id: "proposalInfo_rationale_control").text }
+
+
 
   # COURSE INFORMATION READ-ONLY REVIEW FIELDS
   value(:proposal_title_review_read_only) { |b| b.div(id: "proposalInfo_name").text }

@@ -16,25 +16,30 @@ class CmCourseInformation < BasePage
 
 #CROSS LIST SECTION
   element(:course_listing_section_collapsed) { |b| b.img(id: /^KS-CrossListingEtcDisclosure-Section/, alt: 'collapse') }
-  action(:expand_course_listing_section) { |b| b.span(id: 'KS-CrossListingEtcDisclosure-Section_toggle_col').click; b.add_a_version_code_button.wait_until_present }
+  action(:expand_course_listing_section) { |b| b.a(id: 'KS-CrossListingEtcDisclosure-Section_toggle').span(class: 'uif-headerText-span').click; b.add_version_code_button.wait_until_present }
   element(:collapse_course_listing_section) { |b| b.div(id: 'KS-CrossListingEtcDisclosure-Section_disclosureContent') }
 
-  element(:add_another_course_listing_button) { |b| b.button(id: 'addCrosslistedCourse') }
-  element(:add_another_course_button) { |b| b.button(id: 'addJointlyOfferedCourse') }
-  element(:add_a_version_code_button) { |b| b.button(id: 'addVersionCode') }
+  #CROSS LISTED COURSES
+  action(:cross_listed_course_subject) { |cross_list_course_level, b| b.text_field(id: "subjectArea_line#{cross_list_course_level-1}_control") }
+  action(:cross_listed_course_number) { |cross_list_course_level, b| b.text_field(id: "courseNumberSuffix_line#{cross_list_course_level-1}_control") }
+  action(:add_cross_listed_course) { |b| b.button(id: 'addCrosslistedCourse').click; b.loading_wait }
+  action(:delete_cross_listed_course) { |cross_list_course_level,b| b.a(id: "delete_jointofferedcourse_line#{cross_list_course_level}"); b.loading_wait }
 
-  action(:add_another_course_listing) { |b| b.add_another_course_listing_button.click; b.adding_line_wait }
-  action(:add_another_course) { |b| b.add_another_course_button.click; b.loading_wait }
-  action(:add_a_version_code) { |b| b.add_a_version_code_button.click; b.loading_wait }
+  #JOINTLY OFFERED COURSES
+  element(:add_jointly_offered_course) { |b| b.button(id: 'addJointlyOfferedCourse').click; b.loading_wait }
+  element(:jointly_offered_course) { | joint_offered_course_level,b| b.text_field(id: "KS-CourseCode-Field_line#{joint_offered_course_level-1}_control") }
+  action(:jointly_offered_quick_find) { |joint_offered_course_level, b| b.a(id: "KS-CourseCode-Field_line#{joint_offered_course_level-1}_quickfinder_act").click }
+  action(:delete_jointly_offered_course) { |joint_offered_course_level, b| b.a(id: "delete_jointofferedcourse_line#{joint_offered_course_level01}") }
+  ##ADVANCED SEARCH
 
-  # Needed this way because if user has multiple cross_list to access those multiple fields
-  action(:course_listing_subject) { |cross_list_subject_code='0', b| b.text_field(id: /^KS-CrossList-SubjectArea-Field_line#{cross_list_subject_code}/) }
-  action(:course_listing_number) { |cross_list_course_number='0', b| b.text_field(id: /^KS-CrossList-CourseNumberSuffix-Field_line#{cross_list_course_number}/) }
+  #VERSION CODES
+  element(:add_version_code_button) { |b| b.button(id: 'addVersionCode') }
+  action(:add_version_code) { |b| b.add_version_code_button.click; b.loading_wait }
+  action(:version_code_code) { |version_code_level, b| b.text_field(id: "variationCode_line#{version_code_level-1}_control") }
+  action(:version_code_title) { |version_code_level, b| b.text_field(id: "variationTitle_line#{version_code_level-1}_control") }
+  action(:delete_version_code) { |version_code_level, b| b.a(id: "delete_versioncode_line#{version_code_level-1}") }
 
-  #action(:joint_offering_number) { |joint_offering_course_number='0', b| b.text_field(name: /#{joint_offering_course_number}\].courseCode$/) }
-  action(:joint_offering_number) { |joint_offering_course_number='0', b| b.text_field(name: "document\.newMaintainableObject\.courseJointWrappers\[#{joint_offering_course_number}\]\.courseCode") }
-  action(:version_code_code) { |version_version_code='0', b| b.text_field(name: /#{version_version_code}\]\.variationCode$/) }
-  action(:version_code_title) { |version_course_title='0', b| b.text_field(name: /#{version_course_title}\]\.variationTitle$/) }
+
 
 #INSTRUCTORS
   element(:instructor_name) { |b| b.text_field(name: /instructorWrappers\'\]\.displayName$/) }
@@ -47,8 +52,6 @@ class CmCourseInformation < BasePage
   element(:proposal_rationale) { |b| b.text_field(name: /proposalInfo.rationale.plain$/) }
 
 # ADVANCED SEARCH
-  action(:joint_offering_advanced_search) { |b| b.div(id: 'KS-JointlyOffered-Section').link(text: 'Advanced Search').click }
-
   element(:error_popup) { |b| b.div(text: 'The form contains errors. Please correct these errors and try again.') }
   action(:error_message) { |error_number='2', b| b.h3(text: "This page has #{error_number} errors") }
 

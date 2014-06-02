@@ -453,8 +453,63 @@ end
 
 When /^I complete the required fields on the course proposal$/ do
   @course_proposal = create CmCourseProposalObject
+
 end
 
+When(/^I create a proposal with alternate identifier details$/) do
+  @course_proposal = create CmCourseProposalObject, subject_code: nil,
+                                                   course_number: nil,
+                                                   cross_listed_course_list:   [(make CmCrossListedObject, :auto_lookup => true), (make CmCrossListedObject, :cross_list_course_count => 2)],
+                                                   jointly_offered_course_list: [(make CmJointlyOfferedObject, :auto_lookup => true)],
+                                                                                 #TODO Disabled until KSCM-2195 dev issue is resolved
+                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 2, :search_type => "name")
+                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 3, :search_type => "course code"),
+                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 4, :search_type => "plain text"),
+                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 5, :search_type => "blank"),
+
+                                                   version_code_list:           [(make CmVersionCodeObject), (make CmVersionCodeObject, :version_code_count => 2) ],
+                                                   transcript_course_title: nil,
+                                                   description_rationale: nil,
+                                                   proposal_rationale: nil,
+                                                   campus_location: nil,
+                                                   curriculum_oversight: nil,
+                                                   assessment_scale: nil,
+                                                   final_exam_type: nil,
+                                                   final_exam_rationale: nil,
+                                                   outcome_list: nil,
+                                                   format_list: nil,
+                                                   start_term:nil
+
+end
+
+
+Then(/^I should see alternate identifier details on the course proposal$/) do
+  @course_proposal.review_proposal_action
+
+  on CmReviewProposal do |page|
+
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+
+    #Cross Listed Courses
+    @course_proposal.cross_listed_course_list.each do |cross_list|
+      page.cross_listed_courses_review.should include cross_list.cross_list_subject_code
+    end
+
+    #Jointly Offered Courses
+    @course_proposal.jointly_offered_course_list.each do |jointly_offered|
+      page.jointly_offered_courses_review.should include jointly_offered.jointly_offered_course
+    end
+
+    #Version Code
+    @course_proposal.version_code_list.each do |version|
+      page.version_codes_review.should include version.version_code
+      page.version_codes_review.should include version.version_course_title
+    end
+
+  end
+
+end
 
 #-----
 # S2
