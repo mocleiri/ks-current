@@ -72,6 +72,7 @@ Feature: REG.Register for course
 
   #KSENROLL-12065 KSENROLL-13097
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.
+            CR 6.2 As a student, I want to be informed if my drop transaction is successful so that I can be sure my action is complete.
     Given I have registered for an ENGL1 course
     When I remove the course from my schedule
     Then there is a message indicating the course was dropped
