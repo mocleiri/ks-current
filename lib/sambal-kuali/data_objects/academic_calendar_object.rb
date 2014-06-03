@@ -606,7 +606,7 @@ class KeyDateObject < DataFactory
       page.go_to_terms_tab
       page.open_term_section @parent_term.term_type
 
-      if !page.key_date_exists?  @parent_term.term_type, @parent_key_date_group.key_date_group_type, @key_date_type then
+      if !page.key_date_exists?  @parent_term.term_type, @parent_key_date_group.key_date_group_type, @key_date_type
         @term_index = page.term_index_by_term_type @parent_term.term_type
         key_date_group_index = page.key_date_group_index @parent_term.term_type, @parent_key_date_group.key_date_group_type
 
@@ -621,7 +621,13 @@ class KeyDateObject < DataFactory
         page.key_date_end_date_addline( @term_index,key_date_group_index).set @end_date
       else
         #TODO - need the opposite of set_options here
-        edit :key_date_type => @key_date_type, :start_date => @start_date, :end_date  => @end_date, :start_time  => @start_time, :end_time  => @end_time, :start_time_ampm  => @start_time_ampm,  :end_time_ampm => @end_time_ampm
+        edit :key_date_type => @key_date_type,
+             :start_date => @start_date,
+             :end_date  => @end_date,
+             :start_time  => @start_time,
+             :end_time  => @end_time,
+             :start_time_ampm  => @start_time_ampm,
+             :end_time_ampm => @end_time_ampm
       end
 
       page.save
