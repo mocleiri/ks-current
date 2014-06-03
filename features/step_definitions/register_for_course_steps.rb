@@ -81,6 +81,21 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       term_descr = "Spring 2012"
       credit_option = "3.0"
       course_has_options = true
+    when "HIST2" then
+      course_code = "HIST110"
+      reg_group_code = "1001"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      credit_option = "3.0"
+      course_has_options = true
+    when "HIST3" then
+      course_code = "HIST110A"
+      #need to find another (offered) course
+      reg_group_code = "1001"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      credit_option = "3.0"
+      course_has_options = true
     when "PHYS" then
       course_code = "PHYS102"
       reg_group_code = "1001"
@@ -421,4 +436,12 @@ Given /^I log in to student registration as (\w+)$/  do |user|
     when "ELEANORB"
       visit RestELEANORBLogin
   end
+end
+
+When /^I try to register for two course offerings that have a time conflict$/ do
+  steps %{
+    When I add a HIST2 course offering to my registration cart
+    When I add a HIST3 course offering to my registration cart
+    And I register for the course
+  }
 end

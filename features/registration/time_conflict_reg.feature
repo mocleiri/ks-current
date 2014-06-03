@@ -6,7 +6,14 @@ Feature: REG.Time Conflict
          the Activity Offerings in a student's Registration Cart and existing Schedule.
 
   Background:
+    Given I am using a mobile screen size
     Given I log in to student registration as student2
+
+  #KSENROLL-13008
+  @wip
+  Scenario: CR 9.1 - As an admin, I want to prevent students from being registered in courses
+                     whose times conflict so that they are able to attend courses in their entirety
+    When I try to register for two course offerings that have a time conflict
 
   #KSENROLL-13010
   @wip
