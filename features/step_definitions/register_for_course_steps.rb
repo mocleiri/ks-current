@@ -157,7 +157,10 @@ Then /^the course is (present|not present) in my cart$/  do |presence|
       page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should_not be_nil
     else
       sleep 1
-      page.user_message.should include "#{@reg_request.course_code}(#{@reg_request.reg_group_code}) has been successfully removed from your cart"
+      course_code_text = "#{@reg_request.course_code}(#{@reg_request.reg_group_code})"
+      page.user_message_div.wait_until_present
+      #Escape because string has () in it
+      page.user_message.should match /Removed(\s+)#{Regexp.escape(course_code_text)}/i
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
@@ -246,7 +249,7 @@ And /^I? ?can view the details of my selection in the registration cart$/ do
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "Discussion"
     page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /M 3:00-3:50pm(\s+)CHM 0124/i
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "Lecture"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /TuTh 11:00-12:15pm(\s+)EGR 1202/i
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /TuTh 11:00am-12:15pm(\s+)EGR 1202/i
   end
 end
 
@@ -342,7 +345,7 @@ end
 
 Then /^I can view the number of courses and credits I am registered for in my registration cart$/ do
   on RegistrationCart do |page|
-    sleep 1
+    sleep 2
     @updated_cart_course_count = page.credit_count_title.text.downcase.match('(\d*) course')[1].to_i
     @updated_cart_course_count.should == (@orig_cart_course_count + 1)
     @updated_cart_credit_count = page.credit_count_title.text.downcase.match('\((.*) credit')[1].to_f
