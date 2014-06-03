@@ -113,9 +113,8 @@ module Workflows
         page.login_with user, pwd
       elsif current_user.downcase != user.downcase
         page.logout
-        visit Login do |page|
-          page.login_with user, pwd
-        end
+        Watir::Wait.until { page.username_field.present? }
+        page.login_with user, pwd
       end
     end
   end
