@@ -237,7 +237,7 @@ class CmCourseProposalObject < DataFactory
       page.course_information unless page.current_page('Course Information').exists?
 
       fill_out page, :proposal_title, :course_title, :transcript_course_title
-      #page.subject_code.fit @subject_code
+      page.subject_code.fit @subject_code
       page.auto_lookup @subject_code unless @subject_code.nil?
       fill_out page, :course_number
 
