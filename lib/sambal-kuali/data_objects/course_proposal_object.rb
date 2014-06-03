@@ -121,8 +121,9 @@ class CmCourseProposalObject < DataFactory
         #OUTCOMES
         outcome_list: [
             (make CmOutcomeObject, :outcome_type => "Fixed", :outcome_level => 0, :credit_value=>(1..5).to_a.sample),
-            (make CmOutcomeObject, :outcome_type => "Range", :outcome_level => 1, :credit_value => "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}"),
-            (make CmOutcomeObject, :outcome_type => "Multiple",:outcome_level => 2, :credit_value => "#{(1..4).to_a.sample},#{(5..9).to_a.sample}")
+            (make CmOutcomeObject, :outcome_type => "Multiple",:outcome_level => 1, :credit_value => "#{(1..4).to_a.sample},#{(5..9).to_a.sample}"),
+            (make CmOutcomeObject, :outcome_type => "Range", :outcome_level => 2, :credit_value => "#{(1..4).to_a.sample}-#{(5..9).to_a.sample}"),
+
         ],
         format_list: [(make CmFormatsObject)],
         start_term: '::random::',

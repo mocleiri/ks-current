@@ -138,12 +138,12 @@ And /^I can review the course (.*?)$/ do |proposal_type|
 
     #RANGE OUTCOME
     page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_list[1].outcome_level.to_i+1 }" unless @course_proposal.outcome_list[1].outcome_level.nil?
-    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_list[1].outcome_type.nil?
+    page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_list[1].outcome_type.nil?
     page.outcome_credit_review(2) == "#{@course_proposal.outcome_list[1].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #MULTIPLE OUTCOME
     page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
-    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
+    page.outcome_type_review(3).should == "Range" unless @course_proposal.outcome_list[2].outcome_type.nil?
     page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #ACTIVE DATES SECTION
@@ -203,12 +203,12 @@ And /^I can review the required fields on the (.*?)$/ do |proposal_type|
 
     #RANGE OUTCOME
     page.outcome_level_review(2).should == "Outcome #{@course_proposal.outcome_list[1].outcome_level.to_i+1 }" unless @course_proposal.outcome_list[1].outcome_level.nil?
-    page.outcome_type_review(2).should == "Range" unless @course_proposal.outcome_list[1].outcome_type.nil?
+    page.outcome_type_review(2).should == "Multiple" unless @course_proposal.outcome_list[1].outcome_type.nil?
     page.outcome_credit_review(2) == "#{@course_proposal.outcome_list[1].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #MULTIPLE OUTCOME
     page.outcome_level_review(3).should == "Outcome #{@course_proposal.outcome_list[2].outcome_level.to_i+1}" unless @course_proposal.outcome_list[1].outcome_level.nil?
-    page.outcome_type_review(3).should == "Multiple" unless @course_proposal.outcome_list[2].outcome_type.nil?
+    page.outcome_type_review(3).should == "Range" unless @course_proposal.outcome_list[2].outcome_type.nil?
     page.outcome_credit_review(3) == "#{@course_proposal.outcome_list[2].credit_value}" unless @course_proposal.outcome_list[0].credit_value.nil?
 
     #ACTIVITY FORMAT
