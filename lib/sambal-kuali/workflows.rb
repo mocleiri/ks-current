@@ -26,7 +26,12 @@ module Workflows
     on(CmCourseInformation).functional_home_via_breadcrumb
   end
 
-
+  def determine_save_action
+    on CmCourseInformation do |create|
+      create.save_progress if create.logged_in_user == "Alice"
+      create.save_and_continue if create.logged_in_user == "Fred"
+    end
+  end
 
   def log_in(user, pwd)
     current_user = ""

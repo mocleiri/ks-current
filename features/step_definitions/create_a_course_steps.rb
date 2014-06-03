@@ -453,14 +453,14 @@ end
 When(/^I create a proposal with alternate identifier details$/) do
   @course_proposal = create CmCourseProposalObject, subject_code: nil,
                                                    course_number: nil,
-                                                   cross_listed_course_list:   [(make CmCrossListedObject, :auto_lookup => true), (make CmCrossListedObject, :cross_list_course_count => 2)],
-                                                   jointly_offered_course_list: [(make CmJointlyOfferedObject, :auto_lookup => true)],
-                                                                                 #TODO Disabled until KSCM-2195 dev issue is resolved
-                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 2, :search_type => "name")
-                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 3, :search_type => "course code"),
-                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 4, :search_type => "plain text"),
-                                                                                 #(make CmJointlyOfferedObject, :jointly_offered_course_count => 5, :search_type => "blank"),
-
+                                                   cross_listed_course_list:    [(make CmCrossListedObject, :auto_lookup => true), (make CmCrossListedObject, :cross_list_course_count => 2)],
+                                                   jointly_offered_course_list: [
+                                                                                 (make CmJointlyOfferedObject, :search_type => "name"),
+                                                                                 (make CmJointlyOfferedObject, :search_type => "course code", :jointly_offered_course_count => 2, :search_by => "Courses Only"),
+                                                                                 #(make CmJointlyOfferedObject, :search_type => "plain text", :jointly_offered_course_count => 3, :search_by => "Proposals Only"),
+                                                                                 #(make CmJointlyOfferedObject, :search_type => "blank", :jointly_offered_course_count => 4, :search_by => "Proposals Only"),
+                                                                                 (make CmJointlyOfferedObject, :auto_lookup => true, :jointly_offered_course_count =>3)
+                                                                                ],
                                                    version_code_list:           [(make CmVersionCodeObject), (make CmVersionCodeObject, :version_code_count => 2) ],
                                                    transcript_course_title: nil,
                                                    description_rationale: nil,
@@ -503,6 +503,89 @@ Then(/^I should see alternate identifier details on the course proposal$/) do
 
   end
 
+end
+
+
+And(/^I have a basic course proposal with alternate identifier details$/) do
+  @course_proposal = create CmCourseProposalObject, subject_code: nil,
+                            course_number: nil,
+                            cross_listed_course_list:    [(make CmCrossListedObject, :auto_lookup => true), (make CmCrossListedObject, :cross_list_course_count => 2)],
+                            jointly_offered_course_list: [
+                                                          (make CmJointlyOfferedObject, :search_type => "name"),
+                                                          (make CmJointlyOfferedObject, :search_type => "course code", :jointly_offered_course_count => 2, :search_by => "Courses Only"),
+                                                          #(make CmJointlyOfferedObject, :search_type => "plain text", :jointly_offered_course_count => 3, :search_by => "Proposals Only"),
+                                                          #(make CmJointlyOfferedObject, :search_type => "blank", :jointly_offered_course_count => 4, :search_by => "Proposals Only"),
+                                                          (make CmJointlyOfferedObject, :auto_lookup => true, :jointly_offered_course_count =>3)
+                                                          ],
+                            version_code_list:           [(make CmVersionCodeObject), (make CmVersionCodeObject, :version_code_count => 2) ],
+                            transcript_course_title: nil,
+                            description_rationale: nil,
+                            proposal_rationale: nil,
+                            campus_location: nil,
+                            curriculum_oversight: nil,
+                            assessment_scale: nil,
+                            final_exam_type: nil,
+                            final_exam_rationale: nil,
+                            outcome_list: nil,
+                            format_list: nil,
+                            start_term:nil
+end
+
+
+When(/^I update Alternate Identifier details on the course proposal$/) do
+  navigate_to_cm_home
+  @course_proposal.search(@course_proposal.proposal_title)
+  @course_proposal.edit_proposal_action
+  @course_proposal.cross_listed_course_list[0].delete
+  @course_proposal.cross_listed_course_list[1].edit :auto_lookup => true,
+                                                    :cross_list_subject_code => "BSCI",
+                                                    :cross_list_course_number => "555",
+                                                    :cross_list_course_count => 1,
+                                                    :defer_save => true
+
+  @course_proposal.jointly_offered_course_list[0].delete
+  @course_proposal.jointly_offered_course_list[1].edit :jointly_offered_course_count => 1,
+                                                       :jointly_offered_course => "PHYS675",
+                                                       :defer_save => true
+
+  @course_proposal.version_code_list[0].delete
+
+  @course_proposal.version_code_list[1].edit :version_code => "Z",
+                                             :version_course_title => "edited title",
+                                             :version_code_count => 1
+
+
+
+
+end
+
+Then(/^I should see updated alternate identifier details on the course proposal$/) do
+  @course_proposal.review_proposal_action
+
+  on CmReviewProposal do |page|
+
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+
+    #Cross Listed Courses
+    page.cross_listed_courses_review.should_not include @course_proposal.cross_listed_course_list[0].cross_list_subject_code
+    page.cross_listed_courses_review.should include "#{@course_proposal.cross_listed_course_list[1].cross_list_course_number}"
+
+
+    #Jointly Offered Courses
+    page.jointly_offered_courses_review.should_not include @course_proposal.jointly_offered_course_list[0].jointly_offered_course
+    page.jointly_offered_courses_review.should include @course_proposal.jointly_offered_course_list[1].jointly_offered_course
+
+
+
+    #Version Code
+    page.version_codes_review.should_not include @course_proposal.version_code_list[0].version_code
+    page.version_codes_review.should_not include @course_proposal.version_code_list[0].version_course_title
+
+    page.version_codes_review.should include @course_proposal.version_code_list[1].version_code
+    page.version_codes_review.should include @course_proposal.version_code_list[1].version_course_title
+
+  end
 end
 
 #-----
@@ -746,6 +829,9 @@ Given /^I complete all the fields on the course proposal$/ do
 
 
 end
+
+
+
 
 Then /^I should see data in all non required fields for the course proposal$/ do
   on CmCourseInformation do |page|

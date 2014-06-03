@@ -23,13 +23,13 @@ class CmCourseInformation < BasePage
   action(:cross_listed_course_subject) { |cross_list_course_level, b| b.text_field(id: "subjectArea_line#{cross_list_course_level-1}_control") }
   action(:cross_listed_course_number) { |cross_list_course_level, b| b.text_field(id: "courseNumberSuffix_line#{cross_list_course_level-1}_control") }
   action(:add_cross_listed_course) { |b| b.button(id: 'addCrosslistedCourse').click; b.loading_wait }
-  action(:delete_cross_listed_course) { |cross_list_course_level,b| b.a(id: "delete_jointofferedcourse_line#{cross_list_course_level}"); b.loading_wait }
+  action(:delete_cross_listed_course) { |cross_list_course_level,b| b.a(id: "delete_crosslistedcourse_line#{cross_list_course_level}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait }
 
   #JOINTLY OFFERED COURSES
   element(:add_jointly_offered_course) { |b| b.button(id: 'addJointlyOfferedCourse').click; b.loading_wait }
   element(:jointly_offered_course) { | joint_offered_course_level,b| b.text_field(id: "KS-CourseCode-Field_line#{joint_offered_course_level-1}_control") }
   action(:jointly_offered_quick_find) { |joint_offered_course_level, b| b.a(id: "KS-CourseCode-Field_line#{joint_offered_course_level-1}_quickfinder_act").click }
-  action(:delete_jointly_offered_course) { |joint_offered_course_level, b| b.a(id: "delete_jointofferedcourse_line#{joint_offered_course_level01}") }
+  action(:delete_jointly_offered_course) { |joint_offered_course_level, b| b.a(id: "delete_jointofferedcourse_line#{joint_offered_course_level-1}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait }
   ##ADVANCED SEARCH
 
   #VERSION CODES
@@ -37,7 +37,7 @@ class CmCourseInformation < BasePage
   action(:add_version_code) { |b| b.add_version_code_button.click; b.loading_wait }
   action(:version_code_code) { |version_code_level, b| b.text_field(id: "variationCode_line#{version_code_level-1}_control") }
   action(:version_code_title) { |version_code_level, b| b.text_field(id: "variationTitle_line#{version_code_level-1}_control") }
-  action(:delete_version_code) { |version_code_level, b| b.a(id: "delete_versioncode_line#{version_code_level-1}") }
+  action(:delete_version_code) { |version_code_level, b| b.a(id: "delete_versioncode_line#{version_code_level-1}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait  }
 
 
 

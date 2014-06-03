@@ -70,11 +70,6 @@ class CmFormatsObject < DataFactory
   determine_save_action
 end
 
-def determine_save_action
-  on CmCourseInformation do |create|
-    create.save_progress if create.logged_in_user == "Alice"
-    create.save_and_continue if create.logged_in_user == "Fred"
-  end
-end
+
 
 end
