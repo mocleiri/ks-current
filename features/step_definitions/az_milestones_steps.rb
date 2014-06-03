@@ -81,7 +81,7 @@ When /^I do not have access to edit maximum enrollment$/ do
 end
 
 When /^I verify the exam periods for the milestones test fall and spring terms$/ do
-  @calendar = make AcademicCalendar, :year => "2014"
+  @calendar = make AcademicCalendar, :year => PUBLISHED_MILESTONES_SOC_TERM_YEAR.to_i-1
   @term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
   @calendar.terms << @term
 
@@ -90,7 +90,7 @@ When /^I verify the exam periods for the milestones test fall and spring terms$/
 
   @calendar.terms[0].exam_period.edit :exclude_saturday => false, :exclude_sunday => false, :defer_save => true
 
-  @calendar.year = "2015"
+  @calendar.year = PUBLISHED_MILESTONES_SOC_TERM_YEAR
   @term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Spring"
   @calendar.terms << @term
 
@@ -101,7 +101,7 @@ When /^I verify the exam periods for the milestones test fall and spring terms$/
 end
 
 When /^I verify the exam periods for the published test fall and spring terms$/ do
-  @calendar = make AcademicCalendar, :year => "2015"
+  @calendar = make AcademicCalendar, :year => PUBLISHED_SOC_TERM[0..3].to_i-1
   @term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Fall"
   @calendar.terms << @term
 
@@ -110,7 +110,7 @@ When /^I verify the exam periods for the published test fall and spring terms$/ 
 
   @calendar.terms[0].exam_period.edit :exclude_saturday => false, :exclude_sunday => false, :defer_save => true
 
-  @calendar.year = "2016"
+  @calendar.year = PUBLISHED_SOC_TERM[0..3]
   @term = make AcademicTermObject, :parent_calendar => @calendar, :term => "Spring"
   @calendar.terms << @term
 

@@ -95,6 +95,7 @@ class ManageSoc < DataFactory
         when 'Lock'
           page.lock_action
           page.lock_confirm_action
+          sleep 4 #work around for KSENROLL-12946
           page.go_action #work around for KSENROLL-12946
           raise "SOC state table not updated to 'Locked'" unless page.soc_status == 'Locked'
           #page.message_element.wait_until_present
@@ -104,6 +105,7 @@ class ManageSoc < DataFactory
         when 'FinalEdit'
           page.final_edit_action
           page.final_edit_confirm_action
+          sleep 4 #work around for KSENROLL-12946
           page.go_action #work around for KSENROLL-12946
           raise "SOC state table not updated to 'Final Edits'" unless page.soc_status == 'Final Edits'
           #page.message_element.wait_until_present
@@ -147,6 +149,7 @@ class ManageSoc < DataFactory
   def publish_soc(page)
     page.publish_action
     page.publish_confirm_action
+    sleep 4 #work around for KSENROLL-12946
     page.go_action #work around for KSENROLL-12946
     #raise "SOC status doesnt change to Publishing In Progress" unless page.soc_status == 'Publishing In Progress'
 #    raise "Close button not displayed" unless page.close_button.exists?
