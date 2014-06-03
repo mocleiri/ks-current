@@ -1,8 +1,8 @@
 Given(/^I have a basic course proposal created as Faculty$/) do
   steps %{Given I am logged in as Faculty}
   @course_proposal = create CmCourseProposalObject, :create_new_proposal => false, :create_basic_propsal => true,
-                            :proposal_title => random_alphanums(10,'test proposal comment title '),
-                            :course_title => random_alphanums(10,'test proposal comment title ')
+                            :proposal_title => random_alphanums(10,'test basic proposal title '),
+                            :course_title => random_alphanums(10,'test basic course title ')
 end
 
 When(/^I add comments to the course proposal$/) do
