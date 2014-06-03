@@ -136,8 +136,8 @@ class RegistrationRequest < DataFactory
     end
     on RegistrationCart do |page|
       page.new_item_credits_selection_div(@course_code,@reg_group_code).wait_until_present
-      page.select_credits_on_new_item @course_options.credit_option
-      page.select_grading_on_new_item @course_options.grading_option
+      page.select_credits_on_new_item @course_code,@reg_group_code,@course_options.credit_option
+      page.select_grading_on_new_item @course_code,@reg_group_code,@course_options.grading_option
     end
   end
   private :edit_course_options_on_new_item

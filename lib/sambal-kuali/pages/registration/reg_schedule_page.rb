@@ -25,30 +25,34 @@ class StudentSchedule < RegisterForCourseBase
   element(:course_schedule) { |course_code,reg_group_code,ao_index,index,b| b.div(id: "schedule_long_#{course_code}_#{reg_group_code}_#{ao_index}_#{index}").text }
   element(:confirm_drop) { |course_code,reg_group_code,b| b.button(id: "dropRegGroup_#{course_code}_#{reg_group_code}") }
   element(:cancel_drop) { |b| b.button(id: "dropRegGroupCancel") }
-  element(:credits_selection_more) { |course_code,reg_group_code,b| b.div(id: "schedule_credits_#{course_code}_#{reg_group_code}_more") }
-  action(:show_more_credit_options) { |course_code,reg_group_code,b| b.credits_selection_more(course_code,reg_group_code).click }
-  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "schedule_credits_#{course_code}_#{reg_group_code}_#{credits}") }
-  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "schedule_grading_#{course_code}_#{reg_group_code}_Audit", value: "kuali.resultComponent.grade.audit") }
-  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "schedule_grading_#{course_code}_#{reg_group_code}_Letter", value: "kuali.resultComponent.grade.letter") }
-  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "schedule_grading_#{course_code}_#{reg_group_code}_Pass/Fail", value: "kuali.resultComponent.grade.passFail") }
-  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "save_#{course_code}_#{reg_group_code}") }
+
+  element(:credit_options_more) { |course_code,reg_group_code,b| b.div(id: "schedule_credits_#{course_code}_#{reg_group_code}_more") }
+  action(:more_credit_options) { |course_code,reg_group_code,b| b.credit_options_more(course_code,reg_group_code).click }
+  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.i(id: "schedule_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).click}
+  element(:grading_audit) { |course_code,reg_group_code,b| b.i(id: "schedule_grading_#{course_code}_#{reg_group_code}_Audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.i(id: "schedule_grading_#{course_code}_#{reg_group_code}_Letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.i(id: "schedule_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
+  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "schedule_save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
-  element(:edit_cancel_button) { |course_code,reg_group_code,b| b.button(id: "cancel_#{course_code}_#{reg_group_code}") }
+  element(:edit_cancel_button) { |course_code,reg_group_code,b| b.button(id: "schedule_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_button(course_code,reg_group_code).click }
 
+  element(:waitlist_credit_options_more) { |course_code,reg_group_code,b| b.div(id: "waitlist_credits_#{course_code}_#{reg_group_code}_more") }
+  action(:more_waitlist_credit_options) { |course_code,reg_group_code,b| b.waitlist_credit_options_more(course_code,reg_group_code).click }
   element(:waitlist_course_info_div) { |course_code,reg_group_code,b| b.div(id: "waitlist_course_info_#{course_code}_#{reg_group_code}") }
   element(:waitlist_course_info) { |course_code,reg_group_code,b| b.waitlist_course_info_div(course_code,reg_group_code).text }
   element(:edit_waitlist_item_button)  { |course_code,reg_group_code,b| b.button(id: "waitlist_edit_#{course_code}_#{reg_group_code}") }
   action(:edit_waitlisted_course_options) { |course_code,reg_group_code,b| b.edit_waitlist_item_button(course_code,reg_group_code).click }
-  element(:waitlist_credits_selection) { |course_code,reg_group_code,b| b.select(id: "waitlist_credits_#{course_code}_#{reg_group_code}") }
-  element(:waitlist_grading_audit) { |course_code,reg_group_code,b| b.radio(id: "waitlist_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.audit") }
-  element(:waitlist_grading_letter) { |course_code,reg_group_code,b| b.radio(id: "waitlist_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.letter") }
-  element(:waitlist_grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "waitlist_grading_#{course_code}_#{reg_group_code}", value: "kuali.resultComponent.grade.passFail") }
+  element(:waitlist_credits_selection) { |course_code,reg_group_code,credits,b| b.i(id: "waitlist_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  element(:waitlist_grading_audit) { |course_code,reg_group_code,b| b.i(id: "waitlist_grading_#{course_code}_#{reg_group_code}_Audit") }
+  element(:waitlist_grading_letter) { |course_code,reg_group_code,b| b.i(id: "waitlist_grading_#{course_code}_#{reg_group_code}_Letter") }
+  element(:waitlist_grading_pass_fail) { |course_code,reg_group_code,b| b.i(id: "waitlist_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
   element(:waitlist_grading_option_badge) { |course_code,reg_group_code,b| b.span(id: "waitlist_grading_badge_#{course_code}_#{reg_group_code}") }
   element(:waitlist_grading_option) { |course_code,reg_group_code,b| b.waitlist_grading_option_badge(course_code,reg_group_code).text }
-  element(:waitlist_edit_save_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_saveScheduleItem_#{course_code}_#{reg_group_code}") }
+  element(:waitlist_edit_save_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_save_#{course_code}_#{reg_group_code}") }
   action(:save_waitlist_edits) { |course_code,reg_group_code,b| b.waitlist_edit_save_button(course_code,reg_group_code).click }
-  element(:waitlist_edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "waitlist_cancelEditScheduleItem_#{course_code}_#{reg_group_code}") }
+  element(:waitlist_edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "waitlist_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_waitlist_edits) { |course_code,reg_group_code,b| b.waitlist_edit_cancel_link(course_code,reg_group_code).click }
   element(:remove_from_waitlist_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_remove_#{course_code}_#{reg_group_code}") }
   element(:confirm_remove_waitlist_button) { |b| b.button(id: "removeWaitlist") }
@@ -80,14 +84,21 @@ class StudentSchedule < RegisterForCourseBase
   end
 
   def select_credits(course_code, reg_group_code, credits)
-    credits_selection(course_code, reg_group_code).select(credits)
+    # Firefox workaround
+    toggle_course_details course_code,reg_group_code,"registered"
+    sleep 1
+    show_course_details course_code,reg_group_code,"registered"
+    sleep 1
+
+    more_credit_options(course_code, reg_group_code) if credit_options_more(course_code, reg_group_code).visible?
+    credits_selection(course_code, reg_group_code, credits).click
   end
 
   def select_grading(course_code, reg_group_code, grading_option)
     case grading_option
-      when "Audit" then grading_audit(course_code,reg_group_code).set
-      when "Letter" then grading_letter(course_code,reg_group_code).set
-      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).set
+      when "Audit" then grading_audit(course_code,reg_group_code).click
+      when "Letter" then grading_letter(course_code,reg_group_code).click
+      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).click
     end
   end
 
@@ -112,14 +123,21 @@ class StudentSchedule < RegisterForCourseBase
   end
 
   def select_waitlist_credits(course_code, reg_group_code, credits)
-    waitlist_credits_selection(course_code, reg_group_code).select(credits)
+    # Firefox workaround
+    toggle_course_details course_code,reg_group_code,"waitlisted"
+    sleep 1
+    show_course_details course_code,reg_group_code,"waitlisted"
+    sleep 1
+
+    more_waitlist_credit_options(course_code, reg_group_code) if waitlist_credit_options_more(course_code, reg_group_code).visible?
+    waitlist_credits_selection(course_code, reg_group_code, credits).click
   end
 
   def select_waitlist_grading(course_code, reg_group_code, grading_option)
     case grading_option
-      when "Audit" then waitlist_grading_audit(course_code,reg_group_code).set
-      when "Letter" then waitlist_grading_letter(course_code,reg_group_code).set
-      when "Pass/Fail" then waitlist_grading_pass_fail(course_code,reg_group_code).set
+      when "Audit" then waitlist_grading_audit(course_code,reg_group_code).click
+      when "Letter" then waitlist_grading_letter(course_code,reg_group_code).click
+      when "Pass/Fail" then waitlist_grading_pass_fail(course_code,reg_group_code).click
     end
   end
 

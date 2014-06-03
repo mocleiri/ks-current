@@ -48,10 +48,13 @@ class RegistrationCart < RegisterForCourseBase
 
   # ADD NEW ITEM OPTIONS MODAL DIALOG
   element(:new_item_credits_selection_div) { |course_code,reg_group_code,b| b.div(id:"newItem_credits_#{course_code}_#{reg_group_code}") }
-  element(:new_item_credits_selection) { |course_code,reg_group_code,b| b.radio(id: "newItem_credits_#{course_code}_#{reg_group_code}").set }
-  element(:new_item_grading_audit) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.audit") }
-  element(:new_item_grading_letter) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.letter") }
-  element(:new_item_grading_pass_fail) { |b| b.radio(id: "newItemGrading", value: "kuali.resultComponent.grade.passFail") }
+  element(:new_item_credit_options_more) { |course_code,reg_group_code,b| b.div(id: "newItem_credits_#{course_code}_#{reg_group_code}_more") }
+  action(:more_new_item_credit_options) { |course_code,reg_group_code,b| b.new_item_credit_options_more(course_code,reg_group_code).click }
+  element(:new_item_credits_selection) { |course_code,reg_group_code,credits,b| b.i(id: "newItem_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  action(:select_new_item_credits) { |course_code,reg_group_code,credits,b| b.new_item_credits_selection(course_code,reg_group_code,credits).click }
+  element(:new_item_grading_audit) { |course_code,reg_group_code,b| b.i(id: "newItem_grading_#{course_code}_#{reg_group_code}_Audit") }
+  element(:new_item_grading_letter) { |course_code,reg_group_code,b| b.i(id: "newItem_grading_#{course_code}_#{reg_group_code}_Letter") }
+  element(:new_item_grading_pass_fail) { |course_code,reg_group_code,b| b.i(id: "newItem_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
   element(:new_item_save_button) { |course_code,reg_group_code,b| b.button(id: "newItem_save_#{course_code}_#{reg_group_code}") }
   action(:save_new_item) { |course_code,reg_group_code,b| b.new_item_save_button(course_code,reg_group_code).click }
   element(:new_item_cancel_button) { |course_code,reg_group_code,b| b.button(id: "newItem_cancel_#{course_code}_#{reg_group_code}") }
@@ -60,11 +63,11 @@ class RegistrationCart < RegisterForCourseBase
   # EDIT COURSE OPTIONS DISCLOSURE
   element(:credit_options_more) { |course_code,reg_group_code,b| b.div(id: "cart_credits_#{course_code}_#{reg_group_code}_more") }
   action(:more_credit_options) { |course_code,reg_group_code,b| b.credit_options_more(course_code,reg_group_code).click }
-  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.radio(id: "cart_credits_#{course_code}_#{reg_group_code}_#{credits}") }
-  action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).set }
-  element(:grading_audit) { |course_code,reg_group_code,b| b.radio(id: "cart_grading_#{course_code}_#{reg_group_code}_Audit", value: "kuali.resultComponent.grade.audit") }
-  element(:grading_letter) { |course_code,reg_group_code,b| b.radio(id: "cart_grading_#{course_code}_#{reg_group_code}_Letter", value: "kuali.resultComponent.grade.letter") }
-  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.radio(id: "cart_grading_#{course_code}_#{reg_group_code}_Pass/Fail", value: "kuali.resultComponent.grade.passFail") }
+  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.i(id: "cart_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).click }
+  element(:grading_audit) { |course_code,reg_group_code,b| b.i(id: "cart_grading_#{course_code}_#{reg_group_code}_Audit") }
+  element(:grading_letter) { |course_code,reg_group_code,b| b.i(id: "cart_grading_#{course_code}_#{reg_group_code}_Letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.i(id: "cart_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
   element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "cart_save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
   element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cart_cancel_#{course_code}_#{reg_group_code}") }
@@ -94,15 +97,16 @@ class RegistrationCart < RegisterForCourseBase
     toggle_course_details(course_code,reg_group_code) if remove_course_button(course_code,reg_group_code).visible?
   end
 
-  def select_credits_on_new_item(credits)
-    new_item_credits_selection.select(credits)
+  def select_credits_on_new_item(course_code, reg_group_code, credits)
+    more_new_item_credit_options(course_code, reg_group_code) if new_item_credit_options_more(course_code, reg_group_code).visible?
+    select_new_item_credits course_code,reg_group_code,credits
   end
 
-  def select_grading_on_new_item(grading_option)
+  def select_grading_on_new_item(course_code, reg_group_code, grading_option)
     case grading_option
-      when "Audit" then new_item_grading_audit.set
-      when "Letter" then new_item_grading_letter.set
-      when "Pass/Fail" then new_item_grading_pass_fail.set
+      when "Audit" then new_item_grading_audit(course_code, reg_group_code).click
+      when "Letter" then new_item_grading_letter(course_code, reg_group_code).click
+      when "Pass/Fail" then new_item_grading_pass_fail(course_code, reg_group_code).click
     end
   end
 
@@ -120,9 +124,9 @@ class RegistrationCart < RegisterForCourseBase
 
   def select_grading_in_cart(course_code, reg_group_code, grading_option)
     case grading_option
-      when "Audit" then grading_audit(course_code,reg_group_code).set
-      when "Letter" then grading_letter(course_code,reg_group_code).set
-      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).set
+      when "Audit" then grading_audit(course_code,reg_group_code).click
+      when "Letter" then grading_letter(course_code,reg_group_code).click
+      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).click
     end
   end
 
