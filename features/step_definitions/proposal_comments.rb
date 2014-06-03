@@ -8,10 +8,17 @@ end
 When(/^I add comments to the course proposal$/) do
   @course_proposal.load_comments_action
   sleep 10
+  on CmProposalComments do |page|
+    page.comment_text_input.set random_alphanums(10,'test proposal comment')
+    page.add_comment
+    sleep 2
+    page.close_comment_dialog
+  end
+
 end
 
 Then(/^I should see my comments on the course proposal$/) do
-
+  @course_proposal.load_comments_action
 end
 
 Given(/^I have a basic course admin proposal created as Curriculum Specialist$/) do
