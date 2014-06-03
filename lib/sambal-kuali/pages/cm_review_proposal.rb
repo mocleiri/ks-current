@@ -55,5 +55,7 @@ class CmReviewProposal < BasePage
   action(:edit_active_dates) { |b| b.a(id: 'ActiveDates-Review-Edit-link').click }
   value(:start_term_review) { |b| b.textarea(id: "activeDatesSection_startTerm_control").text }
 
+  # Financial fees
+  value(:financial_fee_text ) { |b| b.textarea(id: "financialsSection_justificationOfFees_control").text }
 
 end
