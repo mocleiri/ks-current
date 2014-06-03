@@ -23,7 +23,7 @@ class CmCourseInformation < BasePage
   action(:cross_listed_course_subject) { |cross_list_course_level, b| b.text_field(id: "subjectArea_line#{cross_list_course_level-1}_control") }
   action(:cross_listed_course_number) { |cross_list_course_level, b| b.text_field(id: "courseNumberSuffix_line#{cross_list_course_level-1}_control") }
   action(:add_cross_listed_course) { |b| b.button(id: 'addCrosslistedCourse').click; b.loading_wait }
-  action(:delete_cross_listed_course) { |cross_list_course_level,b| b.a(id: "delete_crosslistedcourse_line#{cross_list_course_level}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait }
+  action(:delete_cross_listed_course) { |cross_list_course_level,b| b.a(id: "delete_crosslistedcourse_line#{cross_list_course_level-1}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait }
 
   #JOINTLY OFFERED COURSES
   element(:add_jointly_offered_course) { |b| b.button(id: 'addJointlyOfferedCourse').click; b.loading_wait }

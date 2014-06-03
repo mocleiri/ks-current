@@ -450,7 +450,7 @@ When /^I complete the required fields on the course proposal$/ do
 
 end
 
-When(/^I create a proposal with alternate identifier details$/) do
+When(/^I create a basic proposal with alternate identifier details$/) do
   @course_proposal = create CmCourseProposalObject, subject_code: nil,
                                                    course_number: nil,
                                                    cross_listed_course_list:    [(make CmCrossListedObject, :auto_lookup => true), (make CmCrossListedObject, :cross_list_course_count => 2)],
@@ -536,19 +536,19 @@ When(/^I update Alternate Identifier details on the course proposal$/) do
   navigate_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
   @course_proposal.edit_proposal_action
-  @course_proposal.cross_listed_course_list[0].delete
+  @course_proposal.cross_listed_course_list[0].delete :cross_list_course_count => 1
   @course_proposal.cross_listed_course_list[1].edit :auto_lookup => true,
                                                     :cross_list_subject_code => "BSCI",
                                                     :cross_list_course_number => "555",
                                                     :cross_list_course_count => 1,
                                                     :defer_save => true
 
-  @course_proposal.jointly_offered_course_list[0].delete
+  @course_proposal.jointly_offered_course_list[0].delete :jointly_offered_course_count => 1
   @course_proposal.jointly_offered_course_list[1].edit :jointly_offered_course_count => 1,
                                                        :jointly_offered_course => "PHYS675",
                                                        :defer_save => true
 
-  @course_proposal.version_code_list[0].delete
+  @course_proposal.version_code_list[0].delete :version_code_count => 1
 
   @course_proposal.version_code_list[1].edit :version_code => "Z",
                                              :version_course_title => "edited title",
@@ -588,6 +588,52 @@ Then(/^I should see updated alternate identifier details on the course proposal$
   end
 end
 
+
+When(/^I delete alternate identifier details to the course proposal$/) do
+  navigate_to_cm_home
+  @course_proposal.search(@course_proposal.proposal_title)
+  @course_proposal.edit_proposal_action
+
+  @course_proposal.cross_listed_course_list[0].delete :cross_list_course_count => 1, :defer_save => true
+  @course_proposal.cross_listed_course_list[1].delete :cross_list_course_count => 1, :defer_save => true
+
+  @course_proposal.jointly_offered_course_list[0].delete :jointly_offered_course_count => 1, :defer_save => true
+  @course_proposal.jointly_offered_course_list[1].delete :jointly_offered_course_count => 1, :defer_save => true
+  @course_proposal.jointly_offered_course_list[2].delete :jointly_offered_course_count => 1, :defer_save => true
+
+  @course_proposal.version_code_list[0].delete :version_code_count => 1, :defer_save => true
+  @course_proposal.version_code_list[1].delete :version_code_count => 1, :defer_save => false
+
+end
+
+Then(/^I should not alternate identifier details on the course proposal$/) do
+  @course_proposal.review_proposal_action
+
+  on CmReviewProposal do |page|
+
+    page.proposal_title_review.should == @course_proposal.proposal_title
+    page.course_title_review.should == @course_proposal.course_title
+
+    #Cross Listed Courses
+    @course_proposal.cross_listed_course_list.each do |cross_list|
+      page.cross_listed_courses_review.should_not include cross_list.cross_list_subject_code
+    end
+
+    #Jointly Offered Courses
+    @course_proposal.jointly_offered_course_list.each do |jointly_offered|
+      page.jointly_offered_courses_review.should_not include jointly_offered.jointly_offered_course
+    end
+
+    #Version Code
+    @course_proposal.version_code_list.each do |version|
+      page.version_codes_review.should_not include version.version_code
+      page.version_codes_review.should_not include version.version_course_title
+    end
+
+  end
+
+
+end
 #-----
 # S2
 #-----

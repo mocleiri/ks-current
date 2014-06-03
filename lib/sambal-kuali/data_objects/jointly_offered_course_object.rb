@@ -88,11 +88,12 @@ class CmJointlyOfferedObject < DataFactory
     end
   end
 
-  def delete
+  def delete (opts={})
     on CmCourseInformation do |page|
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
-      page.delete_jointly_offered_course(@jointly_offered_course_count)
+      page.delete_jointly_offered_course(opts[:jointly_offered_course_count])
     end
+    determine_save_action unless opts[:defer_save]
   end
 
 end

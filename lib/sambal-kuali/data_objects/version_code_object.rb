@@ -43,11 +43,12 @@ class CmVersionCodeObject < DataFactory
 
 
 
-  def delete
+  def delete (opts={})
     on CmCourseInformation do |page|
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
-      page.delete_version_code(@version_code_count)
+      page.delete_version_code(opts[:version_code_count])
     end
+    determine_save_action unless opts[:defer_save]
   end
 
 end

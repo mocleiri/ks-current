@@ -50,11 +50,12 @@ class CmCrossListedObject < DataFactory
 
   end
   
-  def delete
+  def delete (opts={})
     on CmCourseInformation do |page|
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
-      page.delete_cross_listed_course(@cross_list_course_count)
+      page.delete_cross_listed_course(opts[:cross_list_course_count])
     end
+    determine_save_action unless opts[:defer_save]
   end
 
 
