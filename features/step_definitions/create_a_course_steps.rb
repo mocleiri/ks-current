@@ -450,7 +450,7 @@ When /^I complete the required fields on the course proposal$/ do
 
 end
 
-When(/^I create a basic proposal with alternate identifier details$/) do
+When(/^I create a basic course proposal with alternate identifier details$/) do
   @course_proposal = create CmCourseProposalObject, subject_code: nil,
                                                    course_number: nil,
                                                    cross_listed_course_list:    [(make CmCrossListedObject, :auto_lookup => true), (make CmCrossListedObject, :cross_list_course_count => 2)],
@@ -606,7 +606,7 @@ When(/^I delete alternate identifier details to the course proposal$/) do
 
 end
 
-Then(/^I should not alternate identifier details on the course proposal$/) do
+Then(/^I should no longer see alternate identifier details on the course proposal$/) do
   @course_proposal.review_proposal_action
 
   on CmReviewProposal do |page|
