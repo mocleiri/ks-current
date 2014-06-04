@@ -10,8 +10,8 @@ class CmCourseLogistics < BasePage
   element(:term_summer) { |b| b.checkbox(value: 'kuali.atp.type.Summer') }
 
 #DURATION COUNT
-  element(:duration_count_type) { |b| b.select_list(name: /course.duration.atpDurationTypeKey$/) }
-  element(:duration_count_count) { |b| b.text_field(name: /course.duration.timeQuantity$/) }
+  element(:duration_count_type) { |b| b.select_list(id: "KS-DurationTypeDropDown_control") }
+  element(:duration_count_count) { |b| b.text_field(name: "KS-DurationTimeQuantity-Field_control") }
 
 #GRADE ASSESMENTS
 
@@ -24,8 +24,8 @@ class CmCourseLogistics < BasePage
   element(:assessment_satisfactory) {|b| b.checkbox(value: 'kuali.resultComponent.grade.satisfactory') }
 
 #STUDENT REGISTRATION OPTIONS
-  element(:audit) {|b| b.checkbox(name: 'document.newMaintainableObject.audit') }
-  element(:pass_fail_transcript_grade) { |b| b.checkbox(name: 'document.newMaintainableObject.passFail') }
+  element(:audit) {|b| b.checkbox(name: 'document.newMaintainableObject.dataObject.audit') }
+  element(:pass_fail_transcript_grade) { |b| b.checkbox(name: 'document.newMaintainableObject.dataObject.passFail') }
 
 #FINAL EXAM
   element(:exam_standard) { |b| b.radio(value: 'STD') }

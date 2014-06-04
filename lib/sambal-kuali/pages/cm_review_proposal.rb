@@ -18,6 +18,7 @@ class CmReviewProposal < BasePage
   value(:cross_listed_courses_review) { |b| b.textarea(id: "courseSection_crossListings_control").text }
   value(:jointly_offered_courses_review) { |b| b.textarea(id: "courseSection_jointly_offered_courses_control").text }
   value(:version_codes_review) { |b| b.textarea(id: "courseSection_Version_Codes_control" ).text}
+  value(:instructors_review) { b. b.textarea(id: 'courseSection_instructors_control').text }
   value(:description_review) { |b| b.textarea(id: "courseInfo_descr_control").text }
   value(:proposal_rationale_review) { |b| b.textarea(id: "proposalInfo_rationale_control").text }
 
@@ -32,10 +33,17 @@ class CmReviewProposal < BasePage
   action(:edit_governance) { |b| b.a(id: "Governance-Review-Edit-link").click }
   value(:campus_locations_review) { |b| b.textarea(id: 'governanceSection_campusLocations_control').text }
   value(:curriculum_oversight_review) { |b| b.textarea(id: 'governanceSection_curriculumOversightAsString_control').text }
+  value(:administering_org_review) { |b| b.textarea(id: 'governanceSection_administeringOrganization_control').text }
 
 
   # LOGISTICS REVIEW FIELDS
   action(:edit_course_logistics) { |b| b.a(id: "CourseLogistics-Review-Edit-link").click }
+  value(:terms_review) { |b| b.textarea(id: 'courseLogisticsSection_terms_control').text }
+  value(:duration_review) { |b| b.textarea(id: 'courseLogisticsSection_atpDurationType_control').text }
+  value (:audit_review) { |b| b.textarea(id: 'courseLogisticsSection_audit_control').text }
+  value(:pass_fail_transcript_review) { |b| b.textarea(id: 'courseLogisticsSection_passFail_control').text }
+
+
   value(:assessment_scale_review) { |b| b.textarea(id: "courseLogisticsSection_gradingOptions_control").text }
   value(:final_exam_status_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatus_control").text }
   value(:final_exam_rationale_review) { |b| b.textarea(id: "courseLogisticsSection_finalExamStatusRationale_control").text }
@@ -54,8 +62,10 @@ class CmReviewProposal < BasePage
   # ACTIVE DATES REVIEW FIELDS
   action(:edit_active_dates) { |b| b.a(id: 'ActiveDates-Review-Edit-link').click }
   value(:start_term_review) { |b| b.textarea(id: "activeDatesSection_startTerm_control").text }
+  value(:end_term_review) { |b| b.textarea(id: 'activeDatesSection_endTerm_control').text }
+  value(:pilot_course_review) { |b| b.textarea(id: 'activeDatesSection_pilotCourse_control').text }
 
-  # Financial fees
-  value(:financial_fee_text ) { |b| b.textarea(id: "financialsSection_justificationOfFees_control").text }
+  # FINANCIAL FEES
+  value(:fee_justification_review ) { |b| b.textarea(id: "financialsSection_justificationOfFees_control").text }
 
 end

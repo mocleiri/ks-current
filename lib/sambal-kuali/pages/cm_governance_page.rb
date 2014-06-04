@@ -17,8 +17,9 @@ class CmGovernance < BasePage
   action(:curriculum_oversight_when_added) {|added_org, b| b.div(text: added_org) }
 
 #ADMINISTERING ORGANIZATION
-  element(:administering_organization) {|b| b.text_field(name: 'newCollectionLines[\'document.newMaintainableObject.administeringOrganizations\'].organizationName') }
-  action(:organization_add) {|b| b.button(id: 'KS-AdministeringOrganization-Section_add').click; b.adding_line_wait }
+  element(:admin_org) {|admin_org_level,b| b.text_field(id: "organizationName_line#{admin_org_level}_control") }
+  action(:organization_add) {|b| b.button(id: "addAdministeringOrganization").click; b.loading_wait }
+  action(:delete_admin_org) { |admin_org_level,b| b.a(id: "delete_administeringorganization_line#{admin_org_level}").i(class: "ks-fontello-icon-cancel").click }
 
   # 0 is default for the first ADDED organization
   action(:added_administering_organization) {|org_added='0', b| b.text_field(name: /#{org_added}\]\.organizationName$/) }

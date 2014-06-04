@@ -40,12 +40,10 @@ class CmCourseInformation < BasePage
   action(:delete_version_code) { |version_code_level, b| b.a(id: "delete_versioncode_line#{version_code_level-1}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait  }
 
 
-
-#INSTRUCTORS
-  element(:instructor_name) { |b| b.text_field(name: /instructorWrappers\'\]\.displayName$/) }
-  action(:instructor_add) {|b| b.button(id: 'KS-Instructors-Section_add').click; b.adding_line.wait_while_present }
-  action(:added_instructor_name) { |instructor_level='0', b| b.text_field(name: "document.newMaintainableObject.instructorWrappers[#{instructor_level}].displayName") } #/instructorWrappers\[{instructor_level}\]\.displayName$/)}
-  action(:instructor_advanced_search) { |b| b.div(id: 'KS-Instructor-displayName_add').link(text: 'Advanced Search' ).click; b.adv_search_button.wait_until_present }
+  #INSTRUCTORS
+  element(:instructor_name) { |instructor_level,b| b.text_field(id: "KS-Instructor-displayName_line#{instructor_level}_control") }
+  action(:instructor_add) {|b| b.button(id: 'addInstructor').click; b.adding_line.wait_while_present }
+  action(:delete_instructor) { |instructor_level,b| b.a(id: "delete_instructor_line#{instructor_level}").i(class: "ks-fontello-icon-cancel").click }
 
 #DESCRIPTION AND RATIONALE
   element(:description_rationale) { |b| b.text_field(name: /courseInfo.descr.plain$/) }
