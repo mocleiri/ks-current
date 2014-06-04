@@ -55,8 +55,8 @@ class StudentSchedule < RegisterForCourseBase
   element(:waitlist_edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "waitlist_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_waitlist_edits) { |course_code,reg_group_code,b| b.waitlist_edit_cancel_link(course_code,reg_group_code).click }
   element(:remove_from_waitlist_button) { |course_code,reg_group_code,b| b.button(id: "waitlist_remove_#{course_code}_#{reg_group_code}") }
-  element(:confirm_remove_waitlist_button) { |b| b.button(id: "removeWaitlist") }
-  element(:cancel_remove_waitlist_button) { |b| b.button(id: "removeWaitlistCancel") }
+  element(:confirm_remove_waitlist_button) { |b| b.button(id: "removeWaitlist", index: 1) }
+  element(:cancel_remove_waitlist_button) { |b| b.button(id: "removeWaitlistCancel", index: 1) }
 
   def toggle_course_details(course_code, reg_group_code, course_status="registered")
     case course_status

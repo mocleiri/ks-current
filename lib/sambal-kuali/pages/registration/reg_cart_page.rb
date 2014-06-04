@@ -36,7 +36,7 @@ class RegistrationCart < RegisterForCourseBase
 
   element(:user_message_div) { |b| b.div(id: "user_message") }
   element(:user_message) { |b| b.div(id: "user_message").text }
-  element(:undo_remove_link) { |b| b.link(id: "userMessageInvoke") }
+  element(:undo_remove_link) { |b| b.button(id: "userMessageInvoke") }
   action(:undo_remove) { |b| b.undo_remove_link.click }
   element(:result_status) { |course_code,reg_group_code,b| b.div(id: "result_status_#{course_code}_#{reg_group_code}").text }
   element(:waitlist_status) { |course_code,reg_group_code,b| b.span(id: "waitlisted_#{course_code}_#{reg_group_code}") }
