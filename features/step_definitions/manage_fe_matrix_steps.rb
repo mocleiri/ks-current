@@ -513,7 +513,7 @@ Given /^I manage an AO-driven exam offering with RSI generated from the exam mat
   @course_offering.delivery_format_list[0].grade_format = 'Lecture'
   @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
 
-  @matrix = make FinalExamMatrix, :term_type => "Winter Term"
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
   @matrix.create_standard_rule_matrix_object_for_rsi( "MWF at 01:00 PM")
 
   @course_offering.create
