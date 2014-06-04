@@ -89,8 +89,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       credit_option = "3.0"
       course_has_options = true
     when "HIST3" then
-      course_code = "HIST110A"
-      #need to find another (offered) course
+      course_code = "HIST133"
       reg_group_code = "1001"
       term_code = "201208"
       term_descr = "Fall 2012"
@@ -409,6 +408,13 @@ Then /^the number of credits I am registered for and waitlisted for are correctl
   end
 end
 
+And /^there is a message indicating a time conflict$/ do
+  on RegistrationCart do |page|
+    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code)
+    page_status.should =~ /time conflict/i
+  end
+end
+
 Given /^I log in to student registration as (\w+)$/  do |user|
   puts "I am logged in to student registration as #{user}"
   case user
@@ -437,12 +443,4 @@ Given /^I log in to student registration as (\w+)$/  do |user|
     when "ELEANORB"
       visit RestELEANORBLogin
   end
-end
-
-When /^I try to register for two course offerings that have a time conflict$/ do
-  steps %{
-    When I add a HIST2 course offering to my registration cart
-    When I add a HIST3 course offering to my registration cart
-    And I register for the course
-  }
 end

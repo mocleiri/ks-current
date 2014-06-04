@@ -13,7 +13,17 @@ Feature: REG.Time Conflict
   @wip
   Scenario: CR 9.1 - As an admin, I want to prevent students from being registered in courses
                      whose times conflict so that they are able to attend courses in their entirety
-    When I try to register for two course offerings that have a time conflict
+    When I add a HIST2 course offering to my registration cart
+    And I register for the course
+    Then there is a message indicating successful registration
+    When I view my schedule
+    Then the course is present in my schedule
+    When I add a HIST3 course offering to my registration cart
+    And I register for the course
+    And there is a message indicating that registration failed
+    And there is a message indicating a time conflict
+    When I view my schedule
+    Then the course is not present in my schedule
 
   #KSENROLL-13010
   @wip
