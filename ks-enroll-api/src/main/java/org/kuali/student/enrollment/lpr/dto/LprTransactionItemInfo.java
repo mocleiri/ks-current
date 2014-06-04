@@ -28,19 +28,16 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.kuali.student.enrollment.lpr.infc.LprTransactionItem;
 import org.kuali.student.enrollment.lpr.infc.LprTransactionItemRequestOption;
+import org.kuali.student.enrollment.lpr.infc.LprTransactionItemResult;
 import org.kuali.student.r2.common.dto.IdEntityInfo;
-import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LprTransactionItemInfo", propOrder = {
                 "id", "typeKey", "stateKey", "name", "descr",
-                "transactionId", "personId", 
-                "newLuiId",
+                "transactionId", "personId", "luiId",
                 "existingLprId", "resultValuesGroupKeys",
-                "requestOptions", 
-                "resultingLprId",
-                "validationResults",
+                "requestOptions", "lprTransactionItemResult",
                 "meta", "attributes", "_futureElements"})
 
 public class LprTransactionItemInfo 
@@ -53,10 +50,13 @@ public class LprTransactionItemInfo
     private String transactionId;
 
     @XmlElement
+    private LprTransactionItemResultInfo lprTransactionItemResult;
+
+    @XmlElement
     private String personId;
 
     @XmlElement
-    private String newLuiId;
+    private String luiId;
 
     @XmlElement
     private String existingLprId;
@@ -66,12 +66,6 @@ public class LprTransactionItemInfo
 
     @XmlElement
     private List<LprTransactionItemRequestOptionInfo> requestOptions;
-
-    @XmlElement
-    private String resultingLprId;
-    
-    @XmlElement
-    private List<ValidationResultInfo> validationResults;
 
     @XmlAnyElement
     private List<Element> _futureElements;
@@ -86,10 +80,14 @@ public class LprTransactionItemInfo
         super(lprTransactionItem);
         if (null != lprTransactionItem) {
             this.transactionId = lprTransactionItem.getTransactionId();
-            this.newLuiId = lprTransactionItem.getResultingLprId();
+            LprTransactionItemResult result = lprTransactionItem.getLprTransactionItemResult();
+            if (result != null) {
+            	// only set the result if there is a result in the item.
+            	this.lprTransactionItemResult = new LprTransactionItemResultInfo(result);	
+            }
 
             this.personId = lprTransactionItem.getPersonId();
-            this.newLuiId = lprTransactionItem.getNewLuiId();
+            this.luiId = lprTransactionItem.getLuiId();
             this.existingLprId = lprTransactionItem.getExistingLprId();
             
             this.requestOptions = new ArrayList<LprTransactionItemRequestOptionInfo>();
@@ -102,14 +100,6 @@ public class LprTransactionItemInfo
             this.resultValuesGroupKeys = new ArrayList<String>();
             if (null != lprTransactionItem.getResultValuesGroupKeys()) {
                 resultValuesGroupKeys.addAll(lprTransactionItem.getResultValuesGroupKeys());
-            }
-
-            this.validationResults = new ArrayList<ValidationResultInfo>();
-            if (null != lprTransactionItem.getValidationResults()) {
-                // Make a deep copy
-                for (ValidationResultInfo info: lprTransactionItem.getValidationResults()) {
-                    this.validationResults.add(new ValidationResultInfo(info));
-                }
             }
         }
     }
@@ -124,21 +114,24 @@ public class LprTransactionItemInfo
     }
 
     @Override
-    public String getResultingLprId() {
-        return resultingLprId;
+    public LprTransactionItemResultInfo getLprTransactionItemResult() {
+        if(lprTransactionItemResult == null){
+            lprTransactionItemResult = new LprTransactionItemResultInfo();
+        }
+        return lprTransactionItemResult;
     }
 
-    public void setResultingLprId(String resultingLprId) {
-        this.resultingLprId = resultingLprId;
+    public void setLprTransactionResult(LprTransactionItemResultInfo lprTransactionResult) {
+        this.lprTransactionItemResult = lprTransactionResult;
     }
 
     @Override
-    public String getNewLuiId() {
-        return newLuiId;
+    public String getLuiId() {
+        return luiId;
     }
 
-    public void setNewLuiId(String luiId) {
-        this.newLuiId = luiId;
+    public void setLuiId(String luiId) {
+        this.luiId = luiId;
     }
 
     @Override
@@ -184,12 +177,7 @@ public class LprTransactionItemInfo
         this.resultValuesGroupKeys = resultValuesGroupKeys;
     }
 
-    @Override
-    public List<ValidationResultInfo> getValidationResults() {
-        return validationResults;
-    }
-
-    public void setValidationResults(List<ValidationResultInfo> validationResults) {
-        this.validationResults = validationResults;
+    public void setLprTransactionItemResult(LprTransactionItemResultInfo lprTransactionItemResult) {
+        this.lprTransactionItemResult = lprTransactionItemResult;
     }
 }

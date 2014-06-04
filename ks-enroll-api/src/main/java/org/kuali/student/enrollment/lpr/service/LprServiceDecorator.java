@@ -68,6 +68,16 @@ public class LprServiceDecorator implements LprService {
     }
 
     @Override
+    public LprTransactionItemInfo updateLprTransactionItem(String lprTransactionItemId, LprTransactionItemInfo lprTransactionItemInfo, ContextInfo contextInfo) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
+        return getNextDecorator().updateLprTransactionItem(lprTransactionItemId, lprTransactionItemInfo, contextInfo);
+    }
+
+    @Override
+    public StatusInfo changeLprTransactionItemState(String lprTransactionItemId, String nextStateKey, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        return getNextDecorator().changeLprTransactionItemState(lprTransactionItemId, nextStateKey, contextInfo);
+    }
+
+    @Override
     public LprInfo updateLpr(String lprId, LprInfo lprInfo, ContextInfo contextInfo) throws DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, ReadOnlyException, VersionMismatchException {
         return getNextDecorator().updateLpr(lprId, lprInfo, contextInfo);
     }
@@ -101,42 +111,6 @@ public class LprServiceDecorator implements LprService {
     public List<LprTransactionInfo> getUnsubmittedLprTransactionsByRequestingPersonAndAtp(String requestingPersonId, String atpId, ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         return getNextDecorator().getUnsubmittedLprTransactionsByRequestingPersonAndAtp(requestingPersonId, atpId, contextInfo);
     }
-
-    @Override
-    public LprTransactionItemInfo getLprTransactionItem(String lprTransactionItemId, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return getNextDecorator().getLprTransactionItem(lprTransactionItemId, contextInfo);
-    }
-
-    @Override
-    public List<LprTransactionItemInfo> getLprTransactionItemsByIds(List<String> lprTransactionItemIds, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return getNextDecorator().getLprTransactionItemsByIds(lprTransactionItemIds, contextInfo);
-    }
-
-    @Override
-    public List<String> getLprTransactionItemsByType(String lprTransactionItemTypeKey, ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return getNextDecorator().getLprTransactionItemsByType(lprTransactionItemTypeKey, contextInfo);
-    }
-
-    @Override
-    public List<String> searchForLprTransactionItemIds(QueryByCriteria criteria, ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return getNextDecorator().searchForLprTransactionItemIds(criteria, contextInfo);
-    }
-
-    @Override
-    public List<LprTransactionItemInfo> searchForLprTransactionItems(QueryByCriteria criteria, ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return getNextDecorator().searchForLprTransactionItems(criteria, contextInfo);
-    }
-
-    @Override
-    public List<ValidationResultInfo> validateLprTransactionItem(String validationTypeKey, String lprTransactionItemTypeKey, LprTransactionItemInfo lprTransactionItem, String lprTransactionId, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return getNextDecorator().validateLprTransactionItem(validationTypeKey, lprTransactionItemTypeKey, lprTransactionItem, lprTransactionId, contextInfo);
-    }
-
-    @Override
-    public LprTransactionItemInfo changeLprTransactionItem(String lprTransactionItemId, LprTransactionItemInfo lprTransactionItemInfo, ContextInfo contextInfo) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, ReadOnlyException, VersionMismatchException {
-        return getNextDecorator().changeLprTransactionItem(lprTransactionItemId, lprTransactionItemInfo, contextInfo);
-    }
-
 
     @Override
     public List<String> getPersonIdsByLuiAndTypeAndState(String luiId, String lprTypeKey, String relationState, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
@@ -322,12 +296,9 @@ public class LprServiceDecorator implements LprService {
 	}
 
     @Override
-    public StatusInfo changeLprTransactionItemState(String lprTransactionItemId, String nextStateKey, ContextInfo contextInfo)
-            throws DoesNotExistException,
-            InvalidParameterException,
-            MissingParameterException,
-            OperationFailedException,
-            PermissionDeniedException {
-        return getNextDecorator().changeLprTransactionItemState(lprTransactionItemId, nextStateKey, contextInfo);
+    public LprTransactionItemInfo getLprTransactionItem(String lprTransactionItemId, ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        return getNextDecorator().getLprTransactionItem(lprTransactionItemId, context);
     }
+
+
 }

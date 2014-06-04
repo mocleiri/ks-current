@@ -23,7 +23,7 @@ package org.kuali.student.r1.common.rice.authorization;
  */
 public enum PermissionType {
 	INITIATE("Initiate","KR-SYS","Initiate Document"),
-	OPEN("View","KS-SYS","Open Document"),
+	OPEN("View","KS-SYS","Open Document (GWT)"),
 	EDIT("Edit","KS-SYS","Edit Document"),
 	ADD_COMMENT("Comment","KS-SYS","Comment on Document"),
 	ADD_ADHOC_REVIEWER("Add Reviewer","KS-SYS","Add Adhoc Reviewer"), 
@@ -35,7 +35,10 @@ public enum PermissionType {
 	BLANKET_APPROVE("Blanket Approve","KS-SYS","Blanket Approve"),
 	UPLOAD_DOCUMENTS("Upload","KS-SYS","Upload to Document"),
 	USE_SCREEN("Use Screen","KS-SYS","Use Screen"),
-	ADD_COLLABORATOR_ACTION("Add Collaborator Action","KS-SYS","Add Collaborator Action");
+    ADD_COLLABORATOR_ACTION("Add Collaborator Action","KS-SYS","Add Collaborator Action"),
+    ADD_COMMENT_FOR_PROPOSALS("Add a Comment","KS-SYS","Add a Comment"),
+    EDIT_COMMENT_FOR_PROPOSALS("Edit a Comment","KS-SYS","Edit a Comment"),
+    DELETE_COMMENT_FOR_PROPOSALS("Delete a Comment","KS-SYS","Delete a Comment");
 
 	private String label = "";
 	private String permissionNamespace = "";
