@@ -58,7 +58,3 @@ end
 When(/^I delete Optional\-Other details on the course proposal$/) do
   pending # express the regexp above with the code you wish you had
 end
-
-When(/^I delete alternate identifier details to the course proposal$/) do
-  pending # express the regexp above with the code you wish you had
-end
