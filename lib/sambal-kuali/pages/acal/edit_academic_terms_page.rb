@@ -90,7 +90,7 @@ class EditAcademicTerms < BasePage
   end
 
   def key_date_validation_messages(term_type)
-    key_date_section_list_parent.ul(class: "uif-validationMessagesList").lis
+    key_date_section_list_parent(term_type).ul(class: "uif-validationMessagesList").lis
   end
 
   def key_date_group_section_list(term_type)
