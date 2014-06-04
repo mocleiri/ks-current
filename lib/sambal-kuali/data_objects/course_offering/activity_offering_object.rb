@@ -231,6 +231,9 @@ class ActivityOfferingObject < DataFactory
     si_days.each do |day|
       st, st_ampm = st_times[i].split unless st_times[i].nil?
       et, et_ampm = end_times[i].split unless end_times[i].nil?
+      fac_name = fac_names[i].nil? ? '' : fac_names[i]
+      fac_long_name = fac_long_names[i].nil? ? ''  :fac_long_names[i]
+      room = rooms[i].nil? ? '' : rooms[i]
       si = make SchedulingInformationObject,
                 :isRSI => is_rsi,
                 :days => si_days[i],
@@ -238,9 +241,9 @@ class ActivityOfferingObject < DataFactory
                 :start_time_ampm => st_ampm,
                 :end_time => et,
                 :end_time_ampm => et_ampm,
-                :facility => fac_names[i],
-                :facility_long_name => fac_long_names[i],
-                :room => rooms[i]
+                :facility => fac_name,
+                :facility_long_name => fac_long_name ,
+                :room => room
       si_list << si
       i += 1
     end

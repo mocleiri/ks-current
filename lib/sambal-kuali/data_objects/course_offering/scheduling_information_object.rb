@@ -152,30 +152,6 @@ class SchedulingInformationObject < DataFactory
     end
   end
 
-  def init_existing(ao_table_row)
-    @isRSI = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).present? and ao_table_row.cells[ManageCourseOfferings::AO_DAYS].span(index: 1).attribute_value("class") == "uif-scheduled-dl"
-    @days = ao_table_row.cells[ManageCourseOfferings::AO_DAYS].text
-    st_time = ao_table_row.cells[ManageCourseOfferings::AO_ST_TIME].text
-    if st_time != "" then
-      @start_time = st_time.split[0]
-      @start_time_ampm = st_time.split[1]
-    else
-      @start_time = ""
-      @start_time_ampm = ""
-    end
-    end_time = ao_table_row.cells[ManageCourseOfferings::AO_END_TIME].text
-    if end_time != "" then
-      @end_time = end_time.split[0]
-      @end_time_ampm = end_time.split[1]
-    else
-      @end_time = ""
-      @end_time_ampm = ""
-    end
-    @facility_long_name = ""
-    @facility = ao_table_row.cells[ManageCourseOfferings::AO_BLDG].text
-    @room = ao_table_row.cells[ManageCourseOfferings::AO_ROOM].text
-  end
-
   # compares 2 instances of SchedulingInformation for field-equality
   # note: by default, the comparison ignores the isRSI-field
   # @example
