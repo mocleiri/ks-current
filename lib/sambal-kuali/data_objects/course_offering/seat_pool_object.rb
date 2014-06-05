@@ -32,6 +32,7 @@ class SeatPoolObject < DataFactory
   alias_method :remove?, :remove
   alias_method :exp_add_succeed?, :exp_add_succeed
 
+  POPULATION_LIST = [ 'Sophomore','New Freshmen','Academic Dismissal','Gen Ed','Veteran','Athlete','Good Academic Standing','Young Scholars','Study Abroad','New Transfers','Maryland Incentive','Individual Admit']
   # provides default data:
   #defaults = {
   #    :priority => 1,
