@@ -69,20 +69,22 @@ Feature: REG.Register for course
   #KSENROLL-12065 KSENROLL-13097
   Scenario: CR 6.1 I want to drop a registered course so that I am no longer registered for it.
             CR 6.2 As a student, I want to be informed if my drop transaction is successful so that I can be sure my action is complete.
-    Given I have registered for an ENGL1 course
-    When I remove the course from my schedule
+    # Switch user here so we do not exceed max credits for one user for one term
+    Given I log in to student registration as student1
+    When I have registered for an ENGL1 course
+    And I remove the course from my schedule
     Then there is a message indicating the course was dropped
     And the course is not present in my schedule
 
   #KSENROLL-12065
   Scenario: CR 6.1 I want to drop a registered course and cancel the drop so that I am still registered for it.
-    Given I have registered for an ENGL1 course
-    When I remove the course from my schedule and cancel the drop
+    Given I log in to student registration as student1
+    When I have registered for an ENGL1 course
+    And I remove the course from my schedule and cancel the drop
     Then the course is present in my schedule
 
   #KSENROLL-12353
   Scenario: I want my registration cart and schedule to accurately reflect the number of courses and credits I am registered for so that I can be aware of my credit load.
-    # Switch user here so we do not exceed max credits for one user for one term
     Given I log in to student registration as student1
     When I add a WMST course offering to my registration cart
     Then I can view the number of courses and credits I am registered for in my registration cart
