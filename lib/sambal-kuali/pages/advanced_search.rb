@@ -8,7 +8,7 @@ class CmAdvancedSearchPage < BasePage
 
 
   element(:jointly_offered_search_by) { |b| b.frm.select(id: "joints_search.searchBy_control") }
-  element(:jointly_offered_given_name) { |b| b.frm.text_field(id: "joints_search.courseTitle_control") }
+  element(:jointly_offered_given_name) { |b| b.frm.text_field(id: "joints_search.courseTitle_control"); b.wait_until_present(120) }
   element(:jointly_offered_course_code) { |b| b.frm.text_field(id: "joints_search.courseCode_control") }
   element(:jointly_offered_text) { |b| b.frm.text_field(id: "joints_search.descr.plain_control") }
   action(:jointly_offered_search) { |b| b.frm.button(id: "button_search").click}
