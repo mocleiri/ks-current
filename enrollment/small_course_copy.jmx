@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="2.6" jmeter="2.11 r1554548">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Large Course Copy" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Small Course Copy" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -145,7 +145,7 @@
         <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
       </ConfigTestElement>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Large Course Copy" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Small Course Copy" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -2069,7 +2069,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Search ENGL101" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Search ENGL311" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -2087,7 +2087,7 @@
                 <elementProp name="inputCode" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">inputCode</stringProp>
-                  <stringProp name="Argument.value">ENGL101</stringProp>
+                  <stringProp name="Argument.value">ENGL31</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -2242,7 +2242,7 @@
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
-                <stringProp name="-160583159">view_co_ENGL101_control</stringProp>
+                <stringProp name="343967914">view_co_ENGL311_control</stringProp>
               </collectionProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
               <boolProp name="Assertion.assume_success">false</boolProp>
@@ -2585,7 +2585,7 @@
                 <elementProp name="inputCode" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">inputCode</stringProp>
-                  <stringProp name="Argument.value">ENGL101</stringProp>
+                  <stringProp name="Argument.value">ENGL311</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -2739,7 +2739,7 @@
                 <elementProp name="actionParameters[selectedLineIndex]" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">actionParameters[selectedLineIndex]</stringProp>
-                  <stringProp name="Argument.value">0</stringProp>
+                  <stringProp name="Argument.value">1</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
