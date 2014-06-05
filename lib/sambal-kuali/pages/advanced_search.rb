@@ -1,6 +1,6 @@
 class CmAdvancedSearchPage < BasePage
 
-  expected_element :jointly_offered_given_name,timeout=120
+  expected_element :jointly_offered_given_name,timeout=240
 
   def frm
     self.frame(class: "fancybox-iframe")
