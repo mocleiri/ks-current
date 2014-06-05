@@ -80,7 +80,7 @@ class BasePage < PageFactory
       action(:save_and_continue) { |b| b.save_continue.click; b.saving_wait }
 
       # For Auto Lookup drop down that appears in KRAD
-      action(:auto_lookup) { |lookup_results, b| b.link(text: lookup_results).when_present.click}
+      action(:auto_lookup) { |lookup_results, b| b.link(text: /#{lookup_results}/).when_present.click}
 
       #ADVANCED SEARCH BOXES
       action(:advanced_search) { |b| b.link(text: 'Advanced Search').click; b.adv_search_button.wait_until_present}

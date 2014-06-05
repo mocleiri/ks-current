@@ -23,10 +23,10 @@ Feature: Add details to a course proposal
 
 @draft
   Scenario: CC6.1 Add instructor, admin org, optional logistics, term and financial details (Optional-Other) to a Course Proposal
-    Given I have a basic course proposal created as Faculty
-    When I add Optional-Other details to the course proposal
-    And I perform a search for the course proposal with given proposal ID
-    Then I should see Optional-Other details on the course proposal
+  Given I am logged in as Faculty
+  When I create a course proposal with Optional-Other fields
+  And I perform a full search for the course proposal
+  Then I should see Optional-Other details on the course proposal
 
 @draft
   Scenario: CC6.2 Edit Optional-Other details on a course proposal

@@ -18,7 +18,7 @@ class CmReviewProposal < BasePage
   value(:cross_listed_courses_review) { |b| b.textarea(id: "courseSection_crossListings_control").text }
   value(:jointly_offered_courses_review) { |b| b.textarea(id: "courseSection_jointly_offered_courses_control").text }
   value(:version_codes_review) { |b| b.textarea(id: "courseSection_Version_Codes_control" ).text}
-  value(:instructors_review) { b. b.textarea(id: 'courseSection_instructors_control').text }
+  value(:instructors_review) { |b| b.textarea(id: 'courseSection_instructors_control').text }
   value(:description_review) { |b| b.textarea(id: "courseInfo_descr_control").text }
   value(:proposal_rationale_review) { |b| b.textarea(id: "proposalInfo_rationale_control").text }
 

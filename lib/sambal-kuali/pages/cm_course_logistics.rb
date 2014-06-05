@@ -11,7 +11,7 @@ class CmCourseLogistics < BasePage
 
 #DURATION COUNT
   element(:duration_count_type) { |b| b.select_list(id: "KS-DurationTypeDropDown_control") }
-  element(:duration_count_count) { |b| b.text_field(name: "KS-DurationTimeQuantity-Field_control") }
+  element(:duration_count_count) { |b| b.text_field(id: "KS-DurationTimeQuantity-Field_control") }
 
 #GRADE ASSESMENTS
 

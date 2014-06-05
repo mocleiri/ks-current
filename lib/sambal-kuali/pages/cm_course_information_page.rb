@@ -41,9 +41,9 @@ class CmCourseInformation < BasePage
 
 
   #INSTRUCTORS
-  element(:instructor_name) { |instructor_level,b| b.text_field(id: "KS-Instructor-displayName_line#{instructor_level}_control") }
-  action(:instructor_add) {|b| b.button(id: 'addInstructor').click; b.adding_line.wait_while_present }
-  action(:delete_instructor) { |instructor_level,b| b.a(id: "delete_instructor_line#{instructor_level}").i(class: "ks-fontello-icon-cancel").click }
+  element(:instructor_name) { |instructor_level,b| b.text_field(id: "KS-Instructor-displayName_line#{instructor_level-1}_control") }
+  action(:add_instructor) {|b| b.button(id: 'addInstructor').click; b.adding_line.wait_while_present }
+  action(:delete_instructor) { |instructor_level,b| b.a(id: "delete_instructor_line#{instructor_level-1}").i(class: "ks-fontello-icon-cancel").click }
 
 #DESCRIPTION AND RATIONALE
   element(:description_rationale) { |b| b.text_field(name: /courseInfo.descr.plain$/) }

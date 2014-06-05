@@ -7,7 +7,7 @@ class CmCourseProposalObject < DataFactory
   include Utilities
 
   # Course Information, Governance, Course Logistics, Active Dates completed
-  attr_accessor :proposal_title, :course_title, :transcript_course_title, :subject_code, :course_number,
+  attr_accessor :optional_fields,:proposal_title, :course_title, :transcript_course_title, :subject_code, :course_number,
         :cross_listed_course_list,
         :jointly_offered_course_list,
         :version_code_list,
@@ -94,7 +94,11 @@ class CmCourseProposalObject < DataFactory
 
         #Save
         :create_new_proposal,
-        :save_proposal
+        :save_proposal,
+        :defer_save,
+        :create_blank_proposal,
+        :create_basic_proposal,
+        :create_optional_fields
 
 
 
@@ -128,10 +132,11 @@ class CmCourseProposalObject < DataFactory
         format_list: [(make CmFormatsObject)],
         start_term: '::random::',
         #FINANCIALS
-        course_fees:                random_alphanums(10, 'test course fees '),
         curriculum_review_process:  nil,
         create_new_proposal:        true,
-        create_basic_propsal:       false,
+        create_blank_proposal:      false,
+        create_basic_proposal:      false,
+        create_optional_fields:     false,
         save_proposal:              true
     }
     set_options(defaults.merge(opts))
@@ -153,15 +158,16 @@ class CmCourseProposalObject < DataFactory
     navigate_to_create_course_proposal
     set_curriculum_review
 
-    if(@create_basic_propsal)
+    if @create_optional_fields
       create_course_continue
-      create_course_proposal_required_for_save unless @proposal_title.nil?
+      create_proposal_optional
       determine_save_action
     elsif @create_new_proposal
       create_course_continue
       create_course_proposal_required unless @proposal_title.nil?
       determine_save_action
     end
+
   end
 
 
@@ -179,7 +185,7 @@ class CmCourseProposalObject < DataFactory
       page.proposal_rationale.fit opts[:proposal_rationale]
     end
 
-    determine_save_action
+    determine_save_action unless @defer_save
 
     on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
@@ -190,7 +196,7 @@ class CmCourseProposalObject < DataFactory
       page.curriculum_oversight.pick! opts[:curriculum_oversight] unless opts[:curriculum_oversight].nil?
     end
 
-    determine_save_action
+    determine_save_action unless @defer_save
 
     on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
@@ -210,7 +216,7 @@ class CmCourseProposalObject < DataFactory
       end
 
     end
-    determine_save_action
+    determine_save_action unless @defer_save
     
     on CmActiveDates do |page|
       #Active Dates
@@ -223,6 +229,27 @@ class CmCourseProposalObject < DataFactory
     set_options(opts)
   end
 
+  def create_basic_proposal
+    on CmCourseInformation do |page|
+      page.course_information unless page.current_page('Course Information').exists?
+      fill_out page, :proposal_title, :course_title
+    end
+
+    determine_save_action unless @defer_save
+
+  end
+
+  def create_proposal_optional
+    create_basic_proposal
+
+    @optional_fields.each do |optional|
+     optional.create
+    end
+
+  end
+
+
+
   def create_course_proposal_required_for_save
     on CmCourseInformation do |page|
       page.course_information unless page.current_page('Course Information').exists?
@@ -230,7 +257,10 @@ class CmCourseProposalObject < DataFactory
       fill_out page, :proposal_title, :course_title
       determine_save_action
     end
-   end
+  end
+
+
+
 
 
   def create_course_proposal_required
@@ -241,6 +271,8 @@ class CmCourseProposalObject < DataFactory
       page.subject_code.fit @subject_code
       page.auto_lookup @subject_code unless @subject_code.nil?
       fill_out page, :course_number
+
+
 
       if @cross_listed_course_list != nil
         @cross_listed_course_list.each do |cross_listed_course|
