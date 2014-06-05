@@ -60,18 +60,18 @@ Before do
   @browser = browser
 end
 
-at_exit { browser.close unless browser == nil }
-
+#at_exit { browser.close unless browser == nil }
 if ENV['HEADLESS']
-  # commented out to allow parallel execution
-  #at_exit do
-  #  headless.destroy
-  #end
-
   #re-start browser after each failed scenario
   After do | scenario |
     if scenario.failed?
-      @browser.close unless @browser == nil
+      begin
+        screenshot_img = @browser.driver.save_screenshot("./failure.png")
+        embed(screenshot_img, 'data:image/png')
+      rescue Exception => e
+        puts "debug env.rb - screenshot failed - #{e.message}"
+      end
+      @browser.close unless @browser.nil?
       browser = nil
     end
   end
