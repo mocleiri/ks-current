@@ -22,7 +22,7 @@ class Population < DataFactory
   #do not access directly - set using 'type' attribute
   attr_accessor :operation
 
-
+  POPULATION_LIST = [ 'Sophomore','New Freshmen','Academic Dismissal','Gen Ed','Veteran','Athlete','Good Academic Standing','Young Scholars','Study Abroad','New Transfers','Maryland Incentive','Individual Admit']
   # provides default data:
   #  defaults = {
   #    :name=>random_alphanums.strip,

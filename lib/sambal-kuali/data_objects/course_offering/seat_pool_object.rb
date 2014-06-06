@@ -32,7 +32,6 @@ class SeatPoolObject < DataFactory
   alias_method :remove?, :remove
   alias_method :exp_add_succeed?, :exp_add_succeed
 
-  POPULATION_LIST = [ 'Sophomore','New Freshmen','Academic Dismissal','Gen Ed','Veteran','Athlete','Good Academic Standing','Young Scholars','Study Abroad','New Transfers','Maryland Incentive','Individual Admit']
   # provides default data:
   #defaults = {
   #    :priority => 1,
@@ -80,26 +79,27 @@ class SeatPoolObject < DataFactory
       page.add_pool_seats.fire_event "onblur"
     end
     if @population_name != ""
-      on(ActivityOfferingMaintenance).add_lookup_population_name
-
-      #TODO should really call Population.search_for_pop
-      on ActivePopulationLookup do |page|
-        if @population_name == "random"
-          page.keyword.wait_until_present
-          #page.keyword.set random_letters(1)
-          page.search
-          #page.change_results_page(1+rand(3))
-          #names = page.results_list
-          #@population_name = names[1+rand(9)]
-          @population_name = search_for_random_pop(pops_used_list)
-          page.return_value @population_name
-        else
-          page.keyword.set @population_name
-          page.search
-          page.return_value @population_name
-        end
-      end
-      on(ActivityOfferingMaintenance).add_pool_expiration_milestone.wait_until_present
+      on(ActivityOfferingMaintenance).add_pool_name_field.set @population_name
+      # KSENROLL-13151 iframe/modal dialog issue
+      # on(ActivityOfferingMaintenance).add_lookup_population_name
+      # on ActivePopulationLookup do |page|
+      #   if @population_name == "random"
+      #     page.keyword.wait_until_present
+      #     #page.keyword.set random_letters(1)
+      #     page.search
+      #     #page.change_results_page(1+rand(3))
+      #     #names = page.results_list
+      #     #@population_name = names[1+rand(9)]
+      #     @population_name = search_for_random_pop(pops_used_list)
+      #     page.return_value @population_name
+      #   else
+      #     page.keyword.set @population_name
+      #     page.search
+      #     page.return_value @population_name
+      #   end
+      # end
+      # on(ActivityOfferingMaintenance).add_pool_expiration_milestone.wait_until_present
+      # end KSENROLL-13151 iframe/modal dialog issue
     end
     on(ActivityOfferingMaintenance).add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
   end

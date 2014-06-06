@@ -273,7 +273,8 @@ class ActivityOfferingMaintenance < BasePage
 
   element(:add_pool_priority) { |b| b.seat_pools_table.rows[-1].cells[PRIORITY_COLUMN].text_field() }
   element(:add_pool_seats) { |b| b.seat_pools_table.rows[-1].cells[SEATS_COLUMN].text_field() }
-  value(:add_pool_name)  { |b| b.seat_pools_table.rows[-1].cells[POP_NAME_COLUMN].text_field().value }
+  element(:add_pool_name_field)  { |b| b.seat_pools_table.rows[-1].cells[POP_NAME_COLUMN].text_field() }
+  value(:add_pool_name)  { |b| b.add_pool_name_field.value }
   
   action(:add_lookup_population_name) { |b| b.add_pool_element.focus; b.seat_pools_table.rows[-1].link(id: /ao-seatpoolgroup-population-name_line\d+_quickfinder_act/).click; b.loading.wait_while_present }
   element(:add_pool_expiration_milestone) { |b| b.seat_pools_table.rows[-1].cells[EXP_MILESTONE_COLUMN].select() }

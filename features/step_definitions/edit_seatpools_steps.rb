@@ -20,7 +20,7 @@ When /^I edit an existing activity offering with (\d+) seat pools?$/ do |number|
     ctr = ctr + 1
     seatpool = make SeatPoolObject, :priority => (ctr),
                     :priority_after_reseq => (ctr),
-                    :population_name => SeatPoolObject::POPULATION_LIST[ctr]
+                    :population_name => Population::POPULATION_LIST[ctr]
     pool_list << seatpool
   end
 
