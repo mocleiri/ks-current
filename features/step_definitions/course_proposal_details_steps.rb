@@ -92,3 +92,7 @@ end
 When(/^I delete Optional\-Other details on the course proposal$/) do
   pending # express the regexp above with the code you wish you had
 end
+
+Then(/^I should no longer see Optional\-Other details on the course proposal$/) do
+  pending # express the regexp above with the code you wish you had
+end

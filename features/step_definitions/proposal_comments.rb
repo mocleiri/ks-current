@@ -3,34 +3,48 @@ Given(/^I have a basic course proposal created as Faculty$/) do
   @course_proposal = create CmCourseProposalObject, :create_new_proposal => false, :create_basic_propsal => true,
                             :proposal_title => random_alphanums(10,'test basic proposal title '),
                             :course_title => random_alphanums(10,'test basic course title ')
+  @course_proposal.create_course_continue
+  @course_proposal.create_basic_proposal
 end
 
 When(/^I add comments to the course proposal$/) do
+  @comment_add = make CmCommentsObject
+  @comment_add.commentText = random_alphanums(10,'test proposal comment')
   @course_proposal.load_comments_action
   sleep 10
-  on CmProposalComments do |page|
-    page.comment_text_input.set random_alphanums(10,'test proposal comment')
-    page.add_comment
-    sleep 2
-    page.close_comment_dialog
-  end
-
+  @comment_add.add_comment (@comment_add.commentText)
+  @comment_add.close_comment_dialog
 end
 
 Then(/^I should see my comments on the course proposal$/) do
+  on FindProposalPage do |page|
+    page.edit_proposal_action(@course_proposal.proposal_title)
+    page.loading_wait
+  end
   @course_proposal.load_comments_action
 end
 
 Given(/^I have a basic course admin proposal created as Curriculum Specialist$/) do
-
+  steps %{Given I am logged in as Curriculum Specialist}
+  @course_proposal = create CmCourseProposalObject, :create_new_proposal => false, :create_basic_propsal => true,
+                            :proposal_title => random_alphanums(10,'test basic proposal title '),
+                            :course_title => random_alphanums(10,'test basic course title ')
+  @course_proposal.create_course_continue
+  @course_proposal.create_basic_proposal
 end
 
 Given(/^I have a basic course proposal with comments created as Faculty$/) do
-
+  steps %{Given I have a basic course proposal created as Faculty}
+  steps %{When I add comments to the course proposal}
 end
 
 When(/^I edit a comment$/) do
-
+  @comment_edit = make CmCommentsObject
+  @comment_edit.commentText = random_alphanums(10,'edit proposal comment')
+  @course_proposal.load_comments_action
+  sleep 10
+  @comment_edit.edit_comment(0, @comment_edit.commentText)
+  @comment_edit.close_comment_dialog
 end
 
 And(/^I delete my comments$/) do
