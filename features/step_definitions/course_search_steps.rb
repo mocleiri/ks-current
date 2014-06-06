@@ -89,7 +89,7 @@ Then /^course title or course description containing "(.*?)"text option "(.*?)" 
 end
 
 When /^I search for a course with multi word"(.*?)" text option$/ do |text|
-  @course_search_result = make CourseSearchResults, :search_text => text
+  @course_search_result = make CourseSearchResults, :search_text => text, :term_select => "All"
   @course_search_result.course_search_with_search_text
 
 end
