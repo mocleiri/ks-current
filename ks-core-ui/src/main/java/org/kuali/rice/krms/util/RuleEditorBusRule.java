@@ -16,7 +16,7 @@
 package org.kuali.rice.krms.util;
 
 import org.kuali.rice.core.api.util.RiceKeyConstants;
-import org.kuali.rice.krad.bo.GlobalBusinessObject;
+import org.kuali.rice.kns.bo.GlobalBusinessObject;
 import org.kuali.rice.krad.maintenance.MaintenanceDocument;
 import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
 import org.kuali.rice.krad.util.KRADConstants;
