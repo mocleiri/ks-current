@@ -287,8 +287,10 @@ class ActivityOfferingMaintenance < BasePage
         if (row.cells[POP_NAME_COLUMN].text_field.value =~ /#{pop_name}/)
           return row
         end
-      end
+    end
+    raise "seat pool row not found for: #{pop_name}"
   end
+  
   def pool_percentage(pop_name)
     target_pool_row(pop_name).div(id: /seatLimitPercent_line/).text
   end
