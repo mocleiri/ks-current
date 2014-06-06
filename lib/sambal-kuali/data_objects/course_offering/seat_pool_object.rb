@@ -78,41 +78,42 @@ class SeatPoolObject < DataFactory
       page.add_pool_priority.set @priority
       page.add_pool_seats.set @seats
       page.add_pool_seats.fire_event "onblur"
-      if @population_name != ""
-        page.add_lookup_population_name
-
-        #TODO should really call Population.search_for_pop
-        on ActivePopulationLookup do |page|
-          if @population_name == "random"
-            page.keyword.wait_until_present
-            #page.keyword.set random_letters(1)
-            page.search
-            #page.change_results_page(1+rand(3))
-            #names = page.results_list
-            #@population_name = names[1+rand(9)]
-            @population_name = search_for_random_pop(pops_used_list)
-            page.return_value @population_name
-          else
-            page.keyword.set @population_name
-            page.search
-            page.return_value @population_name
-          end
-        end
-
-      end
-      page.add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
     end
+    if @population_name != ""
+      on(ActivityOfferingMaintenance).add_lookup_population_name
+
+      #TODO should really call Population.search_for_pop
+      on ActivePopulationLookup do |page|
+        if @population_name == "random"
+          page.keyword.wait_until_present
+          #page.keyword.set random_letters(1)
+          page.search
+          #page.change_results_page(1+rand(3))
+          #names = page.results_list
+          #@population_name = names[1+rand(9)]
+          @population_name = search_for_random_pop(pops_used_list)
+          page.return_value @population_name
+        else
+          page.keyword.set @population_name
+          page.search
+          page.return_value @population_name
+        end
+      end
+      on(ActivityOfferingMaintenance).add_pool_expiration_milestone.wait_until_present
+    end
+    on(ActivityOfferingMaintenance).add_pool_expiration_milestone.select @expiration_milestone unless @expiration_milestone.nil?
   end
 
-  #while on activity offering edit page and updates the details for a specific seatpool
-  # @example - must always call save
-  #  @activity_offering.edit :honors_course=> true
-  #  @activity_offering.edit_seatpool :seats => 2
-  #  @activity_offering.save
-  #
-  # NB: 'save' is a separate step from edit as it allows validation steps to occur during the edit process
-  #
-  # @param opts [Hash] key => value for attribute to be updated
+
+#while on activity offering edit page and updates the details for a specific seatpool
+# @example - must always call save
+#  @activity_offering.edit :honors_course=> true
+#  @activity_offering.edit_seatpool :seats => 2
+#  @activity_offering.save
+#
+# NB: 'save' is a separate step from edit as it allows validation steps to occur during the edit process
+#
+# @param opts [Hash] key => value for attribute to be updated
   def edit opts = {}
 
     defaults = {
@@ -150,10 +151,10 @@ class SeatPoolObject < DataFactory
     @parent_ao.save unless options[:defer_save]
   end
 
-  #removes seatpool from activity offering
-  #
-  #@param [string] seat_pool_list hash key
-  #TODO: if this works, get rid of parent.remove_seatpool
+#removes seatpool from activity offering
+#
+#@param [string] seat_pool_list hash key
+#TODO: if this works, get rid of parent.remove_seatpool
   def delete
     on ActivityOfferingMaintenance do |page|
       page.remove_seatpool(@population_name)
