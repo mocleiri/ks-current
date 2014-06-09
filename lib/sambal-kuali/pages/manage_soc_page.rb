@@ -8,32 +8,33 @@ class ManageSocPage < BasePage
   element(:message_element) {|b| b.frm.ul(id: "pageValidationList").li}
   value(:message) {|b| b.message_element.text}
   element(:term_code)  { |b| b.frm.text_field(id: "socTermField_control") }
+  element(:manage_course_offerings)  { |b| b.frm.a(id: "ManageSOCView-SchedulingDetails-ManageCOButton") }
   element(:lock_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-LockSetButton") }
   element(:final_edit_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-FinalEditButton") }
   element(:send_to_scheduler_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-SendToSchedulerButton") }
   element(:publish_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-PublishButton") }
   element(:close_button)  { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-CloseButton") }
 
-  action(:go_action) { |b| b.frm.button(id: "socShowButton").click; b.loading.wait_while_present }
-  action(:lock_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-LockSetButton").click; b.loading.wait_while_present; sleep 1 }
-  action(:final_edit_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-FinalEditButton").click; b.loading.wait_while_present; sleep 1 }
-  action(:send_to_scheduler_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-SendToSchedulerButton").click; b.loading.wait_while_present; sleep 1 }
-  action(:publish_action) { |b| b.frm.button(id: "ManageSOCView-SchedulingDetails-PublishButton").click; b.loading.wait_while_present; sleep 1 }
+  action(:go_action) { |b| b.frm.button(id: "socShowButton").click; sleep 2; b.loading.wait_while_present }
+  action(:lock_action) { |b| b.lock_button.click; b.loading.wait_while_present; sleep 1 }
+  action(:final_edit_action) { |b| b.final_edit_button.click; b.loading.wait_while_present; sleep 1 }
+  action(:send_to_scheduler_action) { |b| b.send_to_scheduler_button.click; b.loading.wait_while_present; sleep 1 }
+  action(:publish_action) { |b| b.publish_button.click; b.loading.wait_while_present; sleep 1 }
 
   element(:lock_popup_div) { |b| b.section(id: "lockConfirmDialog") }
-  action(:lock_confirm_action) { |b| b.lock_popup_div.radio(index: 0).click; b.loading.wait_while_present }
+  action(:lock_confirm_action) { |b| b.lock_popup_div.radio(index: 0).focus; b.lock_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:lock_cancel_action) { |b| b.lock_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
   element(:schedule_popup_div) { |b| b.section(id: "massScheduleConfirmDialog") }
-  action(:schedule_confirm_action) { |b| b.schedule_popup_div.radio(index: 0).click; b.loading.wait_while_present }
+  action(:schedule_confirm_action) { |b| b.schedule_popup_div.radio(index: 0).focus; b.schedule_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:schedule_cancel_action) { |b| b.schedule_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
   element(:final_edit_popup_div) { |b| b.section(id: "finalEditConfirmDialog") }
-  action(:final_edit_confirm_action) { |b| b.final_edit_popup_div.radio(index: 0).click; b.loading.wait_while_present }
+  action(:final_edit_confirm_action) { |b| b.final_edit_popup_div.radio(index: 0).focus; b.final_edit_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:final_edit_cancel_action) { |b| b.final_edit_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
   element(:publish_popup_div) { |b| b.section(id: "massPublishConfirmDialog") }
-  action(:publish_confirm_action) { |b| b.publish_popup_div.radio(index: 0).click; b.loading.wait_while_present }
+  action(:publish_confirm_action) { |b| b.publish_popup_div.radio(index: 0).focus; b.publish_popup_div.radio(index: 0).click; b.loading.wait_while_present }
   action(:publish_cancel_action) { |b| b.publish_popup_div.radio(index: 1).click; b.loading.wait_while_present }
 
   element(:soc_status_table) { |b| b.div(id: "ManageSOCView-StatusHistory-SubSection2").table }
