@@ -48,9 +48,6 @@ class CmCommentsObject < DataFactory
       if(page.alert.exists?)
         page.alert.ok
       end
-      page.edit_comment_text_field.set newInput
-      page.save_edited_comment
-      sleep 5
     end
   end
 

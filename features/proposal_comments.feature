@@ -20,13 +20,13 @@ Feature: Add/Edit/Delete/View Comments on a Proposal for different authors.
     Given I have a basic course proposal with comments created as Faculty
     When I edit a comment
     And I perform a full search for the course proposal
-    Then I should see my comments on the course proposal
+    Then I should see my edited comments on the course proposal
 
 @draft
   Scenario: PC1.4: Delete Comments - Faculty
     Given I have a basic course proposal with comments created as Faculty
     And I delete my comments
-    And I perform a full search for the course proposal
+    And I perform a search for the course proposal
     Then I should not see any comments on the course proposal
 
 @draft
@@ -40,7 +40,7 @@ Feature: Add/Edit/Delete/View Comments on a Proposal for different authors.
 @draft
   Scenario: PC1.6: View-Only Comments by another user
     Given I have a basic course proposal with comments created as Faculty with comments by CS
-    When I perform a full search for the course proposal
+    When I perform a search for the course proposal
     Then I should see my comments and CS comments on the course proposal
     And I should not have edit or delete options for CS comments
 
