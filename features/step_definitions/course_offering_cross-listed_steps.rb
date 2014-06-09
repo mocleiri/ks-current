@@ -74,7 +74,7 @@ end
 
 
 Then /^the alias is indicated as cross-listed with the owner CO$/ do
-  expect_result = "Crosslisted as\n#{@cross_listed_co.course}"
+  expect_result = "Crosslisted as: #{@cross_listed_co.course}"
   #expect_result = "#{@cross_listed_co.cross_listed_codes[0]}#{@suffix_with_cl} is a crosslisted alias for #{@cross_listed_co.course}#{@suffix_with_cl} (Owner)"
   on ManageCourseOfferings do |page|
     page.cross_listed_message.should include expect_result
