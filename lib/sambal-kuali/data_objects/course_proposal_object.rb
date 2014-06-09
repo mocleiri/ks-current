@@ -293,16 +293,18 @@ class CmCourseProposalObject < DataFactory
       end
 
       fill_out page, :description_rationale, :proposal_rationale
-      determine_save_action
+
     end
+    determine_save_action
 
     on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
 
       fill_out page, :location_all, :location_extended, :location_north, :location_south
       page.curriculum_oversight.pick! @curriculum_oversight
-      determine_save_action
+
     end
+    determine_save_action
 
     on CmCourseLogistics do |page|
       page.course_logistics unless page.current_page('Course Logistics').exists?
@@ -340,8 +342,9 @@ class CmCourseProposalObject < DataFactory
         page.final_exam_rationale.wait_until_present unless page.exam_standard.set?
         page.final_exam_rationale.fit @final_exam_rationale unless page.exam_standard.set?
       end
-      determine_save_action
+
     end
+    determine_save_action
 
     on CmActiveDates do |page|
       page.active_dates unless page.current_page('Active Dates').exists?
@@ -354,8 +357,9 @@ class CmCourseProposalObject < DataFactory
       #sleep 1
       #page.end_term.fit @end_term
 
-      determine_save_action
+
     end
+    determine_save_action
 
   end # required proposal
   def course_proposal_nonrequired
@@ -482,20 +486,18 @@ class CmCourseProposalObject < DataFactory
   end
   end
 
+=begin
   def determine_save_action
   on CmCourseInformation do |create|
-    unless !@save_proposal
-      if create.logged_in_user == "Alice"
-        create.save_progress
-      elsif create.logged_in_user == "Fred"
-        create.save_and_continue
-      end
+    if @save_proposal
+       create.save_progress if create.logged_in_user == "Alice"
+       create.save_and_continue if create.logged_in_user == "Fred"
     end
-
-
+    end
   end
+=end
 
-  end
+
 
   def search(search_text)
     navigate_to_find_course_proposal
