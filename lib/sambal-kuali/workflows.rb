@@ -28,8 +28,8 @@ module Workflows
 
   def determine_save_action
     on CmCourseInformation do |create|
-      create.save_progress if create.logged_in_user.downcase! == "alice"
-      create.save_and_continue if create.logged_in_user.downcase! == "fred"
+      create.save_progress if create.logged_in_user.downcase == "alice"
+      create.save_and_continue if create.logged_in_user.downcase == "fred"
     end
   end
 
