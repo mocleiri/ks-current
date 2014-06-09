@@ -153,8 +153,9 @@ end
 And /^I edit the course in my registration cart$/ do
   @reg_request.course_options.credit_option = "1.5"
   @reg_request.course_options.grading_option = "Pass/Fail"
-  @reg_request.edit_course_options_in_cart :credit_option => @reg_request.course_options.credit_option,
-                                           :grading_option => @reg_request.course_options.grading_option
+  @reg_request.edit_course_options :credit_option => @reg_request.course_options.credit_option,
+                                   :grading_option => @reg_request.course_options.grading_option,
+                                   :context => "cart"
 end
 
 When /^I edit the course in my schedule$/ do
@@ -383,6 +384,7 @@ Then /^the number of courses and credits I am registered for is correctly update
   on StudentSchedule do |page|
     expected_count = @cart_reg_credit_count + @updated_cart_credit_count
     if drop == "after the drop"
+      page.course_user_message_div.wait_until_present
       page.wait_until { page.course_user_message =~ /drop processing/i }
       page.wait_until { page.course_user_message !~ /drop processing/i }
       credits_to_drop = @reg_request.course_options.credit_option

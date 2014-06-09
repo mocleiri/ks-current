@@ -2,6 +2,9 @@ class RegistrationCart < RegisterForCourseBase
 
   page_url "#{$test_site}/registration/index.jsp#/myCart"
 
+  CONTEXT_NEW_ITEM = "newItem"
+  CONTEXT_CART = "cart"
+
   expected_element :credit_count_title
 
   #element(:item_count) { |b| b.span(id: "course_count") }
@@ -30,7 +33,7 @@ class RegistrationCart < RegisterForCourseBase
   element(:grading_option_badge) { |course_code,reg_group_code,b| b.span(id: "grading_badge_#{course_code}_#{reg_group_code}") }
   element(:grading_option) { |course_code,reg_group_code,b| b.grading_option_badge(course_code,reg_group_code).text }
   element(:edit_course_options_button) { |course_code,reg_group_code,b| b.button(id: "edit_#{course_code}_#{reg_group_code}") }
-  action(:edit_course_options) { |course_code,reg_group_code,b| b.edit_course_options_button(course_code,reg_group_code).click }
+  action(:edit_course_options) { |course_code,reg_group_code,b| b.edit_course_options_button(course_code,reg_group_code).when_present.click }
   element(:ao_type) { |course_code,reg_group_code,index,b| b.span(id: "ao_type_long_#{course_code}_#{reg_group_code}_#{index}").text }
   element(:course_schedule) { |course_code,reg_group_code,ao_index,index,b| b.div(id: "schedule_long_#{course_code}_#{reg_group_code}_#{ao_index}_#{index}").text }
 
@@ -46,32 +49,21 @@ class RegistrationCart < RegisterForCourseBase
   element(:results_div) { |b| b.div(id: "resultsSection") }
   element(:course_code_message) { |course_code,reg_group_code,b| b.results_div.span(id: "course_code_#{course_code}_#{reg_group_code}") }
 
-  # ADD NEW ITEM OPTIONS MODAL DIALOG
-  element(:new_item_credits_selection_div) { |course_code,reg_group_code,b| b.div(id:"newItem_credits_#{course_code}_#{reg_group_code}") }
-  element(:new_item_credit_options_more) { |course_code,reg_group_code,b| b.div(id: "newItem_credits_#{course_code}_#{reg_group_code}_more") }
-  action(:more_new_item_credit_options) { |course_code,reg_group_code,b| b.new_item_credit_options_more(course_code,reg_group_code).click }
-  element(:new_item_credits_selection) { |course_code,reg_group_code,credits,b| b.i(id: "newItem_credits_#{course_code}_#{reg_group_code}_#{credits}") }
-  action(:select_new_item_credits) { |course_code,reg_group_code,credits,b| b.new_item_credits_selection(course_code,reg_group_code,credits).click }
-  element(:new_item_grading_audit) { |course_code,reg_group_code,b| b.i(id: "newItem_grading_#{course_code}_#{reg_group_code}_Audit") }
-  element(:new_item_grading_letter) { |course_code,reg_group_code,b| b.i(id: "newItem_grading_#{course_code}_#{reg_group_code}_Letter") }
-  element(:new_item_grading_pass_fail) { |course_code,reg_group_code,b| b.i(id: "newItem_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
-  element(:new_item_save_button) { |course_code,reg_group_code,b| b.button(id: "newItem_save_#{course_code}_#{reg_group_code}") }
-  action(:save_new_item) { |course_code,reg_group_code,b| b.new_item_save_button(course_code,reg_group_code).click }
-  element(:new_item_cancel_button) { |course_code,reg_group_code,b| b.button(id: "newItem_cancel_#{course_code}_#{reg_group_code}") }
-  action(:cancel_new_item) { |course_code,reg_group_code,b| b.new_item_cancel_button(course_code,reg_group_code).click }
+# EDIT COURSE OPTIONS DIALOG
+#   context = newItem or cart
+  element(:credits_selection_div) { |course_code,reg_group_code,context,b| b.div(id:"#{context}_credits_#{course_code}_#{reg_group_code}") }
+  element(:credit_options_more) { |course_code,reg_group_code,context,b| b.div(id: "#{context}_credits_#{course_code}_#{reg_group_code}_more") }
+  action(:more_credit_options) { |course_code,reg_group_code,context,b| b.credit_options_more(course_code,reg_group_code,context).click }
+  element(:credits_selection) { |course_code,reg_group_code,credits,context,b| b.i(id: "#{context}_credits_#{course_code}_#{reg_group_code}_#{credits}") }
+  action(:select_credit_count) { |course_code,reg_group_code,credits,context,b| b.credits_selection(course_code,reg_group_code,credits,context).click }
+  element(:grading_audit) { |course_code,reg_group_code,context,b| b.i(id: "#{context}_grading_#{course_code}_#{reg_group_code}_Audit") }
+  element(:grading_letter) { |course_code,reg_group_code,context,b| b.i(id: "#{context}_grading_#{course_code}_#{reg_group_code}_Letter") }
+  element(:grading_pass_fail) { |course_code,reg_group_code,context,b| b.i(id: "#{context}_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
+  element(:edit_save_button) { |course_code,reg_group_code,context,b| b.button(id: "#{context}_save_#{course_code}_#{reg_group_code}") }
+  action(:save_edits) { |course_code,reg_group_code,context,b| b.edit_save_button(course_code,reg_group_code,context).click }
+  element(:edit_cancel_button) { |course_code,reg_group_code,context,b| b.button(id: "#{context}_cancel_#{course_code}_#{reg_group_code}") }
+  action(:cancel_edits) { |course_code,reg_group_code,context,b| b.edit_cancel_button(course_code,reg_group_code,context).click }
 
-  # EDIT COURSE OPTIONS DISCLOSURE
-  element(:credit_options_more) { |course_code,reg_group_code,b| b.div(id: "cart_credits_#{course_code}_#{reg_group_code}_more") }
-  action(:more_credit_options) { |course_code,reg_group_code,b| b.credit_options_more(course_code,reg_group_code).click }
-  element(:credits_selection) { |course_code,reg_group_code,credits,b| b.i(id: "cart_credits_#{course_code}_#{reg_group_code}_#{credits}") }
-  action(:select_credits) { |course_code,reg_group_code,credits,b| b.credits_selection(course_code,reg_group_code,credits).click }
-  element(:grading_audit) { |course_code,reg_group_code,b| b.i(id: "cart_grading_#{course_code}_#{reg_group_code}_Audit") }
-  element(:grading_letter) { |course_code,reg_group_code,b| b.i(id: "cart_grading_#{course_code}_#{reg_group_code}_Letter") }
-  element(:grading_pass_fail) { |course_code,reg_group_code,b| b.i(id: "cart_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
-  element(:edit_save_button) { |course_code,reg_group_code,b| b.button(id: "cart_save_#{course_code}_#{reg_group_code}") }
-  action(:save_edits) { |course_code,reg_group_code,b| b.edit_save_button(course_code,reg_group_code).click }
-  element(:edit_cancel_link) { |course_code,reg_group_code,b| b.link(id: "cart_cancel_#{course_code}_#{reg_group_code}") }
-  action(:cancel_edits) { |course_code,reg_group_code,b| b.edit_cancel_link(course_code,reg_group_code).click }
 
   def show_add_dialog
     toggle_add_dialog unless submit_button.visible?
@@ -90,43 +82,28 @@ class RegistrationCart < RegisterForCourseBase
   end
 
   def show_course_details(course_code, reg_group_code)
+    sleep 1
     toggle_course_details(course_code,reg_group_code) unless remove_course_button(course_code,reg_group_code).visible?
   end
 
   def hide_course_details(course_code, reg_group_code)
+    sleep 1
     toggle_course_details(course_code,reg_group_code) if remove_course_button(course_code,reg_group_code).visible?
   end
 
-  def select_credits_on_new_item(course_code, reg_group_code, credits)
-    more_new_item_credit_options(course_code, reg_group_code) if new_item_credit_options_more(course_code, reg_group_code).visible?
-    select_new_item_credits course_code,reg_group_code,credits
-  end
-
-  def select_grading_on_new_item(course_code, reg_group_code, grading_option)
-    case grading_option
-      when "Audit" then new_item_grading_audit(course_code, reg_group_code).click
-      when "Letter" then new_item_grading_letter(course_code, reg_group_code).click
-      when "Pass/Fail" then new_item_grading_pass_fail(course_code, reg_group_code).click
+  def select_credits(course_code, reg_group_code, credits, context)
+    if context==CONTEXT_CART
+      firefox_14_workaround(course_code, reg_group_code)
     end
+    more_credit_options(course_code, reg_group_code,context) if credit_options_more(course_code, reg_group_code,context).visible?
+    select_credit_count course_code,reg_group_code,credits,context
   end
 
-  def select_credits_in_cart(course_code, reg_group_code, credits)
-
-    # Firefox workaround
-    toggle_course_details course_code,reg_group_code
-    sleep 1
-    show_course_details course_code,reg_group_code
-    sleep 1
-
-    more_credit_options(course_code, reg_group_code) if credit_options_more(course_code, reg_group_code).visible?
-    select_credits course_code,reg_group_code,credits
-  end
-
-  def select_grading_in_cart(course_code, reg_group_code, grading_option)
+  def select_grading(course_code, reg_group_code, grading_option, context)
     case grading_option
-      when "Audit" then grading_audit(course_code,reg_group_code).click
-      when "Letter" then grading_letter(course_code,reg_group_code).click
-      when "Pass/Fail" then grading_pass_fail(course_code,reg_group_code).click
+      when "Audit" then grading_audit(course_code, reg_group_code, context).click
+      when "Letter" then grading_letter(course_code, reg_group_code, context).click
+      when "Pass/Fail" then grading_pass_fail(course_code, reg_group_code, context).click
     end
   end
 
@@ -143,4 +120,12 @@ class RegistrationCart < RegisterForCourseBase
   def add_to_waitlist(course_code, reg_group_code)
     add_to_waitlist_button(course_code, reg_group_code).click
   end
+
+  def firefox_14_workaround(course_code, reg_group_code)
+    toggle_course_details course_code, reg_group_code
+    sleep 1
+    show_course_details course_code, reg_group_code
+    sleep 1
+  end
+
 end

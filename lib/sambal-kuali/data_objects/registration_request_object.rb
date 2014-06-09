@@ -20,6 +20,8 @@ class RegistrationRequest < DataFactory
   #boolean - - generally set using options hash true/false
   attr_reader   :course_has_options
   attr_reader   :modify_course_options
+  CONTEXT_NEW_ITEM = "newItem"
+  CONTEXT_CART = "cart"
 
   # provides default data:
   #  defaults = {
@@ -66,11 +68,13 @@ class RegistrationRequest < DataFactory
       page.submit_button.wait_until_present
       page.add_to_cart
       if @course_has_options
-        page.new_item_save_button(@course_code,@reg_group_code).wait_until_present
+        page.edit_save_button(@course_code,@reg_group_code,CONTEXT_NEW_ITEM).wait_until_present
         if @modify_course_options
-          edit_course_options_on_new_item
+          edit_course_options :credit_option=>@course_options.credit_option,
+                              :grading_option=>@course_options.grading_option,
+                              :context => CONTEXT_NEW_ITEM
         end
-        page.save_new_item @course_code,@reg_group_code
+        page.save_edits @course_code,@reg_group_code,CONTEXT_NEW_ITEM
       end
     end
   end
@@ -130,20 +134,43 @@ class RegistrationRequest < DataFactory
     end
   end
 
-  def edit_course_options_on_new_item
-    if @course_options.nil?
-      return nil
-    end
-    on RegistrationCart do |page|
-      page.new_item_credits_selection_div(@course_code,@reg_group_code).wait_until_present
-      page.select_credits_on_new_item @course_code,@reg_group_code,@course_options.credit_option
-      page.select_grading_on_new_item @course_code,@reg_group_code,@course_options.grading_option
-    end
-  end
-  private :edit_course_options_on_new_item
+  # def edit_course_options_on_new_item
+  #   if @course_options.nil?
+  #     return nil
+  #   end
+  #   on RegistrationCart do |page|
+  #     page.credits_selection_div(@course_code,@reg_group_code,CONTEXT_NEW_ITEM).wait_until_present
+  #     page.select_credits @course_code,@reg_group_code,@course_options.credit_option,CONTEXT_NEW_ITEM
+  #     page.select_grading @course_code,@reg_group_code,@course_options.grading_option,CONTEXT_NEW_ITEM
+  #   end
+  # end
+  # private :edit_course_options_on_new_item
+  #
+  # def edit_course_options_in_cart opts = {}
+  #   if @course_options.nil?
+  #     return nil
+  #   end
+  #
+  #   defaults = {
+  #   }
+  #   options = defaults.merge(opts)
+  #
+  #   on RegistrationCart do |page|
+  #     page.course_code(@course_code,@reg_group_code).wait_until_present
+  #     page.show_course_details @course_code,@reg_group_code
+  #     page.edit_course_options @course_code,@reg_group_code
+  #
+  #     page.select_credits @course_code,@reg_group_code,options[:credit_option],CONTEXT_CART unless options[:credit_option].nil?
+  #     page.select_grading @course_code,@reg_group_code,options[:grading_option],CONTEXT_CART unless options[:grading_option].nil?
+  #     page.save_edits @course_code,@reg_group_code,CONTEXT_CART
+  #   end
+  #
+  #   #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
+  # end
+  # #private :edit_course_options_in_cart
 
-  def edit_course_options_in_cart opts = {}
-    if @course_options.nil?
+  def edit_course_options opts = {}
+    if opts.nil?
       return nil
     end
 
@@ -152,18 +179,23 @@ class RegistrationRequest < DataFactory
     options = defaults.merge(opts)
 
     on RegistrationCart do |page|
-      page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.show_course_details @course_code,@reg_group_code
-      page.edit_course_options @course_code,@reg_group_code
 
-      page.select_credits_in_cart @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
-      page.select_grading_in_cart @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
-      page.save_edits @course_code,@reg_group_code
+      if options[:context]==CONTEXT_CART then
+        page.show_course_details @course_code, @reg_group_code
+        page.edit_course_options @course_code, @reg_group_code
+
+        page.firefox_14_workaround @course_code, @reg_group_code
+
+      end
+
+      page.credits_selection_div(@course_code, @reg_group_code, options[:context]).wait_until_present
+      page.select_credits @course_code, @reg_group_code, options[:credit_option], options[:context] unless options[:credit_option].nil?
+      page.select_grading @course_code, @reg_group_code, options[:grading_option], options[:context] unless options[:grading_option].nil?
+      page.save_edits @course_code, @reg_group_code, options[:context]
     end
 
     #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
   end
-  #private :edit_course_options_in_cart
 
   def edit_course_options_in_schedule opts = {}
     if @course_options.nil?
