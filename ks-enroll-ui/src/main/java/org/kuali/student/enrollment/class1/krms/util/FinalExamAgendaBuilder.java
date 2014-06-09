@@ -51,7 +51,7 @@ public class FinalExamAgendaBuilder extends AgendaBuilder {
         List<CollectionGroup> components = ViewLifecycleUtils.getElementsOfTypeDeep(group, CollectionGroup.class);
         for (CollectionGroup fieldCollectionGroup : components) {
             ComponentUtils.prefixBindingPath(fieldCollectionGroup, bindingPrefix);
-            fieldCollectionGroup.setSubCollectionSuffix(agendaSuffix);
+            fieldCollectionGroup.setContainerIdSuffix(agendaSuffix);
         }
 
         List<Action> actionLinks = ViewLifecycleUtils.getElementsOfTypeDeep(group, Action.class);
