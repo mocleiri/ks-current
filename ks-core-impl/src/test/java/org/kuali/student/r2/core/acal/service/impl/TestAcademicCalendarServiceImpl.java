@@ -1,10 +1,9 @@
 package org.kuali.student.r2.core.acal.service.impl;
 
-import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kuali.rice.core.api.criteria.Predicate;
@@ -67,7 +66,6 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -402,7 +400,7 @@ public class TestAcademicCalendarServiceImpl {
         assertNotNull(temp.getId());
 
         // check the generated code, based on formula in https://jira.kuali.org/browse/KSENROLL-1146
-        String expectedCode = DateUtil.formatDate(term.getStartDate(), "yyyy") + "08";
+        String expectedCode = DateFormatUtils.format(term.getStartDate(), "yyyy") + "08";
         assertEquals(expectedCode, created.getCode());
 
         term.setId(null);

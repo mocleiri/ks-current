@@ -15,22 +15,18 @@
  */
 package org.kuali.student.r2.core.acal.service.impl;
 
-import org.apache.commons.httpclient.util.DateUtil;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.core.acal.dto.TermInfo;
-import org.kuali.student.r2.core.acal.service.TermCodeGenerator;
-import org.kuali.student.r2.core.acal.service.impl.TermCodeGeneratorImpl;
 import org.kuali.student.r2.common.util.date.DateFormatters;
+import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.core.constants.AtpServiceConstants;
 import org.kuali.student.r2.core.constants.TypeServiceConstants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -88,7 +84,7 @@ public class TestTermCodeGeneratorImpl {
         TypeInfo type = typeService.getType(term.getTypeKey(), callContext);
         String typeCode = type.getAttributeValue(TypeServiceConstants.ATP_TERM_TYPE_CODE_ATTR);
 
-        StringBuilder termCode = new StringBuilder(DateUtil.formatDate(term.getStartDate(), YEAR_ONLY_FORMAT_STRING));
+        StringBuilder termCode = new StringBuilder(DateFormatUtils.format(term.getStartDate(), YEAR_ONLY_FORMAT_STRING));
         termCode.append(typeCode);
 
         String startYear = DateFormatters.DEFULT_YEAR_FORMATTER.format(new Date());

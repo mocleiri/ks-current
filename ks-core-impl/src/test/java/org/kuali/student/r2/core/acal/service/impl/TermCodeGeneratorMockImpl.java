@@ -15,7 +15,7 @@
  */
 package org.kuali.student.r2.core.acal.service.impl;
 
-import org.apache.commons.httpclient.util.DateUtil;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.kuali.student.r2.core.acal.dto.TermInfo;
 import org.kuali.student.r2.core.acal.service.TermCodeGenerator;
 import org.kuali.student.r2.core.constants.AtpServiceConstants;
@@ -57,7 +57,7 @@ public class TermCodeGeneratorMockImpl implements TermCodeGenerator {
             return null;
         }
 
-        StringBuilder result = new StringBuilder(DateUtil.formatDate(term.getStartDate(), YEAR_ONLY_FORMAT_STRING));
+        StringBuilder result = new StringBuilder(DateFormatUtils.format(term.getStartDate(), YEAR_ONLY_FORMAT_STRING));
 
         result.append(termTypeCodeMap.get(term.getTypeKey()).toString());
 
