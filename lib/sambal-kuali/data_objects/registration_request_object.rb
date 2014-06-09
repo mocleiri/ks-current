@@ -130,6 +130,7 @@ class RegistrationRequest < DataFactory
     on RegistrationCart do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
       page.show_course_details @course_code,@reg_group_code
+      page.remove_course_button(@course_code,@reg_group_code).wait_until_present
       page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
@@ -181,7 +182,9 @@ class RegistrationRequest < DataFactory
     on RegistrationCart do |page|
 
       if options[:context]==CONTEXT_CART then
+        page.course_code(@course_code,@reg_group_code).wait_until_present
         page.show_course_details @course_code, @reg_group_code
+        page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
         page.edit_course_options @course_code, @reg_group_code
 
         page.firefox_14_workaround @course_code, @reg_group_code
