@@ -161,7 +161,6 @@ class CmCourseProposalObject < DataFactory
     if @create_optional_fields
       create_course_continue
       create_proposal_optional
-      determine_save_action
     elsif @create_new_proposal
       create_course_continue
       create_course_proposal_required unless @proposal_title.nil?

@@ -30,14 +30,16 @@ Feature: Add details to a course proposal
 
 @draft
   Scenario: CC6.2 Edit Optional-Other details on a course proposal
-    Given I have a basic course admin proposal with Optional-Other details created as CS
-    When I update Optional-Other details on the course proposal
-    And I perform a search for the course proposal with given proposal ID
-    Then I should see Optional-Other details on the course proposal
+  Given I am logged in as Curriculum Specialist
+  And I have a basic course proposal created with Optional-Other fields
+  When I update the Optional Other details on the course proposal
+  And I perform a full search for the course proposal
+  Then I should see updated Optional Other details on the course proposal
 
 @draft
   Scenario: CC6.3 Delete Optional-Other details on a course proposal
-    Given I have a basic course proposal with Optional-Other details created as Faculty
-    When I delete Optional-Other details on the course proposal
-    And I perform a search for the course proposal with given proposal ID
-    Then I should no longer see Optional-Other details on the course proposal
+  Given I am logged in as Faculty
+  And I have a basic course proposal created with Optional-Other fields
+  When I delete Optional-Other details on the course proposal
+  And I perform a full search for the course proposal
+  Then I should no longer see Optional-Other details on the course proposal
