@@ -333,11 +333,21 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
 
 end
 
-And /^I generate 'bulk' exam offerings for a term$/ do
-  @manage_soc = make ManageSoc, :term_code =>'201301'
+And /^I generate 'bulk' exam offerings for the term$/ do
   @manage_soc.create_exam_offerings_soc
 end
 
 And /^the exam offerings are successfully generated$/ do
- #TODO
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  on ViewExamOfferings do |page|
+    page.get_eo_by_co_days_text.should =~ /#{@matrix.rules[0].rsi_days}/
+    page.get_eo_by_co_st_time_text.should == "#{@matrix.rules[0].start_time} #{@matrix.rules[0].start_time_ampm}"
+    page.get_eo_by_co_end_time_text.should == "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}"
+    page.get_eo_by_co_bldg_text.should == @matrix.rules[0].facility
+    page.get_eo_by_co_room_text.should == @matrix.rules[0].room
+  end
+
+
+
 end

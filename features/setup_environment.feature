@@ -100,5 +100,6 @@ Feature: data_setup.Setup Environment
 
   @wip
   Scenario: Run Bulk Creation of Exam Offerings for a term
-    When I generate 'bulk' exam offerings for a term
+    When a new academic term has courses found in the CO based exam matrix
+    When I generate 'bulk' exam offerings for the term
     Then the exam offerings are successfully generated

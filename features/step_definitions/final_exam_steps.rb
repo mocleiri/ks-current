@@ -987,9 +987,9 @@ end
 When /^I change the Final Exam indicator from Standard Final Exam to Alternate Final Assessment or No Final Exam or Assessment$/ do
   on CourseOfferingCreateEdit do |page|
     page.final_exam_option_alternate
-    page.new_final_exam_driver_value.should == "Alternate exam for this offering"
+    page.new_final_exam_driver_value.should == ''
     page.final_exam_option_none
-    page.new_final_exam_driver_value.should == "No final exam for this offering"
+    page.new_final_exam_driver_value.should == ''
   end
 end
 
@@ -1936,4 +1936,33 @@ When /^I? ?add facility and room information to the exam offering RSI$/ do
                :facility => 'VMH',
                :room => '1212',
                :override_matrix => true
+end
+
+Given /^a new academic term has courses found in the CO based exam matrix$/ do
+  @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
+  term = make AcademicTermObject, :parent_calendar => @calendar
+  @calendar.add_term term
+
+  exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"12/11/#{@calendar.year}",
+                     :end_date=>"12/20/#{@calendar.year}"
+  @calendar.terms[0].add_exam_period exam_period
+  @calendar.terms[0].save
+
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
+  @manage_soc.set_up_soc
+  @manage_soc.perform_manual_soc_state_change
+
+  @course_offering = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                          :course => "ENGL407"
+  @course_offering.delivery_format_list[0].format = "Lecture"
+  @course_offering.delivery_format_list[0].grade_format = "Lecture"
+  @course_offering.delivery_format_list[0].final_exam_activity = "Lecture"
+  @course_offering.create
+
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
+                              :format => "Lecture Only", :activity_type => "Lecture"
+  @activity_offering.approve :navigate_to_page => false
+
+  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course[0..6]) #canonical course code only
 end
