@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="2.4" jmeter="2.9 r1437961">
+<jmeterTestPlan version="1.2" properties="2.6" jmeter="2.11 r1554548">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -399,15 +399,11 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="cart_id" enabled="true">
-              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">Cart_id</stringProp>
-              <stringProp name="RegexExtractor.regex">&quot;cartId&quot;:&quot;(\S+)&quot;,&quot;termId</stringProp>
-              <stringProp name="RegexExtractor.template">$1$</stringProp>
-              <stringProp name="RegexExtractor.default">no_cart_id</stringProp>
-              <stringProp name="RegexExtractor.match_number">1</stringProp>
-              <stringProp name="Sample.scope">all</stringProp>
-            </RegexExtractor>
+            <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="cart_id" enabled="true">
+              <stringProp name="VAR">Cart_id</stringProp>
+              <stringProp name="JSONPATH">$.cartId</stringProp>
+              <stringProp name="DEFAULT">broken</stringProp>
+            </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -501,15 +497,11 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Reg_grp_id" enabled="true">
-              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">Reg_grp_id</stringProp>
-              <stringProp name="RegexExtractor.regex">regGroupId&quot;:&quot;(\S+)&quot;,&quot;regGroupCode</stringProp>
-              <stringProp name="RegexExtractor.template">$1$</stringProp>
-              <stringProp name="RegexExtractor.default">no_reg_grp_id</stringProp>
-              <stringProp name="RegexExtractor.match_number">1</stringProp>
-              <stringProp name="Sample.scope">all</stringProp>
-            </RegexExtractor>
+            <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Reg_grp_id" enabled="true">
+              <stringProp name="VAR">Reg_grp_id</stringProp>
+              <stringProp name="JSONPATH">$.regGroupId</stringProp>
+              <stringProp name="DEFAULT">broken</stringProp>
+            </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -570,15 +562,11 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Reg_req_id" enabled="true">
-              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">Reg_req_id</stringProp>
-              <stringProp name="RegexExtractor.regex">registrationRequestId&quot;:&quot;(\S+)&quot;,&quot;hasFailed</stringProp>
-              <stringProp name="RegexExtractor.template">$1$</stringProp>
-              <stringProp name="RegexExtractor.default">no_req_req_id</stringProp>
-              <stringProp name="RegexExtractor.match_number">1</stringProp>
-              <stringProp name="Sample.scope">all</stringProp>
-            </RegexExtractor>
+            <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Reg_req_id" enabled="true">
+              <stringProp name="VAR">Reg_req_id</stringProp>
+              <stringProp name="JSONPATH">$registrationRequestItems[0].registrationRequestId</stringProp>
+              <stringProp name="DEFAULT">broken</stringProp>
+            </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/services/CourseRegistrationClientService/getRegistrationStatus" enabled="true">
@@ -1097,15 +1085,11 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Cart_id1" enabled="true">
-              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">Cart_id1</stringProp>
-              <stringProp name="RegexExtractor.regex">&quot;cartId&quot;:&quot;(\S+)&quot;,&quot;termId</stringProp>
-              <stringProp name="RegexExtractor.template">$1$</stringProp>
-              <stringProp name="RegexExtractor.default">no_cart_id</stringProp>
-              <stringProp name="RegexExtractor.match_number">1</stringProp>
-              <stringProp name="Sample.scope">all</stringProp>
-            </RegexExtractor>
+            <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="cart_id1" enabled="true">
+              <stringProp name="VAR">Cart_id1</stringProp>
+              <stringProp name="JSONPATH">$.cartId</stringProp>
+              <stringProp name="DEFAULT">broken</stringProp>
+            </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -1199,15 +1183,11 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Reg_grp_id1" enabled="true">
-              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">Reg_grp_id1</stringProp>
-              <stringProp name="RegexExtractor.regex">regGroupId&quot;:&quot;(\S+)&quot;,&quot;regGroupCode</stringProp>
-              <stringProp name="RegexExtractor.template">$1$</stringProp>
-              <stringProp name="RegexExtractor.default">no_reg_grp_id</stringProp>
-              <stringProp name="RegexExtractor.match_number">1</stringProp>
-              <stringProp name="Sample.scope">all</stringProp>
-            </RegexExtractor>
+            <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Reg_grp_id1" enabled="true">
+              <stringProp name="VAR">Reg_grp_id1</stringProp>
+              <stringProp name="JSONPATH">$.regGroupId</stringProp>
+              <stringProp name="DEFAULT">broken</stringProp>
+            </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -1268,15 +1248,11 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Reg_req_id1" enabled="true">
-              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">Reg_req_id1</stringProp>
-              <stringProp name="RegexExtractor.regex">registrationRequestId&quot;:&quot;(\S+)&quot;,&quot;hasFailed</stringProp>
-              <stringProp name="RegexExtractor.template">$1$</stringProp>
-              <stringProp name="RegexExtractor.default">no_req_req_id</stringProp>
-              <stringProp name="RegexExtractor.match_number">1</stringProp>
-              <stringProp name="Sample.scope">all</stringProp>
-            </RegexExtractor>
+            <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Reg_req_id1" enabled="true">
+              <stringProp name="VAR">Reg_req_id1</stringProp>
+              <stringProp name="JSONPATH">$registrationRequestItems[0].registrationRequestId</stringProp>
+              <stringProp name="DEFAULT">broken</stringProp>
+            </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
             <hashTree/>
           </hashTree>
         </hashTree>
