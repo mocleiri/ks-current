@@ -97,6 +97,7 @@ class SchedulingInformationObject < DataFactory
           page.add_start_time.click
           page.loading.wait_while_present
           page.add_days.set @days
+          page.loading.wait_while_present
           sleep 2
         end
 
@@ -104,6 +105,7 @@ class SchedulingInformationObject < DataFactory
           page.add_start_time.click
           page.loading.wait_while_present
           page.add_start_time.set @start_time + " " + @start_time_ampm
+          page.loading.wait_while_present
           page.add_start_time.click
           page.loading.wait_while_present
         end
@@ -120,6 +122,7 @@ class SchedulingInformationObject < DataFactory
             page.end_time_select_populate_list
             if page.end_time_select.present?
               page.end_time_select.select(formatted_end_time)
+              page.loading.wait_while_present
             else
               page.add_end_time.click
               page.loading.wait_while_present
@@ -132,6 +135,7 @@ class SchedulingInformationObject < DataFactory
           else
             page.end_time_select_populate_list
             page.add_end_time.set @end_time + " " + @end_time_ampm
+            page.loading.wait_while_present
           end
         end
 
@@ -262,12 +266,14 @@ class SchedulingInformationObject < DataFactory
 
         if options[:days] != nil then
           page.add_days.set options[:days]
+          page.loading.wait_while_present
         end
 
         if options[:start_time] != nil then
           page.add_start_time.click
           page.loading.wait_while_present
           page.add_start_time.set options[:start_time] + " " + options[:start_time_ampm].upcase
+          page.loading.wait_while_present
           sleep(1)
         end
 
@@ -275,6 +281,7 @@ class SchedulingInformationObject < DataFactory
           page.add_end_time.click
           page.loading.wait_while_present
           page.add_end_time.set options[:end_time] + " " + options[:end_time_ampm].upcase
+          page.loading.wait_while_present
         end
 
         if options[:facility] != nil then
