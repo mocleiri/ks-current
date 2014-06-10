@@ -174,6 +174,30 @@ class ManageSoc < DataFactory
     raise "Test timed out waiting for Publish process" unless page.soc_status == 'Published'
   end
 
+  #create exam offering for soc
+  #
+  #
+  #
+  def create_exam_offerings_soc
+    search
+    on ManageSocPage do |page|
+      page.create_eos_action
+      page.create_eos_confirm_action
+      sleep 4 #work around for KSENROLL-12946
+      page.go_action #work around for KSENROLL-12946
+      sleep 2 #work around for KSENROLL-12946
+      page.term_code.wait_until_present #work around for KSENROLL-12946
+
+      tries = 0
+      until page.eo_creation_status == 'Completed' or tries == 100 do
+        sleep 60
+        tries += 1
+        search
+      end
+      raise "Test timed out waiting for Exam Offering creation process" unless page.eo_creation_status == 'Completed'
+    end
+  end
+
   def verify_schedule_state_changes
     @browser.goto "#{$test_site}/kr-krad/statusview/#{@term_code}/#{@co_code}"
     on StatusViewPage do |page|

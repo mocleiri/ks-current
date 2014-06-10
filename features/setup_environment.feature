@@ -97,3 +97,8 @@ Feature: data_setup.Setup Environment
   Scenario: Set up a term in draft state
     When I initiate a rollover to create a term in draft state EC
     Then the results of the rollover are available
+
+  @wip
+  Scenario: Run Bulk Creation of Exam Offerings for a term
+    When I generate 'bulk' exam offerings for a term
+    Then the exam offerings are successfully generated

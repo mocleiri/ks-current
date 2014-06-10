@@ -332,3 +332,12 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
   end
 
 end
+
+And /^I generate 'bulk' exam offerings for a term$/ do
+  @manage_soc = make ManageSoc, :term_code =>'201301'
+  @manage_soc.create_exam_offerings_soc
+end
+
+And /^the exam offerings are successfully generated$/ do
+ #TODO
+end

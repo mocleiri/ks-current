@@ -22,20 +22,31 @@ class ManageSocPage < BasePage
   action(:publish_action) { |b| b.publish_button.click; b.loading.wait_while_present; sleep 1 }
 
   element(:lock_popup_div) { |b| b.section(id: "lockConfirmDialog") }
-  action(:lock_confirm_action) { |b| b.lock_popup_div.radio(index: 0).focus; b.lock_popup_div.radio(index: 0).click; b.loading.wait_while_present }
-  action(:lock_cancel_action) { |b| b.lock_popup_div.radio(index: 1).click; b.loading.wait_while_present }
+  action(:lock_confirm_action) { |b| b.lock_popup_div.span(class: 'ui-button-text',text: 'Lock set').click; b.loading.wait_while_present }
+  action(:lock_cancel_action) { |b| b.lock_popup_div.span(class: 'ui-button-text',text: 'Cancel').click; b.loading.wait_while_present }
 
   element(:schedule_popup_div) { |b| b.section(id: "massScheduleConfirmDialog") }
-  action(:schedule_confirm_action) { |b| b.schedule_popup_div.radio(index: 0).focus; b.schedule_popup_div.radio(index: 0).click; b.loading.wait_while_present }
-  action(:schedule_cancel_action) { |b| b.schedule_popup_div.radio(index: 1).click; b.loading.wait_while_present }
+  action(:schedule_confirm_action) { |b| b.schedule_popup_div.span(class: 'ui-button-text',text: 'Send Activities').click; b.loading.wait_while_present }
+  action(:schedule_cancel_action) { |b| b.schedule_popup_div.span(class: 'ui-button-text',text: 'Cancel').click; b.loading.wait_while_present }
 
   element(:final_edit_popup_div) { |b| b.section(id: "finalEditConfirmDialog") }
-  action(:final_edit_confirm_action) { |b| b.final_edit_popup_div.radio(index: 0).focus; b.final_edit_popup_div.radio(index: 0).click; b.loading.wait_while_present }
-  action(:final_edit_cancel_action) { |b| b.final_edit_popup_div.radio(index: 1).click; b.loading.wait_while_present }
+  action(:final_edit_confirm_action) { |b| b.final_edit_popup_div.span(class: 'ui-button-text',text: 'Allow Final Edits').click; b.loading.wait_while_present }
+  action(:final_edit_cancel_action) { |b| b.final_edit_popup_div.span(class: 'ui-button-text',text: 'Cancel').click; b.loading.wait_while_present }
 
   element(:publish_popup_div) { |b| b.section(id: "massPublishConfirmDialog") }
-  action(:publish_confirm_action) { |b| b.publish_popup_div.radio(index: 0).focus; b.publish_popup_div.radio(index: 0).click; b.loading.wait_while_present }
-  action(:publish_cancel_action) { |b| b.publish_popup_div.radio(index: 1).click; b.loading.wait_while_present }
+  action(:publish_confirm_action) { |b| b.publish_popup_div.span(class: 'ui-button-text',text: 'Publish Set').click; b.loading.wait_while_present }
+  action(:publish_cancel_action) { |b| b.publish_popup_div.span(class: 'ui-button-text',text: 'Cancel').click; b.loading.wait_while_present }
+
+  element(:create_eos_button)  { |b| b.frm.button(id: 'ManageSOCView-CreateEOBulk-SchedulerButton') }
+  action(:create_eos_action) { |b| b.create_eos_button.click; b.loading.wait_while_present; sleep 1 }
+  element(:create_eos_confirm_popup_div) { |b| b.section(id: "examOfferingConfirmDialog") }
+  action(:create_eos_confirm_action) { |b| b.create_eos_confirm_popup_div.span(class: 'ui-button-text',text: 'Create Exam Offerings').click; b.loading.wait_while_present }
+  action(:create_eos_cancel_action) { |b| b.create_eos_confirm_popup_div.span(class: 'ui-button-text',text: 'Cancel').click; b.loading.wait_while_present }
+
+  element(:eo_creation_status) { |b| b.div(id: 'eoSlottingStatus').text }
+  element(:eo_creation_initiated_date) { |b| b.div(id: 'eoSlottingInitiatedDate').text }
+  element(:eo_creation_completed_date) { |b| b.div(id: 'eoSlottingCompleteDate').text }
+  element(:eo_creation_duration) { |b| b.div(id: 'eoSlottingDuration').text }
 
   element(:soc_status_table) { |b| b.div(id: "ManageSOCView-StatusHistory-SubSection2").table }
   STATE_COLUMN = 0
