@@ -3040,7 +3040,7 @@
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/courseOfferingManagement" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/courseOfferingManagement" enabled="false">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="termCode" elementType="HTTPArgument">
@@ -4122,7 +4122,7 @@ createTable(&apos;u1b74m4s_line0&apos;, {sDom:&quot;opir&quot;,aaSorting:[[0, &a
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/activityOfferingRules" enabled="false">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/kr-krad/activityOfferingRules" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="overrideKeys" elementType="HTTPArgument">
@@ -4214,6 +4214,15 @@ createTable(&apos;u1b74m4s_line0&apos;, {sDom:&quot;opir&quot;,aaSorting:[[0, &a
                 </elementProp>
               </collectionProp>
             </HeaderManager>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="formKey4" enabled="true">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">formKey4</stringProp>
+              <stringProp name="RegexExtractor.regex">name=&quot;formKey&quot; value=&quot;(.*)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default">broken</stringProp>
+              <stringProp name="RegexExtractor.match_number">1</stringProp>
+            </RegexExtractor>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/krms/scripts/requiredAlerts.js" enabled="true">
