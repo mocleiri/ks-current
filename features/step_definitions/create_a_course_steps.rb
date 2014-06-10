@@ -17,7 +17,7 @@ When /^I create a course proposal$/ do
 end
 
 When /^I create a course proposal from blank$/ do
-  @course_proposal = create CmCourseProposalObject, :save_proposal => false, :proposal_title => nil, :course_title =>nil
+  @course_proposal = create CmCourseProposalObject, :blank_proposal => true, :defer_save => true
 end
 
 Then /^I should see a blank course proposal$/ do

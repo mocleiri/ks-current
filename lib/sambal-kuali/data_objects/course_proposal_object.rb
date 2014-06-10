@@ -96,7 +96,7 @@ class CmCourseProposalObject < DataFactory
         :create_new_proposal,
         :save_proposal,
         :defer_save,
-        :create_blank_proposal,
+        :blank_proposal,
         :create_basic_proposal,
         :create_optional_fields
 
@@ -134,10 +134,11 @@ class CmCourseProposalObject < DataFactory
         #FINANCIALS
         curriculum_review_process:  nil,
         create_new_proposal:        true,
-        create_blank_proposal:      false,
+        blank_proposal:             false,
         create_basic_proposal:      false,
         create_optional_fields:     false,
-        save_proposal:              true
+        save_proposal:              true,
+        defer_save:                 false
     }
     set_options(defaults.merge(opts))
 
@@ -163,8 +164,8 @@ class CmCourseProposalObject < DataFactory
       create_proposal_optional
     elsif @create_new_proposal
       create_course_continue
-      create_course_proposal_required unless @proposal_title.nil?
-      determine_save_action
+      create_course_proposal_required unless @blank_proposal
+      determine_save_action unless @defer_save
     end
 
   end
