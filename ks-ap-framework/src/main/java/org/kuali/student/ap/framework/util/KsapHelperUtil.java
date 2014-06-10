@@ -1,3 +1,17 @@
+/*
+ * Copyright 2014 The Kuali Foundation Licensed under the
+ * Educational Community License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may
+ * obtain a copy of the License at
+ *
+ * http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 package org.kuali.student.ap.framework.util;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -23,8 +38,6 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equal;
 import static org.kuali.rice.core.api.criteria.PredicateFactory.or;
 
 /**
- * @author Kuali Student Team
- *
  * This is a common utility class for the KSAP application project containing widely used static methods.
  */
 public class KsapHelperUtil {
@@ -156,5 +169,128 @@ public class KsapHelperUtil {
         }
 
         return currentDate;
+    }
+
+    /**
+     * Comparator for sorting the facet values of Numerical facets
+     */
+    public static final Comparator<String> NUMERIC = new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+            if (o1 == null && o2 == null)
+                return 0;
+            if (o1 == null)
+                return -1;
+            if (o2 == null)
+                return 1;
+            if (o1.startsWith("<") && !o2.startsWith("<"))
+                return -1;
+            if (o2.startsWith("<") && !o1.startsWith("<"))
+                return 1;
+            int i1;
+            try {
+                i1 = Integer.parseInt(o1);
+            } catch (NumberFormatException e) {
+                i1 = Integer.MAX_VALUE;
+            }
+            int i2;
+            try {
+                i2 = Integer.parseInt(o2);
+            } catch (NumberFormatException e) {
+                i2 = Integer.MAX_VALUE;
+            }
+            return i1 == i2 ? 0 : i1 < i2 ? -1 : 1;
+        }
+    };
+
+    /**
+     * Comparator for sorting the facet values of Alphabetical facets
+     */
+    public static final Comparator<String> ALPHA = new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+            if (o1 == null && o2 == null)
+                return 0;
+            if (o1 == null)
+                return -1;
+            if (o2 == null)
+                return 1;
+            if (o1.equals(o2))
+                return 0;
+            if ("Unknown".equals(o1) || "None".equals(o1))
+                return 1;
+            if ("Unknown".equals(o2) || "None".equals(o2))
+                return -1;
+            return o1.compareTo(o2);
+        }
+    };
+
+    /**
+     * Comparator for sorting the facet values of Terms
+     */
+    public static final Comparator<String> TERMS = new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+
+            // Compare terms for nulls
+            if (o1 == null && o2 == null)
+                return 0;
+            if (o1 == null)
+                return -1;
+            if (o2 == null)
+                return 1;
+            if (o1.equals(o2))
+                return 0;
+            if ("Unknown".equals(o1) || "None".equals(o1))
+                return 1;
+            if ("Unknown".equals(o2) || "None".equals(o2))
+                return -1;
+
+            // Compare terms for proper format
+            String[] s1 = o1.split(" ");
+            String[] s2 = o2.split(" ");
+            if (s1.length != 2 && s2.length != 2)
+                return o1.compareTo(o2);
+            if (s1.length != 2)
+                return 1;
+            if (s2.length != 2)
+                return -1;
+
+            // Compare year value of the terms
+            int year1;
+            try {
+                year1 = Integer.parseInt(s1[1]);
+                if (year1 < 0 || year1 > 100)
+                    year1 = -1;
+            } catch (NumberFormatException e) {
+                year1 = -1;
+            }
+            int year2;
+            try {
+                year2 = Integer.parseInt(s2[1]);
+                if (year2 < 0 || year2 > 100)
+                    year2 = -1;
+            } catch (NumberFormatException e) {
+                year2 = -1;
+            }
+            if (year1 == -1)
+                return -1;
+            if (year2 == -1)
+                return 1;
+            if(year1 != year2) return compareIntegers(year1,year2);
+
+            // Compare term value of the terms
+            String termOrder = ConfigContext.getCurrentContextConfig().getProperty("ks.ap.search.terms.offered.abbrev");
+            int term1Location = termOrder.indexOf(s1[0]);
+            int term2Location = termOrder.indexOf(s2[0]);
+            return compareIntegers(term1Location,term2Location);
+        }
+
+    };
+
+    private static int compareIntegers(int o1, int o2){
+        if(o1 == o2) return 0;
+        if(o1 > o2) return 1;
+        return -1;
     }
 }

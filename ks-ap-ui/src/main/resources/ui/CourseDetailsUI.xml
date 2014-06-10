@@ -145,7 +145,7 @@
 	<bean id="ksapAddPlannedCourse-parent" abstract="true" parent="Uif-SecondaryActionButton"
 		p:actionLabel="Add to Plan">
 		<property name="actionScript" value="
-                        ksapPlannerOpenDialog('course_add_course','planner','startDialog', this, e);
+                        ksapOpenDialog('course_add_course','planner','startDialog', this, e);
                     "/>
         <property name="dataAttributes">
             <map>
@@ -215,13 +215,13 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Course Description">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -247,13 +247,13 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Course Requisites">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -276,6 +276,16 @@
                                                 </list>
                                             </property>
                                         </bean>
+                                        <bean id="course_req_inactiveCourse_tooltip" parent="Uif-MessageField">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>ksap-inactive-course-link</value>
+                                                </list>
+                                            </property>
+                                            <property name="toolTip">
+                                                <bean parent="Uif-Tooltip" p:tooltipContent=""/>
+                                            </property>
+                                        </bean>
                                         <bean parent="Uif-Message" p:messageText="Source: @{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_REQUISITE_SOURCE_NAME')}">
                                             <property name="cssClasses">
                                                 <list merge="true">
@@ -293,13 +303,13 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Scheduled Terms">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -340,13 +350,13 @@
                 <bean parent="Uif-CssGridGroup" p:render="@{dataObject.scheduledTerms.size() gt 0 ? false : dataObject.lastOffered ne null ? true : false}">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Last Offered">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -382,13 +392,13 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Projected Terms">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -429,13 +439,13 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="General Edu. Req.">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -469,13 +479,13 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="2" p:wrapperCssClasses="ksap-right-labels">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="@{T(org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator).getTextHelper().getText('DETAILS_CURRICULUM_HEADER')}">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -618,20 +628,20 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="4">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="5">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Scheduled Terms">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="8">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="7">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="
@@ -654,20 +664,20 @@
                 <bean parent="Uif-CssGridGroup" p:render="@{dataObject.scheduledTerms.size() gt 0 ? false : dataObject.lastOffered ne null ? true : false}">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="4">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="5">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Last Offered">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="8">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="7">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="@{dataObject.lastOffered}"
@@ -688,20 +698,20 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="4">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="5">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Projected Terms">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="8">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="7">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="
@@ -724,20 +734,20 @@
                 <bean parent="Uif-CssGridGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="4">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="5">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Course Requisites">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>ksap-course-detail-label</value>
+                                                    <value>ksap-label</value>
                                                 </list>
                                             </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-VerticalBoxSection" p:colSpan="8">
+                            <bean parent="Uif-VerticalBoxSection" p:colSpan="7">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText=

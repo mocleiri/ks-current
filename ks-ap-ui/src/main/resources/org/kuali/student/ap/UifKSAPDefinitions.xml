@@ -173,26 +173,30 @@
     <bean id="KSAPTheme" abstract="true" parent="KSAPTheme-parentBean"/>
     <bean id="KSAPTheme-parentBean" parent="Uif-BaseTheme">
         <property name="usesThemeBuilder" value="false"/>
-        <property name="minCssFile" value="themes/ksapboot/stylesheets/ksapboot.@{#ConfigProperties['ksap.theme.version']}.min.css"/>
-        <property name="minCssSourceFiles">
+        <property name="cssFiles">
             <list merge="true">
-                <!--<value>themes/ksboot/stylesheets/ksboot.css</value>-->
+                <value>themes/ksboot/stylesheets/ksboot.css</value>
                 <value>plugins/jquery-popover/jquery.popover.css</value>
-                <value>ks-ap/jquery-ui/jquery-ui.css</value>
                 <value>themes/ksboot/stylesheets/enroll.css</value>
-                <!--<value>themes/ksboot/stylesheets/fontello.css</value>-->
                 <value>themes/ksapboot/stylesheets/ksap.css</value>
             </list>
         </property>
-        <property name="minScriptFile" value="themes/ksapboot/scripts/ksapboot.@{#ConfigProperties['ksap.theme.version']}.min.js"/>
-        <property name="minScriptSourceFiles">
+        <property name="scriptFiles">
             <!--@TODO: KSAP-254: Create ksap.js and include here-->
             <list merge="true">
                 <value>themes/ksapboot/scripts/KradOverrides.js</value>
                 <value>themes/ksapboot/scripts/plan/planner.js</value>
                 <value>themes/ksapboot/scripts/ksap.widgets.js</value>
+                <value>themes/ksapboot/scripts/ksap.dialogs.js</value>
                 <value>plugins/jquery-popover/jquery.popover.js</value>
-                <value>themes/bootstrap/scripts/bootstrap.js</value>
+            </list>
+        </property>
+        <property name="minScriptSourceFiles">
+            <!-- This list is for additional files to include in dev mode -->
+            <list merge="true">
+                <value>themes/ksboot/scripts/bootstrap.js</value>
+                <value>themes/ksapboot/scripts/devmode/live_less_loading.js</value>
+                <value>themes/ksapboot/scripts/vendor/less-1.7.0.min.js</value>
             </list>
         </property>
     </bean>
@@ -407,7 +411,6 @@
         <property name="items">
             <list>
                 <ref bean="watch_list" />
-                <ref bean="non_student_degree_audits_list" />
             </list>
         </property>
         <property name="propertyReplacers">
@@ -417,7 +420,6 @@
                     <property name="replacement">
                         <list>
                             <ref bean="watch_list" />
-                            <ref bean="degree_audits_list" />
                         </list>
                     </property>
                 </bean>
@@ -444,7 +446,6 @@
         <property name="items">
             <list>
                 <ref bean="watch_list" />
-                <ref bean="non_student_degree_audits_list" />
             </list>
         </property>
         <property name="propertyReplacers">
@@ -454,7 +455,6 @@
                     <property name="replacement">
                         <list>
                             <ref bean="watch_list" />
-                            <ref bean="degree_audits_list" />
                         </list>
                     </property>
                 </bean>
@@ -499,37 +499,6 @@
         <property name="onDocumentReadyScript"
                   value="ksapRetrieveComponent('watch_list','bookmark_summary','search','lookup',{viewId:'BookmarkSideBar-LookupView'});"/>
     </bean>
-
-    <bean id="degree_audits_list" parent="degree_audits_list-parent"/>
-    <bean id="degree_audits_list-parent" abstract="true" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-recent-audit</value>
-                <value>ksap-stacked-list</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
-        </property>
-        <property name="onDocumentReadyScript"
-                  value="ksapRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                        registerDegreeAuditListEvents(jQuery('#degree_audits_summary'));"/>
-    </bean>
-
-    <bean id="non_student_degree_audits_list" parent="non_student_degree_audits_list-parent"/>
-    <bean id="non_student_degree_audits_list-parent" abstract="true" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-recent-audit</value>
-                <value>ksap-stacked-list</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
-        </property>
-        <property name="instructionalText" value="No recent audits found."/>
-    </bean>
-
 
     <bean id="data_list_formatter" class="org.kuali.student.ap.coursesearch.util.CollectionListPropertyEditor">
         <property name="emptyListMessage" value="None"/>
@@ -578,28 +547,6 @@
                         <list>
                             <bean parent="Uif-Message"
                                   p:messageText="Advisers are unable to add or bookmark courses."/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="audit_adviser_actions_message" parent="audit_adviser_actions_message-parent"/>
-    <bean id="audit_adviser_actions_message-parent" abstract="true" parent="Uif-VerticalBoxGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Advisers are unable to run degree audits."/>
                         </list>
                     </property>
                 </bean>

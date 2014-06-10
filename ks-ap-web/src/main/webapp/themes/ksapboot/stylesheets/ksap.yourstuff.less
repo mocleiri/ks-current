@@ -61,7 +61,7 @@
 .ksap-section div.blockElement {
   left: auto !important;
   top: 1px !important;
-  right: 0px !important;
+  right: 0 !important;
   border: none;
   width: 16px;
 }
@@ -78,62 +78,11 @@
   cursor: pointer;
 }
 
-.ksap-section .uif-listCollectionGroup.ksap-recent-audit ul li {
-  border-bottom: none;
-  border-top: dotted 1px #ccc;
-}
-
 .ksap-section .uif-listCollectionGroup ul li:hover {
   background-color: #e3f0fe;
 }
 
-.ksap-section .ksap-recent-audit .pending {
-  padding: 7px 10px;
-}
-
-.ksap-section .ksap-recent-audit .pending:hover {
-  background-color: transparent;
-  cursor: default;
-}
-
-.ksap-section .ksap-recent-audit .pending .icon {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  margin-right: 5px;
-}
-
-.ksap-section .ksap-recent-audit .pending .title {
-  vertical-align: middle;
-  color: #777;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
-  width: 187px;
-}
-
-.ksap-section .ksap-recent-audit .pending .program {
-  color: #333;
-}
-
-.ksap-section .ksap-recent-audit label {
-  color: #777777 !important;
-  font-weight: normal;
-  float: left;
-  padding-right: 5px;
-}
-
 /* Saved Courses Summary Styles ########################################################################### */
-
-/* Recent Audit List Styles ########################################################################### */
-.ksap-section .ksap-recent-audit ul li:first-child {
-  border: none;
-}
-
-.ksap-section .ksap-recent-audit a {
-  white-space: normal;
-}
 
 /* Saved Courses Detail Styles ########################################################################### */
 .ksap-saved-courses-detail {
@@ -173,8 +122,8 @@
 .ksap-popup-close {
   cursor: pointer;
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
 }
 
 .myplan-popup-item {
@@ -198,7 +147,7 @@
 }
 
 .jquerybubblepopup-innerHtml div.blockElement {
-  top: 0px !important;
+  top: 0 !important;
 }
 
 /* Messaging and Comments ################################################################################### */
@@ -259,11 +208,11 @@
   /*
       @TODO ksap-961 use icon font instead of images
   */
-  background: url('../images/ksap_icon_sprites.png') no-repeat 0px -48px transparent;
+  background: url('../images/ksap_icon_sprites.png') no-repeat 0 -48px transparent;
 }
 
 .ksap-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-carat-2-n-s {
-  background-position: 0px -48px;
+  background-position: 0 -48px;
 }
 
 .ksap-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-n {
@@ -344,9 +293,4 @@
   text-align: center;
   font-weight: bold;
   font-size: 90%;
-}
-
-.myplan-audit-widget select {
-  width: 180px;
-  margin: 10px 0px 0px;
 }

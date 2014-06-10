@@ -1,22 +1,12 @@
 jQuery('#course_search #text_searchQuery_control').ready(function(){
-    if(sessionStorage.getItem('back_search') != null) {
-        //came from the course details page, check search input, and fill in if blank
+    if(sessionStorage.getItem('last_search') != null) {
+        //Coming back to the search page.  Set the values back to the previous search values, pulled from sessionStorage
         if(jQuery('#text_searchQuery_control').val().length == 0){
-            //fill in the form input for the user with the last search term
-            jQuery('#text_searchQuery_control').val(sessionStorage.getItem('back_search'));
+            var inputData = JSON.parse( sessionStorage.getItem('last_search') );
+            jQuery('#text_searchQuery_control').val(inputData.searchQuery);
+            jQuery("select[name='searchTerm']").val(inputData.searchTerm);
         }
     }
-    //clear the local storage values
-    sessionStorage.removeItem('back_search');
-    sessionStorage.removeItem('last_search');
-});
-
-jQuery(function(){
-    //set the search terms to pass onto course details page
-    //for setting a sentinal value there
-    jQuery('#course_search #course_search_results').on('click', 'td.details_link a', function(){
-        sessionStorage.setItem('last_search', jQuery('#text_searchQuery_control').val());
-    });
 });
 
 var oTable;
@@ -52,20 +42,14 @@ function ksapCourseSearchColumns() {
         'bSearchable' : true,
         'sTitle' : 'Title',
         'sClass' : 'sortable details_link',
-        'sWidth' : '170px',
+        'sWidth' : '225px',
         'sKsapColIdSuffix' : '_title'
     }, {
         'bSortable' : false,
         'bSearchable' : true,
         'sTitle' : 'Credits',
-        'sWidth' : '43px',
+        'sWidth' : '68px',
         'sKsapColIdSuffix' : '_credits'
-    }, {
-        'bSortable' : false,
-        'bSearchable' : true,
-        'sTitle' : 'Campus',
-        'sWidth' : '47px',
-        'sKsapColIdSuffix' : '_campus'
     },{
         'bSortable' : false,
         'bSearchable' : true,
@@ -148,6 +132,9 @@ function fnSelectAllCampuses() {
  *            be hidden while the initial search is taking place.
  */
 function searchForCourses(id, parentId) {
+    //Get the search inputs and save them in sessionStorage for later retrieval
+    var inputData = {searchQuery: jQuery('#text_searchQuery_control').val(), searchTerm: jQuery("select[name='searchTerm'] option:selected").val()};
+    sessionStorage.setItem( 'last_search', JSON.stringify(inputData) );
 
 	var results = jQuery("#" + parentId); // course_search_results_panel
 	results.fadeOut("fast");
@@ -175,7 +162,7 @@ function searchForCourses(id, parentId) {
 						bSortClasses : false,
 						bStateSave : true,     // Turn save state on to allow for saving pagination when moving between pages
                         "fnStateSave": function (oSettings, oData) {
-                            jQuery.extend(oData,{searchQuery: jQuery('#text_searchQuery_control').val(), searchTerm: jQuery("select[name='searchTerm'] option:selected").val()});
+                            jQuery.extend(oData,inputData);
                             sessionStorage.setItem( 'DataTables_SearchQuery', JSON.stringify(oData) );
                         },
                         "fnStateLoad": function (oSettings) {
@@ -239,6 +226,13 @@ function searchForCourses(id, parentId) {
                             oldheader.empty();
                             newheader.removeClass("ksap-hide");
                             oldheader.append(newheader);
+
+                            newheader = jQuery("#genEdPlaceholder").clone(true);
+                            oldheader = jQuery("[aria-label='Gen Ed']");
+                            oldheader.empty();
+                            newheader.removeClass("ksap-hide");
+                            oldheader.append(newheader);
+
 							ksapSearchComplete();
 
                             //Hide dropdown pagination if there is less than X (default=20) # of items in results - Check once
@@ -549,24 +543,24 @@ function registerCourseSearchResultsEvents(jqObject) {
             }
         })
         .on('PLAN_ITEM_ADDED', function(event, data){
-            if (data.category === 'wishlist') {
+            // REwrite when add action functionality is completed
+            /*if (data.category === 'wishlist') {
                 fnDisplayMessage('Bookmarked', 'bookmarked', data.courseDetails.courseId+'_status', false);
-            }
+            }*/
         })
         .on('PLAN_ITEM_ADDED', function(event, data){
-            if (data.category === 'planned') {
+            /*if (data.category === 'planned') {
                 fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
-            }
+            }*/
         })
         .on('PLAN_ITEM_ADDED', function(event, data){
-            if (data.category === 'backup') {
+            /*if (data.category === 'backup') {
                 fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
-            }
+            }*/
         });
 }
 
 // Registering Course Search Results Facets events
-//Refactored from KSAP-254 - Remove JS from Bean xml files
 function registerCourseSearchResultsFacetsEvents(jqObjects){
     jQuery(jqObjects).each(function() {
         jQuery(this)
@@ -585,7 +579,8 @@ function registerCourseSearchResultsFacetsEvents(jqObjects){
  */
 function updateTermsOfferedDisplay(jqObject){
     var terms = jQuery('#course_search_results_panel').data('terms-abbrev').split(",");
-    var baseDL = jqObject.find('td:nth-child(6) dl');
+    // use the column id suffix "_projectedTerms" to find the correct column
+    var baseDL = jqObject.find('td[id$=_projectedTerms] dl');
     if (baseDL.has('dd.projected').length < 1) {
         var fixEmptyList = baseDL.append(jQuery('<dd />').addClass("projected"));
         var baseArray = [];

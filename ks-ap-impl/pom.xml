@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.kuali.student.ap</groupId>
         <artifactId>ks-ap</artifactId>
-        <version>0.8.1-iu-d1</version>
+        <version>0.8.1-iu-d2</version>
     </parent>
     <dependencies>
         <dependency>
