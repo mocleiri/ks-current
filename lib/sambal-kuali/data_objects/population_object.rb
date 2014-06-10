@@ -23,6 +23,11 @@ class Population < DataFactory
   attr_accessor :operation
 
   POPULATION_LIST = [ 'Sophomore','New Freshmen','Academic Dismissal','Gen Ed','Veteran','Athlete','Good Academic Standing','Young Scholars','Study Abroad','New Transfers','Maryland Incentive','Individual Admit']
+
+  def self.random_population(used_populations=[])
+    unused_pops = POPULATION_LIST - used_populations
+    unused_pops[rand(unused_pops.length)]
+  end
   # provides default data:
   #  defaults = {
   #    :name=>random_alphanums.strip,

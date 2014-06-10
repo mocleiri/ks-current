@@ -79,6 +79,9 @@ class SeatPoolObject < DataFactory
       page.add_pool_seats.fire_event "onblur"
     end
     if @population_name != ""
+      if @population_name == "random"
+        @population_name = Population.random_population(pops_used_list)
+      end
       on(ActivityOfferingMaintenance).add_pool_name_field.set @population_name
       # KSENROLL-13151 iframe/modal dialog issue
       # on(ActivityOfferingMaintenance).add_lookup_population_name
