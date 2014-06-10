@@ -457,9 +457,9 @@ When(/^I create a basic course proposal with alternate identifier details$/) do
                                                    jointly_offered_course_list: [
                                                                                  (make CmJointlyOfferedObject, :search_type => "name"),
                                                                                  (make CmJointlyOfferedObject, :search_type => "course code", :jointly_offered_course_count => 2, :search_by => "Courses Only"),
-                                                                                 #(make CmJointlyOfferedObject, :search_type => "plain text", :jointly_offered_course_count => 3, :search_by => "Proposals Only"),
-                                                                                 #(make CmJointlyOfferedObject, :search_type => "blank", :jointly_offered_course_count => 4, :search_by => "Proposals Only"),
-                                                                                 (make CmJointlyOfferedObject, :auto_lookup => true, :jointly_offered_course_count =>3)
+                                                                                 (make CmJointlyOfferedObject, :search_type => "plain text", :jointly_offered_course_count => 3, :search_by => "Proposals Only"),
+                                                                                 (make CmJointlyOfferedObject, :search_type => "blank", :jointly_offered_course_count => 4, :search_by => "Proposals Only"),
+                                                                                 (make CmJointlyOfferedObject, :auto_lookup => true, :jointly_offered_course_count =>5)
                                                                                 ],
                                                    version_code_list:           [(make CmVersionCodeObject), (make CmVersionCodeObject, :version_code_count => 2) ],
                                                    transcript_course_title: nil,
@@ -513,9 +513,9 @@ And(/^I have a basic course proposal with alternate identifier details$/) do
                             jointly_offered_course_list: [
                                                           (make CmJointlyOfferedObject, :search_type => "name"),
                                                           (make CmJointlyOfferedObject, :search_type => "course code", :jointly_offered_course_count => 2, :search_by => "Courses Only"),
-                                                          #(make CmJointlyOfferedObject, :search_type => "plain text", :jointly_offered_course_count => 3, :search_by => "Proposals Only"),
-                                                          #(make CmJointlyOfferedObject, :search_type => "blank", :jointly_offered_course_count => 4, :search_by => "Proposals Only"),
-                                                          (make CmJointlyOfferedObject, :auto_lookup => true, :jointly_offered_course_count =>3)
+                                                          (make CmJointlyOfferedObject, :search_type => "plain text", :jointly_offered_course_count => 3, :search_by => "Proposals Only"),
+                                                          (make CmJointlyOfferedObject, :search_type => "blank", :jointly_offered_course_count => 4, :search_by => "Proposals Only"),
+                                                          (make CmJointlyOfferedObject, :auto_lookup => true, :jointly_offered_course_count =>5)
                                                           ],
                             version_code_list:           [(make CmVersionCodeObject), (make CmVersionCodeObject, :version_code_count => 2) ],
                             transcript_course_title: nil,
