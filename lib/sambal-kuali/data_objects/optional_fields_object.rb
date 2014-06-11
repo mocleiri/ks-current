@@ -98,25 +98,27 @@ class CmOptionalFieldsObject < DataFactory
       #fill_out page, opts, opts[:term_fall], opts[:term_spring], opts[:term_summer]
       page.term_any.fit opts[:term_any]
       page.term_fall.fit opts[:term_fall]
-      page.term_sprint.fit opts[:term_spring]
+      page.term_spring.fit opts[:term_spring]
       page.term_summer.fit opts[:term_summer]
-      page.duration_type.pick! opts[:duration_type]
-      page.duration_count.fit opts[:duration_count]
-      #fill_out page, opts[:audit], opts[:pass_fail_transcript_grade]
+      page.duration_count_type.pick! opts[:duration_type]
+      page.duration_count_count.fit opts[:duration_count]
       page.audit.fit opts[:audit]
       page.pass_fail_transcript_grade.fit opts[:pass_fail_transcript_grade]
+      determine_save_action unless opts[:defer_save]
     end
 
     on CmActiveDates do |page|
       page.active_dates unless page.current_page('Active Dates').exists?
-      fill_out page, opts[:pilot_course]
+      page.pilot_course.fit opts[:pilot_course]
       page.loading_wait
-      page.end_term.pick! opts[:end_term]
+      page.end_term.pick! opts[:end_term] unless opts[:end_term].nil?
+      determine_save_action unless opts[:defer_save]
     end
 
     on CmCourseFinancials do |page|
       page.financials unless page.current_page('Financials').exists?
-      fill_out page, opts[:justification_of_fees]
+      page.justification_of_fees.fit opts[:justification_of_fees]
+      determine_save_action
     end
 
   set_options(opts)

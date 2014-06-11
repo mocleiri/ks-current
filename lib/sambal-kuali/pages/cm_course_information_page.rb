@@ -43,7 +43,7 @@ class CmCourseInformation < BasePage
   #INSTRUCTORS
   element(:instructor_name) { |instructor_level,b| b.text_field(id: "KS-Instructor-displayName_line#{instructor_level-1}_control") }
   action(:add_instructor) {|b| b.button(id: 'addInstructor').click; b.loading_wait }
-  action(:delete_instructor) { |instructor_level,b| b.a(id: "delete_instructor_line#{instructor_level-1}").i(class: "ks-fontello-icon-cancel").click }
+  action(:delete_instructor) { |instructor_level,b| b.a(id: "delete_instructor_line#{instructor_level-1}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait }
 
 #DESCRIPTION AND RATIONALE
   element(:description_rationale) { |b| b.text_field(name: /courseInfo.descr.plain$/) }

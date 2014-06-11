@@ -19,7 +19,7 @@ class CmGovernance < BasePage
 #ADMINISTERING ORGANIZATION
   element(:admin_org_name) {|admin_org_level,b| b.text_field(id: "organizationName_line#{admin_org_level-1}_control") }
   action(:organization_add) {|b| b.button(id: "addAdministeringOrganization").click; b.loading_wait }
-  action(:delete_admin_org) { |admin_org_level,b| b.a(id: "delete_administeringorganization_line#{admin_org_level-1}").i(class: "ks-fontello-icon-cancel").click }
+  action(:delete_admin_org) { |admin_org_level,b| b.a(id: "delete_administeringorganization_line#{admin_org_level-1}").i(class: "ks-fontello-icon-cancel").click; b.loading_wait }
 
   # 0 is default for the first ADDED organization
   action(:added_administering_organization) {|org_added='0', b| b.text_field(name: /#{org_added}\]\.organizationName$/) }

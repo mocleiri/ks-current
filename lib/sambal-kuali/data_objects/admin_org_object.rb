@@ -55,6 +55,7 @@ class CmAdminOrgObject < DataFactory
 
   def delete (opts={})
     on CmGovernance do |page|
+      page.governance unless page.current_page('Governance').exists?
       page.delete_admin_org(opts[:admin_org_level])
     end
     determine_save_action unless opts[:defer_save]

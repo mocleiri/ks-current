@@ -42,8 +42,8 @@ Then(/^I should see Optional\-Other details on the course proposal$/) do
 
     page.terms_review.should include "Any" if @course_proposal.optional_fields[0].term_any == :set
     page.terms_review.should include "Fall" if @course_proposal.optional_fields[0].term_fall == :set
-    page.terms_review.should include "Any" if @course_proposal.optional_fields[0].term_spring == :set
-    page.terms_review.should include "Any" if @course_proposal.optional_fields[0].term_summer == :set
+    page.terms_review.should include "Spring" if @course_proposal.optional_fields[0].term_spring == :set
+    page.terms_review.should include "Summer" if @course_proposal.optional_fields[0].term_summer == :set
 
     page.duration_review.should include "#{@course_proposal.optional_fields[0].duration_type}"
     page.duration_review.should include "#{@course_proposal.optional_fields[0].duration_count}"
@@ -103,12 +103,13 @@ When(/^I update the Optional Other details on the course proposal$/) do
                                            :term_fall => :clear,
                                            :term_summer => :set,
                                            :duration_type => '::random::',
-                                           :duration_count => (1..999).to_a.sample
+                                           :duration_count => (1..999).to_a.sample,
+                                           :pilot_course => :clear,
+                                           :defer_save => true
 
   @course_proposal.edit :start_term => "Spring 1980", :defer_save => true
 
-  @course_proposal.optional_fields[0].edit  :end_term => '::random::',
-                                            :justification_of_fees => "updated justification text"
+  @course_proposal.optional_fields[0].edit :justification_of_fees => "updated justification text"
 
 
 end
@@ -125,8 +126,8 @@ Then(/^I should see updated Optional Other details on the course proposal$/) do
 
     page.terms_review.should include "Any" if @course_proposal.optional_fields[0].term_any == :set
     page.terms_review.should include "Fall" if @course_proposal.optional_fields[0].term_fall == :set
-    page.terms_review.should include "Any" if @course_proposal.optional_fields[0].term_spring == :set
-    page.terms_review.should include "Any" if @course_proposal.optional_fields[0].term_summer == :set
+    page.terms_review.should include "Spring" if @course_proposal.optional_fields[0].term_spring == :set
+    page.terms_review.should include "Summer" if @course_proposal.optional_fields[0].term_summer == :set
 
     page.duration_review.should include "#{@course_proposal.optional_fields[0].duration_type}"
     page.duration_review.should include "#{@course_proposal.optional_fields[0].duration_count}"
@@ -137,7 +138,7 @@ Then(/^I should see updated Optional Other details on the course proposal$/) do
     page.pilot_course_review.should == "Yes" if @course_proposal.optional_fields[0].pilot_course == :set
 
     page.start_term_review.should == @course_proposal.start_term
-    page.end_term_review.should == @course_proposal.optional_fields[0].end_term
+    page.end_term_review.should_not == @course_proposal.optional_fields[0].end_term
     page.fee_justification_review.should == @course_proposal.optional_fields[0].justification_of_fees
 
 
@@ -180,12 +181,12 @@ When(/^I delete Optional\-Other details on the course proposal$/) do
 
   @course_proposal.optional_fields[0].edit :term_any => :clear,
                                            :term_fall => :clear,
-                                           :term_sprint => :clear,
+                                           :term_spring => :clear,
                                            :term_summer => :clear,
                                            :duration_type => '::random::',
                                            :duration_count => (1..999).to_a.sample,
-                                           :duration_type => " ",
-                                           :duration_count => " ",
+                                           :duration_type => "",
+                                           :duration_count => "",
                                            :audit => :clear,
                                            :pass_fail_transcript_grade => :clear,
                                            :pilot_course => :clear,
@@ -209,8 +210,8 @@ Then(/^I should no longer see Optional\-Other details on the course proposal$/) 
 
     page.terms_review.should_not include "Any"
     page.terms_review.should_not include "Fall"
-    page.terms_review.should_not include "Any"
-    page.terms_review.should_not include "Any"
+    page.terms_review.should_not include "Spring"
+    page.terms_review.should_not include "Summer"
 
     page.duration_review.should include "#{@course_proposal.optional_fields[0].duration_type}"
     page.duration_review.should include "#{@course_proposal.optional_fields[0].duration_count}"
