@@ -131,9 +131,12 @@
         </property>
     </bean>
 
+<!--
+    rice 2.5 upgrade - bean no longer present
     <bean id="Uif-MainteanceDialogResponse" parent="Uif-DialogResponse">
         <property name="bindingInfo.bindToForm" value="true"/>
     </bean>
+-->
 
     <bean id="Uif-MainteanceDialogExplanation" parent="Uif-DialogExplanation">
         <property name="bindingInfo.bindToForm" value="true"/>
@@ -148,9 +151,12 @@
             <bean parent="Uif-KeyLabelPair" p:key="N" p:value="Cancel"/>
           </list>
         </property>
+<!--
+        rice 2.5 upgrade - bean no longer present
         <property name="responseInputField">
           <bean parent="Uif-MainteanceDialogResponse"/>
         </property>
+-->
         <property name="explanation">
           <bean parent="Uif-MainteanceDialogExplanation"/>
         </property>
