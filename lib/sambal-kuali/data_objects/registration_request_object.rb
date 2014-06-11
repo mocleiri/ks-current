@@ -25,6 +25,7 @@ class RegistrationRequest < DataFactory
   CONTEXT_CART = "cart"
   STATUS_SCHEDULE = "schedule"
   STATUS_WAITLIST = "waitlist"
+  SPRING_CREDIT_LIMIT = 21
 
   # provides default data:
   #  defaults = {
@@ -79,6 +80,7 @@ class RegistrationRequest < DataFactory
                               :grading_option=>@course_options.grading_option,
                               :context => CONTEXT_NEW_ITEM
         end
+        page.edit_save_button(@course_code,@reg_group_code,CONTEXT_NEW_ITEM).wait_until_present
         page.save_edits @course_code,@reg_group_code,CONTEXT_NEW_ITEM
       end
     end
@@ -135,6 +137,7 @@ class RegistrationRequest < DataFactory
     on RegistrationCart do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
       page.show_course_details @course_code,@reg_group_code
+      page.remove_course_button(@course_code,@reg_group_code).wait_until_present
       page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
@@ -164,7 +167,7 @@ class RegistrationRequest < DataFactory
         page.credits_selection_div(@course_code, @reg_group_code, options[:context]).wait_until_present
         page.select_credits @course_code, @reg_group_code, options[:credit_option], options[:context] unless options[:credit_option].nil?
         page.select_grading @course_code, @reg_group_code, options[:grading_option], options[:context] unless options[:grading_option].nil?
-        page.save_edits @course_code, @reg_group_code, options[:context]
+        #page.save_edits @course_code, @reg_group_code, options[:context]
       end
     elsif options[:context]==STATUS_SCHEDULE || options[:context]==STATUS_WAITLIST then
       on StudentSchedule do |page|
@@ -176,7 +179,7 @@ class RegistrationRequest < DataFactory
         sleep 1
         page.select_credits @course_code,@reg_group_code,options[:credit_option],options[:context] unless options[:credit_option].nil?
         page.select_grading @course_code,@reg_group_code,options[:grading_option],options[:context] unless options[:grading_option].nil?
-        page.save_edits @course_code,@reg_group_code,options[:context]
+        #page.save_edits @course_code,@reg_group_code,options[:context]
       end
       
     end
