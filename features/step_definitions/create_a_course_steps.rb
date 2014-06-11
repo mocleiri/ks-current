@@ -143,7 +143,7 @@ Then /^I should see data in required fields for the (.*?)$/ do |proposal_type|
 end
 
 When /^I am on the course information page and I click save progress without entering any values$/ do
-  @course_proposal = create CmCourseProposalObject, :proposal_title => nil, :course_title => nil
+  @course_proposal = create CmCourseProposalObject, :proposal_title => nil, :course_title => nil, :blank_proposal => true
 end
 
 And /^I click the save progress button$/ do
