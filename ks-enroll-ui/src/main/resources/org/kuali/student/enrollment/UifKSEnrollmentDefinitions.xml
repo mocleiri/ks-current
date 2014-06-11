@@ -55,6 +55,7 @@
         <property name="topGroup">
             <ref bean="KS-CourseOffering-View-ContextBar-PlaceHolder" />
         </property>
+        <property name="dataObjectClassName" value="org.kuali.rice.krad.maintenance.MaintenanceDocumentBase" />
     </bean>
 
     <bean id="KS-CourseOffering-FormViewWithTermContextBarPlaceholder" parent="KS-Uif-FormView" >
