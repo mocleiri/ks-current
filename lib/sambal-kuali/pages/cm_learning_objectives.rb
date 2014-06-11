@@ -14,8 +14,17 @@ class CmLearningObjectives < BasePage
   # 'Financial Resources Division', 'Curriculum Oversight Division', 'Financial Resources Unit', 'Deployment Unit',
   # 'Administering Org', 'Financial Control Division', 'Curriculum Oversight', 'Institution']
 
-  action(:add_learning_objective) { |b| b.frame(class: 'fancybox-iframe').button(id: 'LearningObjective-CollectionSection_add').click; b.loading_wait }
+  action(:add_learning_objective) { |b| b.button(id: 'uif-addBlankLine-outcome').click; b.loading_wait }
 
-  action(:objective_detail) { |objective_level='0', b| b.text_field(id: /^KS-LoDisplayInfoWrapper-descr_line#{objective_level}/) }
-  action(:objective_category) {|objective_level='0', b| b.text_field(name: /^newCollectionLines\[\'document\.newMaintainableObject\.loDisplayWrapperModel\.loWrappers_#{objective_level}/) }
+  action(:objective_detail) { |objective_level, b| b.text_field(id: "KS-LoDisplayInfoWrapper-descr_line#{objective_level-1}_control") }
+  action(:objective_category) { |objective_level, b| b.text_field(id: /line#{objective_level-1}_add_control/) }
+  action(:search_for_lo) {|objective_level,b| b.a(id: "KS-LoDisplayInfoWrapper-descr_line#{objective_level-1}_quickfinder_act") }
+
+  action(:base_category_detail) { |category_level,b| b.text_field(id: /line#{category_level-1}_add_control/) }
+  action(:browse_for_categories) { |category_level, b| b.a(id: "line#{category_level-1}_add_quickfinder_act") }
+  action(:add_category) { |objective_level,b| b.button(id: /line#{objective_level}_add/).click }
+  action(:multiple_category_detail) { |objective_level,category_level,b| b.text_field(id: /line#{category_level-1}_line#{objective_level-1}_control/ )}
+
+  action(:delete_learning_objective) { |objective_level, b| b.button(id: "LearningObjective-CollectionSection_del_line#{objective_level-1}").click ; b.deleting_line_wait }
+  action(:delete_category) { |objective_level,delete_index,b| b.button(id: "uo2ivcn_line#{objective_level-1}_del_line#{objective_level-1}_line#{delete_index-1}").click; b.deleting_line_wait }
 end

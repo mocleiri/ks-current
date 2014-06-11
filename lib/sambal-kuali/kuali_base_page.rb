@@ -67,9 +67,11 @@ class BasePage < PageFactory
 
       element(:adding_line) { |b| b.image(alt: "Adding Line...") }
       element(:saving) { |b| b.image(alt: "Saving...") }
+      element(:deleting_line) { |b| b.image(alt: "Deleting Line...") }
 
       action(:loading_wait) {|b| b.image(alt: "Loading...").wait_while_present }
       action(:adding_line_wait) {|b| b.adding_line.wait_while_present }
+      action(:deleting_line_wait) { |b| b.deleting_line.wait_while_present }
       action(:saving_wait) { |b| b.saving.wait_while_present }
       action(:save_progress) { |b| b.button(text: "Save Progress").click }
       action(:cancel_action) { |b| b.link(text: "Cancel").click; b.loading.wait_while_present }
