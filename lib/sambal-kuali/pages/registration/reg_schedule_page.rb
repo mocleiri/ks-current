@@ -77,6 +77,7 @@ class StudentSchedule < RegisterForCourseBase
   end
 
   def cancel_drop_course(course_code,reg_group_code)
+    remove_course_button(course_code,reg_group_code).wait_until_present
     remove_course_button(course_code,reg_group_code).click
     sleep 2.5
     cancel_drop.wait_until_present
