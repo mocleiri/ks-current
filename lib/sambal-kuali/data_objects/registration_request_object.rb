@@ -14,7 +14,8 @@ class RegistrationRequest < DataFactory
                 :term_code,
                 :term_descr,              #TODO - get term descr from term_code so they are always in sync
                 :course_code,
-                :reg_group_code
+                :reg_group_code,
+                :context
   #array - generally set using options hash
   attr_reader   :course_options
   #boolean - - generally set using options hash true/false
@@ -22,6 +23,8 @@ class RegistrationRequest < DataFactory
   attr_reader   :modify_course_options
   CONTEXT_NEW_ITEM = "newItem"
   CONTEXT_CART = "cart"
+  STATUS_SCHEDULE = "schedule"
+  STATUS_WAITLIST = "waitlist"
 
   # provides default data:
   #  defaults = {
@@ -31,7 +34,8 @@ class RegistrationRequest < DataFactory
   #    :course_code=>"CHEM231",
   #    :reg_group_code=>"1001",
   #    :course_has_options=> true,
-  #    :modify_course_options=> false   This refers only to modifying during add to cart operation
+  #    :modify_course_options=> false,   This refers only to modifying during add to cart operation
+  #    :context=>""
   #  }
   # initialize is generally called using TestFactory Foundry .make or .create methods
   
@@ -46,7 +50,8 @@ class RegistrationRequest < DataFactory
       :reg_group_code=>"1001",
       :course_options=> (make CourseOptions),
       :course_has_options=> true,
-      :modify_course_options=> false
+      :modify_course_options=> false,
+      :context=> ""
     }
     options = defaults.merge(opts)
     update_options(options)
@@ -130,45 +135,9 @@ class RegistrationRequest < DataFactory
     on RegistrationCart do |page|
       page.course_code(@course_code,@reg_group_code).wait_until_present
       page.show_course_details @course_code,@reg_group_code
-      page.remove_course_button(@course_code,@reg_group_code).wait_until_present
       page.remove_course_from_cart @course_code,@reg_group_code
     end
   end
-
-  # def edit_course_options_on_new_item
-  #   if @course_options.nil?
-  #     return nil
-  #   end
-  #   on RegistrationCart do |page|
-  #     page.credits_selection_div(@course_code,@reg_group_code,CONTEXT_NEW_ITEM).wait_until_present
-  #     page.select_credits @course_code,@reg_group_code,@course_options.credit_option,CONTEXT_NEW_ITEM
-  #     page.select_grading @course_code,@reg_group_code,@course_options.grading_option,CONTEXT_NEW_ITEM
-  #   end
-  # end
-  # private :edit_course_options_on_new_item
-  #
-  # def edit_course_options_in_cart opts = {}
-  #   if @course_options.nil?
-  #     return nil
-  #   end
-  #
-  #   defaults = {
-  #   }
-  #   options = defaults.merge(opts)
-  #
-  #   on RegistrationCart do |page|
-  #     page.course_code(@course_code,@reg_group_code).wait_until_present
-  #     page.show_course_details @course_code,@reg_group_code
-  #     page.edit_course_options @course_code,@reg_group_code
-  #
-  #     page.select_credits @course_code,@reg_group_code,options[:credit_option],CONTEXT_CART unless options[:credit_option].nil?
-  #     page.select_grading @course_code,@reg_group_code,options[:grading_option],CONTEXT_CART unless options[:grading_option].nil?
-  #     page.save_edits @course_code,@reg_group_code,CONTEXT_CART
-  #   end
-  #
-  #   #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
-  # end
-  # #private :edit_course_options_in_cart
 
   def edit_course_options opts = {}
     if opts.nil?
@@ -179,73 +148,42 @@ class RegistrationRequest < DataFactory
     }
     options = defaults.merge(opts)
 
-    on RegistrationCart do |page|
+    if options[:context]==CONTEXT_NEW_ITEM || options[:context]==CONTEXT_CART then
+      on RegistrationCart do |page|
 
-      if options[:context]==CONTEXT_CART then
-        page.course_code(@course_code,@reg_group_code).wait_until_present
-        page.show_course_details @course_code, @reg_group_code
-        page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
-        page.edit_course_options @course_code, @reg_group_code
+        if options[:context]==CONTEXT_CART then
+          page.course_code(@course_code,@reg_group_code).wait_until_present
+          page.show_course_details @course_code, @reg_group_code
+          page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
+          page.edit_course_options @course_code, @reg_group_code
 
-        page.firefox_14_workaround @course_code, @reg_group_code
+          page.firefox_14_workaround @course_code, @reg_group_code
 
+        end
+
+        page.credits_selection_div(@course_code, @reg_group_code, options[:context]).wait_until_present
+        page.select_credits @course_code, @reg_group_code, options[:credit_option], options[:context] unless options[:credit_option].nil?
+        page.select_grading @course_code, @reg_group_code, options[:grading_option], options[:context] unless options[:grading_option].nil?
+        page.save_edits @course_code, @reg_group_code, options[:context]
       end
-
-      page.credits_selection_div(@course_code, @reg_group_code, options[:context]).wait_until_present
-      page.select_credits @course_code, @reg_group_code, options[:credit_option], options[:context] unless options[:credit_option].nil?
-      page.select_grading @course_code, @reg_group_code, options[:grading_option], options[:context] unless options[:grading_option].nil?
-      page.save_edits @course_code, @reg_group_code, options[:context]
+    elsif options[:context]==STATUS_SCHEDULE || options[:context]==STATUS_WAITLIST then
+      on StudentSchedule do |page|
+        page.course_code(@course_code,@reg_group_code,options[:context]).wait_until_present
+        sleep 1
+        page.show_course_details(@course_code,@reg_group_code,options[:context])
+        page.edit_course_options_button(@course_code,@reg_group_code,options[:context]).wait_until_present
+        page.edit_course_options @course_code,@reg_group_code,options[:context]
+        sleep 1
+        page.select_credits @course_code,@reg_group_code,options[:credit_option],options[:context] unless options[:credit_option].nil?
+        page.select_grading @course_code,@reg_group_code,options[:grading_option],options[:context] unless options[:grading_option].nil?
+        page.save_edits @course_code,@reg_group_code,options[:context]
+      end
+      
     end
 
     #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
   end
 
-  def edit_course_options_in_schedule opts = {}
-    if @course_options.nil?
-      return nil
-    end
-
-    defaults = {
-    }
-    options = defaults.merge(opts)
-
-    on StudentSchedule do |page|
-      page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.show_course_details @course_code,@reg_group_code,"registered"
-      page.edit_course_options_button(@course_code,@reg_group_code).wait_until_present
-      page.edit_course_options @course_code,@reg_group_code
-
-      page.select_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
-      page.select_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
-      page.save_edits @course_code,@reg_group_code
-    end
-
-    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
-  end
-
-  def edit_course_options_in_waitlist opts = {}
-    if @course_options.nil?
-      return nil
-    end
-
-    defaults = {
-    }
-    options = defaults.merge(opts)
-
-    on StudentSchedule do |page|
-      page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
-      sleep 1
-      page.show_course_details(@course_code,@reg_group_code,"waitlisted")
-      page.edit_waitlist_item_button(@course_code,@reg_group_code).wait_until_present
-      page.edit_waitlisted_course_options @course_code,@reg_group_code
-      sleep 1
-      page.select_waitlist_credits @course_code,@reg_group_code,options[:credit_option] unless options[:credit_option].nil?
-      page.select_waitlist_grading @course_code,@reg_group_code,options[:grading_option] unless options[:grading_option].nil?
-      page.save_waitlist_edits @course_code,@reg_group_code
-    end
-
-    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
-  end
 
   def undo_remove_from_cart
     on RegistrationCart do |page|
@@ -262,27 +200,19 @@ class RegistrationRequest < DataFactory
     end
   end
 
-  def remove_from_schedule
+  def remove_course(status=STATUS_SCHEDULE)
     on StudentSchedule do |page|
-      page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.show_course_details @course_code,@reg_group_code,"registered"
-      page.remove_course_from_schedule @course_code,@reg_group_code
+      page.course_code(@course_code,@reg_group_code,status).wait_until_present
+      page.show_course_details @course_code,@reg_group_code,status
+      page.remove_course @course_code,@reg_group_code,status
     end
   end
 
   def remove_from_schedule_and_cancel
     on StudentSchedule do |page|
-      page.course_code(@course_code,@reg_group_code).wait_until_present
-      page.show_course_details @course_code,@reg_group_code,"registered"
+      page.course_code(@course_code,@reg_group_code,STATUS_SCHEDULE).wait_until_present
+      page.show_course_details @course_code,@reg_group_code,STATUS_SCHEDULE
       page.cancel_drop_course @course_code,@reg_group_code
-    end
-  end
-
-  def remove_from_waitlist
-    on StudentSchedule do |page|
-      page.waitlisted_course_code(@course_code,@reg_group_code).wait_until_present
-      page.show_course_details @course_code,@reg_group_code,"waitlisted"
-      page.remove_course_from_waitlist @course_code,@reg_group_code
     end
   end
 

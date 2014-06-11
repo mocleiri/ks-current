@@ -161,8 +161,9 @@ end
 When /^I edit the course in my schedule$/ do
   @reg_request.course_options.credit_option = "2.5"
   @reg_request.course_options.grading_option = "Audit"
-  @reg_request.edit_course_options_in_schedule :credit_option => @reg_request.course_options.credit_option,
-                                               :grading_option => @reg_request.course_options.grading_option
+  @reg_request.edit_course_options :credit_option => @reg_request.course_options.credit_option,
+                                   :grading_option => @reg_request.course_options.grading_option,
+                                   :context => "schedule"
 end
 
 Then /^the course is (present|not present) in my cart$/  do |presence|
@@ -204,13 +205,13 @@ end
 
 Then /^there is a message indicating the course was dropped$/ do
   on StudentSchedule do |page|
-    page.course_user_message_div.wait_until_present
-    page.wait_until { page.course_user_message =~ /dropped successfully/i }
+    page.user_message_div("schedule").wait_until_present
+    page.wait_until { page.user_message("schedule") =~ /dropped successfully/i }
   end
 end
 
 When /^I remove the ?(BSCI2)? course from my schedule$/ do |phys|
-  @reg_request.remove_from_schedule
+  @reg_request.remove_course("schedule")
 end
 
 When /^I? ?remove the course from my schedule and cancel the drop$/ do
@@ -229,7 +230,7 @@ When /^I drop a course I am registered for that has a waitlist$/ do
                       :course_has_options=> false
 
   visit StudentSchedule
-  @reg_request.remove_from_schedule
+  @reg_request.remove_course("schedule")
 end
 
 When /^I view my schedule$/ do
@@ -271,7 +272,7 @@ end
 
 And /^I? ?can view the details of my selection in my schedule$/ do
   on StudentSchedule do |page|
-    page.show_course_details(@reg_request.course_code, @reg_request.reg_group_code, "registered")
+    page.show_course_details(@reg_request.course_code, @reg_request.reg_group_code, "schedule")
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} cr"
     unless @reg_request.course_options.grading_option == "Letter"
@@ -384,9 +385,9 @@ Then /^the number of courses and credits I am registered for is correctly update
   on StudentSchedule do |page|
     expected_count = @cart_reg_credit_count + @updated_cart_credit_count
     if drop == "after the drop"
-      page.course_user_message_div.wait_until_present
-      page.wait_until { page.course_user_message =~ /drop processing/i }
-      page.wait_until { page.course_user_message !~ /drop processing/i }
+      page.user_message_div("schedule").wait_until_present
+      page.wait_until { page.user_message("schedule") =~ /drop processing/i }
+      page.wait_until { page.user_message("schedule") !~ /drop processing/i }
       credits_to_drop = @reg_request.course_options.credit_option
       expected_count -= credits_to_drop.to_f
     end
