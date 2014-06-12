@@ -606,7 +606,7 @@ Given /^I create from catalog a Course Offering with an AO-driven exam that uses
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   @matrix.create_standard_rule_matrix_object_for_rsi( "TH at 09:30 AM")
 
-  @course_offering = make CourseOffering, :term => "201301", :course => "BSCI361",
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "BSCI361",
                             :final_exam_driver => "Final Exam Per Activity Offering"
 
   @course_offering.delivery_format_list[0].format = "Lecture"
