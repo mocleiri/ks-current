@@ -136,6 +136,7 @@ When /^I create an Academic Calendar and add an official term$/ do
   @calendar.terms[0].make_official
   @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
   @manage_soc.set_up_soc
+  @manage_soc.create_exam_offerings_soc
 end
 
 When /^I create an Academic Calendar and add an official term with no exam period$/ do
@@ -247,14 +248,13 @@ When /^I rollover the term to a new academic term that has an exam period$/ do
 
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
-  @manage_soc.set_up_soc
-
   @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
                    :source_term => @calendar.terms[0].term_code,
                    :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
+  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
+  @manage_soc.create_exam_offerings_soc
 end
 
 When /^I view the Exam Offerings for a CO created from an existing CO with a standard final exam driven by Course Offering$/ do
@@ -1928,15 +1928,14 @@ When /^I initiate a rollover to create a term in open state$/ do
 
   @calendar_target.terms[0].make_official
 
-  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
-  @manage_soc.set_up_soc
-
   @rollover = make Rollover, :target_term => @calendar_target.terms[0].term_code ,
                    :source_term => @calendar.terms[0].term_code,
                    :exp_success => false
   @rollover.perform_rollover
   @rollover.wait_for_rollover_to_complete
   @rollover.release_to_depts
+  @manage_soc = make ManageSoc, :term_code => @calendar_target.terms[0].term_code
+  @manage_soc.create_exam_offerings_soc
 end
 
 When /^I create Exam Matrix rules from which the Exam Offering Slotting info is populated$/ do
