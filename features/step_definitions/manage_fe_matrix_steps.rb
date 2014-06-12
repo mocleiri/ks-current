@@ -404,7 +404,7 @@ Then /^I should have a choice of terms from which to associate the Final Exam Ma
 end
 
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix and exists on the Final Exam Matrix for the term$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "CHEM131"
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
@@ -437,7 +437,7 @@ Then /^the Requested Scheduling Information for the Exam Offering should be popu
 end
 
 Given /^that the Course Offering has a CO-driven final exam that is marked to use the matrix but does not exist on the Final Exam Matrix for the term$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM242"
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "CHEM242"
 end
 
 Then /^the Schedule Information for the Exam Offering should be blank$/ do
@@ -556,7 +556,7 @@ Given /^there is an Activity Offering that has RSI data but has no ASI data$/ do
 end
 
 Given /^that the Course Offering has an AO-driven exam that is marked to use the matrix and Requested Scheduling Information for the exam does not exist on the Final Exam Matrix$/ do
-  @original_co = make CourseOffering, :term => "201301", :course => "CHEM395"
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "CHEM395"
 end
 
 Then /^the (?:Requested|Actual) Scheduling Information for the Exam Offering of the AO should be populated$/ do
