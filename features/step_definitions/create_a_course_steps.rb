@@ -536,19 +536,21 @@ When(/^I update Alternate Identifier details on the course proposal$/) do
   navigate_to_cm_home
   @course_proposal.search(@course_proposal.proposal_title)
   @course_proposal.edit_proposal_action
-  @course_proposal.cross_listed_course_list[0].delete :cross_list_course_count => 1
+  @course_proposal.cross_listed_course_list[0].delete :cross_list_course_count => 1,:defer_save => true
   @course_proposal.cross_listed_course_list[1].edit :auto_lookup => true,
                                                     :cross_list_subject_code => "BSCI",
                                                     :cross_list_course_number => "555",
                                                     :cross_list_course_count => 1,
                                                     :defer_save => true
 
-  @course_proposal.jointly_offered_course_list[0].delete :jointly_offered_course_count => 1
-  @course_proposal.jointly_offered_course_list[1].edit :jointly_offered_course_count => 1,
+  @course_proposal.jointly_offered_course_list[0].delete :jointly_offered_course_count => 1, :defer_save => true
+  @course_proposal.jointly_offered_course_list[1].delete :jointly_offered_course_count => 1, :defer_save => true
+  @course_proposal.jointly_offered_course_list[2].edit :jointly_offered_course_count => 1,
                                                        :jointly_offered_course => "PHYS675",
+                                                       :auto_lookup => true,
                                                        :defer_save => true
 
-  @course_proposal.version_code_list[0].delete :version_code_count => 1
+  @course_proposal.version_code_list[0].delete :version_code_count => 1, :defer_save => true
 
   @course_proposal.version_code_list[1].edit :version_code => "Z",
                                              :version_course_title => "edited title",
@@ -574,8 +576,10 @@ Then(/^I should see updated alternate identifier details on the course proposal$
 
     #Jointly Offered Courses
     page.jointly_offered_courses_review.should_not include @course_proposal.jointly_offered_course_list[0].jointly_offered_course
-    page.jointly_offered_courses_review.should include @course_proposal.jointly_offered_course_list[1].jointly_offered_course
-
+    page.jointly_offered_courses_review.should_not include @course_proposal.jointly_offered_course_list[1].jointly_offered_course
+    page.jointly_offered_courses_review.should include @course_proposal.jointly_offered_course_list[2].jointly_offered_course
+    page.jointly_offered_courses_review.should include @course_proposal.jointly_offered_course_list[3].jointly_offered_course
+    page.jointly_offered_courses_review.should include @course_proposal.jointly_offered_course_list[4].jointly_offered_course
 
 
     #Version Code
@@ -600,9 +604,11 @@ When(/^I delete alternate identifier details to the course proposal$/) do
   @course_proposal.jointly_offered_course_list[0].delete :jointly_offered_course_count => 1, :defer_save => true
   @course_proposal.jointly_offered_course_list[1].delete :jointly_offered_course_count => 1, :defer_save => true
   @course_proposal.jointly_offered_course_list[2].delete :jointly_offered_course_count => 1, :defer_save => true
+  @course_proposal.jointly_offered_course_list[3].delete :jointly_offered_course_count => 1, :defer_save => true
+  @course_proposal.jointly_offered_course_list[4].delete :jointly_offered_course_count => 1, :defer_save => true
 
   @course_proposal.version_code_list[0].delete :version_code_count => 1, :defer_save => true
-  @course_proposal.version_code_list[1].delete :version_code_count => 1, :defer_save => false
+  @course_proposal.version_code_list[1].delete :version_code_count => 1
 
 end
 

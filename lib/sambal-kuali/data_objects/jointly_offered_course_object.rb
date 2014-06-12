@@ -55,6 +55,7 @@ class CmJointlyOfferedObject < DataFactory
     on CmCourseInformation do |page|
       page.expand_course_listing_section unless page.collapse_course_listing_section.visible?
       page.jointly_offered_course(opts[:jointly_offered_course_count]).fit opts[:jointly_offered_course]
+      page.auto_lookup(opts[:jointly_offered_course]) if opts[:auto_lookup]
     end
     determine_save_action unless opts[:defer_save]
     set_options(opts)
