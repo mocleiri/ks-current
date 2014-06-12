@@ -16,7 +16,7 @@ class CmAdminOrgObject < DataFactory
   def initialize(browser, opts={})
     @browser = browser
     defaults = {
-        admin_org_name: "Forage",
+        admin_org_name: "Communication",
         admin_org_level: 1,
         defer_save: false
     }
@@ -28,7 +28,6 @@ class CmAdminOrgObject < DataFactory
     on CmGovernance do |page|
       page.governance unless page.current_page('Governance').exists?
       page.organization_add unless page.admin_org_name(@admin_org_level).exists?
-      page.admin_org_name(@admin_org_level).click
       page.admin_org_name(@admin_org_level).set @admin_org_name
       page.auto_lookup @admin_org_name
       @admin_org_name = page.admin_org_name(@admin_org_level).value

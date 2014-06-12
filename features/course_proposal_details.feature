@@ -1,5 +1,5 @@
 @nightly
-Feature: Course Proposal Details
+Feature: GT.Course Proposal Details
 
   Scenario: CC5.1 Add cross list, joint offer, version code details to a Course Proposal
     Given I am logged in as Faculty
