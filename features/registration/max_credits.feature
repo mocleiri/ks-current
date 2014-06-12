@@ -21,3 +21,12 @@ Feature: REG.Max Credits
     And there is a message indicating that I have registered for a credit amount over the credit limit
     And I cannot register for another course
 
+  #KSENROLL-13024
+  @wip
+  Scenario: CR 10.5 - As an administrator, I want the ability to have different max credits for different
+  types of terms so I can manage enrollment for the term
+    When I add courses to my registration cart that would exceed the summer term credit limit
+    And I attempt to register for the courses
+    Then there is a message indicating that registration failed
+    And there is a message indicating that I have registered for a credit amount over the credit limit
+    And I cannot register for another course

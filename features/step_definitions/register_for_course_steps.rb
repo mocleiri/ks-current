@@ -448,14 +448,25 @@ Given /^I log in to student registration as (\w+)$/  do |user|
   end
 end
 
-When /^I add courses to my registration cart that would exceed the spring term credit limit$/ do
+When /^I add courses to my registration cart that would exceed the (spring|summer) term credit limit$/ do  |termType|
   # first make sure user's schedule is clear ?? (need Jira)
   # then add six 3-credit courses and one 4-credit (last one added to cart should fail)
   reg_group_code = "1001"
-  for i in (0..5)
+  course_count = 0
+      case termType
+        when "spring" then
+          course_count = 6
+          term_code = "201101"
+          term_descr = "Spring 2011"
+        when "summer" then
+          course_count = 3    # Don't really know what this value will be -- this is just a guess at this point
+          term_code = "201105"
+          term_descr = "Summer 1 2011"
+      end
+  for i in (0..course_count-1)
     @reg_request_engl = make RegistrationRequest, :student_id=>"student2",
-                           :term_code=>"201101",
-                           :term_descr=>"Spring 2011",
+                           :term_code=>term_code,
+                           :term_descr=>term_descr,
                            :course_code=>"ENGL301",
                            :reg_group_code=>reg_group_code
     @reg_request_engl.create
@@ -463,8 +474,8 @@ When /^I add courses to my registration cart that would exceed the spring term c
   end
   course_options = (make CourseOptions, :credit_option => "4.0")
   @reg_request = make RegistrationRequest, :student_id=>"student2",
-                      :term_code=>"201101",
-                      :term_descr=>"Spring 2011",
+                      :term_code=>term_code,
+                      :term_descr=>term_descr,
                       :course_code=>"WMST469G",
                       :reg_group_code=>"1001", :course_options => course_options, :modify_course_options => true
   @reg_request.create
