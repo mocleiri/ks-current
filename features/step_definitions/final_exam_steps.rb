@@ -545,7 +545,7 @@ When /^I view the Exam Offerings after updating the Final Exam indicator to No f
 end
 
 When /^I view the Exam Offerings for a CO created from catalog with a standard final exam driven by Course Offering$/ do
-  @course_offering = create CourseOffering, :term => "201208", :course => "ENGL304"
+  @course_offering = create CourseOffering, :term => Rollover::PUBLISHED_EO_CREATE_TERM, :course => "ENGL304"
 
   @course_offering.edit :final_exam_type => "Standard Final Exam",
                                  :final_exam_driver => "Final Exam Per Course Offering"
