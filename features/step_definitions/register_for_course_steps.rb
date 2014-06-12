@@ -248,7 +248,7 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).text.should_not be_nil
     else
-      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).visible?.should be_false
     end
   end
 end
@@ -500,5 +500,12 @@ Then /^I cannot register for another course$/ do
   on RegistrationCart do |page|
     page.course_code(@reg_request_phys.course_code,@reg_request_phys.reg_group_code).wait_until_present
     page.course_code(@reg_request_phys.course_code,@reg_request_phys.reg_group_code).text.should match /failed/i
+  end
+end
+
+And /^I am able to retain the course to re\-submit it$/ do
+  on RegistrationCart do |page|
+    page.keep_in_cart_button(@reg_request.course_code,@reg_request.reg_group_code).wait_until_present
+    page.keep_in_cart(@reg_request.course_code,@reg_request.reg_group_code)
   end
 end

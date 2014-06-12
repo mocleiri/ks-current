@@ -13,6 +13,8 @@ class RegistrationCart < RegisterForCourseBase
   action(:register) { |b| b.register_button.click }
   element(:register_confirm_button) { |b| b.button(id: "confirmRegistration") }
   action(:confirm_registration) { |b| b.register_confirm_button.click }
+  element(:keep_in_cart_button) { |course_code,reg_group_code,b| b.button(id: "addBackToCart_#{course_code}_#{reg_group_code}") }
+  action(:keep_in_cart) { |course_code,reg_group_code,b| b.keep_in_cart_button(course_code,reg_group_code).click }
 
   element(:schedule_counts) { |b| b.span(id: "reg_course_count") }
 
