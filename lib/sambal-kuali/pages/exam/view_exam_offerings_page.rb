@@ -15,6 +15,9 @@ class ViewExamOfferings < BasePage
   element(:cancel_link) { |b| b.frm.a( text: 'Return to Course Offering')}
   action(:cancel) { |b| b.cancel_link.click; b.loading.wait_while_present}
 
+  element(:confirm_remove_override_dialog) { |b| b.div(id: 'examOfferingRemoveMatrixOverrideConfirmDialog')}
+  action(:confirm_remove_override){ |b| b.confirm_remove_override_dialog.button(id: 'remove_matrix_override_yes_button').click; sleep 2 }
+
   def co_eo_table
     return eo_table_section.table unless !eo_table_section.table.exists? #TODO: why unless?
   end
@@ -238,6 +241,6 @@ class ViewExamOfferings < BasePage
 
   def cancel_edit(row)
     row.link(id: /EO-toggleCancelButton_line/).click
-    edit_rsi_element(row)
+    edit_rsi_element(row).wait_until_present
   end
 end

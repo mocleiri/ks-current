@@ -333,7 +333,7 @@ Then /^the Activity Offerings for the copied CO are assigned to the target subte
 
 end
 
-And /^I generate 'bulk' exam offerings for the term$/ do
+And /^I(?: can)? generate 'bulk' exam offerings for the term$/ do
   @manage_soc.create_exam_offerings_soc
 end
 

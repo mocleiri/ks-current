@@ -122,6 +122,7 @@ class CourseOffering < DataFactory
 
       on CourseOfferingCreateEdit do |page|
         @suffix = random_alphanums(3).upcase if @suffix == ""
+        @suffix.strip! #if you set suffix => ' ' you get no suffix
         page.suffix.set @suffix
         @course = "#{@course}#{@suffix}"
         if @joint_co_to_create != nil

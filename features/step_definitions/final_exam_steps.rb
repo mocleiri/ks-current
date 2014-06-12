@@ -659,8 +659,8 @@ end
 When /^I? ?update the location fields on the exam offering RSI$/ do
   @eo_rsi.edit :override_matrix => true,
                :do_navigation => false,
-               :facility => 'PHYS',
-               :room => '4102'
+               :facility => 'MTH',
+               :room => '0303'
 end
 
 When /^I? ?I trigger the population of the EO RSI from the matrix$/ do
@@ -688,12 +688,38 @@ When /^I select matrix override and update the day and time fields on the exam o
   @eo_rsi.edit :do_navigation => false,
                :day => 'Day 2',
                :start_time => '6:00 PM',
-               :end_time => '7:00 PM',
-               :override_matrix => true
+               :end_time => '7:00 PM'
 end
 
-When /^I subsequently remove matrix override from the exam offering RSI$/ do
-  @eo_rsi.edit :override_matrix => false, :do_navigation => false
+When /^I subsequently remove matrix override from the CO driven exam offering RSI$/ do
+  #first confirm edit was successful
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  on ViewExamOfferings do |page|
+    page.co_target_row.exists?.should be_true
+    page.get_eo_by_co_days_text.should match /#{@eo_rsi.day}/
+    page.get_eo_by_co_st_time_text.should == @eo_rsi.start_time
+    page.get_eo_by_co_end_time_text.should == @eo_rsi.end_time
+    #page.get_eo_by_co_bldg_text.should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_co_room_text.should == @eo_rsi.room
+  end
+  @eo_rsi.remove_override_matrix :do_navigation => false
+end
+
+When /^I subsequently remove matrix override from the AO-driven exam offering RSI$/ do
+  #first confirm edit was successful
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  ao_code = @eo_rsi.ao_code
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_target_row(ao_code).exists?.should be_true
+    page.get_eo_by_ao_days_text(ao_code).should match /#{@eo_rsi.day}/
+    page.get_eo_by_ao_st_time_text(ao_code).should == @eo_rsi.start_time
+    page.get_eo_by_ao_end_time_text(ao_code).should == @eo_rsi.end_time
+    #page.get_eo_by_ao_bldg_text(ao_code).should == @eo_rsi.facility TODO: issue with short vs full facility name
+    page.get_eo_by_ao_room_text(ao_code).should == @eo_rsi.room
+  end
+  @eo_rsi.remove_override_matrix :do_navigation => false
 end
 
 When /^I update the day and time fields on the exam offering RSI$/ do
@@ -754,6 +780,7 @@ When /^the error displayed for AO-driven exam offerings RSI day field is require
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{page.rsi_day(row).id}").table.text
     popup_text.should match /Required|Days, start time and end time fields are required/
+    page.cancel_edit(row)
     page.cancel
   end
 end
@@ -766,6 +793,7 @@ When /^the error displayed for CO-driven exam offerings RSI is that the start ti
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /Valid time format hh:mm AM or hh:mm PM|Start Time is invalid/
+    page.cancel_edit(row)
     page.cancel
   end
 end
@@ -778,6 +806,7 @@ When /^the error displayed for AO-driven exam offerings RSI end time is required
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /Required|Days, start time and end time fields are required/
+    page.cancel_edit(row)
     page.cancel
   end
 end
@@ -790,6 +819,7 @@ When /^the error displayed for AO-driven exam offerings RSI facility is: (.*?)$/
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /#{expected_errMsg}/
+    page.cancel_edit(row)
     page.cancel
   end
 end
@@ -802,6 +832,7 @@ When /^the error displayed for AO-driven exam offerings RSI room is: (.*?)$/ do 
     sleep 1
     popup_text = page.div(id: /jquerybubblepopup/, data_for: "#{element.id}").table.text
     popup_text.should match /#{expected_errMsg}/
+    page.cancel_edit(row)
     page.cancel
   end
 end
@@ -833,6 +864,20 @@ When /^the CO-driven exam offering RSI is updated according to the exam matrix$/
     page.get_eo_by_co_end_time_text.should == "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}"
     #page.get_eo_by_co_bldg_text.should == @matrix.rules[0].facility TODO: issue with short vs full facility name
     page.get_eo_by_co_room_text.should == @matrix.rules[0].room
+  end
+end
+
+When /^the AO-driven exam offering RSI is updated according to the exam matrix$/ do
+  @course_offering.manage
+  on(ManageCourseOfferings).view_exam_offerings
+  code = @activity_offering.code
+  on ViewExamOfferings do |page|
+    page.eo_by_ao_target_row(code).exists?.should be_true
+    page.get_eo_by_ao_days_text(code).should match @matrix.rules[0].rsi_days
+    page.get_eo_by_ao_st_time_text(code).should == "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm.upcase}"
+    page.get_eo_by_ao_end_time_text(code).should == "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm.upcase}"
+    #page.get_eo_by_ao_bldg_text(code).should == @eo_rsi.facility TODO: issue with short vs full facility name
+    #page.get_eo_by_ao_room_text(code).should == @matrix.rules[0].room
   end
 end
 
@@ -1938,6 +1983,32 @@ When /^I? ?add facility and room information to the exam offering RSI$/ do
                :override_matrix => true
 end
 
+Given /^I set up an academic term for exam offering creation in open SOC state$/ do
+  @calendar = make AcademicCalendar, :year => Rollover::OPEN_EO_CREATE_TERM[0..3]
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => 'Spring', :term_code => Rollover::OPEN_EO_CREATE_TERM
+  @calendar.terms << term
+  @calendar.terms[0].exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"05/11/#{Rollover::OPEN_EO_CREATE_TERM[0..3]}",
+                                        :end_date=>"05/18/#{Rollover::OPEN_EO_CREATE_TERM[0..3]}"
+
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
+  @manage_soc.set_up_soc
+  @manage_soc.perform_manual_soc_state_change
+end
+
+Given /^I set up an academic term for exam offering creation in published SOC state$/ do
+  @calendar = make AcademicCalendar, :year => Rollover::PUBLISHED_EO_CREATE_TERM[0..3]
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => 'Spring', :term_code => Rollover::PUBLISHED_EO_CREATE_TERM
+  @calendar.terms << term
+  @calendar.terms[0].exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"05/11/#{Rollover::PUBLISHED_EO_CREATE_TERM[0..3]}",
+                                        :end_date=>"05/18/#{Rollover::PUBLISHED_EO_CREATE_TERM[0..3]}"
+
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
+  @manage_soc.set_up_soc
+  @manage_soc.perform_manual_soc_state_change
+  @manage_soc.advance_soc_from_open_to_published
+end
+
+
 Given /^a new academic term has courses found in the CO based exam matrix$/ do
   @calendar = create AcademicCalendar #, :year => "2235", :name => "fSZtG62zfU"
   term = make AcademicTermObject, :parent_calendar => @calendar
@@ -1965,4 +2036,56 @@ Given /^a new academic term has courses found in the CO based exam matrix$/ do
 
   @matrix = make FinalExamMatrix, :term_type => "Fall Term"
   @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course[0..6]) #canonical course code only
+end
+
+Given /^an academic term has course offerings with slotted exam offerings$/ do
+  @calendar = make AcademicCalendar, :year => '2020', :name => '2019-2020 Academic Calendar'
+  term = make AcademicTermObject, :parent_calendar => @calendar, :term => 'Spring', :term_code => '202001'
+  @calendar.terms << term
+  @calendar.terms[0].exam_period = make ExamPeriodObject, :parent_term => term, :start_date=>"05/11/2020",
+                     :end_date=>"05/18/2020"
+
+  @manage_soc = make ManageSoc, :term_code => @calendar.terms[0].term_code
+  @manage_soc.set_up_soc
+  @manage_soc.perform_manual_soc_state_change
+
+  @course_offering = make CourseOffering, :term=> @calendar.terms[0].term_code,
+                          :course => 'CHEM131', :suffix => ' '
+  @course_offering.delivery_format_list[0].format = 'Lecture'
+  @course_offering.delivery_format_list[0].grade_format = 'Lecture'
+  @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
+  @course_offering.create
+
+  @activity_offering = create ActivityOfferingObject, :parent_course_offering => @course_offering,
+                              :format => 'Lecture Only', :activity_type => 'Lecture'
+  @activity_offering.approve :navigate_to_page => false
+
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
+  @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course[0..6]) #canonical course code only
+
+  @course_offering1 = make CourseOffering, :term => "202001",
+                           :course => "HIST110",
+                           :final_exam_driver => "Final Exam Per Activity Offering",
+                           :suffix => ' '
+  @course_offering1.delivery_format_list[0].format = 'Lecture'
+  @course_offering1.delivery_format_list[0].grade_format = 'Lecture'
+  @course_offering1.delivery_format_list[0].final_exam_activity = 'Lecture'
+
+  @matrix.create_standard_rule_matrix_object_for_rsi( "MWF at 03:00 PM")
+
+  @course_offering1.create
+  @activity_offering1 = @course_offering1.create_ao :ao_obj => (make ActivityOfferingObject)
+  si_obj =  make SchedulingInformationObject, :days => "MWF",
+                 :start_time => "03:00", :start_time_ampm => "pm",
+                 :end_time => "03:50", :end_time_ampm => "pm"
+  @activity_offering1.add_req_sched_info :rsi_obj => si_obj
+
+  @eo_rsi = make EoRsiObject, :ao_driven => true, :ao_code => @activity_offering.code,
+                 :day => @matrix.rules[0].rsi_days,
+                 :start_time => "#{@matrix.rules[0].start_time} #{@matrix.rules[0].st_time_ampm}",
+                 :end_time => "#{@matrix.rules[0].end_time} #{@matrix.rules[0].end_time_ampm}",
+                 :facility =>si_obj.facility, #use AO location is checked on matrix page
+                 :room => si_obj.room         #use AO location is checked on matrix page
+
+
 end

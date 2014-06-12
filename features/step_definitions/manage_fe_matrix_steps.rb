@@ -411,7 +411,7 @@ Given /^that the Course Offering has a CO-driven final exam that is marked to us
 end
 
 Given /^I manage a CO-driven exam offering with RSI generated from the exam matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131"
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "CHEM131"
 
   @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   @matrix.create_common_rule_matrix_object_for_rsi( @course_offering.course)
@@ -475,7 +475,7 @@ Given /^that the Course Offering has an AO-driven exam that is marked to use the
 end
 
 Given /^I manage an AO-driven exam offering with RSI generated from the exam matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
   @course_offering.delivery_format_list[0].format = 'Lecture'
   @course_offering.delivery_format_list[0].grade_format = 'Lecture'
   @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
@@ -500,20 +500,23 @@ Given /^I manage an AO-driven exam offering with RSI generated from the exam mat
   on(ManageCourseOfferings).view_exam_offerings
 end
 
-Given /^I manage an AO-driven exam offering for a course offering in my admin org$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "ENGL201"
-  @course_offering.manage
+Given /^there is an AO-driven exam offering for a course offering in Carol's admin org$/ do
+  @course_offering = create CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "ENGL201"
+end
 
+
+Given /^I manage an AO-driven exam offering for a course offering in my admin org$/ do
+  @course_offering.manage
   on(ManageCourseOfferings).view_exam_offerings
 end
 
 Given /^I manage an AO-driven exam offering with RSI generated from the exam matrix in a term in "Published" SOC state$/ do
-  @course_offering = make CourseOffering, :term => '201208', :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
+  @course_offering = make CourseOffering, :term => Rollover::PUBLISHED_EO_CREATE_TERM, :course => "HIST110", :final_exam_driver => "Final Exam Per Activity Offering"
   @course_offering.delivery_format_list[0].format = 'Lecture'
   @course_offering.delivery_format_list[0].grade_format = 'Lecture'
   @course_offering.delivery_format_list[0].final_exam_activity = 'Lecture'
 
-  @matrix = make FinalExamMatrix, :term_type => "Fall Term"
+  @matrix = make FinalExamMatrix, :term_type => "Spring Term"
   @matrix.create_standard_rule_matrix_object_for_rsi( "MWF at 01:00 PM")
 
   @course_offering.create
@@ -640,13 +643,13 @@ When /^I update the Actual Scheduling Information for the Activity Offering whic
 end
 
 Given /^I manage CO-driven exam offerings for a course offering configured not to use the exam matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "CHEM131", :use_final_exam_matrix => false
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "CHEM131", :use_final_exam_matrix => false
   @course_offering.create
   on(ManageCourseOfferings).view_exam_offerings
 end
 
 Given /^I manage AO-driven exam offerings for a course offering configured not to use the exam matrix$/ do
-  @course_offering = make CourseOffering, :term => "201301", :course => "HIST110",
+  @course_offering = make CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "HIST110",
                           :final_exam_driver => "Final Exam Per Activity Offering",
                           :use_final_exam_matrix => false
   @course_offering.delivery_format_list[0].format = 'Lecture'
@@ -662,6 +665,7 @@ Given /^I manage AO-driven exam offerings for a course offering configured not t
   @activity_offering.add_req_sched_info :rsi_obj => si_obj
 
   @eo_rsi = make EoRsiObject, :ao_driven => true, :ao_code => @activity_offering.code,
+                 :on_matrix => false,
                  :day => '',
                  :start_time => '',
                  :end_time => '',

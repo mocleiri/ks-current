@@ -98,8 +98,18 @@ Feature: data_setup.Setup Environment
     When I initiate a rollover to create a term in draft state EC
     Then the results of the rollover are available
 
+  Scenario: Set up a term for exam offering creation in open SOC state
+    When I set up an academic term for exam offering creation in open SOC state
+    Then I can generate 'bulk' exam offerings for the term
+
+  @smoke_test_setup
+  Scenario: Set up a term for exam offering creation in published SOC state
+    When I set up an academic term for exam offering creation in published SOC state
+    Then I can generate 'bulk' exam offerings for the term
+
   @wip
   Scenario: Run Bulk Creation of Exam Offerings for a term
     When a new academic term has courses found in the CO based exam matrix
+    #When an academic term has course offerings with slotted exam offerings
     When I generate 'bulk' exam offerings for the term
     Then the exam offerings are successfully generated

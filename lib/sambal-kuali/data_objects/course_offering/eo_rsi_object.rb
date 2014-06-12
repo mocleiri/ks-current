@@ -12,7 +12,8 @@ class EoRsiObject < DataFactory
                 :day,
                 :room,
                 :facility,
-                :override_matrix
+                :override_matrix,
+                :on_matrix
   attr_writer   :start_time,
                 :end_time
 
@@ -29,7 +30,8 @@ class EoRsiObject < DataFactory
         :end_time => '12:00 PM',
         :facility => 'MTH', #TODO: use object
         :facility_long =>  'Mathematics Bldg.',
-        :room => '0304'
+        :room => '0304',
+        :on_matrix => true
     }
 
     set_options(defaults.merge(opts))
@@ -44,11 +46,6 @@ class EoRsiObject < DataFactory
   def end_time
     @end_time.rjust(8,'0')
   end
-  # ...
-
-  #created automatically by CO configured use exam matrix
-  #def create
-
 
   def edit opts={}
 
@@ -71,6 +68,8 @@ class EoRsiObject < DataFactory
 
     on(ViewExamOfferings).edit_rsi(edit_row)
 
+    on(ViewExamOfferings).override_checkbox(edit_row).set if @on_matrix
+
     if options[:day]
       on(ViewExamOfferings).rsi_day(edit_row).select options[:day]
     end
@@ -91,13 +90,39 @@ class EoRsiObject < DataFactory
       on(ViewExamOfferings).rsi_facility(edit_row).set options[:facility]
     end
 
-    if ! options[:override_matrix].nil?
-      if options[:override_matrix]
-        on(ViewExamOfferings).override_checkbox(edit_row).set
-      else
-        on(ViewExamOfferings).override_checkbox(edit_row).clear
-      end
+    on(ViewExamOfferings).save_edit(edit_row) unless options[:defer_save]
+    if options[:exp_success]
+      on(ViewExamOfferings).edit_rsi_element(edit_row).wait_until_present
+    else
+      sleep 1
+      on(ViewExamOfferings).save_edit_element(edit_row).wait_until_present
     end
+
+    update_options(opts) if options[:exp_success]
+  end
+
+  def remove_override_matrix opts={}
+
+    defaults = {
+        :exp_success=> true,
+        :defer_save => false,
+        :do_navigation => true
+    }
+    options = defaults.merge(opts)
+
+    if options[:do_navigation]
+      on(ManageCourseOfferings).view_exam_offerings
+    end
+
+    if @ao_driven
+      edit_row =  on(ViewExamOfferings).eo_by_ao_target_row(@ao_code) #TODO: AO Cluster
+    else
+      edit_row = on(ViewExamOfferings).co_target_row
+    end
+
+    on(ViewExamOfferings).edit_rsi(edit_row)
+    on(ViewExamOfferings).override_checkbox(edit_row).clear
+    on(ViewExamOfferings).confirm_remove_override
 
     on(ViewExamOfferings).save_edit(edit_row) unless options[:defer_save]
     if options[:exp_success]
@@ -108,6 +133,7 @@ class EoRsiObject < DataFactory
     end
 
     update_options(opts) if options[:exp_success]
+
   end
 
 end

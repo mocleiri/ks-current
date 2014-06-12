@@ -1,10 +1,17 @@
 @nightly @yellow_team
 Feature: CO.Exam Offering RSI Inline Edit
 
+  FE 6.1: As a Central Administrator I want to update the requested scheduling information for exam offerings driven by Course Offerings
+
+  FE 6.2:  As a Central Adminisrator I want to update the requested scheduling information for exam offerings driven by activity offerings
+
   FE 6.3: As a Central Administrator I want to update the requested scheduling information for AO driven exam offerings with a
   scheduling state of Matrix Error so that AOs with non standard times will have exam offerings with RSI
 
   FE 6.4: As a Central Administrator I want the system to enforce appropriate authorization to add or change RSI information for exam offerings
+
+  FE 6.6: As a Central Administrator I want to add location to an AO driven Exam Offering if the matrix is not configured to copy location
+  from the driver AO so that the preferred examination site is sent to the scheduler
 
   FE 6.7: As a Central Administrator I want to override the day and time of an exam slotted by the matrix so that scheduling data
   that is preferred to that derived from the matrix is sent to the scheduler
@@ -12,21 +19,27 @@ Feature: CO.Exam Offering RSI Inline Edit
   FE 6.8: As a Central Administrator I want to add a location to the requested scheduling information of an on matrix CO driven exam offering
   if the location is not part of the matrix so that the preferred examination site is sent to the scheduler
 
+  FE 6.9: As a Central Administrator I want to resend an on matrix CO Driven exam offering to the matrix slotting process so that
+  I can correct exam override errors
+
+  FE 6.10: As a Central Administrator I want to resend an on matrix AO Driven exam offering to the matrix slotting process so that
+  I can correct exam override errors
+
   Background:
     Given I am logged in as a Schedule Coordinator
 
-  Scenario: FE 6.3.1 Verify successful Exam Offering RSI inline edit for a CO-driven Exam Offering
+  Scenario: FE 6.3.1/FE 6.1.1 Verify successful Exam Offering RSI inline edit for a CO-driven Exam Offering
     Given I manage a CO-driven exam offering with RSI generated from the exam matrix
     When I update all fields on the exam offering RSI
     Then the CO-driven exam offering RSI is successfully updated
 
   Scenario: FE 6.5.1 Verify can override Exam Offering RSI location for a CO-driven Exam Offering
     Given I manage a CO-driven exam offering with RSI generated from the exam matrix
-    And I trigger the population of the EO RSI from the matrix
+    #And I trigger the population of the EO RSI from the matrix
     When I update the location fields on the exam offering RSI
     Then the CO-driven exam offering RSI is successfully updated
 
-  Scenario: FE 6.3.2 Verify successful Exam Offering RSI inline edit for an AO-driven Exam Offering
+  Scenario: FE 6.3.2/FE 6.2.1/FE 6.6.1 Verify successful Exam Offering RSI inline edit for an AO-driven Exam Offering
     Given I manage an AO-driven exam offering with RSI generated from the exam matrix
     And update all fields on the exam offering RSI
     Then the AO-driven exam offering RSI is successfully updated
@@ -87,21 +100,21 @@ Feature: CO.Exam Offering RSI Inline Edit
     When I update the scheduling information for the related activity offering and send to the scheduler
     Then the AO-driven exam offering RSI is not updated
 
-  Scenario: FE 6.7.3 AO-driven verify that when the matrix override option is NOT selected then updates to the activity offering RSI change the EO RSI
-    Given I manage an AO-driven exam offering with RSI generated from the exam matrix
-    And I update the day and time fields on the exam offering RSI
-    When I update the requested scheduling information for the related activity offering so there is no match on the exam matrix
-    Then the exam offering RSI is blank according to the new AO RSI information
-
-  Scenario: FE 6.7.4 Verify that when the matrix override option removed then the EO RSI updates to the exam matrix value
+  Scenario: FE 6.7.4/FE 6.9.1 Verify that when the matrix override option removed then the CO driven EO RSI updates to the exam matrix value
     Given I manage a CO-driven exam offering with RSI generated from the exam matrix
     And I select matrix override and update the day and time fields on the exam offering RSI
-    When I subsequently remove matrix override from the exam offering RSI
+    When I subsequently remove matrix override from the CO driven exam offering RSI
     Then the CO-driven exam offering RSI is updated according to the exam matrix
 
-#this needs to go in AZ feature file
+  Scenario: FE 6.10.1 Verify that when the matrix override option removed then the AO driven EO RSI updates to the exam matrix value
+    Given I manage an AO-driven exam offering with RSI generated from the exam matrix
+    And I select matrix override and update the day and time fields on the exam offering RSI
+    When I subsequently remove matrix override from the AO-driven exam offering RSI
+    Then the AO-driven exam offering RSI is updated according to the exam matrix
+
   Scenario: FE 6.4.2 DSC (Carol) has read-only permission on Manage Exam Offerings page
-    Given I am logged in as a Department Schedule Coordinator
+    Given there is an AO-driven exam offering for a course offering in Carol's admin org
+    When I am logged in as a Department Schedule Coordinator
     And I manage an AO-driven exam offering for a course offering in my admin org
     Then I am not able to edit the AO-driven exam offering RSI
 
@@ -110,3 +123,8 @@ Feature: CO.Exam Offering RSI Inline Edit
     When I manage the Exam Offerings for the Course Offering
     And add facility and room information to the exam offering RSI
     Then the CO-driven exam offering RSI is successfully updated
+
+  Scenario: FE 6.6.1 Successfully override facility and room information for an AO-driven Exam Offering RSI
+    Given I manage an AO-driven exam offering with RSI generated from the exam matrix
+    And I update the location fields on the exam offering RSI
+    Then the AO-driven exam offering RSI is successfully updated
