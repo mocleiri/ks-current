@@ -14,6 +14,10 @@ module Workflows
     end
   end
 
+  def navigate_to_lo_categories
+    on(CmCurriculum).learning_objective_categories
+  end
+
   def navigate_to_create_course_proposal
     on(CmCurriculum).create_a_course
   end

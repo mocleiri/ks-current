@@ -225,3 +225,22 @@ Then(/^I should no longer see Optional\-Other details on the course proposal$/) 
 
   end
 end
+
+And(/^I have Learning Objective Categories created$/) do
+  navigate_rice_to_cm_home
+  @learning_objective = create CmLoCategoryObject
+end
+
+
+When(/^I create a basic course proposal with Learning Objectives$/) do
+  pending # express the regexp above with the code you wish you had
+end
+
+
+Then(/^I should see Learning Objective details on the course proposal$/) do
+  pending # express the regexp above with the code you wish you had
+end
+
+
+
+
