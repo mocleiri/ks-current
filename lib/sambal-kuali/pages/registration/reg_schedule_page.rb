@@ -4,18 +4,19 @@ class StudentSchedule < RegisterForCourseBase
 
   STATUS_SCHEDULE = "schedule"
   STATUS_WAITLIST = "waitlist"
+  PREFIX_WAITLIST = "waitlist_"
 
   element(:reg_credit_count) { |b| b.span(id: "reg_credit_count").text }
-  element(:user_message_div) { |status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.div(id: "#{prefix}course_status_message") }
+  element(:user_message_div) { |status=STATUS_SCHEDULE,b| b.div(id: "#{prefix(status)}course_status_message") }
   element(:user_message) { |status=STATUS_SCHEDULE,b| b.user_message_div(status).div(index: 0).text }
 
-  element(:course_code) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.span(id: "#{prefix}course_code_#{course_code}_#{reg_group_code}") }
+  element(:course_code) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.span(id: "#{prefix(status)}course_code_#{course_code}_#{reg_group_code}") }
 
   element(:course_title_div) { |course_code,reg_group_code,b| b.div(id: "title_#{course_code}_#{reg_group_code}") }
   element(:course_title) { |course_code,reg_group_code,b| b.div(id: "title_#{course_code}_#{reg_group_code}").text }
-  element(:course_info_div) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.div(id: "#{prefix}course_info_#{course_code}_#{reg_group_code}") }
+  element(:course_info_div) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.div(id: "#{prefix(status)}course_info_#{course_code}_#{reg_group_code}") }
   element(:course_info) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.course_info_div(course_code,reg_group_code,status).text }
-  element(:edit_course_options_button) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.button(id: "#{prefix}edit_#{course_code}_#{reg_group_code}") }
+  element(:edit_course_options_button) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.button(id: "#{prefix(status)}edit_#{course_code}_#{reg_group_code}") }
   action(:edit_course_options) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.edit_course_options_button(course_code,reg_group_code,status).click }
   element(:ao_type) { |course_code,reg_group_code,index,b| b.span(id: "ao_type_long_#{course_code}_#{reg_group_code}_#{index}").text }
   element(:course_schedule) { |course_code,reg_group_code,ao_index,index,b| b.div(id: "schedule_long_#{course_code}_#{reg_group_code}_#{ao_index}_#{index}").text }
@@ -29,17 +30,21 @@ class StudentSchedule < RegisterForCourseBase
   element(:grading_audit) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.i(id: "#{status}_grading_#{course_code}_#{reg_group_code}_Audit") }
   element(:grading_letter) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.i(id: "#{status}_grading_#{course_code}_#{reg_group_code}_Letter") }
   element(:grading_pass_fail) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.i(id: "#{status}_grading_#{course_code}_#{reg_group_code}_Pass/Fail") }
-  element(:grading_option_badge) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.span(id: "#{prefix}grading_badge_#{course_code}_#{reg_group_code}") }
-  element(:grading_option) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.grading_option_badge(course_code,reg_group_code,status).text }
+  element(:grading_option_badge) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.span(id: "#{prefix(status)}grading_badge_#{course_code}_#{reg_group_code}") }
+  element(:grading_option) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.grading_option_badge(course_code,reg_group_code,status).text }
   element(:edit_save_button) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.button(id: "#{status}_save_#{course_code}_#{reg_group_code}") }
   action(:save_edits) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.edit_save_button(course_code,reg_group_code,status).click }
   element(:edit_cancel_button) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.button(id: "#{status}_cancel_#{course_code}_#{reg_group_code}") }
   action(:cancel_edits) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.edit_cancel_button(course_code,reg_group_code,status).click }
-  element(:remove_course_button) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| prefix = (status==STATUS_SCHEDULE)?"":"waitlist_"; b.button(id: "#{prefix}remove_#{course_code}_#{reg_group_code}") }
+  element(:remove_course_button) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.button(id: "#{prefix(status)}remove_#{course_code}_#{reg_group_code}") }
   action(:remove_the_course) { |course_code,reg_group_code,status=STATUS_SCHEDULE,b| b.remove_course_button(course_code,reg_group_code,status).click }
 
   element(:confirm_remove_waitlist_button) { |b| b.button(id: "removeWaitlist") }
   element(:cancel_remove_waitlist_button) { |b| b.button(id: "removeWaitlistCancel") }
+
+  def self.prefix(status)
+    return (status==STATUS_SCHEDULE)?"":PREFIX_WAITLIST
+  end
 
   def toggle_course_details(course_code, reg_group_code, course_status=STATUS_SCHEDULE)
     course_code(course_code,reg_group_code,course_status).wait_until_present
