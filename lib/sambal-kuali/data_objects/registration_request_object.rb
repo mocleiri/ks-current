@@ -143,13 +143,11 @@ class RegistrationRequest < DataFactory
   end
 
   def edit_course_options opts = {}
-    if opts.nil?
-      return nil
-    end
-
     defaults = {
     }
     options = defaults.merge(opts)
+
+    return nil if options.empty?
 
     if options[:context]==CONTEXT_NEW_ITEM || options[:context]==CONTEXT_CART then
       on RegistrationCart do |page|
@@ -167,7 +165,7 @@ class RegistrationRequest < DataFactory
         page.credits_selection_div(@course_code, @reg_group_code, options[:context]).wait_until_present
         page.select_credits @course_code, @reg_group_code, options[:credit_option], options[:context] unless options[:credit_option].nil?
         page.select_grading @course_code, @reg_group_code, options[:grading_option], options[:context] unless options[:grading_option].nil?
-        #page.save_edits @course_code, @reg_group_code, options[:context]
+        page.save_edits @course_code, @reg_group_code, options[:context]
       end
     elsif options[:context]==STATUS_SCHEDULE || options[:context]==STATUS_WAITLIST then
       on StudentSchedule do |page|
@@ -179,12 +177,12 @@ class RegistrationRequest < DataFactory
         sleep 1
         page.select_credits @course_code,@reg_group_code,options[:credit_option],options[:context] unless options[:credit_option].nil?
         page.select_grading @course_code,@reg_group_code,options[:grading_option],options[:context] unless options[:grading_option].nil?
-        #page.save_edits @course_code,@reg_group_code,options[:context]
+        page.save_edits @course_code, @reg_group_code, options[:context]
       end
-      
     end
 
-    #note - set_options won't work here, because the course options are in their own class (so they're set in the steps)
+    @course_options.credit_option = options[:credit_option]
+    @course_options.grading_option = options[:grading_option]
   end
 
 

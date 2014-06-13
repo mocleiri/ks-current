@@ -173,10 +173,8 @@ And /^I edit the course in my registration cart$/ do
 end
 
 When /^I edit the course in my schedule$/ do
-  @reg_request.course_options.credit_option = "2.5"
-  @reg_request.course_options.grading_option = "Audit"
-  @reg_request.edit_course_options :credit_option => @reg_request.course_options.credit_option,
-                                   :grading_option => @reg_request.course_options.grading_option,
+  @reg_request.edit_course_options :credit_option => "2.5",
+                                   :grading_option => "Audit",
                                    :context => "schedule"
 end
 
@@ -329,8 +327,8 @@ end
 
 Given /^I have registered for a course having multiple credit options$/ do
   @reg_request = make RegistrationRequest, :student_id=>"student",
-                      :term_code=>"201201",
-                      :term_descr=>"Spring 2012",
+                      :term_code=>"201208",
+                      :term_descr=>"Fall 2012",
                       :course_code=>"CHEM399B",
                       :reg_group_code=>"1001"
   @reg_request.create
