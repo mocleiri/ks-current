@@ -16,7 +16,7 @@ class CmAdminOrgObject < DataFactory
   def initialize(browser, opts={})
     @browser = browser
     defaults = {
-        admin_org_name: "Communication",
+        admin_org_name: ["Communication","Forage","Turfgrass"].sample,
         admin_org_level: 1,
         defer_save: false
     }
