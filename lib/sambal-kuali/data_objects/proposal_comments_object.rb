@@ -34,9 +34,9 @@ class CmCommentsObject < DataFactory
       if(page.alert.exists?)
         page.alert.ok
       end
-      page.edit_comment_text_field.set newInput
-      page.save_edited_comment
-      sleep 5
+      page.edit_comment_text_field(index).set newInput
+      page.save_edited_comment(index)
+      sleep 1
     end
   end
 
@@ -54,6 +54,8 @@ class CmCommentsObject < DataFactory
   def close_comment_dialog()
     on CmProposalComments do |page|
       page.close_dialog
+      page.loading_wait
     end
+    sleep 1
   end
 end

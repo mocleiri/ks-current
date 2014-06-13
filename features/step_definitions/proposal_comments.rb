@@ -11,7 +11,7 @@ When(/^I add comments to the course proposal$/) do
   @comment_add = make CmCommentsObject
   @comment_add.commentText = random_alphanums(10,'test proposal comment')
   @course_proposal.load_comments_action
-  sleep 15
+  sleep 1
   @comment_add.add_comment (@comment_add.commentText)
   @comment_add.close_comment_dialog
 end
@@ -42,9 +42,14 @@ When(/^I edit a comment$/) do
   @comment_edit = make CmCommentsObject
   @comment_edit.commentText = random_alphanums(10,'edit proposal comment')
   @course_proposal.load_comments_action
-  sleep 15
+  sleep 1
   @comment_edit.edit_comment(0, @comment_edit.commentText)
   @comment_edit.close_comment_dialog
+  on CmCourseInformation do |page|
+    if(page.alert.exists?)
+      page.alert.ok
+    end
+  end
 end
 
 Then(/^I should see my edited comments on the course proposal$/) do
@@ -57,13 +62,9 @@ end
 
 And(/^I delete my comments$/) do
   @course_proposal.load_comments_action
-  sleep 15
+  sleep 1
   @comment_add.delete(0)
   @comment_add.close_comment_dialog
-  # temp fix because the breadcrumbs are lost after the deletion of a comment
-  # after the breadcrumbs are fixed we should remove the following lines
-  @course_proposal.cancel_course_proposal
-  on(CmCurriculum).functional_home_via_breadcrumb
 end
 
 Then(/^I should not see any comments on the course proposal$/) do
@@ -96,7 +97,7 @@ Given(/^I have a basic course proposal with comments created as Faculty with com
 end
 
 Then(/^I should see my comments and CS comments on the course proposal$/) do
-  steps %{And edit the course proposal after finding it}
+  steps %{And review the course proposal after finding it}
   on CmProposalComments do |page|
     page.comment_list_header_text.should == "Comments (2)"
     page.comment_content_text(1).should == @comment_add.commentText
@@ -106,41 +107,36 @@ end
 And(/^I should not have edit or delete options for CS comments$/) do
   on CmProposalComments do |page|
     page.comment_list_header_text.should == "Comments (2)"
+    page.comment_edit_link(0).exists?.should == true
+    page.comment_delete_link(0).exists?.should == true
     page.comment_edit_link(1).exists?.should == false
     page.comment_delete_link(1).exists?.should == false
   end
 end
 
 Then(/^I should see CS comments on the course proposal$/) do
-  steps %{And edit the course proposal after finding it}
+  steps %{And review the course proposal after finding it}
   on CmProposalComments do |page|
     page.comment_list_header_text.should == "Comments (1)"
-    page.comment_content_text(1).should == @comment_add.commentText
+    page.comment_content_text(0).should == @comment_add.commentText
   end
 end
 
 And(/^I should not have ability to add comments$/) do
-  steps %{And edit the course proposal after finding it}
   on CmProposalComments do |page|
-    page.comment_list_header_text.should == "Comments (1)"
-    page.comment_content_text(1).should == @comment_add.commentText
+    page.comment_text_input.exists?.should == false
+    page.add_comment_button.exists?.should == false
   end
 end
 
 And (/^edit the course proposal after finding it$/) do
-  on FindProposalPage do |page|
-    page.edit_proposal_action(@course_proposal.proposal_title)
-    page.loading_wait
-  end
+  @course_proposal.edit_proposal_action
   @course_proposal.load_comments_action
-  sleep 15
+  sleep 1
 end
 
 
 And (/^review the course proposal after finding it$/) do
-  on FindProposalPage do |page|
-    page.review_proposal_action(@course_proposal.proposal_title)
-    page.loading_wait
-  end
-  #loading the comments on the review proposal page
+  @course_proposal.review_proposal_action
+  @course_proposal.load_comments_on_review_page
 end

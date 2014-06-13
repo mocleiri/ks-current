@@ -516,6 +516,12 @@ class CmCourseProposalObject < DataFactory
   end
 
 
+  def load_comments_on_review_page
+    on CmReviewProposal do |page|
+      page.load_comments
+    end
+  end
+
   def load_decisions_action
     on CmCourseInformation do |page|
       page.load_decisions
@@ -526,18 +532,21 @@ class CmCourseProposalObject < DataFactory
   def review_proposal_action
     on FindProposalPage do |page|
       page.review_proposal_action_link(@proposal_title)
+      page.loading_wait
     end
   end
 
   def edit_proposal_action
     on FindProposalPage do |page|
       page.edit_proposal_action(@proposal_title)
+      page.loading_wait
     end
   end
 
   def edit_course_information
     on CmReviewProposal do |page|
       page.edit_course_information
+      page.loading_wait
     end
   end
 

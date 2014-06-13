@@ -26,7 +26,7 @@ Feature: Add/Edit/Delete/View Comments on a Proposal for different authors.
   Scenario: PC1.4: Delete Comments - Faculty
     Given I have a basic course proposal with comments created as Faculty
     And I delete my comments
-    And I perform a search for the course proposal
+    And I perform a full search for the course proposal
     Then I should not see any comments on the course proposal
 
 @draft
@@ -48,6 +48,6 @@ Feature: Add/Edit/Delete/View Comments on a Proposal for different authors.
   Scenario: PC1.7: No option to add comments for user with view-only access to a proposal
     Given I have a basic course admin proposal with comments created as CS
     When I am logged in as Faculty
-    When I perform a full search for the course proposal
+    When I perform a search for the course proposal
     Then I should see CS comments on the course proposal
     And I should not have ability to add comments
