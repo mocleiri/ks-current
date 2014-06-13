@@ -19,8 +19,8 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       credit_option = "4.0"
       course_has_options = true
     when "BSCI2" then
-      course_code = "BSCI201"
-      reg_group_code = "1001"
+      course_code = "BSCI105"
+      reg_group_code = "1004"
       term_code = "201201"
       term_descr = "Spring 2012"
       credit_option = "4.0"
@@ -33,7 +33,7 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       credit_option = "4.0"
       course_has_options = true
     when "CHEM" then
-      course_code = "CHEM231"
+      course_code = "CHEM241"
       reg_group_code = "1001"
       term_code = "201201"
       term_descr = "Spring 2012"
@@ -74,6 +74,13 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       term_descr = "Fall 2012"
       credit_option = "3.0"
       course_has_options = false
+    when "ENGL5" then
+      course_code = "ENGL211"
+      reg_group_code = "1001"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      credit_option = "3.0"
+      course_has_options = false
     when "HIST" then
       course_code = "HIST111"
       reg_group_code = "1001"
@@ -101,6 +108,13 @@ When /^I add an? (\w+) course offering to my registration cart$/ do |subj|
       term_code = "201201"
       term_descr = "Spring 2012"
       credit_option = "3.0"
+      course_has_options = true
+    when "PHYS2" then
+      course_code = "PHYS121"
+      reg_group_code = "1048"
+      term_code = "201208"
+      term_descr = "Fall 2012"
+      credit_option = "4.0"
       course_has_options = true
     when "WMST" then
       course_code = "WMST360"
@@ -141,7 +155,7 @@ When /^I add a course to my registration cart and specify course options$/ do
   course_options = (make CourseOptions, :credit_option => "2.5", :grading_option => "Pass/Fail")
   @reg_request = create RegistrationRequest, :student_id => "student", :term_code => "201201",
                         :term_descr=>"Spring 2012",
-                        :course_code=>"WMST298G",
+                        :course_code=>"PHYS399",
                         :reg_group_code=>"1001", :course_options => course_options, :modify_course_options => true
   # above will include entering course_code, reg_group_code and clicking Add to Cart, then changing the 2 options, and clicking Save
 end
@@ -257,16 +271,16 @@ And /^I? ?can view the details of my selection in the registration cart$/ do
   on RegistrationCart do |page|
     page.toggle_course_details(@reg_request.course_code, @reg_request.reg_group_code)
     page.wait_until { page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0) != "" }
-    page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry I"
+    page.course_title(@reg_request.course_code, @reg_request.reg_group_code).should == "Organic Chemistry II"
     page.course_info(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.credit_option[0]} cr"
     unless @reg_request.course_options.grading_option == "Letter"
       page.grading_option_badge(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.grading_option(@reg_request.course_code, @reg_request.reg_group_code).should include "#{@reg_request.course_options.grading_option}"
     end
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,0).should include "Discussion"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /M 3:00-3:50pm(\s+)CHM 0124/i
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,0,0).should match /Tu 8:00-8:50am(\s+)CHM 0128/i
     page.ao_type(@reg_request.course_code, @reg_request.reg_group_code,1).should include "Lecture"
-    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /TuTh 11:00am-12:15pm(\s+)EGR 1202/i
+    page.course_schedule(@reg_request.course_code, @reg_request.reg_group_code,1,0).should match /MWF 8:00-8:50am(\s+)HJP 0226/i
   end
 end
 
@@ -442,8 +456,8 @@ Given /^I log in to student registration as (\w+)$/  do |user|
 end
 
 When /^I add courses to my registration cart that would exceed the (spring|summer) term credit limit$/ do  |termType|
-  # first make sure user's schedule is clear ?? (need Jira)
-  # then add six 3-credit courses and one 4-credit (last one added to cart should fail)
+  # first make sure user's schedule is clear ?? (Dev working on)
+  # then add three or six 3-credit courses and one 4-credit (last one added to cart should fail)
   reg_group_code = "1001"
   course_count = 0
       case termType
