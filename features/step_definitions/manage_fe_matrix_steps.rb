@@ -690,7 +690,7 @@ Then /^I am not able to edit the AO-driven exam offering RSI$/ do
 end
 
 Given /^I manage a course offering with a CO-driven exam offering with RSI generated from the exam matrix where facility and room info are blank$/ do
-  @course_offering = create CourseOffering, :create_by_copy => (make CourseOffering, :term => "201301", :course => "CHEM135")
+  @course_offering = create CourseOffering, :term => Rollover::OPEN_EO_CREATE_TERM, :course => "CHEM135"
 
   @eo_rsi = make EoRsiObject, :day => '',
                  :start_time => '',
