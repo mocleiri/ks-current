@@ -248,7 +248,7 @@ And /^the course is (present|not present) in my schedule$/ do |presence|
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).wait_until_present
       page.course_code(@reg_request.course_code, @reg_request.reg_group_code).text.should_not be_nil
     else
-      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).visible?.should be_false
+      page.course_code(@reg_request.course_code, @reg_request.reg_group_code).exists?.should be_false
     end
   end
 end
@@ -408,13 +408,6 @@ Then /^the number of credits I am registered for and waitlisted for are correctl
   on StudentSchedule do |page|
     page.reg_credit_count.downcase.match('(.*) credits')[1].to_f.should == 3
     #page.
-  end
-end
-
-And /^there is a message indicating a time conflict$/ do
-  on RegistrationCart do |page|
-    page_status = page.result_status(@reg_request.course_code,@reg_request.reg_group_code)
-    page_status.should =~ /time conflict/i
   end
 end
 
