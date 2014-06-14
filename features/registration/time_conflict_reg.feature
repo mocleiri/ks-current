@@ -1,4 +1,4 @@
-@draft @red_team
+@red_team
 
 Feature: REG.Time Conflict
 
