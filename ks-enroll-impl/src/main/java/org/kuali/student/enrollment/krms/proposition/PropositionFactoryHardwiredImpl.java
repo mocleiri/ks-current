@@ -5,6 +5,10 @@ import org.kuali.student.core.krms.proposition.PropositionFactory;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.core.constants.KSKRMSServiceConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Factory for getting the required load calculation rule given a key
@@ -21,6 +25,7 @@ public class PropositionFactoryHardwiredImpl extends
     public static final String RULE_ID_CREDIT_LIMIT = "kuali.rule.credit.limit";
     public static final String RULE_ID_CREDIT_MINIMUM = "kuali.rule.credit.minimum";
     public static final String RULE_ID_CREDIT_LOAD_BEST_EFFORT = "kuali.rule.best.effort.credit.load";
+    public static final String RULE_ID_REQUISITES = "kuali.rule.requisites";
 
     @Override
     public Proposition getProposition(String ruleId, ContextInfo contextInfo) throws DoesNotExistException,
@@ -44,6 +49,12 @@ public class PropositionFactoryHardwiredImpl extends
         }
         if (ruleId.equals(RULE_ID_CREDIT_LOAD_BEST_EFFORT)) {
             Proposition prop = new BestEffortCreditLoadProposition();
+            return prop;
+        }
+        if (ruleId.equals(RULE_ID_REQUISITES)) {
+            List<String> ruleTypes = new ArrayList<String>();
+            ruleTypes.add(KSKRMSServiceConstants.RULE_TYPE_COURSE_ACADEMICREADINESS_ANTIREQ);
+            Proposition prop = new RequisitesProposition(KSKRMSServiceConstants.AGENDA_TYPE_COURSE_ENROLLMENTELIGIBILITY, ruleTypes);
             return prop;
         }
         return super.getProposition(ruleId, contextInfo);
