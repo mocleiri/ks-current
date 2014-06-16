@@ -2,7 +2,6 @@ Feature: Course Proposal Details - Learning Objectives
 
 Background:
   Given I am logged in as Faculty
-  And I have Learning Objective Categories created
 
   Scenario: CC8.1 Add new Learning Objectives to a Course Proposal
     When I create a basic course proposal with Learning Objectives

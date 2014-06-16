@@ -29,6 +29,10 @@ class CmCourseProposalObject < DataFactory
         :format_list,
         :audit, :pass_fail_transcript_grade,
         :assessment_a_f, :assessment_notation, :assessment_letter, :assessment_pass_fail, :assessment_percentage, :assessment_satisfactory,
+
+        #Learning Objectives
+        :learning_objective_list,
+
         #Course Requisites
 
 
@@ -345,6 +349,21 @@ class CmCourseProposalObject < DataFactory
 
     end
     determine_save_action
+
+    on CmLearningObjectives do |page|
+      #if @learning_objectives_list != nil
+      #  @learning_objectives_list.each do |learning_objective|
+      #    learning_objective.create
+      #  end
+      #end
+
+      unless @learning_objective_list.nil?
+          @learning_objective_list.each do |learning_objective|
+          learning_objective.create
+          end
+      end
+
+    end
 
     on CmActiveDates do |page|
       page.active_dates unless page.current_page('Active Dates').exists?
